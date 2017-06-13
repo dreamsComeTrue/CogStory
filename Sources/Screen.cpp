@@ -63,6 +63,9 @@ namespace aga
             return false;
         }
 
+        al_init_font_addon ();
+        al_init_ttf_addon ();
+
         m_DisplayTimer = al_create_timer (1.0 / TARGET_FPS);
 
         if (!m_DisplayTimer)
@@ -90,6 +93,8 @@ namespace aga
         al_set_window_position (m_Display, 0, 0);
 
         al_start_timer (m_DisplayTimer);
+
+        m_Font.Initialize ();
 
         Lifecycle::Initialize ();
 
@@ -120,6 +125,8 @@ namespace aga
             al_destroy_display (m_Display);
             m_Display = nullptr;
         }
+
+        m_Font.Destroy ();
 
         Lifecycle::Destroy ();
     }
@@ -189,6 +196,13 @@ namespace aga
     const Point Screen::GetScreenSize ()
     {
         return Point{ m_RealWidth, m_RealHeight };
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Font& Screen::GetFont ()
+    {
+        return m_Font;
     }
 
     //--------------------------------------------------------------------------------------------------

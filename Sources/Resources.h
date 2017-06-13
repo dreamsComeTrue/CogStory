@@ -12,6 +12,8 @@ namespace aga
         GFX_MENU_COG,
         GFX_TEXT_FRAME,
         GFX_PLAYER,
+
+        FONT_MAIN
     };
 
     struct Resource

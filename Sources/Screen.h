@@ -4,6 +4,7 @@
 #define __SCREEN_H__
 
 #include "Common.h"
+#include "Font.h"
 
 #include <functional>
 
@@ -27,6 +28,7 @@ namespace aga
         void SetMouseCursor (const char* path);
 
         const Point GetScreenSize ();
+        Font& GetFont ();
 
         double GetDeltaTime () const;
         double GetFPS () const;
@@ -39,6 +41,8 @@ namespace aga
         int m_RealWidth, m_RealHeight;
         bool m_Redraw;
         double m_DeltaTime;
+
+        Font m_Font;
 
         ALLEGRO_DISPLAY* m_Display;
         ALLEGRO_EVENT_QUEUE* m_EventQueue;

@@ -1,7 +1,6 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Player.h"
-#include "Common.h"
 #include "Screen.h"
 
 namespace aga

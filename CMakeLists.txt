@@ -13,4 +13,4 @@ include_directories(Sources/
                     )
 
 add_executable(${PROJECT_NAME} ${SRC_LIST})
-target_link_libraries(${PROJECT_NAME} allegro allegro_image allegro_dialog)
+target_link_libraries(${PROJECT_NAME} allegro allegro_image allegro_dialog allegro_font allegro_ttf)

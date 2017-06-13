@@ -67,6 +67,8 @@ namespace aga
     void GamePlayState::Render (double deltaTime)
     {
         m_Player->Render (deltaTime);
+
+        m_StateManager->GetScreen ()->GetFont ().DrawText (FONT_NAME_MAIN, al_map_rgb (255, 255, 255), 200, 200, "Robot Tale");
     }
 
     //--------------------------------------------------------------------------------------------------
