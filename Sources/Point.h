@@ -18,11 +18,11 @@ namespace aga
         union {
             struct
             {
-                int X, Y;
+                double X, Y;
             };
             struct
             {
-                int Width, Height;
+                double Width, Height;
             };
         };
     };

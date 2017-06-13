@@ -19,9 +19,9 @@ namespace aga
         {
         }
 
-        virtual void ProcessEvent (ALLEGRO_EVENT* event) = 0;
-        virtual void Update () = 0;
-        virtual void Render () = 0;
+        virtual void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime) = 0;
+        virtual void Update (double deltaTime) = 0;
+        virtual void Render (double deltaTime) = 0;
 
     private:
         std::string m_Name;

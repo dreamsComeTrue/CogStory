@@ -21,9 +21,9 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
-        void ProcessEvent (ALLEGRO_EVENT* event);
-        void Update ();
-        void Render ();
+        void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
+        void Update (double deltaTime);
+        void Render (double deltaTime);
 
     private:
         StateManager* m_StateManager;

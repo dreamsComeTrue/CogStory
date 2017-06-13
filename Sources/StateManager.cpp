@@ -62,14 +62,14 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool StateManager::Update ()
+    bool StateManager::Update (double deltaTime)
     {
         if (m_ActiveState != nullptr)
         {
-            m_ActiveState->Update ();
+            m_ActiveState->Update (deltaTime);
         }
 
-        if (!m_Screen->Update ())
+        if (!m_Screen->Update (deltaTime))
         {
             return false;
         }
@@ -79,21 +79,21 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void StateManager::ProcessEvent (ALLEGRO_EVENT* event)
+    void StateManager::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
         if (m_ActiveState != nullptr)
         {
-            m_ActiveState->ProcessEvent (event);
+            m_ActiveState->ProcessEvent (event, deltaTime);
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void StateManager::Render ()
+    void StateManager::Render (double deltaTime)
     {
         if (m_ActiveState != nullptr)
         {
-            m_ActiveState->Render ();
+            m_ActiveState->Render (deltaTime);
         }
     }
 

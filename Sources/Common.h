@@ -7,6 +7,7 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_native_dialog.h>
 
+#include <cmath>
 #include <map>
 #include <string>
 #include <vector>
@@ -27,6 +28,11 @@
 
 namespace aga
 {
+    static bool AreSame (double a, double b)
+    {
+        double epsilon = 1.0E-8;
+        return std::fabs (a - b) < epsilon;
+    }
 }
 
 #endif //   __COMMON_H__

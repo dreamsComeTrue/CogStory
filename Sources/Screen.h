@@ -22,11 +22,14 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
-        bool Update ();
+        bool Update (double deltaTime);
 
         void SetMouseCursor (const char* path);
 
         const Point GetScreenSize ();
+
+        double GetDeltaTime () const;
+        double GetFPS () const;
 
         std::function<void(ALLEGRO_EVENT*)> ProcessEventFunction;
         std::function<void()> RenderFunction;
@@ -35,6 +38,7 @@ namespace aga
         unsigned m_Width, m_Height;
         int m_RealWidth, m_RealHeight;
         bool m_Redraw;
+        double m_DeltaTime;
 
         ALLEGRO_DISPLAY* m_Display;
         ALLEGRO_EVENT_QUEUE* m_EventQueue;

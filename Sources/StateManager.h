@@ -23,9 +23,9 @@ namespace aga
         void SetActiveState (State* state);
         void RegisterState (State* state);
 
-        bool Update ();
-        void ProcessEvent (ALLEGRO_EVENT* event);
-        void Render ();
+        bool Update (double deltaTime);
+        void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
+        void Render (double deltaTime);
 
         Screen* GetScreen () { return m_Screen; }
 

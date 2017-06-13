@@ -51,7 +51,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void MainMenuState::ProcessEvent (ALLEGRO_EVENT* event)
+    void MainMenuState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
         if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
         {
@@ -60,13 +60,13 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void MainMenuState::Update ()
+    void MainMenuState::Update (double deltaTime)
     {
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void MainMenuState::Render ()
+    void MainMenuState::Render (double deltaTime)
     {
         draw_nine_patch_bitmap (m_Background, 20, 20, 400, 150);
     }

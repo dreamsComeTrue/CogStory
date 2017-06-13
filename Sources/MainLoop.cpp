@@ -41,11 +41,11 @@ namespace aga
         m_StateManager->SetActiveState (m_GamePlayState);
 
         m_Screen->ProcessEventFunction = [&](ALLEGRO_EVENT* event) {
-            m_StateManager->ProcessEvent (event);
+            m_StateManager->ProcessEvent (event, m_Screen->GetDeltaTime ());
         };
 
         m_Screen->RenderFunction = [&]() {
-            m_StateManager->Render ();
+            m_StateManager->Render (m_Screen->GetDeltaTime ());
         };
 
         Lifecycle::Initialize ();
@@ -87,9 +87,15 @@ namespace aga
 
     void MainLoop::Start ()
     {
+        double oldTime = al_get_time ();
+
         while (true)
         {
-            if (!m_StateManager->Update ())
+            double newTime = al_get_time ();
+            double deltaTime = (newTime - oldTime);
+            oldTime = newTime;
+
+            if (!m_StateManager->Update (deltaTime))
             {
                 break;
             }

@@ -44,6 +44,7 @@ namespace aga
         }
 
         al_install_mouse ();
+        al_install_keyboard ();
 
         al_set_new_display_flags (ALLEGRO_RESIZABLE);
         m_Display = al_create_display (m_Width, m_Height);
@@ -83,6 +84,7 @@ namespace aga
             al_get_display_event_source (m_Display));
         al_register_event_source (m_EventQueue, al_get_timer_event_source (m_DisplayTimer));
         al_register_event_source (m_EventQueue, al_get_mouse_event_source ());
+        al_register_event_source (m_EventQueue, al_get_keyboard_event_source ());
 
         al_set_window_title (m_Display, GAME_TITLE);
         al_set_window_position (m_Display, 0, 0);
@@ -98,6 +100,9 @@ namespace aga
 
     bool Screen::Destroy ()
     {
+        al_uninstall_keyboard ();
+        al_uninstall_mouse ();
+
         if (m_DisplayTimer != nullptr)
         {
             al_destroy_timer (m_DisplayTimer);
@@ -121,8 +126,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Screen::Update ()
+    bool Screen::Update (double deltaTime)
     {
+        m_DeltaTime = deltaTime;
+
         ALLEGRO_EVENT ev;
         al_wait_for_event (m_EventQueue, &ev);
 
@@ -141,7 +148,9 @@ namespace aga
 
             al_acknowledge_resize (m_Display);
         }
-        else
+        else if ((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+            || (ev.type == ALLEGRO_EVENT_KEY_DOWN)
+            || (ev.type == ALLEGRO_EVENT_KEY_UP))
         {
             if (ProcessEventFunction != nullptr)
             {
@@ -180,6 +189,20 @@ namespace aga
     const Point Screen::GetScreenSize ()
     {
         return Point{ m_RealWidth, m_RealHeight };
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    double Screen::GetDeltaTime () const
+    {
+        return m_DeltaTime;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    double Screen::GetFPS () const
+    {
+        return 1 / m_DeltaTime * 1000;
     }
 
     //--------------------------------------------------------------------------------------------------

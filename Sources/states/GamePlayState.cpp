@@ -50,25 +50,23 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::ProcessEvent (ALLEGRO_EVENT* event)
+    void GamePlayState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
-        if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
-        {
-        }
+        m_Player->ProcessEvent (event, deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::Update ()
+    void GamePlayState::Update (double deltaTime)
     {
-        m_Player->Update ();
+        m_Player->Update (deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::Render ()
+    void GamePlayState::Render (double deltaTime)
     {
-        m_Player->Render ();
+        m_Player->Render (deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------
