@@ -25,6 +25,8 @@ namespace aga
 
         bool Update (double deltaTime);
 
+        void SetBackgroundColor (ALLEGRO_COLOR color);
+
         void SetMouseCursor (const char* path);
 
         const Point GetScreenSize ();
@@ -44,6 +46,7 @@ namespace aga
 
         Font m_Font;
 
+        ALLEGRO_COLOR m_BackgroundColor;
         ALLEGRO_DISPLAY* m_Display;
         ALLEGRO_EVENT_QUEUE* m_EventQueue;
         ALLEGRO_TIMER* m_DisplayTimer;

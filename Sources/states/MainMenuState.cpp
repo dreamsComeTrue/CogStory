@@ -51,6 +51,18 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void MainMenuState::BeforeEnter ()
+    {
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void MainMenuState::AfterLeave ()
+    {
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void MainMenuState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
         if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)

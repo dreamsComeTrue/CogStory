@@ -18,6 +18,7 @@ namespace aga
         , m_RealWidth (width)
         , m_RealHeight (height)
         , m_Redraw (false)
+        , m_BackgroundColor (al_map_rgb (0, 0, 0))
     {
     }
 
@@ -168,7 +169,7 @@ namespace aga
         if (m_Redraw && al_is_event_queue_empty (m_EventQueue))
         {
             m_Redraw = false;
-            al_clear_to_color (al_map_rgb (0, 0, 0));
+            al_clear_to_color (m_BackgroundColor);
 
             if (RenderFunction != nullptr)
             {
@@ -179,6 +180,13 @@ namespace aga
         }
 
         return true;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Screen::SetBackgroundColor (ALLEGRO_COLOR color)
+    {
+        m_BackgroundColor = color;
     }
 
     //--------------------------------------------------------------------------------------------------

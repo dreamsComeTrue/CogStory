@@ -21,6 +21,9 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
+        void BeforeEnter ();
+        void AfterLeave ();
+
         void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
         void Update (double deltaTime);
         void Render (double deltaTime);

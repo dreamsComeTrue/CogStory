@@ -47,7 +47,13 @@ namespace aga
 
     void StateManager::SetActiveState (State* state)
     {
+        if (m_ActiveState != nullptr)
+        {
+            m_ActiveState->AfterLeave ();
+        }
+
         m_ActiveState = state;
+        m_ActiveState->BeforeEnter ();
     }
 
     //--------------------------------------------------------------------------------------------------

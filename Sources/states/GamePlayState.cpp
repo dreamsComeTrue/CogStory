@@ -50,6 +50,19 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void GamePlayState::BeforeEnter ()
+    {
+        m_StateManager->GetScreen ()->SetBackgroundColor (al_map_rgb (60, 60, 60));
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void GamePlayState::AfterLeave ()
+    {
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void GamePlayState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
         m_Player->ProcessEvent (event, deltaTime);
