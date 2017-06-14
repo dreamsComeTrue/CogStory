@@ -13,7 +13,9 @@ namespace aga
         GFX_TEXT_FRAME,
         GFX_PLAYER,
 
-        FONT_MAIN
+        FONT_MAIN,
+
+        SCENE_0_0
     };
 
     struct Resource

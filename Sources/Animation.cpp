@@ -96,7 +96,7 @@ namespace aga
         {
             AnimationFrames& animation = it->second;
 
-            m_TimeTaken += deltaTime;
+            m_TimeTaken += deltaTime * 1000;
 
             if (m_TimeTaken >= animation.GetPlaySpeed ())
             {

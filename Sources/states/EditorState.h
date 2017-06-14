@@ -1,24 +1,20 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
-#ifndef __GAMEPLAY_STATE_H__
-#define __GAMEPLAY_STATE_H__
+#ifndef __EDITOR_STATE_H__
+#define __EDITOR_STATE_H__
 
-#include "SceneManager.h"
 #include "State.h"
-
-struct ALLEGRO_BITMAP;
 
 namespace aga
 {
     class StateManager;
-    class Player;
 
-    class GamePlayState : public State
+    class EditorState : public State
     {
     public:
-        GamePlayState (StateManager* stateManager);
+        EditorState (StateManager* stateManager);
 
-        virtual ~GamePlayState ();
+        virtual ~EditorState ();
         bool Initialize ();
         bool Destroy ();
 
@@ -31,10 +27,7 @@ namespace aga
 
     private:
         StateManager* m_StateManager;
-        Player* m_Player;
-
-        SceneManager m_SceneManager;
     };
 }
 
-#endif //   __GAMEPLAY_STATE_H__
+#endif //   __EDITOR_STATE_H__

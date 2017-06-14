@@ -1,8 +1,7 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
-#include "GamePlayState.h"
+#include "EditorState.h"
 #include "Common.h"
-#include "Player.h"
 #include "Screen.h"
 #include "StateManager.h"
 
@@ -10,17 +9,15 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    GamePlayState::GamePlayState (StateManager* stateManager)
-        : State ("GAMEPLAY")
+    EditorState::EditorState (StateManager* stateManager)
+        : State ("EDITOR")
         , m_StateManager (stateManager)
-        , m_SceneManager (stateManager->GetScreen ())
-        , m_Player (nullptr)
     {
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    GamePlayState::~GamePlayState ()
+    EditorState::~EditorState ()
     {
         if (!IsDestroyed ())
         {
@@ -32,62 +29,49 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool GamePlayState::Initialize ()
+    bool EditorState::Initialize ()
     {
-        m_SceneManager.Initialize ();
-
-        m_Player = new Player (m_StateManager->GetScreen ());
-        m_Player->Initialize ();
-
         Lifecycle::Initialize ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool GamePlayState::Destroy ()
+    bool EditorState::Destroy ()
     {
-        SAFE_DELETE (m_Player);
-
-        m_SceneManager.Destroy ();
-
         Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::BeforeEnter ()
-    {
-        int pigment = 40;
-        m_StateManager->GetScreen ()->SetBackgroundColor (al_map_rgb (pigment, pigment, pigment));
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void GamePlayState::AfterLeave ()
+    void EditorState::BeforeEnter ()
     {
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
+    void EditorState::AfterLeave ()
     {
-        m_Player->ProcessEvent (event, deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::Update (double deltaTime)
+    void EditorState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
-        m_Player->Update (deltaTime);
-        m_SceneManager.Update (deltaTime);
+        if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+        {
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::Render (double deltaTime)
+    void EditorState::Update (double deltaTime)
     {
-        m_Player->Render (deltaTime);
-        m_SceneManager.Render (deltaTime);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorState::Render (double deltaTime)
+    {
     }
 
     //--------------------------------------------------------------------------------------------------

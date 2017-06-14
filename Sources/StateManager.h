@@ -27,7 +27,7 @@ namespace aga
         void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
         void Render (double deltaTime);
 
-        Screen* GetScreen () { return m_Screen; }
+        Screen* GetScreen ();
 
     private:
         std::vector<State*> m_States;

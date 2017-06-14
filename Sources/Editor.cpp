@@ -1,18 +1,20 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
-#include "Font.h"
+#include "Editor.h"
+#include "Screen.h"
 
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    Font::Font ()
+    Editor::Editor (Screen* screen)
+        : m_Screen (screen)
     {
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    Font::~Font ()
+    Editor::~Editor ()
     {
         if (!IsDestroyed ())
         {
@@ -24,35 +26,38 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Font::Initialize ()
+    bool Editor::Initialize ()
     {
-        ALLEGRO_FONT* mainFont = al_load_ttf_font (GetResourcePath (FONT_MAIN).c_str (), 32, 0);
-
-        if (!mainFont)
-        {
-            fprintf (stderr, "Could not load %s.\n", GetResourcePath (FONT_MAIN).c_str ());
-            return false;
-        }
-
-        m_Fonts.insert (std::make_pair (FONT_NAME_MAIN, mainFont));
-
         Lifecycle::Initialize ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Font::Destroy ()
+    bool Editor::Destroy ()
     {
         Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Font::DrawText (const std::string& fontName, ALLEGRO_COLOR color, float x, float y, const std::string& text, int flags)
+    bool Editor::Update (double deltaTime)
     {
-        ALLEGRO_FONT* font = m_Fonts[fontName];
+        return true;
+    }
 
-        al_draw_text (font, color, x, y, flags, text.c_str ());
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
+    {
+        if (event->type == ALLEGRO_EVENT_KEY_UP)
+        {
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::Render (double deltaTime)
+    {
     }
 
     //--------------------------------------------------------------------------------------------------

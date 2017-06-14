@@ -1,26 +1,42 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
-#include "GamePlayState.h"
-#include "Common.h"
-#include "Player.h"
+#include "Scene.h"
+#include "SceneManager.h"
 #include "Screen.h"
-#include "StateManager.h"
+
+#include "addons/json/json.hpp"
+
+#include <fstream>
+
+using json = nlohmann::json;
 
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    GamePlayState::GamePlayState (StateManager* stateManager)
-        : State ("GAMEPLAY")
-        , m_StateManager (stateManager)
-        , m_SceneManager (stateManager->GetScreen ())
-        , m_Player (nullptr)
+    /*
+     *
+     *  {
+     *      "name": "Home",
+     *      "spawn_points" :
+     *      [
+     *          "SPAWN_1" : "0 0"
+     *      ]
+     *  }
+     *
+     */
+
+    //--------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
+
+    Scene::Scene (SceneManager* sceneManager)
+        : m_SceneManager (sceneManager)
     {
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    GamePlayState::~GamePlayState ()
+    Scene::~Scene ()
     {
         if (!IsDestroyed ())
         {
@@ -32,62 +48,57 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool GamePlayState::Initialize ()
+    bool Scene::Initialize ()
     {
-        m_SceneManager.Initialize ();
-
-        m_Player = new Player (m_StateManager->GetScreen ());
-        m_Player->Initialize ();
-
         Lifecycle::Initialize ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool GamePlayState::Destroy ()
+    bool Scene::Destroy ()
     {
-        SAFE_DELETE (m_Player);
-
-        m_SceneManager.Destroy ();
-
         Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::BeforeEnter ()
+    Scene* Scene::LoadScene (SceneManager* sceneManager, const std::string& filePath)
     {
-        int pigment = 40;
-        m_StateManager->GetScreen ()->SetBackgroundColor (al_map_rgb (pigment, pigment, pigment));
+        Scene* scene = new Scene (sceneManager);
+        std::ifstream file (filePath.c_str ());
+        json j;
+        file >> j;
+        file.close ();
+
+        scene->m_Name = j["name"];
+
+        return scene;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::AfterLeave ()
+    void Scene::BeforeEnter ()
     {
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
+    void Scene::AfterLeave ()
     {
-        m_Player->ProcessEvent (event, deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::Update (double deltaTime)
+    void Scene::Update (double deltaTime)
     {
-        m_Player->Update (deltaTime);
-        m_SceneManager.Update (deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::Render (double deltaTime)
+    void Scene::Render (double deltaTime)
     {
-        m_Player->Render (deltaTime);
-        m_SceneManager.Render (deltaTime);
+        m_SceneManager->GetScreen ()->GetFont ().DrawText (FONT_NAME_MAIN, al_map_rgb (255, 255, 255), 200, 200, "Robot Tale");
+        m_SceneManager->GetScreen ()->GetFont ().DrawText (FONT_NAME_MAIN, al_map_rgb (0, 255, 0), 0, 0, m_Name, ALLEGRO_ALIGN_LEFT);
     }
 
     //--------------------------------------------------------------------------------------------------

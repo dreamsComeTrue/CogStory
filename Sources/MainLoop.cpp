@@ -3,7 +3,6 @@
 #include "MainLoop.h"
 #include "Common.h"
 #include "Screen.h"
-#include "StateManager.h"
 
 #include "states/GamePlayState.h"
 #include "states/MainMenuState.h"
@@ -13,7 +12,8 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     MainLoop::MainLoop (Screen* screen)
-        : m_Screen (screen)
+        : m_StateManager (m_Screen)
+        , m_Screen (screen)
     {
     }
 
@@ -33,19 +33,18 @@ namespace aga
 
     bool MainLoop::Initialize ()
     {
-        m_StateManager = new StateManager (m_Screen);
-        m_StateManager->Initialize ();
+        m_StateManager.Initialize ();
 
         InitializeStates ();
 
-        m_StateManager->SetActiveState (m_GamePlayState);
+        m_StateManager.SetActiveState (m_GamePlayState);
 
         m_Screen->ProcessEventFunction = [&](ALLEGRO_EVENT* event) {
-            m_StateManager->ProcessEvent (event, m_Screen->GetDeltaTime ());
+            m_StateManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
         };
 
         m_Screen->RenderFunction = [&]() {
-            m_StateManager->Render (m_Screen->GetDeltaTime ());
+            m_StateManager.Render (m_Screen->GetDeltaTime ());
         };
 
         Lifecycle::Initialize ();
@@ -57,7 +56,7 @@ namespace aga
     {
         DestroyStates ();
 
-        SAFE_DELETE (m_StateManager);
+        m_StateManager.Destroy ();
 
         Lifecycle::Destroy ();
     }
@@ -66,13 +65,13 @@ namespace aga
 
     void MainLoop::InitializeStates ()
     {
-        m_MainMenuState = new MainMenuState (m_StateManager);
+        m_MainMenuState = new MainMenuState (&m_StateManager);
         m_MainMenuState->Initialize ();
-        m_StateManager->RegisterState (m_MainMenuState);
+        m_StateManager.RegisterState (m_MainMenuState);
 
-        m_GamePlayState = new GamePlayState (m_StateManager);
+        m_GamePlayState = new GamePlayState (&m_StateManager);
         m_GamePlayState->Initialize ();
-        m_StateManager->RegisterState (m_GamePlayState);
+        m_StateManager.RegisterState (m_GamePlayState);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -95,7 +94,7 @@ namespace aga
             double deltaTime = (newTime - oldTime);
             oldTime = newTime;
 
-            if (!m_StateManager->Update (deltaTime))
+            if (!m_StateManager.Update (deltaTime))
             {
                 break;
             }

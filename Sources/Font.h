@@ -19,7 +19,7 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
-        void DrawText (const std::string& fontName, ALLEGRO_COLOR color, float x, float y, const std::string& text);
+        void DrawText (const std::string& fontName, ALLEGRO_COLOR color, float x, float y, const std::string& text, int flags = ALLEGRO_ALIGN_CENTRE);
 
     private:
         std::map<std::string, ALLEGRO_FONT*> m_Fonts;

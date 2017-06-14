@@ -4,10 +4,10 @@
 #define __MAIN_LOOP_H__
 
 #include "Lifecycle.h"
+#include "StateManager.h"
 
 namespace aga
 {
-    class StateManager;
     class Screen;
     class MainMenuState;
     class GamePlayState;
@@ -28,7 +28,7 @@ namespace aga
 
     private:
         Screen* m_Screen;
-        StateManager* m_StateManager;
+        StateManager m_StateManager;
 
         MainMenuState* m_MainMenuState;
         GamePlayState* m_GamePlayState;

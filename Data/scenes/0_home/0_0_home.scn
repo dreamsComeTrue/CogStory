@@ -1,0 +1,9 @@
+    {
+        "name": "Home",
+        "spawn_points" :
+        [
+            {
+                "SPAWN_1" : "0 0"
+            }
+        ]
+    } 
