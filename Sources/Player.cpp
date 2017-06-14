@@ -39,7 +39,7 @@ namespace aga
     bool Player::Initialize ()
     {
         m_Image = al_load_bitmap (GetResourcePath (ResourceID::GFX_PLAYER).c_str ());
-        m_Size = { al_get_bitmap_width (m_Image), al_get_bitmap_height (m_Image) };
+        m_Size = { 64, 64 };
 
         InitializeAnimations ();
 
@@ -173,6 +173,25 @@ namespace aga
     {
         m_Position.X += dx;
         m_Position.Y += dy;
+
+        if (MoveCallback != nullptr)
+        {
+            MoveCallback (dx, dy);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Point& Player::GetPosition ()
+    {
+        return m_Position;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Point& Player::GetSize ()
+    {
+        return m_Size;
     }
 
     //--------------------------------------------------------------------------------------------------

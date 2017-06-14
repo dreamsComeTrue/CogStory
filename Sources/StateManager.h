@@ -5,8 +5,6 @@
 
 #include "Common.h"
 
-union ALLEGRO_EVENT;
-
 namespace aga
 {
     class Screen;

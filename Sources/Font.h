@@ -5,8 +5,6 @@
 
 #include "Common.h"
 
-struct ALLEGRO_FONT;
-
 namespace aga
 {
     const std::string FONT_NAME_MAIN = "FONT_MAIN";

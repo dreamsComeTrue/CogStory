@@ -70,7 +70,25 @@ namespace aga
         file >> j;
         file.close ();
 
+        auto stringToPoint = [](std::string in) -> Point {
+            size_t pos = 0, count = 0;
+            std::string token, delimiter = " ";
+            double nums[2] = { 0, 0 };
+
+            while ((pos = in.find (delimiter)) != std::string::npos)
+            {
+                token = in.substr (0, pos);
+                in.erase (0, pos + delimiter.length ());
+                nums[count] = atof (token.c_str ());
+
+                ++count;
+            }
+
+            return Point (nums[0], nums[1]);
+        };
+
         scene->m_Name = j["name"];
+        scene->m_Size = stringToPoint (j["size"]);
 
         return scene;
     }

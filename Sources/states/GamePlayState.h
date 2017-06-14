@@ -6,12 +6,11 @@
 #include "SceneManager.h"
 #include "State.h"
 
-struct ALLEGRO_BITMAP;
-
 namespace aga
 {
     class StateManager;
     class Player;
+    class Camera;
 
     class GamePlayState : public State
     {
@@ -32,6 +31,7 @@ namespace aga
     private:
         StateManager* m_StateManager;
         Player* m_Player;
+        Camera* m_Camera;
 
         SceneManager m_SceneManager;
     };

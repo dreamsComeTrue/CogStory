@@ -8,11 +8,6 @@
 
 #include <functional>
 
-struct ALLEGRO_DISPLAY;
-struct ALLEGRO_EVENT_QUEUE;
-struct ALLEGRO_TIMER;
-union ALLEGRO_EVENT;
-
 namespace aga
 {
     class Screen : public Lifecycle

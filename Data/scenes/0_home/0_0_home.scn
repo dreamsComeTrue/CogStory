@@ -1,5 +1,6 @@
     {
-        "name": "Home",
+        "name" : "Home",
+        "size" : "1000 1000",
         "spawn_points" :
         [
             {

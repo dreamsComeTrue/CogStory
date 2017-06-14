@@ -1,6 +1,7 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "GamePlayState.h"
+#include "Camera.h"
 #include "Common.h"
 #include "Player.h"
 #include "Screen.h"
@@ -15,6 +16,7 @@ namespace aga
         , m_StateManager (stateManager)
         , m_SceneManager (stateManager->GetScreen ())
         , m_Player (nullptr)
+        , m_Camera (nullptr)
     {
     }
 
@@ -39,6 +41,16 @@ namespace aga
         m_Player = new Player (m_StateManager->GetScreen ());
         m_Player->Initialize ();
 
+        m_Camera = new Camera (m_StateManager->GetScreen ());
+        const Point& screenSize = m_StateManager->GetScreen ()->GetScreenSize ();
+        Point& playerSize = m_Player->GetSize ();
+        m_Camera->SetOffset (screenSize.Width * 0.5 - playerSize.Width * 0.5,
+            screenSize.Height * 0.5 - playerSize.Height * 0.5);
+
+        m_Player->MoveCallback = [&](double dx, double dy) {
+            m_Camera->Move (-dx, -dy);
+        };
+
         Lifecycle::Initialize ();
     }
 
@@ -46,6 +58,7 @@ namespace aga
 
     bool GamePlayState::Destroy ()
     {
+        SAFE_DELETE (m_Camera);
         SAFE_DELETE (m_Player);
 
         m_SceneManager.Destroy ();
@@ -79,6 +92,8 @@ namespace aga
     void GamePlayState::Update (double deltaTime)
     {
         m_Player->Update (deltaTime);
+        m_Camera->Update (deltaTime);
+
         m_SceneManager.Update (deltaTime);
     }
 

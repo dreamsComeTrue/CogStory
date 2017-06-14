@@ -8,8 +8,7 @@
 
 #include "addons/tweeny/tweeny.h"
 
-union ALLEGRO_EVENT;
-struct ALLEGRO_BITMAP;
+#include <functional>
 
 namespace aga
 {
@@ -26,6 +25,11 @@ namespace aga
         bool Update (double deltaTime);
         void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
         void Render (double deltaTime);
+
+        Point& GetPosition ();
+        Point& GetSize ();
+
+        std::function<void(double dx, double dy)> MoveCallback;
 
     private:
         void InitializeAnimations ();

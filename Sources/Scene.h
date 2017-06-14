@@ -28,6 +28,7 @@ namespace aga
 
     private:
         std::string m_Name;
+        Point m_Size;
         SceneManager* m_SceneManager;
     };
 }
