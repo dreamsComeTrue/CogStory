@@ -8,10 +8,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
 file(GLOB_RECURSE SRC_LIST   "Sources/*")
 
 include_directories(Sources/
+                    Sources/editor/
                     Sources/addons/nine-patch/
                     Sources/addons/tweeny/
                     Sources/addons/json/
                     )
 
 add_executable(${PROJECT_NAME} ${SRC_LIST})
-target_link_libraries(${PROJECT_NAME} allegro allegro_image allegro_dialog allegro_font allegro_ttf)
+target_link_libraries(${PROJECT_NAME} allegro allegro_image allegro_dialog allegro_font allegro_ttf allegro_primitives)

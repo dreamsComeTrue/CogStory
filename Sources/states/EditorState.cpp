@@ -11,6 +11,7 @@ namespace aga
 
     EditorState::EditorState (StateManager* stateManager)
         : State ("EDITOR")
+        , m_Editor (stateManager->GetScreen ())
         , m_StateManager (stateManager)
     {
     }
@@ -38,6 +39,8 @@ namespace aga
 
     bool EditorState::Destroy ()
     {
+        m_Editor.Destroy ();
+
         Lifecycle::Destroy ();
     }
 
@@ -57,21 +60,21 @@ namespace aga
 
     void EditorState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
-        if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
-        {
-        }
+        m_Editor.ProcessEvent (event, deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void EditorState::Update (double deltaTime)
     {
+        m_Editor.Update (deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void EditorState::Render (double deltaTime)
     {
+        m_Editor.Render (deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------

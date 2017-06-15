@@ -26,6 +26,7 @@ namespace aga
         void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
         void Render (double deltaTime);
 
+        void SetPosition (const Point& pos);
         Point& GetPosition ();
         Point& GetSize ();
 

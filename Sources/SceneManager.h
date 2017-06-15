@@ -3,7 +3,9 @@
 #ifndef __SCENE_MANAGER_H__
 #define __SCENE_MANAGER_H__
 
+#include "Camera.h"
 #include "Common.h"
+#include "Player.h"
 
 namespace aga
 {
@@ -20,13 +22,18 @@ namespace aga
 
         void SetActiveScene (Scene* scene);
 
+        void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
         bool Update (double deltaTime);
         void Render (double deltaTime);
 
         Screen* GetScreen ();
+        Player& GetPlayer ();
 
     private:
         void LoadScenes ();
+
+        Player m_Player;
+        Camera m_Camera;
 
         Screen* m_Screen;
         std::map<ResourceID, Scene*> m_Scenes;

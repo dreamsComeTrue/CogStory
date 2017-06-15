@@ -3,8 +3,20 @@
         "size" : "1000 1000",
         "spawn_points" :
         [
+            {   
+                "name" : "DEFAULT",
+                "pos"  : "0 -200"   
+            },
+            {   
+                "name" : "SPAWN_1",
+                "pos"  : "0 0"   
+            }
+        ],
+        "tiles" :
+        [
             {
-                "SPAWN_1" : "0 0"
+                "img" : "0_0_home/main_room.png",
+                "pos" : "0 0"
             }
         ]
     } 

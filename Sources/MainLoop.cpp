@@ -4,6 +4,7 @@
 #include "Common.h"
 #include "Screen.h"
 
+#include "states/EditorState.h"
 #include "states/GamePlayState.h"
 #include "states/MainMenuState.h"
 
@@ -13,6 +14,9 @@ namespace aga
 
     MainLoop::MainLoop (Screen* screen)
         : m_StateManager (m_Screen)
+        , m_EditorState (nullptr)
+        , m_GamePlayState (nullptr)
+        , m_MainMenuState (nullptr)
         , m_Screen (screen)
     {
     }
@@ -37,7 +41,7 @@ namespace aga
 
         InitializeStates ();
 
-        m_StateManager.SetActiveState (m_GamePlayState);
+        m_StateManager.SetActiveState (m_EditorState);
 
         m_Screen->ProcessEventFunction = [&](ALLEGRO_EVENT* event) {
             m_StateManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
@@ -72,6 +76,10 @@ namespace aga
         m_GamePlayState = new GamePlayState (&m_StateManager);
         m_GamePlayState->Initialize ();
         m_StateManager.RegisterState (m_GamePlayState);
+
+        m_EditorState = new EditorState (&m_StateManager);
+        m_EditorState->Initialize ();
+        m_StateManager.RegisterState (m_EditorState);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -79,6 +87,7 @@ namespace aga
     void MainLoop::DestroyStates ()
     {
         SAFE_DELETE (m_MainMenuState);
+        SAFE_DELETE (m_EditorState);
         SAFE_DELETE (m_GamePlayState);
     }
 

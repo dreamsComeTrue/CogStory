@@ -23,6 +23,7 @@ namespace aga
 
     private:
         Screen* m_Screen;
+        bool m_DrawTiles;
     };
 }
 

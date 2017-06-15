@@ -3,6 +3,7 @@
 #ifndef __EDITOR_STATE_H__
 #define __EDITOR_STATE_H__
 
+#include "editor/Editor.h"
 #include "State.h"
 
 namespace aga
@@ -27,6 +28,7 @@ namespace aga
 
     private:
         StateManager* m_StateManager;
+        Editor m_Editor;
     };
 }
 

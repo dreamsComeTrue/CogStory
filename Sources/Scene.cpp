@@ -29,6 +29,22 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
+    auto StringToPoint = [](std::string in) -> Point {
+        size_t count = 0;
+        const char* delimiter = " ";
+        double nums[2] = { 0, 0 };
+        char* str = const_cast<char*> (in.c_str ());
+
+        for (char* pch = strtok (str, delimiter); pch != NULL; pch = strtok (NULL, delimiter))
+        {
+            nums[count++] = atof (pch);
+        }
+
+        return Point (nums[0], nums[1]);
+    };
+
+    //--------------------------------------------------------------------------------------------------
+
     Scene::Scene (SceneManager* sceneManager)
         : m_SceneManager (sceneManager)
     {
@@ -57,6 +73,11 @@ namespace aga
 
     bool Scene::Destroy ()
     {
+        for (Tile& tile : m_Tiles)
+        {
+            al_destroy_bitmap (tile.Image);
+        }
+
         Lifecycle::Destroy ();
     }
 
@@ -70,25 +91,32 @@ namespace aga
         file >> j;
         file.close ();
 
-        auto stringToPoint = [](std::string in) -> Point {
-            size_t pos = 0, count = 0;
-            std::string token, delimiter = " ";
-            double nums[2] = { 0, 0 };
-
-            while ((pos = in.find (delimiter)) != std::string::npos)
-            {
-                token = in.substr (0, pos);
-                in.erase (0, pos + delimiter.length ());
-                nums[count] = atof (token.c_str ());
-
-                ++count;
-            }
-
-            return Point (nums[0], nums[1]);
-        };
-
         scene->m_Name = j["name"];
-        scene->m_Size = stringToPoint (j["size"]);
+        scene->m_Size = StringToPoint (j["size"]);
+
+        auto& tiles = j["tiles"];
+
+        for (auto& j_tile : tiles)
+        {
+            Tile tile;
+            tile.FileName = j_tile["img"];
+
+            std::string filePath = GetDataPath () + std::string ("gfx/") + tile.FileName;
+            tile.Image = al_load_bitmap (filePath.c_str ());
+            tile.Pos = StringToPoint (j_tile["pos"]);
+
+            scene->m_Tiles.push_back (tile);
+        }
+
+        auto& spawn_points = j["spawn_points"];
+
+        for (auto& spawn_point : spawn_points)
+        {
+            std::string name = spawn_point["name"];
+            Point pos = StringToPoint (spawn_point["pos"]);
+
+            scene->m_SpawnPoints.insert (make_pair (name, pos));
+        }
 
         return scene;
     }
@@ -97,6 +125,8 @@ namespace aga
 
     void Scene::BeforeEnter ()
     {
+        Point pos = m_SpawnPoints["DEFAULT"];
+        m_SceneManager->GetPlayer ().SetPosition (pos);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -115,6 +145,11 @@ namespace aga
 
     void Scene::Render (double deltaTime)
     {
+        for (Tile& tile : m_Tiles)
+        {
+            al_draw_bitmap (tile.Image, tile.Pos.X, tile.Pos.Y, 0);
+        }
+
         m_SceneManager->GetScreen ()->GetFont ().DrawText (FONT_NAME_MAIN, al_map_rgb (255, 255, 255), 200, 200, "Robot Tale");
         m_SceneManager->GetScreen ()->GetFont ().DrawText (FONT_NAME_MAIN, al_map_rgb (0, 255, 0), 0, 0, m_Name, ALLEGRO_ALIGN_LEFT);
     }

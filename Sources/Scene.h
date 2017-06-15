@@ -9,6 +9,13 @@ namespace aga
 {
     class SceneManager;
 
+    struct Tile
+    {
+        std::string FileName;
+        ALLEGRO_BITMAP* Image;
+        Point Pos;
+    };
+
     class Scene : public Lifecycle
     {
     public:
@@ -29,6 +36,8 @@ namespace aga
     private:
         std::string m_Name;
         Point m_Size;
+        std::map<std::string, Point> m_SpawnPoints;
+        std::vector<Tile> m_Tiles;
         SceneManager* m_SceneManager;
     };
 }

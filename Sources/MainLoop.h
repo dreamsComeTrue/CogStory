@@ -11,6 +11,7 @@ namespace aga
     class Screen;
     class MainMenuState;
     class GamePlayState;
+    class EditorState;
 
     class MainLoop : public Lifecycle
     {
@@ -32,6 +33,7 @@ namespace aga
 
         MainMenuState* m_MainMenuState;
         GamePlayState* m_GamePlayState;
+        EditorState* m_EditorState;
     };
 }
 

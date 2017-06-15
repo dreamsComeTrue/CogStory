@@ -26,9 +26,18 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    const std::string GetResourcePath (ResourceID id)
+    const std::string GetDataPath ()
     {
         std::string path = "../Data/";
+
+        return path;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    const std::string GetResourcePath (ResourceID id)
+    {
+        std::string path = GetDataPath ();
         Resource res = g_Resources[id];
 
         path += res.Dir + std::string ("/") + res.Name;

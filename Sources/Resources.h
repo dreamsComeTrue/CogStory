@@ -25,6 +25,7 @@ namespace aga
         std::string Name;
     };
 
+    const std::string GetDataPath ();
     const std::string GetResourcePath (ResourceID id);
 }
 
