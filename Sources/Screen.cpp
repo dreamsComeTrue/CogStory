@@ -59,8 +59,7 @@ namespace aga
         if (!al_init_image_addon ())
         {
             al_show_native_message_box (m_Display, "Error", "Error",
-                "Failed to initialize al_init_image_addon!",
-                nullptr, ALLEGRO_MESSAGEBOX_ERROR);
+                "Failed to initialize al_init_image_addon!", nullptr, ALLEGRO_MESSAGEBOX_ERROR);
             return false;
         }
 
@@ -85,8 +84,7 @@ namespace aga
             return false;
         }
 
-        al_register_event_source (m_EventQueue,
-            al_get_display_event_source (m_Display));
+        al_register_event_source (m_EventQueue, al_get_display_event_source (m_Display));
         al_register_event_source (m_EventQueue, al_get_timer_event_source (m_DisplayTimer));
         al_register_event_source (m_EventQueue, al_get_mouse_event_source ());
         al_register_event_source (m_EventQueue, al_get_keyboard_event_source ());
@@ -158,8 +156,8 @@ namespace aga
             al_acknowledge_resize (m_Display);
         }
         else if ((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
-            || (ev.type == ALLEGRO_EVENT_KEY_DOWN)
-            || (ev.type == ALLEGRO_EVENT_KEY_UP))
+            || (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) || (ev.type == ALLEGRO_EVENT_MOUSE_AXES)
+            || (ev.type == ALLEGRO_EVENT_KEY_DOWN) || (ev.type == ALLEGRO_EVENT_KEY_UP))
         {
             if (ProcessEventFunction != nullptr)
             {
@@ -185,10 +183,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Screen::SetBackgroundColor (ALLEGRO_COLOR color)
-    {
-        m_BackgroundColor = color;
-    }
+    void Screen::SetBackgroundColor (ALLEGRO_COLOR color) { m_BackgroundColor = color; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -202,31 +197,19 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    const Point Screen::GetScreenSize ()
-    {
-        return Point{ m_RealWidth, m_RealHeight };
-    }
+    const Point Screen::GetScreenSize () { return Point{ m_RealWidth, m_RealHeight }; }
 
     //--------------------------------------------------------------------------------------------------
 
-    Font& Screen::GetFont ()
-    {
-        return m_Font;
-    }
+    Font& Screen::GetFont () { return m_Font; }
 
     //--------------------------------------------------------------------------------------------------
 
-    double Screen::GetDeltaTime () const
-    {
-        return m_DeltaTime;
-    }
+    double Screen::GetDeltaTime () const { return m_DeltaTime; }
 
     //--------------------------------------------------------------------------------------------------
 
-    double Screen::GetFPS () const
-    {
-        return 1 / m_DeltaTime * 1000;
-    }
+    double Screen::GetFPS () const { return 1 / m_DeltaTime * 1000; }
 
     //--------------------------------------------------------------------------------------------------
 }

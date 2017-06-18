@@ -26,6 +26,7 @@ namespace aga
 
     private:
         Screen* m_Screen;
+        Widget* m_WidgetFocus;
         std::map<int, Widget*> m_Widgets;
         std::vector<Widget*> m_OwnQueue;
     };

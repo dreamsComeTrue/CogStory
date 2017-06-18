@@ -14,6 +14,7 @@ namespace aga
 
     UIManager::UIManager (Screen* screen)
         : m_Screen (screen)
+        , m_WidgetFocus (nullptr)
     {
     }
 
@@ -31,10 +32,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool UIManager::Initialize ()
-    {
-        Lifecycle::Initialize ();
-    }
+    bool UIManager::Initialize () { Lifecycle::Initialize (); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -64,9 +62,57 @@ namespace aga
 
     void UIManager::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
-        for (WIDGET_ITERATOR it = m_Widgets.begin (); it != m_Widgets.end (); it++)
+        if (event->type == ALLEGRO_EVENT_MOUSE_AXES)
         {
-            it->second->ProcessEvent (event, deltaTime);
+            bool foundWidget = false;
+
+            for (WIDGET_ITERATOR it = m_Widgets.begin (); it != m_Widgets.end (); it++)
+            {
+                if (InsideRect (event->mouse.x, event->mouse.y, it->second->GetBounds ()))
+                {
+                    if (m_WidgetFocus != nullptr)
+                    {
+                        m_WidgetFocus->MouseMove (event->mouse);
+
+                        if (m_WidgetFocus != it->second)
+                        {
+                            m_WidgetFocus->MouseLeave (event->mouse);
+                        }
+                    }
+
+                    if (m_WidgetFocus != it->second)
+                    {
+                        m_WidgetFocus = it->second;
+                        m_WidgetFocus->MouseEnter (event->mouse);
+                    }
+
+                    foundWidget = true;
+                }
+            }
+
+            if (!foundWidget)
+            {
+                if (m_WidgetFocus != nullptr)
+                {
+                    m_WidgetFocus->MouseLeave (event->mouse);
+                }
+
+                m_WidgetFocus = nullptr;
+            }
+        }
+        else if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+        {
+            if (m_WidgetFocus != nullptr)
+            {
+                m_WidgetFocus->MouseDown (event->mouse);
+            }
+        }
+        else if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
+        {
+            if (m_WidgetFocus != nullptr)
+            {
+                m_WidgetFocus->MouseUp (event->mouse);
+            }
         }
     }
 

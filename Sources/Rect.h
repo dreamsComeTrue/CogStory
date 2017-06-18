@@ -12,6 +12,12 @@ namespace aga
         Point TopLeft;
         Point BottomRight;
     };
+
+    static bool InsideRect (double x, double y, const Rect& rect)
+    {
+        return (x >= rect.TopLeft.X && y >= rect.TopLeft.Y && x <= rect.BottomRight.X
+            && y <= rect.BottomRight.Y);
+    }
 }
 
 #endif //   __RECT_H__

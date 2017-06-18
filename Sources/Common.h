@@ -20,13 +20,13 @@
 #include "Rect.h"
 #include "Resources.h"
 
-#define SAFE_DELETE(x)    \
-    {                     \
-        if (x != nullptr) \
-        {                 \
-            delete x;     \
-            x = nullptr;  \
-        }                 \
+#define SAFE_DELETE(x)                                                                             \
+    {                                                                                              \
+        if (x != nullptr)                                                                          \
+        {                                                                                          \
+            delete x;                                                                              \
+            x = nullptr;                                                                           \
+        }                                                                                          \
     }
 
 namespace aga
@@ -36,6 +36,8 @@ namespace aga
     const ALLEGRO_COLOR COLOR_RED{ 1.0f, 0.0f, 0.0f };
     const ALLEGRO_COLOR COLOR_GREEN{ 0.0f, 1.0f, 0.0f };
     const ALLEGRO_COLOR COLOR_BLUE{ 0.0f, 0.0f, 1.0f };
+    const ALLEGRO_COLOR COLOR_YELLOW{ 1.0f, 1.0f, 0.0f };
+    const ALLEGRO_COLOR COLOR_GRAY{ 0.3f, 0.3f, 0.3f };
 
     static bool AreSame (double a, double b)
     {

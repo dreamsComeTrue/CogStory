@@ -99,7 +99,8 @@ namespace aga
         for (int i = 0; i < 5; ++i)
         {
             int advance = beginning + i * TILE_SIZE;
-            al_draw_rectangle (advance, screenSize.Height - TILE_SIZE, advance + TILE_SIZE, screenSize.Height, COLOR_GREEN, 1);
+            al_draw_rectangle (advance, screenSize.Height - TILE_SIZE, advance + TILE_SIZE,
+                screenSize.Height, COLOR_GREEN, 1);
         }
     }
 
@@ -107,13 +108,13 @@ namespace aga
 
     void Editor::InitializeUI ()
     {
-        Label* label = new Label (m_Screen, "MENU");
-        label->SetPosition (20, 20);
-        label->SetDrawBorder (true);
-        label->SetBorderColor (COLOR_GREEN);
-        label->SetTextColor (COLOR_RED);
+        Button* button = new Button (m_Screen, Point{ 20, 20 }, "MENU");
+        button->SetDrawBorder (true);
+        button->SetPressedColor (COLOR_BLUE);
+        button->SetBorderColor (COLOR_GREEN);
+        button->SetTextColor (COLOR_RED);
 
-        m_UIManager.AddWidget (0, label);
+        m_UIManager.AddWidget (0, button);
     }
 
     //--------------------------------------------------------------------------------------------------

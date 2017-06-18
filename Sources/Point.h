@@ -7,9 +7,19 @@ namespace aga
 {
     struct Point
     {
-        Point () :X(0), Y(0) {}
+        Point ()
+            : X (0.0)
+            , Y (0.0)
+        {
+        }
 
         Point (int x, int y)
+            : X (x)
+            , Y (y)
+        {
+        }
+
+        Point (double x, double y)
             : X (x)
             , Y (y)
         {
