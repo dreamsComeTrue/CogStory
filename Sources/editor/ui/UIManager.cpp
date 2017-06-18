@@ -1,24 +1,25 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
-#include "EditorState.h"
-#include "Common.h"
+#include "UIManager.h"
 #include "Screen.h"
-#include "StateManager.h"
+#include "Widget.h"
 
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    EditorState::EditorState (StateManager* stateManager)
-        : State ("EDITOR")
-        , m_Editor (stateManager->GetScreen ())
-        , m_StateManager (stateManager)
+    typedef std::map<int, Widget*>::iterator WIDGET_ITERATOR;
+
+    //--------------------------------------------------------------------------------------------------
+
+    UIManager::UIManager (Screen* screen)
+        : m_Screen (screen)
     {
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    EditorState::~EditorState ()
+    UIManager::~UIManager ()
     {
         if (!IsDestroyed ())
         {
@@ -30,53 +31,65 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool EditorState::Initialize ()
+    bool UIManager::Initialize ()
     {
-        m_Editor.Initialize ();
-
         Lifecycle::Initialize ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool EditorState::Destroy ()
+    bool UIManager::Destroy ()
     {
-        m_Editor.Destroy ();
+        for (Widget* widget : m_OwnQueue)
+        {
+            SAFE_DELETE (widget);
+        }
 
         Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::BeforeEnter ()
+    bool UIManager::Update (double deltaTime)
     {
+        for (WIDGET_ITERATOR it = m_Widgets.begin (); it != m_Widgets.end (); it++)
+        {
+            it->second->Update (deltaTime);
+        }
+
+        return true;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::AfterLeave ()
+    void UIManager::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
+        for (WIDGET_ITERATOR it = m_Widgets.begin (); it != m_Widgets.end (); it++)
+        {
+            it->second->ProcessEvent (event, deltaTime);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
+    void UIManager::Render (double deltaTime)
     {
-        m_Editor.ProcessEvent (event, deltaTime);
+        for (WIDGET_ITERATOR it = m_Widgets.begin (); it != m_Widgets.end (); it++)
+        {
+            it->second->Render (deltaTime);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::Update (double deltaTime)
+    void UIManager::AddWidget (int id, Widget* widget, bool ownMemory)
     {
-        m_Editor.Update (deltaTime);
-    }
+        m_Widgets.insert (std::make_pair (id, widget));
 
-    //--------------------------------------------------------------------------------------------------
-
-    void EditorState::Render (double deltaTime)
-    {
-        m_Editor.Render (deltaTime);
+        if (ownMemory)
+        {
+            m_OwnQueue.push_back (widget);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

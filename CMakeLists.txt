@@ -9,6 +9,7 @@ file(GLOB_RECURSE SRC_LIST   "Sources/*")
 
 include_directories(Sources/
                     Sources/editor/
+                    Sources/editor/ui/
                     Sources/addons/nine-patch/
                     Sources/addons/tweeny/
                     Sources/addons/json/

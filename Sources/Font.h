@@ -18,6 +18,8 @@ namespace aga
         bool Destroy ();
 
         void DrawText (const std::string& fontName, ALLEGRO_COLOR color, float x, float y, const std::string& text, int flags = ALLEGRO_ALIGN_CENTRE);
+        Point GetTextDimensions (const std::string& fontName, const std::string& text);
+        unsigned GetFontAscent (const std::string& fontName);
 
     private:
         std::map<std::string, ALLEGRO_FONT*> m_Fonts;

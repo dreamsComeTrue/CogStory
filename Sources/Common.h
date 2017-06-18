@@ -31,6 +31,12 @@
 
 namespace aga
 {
+    const ALLEGRO_COLOR COLOR_BLACK{ 0.0f, 0.0f, 0.0f };
+    const ALLEGRO_COLOR COLOR_WHITE{ 1.0f, 1.0f, 1.0f };
+    const ALLEGRO_COLOR COLOR_RED{ 1.0f, 0.0f, 0.0f };
+    const ALLEGRO_COLOR COLOR_GREEN{ 0.0f, 1.0f, 0.0f };
+    const ALLEGRO_COLOR COLOR_BLUE{ 0.0f, 0.0f, 1.0f };
+
     static bool AreSame (double a, double b)
     {
         double epsilon = 1.0E-8;

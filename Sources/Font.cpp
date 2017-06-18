@@ -6,9 +6,7 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    Font::Font ()
-    {
-    }
+    Font::Font () {}
 
     //--------------------------------------------------------------------------------------------------
 
@@ -43,16 +41,44 @@ namespace aga
 
     bool Font::Destroy ()
     {
+        for (std::map<std::string, ALLEGRO_FONT*>::iterator it = m_Fonts.begin ();
+             it != m_Fonts.end (); ++it)
+        {
+            al_destroy_font (it->second);
+        }
+
         Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Font::DrawText (const std::string& fontName, ALLEGRO_COLOR color, float x, float y, const std::string& text, int flags)
+    void Font::DrawText (const std::string& fontName, ALLEGRO_COLOR color, float x, float y,
+        const std::string& text, int flags)
     {
         ALLEGRO_FONT* font = m_Fonts[fontName];
 
         al_draw_text (font, color, x, y, flags, text.c_str ());
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Point Font::GetTextDimensions (const std::string& fontName, const std::string& text)
+    {
+        int x, y, width, height;
+        ALLEGRO_FONT* font = m_Fonts[fontName];
+
+        al_get_text_dimensions (font, text.c_str (), &x, &y, &width, &height);
+
+        return Point{ width, height };
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    unsigned Font::GetFontAscent (const std::string& fontName)
+    {
+        ALLEGRO_FONT* font = m_Fonts[fontName];
+
+        return al_get_font_ascent (font);
     }
 
     //--------------------------------------------------------------------------------------------------

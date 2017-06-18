@@ -1,24 +1,20 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
-#include "EditorState.h"
-#include "Common.h"
+#include "Widget.h"
 #include "Screen.h"
-#include "StateManager.h"
 
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    EditorState::EditorState (StateManager* stateManager)
-        : State ("EDITOR")
-        , m_Editor (stateManager->GetScreen ())
-        , m_StateManager (stateManager)
+    Widget::Widget (Screen* screen)
+        : m_Screen (screen)
     {
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    EditorState::~EditorState ()
+    Widget::~Widget ()
     {
         if (!IsDestroyed ())
         {
@@ -30,53 +26,56 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool EditorState::Initialize ()
+    bool Widget::Initialize ()
     {
-        m_Editor.Initialize ();
-
         Lifecycle::Initialize ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool EditorState::Destroy ()
+    bool Widget::Destroy ()
     {
-        m_Editor.Destroy ();
-
         Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::BeforeEnter ()
+    bool Widget::Update (double deltaTime)
+    {
+        return true;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Widget::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::AfterLeave ()
+    void Widget::Render (double deltaTime)
     {
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
+    void Widget::SetPosition (int x, int y)
     {
-        m_Editor.ProcessEvent (event, deltaTime);
+        m_Position = { x, y };
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::Update (double deltaTime)
+    void Widget::SetPosition (Point pos)
     {
-        m_Editor.Update (deltaTime);
+        m_Position = pos;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::Render (double deltaTime)
+    Point Widget::GetPosition ()
     {
-        m_Editor.Render (deltaTime);
+        return m_Position;
     }
 
     //--------------------------------------------------------------------------------------------------

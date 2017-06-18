@@ -1,20 +1,20 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
-#ifndef __EDITOR_H__
-#define __EDITOR_H__
+#ifndef __UIMANAGER_H__
+#define __UIMANAGER_H__
 
 #include "Common.h"
-#include "UIManager.h"
 
 namespace aga
 {
     class Screen;
+    class Widget;
 
-    class Editor : public Lifecycle
+    class UIManager : public Lifecycle
     {
     public:
-        Editor (Screen* screen);
-        virtual ~Editor ();
+        UIManager (Screen* screen);
+        virtual ~UIManager ();
         bool Initialize ();
         bool Destroy ();
 
@@ -22,15 +22,13 @@ namespace aga
         void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
         void Render (double deltaTime);
 
-    private:
-        void InitializeUI ();
-        void DrawTiles ();
+        void AddWidget (int id, Widget* widget, bool ownMemory = true);
 
     private:
         Screen* m_Screen;
-        UIManager m_UIManager;
-        bool m_DrawTiles;
+        std::map<int, Widget*> m_Widgets;
+        std::vector<Widget*> m_OwnQueue;
     };
 }
 
-#endif //   __EDITOR_H__
+#endif //   __UIMANAGER_H__
