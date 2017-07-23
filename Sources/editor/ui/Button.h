@@ -21,16 +21,16 @@ namespace aga
         void SetHighlightColor (ALLEGRO_COLOR color);
         void SetPressedColor (ALLEGRO_COLOR color);
 
-        virtual void MouseMove (ALLEGRO_MOUSE_EVENT& event);
-        virtual void MouseDown (ALLEGRO_MOUSE_EVENT& event);
-        virtual void MouseUp (ALLEGRO_MOUSE_EVENT& event);
-        virtual void MouseEnter (ALLEGRO_MOUSE_EVENT& event);
-        virtual void MouseLeave (ALLEGRO_MOUSE_EVENT& event);
+        void MouseMove (ALLEGRO_MOUSE_EVENT& event);
+        void MouseDown (ALLEGRO_MOUSE_EVENT& event);
+        void MouseUp (ALLEGRO_MOUSE_EVENT& event);
+        void MouseEnter (ALLEGRO_MOUSE_EVENT& event);
+        void MouseLeave (ALLEGRO_MOUSE_EVENT& event);
 
-        virtual void KeyboardUp (ALLEGRO_KEYBOARD_EVENT& event);
-        virtual void KeyboardDown (ALLEGRO_KEYBOARD_EVENT& event);
+        void KeyboardUp (ALLEGRO_KEYBOARD_EVENT& event);
+        void KeyboardDown (ALLEGRO_KEYBOARD_EVENT& event);
 
-    protected:        
+    protected:
         bool m_IsHighlight;
         ALLEGRO_COLOR m_HighlightColor;
 

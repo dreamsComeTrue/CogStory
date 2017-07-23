@@ -12,7 +12,7 @@ namespace aga
 
     class UIManager : public Lifecycle
     {
-    public:
+      public:
         UIManager (Screen* screen);
         virtual ~UIManager ();
         bool Initialize ();
@@ -22,13 +22,14 @@ namespace aga
         void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
         void Render (double deltaTime);
 
-        void AddWidget (int id, Widget* widget, bool ownMemory = true);
+        void AddWidget (Widget* widget, int id = -1, bool ownMemory = true);
 
-    private:
+      private:
         Screen* m_Screen;
         Widget* m_WidgetFocus;
         std::map<int, Widget*> m_Widgets;
         std::vector<Widget*> m_OwnQueue;
+        int m_LastID;
     };
 }
 

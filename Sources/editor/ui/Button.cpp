@@ -8,11 +8,11 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Button::Button (Screen* screen, Point pos, const std::string& text)
-        : Label (screen, pos, text)
-        , m_IsPressed (false)
-        , m_IsHighlight (false)
-        , m_PressedColor (COLOR_WHITE)
-        , m_HighlightColor (COLOR_GRAY)
+      : Label (screen, pos, text)
+      , m_IsPressed (false)
+      , m_IsHighlight (false)
+      , m_PressedColor ({ 0.5, 0.5, 0.5 })
+      , m_HighlightColor ({ 0.7, 0.7, 0.7 })
     {
     }
 
@@ -51,22 +51,27 @@ namespace aga
     {
         int thickness = 1;
 
-        ALLEGRO_COLOR color
-            = m_IsPressed ? m_PressedColor : m_IsHighlight ? m_HighlightColor : m_BackGroundColor;
+        ALLEGRO_COLOR color =
+          m_IsPressed ? m_PressedColor : m_IsHighlight ? m_HighlightColor : m_BackGroundColor;
 
-        al_draw_filled_rectangle (m_Bounds.TopLeft.X - m_Padding, m_Bounds.TopLeft.Y - m_Padding,
-            m_Bounds.BottomRight.X + m_Padding - thickness,
-            m_Bounds.BottomRight.Y + m_Padding + thickness, color);
+        al_draw_filled_rectangle (m_Bounds.TopLeft.X - m_Padding,
+                                  m_Bounds.TopLeft.Y - m_Padding,
+                                  m_Bounds.BottomRight.X + m_Padding - thickness,
+                                  m_Bounds.BottomRight.Y + m_Padding + thickness,
+                                  color);
 
         if (m_DrawBorder)
         {
-            al_draw_rectangle (m_Bounds.TopLeft.X - m_Padding, m_Bounds.TopLeft.Y - m_Padding,
-                m_Bounds.BottomRight.X + m_Padding - thickness,
-                m_Bounds.BottomRight.Y + m_Padding + thickness, m_BorderColor, thickness);
+            al_draw_rectangle (m_Bounds.TopLeft.X - m_Padding,
+                               m_Bounds.TopLeft.Y - m_Padding,
+                               m_Bounds.BottomRight.X + m_Padding - thickness,
+                               m_Bounds.BottomRight.Y + m_Padding + thickness,
+                               m_BorderColor,
+                               thickness);
         }
 
-        m_Screen->GetFont ().DrawText (FONT_NAME_MAIN, m_TextColor, m_Bounds.TopLeft.X,
-            m_Bounds.TopLeft.Y, m_Text, ALLEGRO_ALIGN_LEFT);
+        m_Screen->GetFont ().DrawText (
+          FONT_NAME_MAIN, m_TextColor, m_Bounds.TopLeft.X, m_Bounds.TopLeft.Y, m_Text, ALLEGRO_ALIGN_LEFT);
     }
 
     //--------------------------------------------------------------------------------------------------

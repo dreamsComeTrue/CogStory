@@ -13,8 +13,9 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     UIManager::UIManager (Screen* screen)
-        : m_Screen (screen)
-        , m_WidgetFocus (nullptr)
+      : m_Screen (screen)
+      , m_WidgetFocus (nullptr)
+      , m_LastID (-1)
     {
     }
 
@@ -122,20 +123,30 @@ namespace aga
     {
         for (WIDGET_ITERATOR it = m_Widgets.begin (); it != m_Widgets.end (); it++)
         {
-            it->second->Render (deltaTime);
+            if (it->second->IsVisible ())
+            {
+                it->second->Render (deltaTime);
+            }
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void UIManager::AddWidget (int id, Widget* widget, bool ownMemory)
+    void UIManager::AddWidget (Widget* widget, int id, bool ownMemory)
     {
+        if (id < 0)
+        {
+            id = m_LastID + 1;
+        }
+
         m_Widgets.insert (std::make_pair (id, widget));
 
         if (ownMemory)
         {
             m_OwnQueue.push_back (widget);
         }
+
+        m_LastID = id;
     }
 
     //--------------------------------------------------------------------------------------------------

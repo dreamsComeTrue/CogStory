@@ -8,11 +8,12 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Widget::Widget (Screen* screen, Point pos)
-        : m_Screen (screen)
-        , m_DrawBorder (false)
-        , m_BorderColor (COLOR_BLACK)
-        , m_BackGroundColor (COLOR_BLACK)
-        , m_Padding (2)
+      : m_Screen (screen)
+      , m_DrawBorder (false)
+      , m_BorderColor (COLOR_BLACK)
+      , m_BackGroundColor (COLOR_BLACK)
+      , m_Padding (2)
+      , m_Visible (true)
     {
         SetPosition (pos);
     }
@@ -43,29 +44,27 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Widget::Render (double deltaTime)
-    {
-        int thickness = 1;
-
-        al_draw_filled_rectangle (m_Bounds.TopLeft.X - m_Padding, m_Bounds.TopLeft.Y - m_Padding,
-            m_Bounds.BottomRight.X + m_Padding - thickness,
-            m_Bounds.BottomRight.Y + m_Padding + thickness, m_BackGroundColor);
-
-        if (m_DrawBorder)
-        {
-            al_draw_rectangle (m_Bounds.TopLeft.X - m_Padding, m_Bounds.TopLeft.Y - m_Padding,
-                m_Bounds.BottomRight.X + m_Padding - thickness,
-                m_Bounds.BottomRight.Y + m_Padding + thickness, m_BorderColor, thickness);
-        }
-    }
+    void Widget::Render (double deltaTime) {}
 
     //--------------------------------------------------------------------------------------------------
 
-    void Widget::SetPosition (int x, int y) { m_Bounds.TopLeft = { x, y }; }
+    void Widget::SetPosition (int x, int y) { SetPosition ({ x, y }); }
 
     //--------------------------------------------------------------------------------------------------
 
     void Widget::SetPosition (Point pos) { m_Bounds.TopLeft = pos; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Widget::SetSize (int width, int height) { SetSize ({ width, height }); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Widget::SetSize (Point size) { m_Bounds.BottomRight = { m_Bounds.TopLeft.X + size.Width, m_Bounds.TopLeft.Y + size.Height }; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Point Widget::GetSize () { return { m_Bounds.BottomRight.X - m_Bounds.TopLeft.X, m_Bounds.BottomRight.Y - m_Bounds.TopLeft.Y }; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -74,6 +73,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Rect Widget::GetBounds () { return m_Bounds; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Widget::IsVisible () const { return m_Visible; }
 
     //--------------------------------------------------------------------------------------------------
 
