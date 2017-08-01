@@ -16,7 +16,7 @@ namespace aga
 
     void AnimationFrames::SetPlaySpeed (unsigned milliseconds)
     {
-        m_SpeedMS = milliseconds;
+      m_SpeedMS = milliseconds;
     }
 
     //--------------------------------------------------------------------------------------------------

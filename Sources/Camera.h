@@ -18,6 +18,7 @@ namespace aga
         void Update (double deltaTime);
         void SetOffset (float dx, float dy);
         void Move (float dx, float dy);
+        void Reset ();
 
     private:
         ALLEGRO_TRANSFORM m_Transform;

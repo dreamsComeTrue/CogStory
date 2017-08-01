@@ -3,17 +3,15 @@
 #ifndef __EDITOR_STATE_H__
 #define __EDITOR_STATE_H__
 
-#include "editor/Editor.h"
 #include "State.h"
+#include "editor/Editor.h"
 
 namespace aga
 {
-    class StateManager;
-
     class EditorState : public State
     {
     public:
-        EditorState (StateManager* stateManager);
+        EditorState (MainLoop* mainLoop);
 
         virtual ~EditorState ();
         bool Initialize ();
@@ -27,7 +25,6 @@ namespace aga
         void Render (double deltaTime);
 
     private:
-        StateManager* m_StateManager;
         Editor m_Editor;
     };
 }

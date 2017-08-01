@@ -43,8 +43,6 @@ namespace aga
 
         InitializeAnimations ();
 
-        tween = tweeny::from (0).to (400).during (200).onStep ([this](int value) {  Move (value * m_Screen->GetDeltaTime(), 0); return tween.progress() >= 1; });
-
         Lifecycle::Initialize ();
     }
 
@@ -66,11 +64,6 @@ namespace aga
     bool Player::Update (double deltaTime)
     {
         HandleInput (deltaTime);
-
-        if (tween.progress () < 1)
-        {
-            tween.step ((float)deltaTime);
-        }
 
         m_Animation.Update (deltaTime);
 
@@ -96,7 +89,8 @@ namespace aga
         int width = frame.BottomRight.Width;
         int height = frame.BottomRight.Height;
 
-        al_draw_scaled_bitmap (m_Image, frame.TopLeft.X, frame.TopLeft.Y, width, height, m_Position.X, m_Position.Y, width, height, 0);
+        al_draw_scaled_bitmap (
+            m_Image, frame.TopLeft.X, frame.TopLeft.Y, width, height, m_Position.X, m_Position.Y, width, height, 0);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -171,6 +165,7 @@ namespace aga
 
     void Player::Move (double dx, double dy)
     {
+        m_OldPosition = m_Position;
         m_Position.X += dx;
         m_Position.Y += dy;
 
@@ -182,24 +177,29 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Player::SetPosition (const Point& pos)
+    void Player::SetPosition (const Point& pos) { SetPosition (pos.X, pos.Y); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::SetPosition (double x, double y)
     {
-        m_Position = pos;
+        m_OldPosition = m_Position;
+        m_Position.X = x;
+        m_Position.Y = y;
+
+        if (MoveCallback != nullptr)
+        {
+            MoveCallback (m_Position.X - m_OldPosition.X, m_Position.Y - m_OldPosition.Y);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    Point& Player::GetPosition ()
-    {
-        return m_Position;
-    }
+    Point& Player::GetPosition () { return m_Position; }
 
     //--------------------------------------------------------------------------------------------------
 
-    Point& Player::GetSize ()
-    {
-        return m_Size;
-    }
+    Point& Player::GetSize () { return m_Size; }
 
     //--------------------------------------------------------------------------------------------------
 }

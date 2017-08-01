@@ -16,6 +16,7 @@ namespace aga
         bool Destroy ();
 
         void SetText (const std::string& text);
+        std::string GetText () const;
         void SetTextColor (ALLEGRO_COLOR color);
 
         virtual bool Update (double deltaTime);

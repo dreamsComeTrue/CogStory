@@ -8,12 +8,13 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Widget::Widget (Screen* screen, Point pos)
-      : m_Screen (screen)
-      , m_DrawBorder (false)
-      , m_BorderColor (COLOR_BLACK)
-      , m_BackGroundColor (COLOR_BLACK)
-      , m_Padding (2)
-      , m_Visible (true)
+        : m_Screen (screen)
+        , m_DrawBorder (false)
+        , m_BorderColor (COLOR_BLACK)
+        , m_BackGroundColor (COLOR_BLACK)
+        , m_Padding (2)
+        , m_Border (1)
+        , m_Visible (true)
     {
         SetPosition (pos);
     }
@@ -40,14 +41,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Widget::Update (double deltaTime) { return true; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Widget::Render (double deltaTime) {}
-
-    //--------------------------------------------------------------------------------------------------
-
     void Widget::SetPosition (int x, int y) { SetPosition ({ x, y }); }
 
     //--------------------------------------------------------------------------------------------------
@@ -60,11 +53,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Widget::SetSize (Point size) { m_Bounds.BottomRight = { m_Bounds.TopLeft.X + size.Width, m_Bounds.TopLeft.Y + size.Height }; }
+    void Widget::SetSize (Point size) { m_Bounds.BottomRight = size; }
 
     //--------------------------------------------------------------------------------------------------
 
-    Point Widget::GetSize () { return { m_Bounds.BottomRight.X - m_Bounds.TopLeft.X, m_Bounds.BottomRight.Y - m_Bounds.TopLeft.Y }; }
+    Point Widget::GetSize () { return m_Bounds.BottomRight; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Screen* Widget::GetScreen () { return m_Screen; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -72,7 +69,34 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Rect Widget::GetBounds () { return m_Bounds; }
+    Rect Widget::GetBounds (bool withOutsets)
+    {
+        if (withOutsets)
+        {
+            int offset = m_Padding;
+
+            if (m_DrawBorder)
+            {
+                offset += m_Border;
+            }
+
+            return Rect{ Point (m_Bounds.TopLeft.X - offset, m_Bounds.TopLeft.Y - offset),
+                Point (m_Bounds.TopLeft.X + m_Bounds.BottomRight.Width + offset,
+                    m_Bounds.TopLeft.Y + m_Bounds.BottomRight.Height + offset) };
+        }
+        else
+        {
+            return m_Bounds;
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Widget::SetPadding (unsigned padding) { m_Padding = padding; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    unsigned Widget::GetPadding () const { return m_Padding; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -89,6 +113,14 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Widget::SetDrawBorder (bool draw) { m_DrawBorder = draw; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Widget::SetBorder (unsigned border) { m_Border = border; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    unsigned Widget::GetBorder () const { return m_Border; }
 
     //--------------------------------------------------------------------------------------------------
 

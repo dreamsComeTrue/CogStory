@@ -2,17 +2,19 @@
 
 #include "GamePlayState.h"
 #include "Common.h"
+#include "MainLoop.h"
+#include "Scene.h"
+#include "SceneManager.h"
 #include "Screen.h"
+#include "ScriptManager.h"
 #include "StateManager.h"
 
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    GamePlayState::GamePlayState (StateManager* stateManager)
-        : State ("GAMEPLAY")
-        , m_StateManager (stateManager)
-        , m_SceneManager (stateManager->GetScreen ())
+    GamePlayState::GamePlayState (MainLoop* mainLoop)
+        : State (mainLoop, "GAMEPLAY")
     {
     }
 
@@ -32,52 +34,55 @@ namespace aga
 
     bool GamePlayState::Initialize ()
     {
-        m_SceneManager.Initialize ();
+        Scene* scene00 = Scene::LoadScene (m_MainLoop->GetSceneManager (), GetResourcePath (SCENE_0_0));
+
+        m_MainLoop->GetSceneManager ()->AddScene (SCENE_0_0, scene00);
+
+        Point pos = scene00->GetSpawnPoint ("DEFAULT");
+        m_MainLoop->GetSceneManager ()->GetPlayer ().SetPosition (pos);
+
+        m_MainLoop->GetSceneManager ()->SetActiveScene (scene00);
 
         Lifecycle::Initialize ();
+
+        return true;
     }
 
     //--------------------------------------------------------------------------------------------------
 
     bool GamePlayState::Destroy ()
     {
-        m_SceneManager.Destroy ();
-
         Lifecycle::Destroy ();
+
+        return true;
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void GamePlayState::BeforeEnter ()
     {
-        m_StateManager->GetScreen ()->SetBackgroundColor (al_map_rgb (60, 60, 70));
+        m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (60, 60, 70));
+        m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (50, 60, 100));
+        m_MainLoop->GetSceneManager ()->SetActiveScene (m_MainLoop->GetSceneManager ()->GetActiveScene ());
+
+        Script* script = m_MainLoop->GetScriptManager ()->LoadScriptFromFile (GetResourcePath (SCRIPT_0_0), "home");
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::AfterLeave ()
-    {
-    }
+    void GamePlayState::AfterLeave () {}
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
-    {
-    }
+    void GamePlayState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime) {}
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::Update (double deltaTime)
-    {
-        m_SceneManager.Update (deltaTime);
-    }
+    void GamePlayState::Update (double deltaTime) {}
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::Render (double deltaTime)
-    {
-        m_SceneManager.Render (deltaTime);
-    }
+    void GamePlayState::Render (double deltaTime) {}
 
     //--------------------------------------------------------------------------------------------------
 }

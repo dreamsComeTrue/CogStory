@@ -11,14 +11,14 @@ namespace aga
 
     class Widget : public Lifecycle
     {
-      public:
+    public:
         Widget (Screen* screen, Point pos);
         virtual ~Widget ();
         bool Initialize ();
         bool Destroy ();
 
-        virtual bool Update (double deltaTime);
-        virtual void Render (double deltaTime);
+        virtual bool Update (double deltaTime) = 0;
+        virtual void Render (double deltaTime) = 0;
 
         void SetPosition (int x, int y);
         void SetPosition (Point pos);
@@ -28,13 +28,21 @@ namespace aga
         virtual void SetSize (Point size);
         Point GetSize ();
 
-        Rect GetBounds ();
+        Screen* GetScreen ();
+
+        Rect GetBounds (bool withOutsets = true);
+
+        void SetPadding(unsigned border);
+        unsigned GetPadding() const;
 
         bool IsVisible () const;
 
         void SetBackgroundColor (ALLEGRO_COLOR color);
         void SetBorderColor (ALLEGRO_COLOR color);
         void SetDrawBorder (bool draw);
+
+        void SetBorder(unsigned border);
+        unsigned GetBorder() const;
 
         virtual void MouseMove (ALLEGRO_MOUSE_EVENT& event);
         virtual void MouseDown (ALLEGRO_MOUSE_EVENT& event);
@@ -45,10 +53,11 @@ namespace aga
         virtual void KeyboardUp (ALLEGRO_KEYBOARD_EVENT& event);
         virtual void KeyboardDown (ALLEGRO_KEYBOARD_EVENT& event);
 
-      protected:
+    protected:
         Screen* m_Screen;
         Rect m_Bounds;
 
+        unsigned m_Border;
         bool m_DrawBorder;
         unsigned m_Padding;
         ALLEGRO_COLOR m_BackGroundColor;

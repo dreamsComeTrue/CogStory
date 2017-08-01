@@ -1,0 +1,11 @@
+const double SPEED = 15.0;
+
+void Start ()
+{
+
+}
+
+void Update (double deltaTime)
+{
+    player.Move (0, SPEED * deltaTime);
+}

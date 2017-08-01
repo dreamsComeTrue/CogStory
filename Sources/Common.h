@@ -10,10 +10,18 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_ttf.h>
 
+#include <angelscript.h>
+#include <scriptbuilder/scriptbuilder.h>
+#include <scriptstdstring/scriptstdstring.h>
+
 #include <cmath>
 #include <map>
 #include <string>
 #include <vector>
+#include <fstream>
+#include <functional>
+
+#include "addons/tweeny/tweeny.h"
 
 #include "Lifecycle.h"
 #include "Point.h"

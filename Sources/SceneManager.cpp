@@ -2,6 +2,7 @@
 
 #include "SceneManager.h"
 #include "Common.h"
+#include "MainLoop.h"
 #include "Scene.h"
 #include "Screen.h"
 
@@ -11,11 +12,11 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    SceneManager::SceneManager (Screen* screen)
+    SceneManager::SceneManager (MainLoop* mainLoop)
         : m_ActiveScene (nullptr)
-        , m_Screen (screen)
-        , m_Player (screen)
-        , m_Camera (screen)
+        , m_MainLoop (mainLoop)
+        , m_Player (mainLoop->GetScreen ())
+        , m_Camera (mainLoop->GetScreen ())
     {
     }
 
@@ -36,17 +37,7 @@ namespace aga
     bool SceneManager::Initialize ()
     {
         m_Player.Initialize ();
-
-        const Point& screenSize = m_Screen->GetScreenSize ();
-        Point& playerSize = m_Player.GetSize ();
-        m_Camera.SetOffset (screenSize.Width * 0.5 - playerSize.Width * 0.5,
-            screenSize.Height * 0.5 - playerSize.Height * 0.5);
-
-        m_Player.MoveCallback = [&](double dx, double dy) {
-            m_Camera.Move (-dx, -dy);
-        };
-
-        LoadScenes ();
+        m_Player.MoveCallback = [&](double dx, double dy) { m_Camera.Move (-dx, -dy); };
 
         Lifecycle::Initialize ();
     }
@@ -67,6 +58,16 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void SceneManager::AddScene (ResourceID id, Scene* scene)
+    {
+        if (m_Scenes.find (id) == m_Scenes.end ())
+        {
+            m_Scenes.insert (std::make_pair (id, scene));
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void SceneManager::SetActiveScene (Scene* scene)
     {
         if (m_ActiveScene != nullptr)
@@ -80,6 +81,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    Scene* SceneManager::GetActiveScene () { return m_ActiveScene; }
+
+    //--------------------------------------------------------------------------------------------------
+
     void SceneManager::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
         m_Player.ProcessEvent (event, deltaTime);
@@ -89,9 +94,6 @@ namespace aga
 
     bool SceneManager::Update (double deltaTime)
     {
-        m_Player.Update (deltaTime);
-        m_Camera.Update (deltaTime);
-
         if (m_ActiveScene != nullptr)
         {
             m_ActiveScene->Update (deltaTime);
@@ -108,27 +110,19 @@ namespace aga
         {
             m_ActiveScene->Render (deltaTime);
         }
-
-        m_Player.Render (deltaTime);
     }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void SceneManager::LoadScenes ()
-    {
-        Scene* scene00 = Scene::LoadScene (this, GetResourcePath (SCENE_0_0));
-        m_Scenes.insert (std::make_pair (SCENE_0_0, scene00));
-
-        SetActiveScene (scene00);
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    Screen* SceneManager::GetScreen () { return m_Screen; }
 
     //--------------------------------------------------------------------------------------------------
 
     Player& SceneManager::GetPlayer () { return m_Player; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Camera& SceneManager::GetCamera () { return m_Camera; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    MainLoop* SceneManager::GetMainLoop () { return m_MainLoop; }
 
     //--------------------------------------------------------------------------------------------------
 }

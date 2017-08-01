@@ -11,11 +11,14 @@ union ALLEGRO_EVENT;
 
 namespace aga
 {
+    class MainLoop;
+
     class State : public Lifecycle
     {
     public:
-        State (const std::string& name)
-            : m_Name (name)
+        State (MainLoop* mainLoop, const std::string& name)
+            : m_MainLoop (mainLoop)
+            , m_Name (name)
         {
         }
 
@@ -26,7 +29,8 @@ namespace aga
         virtual void Update (double deltaTime) = 0;
         virtual void Render (double deltaTime) = 0;
 
-    private:
+    protected:
+        MainLoop* m_MainLoop;
         std::string m_Name;
     };
 }

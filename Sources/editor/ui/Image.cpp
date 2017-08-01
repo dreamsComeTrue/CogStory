@@ -43,7 +43,6 @@ namespace aga
 
     bool Image::Update (double deltaTime)
     {
-        Widget::Update (deltaTime);
         return true;
     }
 
@@ -73,8 +72,6 @@ namespace aga
 
     void Image::Render (double deltaTime)
     {
-        Widget::Render (deltaTime);
-
         if (m_DrawWithTint)
         {
             al_draw_tinted_scaled_bitmap (m_Bitmap,

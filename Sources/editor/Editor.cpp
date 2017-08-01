@@ -7,20 +7,21 @@
 #include "ui/Frame.h"
 #include "ui/Image.h"
 #include "ui/Label.h"
+#include "ui/Menu.h"
 
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    const int TILE_SIZE = 128;
+    const int TILE_SIZE = 64;
 
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
     Editor::Editor (Screen* screen)
-      : m_Screen (screen)
-      , m_UIManager (screen)
-      , m_DrawTiles (true)
+        : m_Screen (screen)
+        , m_UIManager (screen)
+        , m_DrawTiles (true)
     {
     }
 
@@ -98,26 +99,37 @@ namespace aga
 
     void Editor::InitializeUI ()
     {
-        Button* button = new Button (m_Screen, Point{ 2, 2 }, "MENU");
+        Menu* mainMenu = new Menu (m_Screen, Point{ 4, 4 });
+        MenuItem* editorSubMenu = new MenuItem ("EDITOR", mainMenu);
+        MenuItem* objectSubMenu = new MenuItem ("OBJECT", mainMenu);
+
+        m_UIManager.AddWidget (mainMenu);
+
+        Button* button = new Button (m_Screen, Point{ 30, 200 }, "MENU");
         button->SetBackgroundColor (COLOR_GREEN);
         button->SetTextColor (COLOR_BLACK);
+        button->SetBorderColor (COLOR_WHITE);
+        button->SetDrawBorder (true);
 
         m_UIManager.AddWidget (button);
 
-        ButtonImage* buttonImage = new ButtonImage (m_Screen, Point (100, 100), GetDataPath () + "gfx/crate_sprite.png");
+        ButtonImage* buttonImage
+            = new ButtonImage (m_Screen, Point (100, 100), GetDataPath () + "gfx/crate_sprite.png");
         buttonImage->SetSize (100, 100);
         m_UIManager.AddWidget (buttonImage);
 
+        int tilesCount = 8;
         const Point& screenSize = m_Screen->GetScreenSize ();
         double centerX = screenSize.Width * 0.5;
-        double beginning = centerX - 2 * TILE_SIZE - TILE_SIZE * 0.5;
+        double beginning = centerX - (tilesCount - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
 
         //  Back frame
-        for (int i = 0; i < 5; ++i)
+        for (int i = 0; i < tilesCount; ++i)
         {
             float advance = beginning + i * TILE_SIZE;
 
-            Frame* frame = new Frame (m_Screen, Rect{ { advance, screenSize.Height - TILE_SIZE }, { TILE_SIZE, TILE_SIZE } }, true, 1.0);
+            Frame* frame = new Frame (
+                m_Screen, Rect{ { advance, screenSize.Height - TILE_SIZE }, { TILE_SIZE, TILE_SIZE } }, true, 1.0);
             frame->SetBorderColor (COLOR_GREEN);
             frame->SetDrawBorder (true);
 

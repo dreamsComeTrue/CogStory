@@ -47,7 +47,6 @@ namespace aga
 
     bool Frame::Update (double deltaTime)
     {
-        Widget::Update (deltaTime);
         return true;
     }
 
@@ -55,8 +54,6 @@ namespace aga
 
     void Frame::Render (double deltaTime)
     {
-        Widget::Render (deltaTime);
-
         if (m_Filled)
         {
             al_draw_filled_rectangle (m_Rect.TopLeft.X,

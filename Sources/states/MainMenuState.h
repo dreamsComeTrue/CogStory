@@ -15,7 +15,7 @@ namespace aga
     class MainMenuState : public State
     {
     public:
-        MainMenuState (StateManager* stateManager);
+        MainMenuState (MainLoop* mainLoop);
 
         virtual ~MainMenuState ();
         bool Initialize ();
@@ -29,7 +29,6 @@ namespace aga
         void Render (double deltaTime);
 
     private:
-        StateManager* m_StateManager;
         NINE_PATCH_BITMAP* m_Background;
     };
 }

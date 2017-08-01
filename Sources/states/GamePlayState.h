@@ -3,17 +3,16 @@
 #ifndef __GAMEPLAY_STATE_H__
 #define __GAMEPLAY_STATE_H__
 
-#include "SceneManager.h"
 #include "State.h"
 
 namespace aga
 {
-    class StateManager;
+    class MainLoop;
 
     class GamePlayState : public State
     {
     public:
-        GamePlayState (StateManager* stateManager);
+        GamePlayState (MainLoop* mainLoop);
 
         virtual ~GamePlayState ();
         bool Initialize ();
@@ -27,8 +26,6 @@ namespace aga
         void Render (double deltaTime);
 
     private:
-        StateManager* m_StateManager;
-        SceneManager m_SceneManager;
     };
 }
 

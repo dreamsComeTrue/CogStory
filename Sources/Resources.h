@@ -9,13 +9,19 @@ namespace aga
 {
     enum ResourceID
     {
+        //  Graphics
         GFX_MENU_COG,
         GFX_TEXT_FRAME,
         GFX_PLAYER,
 
+        //  Fonts
         FONT_MAIN,
 
-        SCENE_0_0
+        //  Scenes
+        SCENE_0_0,
+
+        //  Scripts
+        SCRIPT_0_0
     };
 
     struct Resource

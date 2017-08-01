@@ -33,6 +33,8 @@ namespace aga
         virtual void Update (double deltaTime);
         virtual void Render (double deltaTime);
 
+        Point GetSpawnPoint (const std::string& name);
+
     private:
         std::string m_Name;
         Point m_Size;

@@ -1,12 +1,11 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Scene.h"
+#include "MainLoop.h"
 #include "SceneManager.h"
 #include "Screen.h"
 
 #include "addons/json/json.hpp"
-
-#include <fstream>
 
 using json = nlohmann::json;
 
@@ -64,10 +63,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Scene::Initialize ()
-    {
-        Lifecycle::Initialize ();
-    }
+    bool Scene::Initialize () { Lifecycle::Initialize (); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -125,20 +121,32 @@ namespace aga
 
     void Scene::BeforeEnter ()
     {
-        Point pos = m_SpawnPoints["DEFAULT"];
-        m_SceneManager->GetPlayer ().SetPosition (pos);
+        Player& player = m_SceneManager->GetPlayer ();
+        const Point& screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetScreenSize ();
+        Point& playerSize = player.GetSize ();
+        m_SceneManager->GetCamera ().SetOffset (
+            screenSize.Width * 0.5 - playerSize.Width * 0.5 - player.GetPosition ().X,
+            screenSize.Height * 0.5 - playerSize.Height * 0.5 - player.GetPosition ().Y);
+
+        std::function<bool(int)> func = [&](int i) {
+            m_SceneManager->GetPlayer ().SetPosition(Point (i, 0));
+
+            return false;//t.progress () >= 1;
+        };
+
+        m_SceneManager->GetMainLoop ()->GetTweenManager ()->AddTween (0, 0, 500, 4000, func);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::AfterLeave ()
-    {
-    }
+    void Scene::AfterLeave () {}
 
     //--------------------------------------------------------------------------------------------------
 
     void Scene::Update (double deltaTime)
     {
+        m_SceneManager->GetPlayer ().Update (deltaTime);
+        m_SceneManager->GetCamera ().Update (deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -150,8 +158,25 @@ namespace aga
             al_draw_bitmap (tile.Image, tile.Pos.X, tile.Pos.Y, 0);
         }
 
-        m_SceneManager->GetScreen ()->GetFont ().DrawText (FONT_NAME_MAIN, al_map_rgb (255, 255, 255), 200, 200, "Robot Tale");
-        m_SceneManager->GetScreen ()->GetFont ().DrawText (FONT_NAME_MAIN, al_map_rgb (0, 255, 0), 0, 0, m_Name, ALLEGRO_ALIGN_LEFT);
+        m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
+            FONT_NAME_MAIN, al_map_rgb (255, 255, 255), 200, 200, "Robot Tale");
+        m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
+            FONT_NAME_MAIN, al_map_rgb (0, 255, 0), 0, 0, m_Name, ALLEGRO_ALIGN_LEFT);
+
+        m_SceneManager->GetPlayer ().Render (deltaTime);
+        m_SceneManager->GetCamera ().Reset ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Point Scene::GetSpawnPoint (const std::string& name)
+    {
+        std::map<std::string, Point>::iterator it = m_SpawnPoints.find (name);
+
+        if (it != m_SpawnPoints.end ())
+        {
+            return (*it).second;
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

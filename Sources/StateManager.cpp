@@ -2,6 +2,7 @@
 
 #include "StateManager.h"
 #include "Common.h"
+#include "MainLoop.h"
 #include "Screen.h"
 #include "State.h"
 
@@ -11,9 +12,9 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    StateManager::StateManager (Screen* screen)
-        : m_Screen (screen)
-        , m_ActiveState (nullptr)
+    StateManager::StateManager (MainLoop* mainLoop)
+        : m_ActiveState (nullptr)
+        , m_MainLoop (mainLoop)
     {
     }
 
@@ -31,17 +32,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool StateManager::Initialize ()
-    {
-        Lifecycle::Initialize ();
-    }
+    bool StateManager::Initialize () { Lifecycle::Initialize (); }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool StateManager::Destroy ()
-    {
-        Lifecycle::Destroy ();
-    }
+    bool StateManager::Destroy () { Lifecycle::Destroy (); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -58,11 +53,25 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void StateManager::RegisterState (State* state)
+    void StateManager::SetActiveState (const std::string& name)
     {
-        if (std::find (m_States.begin (), m_States.end (), state) == m_States.end ())
+        std::map<std::string, State*>::iterator it = m_States.find (name);
+
+        if (it != m_States.end ())
         {
-            m_States.push_back (state);
+            SetActiveState ((*it).second);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void StateManager::RegisterState (const std::string& name, State* state)
+    {
+        std::map<std::string, State*>::iterator it = m_States.find (name);
+
+        if (it == m_States.end ())
+        {
+            m_States.insert (std::make_pair (name, state));
         }
     }
 
@@ -75,7 +84,7 @@ namespace aga
             m_ActiveState->Update (deltaTime);
         }
 
-        if (!m_Screen->Update (deltaTime))
+        if (!m_MainLoop->GetScreen ()->Update (deltaTime))
         {
             return false;
         }
@@ -85,11 +94,33 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    bool isEditor = false;
+
     void StateManager::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
         if (m_ActiveState != nullptr)
         {
             m_ActiveState->ProcessEvent (event, deltaTime);
+        }
+
+        if (event->type == ALLEGRO_EVENT_KEY_DOWN)
+        {
+            ALLEGRO_KEYBOARD_STATE state;
+            al_get_keyboard_state (&state);
+
+            if (al_key_down (&state, ALLEGRO_KEY_ENTER))
+            {
+                isEditor = !isEditor;
+
+                if (isEditor)
+                {
+                    SetActiveState ("EDITOR");
+                }
+                else
+                {
+                    SetActiveState ("GAMEPLAY");
+                }
+            }
         }
     }
 
@@ -105,7 +136,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Screen* StateManager::GetScreen () { return m_Screen; }
+    MainLoop* StateManager::GetMainLoop () { return m_MainLoop; }
 
     //--------------------------------------------------------------------------------------------------
 }

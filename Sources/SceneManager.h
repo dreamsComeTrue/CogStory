@@ -10,32 +10,33 @@
 namespace aga
 {
     class Scene;
-    class Screen;
+    class MainLoop;
 
     class SceneManager : public Lifecycle
     {
     public:
-        SceneManager (Screen* screen);
+        SceneManager (MainLoop* mainLoop);
         virtual ~SceneManager ();
         bool Initialize ();
         bool Destroy ();
 
+        void AddScene (ResourceID id, Scene* scene);
         void SetActiveScene (Scene* scene);
+        Scene* GetActiveScene ();
 
         void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
         bool Update (double deltaTime);
         void Render (double deltaTime);
 
-        Screen* GetScreen ();
         Player& GetPlayer ();
+        Camera& GetCamera ();
+        MainLoop* GetMainLoop ();
 
     private:
-        void LoadScenes ();
-
         Player m_Player;
         Camera m_Camera;
 
-        Screen* m_Screen;
+        MainLoop* m_MainLoop;
         std::map<ResourceID, Scene*> m_Scenes;
         Scene* m_ActiveScene;
     };

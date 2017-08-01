@@ -13,9 +13,8 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    MainMenuState::MainMenuState (StateManager* stateManager)
-        : State ("MAIN_MENU")
-        , m_StateManager (stateManager)
+    MainMenuState::MainMenuState (MainLoop* mainLoop)
+        : State (mainLoop, "MAIN_MENU")
     {
     }
 

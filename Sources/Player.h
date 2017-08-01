@@ -6,10 +6,6 @@
 #include "Animation.h"
 #include "Common.h"
 
-#include "addons/tweeny/tweeny.h"
-
-#include <functional>
-
 namespace aga
 {
     class Screen;
@@ -26,7 +22,9 @@ namespace aga
         void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
         void Render (double deltaTime);
 
+        void Move (double dx, double dy);
         void SetPosition (const Point& pos);
+        void SetPosition (double dy, double y);
         Point& GetPosition ();
         Point& GetSize ();
 
@@ -35,15 +33,13 @@ namespace aga
     private:
         void InitializeAnimations ();
         void HandleInput (double deltaTime);
-        void Move (double dx, double dy);
 
     private:
         ALLEGRO_BITMAP* m_Image;
-        Point m_Position;
+        Point m_Position, m_OldPosition;
         Point m_Size;
         Screen* m_Screen;
         Animation m_Animation;
-        tweeny::tween<int> tween;
     };
 }
 

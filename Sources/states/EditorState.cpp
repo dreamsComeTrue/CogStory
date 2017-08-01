@@ -1,7 +1,10 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "EditorState.h"
+#include "Camera.h"
 #include "Common.h"
+#include "SceneManager.h"
+#include "MainLoop.h"
 #include "Screen.h"
 #include "StateManager.h"
 
@@ -9,10 +12,9 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    EditorState::EditorState (StateManager* stateManager)
-        : State ("EDITOR")
-        , m_Editor (stateManager->GetScreen ())
-        , m_StateManager (stateManager)
+    EditorState::EditorState (MainLoop* mainLoop)
+        : State (mainLoop, "EDITOR")
+        , m_Editor (mainLoop->GetScreen ())
     {
     }
 
@@ -48,15 +50,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::BeforeEnter ()
-    {
-    }
+    void EditorState::BeforeEnter () { m_MainLoop->GetSceneManager ()->GetCamera ().Reset(); }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::AfterLeave ()
-    {
-    }
+    void EditorState::AfterLeave () {}
 
     //--------------------------------------------------------------------------------------------------
 
@@ -67,17 +65,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::Update (double deltaTime)
-    {
-        m_Editor.Update (deltaTime);
-    }
+    void EditorState::Update (double deltaTime) { m_Editor.Update (deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::Render (double deltaTime)
-    {
-        m_Editor.Render (deltaTime);
-    }
+    void EditorState::Render (double deltaTime) { m_Editor.Render (deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
 }

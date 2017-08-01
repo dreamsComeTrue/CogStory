@@ -69,7 +69,7 @@ namespace aga
 
             for (WIDGET_ITERATOR it = m_Widgets.begin (); it != m_Widgets.end (); it++)
             {
-                if (InsideRect (event->mouse.x, event->mouse.y, it->second->GetBounds ()))
+                if (InsideRect (event->mouse.x, event->mouse.y, it->second->GetBounds (true)))
                 {
                     if (m_WidgetFocus != nullptr)
                     {

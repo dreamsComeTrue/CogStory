@@ -5,6 +5,9 @@
 
 #include "Lifecycle.h"
 #include "StateManager.h"
+#include "SceneManager.h"
+#include "ScriptManager.h"
+#include "TweenManager.h"
 
 namespace aga
 {
@@ -23,6 +26,12 @@ namespace aga
 
         void Start ();
 
+        Screen* GetScreen();
+        StateManager* GetStateManager();
+        SceneManager* GetSceneManager();
+        ScriptManager* GetScriptManager();
+        TweenManager* GetTweenManager();
+
     private:
         void InitializeStates ();
         void DestroyStates ();
@@ -30,6 +39,9 @@ namespace aga
     private:
         Screen* m_Screen;
         StateManager m_StateManager;
+        SceneManager m_SceneManager;
+        ScriptManager m_ScriptManager;
+        TweenManager m_TweenManager;
 
         MainMenuState* m_MainMenuState;
         GamePlayState* m_GamePlayState;

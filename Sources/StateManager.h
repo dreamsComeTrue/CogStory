@@ -9,28 +9,31 @@ namespace aga
 {
     class Screen;
     class State;
+    class MainLoop;
 
     class StateManager : public Lifecycle
     {
     public:
-        StateManager (Screen* screen);
+        StateManager (MainLoop* mainLoop);
         virtual ~StateManager ();
         bool Initialize ();
         bool Destroy ();
 
         void SetActiveState (State* state);
-        void RegisterState (State* state);
+        void SetActiveState (const std::string& name);
+        void RegisterState (const std::string& name, State* state);
 
         bool Update (double deltaTime);
         void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
         void Render (double deltaTime);
 
-        Screen* GetScreen ();
+        MainLoop* GetMainLoop ();
 
     private:
-        std::vector<State*> m_States;
+        std::map<std::string, State*> m_States;
         State* m_ActiveState;
-        Screen* m_Screen;
+
+        MainLoop* m_MainLoop;
     };
 }
 
