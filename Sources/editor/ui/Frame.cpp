@@ -6,8 +6,8 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    Frame::Frame (Screen* screen, Rect rect, bool filled, float thickness)
-      : Widget (screen, rect.TopLeft)
+    Frame::Frame (UIManager* uiManager, Rect rect, bool filled, float thickness)
+      : Widget (uiManager, rect.TopLeft)
       , m_Rect (rect)
       , m_Filled (filled)
       , m_Thickness (thickness)
@@ -28,27 +28,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Frame::Initialize ()
-    {
-        Lifecycle::Initialize ();
-        return true;
-    }
+    bool Frame::Initialize () { return Lifecycle::Initialize (); }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Frame::Destroy ()
-    {
-        Lifecycle::Destroy ();
-
-        return true;
-    }
+    bool Frame::Destroy () { return Lifecycle::Destroy (); }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Frame::Update (double deltaTime)
-    {
-        return true;
-    }
+    bool Frame::Update (double deltaTime) { return true; }
 
     //--------------------------------------------------------------------------------------------------
 

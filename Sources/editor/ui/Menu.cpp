@@ -2,21 +2,23 @@
 
 #include "Menu.h"
 #include "Screen.h"
+#include "UIManager.h"
 
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
     MenuItem::MenuItem (const std::string& name, Menu* menu)
-        : Button (menu->GetScreen (), Point (), name)
-        , m_Menu (menu)
+      : Button (menu->GetUIManager (), Point (), name)
+      , m_Menu (menu)
+      , m_Parent (nullptr)
     {
         SetBackgroundColor (COLOR_GRAY);
         SetTextColor (COLOR_WHITE);
+        SetHighlightColor ({ 0.2f, 0.2f, 0.2f, 1.0f });
+        SetPressedColor ({ 0.5f, 0.5f, 0.5f, 1.0f });
         SetBorderColor (COLOR_BLACK);
         SetDrawBorder (true);
-
-        m_Menu->AddItem (this);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -40,9 +42,32 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void MenuItem::AddChild (MenuItem* item) {}
+    void MenuItem::AddChild (MenuItem* item)
+    {
+        for (MenuItem* child : m_Children)
+        {
+            if (child == item)
+            {
+                return;
+            }
+        }
+
+        m_Children.push_back (item);
+        m_UIManager->AddWidget (item, -1, false);
+
+        item->SetVisible (false);
+        item->m_Parent = this;
+
+        RepositionItems ();
+    }
 
     //--------------------------------------------------------------------------------------------------
+
+    void MenuItem::SetPosition (int x, int y)
+    {
+        Button::SetPosition (x, y);
+        RepositionItems ();
+    }
 
     bool MenuItem::Update (double deltaTime) { return Button::Update (deltaTime); }
 
@@ -51,10 +76,101 @@ namespace aga
     void MenuItem::Render (double deltaTime) { Button::Render (deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
+
+    void MenuItem::MouseEnter (ALLEGRO_MOUSE_EVENT& event)
+    {
+        Button::MouseEnter (event);
+
+        if (IsMenuHeaderSelected () && m_Parent != nullptr)
+        {
+            m_Parent->ShowChildren ();
+        }
+
+        ShowChildren ();
+    }
+
     //--------------------------------------------------------------------------------------------------
 
-    Menu::Menu (Screen* screen, Point pos)
-        : Widget (screen, pos)
+    void MenuItem::MouseLeave (ALLEGRO_MOUSE_EVENT& event)
+    {
+        Button::MouseLeave (event);
+
+        if (m_Parent != nullptr)
+        {
+            m_Parent->HideChildren ();
+        }
+
+        HideChildren ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void MenuItem::RepositionItems ()
+    {
+        Point offset = GetPosition ();
+
+        for (int i = 0; i < m_Children.size (); ++i)
+        {
+            offset.Y += GetBounds ().BottomRight.Height;
+
+            MenuItem* item = m_Children[i];
+            item->SetPosition (offset.X, offset.Y);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void MenuItem::ShowChildren ()
+    {
+        if (!m_Children.empty ())
+        {
+            for (MenuItem* child : m_Children)
+            {
+                child->SetVisible (true);
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void MenuItem::HideChildren ()
+    {
+        if (!m_Children.empty ())
+        {
+            for (MenuItem* child : m_Children)
+            {
+                child->SetVisible (false);
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool MenuItem::IsMenuHeaderSelected ()
+    {
+        Widget* prevWidget = m_UIManager->GetPreviousWidgetFocus ();
+
+        bool found = false;
+        if (m_Parent != nullptr)
+        {
+            for (MenuItem* child : m_Parent->m_Children)
+            {
+                if (child == prevWidget)
+                {
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        return prevWidget == m_Parent || found;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
+
+    Menu::Menu (UIManager* uiManager, Point pos)
+      : Widget (uiManager, pos)
     {
     }
 
@@ -87,8 +203,17 @@ namespace aga
             item->Initialize ();
             m_Items.insert (std::make_pair (item->GetText (), item));
             m_ItemsList.push_back (item);
+
+            m_UIManager->AddWidget (item, -1, false);
         }
 
+        RepositionItems ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Menu::RepositionItems ()
+    {
         Point offset = GetPosition ();
 
         int itemPadding = 2;

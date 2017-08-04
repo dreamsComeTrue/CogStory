@@ -10,7 +10,7 @@ namespace aga
     class Label : public Widget
     {
     public:
-        Label (Screen* screen, Point pos, const std::string& text);
+        Label (UIManager* uiManager, Point pos, const std::string& text);
         virtual ~Label ();
         bool Initialize ();
         bool Destroy ();

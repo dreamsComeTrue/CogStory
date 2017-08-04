@@ -32,7 +32,7 @@ namespace aga
 
     const std::string GetDataPath ()
     {
-        std::string path = "../Data/";
+        std::string path = "Data/";
 
         return path;
     }

@@ -6,8 +6,8 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    Image::Image (Screen* screen, Point pos, const std::string& imagePath)
-      : Widget (screen, pos)
+    Image::Image (UIManager* uiManager, Point pos, const std::string& imagePath)
+      : Widget (uiManager, pos)
       , m_DrawWithTint (false)
       , m_TintColor (COLOR_WHITE)
     {
@@ -28,7 +28,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Image::Initialize () { Lifecycle::Initialize (); }
+    bool Image::Initialize () { return Lifecycle::Initialize (); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -41,10 +41,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Image::Update (double deltaTime)
-    {
-        return true;
-    }
+    bool Image::Update (double deltaTime) { return true; }
 
     //--------------------------------------------------------------------------------------------------
 

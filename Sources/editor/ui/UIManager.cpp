@@ -15,6 +15,7 @@ namespace aga
     UIManager::UIManager (Screen* screen)
       : m_Screen (screen)
       , m_WidgetFocus (nullptr)
+      , m_PreviousWidgetFocus (nullptr)
       , m_LastID (-1)
     {
     }
@@ -44,7 +45,7 @@ namespace aga
             SAFE_DELETE (widget);
         }
 
-        Lifecycle::Destroy ();
+        return Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -77,6 +78,7 @@ namespace aga
 
                         if (m_WidgetFocus != it->second)
                         {
+                            m_PreviousWidgetFocus = m_WidgetFocus;
                             m_WidgetFocus->MouseLeave (event->mouse);
                         }
                     }
@@ -95,6 +97,7 @@ namespace aga
             {
                 if (m_WidgetFocus != nullptr)
                 {
+                    m_PreviousWidgetFocus = m_WidgetFocus;
                     m_WidgetFocus->MouseLeave (event->mouse);
                 }
 
@@ -148,6 +151,18 @@ namespace aga
 
         m_LastID = id;
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Screen* UIManager::GetScreen () { return m_Screen; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Widget* UIManager::GetWidgetFocus () { return m_WidgetFocus; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Widget* UIManager::GetPreviousWidgetFocus () { return m_PreviousWidgetFocus; }
 
     //--------------------------------------------------------------------------------------------------
 }

@@ -2,14 +2,15 @@
 
 #include "ButtonImage.h"
 #include "Screen.h"
+#include "UIManager.h"
 
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    ButtonImage::ButtonImage (Screen* screen, Point pos, const std::string& imagePath)
-      : Button (screen, pos, "")
-      , m_Image (screen, pos, imagePath)
+    ButtonImage::ButtonImage (UIManager* uiManager, Point pos, const std::string& imagePath)
+      : Button (uiManager, pos, "")
+      , m_Image (uiManager, pos, imagePath)
     {
         m_Image.SetDrawWithTint (true);
 
@@ -73,8 +74,7 @@ namespace aga
             m_Image.SetDrawWithTint (false);
         }
 
-        ALLEGRO_COLOR color =
-          m_IsPressed ? m_PressedColor : m_IsHighlight ? m_HighlightColor : m_BackGroundColor;
+        ALLEGRO_COLOR color = m_IsPressed ? m_PressedColor : m_IsHighlight ? m_HighlightColor : m_BackGroundColor;
 
         m_Image.SetTintColor (color);
 

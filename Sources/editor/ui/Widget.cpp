@@ -1,20 +1,20 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Widget.h"
-#include "Screen.h"
+#include "UIManager.h"
 
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    Widget::Widget (Screen* screen, Point pos)
-        : m_Screen (screen)
-        , m_DrawBorder (false)
-        , m_BorderColor (COLOR_BLACK)
-        , m_BackGroundColor (COLOR_BLACK)
-        , m_Padding (2)
-        , m_Border (1)
-        , m_Visible (true)
+    Widget::Widget (UIManager* uiManager, Point pos)
+      : m_UIManager (uiManager)
+      , m_DrawBorder (false)
+      , m_BorderColor (COLOR_BLACK)
+      , m_BackGroundColor (COLOR_BLACK)
+      , m_Padding (2)
+      , m_Border (1)
+      , m_Visible (true)
     {
         SetPosition (pos);
     }
@@ -61,7 +61,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Screen* Widget::GetScreen () { return m_Screen; }
+    UIManager* Widget::GetUIManager () { return m_UIManager; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -81,8 +81,8 @@ namespace aga
             }
 
             return Rect{ Point (m_Bounds.TopLeft.X - offset, m_Bounds.TopLeft.Y - offset),
-                Point (m_Bounds.TopLeft.X + m_Bounds.BottomRight.Width + offset,
-                    m_Bounds.TopLeft.Y + m_Bounds.BottomRight.Height + offset) };
+                         Point (m_Bounds.TopLeft.X + m_Bounds.BottomRight.Width + offset,
+                                m_Bounds.TopLeft.Y + m_Bounds.BottomRight.Height + offset) };
         }
         else
         {
@@ -97,6 +97,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     unsigned Widget::GetPadding () const { return m_Padding; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Widget::SetVisible (bool visible) { m_Visible = visible; }
 
     //--------------------------------------------------------------------------------------------------
 

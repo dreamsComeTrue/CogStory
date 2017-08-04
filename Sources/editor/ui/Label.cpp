@@ -2,14 +2,15 @@
 
 #include "Label.h"
 #include "Screen.h"
+#include "UIManager.h"
 
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    Label::Label (Screen* screen, Point pos, const std::string& text)
-        : Widget (screen, pos)
-        , m_TextColor (COLOR_WHITE)
+    Label::Label (UIManager* uiManager, Point pos, const std::string& text)
+      : Widget (uiManager, pos)
+      , m_TextColor (COLOR_WHITE)
     {
         SetText (text);
     }
@@ -44,8 +45,8 @@ namespace aga
     {
         m_Text = text;
 
-        m_TextSize = m_Screen->GetFont ().GetTextDimensions (FONT_NAME_MAIN, m_Text);
-        m_FontAscent = m_Screen->GetFont ().GetFontAscent (FONT_NAME_MAIN);
+        m_TextSize = m_UIManager->GetScreen ()->GetFont ().GetTextDimensions (FONT_NAME_MAIN, m_Text);
+        m_FontAscent = m_UIManager->GetScreen ()->GetFont ().GetFontAscent (FONT_NAME_MAIN);
 
         SetSize (m_TextSize.Width - 1, m_FontAscent + 1);
     }
@@ -66,21 +67,29 @@ namespace aga
         {
             int halfBorder = m_Border / 2;
             al_draw_filled_rectangle (m_Bounds.TopLeft.X - m_Padding - halfBorder,
-                m_Bounds.TopLeft.Y - m_Padding - halfBorder, m_Bounds.BottomRight.Width + halfBorder,
-                m_Bounds.BottomRight.Height + halfBorder, m_BackGroundColor);
+                                      m_Bounds.TopLeft.Y - m_Padding - halfBorder,
+                                      m_Bounds.BottomRight.Width + halfBorder,
+                                      m_Bounds.BottomRight.Height + halfBorder,
+                                      m_BackGroundColor);
 
-            al_draw_rectangle (m_Bounds.TopLeft.X - halfBorder - m_Padding, m_Bounds.TopLeft.Y - halfBorder - m_Padding,
-                m_Bounds.BottomRight.Width + halfBorder - 1 + m_Padding,
-                m_Bounds.BottomRight.Height + halfBorder - 1 + m_Padding, m_BorderColor, m_Border);
+            al_draw_rectangle (m_Bounds.TopLeft.X - halfBorder - m_Padding,
+                               m_Bounds.TopLeft.Y - halfBorder - m_Padding,
+                               m_Bounds.BottomRight.Width + halfBorder - 1 + m_Padding,
+                               m_Bounds.BottomRight.Height + halfBorder - 1 + m_Padding,
+                               m_BorderColor,
+                               m_Border);
         }
         else
         {
-            al_draw_filled_rectangle (m_Bounds.TopLeft.X - m_Padding, m_Bounds.TopLeft.Y - m_Padding,
-                m_Bounds.BottomRight.Width, m_Bounds.BottomRight.Height + m_Padding, m_BackGroundColor);
+            al_draw_filled_rectangle (m_Bounds.TopLeft.X - m_Padding,
+                                      m_Bounds.TopLeft.Y - m_Padding,
+                                      m_Bounds.BottomRight.Width,
+                                      m_Bounds.BottomRight.Height + m_Padding,
+                                      m_BackGroundColor);
         }
 
-        m_Screen->GetFont ().DrawText (
-            FONT_NAME_MAIN, m_TextColor, m_Bounds.TopLeft.X, m_Bounds.TopLeft.Y, m_Text, ALLEGRO_ALIGN_LEFT);
+        m_UIManager->GetScreen ()->GetFont ().DrawText (
+          FONT_NAME_MAIN, m_TextColor, m_Bounds.TopLeft.X, m_Bounds.TopLeft.Y, m_Text, ALLEGRO_ALIGN_LEFT);
     }
 
     //--------------------------------------------------------------------------------------------------

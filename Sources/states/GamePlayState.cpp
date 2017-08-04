@@ -14,7 +14,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     GamePlayState::GamePlayState (MainLoop* mainLoop)
-        : State (mainLoop, "GAMEPLAY")
+      : State (mainLoop, "GAMEPLAY")
     {
     }
 
@@ -34,6 +34,8 @@ namespace aga
 
     bool GamePlayState::Initialize ()
     {
+        Lifecycle::Initialize ();
+
         Scene* scene00 = Scene::LoadScene (m_MainLoop->GetSceneManager (), GetResourcePath (SCENE_0_0));
 
         m_MainLoop->GetSceneManager ()->AddScene (SCENE_0_0, scene00);
@@ -43,19 +45,12 @@ namespace aga
 
         m_MainLoop->GetSceneManager ()->SetActiveScene (scene00);
 
-        Lifecycle::Initialize ();
-
         return true;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool GamePlayState::Destroy ()
-    {
-        Lifecycle::Destroy ();
-
-        return true;
-    }
+    bool GamePlayState::Destroy () { return Lifecycle::Destroy (); }
 
     //--------------------------------------------------------------------------------------------------
 

@@ -19,9 +19,9 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Editor::Editor (Screen* screen)
-        : m_Screen (screen)
-        , m_UIManager (screen)
-        , m_DrawTiles (true)
+      : m_Screen (screen)
+      , m_UIManager (screen)
+      , m_DrawTiles (true)
     {
     }
 
@@ -99,13 +99,23 @@ namespace aga
 
     void Editor::InitializeUI ()
     {
-        Menu* mainMenu = new Menu (m_Screen, Point{ 4, 4 });
+        Menu* mainMenu = new Menu (&m_UIManager, Point{ 4, 4 });
         MenuItem* editorSubMenu = new MenuItem ("EDITOR", mainMenu);
+
+        MenuItem* newSceneMenu = new MenuItem ("NEW SCENE", mainMenu);
+        editorSubMenu->AddChild (newSceneMenu);
+
+        MenuItem* exitMenu = new MenuItem ("EXIT", mainMenu);
+        editorSubMenu->AddChild (exitMenu);
+
         MenuItem* objectSubMenu = new MenuItem ("OBJECT", mainMenu);
+
+        mainMenu->AddItem (editorSubMenu);
+        mainMenu->AddItem (objectSubMenu);
 
         m_UIManager.AddWidget (mainMenu);
 
-        Button* button = new Button (m_Screen, Point{ 30, 200 }, "MENU");
+        Button* button = new Button (&m_UIManager, Point{ 30, 200 }, "MENU");
         button->SetBackgroundColor (COLOR_GREEN);
         button->SetTextColor (COLOR_BLACK);
         button->SetBorderColor (COLOR_WHITE);
@@ -113,8 +123,7 @@ namespace aga
 
         m_UIManager.AddWidget (button);
 
-        ButtonImage* buttonImage
-            = new ButtonImage (m_Screen, Point (100, 100), GetDataPath () + "gfx/crate_sprite.png");
+        ButtonImage* buttonImage = new ButtonImage (&m_UIManager, Point (100, 100), GetDataPath () + "gfx/crate_sprite.png");
         buttonImage->SetSize (100, 100);
         m_UIManager.AddWidget (buttonImage);
 
@@ -128,8 +137,8 @@ namespace aga
         {
             float advance = beginning + i * TILE_SIZE;
 
-            Frame* frame = new Frame (
-                m_Screen, Rect{ { advance, screenSize.Height - TILE_SIZE }, { TILE_SIZE, TILE_SIZE } }, true, 1.0);
+            Frame* frame =
+              new Frame (&m_UIManager, Rect{ { advance, screenSize.Height - TILE_SIZE }, { TILE_SIZE, TILE_SIZE } }, true, 1.0);
             frame->SetBorderColor (COLOR_GREEN);
             frame->SetDrawBorder (true);
 

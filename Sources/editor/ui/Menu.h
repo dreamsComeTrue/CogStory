@@ -19,17 +19,30 @@ namespace aga
 
         void AddChild (MenuItem* item);
 
-        virtual bool Update (double deltaTime);
-        virtual void Render (double deltaTime);
+        void SetPosition (int x, int y) override;
+
+        virtual bool Update (double deltaTime) override;
+        virtual void Render (double deltaTime) override;
+
+        virtual void MouseEnter (ALLEGRO_MOUSE_EVENT& event) override;
+        virtual void MouseLeave (ALLEGRO_MOUSE_EVENT& event) override;
+
+    private:
+        void RepositionItems ();
+        void ShowChildren ();
+        void HideChildren ();
+        bool IsMenuHeaderSelected ();
 
     private:
         Menu* m_Menu;
+        MenuItem* m_Parent;
+        std::vector<MenuItem*> m_Children;
     };
 
     class Menu : public Widget
     {
     public:
-        Menu (Screen* screen, Point pos);
+        Menu (UIManager* uiManager, Point pos);
         virtual ~Menu ();
         bool Initialize ();
         bool Destroy ();
@@ -38,6 +51,9 @@ namespace aga
 
         virtual bool Update (double deltaTime);
         virtual void Render (double deltaTime);
+
+    private:
+        void RepositionItems ();
 
     private:
         std::vector<MenuItem*> m_ItemsList;

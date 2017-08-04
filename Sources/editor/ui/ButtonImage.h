@@ -11,7 +11,7 @@ namespace aga
     class ButtonImage : public Button
     {
     public:
-        ButtonImage (Screen* screen, Point pos, const std::string& imagePath = "");
+        ButtonImage (UIManager* uiManager, Point pos, const std::string& imagePath = "");
         virtual ~ButtonImage ();
         bool Initialize ();
         bool Destroy ();

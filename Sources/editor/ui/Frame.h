@@ -9,8 +9,8 @@ namespace aga
 {
     class Frame : public Widget
     {
-      public:
-        Frame (Screen* screen, Rect rect, bool filled = false, float thickness = 1.0);
+    public:
+        Frame (UIManager* uiManager, Rect rect, bool filled = false, float thickness = 1.0);
         virtual ~Frame ();
         bool Initialize ();
         bool Destroy ();
@@ -18,7 +18,7 @@ namespace aga
         virtual bool Update (double deltaTime);
         virtual void Render (double deltaTime);
 
-      protected:
+    protected:
         Rect m_Rect;
         bool m_Filled;
         float m_Thickness;

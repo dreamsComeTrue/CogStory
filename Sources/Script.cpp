@@ -8,8 +8,10 @@ namespace aga
     //---------------------------------------------------------------------------
 
     Script::Script (asIScriptModule* module, ScriptManager* manager)
-        : m_Module (module)
-        , m_Manager (manager)
+      : m_Module (module)
+      , m_Manager (manager)
+      , m_UpdateFuncContext (nullptr)
+      , m_UpdateFunction (nullptr)
     {
     }
 
@@ -29,21 +31,34 @@ namespace aga
 
     bool Script::Initialize ()
     {
-        Lifecycle::Initialize ();
-        return true;
+        m_UpdateFuncContext = GetContext ("void Update (double deltaTime)");
+        m_UpdateFunction = m_UpdateFuncContext->GetFunction ();
+
+        return Lifecycle::Initialize ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
     bool Script::Destroy ()
     {
-        Lifecycle::Destroy ();
-        return true;
+        if (m_UpdateFuncContext != nullptr)
+        {
+            m_UpdateFuncContext->Release ();
+            m_UpdateFuncContext = nullptr;
+        }
+
+        return Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Script::Update (double deltaTime) { return Run ("void Update (double deltaTime)", deltaTime); }
+    bool Script::Update (double deltaTime)
+    {
+        m_UpdateFuncContext->Prepare (m_UpdateFunction);
+        m_UpdateFuncContext->SetArgDouble (0, deltaTime);
+
+        return InternalRun (m_UpdateFuncContext, false);
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -83,7 +98,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Script::InternalRun (asIScriptContext* ctx)
+    bool Script::InternalRun (asIScriptContext* ctx, bool releaseAfterUse)
     {
         int r = ctx->Execute ();
 
@@ -93,14 +108,17 @@ namespace aga
             if (r == asEXECUTION_EXCEPTION)
             {
                 // An exception occurred, let the script writer know what happened so it can be corrected.
-                printf (
-                    "An exception '%s' occurred. Please correct the code and try again.\n", ctx->GetExceptionString ());
+                printf ("An exception '%s' occurred. Please correct the code and try again.\n", ctx->GetExceptionString ());
             }
 
             return false;
         }
 
-        ctx->Release ();
+        if (releaseAfterUse)
+        {
+            ctx->Release ();
+            ctx = nullptr;
+        }
 
         return true;
     }

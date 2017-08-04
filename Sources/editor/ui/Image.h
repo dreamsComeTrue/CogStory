@@ -10,7 +10,7 @@ namespace aga
     class Image : public Widget
     {
     public:
-        Image (Screen* screen, Point pos, const std::string& imagePath);
+        Image (UIManager* uiManager, Point pos, const std::string& imagePath);
         virtual ~Image ();
         bool Initialize ();
         bool Destroy ();

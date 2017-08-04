@@ -2,17 +2,18 @@
 
 #include "Button.h"
 #include "Screen.h"
+#include "UIManager.h"
 
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    Button::Button (Screen* screen, Point pos, const std::string& text)
-        : Label (screen, pos, text)
-        , m_IsPressed (false)
-        , m_IsHighlight (false)
-        , m_PressedColor ({ 0.5, 0.5, 0.5 })
-        , m_HighlightColor ({ 0.7, 0.7, 0.7 })
+    Button::Button (UIManager* uiManager, Point pos, const std::string& text)
+      : Label (uiManager, pos, text)
+      , m_IsPressed (false)
+      , m_IsHighlight (false)
+      , m_PressedColor ({ 0.5, 0.5, 0.5 })
+      , m_HighlightColor ({ 0.7, 0.7, 0.7 })
     {
     }
 
@@ -62,22 +63,30 @@ namespace aga
                 delta = 1;
             }
 
-            al_draw_filled_rectangle (m_Bounds.TopLeft.X - offset, m_Bounds.TopLeft.Y - offset,
-                m_Bounds.TopLeft.X + m_Bounds.BottomRight.Width + offset - delta,
-                m_Bounds.TopLeft.Y + m_Bounds.BottomRight.Height + offset - delta, color);
+            al_draw_filled_rectangle (m_Bounds.TopLeft.X - offset,
+                                      m_Bounds.TopLeft.Y - offset,
+                                      m_Bounds.TopLeft.X + m_Bounds.BottomRight.Width + offset - delta,
+                                      m_Bounds.TopLeft.Y + m_Bounds.BottomRight.Height + offset - delta,
+                                      color);
 
-            al_draw_rectangle (m_Bounds.TopLeft.X - offset, m_Bounds.TopLeft.Y - offset,
-                m_Bounds.TopLeft.X + m_Bounds.BottomRight.Width + offset - delta,
-                m_Bounds.TopLeft.Y + m_Bounds.BottomRight.Height + offset - delta, m_BorderColor, m_Border);
+            al_draw_rectangle (m_Bounds.TopLeft.X - offset,
+                               m_Bounds.TopLeft.Y - offset,
+                               m_Bounds.TopLeft.X + m_Bounds.BottomRight.Width + offset - delta,
+                               m_Bounds.TopLeft.Y + m_Bounds.BottomRight.Height + offset - delta,
+                               m_BorderColor,
+                               m_Border);
         }
         else
         {
-            al_draw_filled_rectangle (m_Bounds.TopLeft.X - m_Padding, m_Bounds.TopLeft.Y - m_Padding,
-                m_Bounds.BottomRight.Width, m_Bounds.BottomRight.Height + m_Padding, color);
+            al_draw_filled_rectangle (m_Bounds.TopLeft.X - m_Padding,
+                                      m_Bounds.TopLeft.Y - m_Padding,
+                                      m_Bounds.BottomRight.Width,
+                                      m_Bounds.BottomRight.Height + m_Padding,
+                                      color);
         }
 
-        m_Screen->GetFont ().DrawText (
-            FONT_NAME_MAIN, m_TextColor, m_Bounds.TopLeft.X, m_Bounds.TopLeft.Y, m_Text, ALLEGRO_ALIGN_LEFT);
+        m_UIManager->GetScreen ()->GetFont ().DrawText (
+          FONT_NAME_MAIN, m_TextColor, m_Bounds.TopLeft.X, m_Bounds.TopLeft.Y, m_Text, ALLEGRO_ALIGN_LEFT);
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -10,7 +10,7 @@ namespace aga
     class Button : public Label
     {
     public:
-        Button (Screen* screen, Point pos, const std::string& text = "");
+        Button (UIManager* uiManager, Point pos, const std::string& text = "");
         virtual ~Button ();
         bool Initialize ();
         bool Destroy ();

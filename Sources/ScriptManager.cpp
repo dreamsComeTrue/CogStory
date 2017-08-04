@@ -33,7 +33,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     ScriptManager::ScriptManager (MainLoop* mainLoop)
-        : m_MainLoop (mainLoop)
+      : m_MainLoop (mainLoop)
     {
     }
 
@@ -62,8 +62,7 @@ namespace aga
         RegisterStdString (m_ScriptEngine);
         RegisterAPI ();
 
-        Lifecycle::Initialize ();
-        return true;
+        return Lifecycle::Initialize ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -77,8 +76,7 @@ namespace aga
 
         m_ScriptEngine->ShutDownAndRelease ();
 
-        Lifecycle::Destroy ();
-        return true;
+        return Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -102,7 +100,7 @@ namespace aga
         std::stringstream strStream;
 
         strStream << file.rdbuf (); // read the file
-        text = strStream.str (); // str holds the content of the file
+        text = strStream.str ();    // str holds the content of the file
         file.close ();
 
         return LoadScriptFromText (text, moduleName);
@@ -149,6 +147,7 @@ namespace aga
 
         asIScriptModule* mod = m_ScriptEngine->GetModule (moduleName.c_str ());
         Script* script = new Script (mod, this);
+        script->Initialize ();
 
         m_Scripts.insert (std::make_pair (moduleName, script));
 
@@ -180,30 +179,28 @@ namespace aga
         //  Point
         m_ScriptEngine->RegisterObjectType ("Point", sizeof (Point), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_CLASS_CAK);
         m_ScriptEngine->RegisterObjectBehaviour (
-            "Point", asBEHAVE_CONSTRUCT, "void Point()", asFUNCTION (ConstructPoint), asCALL_CDECL_OBJLAST);
-        m_ScriptEngine->RegisterObjectBehaviour ("Point", asBEHAVE_CONSTRUCT, "void f(const Point &in)",
-            asFUNCTION (ConstructPointCopy), asCALL_CDECL_OBJLAST);
+          "Point", asBEHAVE_CONSTRUCT, "void Point()", asFUNCTION (ConstructPoint), asCALL_CDECL_OBJLAST);
         m_ScriptEngine->RegisterObjectBehaviour (
-            "Point", asBEHAVE_CONSTRUCT, "void f(double, double)", asFUNCTION (ConstructPointXY), asCALL_CDECL_OBJLAST);
+          "Point", asBEHAVE_CONSTRUCT, "void f(const Point &in)", asFUNCTION (ConstructPointCopy), asCALL_CDECL_OBJLAST);
+        m_ScriptEngine->RegisterObjectBehaviour (
+          "Point", asBEHAVE_CONSTRUCT, "void f(double, double)", asFUNCTION (ConstructPointXY), asCALL_CDECL_OBJLAST);
         m_ScriptEngine->RegisterObjectProperty ("Point", "double X", offsetof (Point, X));
         m_ScriptEngine->RegisterObjectProperty ("Point", "double Y", offsetof (Point, Y));
         m_ScriptEngine->RegisterObjectProperty ("Point", "double Width", offsetof (Point, Width));
         m_ScriptEngine->RegisterObjectProperty ("Point", "double Height", offsetof (Point, Height));
 
-        m_ScriptEngine->RegisterGlobalFunction (
-            "void Log (Point &in)", asFUNCTIONPR (Log, (Point&), void), asCALL_CDECL);
+        m_ScriptEngine->RegisterGlobalFunction ("void Log (Point &in)", asFUNCTIONPR (Log, (Point&), void), asCALL_CDECL);
 
         //  Player
-        m_ScriptEngine->RegisterObjectType ("Player", sizeof(Player), asOBJ_VALUE | asOBJ_POD);
+        m_ScriptEngine->RegisterObjectType ("Player", sizeof (Player), asOBJ_VALUE | asOBJ_POD);
         m_ScriptEngine->RegisterGlobalProperty ("Player player", &m_MainLoop->GetSceneManager ()->GetPlayer ());
-        m_ScriptEngine->RegisterObjectMethod ("Player", "void SetPosition (double X, double Y)",
-            asMETHODPR (Player, SetPosition, (double, double), void), asCALL_THISCALL);
         m_ScriptEngine->RegisterObjectMethod (
-            "Player", "void Move (double dx, double dy)", asMETHOD (Player, Move), asCALL_THISCALL);
+          "Player", "void SetPosition (double X, double Y)", asMETHODPR (Player, SetPosition, (double, double), void), asCALL_THISCALL);
+        m_ScriptEngine->RegisterObjectMethod ("Player", "void Move (double dx, double dy)", asMETHOD (Player, Move), asCALL_THISCALL);
 
         //  Global
-        m_ScriptEngine->RegisterGlobalFunction ("double GetDeltaTime ()", asMETHOD (Screen, GetDeltaTime),
-            asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
+        m_ScriptEngine->RegisterGlobalFunction (
+          "double GetDeltaTime ()", asMETHOD (Screen, GetDeltaTime), asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
     }
 
     //--------------------------------------------------------------------------------------------------
