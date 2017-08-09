@@ -57,7 +57,24 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Point Widget::GetSize () { return m_Bounds.BottomRight; }
+    Point Widget::GetSize (bool withOutsets)
+    {
+        if (withOutsets)
+        {
+            int offset = m_Padding;
+
+            if (m_DrawBorder)
+            {
+                offset += m_Border;
+            }
+
+            return { m_Bounds.BottomRight.Width + offset, m_Bounds.BottomRight.Height + offset };
+        }
+        else
+        {
+            return m_Bounds.BottomRight;
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -128,31 +145,39 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Widget::MouseMove (ALLEGRO_MOUSE_EVENT& event) {}
+    bool Widget::HasFocus () { return m_UIManager->GetWidgetFocus () == this; }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Widget::MouseDown (ALLEGRO_MOUSE_EVENT& event) {}
+    void Widget::MouseMove (ALLEGRO_MOUSE_EVENT&) {}
 
     //--------------------------------------------------------------------------------------------------
 
-    void Widget::MouseUp (ALLEGRO_MOUSE_EVENT& event) {}
+    void Widget::MouseDown (ALLEGRO_MOUSE_EVENT&) {}
 
     //--------------------------------------------------------------------------------------------------
 
-    void Widget::MouseEnter (ALLEGRO_MOUSE_EVENT& event) {}
+    void Widget::MouseUp (ALLEGRO_MOUSE_EVENT&) {}
 
     //--------------------------------------------------------------------------------------------------
 
-    void Widget::MouseLeave (ALLEGRO_MOUSE_EVENT& event) {}
+    void Widget::MouseEnter (ALLEGRO_MOUSE_EVENT&) {}
 
     //--------------------------------------------------------------------------------------------------
 
-    void Widget::KeyboardUp (ALLEGRO_KEYBOARD_EVENT& event) {}
+    void Widget::MouseLeave (ALLEGRO_MOUSE_EVENT&) {}
 
     //--------------------------------------------------------------------------------------------------
 
-    void Widget::KeyboardDown (ALLEGRO_KEYBOARD_EVENT& event) {}
+    void Widget::KeyboardUp (ALLEGRO_KEYBOARD_EVENT&) {}
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Widget::KeyboardDown (ALLEGRO_KEYBOARD_EVENT&) {}
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Widget::Timer (ALLEGRO_TIMER_EVENT&) {}
 
     //--------------------------------------------------------------------------------------------------
 }

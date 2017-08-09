@@ -26,6 +26,7 @@ namespace aga
 
         virtual void MouseEnter (ALLEGRO_MOUSE_EVENT& event) override;
         virtual void MouseLeave (ALLEGRO_MOUSE_EVENT& event) override;
+        virtual void MouseUp (ALLEGRO_MOUSE_EVENT& event) override;
 
     private:
         void RepositionItems ();

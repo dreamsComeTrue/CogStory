@@ -6,8 +6,6 @@
 #include "Common.h"
 #include "Font.h"
 
-#include <functional>
-
 namespace aga
 {
     class Screen : public Lifecycle
@@ -29,6 +27,8 @@ namespace aga
 
         double GetDeltaTime () const;
         double GetFPS () const;
+
+        ALLEGRO_EVENT_QUEUE* GetEventQueue ();
 
         std::function<void(ALLEGRO_EVENT*)> ProcessEventFunction;
         std::function<void()> RenderFunction;

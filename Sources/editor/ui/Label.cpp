@@ -63,28 +63,37 @@ namespace aga
 
     void Label::Render (double deltaTime)
     {
+        int offset = m_Padding;
+
         if (m_DrawBorder)
         {
-            int halfBorder = m_Border / 2;
-            al_draw_filled_rectangle (m_Bounds.TopLeft.X - m_Padding - halfBorder,
-                                      m_Bounds.TopLeft.Y - m_Padding - halfBorder,
-                                      m_Bounds.BottomRight.Width + halfBorder,
-                                      m_Bounds.BottomRight.Height + halfBorder,
+            offset += m_Border / 2;
+
+            int delta = 0;
+            if (offset % 2)
+            {
+                delta = 1;
+            }
+
+            al_draw_filled_rectangle (m_Bounds.TopLeft.X - offset,
+                                      m_Bounds.TopLeft.Y - offset,
+                                      m_Bounds.TopLeft.X + m_Bounds.BottomRight.Width + offset - delta,
+                                      m_Bounds.TopLeft.Y + m_Bounds.BottomRight.Height + offset - delta,
                                       m_BackGroundColor);
 
-            al_draw_rectangle (m_Bounds.TopLeft.X - halfBorder - m_Padding,
-                               m_Bounds.TopLeft.Y - halfBorder - m_Padding,
-                               m_Bounds.BottomRight.Width + halfBorder - 1 + m_Padding,
-                               m_Bounds.BottomRight.Height + halfBorder - 1 + m_Padding,
+            al_draw_rectangle (m_Bounds.TopLeft.X - offset,
+                               m_Bounds.TopLeft.Y - offset,
+                               m_Bounds.TopLeft.X + m_Bounds.BottomRight.Width + offset - delta,
+                               m_Bounds.TopLeft.Y + m_Bounds.BottomRight.Height + offset - delta,
                                m_BorderColor,
                                m_Border);
         }
         else
         {
-            al_draw_filled_rectangle (m_Bounds.TopLeft.X - m_Padding,
-                                      m_Bounds.TopLeft.Y - m_Padding,
-                                      m_Bounds.BottomRight.Width,
-                                      m_Bounds.BottomRight.Height + m_Padding,
+            al_draw_filled_rectangle (m_Bounds.TopLeft.X - offset,
+                                      m_Bounds.TopLeft.Y - offset,
+                                      m_Bounds.TopLeft.X + m_Bounds.BottomRight.Width + offset,
+                                      m_Bounds.TopLeft.Y + m_Bounds.BottomRight.Height + offset,
                                       m_BackGroundColor);
         }
 

@@ -13,12 +13,12 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Screen::Screen (unsigned width, unsigned height)
-        : m_Width (width)
-        , m_Height (height)
-        , m_RealWidth (width)
-        , m_RealHeight (height)
-        , m_Redraw (false)
-        , m_BackgroundColor (al_map_rgb (0, 0, 0))
+      : m_Width (width)
+      , m_Height (height)
+      , m_RealWidth (width)
+      , m_RealHeight (height)
+      , m_Redraw (false)
+      , m_BackgroundColor (al_map_rgb (0, 0, 0))
     {
     }
 
@@ -58,8 +58,8 @@ namespace aga
 
         if (!al_init_image_addon ())
         {
-            al_show_native_message_box (m_Display, "Error", "Error",
-                "Failed to initialize al_init_image_addon!", nullptr, ALLEGRO_MESSAGEBOX_ERROR);
+            al_show_native_message_box (
+              m_Display, "Error", "Error", "Failed to initialize al_init_image_addon!", nullptr, ALLEGRO_MESSAGEBOX_ERROR);
             return false;
         }
 
@@ -143,6 +143,11 @@ namespace aga
         if (ev.type == ALLEGRO_EVENT_TIMER)
         {
             m_Redraw = true;
+
+            if (ProcessEventFunction != nullptr)
+            {
+                ProcessEventFunction (&ev);
+            }
         }
         else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
         {
@@ -155,9 +160,8 @@ namespace aga
 
             al_acknowledge_resize (m_Display);
         }
-        else if ((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
-            || (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) || (ev.type == ALLEGRO_EVENT_MOUSE_AXES)
-            || (ev.type == ALLEGRO_EVENT_KEY_DOWN) || (ev.type == ALLEGRO_EVENT_KEY_UP))
+        else if ((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) || (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) ||
+                 (ev.type == ALLEGRO_EVENT_MOUSE_AXES) || (ev.type == ALLEGRO_EVENT_KEY_DOWN) || (ev.type == ALLEGRO_EVENT_KEY_UP))
         {
             if (ProcessEventFunction != nullptr)
             {
@@ -210,6 +214,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     double Screen::GetFPS () const { return 1 / m_DeltaTime * 1000; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    ALLEGRO_EVENT_QUEUE* Screen::GetEventQueue () { return m_EventQueue; }
 
     //--------------------------------------------------------------------------------------------------
 }

@@ -1,6 +1,7 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Editor.h"
+#include "MainLoop.h"
 #include "Screen.h"
 #include "ui/Button.h"
 #include "ui/ButtonImage.h"
@@ -8,6 +9,7 @@
 #include "ui/Image.h"
 #include "ui/Label.h"
 #include "ui/Menu.h"
+#include "ui/TextBox.h"
 
 namespace aga
 {
@@ -18,10 +20,12 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
-    Editor::Editor (Screen* screen)
-      : m_Screen (screen)
-      , m_UIManager (screen)
+    Editor::Editor (MainLoop* mainLoop)
+      : m_MainLoop (mainLoop)
+      , m_UIManager (mainLoop->GetScreen ())
       , m_DrawTiles (true)
+      , m_MousePan (false)
+      , m_MouseWheel (false)
     {
     }
 
@@ -75,6 +79,35 @@ namespace aga
             if (event->keyboard.keycode == ALLEGRO_KEY_SPACE)
             {
                 m_DrawTiles = !m_DrawTiles;
+
+                for (Frame* frame : m_TilesFrames)
+                {
+                    frame->SetVisible (m_DrawTiles);
+                }
+            }
+        }
+        else if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+        {
+            m_MousePan = event->mouse.button == 3;
+        }
+        else if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
+        {
+            m_MousePan = false;
+        }
+        else if (event->type == ALLEGRO_EVENT_MOUSE_AXES)
+        {
+            if (event->mouse.dz < 0.0)
+            {
+                m_MainLoop->GetSceneManager ()->GetCamera ().Scale (0.75f, 0.75f, event->mouse.x, event->mouse.y);
+            }
+            else if (event->mouse.dz > 0.0)
+            {
+                m_MainLoop->GetSceneManager ()->GetCamera ().Scale (1.25f, 1.25f, event->mouse.x, event->mouse.y);
+            }
+
+            if (m_MousePan)
+            {
+                m_MainLoop->GetSceneManager ()->GetCamera ().Move (event->mouse.dx, event->mouse.dy);
             }
         }
     }
@@ -99,37 +132,43 @@ namespace aga
 
     void Editor::InitializeUI ()
     {
+        const Point& screenSize = m_MainLoop->GetScreen ()->GetScreenSize ();
+        double centerX = screenSize.Width * 0.5;
+        double centerY = screenSize.Height * 0.5;
+
         Menu* mainMenu = new Menu (&m_UIManager, Point{ 4, 4 });
         MenuItem* editorSubMenu = new MenuItem ("EDITOR", mainMenu);
 
         MenuItem* newSceneMenu = new MenuItem ("NEW SCENE", mainMenu);
+        newSceneMenu->OnClick = [&] { m_NewSceneTitle->SetVisible (!m_NewSceneTitle->IsVisible ()); };
         editorSubMenu->AddChild (newSceneMenu);
 
         MenuItem* exitMenu = new MenuItem ("EXIT", mainMenu);
+        exitMenu->OnClick = [&] { m_MainLoop->Exit (); };
         editorSubMenu->AddChild (exitMenu);
 
         MenuItem* objectSubMenu = new MenuItem ("OBJECT", mainMenu);
 
+        MenuItem* gameSubMenu = new MenuItem ("GAME", mainMenu);
+        MenuItem* restartMenu = new MenuItem ("RESTART", mainMenu);
+        gameSubMenu->AddChild (restartMenu);
+
         mainMenu->AddItem (editorSubMenu);
         mainMenu->AddItem (objectSubMenu);
+        mainMenu->AddItem (gameSubMenu);
 
         m_UIManager.AddWidget (mainMenu);
-
-        Button* button = new Button (&m_UIManager, Point{ 30, 200 }, "MENU");
-        button->SetBackgroundColor (COLOR_GREEN);
-        button->SetTextColor (COLOR_BLACK);
-        button->SetBorderColor (COLOR_WHITE);
-        button->SetDrawBorder (true);
-
-        m_UIManager.AddWidget (button);
 
         ButtonImage* buttonImage = new ButtonImage (&m_UIManager, Point (100, 100), GetDataPath () + "gfx/crate_sprite.png");
         buttonImage->SetSize (100, 100);
         m_UIManager.AddWidget (buttonImage);
 
+        m_NewSceneTitle = new TextBox (&m_UIManager, { 300, 300 }, "Hello");
+        m_UIManager.AddWidget (m_NewSceneTitle);
+        m_NewSceneTitle->SetPosition (centerX - m_NewSceneTitle->GetSize ().Width * 0.5f,
+                                      centerY - m_NewSceneTitle->GetSize ().Height * 0.5f);
+
         int tilesCount = 8;
-        const Point& screenSize = m_Screen->GetScreenSize ();
-        double centerX = screenSize.Width * 0.5;
         double beginning = centerX - (tilesCount - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
 
         //  Back frame
@@ -141,6 +180,8 @@ namespace aga
               new Frame (&m_UIManager, Rect{ { advance, screenSize.Height - TILE_SIZE }, { TILE_SIZE, TILE_SIZE } }, true, 1.0);
             frame->SetBorderColor (COLOR_GREEN);
             frame->SetDrawBorder (true);
+
+            m_TilesFrames[i] = frame;
 
             m_UIManager.AddWidget (frame);
         }

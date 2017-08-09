@@ -18,6 +18,7 @@ namespace aga
         void Update (double deltaTime);
         void SetOffset (float dx, float dy);
         void Move (float dx, float dy);
+        void Scale (float dx, float dy, float mousePosX = -1, float mousePosY = -1);
         void Reset ();
 
     private:

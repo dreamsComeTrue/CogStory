@@ -3,8 +3,8 @@
 #include "EditorState.h"
 #include "Camera.h"
 #include "Common.h"
-#include "SceneManager.h"
 #include "MainLoop.h"
+#include "SceneManager.h"
 #include "Screen.h"
 #include "StateManager.h"
 
@@ -13,8 +13,8 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     EditorState::EditorState (MainLoop* mainLoop)
-        : State (mainLoop, "EDITOR")
-        , m_Editor (mainLoop->GetScreen ())
+      : State (mainLoop, "EDITOR")
+      , m_Editor (mainLoop)
     {
     }
 
@@ -50,7 +50,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::BeforeEnter () { m_MainLoop->GetSceneManager ()->GetCamera ().Reset(); }
+    void EditorState::BeforeEnter () { m_MainLoop->GetSceneManager ()->GetCamera ().Reset (); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -58,10 +58,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
-    {
-        m_Editor.ProcessEvent (event, deltaTime);
-    }
+    void EditorState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime) { m_Editor.ProcessEvent (event, deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
 

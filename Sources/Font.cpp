@@ -24,7 +24,7 @@ namespace aga
 
     bool Font::Initialize ()
     {
-        ALLEGRO_FONT* mainFont = al_load_ttf_font (GetResourcePath (FONT_MAIN).c_str (), 32, 0);
+        ALLEGRO_FONT* mainFont = al_load_ttf_font (GetResourcePath (FONT_MAIN).c_str (), 92, 0);
 
         if (!mainFont)
         {
@@ -41,8 +41,7 @@ namespace aga
 
     bool Font::Destroy ()
     {
-        for (std::map<std::string, ALLEGRO_FONT*>::iterator it = m_Fonts.begin ();
-             it != m_Fonts.end (); ++it)
+        for (std::map<std::string, ALLEGRO_FONT*>::iterator it = m_Fonts.begin (); it != m_Fonts.end (); ++it)
         {
             al_destroy_font (it->second);
         }
@@ -52,8 +51,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Font::DrawText (const std::string& fontName, ALLEGRO_COLOR color, float x, float y,
-        const std::string& text, int flags)
+    void Font::DrawText (const std::string& fontName, ALLEGRO_COLOR color, float x, float y, const std::string& text, int flags)
     {
         ALLEGRO_FONT* font = m_Fonts[fontName];
 

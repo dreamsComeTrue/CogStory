@@ -10,7 +10,7 @@ namespace aga
     class Label : public Widget
     {
     public:
-        Label (UIManager* uiManager, Point pos, const std::string& text);
+        Label (UIManager* uiManager, Point pos, const std::string& text = "");
         virtual ~Label ();
         bool Initialize ();
         bool Destroy ();
@@ -19,8 +19,8 @@ namespace aga
         std::string GetText () const;
         void SetTextColor (ALLEGRO_COLOR color);
 
-        virtual bool Update (double deltaTime);
-        virtual void Render (double deltaTime);
+        virtual bool Update (double deltaTime) override;
+        virtual void Render (double deltaTime) override;
 
     protected:
         ALLEGRO_COLOR m_TextColor;

@@ -26,7 +26,7 @@ namespace aga
 
         virtual void SetSize (int width, int height);
         virtual void SetSize (Point size);
-        Point GetSize ();
+        Point GetSize (bool withOutsets = true);
 
         UIManager* GetUIManager ();
 
@@ -45,6 +45,8 @@ namespace aga
         void SetBorder (unsigned border);
         unsigned GetBorder () const;
 
+        bool HasFocus ();
+
         virtual void MouseMove (ALLEGRO_MOUSE_EVENT& event);
         virtual void MouseDown (ALLEGRO_MOUSE_EVENT& event);
         virtual void MouseUp (ALLEGRO_MOUSE_EVENT& event);
@@ -53,6 +55,8 @@ namespace aga
 
         virtual void KeyboardUp (ALLEGRO_KEYBOARD_EVENT& event);
         virtual void KeyboardDown (ALLEGRO_KEYBOARD_EVENT& event);
+
+        virtual void Timer (ALLEGRO_TIMER_EVENT& event);
 
     protected:
         UIManager* m_UIManager;

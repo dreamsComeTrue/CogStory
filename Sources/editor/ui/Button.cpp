@@ -31,20 +31,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Button::Initialize () { Lifecycle::Initialize (); }
+    bool Button::Initialize () { return Lifecycle::Initialize (); }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Button::Destroy () { Lifecycle::Destroy (); }
+    bool Button::Destroy () { return Lifecycle::Destroy (); }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Button::Update (double deltaTime)
-    {
-        Label::Update (deltaTime);
-
-        return true;
-    }
+    bool Button::Update (double deltaTime) { return Label::Update (deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -78,10 +73,10 @@ namespace aga
         }
         else
         {
-            al_draw_filled_rectangle (m_Bounds.TopLeft.X - m_Padding,
-                                      m_Bounds.TopLeft.Y - m_Padding,
-                                      m_Bounds.BottomRight.Width,
-                                      m_Bounds.BottomRight.Height + m_Padding,
+            al_draw_filled_rectangle (m_Bounds.TopLeft.X - offset,
+                                      m_Bounds.TopLeft.Y - offset,
+                                      m_Bounds.TopLeft.X + m_Bounds.BottomRight.Width + offset,
+                                      m_Bounds.TopLeft.Y + m_Bounds.BottomRight.Height + offset,
                                       color);
         }
 
@@ -107,7 +102,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Button::MouseUp (ALLEGRO_MOUSE_EVENT& event) { m_IsPressed = false; }
+    void Button::MouseUp (ALLEGRO_MOUSE_EVENT& event)
+    {
+        m_IsPressed = false;
+
+        if (OnClick != nullptr)
+        {
+            OnClick ();
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 

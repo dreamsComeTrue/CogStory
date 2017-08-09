@@ -13,14 +13,15 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     MainLoop::MainLoop (Screen* screen)
-        : m_SceneManager (this)
-        , m_StateManager (this)
-        , m_ScriptManager (this)
-        , m_TweenManager (this)
-        , m_EditorState (new EditorState (this))
-        , m_GamePlayState (new GamePlayState (this))
-        , m_MainMenuState (new MainMenuState (this))
-        , m_Screen (screen)
+      : m_SceneManager (this)
+      , m_StateManager (this)
+      , m_ScriptManager (this)
+      , m_TweenManager (this)
+      , m_EditorState (new EditorState (this))
+      , m_GamePlayState (new GamePlayState (this))
+      , m_MainMenuState (new MainMenuState (this))
+      , m_Screen (screen)
+      , m_IsRunning (true)
     {
     }
 
@@ -47,10 +48,9 @@ namespace aga
 
         InitializeStates ();
 
-        m_StateManager.SetActiveState (m_GamePlayState);
+        m_StateManager.SetActiveState (m_EditorState);
 
-        m_Screen->ProcessEventFunction
-            = [&](ALLEGRO_EVENT* event) { m_StateManager.ProcessEvent (event, m_Screen->GetDeltaTime ()); };
+        m_Screen->ProcessEventFunction = [&](ALLEGRO_EVENT* event) { m_StateManager.ProcessEvent (event, m_Screen->GetDeltaTime ()); };
 
         m_Screen->RenderFunction = [&]() {
             m_SceneManager.Render (m_Screen->GetDeltaTime ());
@@ -108,7 +108,7 @@ namespace aga
     {
         double oldTime = al_get_time ();
 
-        while (true)
+        while (m_IsRunning)
         {
             double newTime = al_get_time ();
             double deltaTime = (newTime - oldTime);
@@ -124,6 +124,10 @@ namespace aga
             }
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void MainLoop::Exit () { m_IsRunning = false; }
 
     //--------------------------------------------------------------------------------------------------
 

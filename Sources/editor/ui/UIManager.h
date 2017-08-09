@@ -29,7 +29,11 @@ namespace aga
         Widget* GetPreviousWidgetFocus ();
 
     private:
+        Widget* GetWidgetAtPos (int x, int y);
+
+    private:
         Screen* m_Screen;
+        Widget* m_SelectedWidget;
         Widget* m_WidgetFocus;
         Widget* m_PreviousWidgetFocus;
         std::map<int, Widget*> m_Widgets;

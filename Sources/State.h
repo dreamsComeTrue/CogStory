@@ -17,8 +17,8 @@ namespace aga
     {
     public:
         State (MainLoop* mainLoop, const std::string& name)
-            : m_MainLoop (mainLoop)
-            , m_Name (name)
+          : m_MainLoop (mainLoop)
+          , m_Name (name)
         {
         }
 
@@ -28,6 +28,8 @@ namespace aga
         virtual void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime) = 0;
         virtual void Update (double deltaTime) = 0;
         virtual void Render (double deltaTime) = 0;
+
+        MainLoop* GetMainLoop () { return m_MainLoop; }
 
     protected:
         MainLoop* m_MainLoop;

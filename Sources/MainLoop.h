@@ -4,9 +4,9 @@
 #define __MAIN_LOOP_H__
 
 #include "Lifecycle.h"
-#include "StateManager.h"
 #include "SceneManager.h"
 #include "ScriptManager.h"
+#include "StateManager.h"
 #include "TweenManager.h"
 
 namespace aga
@@ -25,12 +25,13 @@ namespace aga
         bool Destroy ();
 
         void Start ();
+        void Exit ();
 
-        Screen* GetScreen();
-        StateManager* GetStateManager();
-        SceneManager* GetSceneManager();
-        ScriptManager* GetScriptManager();
-        TweenManager* GetTweenManager();
+        Screen* GetScreen ();
+        StateManager* GetStateManager ();
+        SceneManager* GetSceneManager ();
+        ScriptManager* GetScriptManager ();
+        TweenManager* GetTweenManager ();
 
     private:
         void InitializeStates ();
@@ -46,6 +47,8 @@ namespace aga
         MainMenuState* m_MainMenuState;
         GamePlayState* m_GamePlayState;
         EditorState* m_EditorState;
+
+        bool m_IsRunning;
     };
 }
 

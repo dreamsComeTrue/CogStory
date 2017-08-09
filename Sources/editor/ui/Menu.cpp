@@ -105,13 +105,27 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void MenuItem::MouseUp (ALLEGRO_MOUSE_EVENT& event)
+    {
+        Button::MouseUp (event);
+
+        if (m_Parent != nullptr)
+        {
+            m_Parent->HideChildren ();
+        }
+
+        HideChildren ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void MenuItem::RepositionItems ()
     {
         Point offset = GetPosition ();
 
         for (int i = 0; i < m_Children.size (); ++i)
         {
-            offset.Y += GetBounds ().BottomRight.Height;
+            offset.Y += GetSize ().Height;
 
             MenuItem* item = m_Children[i];
             item->SetPosition (offset.X, offset.Y);
@@ -216,20 +230,13 @@ namespace aga
     {
         Point offset = GetPosition ();
 
-        int itemPadding = 2;
+        int itemPadding = 4;
 
-        for (int i = 0; i < m_ItemsList.size (); ++i)
+        for (MenuItem* item : m_ItemsList)
         {
-            MenuItem* item = m_ItemsList[i];
             item->SetPosition (offset.X, offset.Y);
 
-            if (i < m_ItemsList.size () - 1)
-            {
-                MenuItem* nextItem = m_ItemsList[i + 1];
-                Rect nextBounds = nextItem->GetBounds (true);
-
-                offset.X += nextBounds.BottomRight.Width + itemPadding;
-            }
+            offset.X = item->GetPosition ().X + item->GetSize ().Width + itemPadding;
         }
     }
 

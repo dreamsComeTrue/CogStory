@@ -10,7 +10,7 @@ namespace aga
     ALLEGRO_TRANSFORM IdentityTransform;
 
     Camera::Camera (Screen* screen)
-        : m_Screen (screen)
+      : m_Screen (screen)
     {
         const Point& size = screen->GetScreenSize ();
         SetOffset (size.Width * 0.5, size.Height * 0.5);
@@ -37,6 +37,23 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Camera::Move (float dx, float dy) { al_translate_transform (&m_Transform, dx, dy); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Camera::Scale (float dx, float dy, float mousePosX, float mousePosY)
+    {
+        if (mousePosX >= 0 && mousePosY >= 0)
+        {
+            al_translate_transform (&m_Transform, -mousePosX, -mousePosY);
+        }
+
+        al_scale_transform (&m_Transform, dx, dy);
+
+        if (mousePosX >= 0 && mousePosY >= 0)
+        {
+            al_translate_transform (&m_Transform, mousePosX, mousePosY);
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 

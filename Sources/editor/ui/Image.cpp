@@ -50,7 +50,7 @@ namespace aga
         m_ImagePath = imagePath;
         m_Bitmap = al_load_bitmap (imagePath.c_str ());
         m_Size = { al_get_bitmap_width (m_Bitmap), al_get_bitmap_height (m_Bitmap) };
-        m_Bounds.BottomRight = { m_Bounds.TopLeft.X + m_Size.X, m_Bounds.TopLeft.Y + m_Size.Y };
+        m_Bounds.BottomRight = { m_Size.X, m_Size.Y };
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -79,8 +79,8 @@ namespace aga
                                           m_Size.Height,
                                           m_Bounds.TopLeft.X,
                                           m_Bounds.TopLeft.Y,
-                                          m_Bounds.BottomRight.Width - m_Bounds.TopLeft.X,
-                                          m_Bounds.BottomRight.Height - m_Bounds.TopLeft.Y,
+                                          m_Bounds.BottomRight.Width,
+                                          m_Bounds.BottomRight.Height,
                                           0);
         }
         else
@@ -93,8 +93,8 @@ namespace aga
                                    m_Size.Height,
                                    m_Bounds.TopLeft.X,
                                    m_Bounds.TopLeft.Y,
-                                   m_Bounds.BottomRight.Width - m_Bounds.TopLeft.X,
-                                   m_Bounds.BottomRight.Height - m_Bounds.TopLeft.Y,
+                                   m_Bounds.BottomRight.Width,
+                                   m_Bounds.BottomRight.Height,
                                    0);
         }
     }

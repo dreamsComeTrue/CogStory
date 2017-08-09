@@ -21,14 +21,16 @@ namespace aga
         void SetHighlightColor (ALLEGRO_COLOR color);
         void SetPressedColor (ALLEGRO_COLOR color);
 
-        void MouseMove (ALLEGRO_MOUSE_EVENT& event);
-        void MouseDown (ALLEGRO_MOUSE_EVENT& event);
-        void MouseUp (ALLEGRO_MOUSE_EVENT& event);
-        void MouseEnter (ALLEGRO_MOUSE_EVENT& event);
-        void MouseLeave (ALLEGRO_MOUSE_EVENT& event);
+        virtual void MouseMove (ALLEGRO_MOUSE_EVENT& event) override;
+        virtual void MouseDown (ALLEGRO_MOUSE_EVENT& event) override;
+        virtual void MouseUp (ALLEGRO_MOUSE_EVENT& event) override;
+        virtual void MouseEnter (ALLEGRO_MOUSE_EVENT& event) override;
+        virtual void MouseLeave (ALLEGRO_MOUSE_EVENT& event) override;
 
-        void KeyboardUp (ALLEGRO_KEYBOARD_EVENT& event);
-        void KeyboardDown (ALLEGRO_KEYBOARD_EVENT& event);
+        virtual void KeyboardUp (ALLEGRO_KEYBOARD_EVENT& event) override;
+        virtual void KeyboardDown (ALLEGRO_KEYBOARD_EVENT& event) override;
+
+        std::function<void()> OnClick;
 
     protected:
         bool m_IsHighlight;

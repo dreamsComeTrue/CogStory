@@ -14,6 +14,7 @@ namespace aga
 
     UIManager::UIManager (Screen* screen)
       : m_Screen (screen)
+      , m_SelectedWidget (nullptr)
       , m_WidgetFocus (nullptr)
       , m_PreviousWidgetFocus (nullptr)
       , m_LastID (-1)
@@ -66,56 +67,79 @@ namespace aga
     {
         if (event->type == ALLEGRO_EVENT_MOUSE_AXES)
         {
-            bool foundWidget = false;
+            Widget* widget = GetWidgetAtPos (event->mouse.x, event->mouse.y);
 
-            for (WIDGET_ITERATOR it = m_Widgets.begin (); it != m_Widgets.end (); it++)
+            if (widget != nullptr)
             {
-                if (InsideRect (event->mouse.x, event->mouse.y, it->second->GetBounds (true)))
+                if (m_SelectedWidget != nullptr)
                 {
-                    if (m_WidgetFocus != nullptr)
+                    m_SelectedWidget->MouseMove (event->mouse);
+
+                    if (m_SelectedWidget != widget)
                     {
-                        m_WidgetFocus->MouseMove (event->mouse);
-
-                        if (m_WidgetFocus != it->second)
-                        {
-                            m_PreviousWidgetFocus = m_WidgetFocus;
-                            m_WidgetFocus->MouseLeave (event->mouse);
-                        }
+                        m_PreviousWidgetFocus = m_SelectedWidget;
+                        m_SelectedWidget->MouseLeave (event->mouse);
                     }
+                }
 
-                    if (m_WidgetFocus != it->second)
-                    {
-                        m_WidgetFocus = it->second;
-                        m_WidgetFocus->MouseEnter (event->mouse);
-                    }
-
-                    foundWidget = true;
+                if (m_SelectedWidget != widget)
+                {
+                    m_SelectedWidget = widget;
+                    m_SelectedWidget->MouseEnter (event->mouse);
                 }
             }
-
-            if (!foundWidget)
+            else
             {
-                if (m_WidgetFocus != nullptr)
+                if (m_SelectedWidget != nullptr)
                 {
-                    m_PreviousWidgetFocus = m_WidgetFocus;
-                    m_WidgetFocus->MouseLeave (event->mouse);
+                    m_PreviousWidgetFocus = m_SelectedWidget;
+                    m_SelectedWidget->MouseLeave (event->mouse);
                 }
 
-                m_WidgetFocus = nullptr;
+                m_SelectedWidget = nullptr;
             }
         }
         else if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
         {
-            if (m_WidgetFocus != nullptr)
+            if (m_SelectedWidget != nullptr)
             {
+                m_WidgetFocus = m_SelectedWidget;
                 m_WidgetFocus->MouseDown (event->mouse);
             }
         }
         else if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
         {
+            if (m_SelectedWidget != nullptr)
+            {
+                m_WidgetFocus = m_SelectedWidget;
+                m_WidgetFocus->MouseUp (event->mouse);
+            }
+        }
+
+        if (event->type == ALLEGRO_EVENT_KEY_UP)
+        {
             if (m_WidgetFocus != nullptr)
             {
-                m_WidgetFocus->MouseUp (event->mouse);
+                m_WidgetFocus->KeyboardUp (event->keyboard);
+            }
+        }
+
+        if (event->type == ALLEGRO_EVENT_KEY_DOWN)
+        {
+            if (m_WidgetFocus != nullptr)
+            {
+                m_WidgetFocus->KeyboardDown (event->keyboard);
+            }
+        }
+
+        if (event->type == ALLEGRO_EVENT_TIMER)
+        {
+            for (WIDGET_ITERATOR it = m_Widgets.begin (); it != m_Widgets.end (); it++)
+            {
+                if (it->second->IsVisible ())
+                {
+                    it->second->Timer (event->timer);
+                }
             }
         }
     }
@@ -142,6 +166,8 @@ namespace aga
             id = m_LastID + 1;
         }
 
+        widget->Initialize ();
+
         m_Widgets.insert (std::make_pair (id, widget));
 
         if (ownMemory)
@@ -163,6 +189,21 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Widget* UIManager::GetPreviousWidgetFocus () { return m_PreviousWidgetFocus; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Widget* UIManager::GetWidgetAtPos (int x, int y)
+    {
+        for (WIDGET_ITERATOR it = m_Widgets.begin (); it != m_Widgets.end (); it++)
+        {
+            if (it->second->IsVisible () && InsideRect (x, y, it->second->GetBounds (true)))
+            {
+                return it->second;
+            }
+        }
+
+        return nullptr;
+    }
 
     //--------------------------------------------------------------------------------------------------
 }

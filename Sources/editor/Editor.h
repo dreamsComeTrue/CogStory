@@ -8,12 +8,14 @@
 
 namespace aga
 {
-    class Screen;
+    class MainLoop;
+    class Frame;
+    class TextBox;
 
     class Editor : public Lifecycle
     {
     public:
-        Editor (Screen* screen);
+        Editor (MainLoop* mainLoop);
         virtual ~Editor ();
         bool Initialize ();
         bool Destroy ();
@@ -27,9 +29,15 @@ namespace aga
         void DrawTiles ();
 
     private:
-        Screen* m_Screen;
+        MainLoop* m_MainLoop;
         UIManager m_UIManager;
         bool m_DrawTiles;
+
+        bool m_MousePan;
+        bool m_MouseWheel;
+
+        Frame* m_TilesFrames[8];
+        TextBox* m_NewSceneTitle;
     };
 }
 
