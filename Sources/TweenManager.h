@@ -21,6 +21,8 @@ namespace aga
         bool Update (double deltaTime);
         MainLoop* GetMainLoop ();
 
+        void AddTween (int id, int from, int to, int during, asIScriptFunction* func);
+
     private:
         MainLoop* m_MainLoop;
         std::map<int, tweeny::tween<int>> m_Tweens;

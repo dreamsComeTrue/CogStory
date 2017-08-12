@@ -14,12 +14,17 @@
 #include <scriptbuilder/scriptbuilder.h>
 #include <scriptstdstring/scriptstdstring.h>
 
+#include <Gwork/Input/Allegro5.h>
+#include <Gwork/Platform.h>
+#include <Gwork/Renderers/Allegro5.h>
+#include <Gwork/Skins/TexturedBase.h>
+
 #include <cmath>
+#include <fstream>
+#include <functional>
 #include <map>
 #include <string>
 #include <vector>
-#include <fstream>
-#include <functional>
 
 #include "addons/tweeny/tweeny.h"
 
@@ -28,13 +33,13 @@
 #include "Rect.h"
 #include "Resources.h"
 
-#define SAFE_DELETE(x)                                                                                       \
-    {                                                                                                        \
-        if (x != nullptr)                                                                                    \
-        {                                                                                                    \
-            delete x;                                                                                        \
-            x = nullptr;                                                                                     \
-        }                                                                                                    \
+#define SAFE_DELETE(x)                                                                                                                     \
+    {                                                                                                                                      \
+        if (x != nullptr)                                                                                                                  \
+        {                                                                                                                                  \
+            delete x;                                                                                                                      \
+            x = nullptr;                                                                                                                   \
+        }                                                                                                                                  \
     }
 
 namespace aga

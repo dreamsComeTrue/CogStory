@@ -45,7 +45,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Scene::Scene (SceneManager* sceneManager)
-        : m_SceneManager (sceneManager)
+      : m_SceneManager (sceneManager)
     {
     }
 
@@ -119,23 +119,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::BeforeEnter ()
-    {
-        Player& player = m_SceneManager->GetPlayer ();
-        const Point& screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetScreenSize ();
-        Point& playerSize = player.GetSize ();
-        m_SceneManager->GetCamera ().SetOffset (
-            screenSize.Width * 0.5 - playerSize.Width * 0.5 - player.GetPosition ().X,
-            screenSize.Height * 0.5 - playerSize.Height * 0.5 - player.GetPosition ().Y);
-
-        std::function<bool(int)> func = [&](int i) {
-            m_SceneManager->GetPlayer ().SetPosition(Point (i, 0));
-
-            return false;//t.progress () >= 1;
-        };
-
-        m_SceneManager->GetMainLoop ()->GetTweenManager ()->AddTween (0, 0, 500, 4000, func);
-    }
+    void Scene::BeforeEnter () { RunAllScripts ("void BeforeEnterScene ()"); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -147,6 +131,7 @@ namespace aga
     {
         m_SceneManager->GetPlayer ().Update (deltaTime);
         m_SceneManager->GetCamera ().Update (deltaTime);
+        UpdateScripts (deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -159,9 +144,9 @@ namespace aga
         }
 
         m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
-            FONT_NAME_MAIN, al_map_rgb (255, 255, 255), 200, 200, "Robot Tale");
+          FONT_NAME_MAIN, al_map_rgb (255, 255, 255), 200, 200, "Robot Tale");
         m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
-            FONT_NAME_MAIN, al_map_rgb (0, 255, 0), 0, 0, m_Name, ALLEGRO_ALIGN_LEFT);
+          FONT_NAME_MAIN, al_map_rgb (0, 255, 0), 0, 0, m_Name, ALLEGRO_ALIGN_LEFT);
 
         m_SceneManager->GetPlayer ().Render (deltaTime);
         m_SceneManager->GetCamera ().Reset ();

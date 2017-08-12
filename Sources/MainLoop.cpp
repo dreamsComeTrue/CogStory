@@ -17,9 +17,9 @@ namespace aga
       , m_StateManager (this)
       , m_ScriptManager (this)
       , m_TweenManager (this)
-      , m_EditorState (new EditorState (this))
-      , m_GamePlayState (new GamePlayState (this))
-      , m_MainMenuState (new MainMenuState (this))
+      , m_EditorState (nullptr)
+      , m_GamePlayState (nullptr)
+      , m_MainMenuState (nullptr)
       , m_Screen (screen)
       , m_IsRunning (true)
     {
@@ -82,15 +82,15 @@ namespace aga
     {
         m_MainMenuState = new MainMenuState (this);
         m_MainMenuState->Initialize ();
-        m_StateManager.RegisterState ("MAIN_MENU", m_MainMenuState);
+        m_StateManager.RegisterState (m_MainMenuState);
 
         m_GamePlayState = new GamePlayState (this);
         m_GamePlayState->Initialize ();
-        m_StateManager.RegisterState ("GAMEPLAY", m_GamePlayState);
+        m_StateManager.RegisterState (m_GamePlayState);
 
         m_EditorState = new EditorState (this);
         m_EditorState->Initialize ();
-        m_StateManager.RegisterState ("EDITOR", m_EditorState);
+        m_StateManager.RegisterState (m_EditorState);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -114,7 +114,6 @@ namespace aga
             double deltaTime = (newTime - oldTime);
             oldTime = newTime;
 
-            m_ScriptManager.Update (deltaTime);
             m_TweenManager.Update (deltaTime);
             m_SceneManager.Update (deltaTime);
 

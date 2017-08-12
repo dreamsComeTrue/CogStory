@@ -32,6 +32,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void print (std::string& msg) { printf ("%s", msg.c_str ()); }
+
+    //--------------------------------------------------------------------------------------------------
+
     ScriptManager::ScriptManager (MainLoop* mainLoop)
       : m_MainLoop (mainLoop)
     {
@@ -77,18 +81,6 @@ namespace aga
         m_ScriptEngine->ShutDownAndRelease ();
 
         return Lifecycle::Destroy ();
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool ScriptManager::Update (double deltaTime)
-    {
-        for (std::map<std::string, Script*>::iterator it = m_Scripts.begin (); it != m_Scripts.end (); ++it)
-        {
-            it->second->Update (deltaTime);
-        }
-
-        return true;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -146,7 +138,7 @@ namespace aga
         }
 
         asIScriptModule* mod = m_ScriptEngine->GetModule (moduleName.c_str ());
-        Script* script = new Script (mod, this);
+        Script* script = new Script (mod, this, moduleName);
         script->Initialize ();
 
         m_Scripts.insert (std::make_pair (moduleName, script));
@@ -195,12 +187,32 @@ namespace aga
         m_ScriptEngine->RegisterObjectType ("Player", sizeof (Player), asOBJ_VALUE | asOBJ_POD);
         m_ScriptEngine->RegisterGlobalProperty ("Player player", &m_MainLoop->GetSceneManager ()->GetPlayer ());
         m_ScriptEngine->RegisterObjectMethod (
-          "Player", "void SetPosition (double X, double Y)", asMETHODPR (Player, SetPosition, (double, double), void), asCALL_THISCALL);
-        m_ScriptEngine->RegisterObjectMethod ("Player", "void Move (double dx, double dy)", asMETHOD (Player, Move), asCALL_THISCALL);
+          "Player", "void SetPosition (Point)", asMETHODPR (Player, SetPosition, (const Point&), void), asCALL_THISCALL);
+        m_ScriptEngine->RegisterObjectMethod (
+          "Player", "void SetPosition (double, double)", asMETHODPR (Player, SetPosition, (double, double), void), asCALL_THISCALL);
+        m_ScriptEngine->RegisterObjectMethod ("Player", "void Move (double, double)", asMETHOD (Player, Move), asCALL_THISCALL);
+        m_ScriptEngine->RegisterObjectMethod ("Player", "Point GetPosition ()", asMETHOD (Player, GetPosition), asCALL_THISCALL);
+        m_ScriptEngine->RegisterObjectMethod ("Player", "Point GetSize ()", asMETHOD (Player, GetSize), asCALL_THISCALL);
+
+        //  Camera
+        m_ScriptEngine->RegisterObjectType ("Camera", sizeof (Camera), asOBJ_VALUE | asOBJ_POD);
+        m_ScriptEngine->RegisterGlobalProperty ("Camera camera", &m_MainLoop->GetSceneManager ()->GetCamera ());
+        m_ScriptEngine->RegisterObjectMethod (
+          "Camera", "void SetOffset (float dx, float dy)", asMETHOD (Camera, SetOffset), asCALL_THISCALL);
 
         //  Global
+        m_ScriptEngine->RegisterGlobalFunction ("void print(const string &in)", asFUNCTION (print), asCALL_CDECL);
         m_ScriptEngine->RegisterGlobalFunction (
           "double GetDeltaTime ()", asMETHOD (Screen, GetDeltaTime), asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
+        Point screenSize = m_MainLoop->GetScreen ()->GetScreenSize ();
+        m_ScriptEngine->RegisterGlobalProperty ("Point screenSize", &screenSize);
+
+        //  Tweening
+        m_ScriptEngine->RegisterFuncdef ("bool TweenFunc (int)");
+        m_ScriptEngine->RegisterGlobalFunction ("void AddTween (int, int, int, int, TweenFunc @tf)",
+                                                asMETHODPR (TweenManager, AddTween, (int, int, int, int, asIScriptFunction*), void),
+                                                asCALL_THISCALL_ASGLOBAL,
+                                                m_MainLoop->GetTweenManager ());
     }
 
     //--------------------------------------------------------------------------------------------------

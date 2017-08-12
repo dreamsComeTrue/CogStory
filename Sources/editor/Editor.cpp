@@ -3,26 +3,23 @@
 #include "Editor.h"
 #include "MainLoop.h"
 #include "Screen.h"
-#include "ui/Button.h"
-#include "ui/ButtonImage.h"
-#include "ui/Frame.h"
-#include "ui/Image.h"
-#include "ui/Label.h"
-#include "ui/Menu.h"
-#include "ui/TextBox.h"
+
+#include <Gwork/Controls.h>
 
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    const int TILE_SIZE = 64;
+    const int TILE_SIZE = 90;
 
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
     Editor::Editor (MainLoop* mainLoop)
       : m_MainLoop (mainLoop)
-      , m_UIManager (mainLoop->GetScreen ())
+      , m_Renderer (nullptr)
+      , m_Skin (nullptr)
+      , m_MainCanvas (nullptr)
       , m_DrawTiles (true)
       , m_MousePan (false)
       , m_MouseWheel (false)
@@ -45,7 +42,6 @@ namespace aga
 
     bool Editor::Initialize ()
     {
-        m_UIManager.Initialize ();
         InitializeUI ();
 
         Lifecycle::Initialize ();
@@ -53,40 +49,26 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Editor::Destroy ()
-    {
-        m_UIManager.Destroy ();
-
-        Lifecycle::Destroy ();
-    }
+    bool Editor::Destroy () { Lifecycle::Destroy (); }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Editor::Update (double deltaTime)
-    {
-        m_UIManager.Update (deltaTime);
-        return true;
-    }
+    bool Editor::Update (double deltaTime) { return true; }
 
     //--------------------------------------------------------------------------------------------------
 
     void Editor::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
-        m_UIManager.ProcessEvent (event, deltaTime);
+        m_GworkInput.ProcessMessage (*event);
 
         if (event->type == ALLEGRO_EVENT_KEY_UP)
         {
-            if (event->keyboard.keycode == ALLEGRO_KEY_SPACE)
+            if (event->keyboard.keycode == ALLEGRO_KEY_F5)
             {
-                m_DrawTiles = !m_DrawTiles;
-
-                for (Frame* frame : m_TilesFrames)
-                {
-                    frame->SetVisible (m_DrawTiles);
-                }
+                MenuItemPlay ();
             }
         }
-        else if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+        if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
         {
             m_MousePan = event->mouse.button == 3;
         }
@@ -110,13 +92,17 @@ namespace aga
                 m_MainLoop->GetSceneManager ()->GetCamera ().Move (event->mouse.dx, event->mouse.dy);
             }
         }
+        else if (event->type == ALLEGRO_EVENT_DISPLAY_RESIZE)
+        {
+            m_MainCanvas->SetSize (event->display.width, event->display.height);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void Editor::Render (double deltaTime)
     {
-        m_UIManager.Render (deltaTime);
+        m_MainCanvas->RenderCanvas ();
 
         if (m_DrawTiles)
         {
@@ -132,60 +118,79 @@ namespace aga
 
     void Editor::InitializeUI ()
     {
-        const Point& screenSize = m_MainLoop->GetScreen ()->GetScreenSize ();
-        double centerX = screenSize.Width * 0.5;
-        double centerY = screenSize.Height * 0.5;
+        m_Renderer = new Gwk::Renderer::Allegro ();
 
-        Menu* mainMenu = new Menu (&m_UIManager, Point{ 4, 4 });
-        MenuItem* editorSubMenu = new MenuItem ("EDITOR", mainMenu);
+        m_Skin = new Gwk::Skin::TexturedBase (m_Renderer);
+        m_Skin->SetRender (m_Renderer);
+        m_Skin->Init (GetResourcePath (GFX_DEFAULT_SKIN));
 
-        MenuItem* newSceneMenu = new MenuItem ("NEW SCENE", mainMenu);
-        newSceneMenu->OnClick = [&] { m_NewSceneTitle->SetVisible (!m_NewSceneTitle->IsVisible ()); };
-        editorSubMenu->AddChild (newSceneMenu);
+        // The fonts work differently in Allegro - it can't use
+        // system fonts. So force the skin to use a local one.
+        m_Skin->SetDefaultFont (GetResourcePath (FONT_EDITOR), 13);
 
-        MenuItem* exitMenu = new MenuItem ("EXIT", mainMenu);
-        exitMenu->OnClick = [&] { m_MainLoop->Exit (); };
-        editorSubMenu->AddChild (exitMenu);
+        // Create a Canvas (it's root, on which all other Gwork panels are created)
+        const Point screenSize = m_MainLoop->GetScreen ()->GetScreenSize ();
 
-        MenuItem* objectSubMenu = new MenuItem ("OBJECT", mainMenu);
+        m_MainCanvas = new Gwk::Controls::Canvas (m_Skin);
+        m_MainCanvas->SetSize (screenSize.Width, screenSize.Height);
+        // m_MainCanvas->SetDrawBackground (true);
+        m_MainCanvas->SetBackgroundColor (Gwk::Color (150, 170, 170, 255));
 
-        MenuItem* gameSubMenu = new MenuItem ("GAME", mainMenu);
-        MenuItem* restartMenu = new MenuItem ("RESTART", mainMenu);
-        gameSubMenu->AddChild (restartMenu);
+        m_GworkInput.Initialize (m_MainCanvas);
 
-        mainMenu->AddItem (editorSubMenu);
-        mainMenu->AddItem (objectSubMenu);
-        mainMenu->AddItem (gameSubMenu);
+        Gwk::Controls::MenuStrip* menu = new Gwk::Controls::MenuStrip (m_MainCanvas);
+        {
+            Gwk::Controls::MenuItem* editorMenu = menu->AddItem ("EDITOR");
+            {
+                Gwk::Controls::MenuItem* exitMenu = editorMenu->GetMenu ()->AddItem ("EXIT")->SetAction (this, &Editor::OnMenuItemExit);
+            }
 
-        m_UIManager.AddWidget (mainMenu);
+            Gwk::Controls::MenuItem* objectMenu = menu->AddItem ("OBJECT");
 
-        ButtonImage* buttonImage = new ButtonImage (&m_UIManager, Point (100, 100), GetDataPath () + "gfx/crate_sprite.png");
-        buttonImage->SetSize (100, 100);
-        m_UIManager.AddWidget (buttonImage);
-
-        m_NewSceneTitle = new TextBox (&m_UIManager, { 300, 300 }, "Hello");
-        m_UIManager.AddWidget (m_NewSceneTitle);
-        m_NewSceneTitle->SetPosition (centerX - m_NewSceneTitle->GetSize ().Width * 0.5f,
-                                      centerY - m_NewSceneTitle->GetSize ().Height * 0.5f);
+            Gwk::Controls::MenuItem* gameMenu = menu->AddItem ("GAME");
+            {
+                Gwk::Controls::MenuItem* playMenu =
+                  gameMenu->GetMenu ()->AddItem ("PLAY", "", "F5")->SetAction (this, &Editor::OnMenuItemPlay);
+            }
+        }
 
         int tilesCount = 8;
-        double beginning = centerX - (tilesCount - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
+        double beginning = screenSize.Width * 0.5 - (tilesCount - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
+        float advance = 0;
 
         //  Back frame
         for (int i = 0; i < tilesCount; ++i)
         {
-            float advance = beginning + i * TILE_SIZE;
+            advance = beginning + i * TILE_SIZE;
 
-            Frame* frame =
-              new Frame (&m_UIManager, Rect{ { advance, screenSize.Height - TILE_SIZE }, { TILE_SIZE, TILE_SIZE } }, true, 1.0);
-            frame->SetBorderColor (COLOR_GREEN);
-            frame->SetDrawBorder (true);
-
-            m_TilesFrames[i] = frame;
-
-            m_UIManager.AddWidget (frame);
+            Gwk::Controls::Rectangle* rect = new Gwk::Controls::Rectangle (m_MainCanvas);
+            rect->SetColor (Gwk::Color (0, 255, 0, 255));
+            rect->SetShouldDrawBackground (false);
+            rect->SetBounds (advance, screenSize.Height - TILE_SIZE - 2, TILE_SIZE, TILE_SIZE);
         }
+
+        Gwk::Controls::Button* nextAssetsButton = new Gwk::Controls::Button (m_MainCanvas);
+        nextAssetsButton->SetText (">>");
+        nextAssetsButton->SetPos (advance + TILE_SIZE, screenSize.Height - TILE_SIZE - 2);
+        nextAssetsButton->SetSize (40, 22);
+
+        Gwk::Controls::Button* prevAssetsButton = new Gwk::Controls::Button (m_MainCanvas);
+        prevAssetsButton->SetText ("<<");
+        prevAssetsButton->SetPos (advance + TILE_SIZE, screenSize.Height - TILE_SIZE - 2 + nextAssetsButton->Height ());
+        prevAssetsButton->SetSize (40, 22);
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnMenuItemPlay (Gwk::Event::Info info) { MenuItemPlay (); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::MenuItemPlay () { m_MainLoop->GetStateManager ()->SetActiveState ("GAMEPLAY_STATE"); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnMenuItemExit (Gwk::Event::Info info) { m_MainLoop->Exit (); }
 
     //--------------------------------------------------------------------------------------------------
 }

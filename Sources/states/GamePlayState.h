@@ -7,6 +7,8 @@
 
 namespace aga
 {
+    extern std::string GAMEPLAY_STATE_NAME;
+
     class MainLoop;
 
     class GamePlayState : public State

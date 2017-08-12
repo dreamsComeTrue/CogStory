@@ -5,12 +5,13 @@
 
 #include "Animation.h"
 #include "Common.h"
+#include "Scriptable.h"
 
 namespace aga
 {
     class Screen;
 
-    class Player : public Lifecycle
+    class Player : public Lifecycle, public Scriptable
     {
     public:
         Player (Screen* screen);
@@ -24,7 +25,7 @@ namespace aga
 
         void Move (double dx, double dy);
         void SetPosition (const Point& pos);
-        void SetPosition (double dy, double y);
+        void SetPosition (double x, double y);
         Point& GetPosition ();
         Point& GetSize ();
 

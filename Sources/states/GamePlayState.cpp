@@ -13,8 +13,10 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
+    std::string GAMEPLAY_STATE_NAME = "GAMEPLAY_STATE";
+
     GamePlayState::GamePlayState (MainLoop* mainLoop)
-      : State (mainLoop, "GAMEPLAY")
+      : State (mainLoop, GAMEPLAY_STATE_NAME)
     {
     }
 
@@ -37,6 +39,8 @@ namespace aga
         Lifecycle::Initialize ();
 
         Scene* scene00 = Scene::LoadScene (m_MainLoop->GetSceneManager (), GetResourcePath (SCENE_0_0));
+        Script* script = m_MainLoop->GetScriptManager ()->LoadScriptFromFile (GetResourcePath (SCRIPT_0_0), "home");
+        scene00->AttachScript (script);
 
         m_MainLoop->GetSceneManager ()->AddScene (SCENE_0_0, scene00);
 
@@ -59,8 +63,6 @@ namespace aga
         m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (60, 60, 70));
         m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (50, 60, 100));
         m_MainLoop->GetSceneManager ()->SetActiveScene (m_MainLoop->GetSceneManager ()->GetActiveScene ());
-
-        Script* script = m_MainLoop->GetScriptManager ()->LoadScriptFromFile (GetResourcePath (SCRIPT_0_0), "home");
     }
 
     //--------------------------------------------------------------------------------------------------

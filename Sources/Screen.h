@@ -22,7 +22,7 @@ namespace aga
 
         void SetMouseCursor (const char* path);
 
-        const Point GetScreenSize ();
+        Point GetScreenSize ();
         Font& GetFont ();
 
         double GetDeltaTime () const;

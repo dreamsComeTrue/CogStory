@@ -6,6 +6,7 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
+    std::string GFX = "gfx";
     std::string GFX_UI = "gfx/ui";
     std::string GFX_CHARACTERS = "gfx/characters";
     std::string FONTS = "fonts";
@@ -14,12 +15,14 @@ namespace aga
 
     Resource g_Resources[] = {
         //  Graphics
+        { GFX_DEFAULT_SKIN, GFX, "DefaultSkin.png" },
         { GFX_MENU_COG, GFX_UI, "cog.png" },
         { GFX_TEXT_FRAME, GFX_UI, "text_frame.9.png" },
         { GFX_PLAYER, GFX_CHARACTERS, "player.png" },
 
         //  Fonts
         { FONT_MAIN, FONTS, "coders_crux.ttf" },
+        { FONT_EDITOR, FONTS, "OpenSans.ttf" },
 
         //  Scenes
         { SCENE_0_0, SCENES_HOME, "0_0_home.scn" },

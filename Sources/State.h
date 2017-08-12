@@ -30,6 +30,7 @@ namespace aga
         virtual void Render (double deltaTime) = 0;
 
         MainLoop* GetMainLoop () { return m_MainLoop; }
+        std::string GetName () { return m_Name; }
 
     protected:
         MainLoop* m_MainLoop;

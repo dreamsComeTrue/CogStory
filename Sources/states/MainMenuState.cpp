@@ -13,8 +13,10 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
+    std::string MAIN_MENU_STATE_NAME = "MAIN_MENU_STATE";
+
     MainMenuState::MainMenuState (MainLoop* mainLoop)
-        : State (mainLoop, "MAIN_MENU")
+      : State (mainLoop, MAIN_MENU_STATE_NAME)
     {
     }
 
@@ -50,15 +52,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void MainMenuState::BeforeEnter ()
-    {
-    }
+    void MainMenuState::BeforeEnter () {}
 
     //--------------------------------------------------------------------------------------------------
 
-    void MainMenuState::AfterLeave ()
-    {
-    }
+    void MainMenuState::AfterLeave () {}
 
     //--------------------------------------------------------------------------------------------------
 
@@ -71,16 +69,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void MainMenuState::Update (double deltaTime)
-    {
-    }
+    void MainMenuState::Update (double deltaTime) {}
 
     //--------------------------------------------------------------------------------------------------
 
-    void MainMenuState::Render (double deltaTime)
-    {
-        draw_nine_patch_bitmap (m_Background, 20, 20, 400, 150);
-    }
+    void MainMenuState::Render (double deltaTime) { draw_nine_patch_bitmap (m_Background, 20, 20, 400, 150); }
 
     //--------------------------------------------------------------------------------------------------
 }

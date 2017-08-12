@@ -4,15 +4,12 @@
 #define __EDITOR_H__
 
 #include "Common.h"
-#include "UIManager.h"
 
 namespace aga
 {
     class MainLoop;
-    class Frame;
-    class TextBox;
 
-    class Editor : public Lifecycle
+    class Editor : public Lifecycle, public Gwk::Event::Handler
     {
     public:
         Editor (MainLoop* mainLoop);
@@ -28,16 +25,22 @@ namespace aga
         void InitializeUI ();
         void DrawTiles ();
 
+        void OnMenuItemPlay (Gwk::Event::Info info);
+        void MenuItemPlay ();
+        void OnMenuItemExit (Gwk::Event::Info info);
+
     private:
         MainLoop* m_MainLoop;
-        UIManager m_UIManager;
+
+        Gwk::Input::Allegro m_GworkInput;
+        Gwk::Renderer::Allegro* m_Renderer;
+        Gwk::Skin::TexturedBase* m_Skin;
+        Gwk::Controls::Canvas* m_MainCanvas;
+
         bool m_DrawTiles;
 
         bool m_MousePan;
         bool m_MouseWheel;
-
-        Frame* m_TilesFrames[8];
-        TextBox* m_NewSceneTitle;
     };
 }
 

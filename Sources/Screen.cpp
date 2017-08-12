@@ -56,6 +56,8 @@ namespace aga
             return false;
         }
 
+        Gwk::Platform::SetPlatformWindow (m_Display);
+
         if (!al_init_image_addon ())
         {
             al_show_native_message_box (
@@ -159,6 +161,11 @@ namespace aga
             m_RealHeight = ev.display.height;
 
             al_acknowledge_resize (m_Display);
+
+            if (ProcessEventFunction != nullptr)
+            {
+                ProcessEventFunction (&ev);
+            }
         }
         else if ((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) || (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) ||
                  (ev.type == ALLEGRO_EVENT_MOUSE_AXES) || (ev.type == ALLEGRO_EVENT_KEY_DOWN) || (ev.type == ALLEGRO_EVENT_KEY_UP))
@@ -201,7 +208,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    const Point Screen::GetScreenSize () { return Point{ m_RealWidth, m_RealHeight }; }
+    Point Screen::GetScreenSize () { return Point{ m_RealWidth, m_RealHeight }; }
 
     //--------------------------------------------------------------------------------------------------
 

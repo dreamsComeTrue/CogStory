@@ -10,7 +10,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     TweenManager::TweenManager (MainLoop* mainLoop)
-        : m_MainLoop (mainLoop)
+      : m_MainLoop (mainLoop)
     {
     }
 
@@ -52,9 +52,9 @@ namespace aga
     {
         if (m_Tweens.size () > 0)
         {
-            for (std::map<int, tweeny::tween<int> >::iterator it = m_Tweens.begin (); it != m_Tweens.end ();)
+            for (std::map<int, tweeny::tween<int>>::iterator it = m_Tweens.begin (); it != m_Tweens.end ();)
             {
-                //printf ("%f\n", it->second.progress());
+                // printf ("%f\n", it->second.progress());
                 if (it->second.progress () < 1)
                 {
                     it->second.step ((int)(deltaTime * 1000));
@@ -73,6 +73,39 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     MainLoop* TweenManager::GetMainLoop () { return m_MainLoop; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    asIScriptFunction* callback = nullptr;
+    void TweenManager::AddTween (int id, int from, int to, int during, asIScriptFunction* asFunc)
+    {
+        if (callback)
+        {
+            callback->Release ();
+        }
+
+        callback = asFunc;
+
+        std::function<bool(int)> func = [&](int i) {
+            asIScriptContext* ctx = m_MainLoop->GetScriptManager ()->GetEngine ()->CreateContext ();
+            ctx->Prepare (callback);
+            ctx->SetArgDWord (0, i);
+
+            int r = ctx->Execute ();
+
+            asDWORD ret = 0;
+            if (r == asEXECUTION_FINISHED)
+            {
+                ret = ctx->GetReturnDWord ();
+            }
+
+            ctx->Release ();
+
+            return ret;
+        };
+
+        AddTween (id, from, to, during, func);
+    }
 
     //--------------------------------------------------------------------------------------------------
 }

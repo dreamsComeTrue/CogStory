@@ -18,8 +18,6 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
-        bool Update (double deltaTime);
-
         Script* LoadScriptFromFile (const std::string& path, const std::string& moduleName);
         Script* LoadScriptFromText (const std::string& text, const std::string& moduleName);
         asIScriptEngine* GetEngine ();

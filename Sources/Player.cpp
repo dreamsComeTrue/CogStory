@@ -17,8 +17,8 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Player::Player (Screen* screen)
-        : m_Screen (screen)
-        , m_Image (nullptr)
+      : m_Screen (screen)
+      , m_Image (nullptr)
     {
     }
 
@@ -66,6 +66,7 @@ namespace aga
         HandleInput (deltaTime);
 
         m_Animation.Update (deltaTime);
+        UpdateScripts (deltaTime);
 
         return true;
     }
@@ -89,8 +90,7 @@ namespace aga
         int width = frame.BottomRight.Width;
         int height = frame.BottomRight.Height;
 
-        al_draw_scaled_bitmap (
-            m_Image, frame.TopLeft.X, frame.TopLeft.Y, width, height, m_Position.X, m_Position.Y, width, height, 0);
+        al_draw_scaled_bitmap (m_Image, frame.TopLeft.X, frame.TopLeft.Y, width, height, m_Position.X, m_Position.Y, width, height, 0);
     }
 
     //--------------------------------------------------------------------------------------------------

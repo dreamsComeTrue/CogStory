@@ -8,6 +8,8 @@
 
 namespace aga
 {
+    extern std::string EDITOR_STATE_NAME;
+
     class EditorState : public State
     {
     public:
@@ -25,7 +27,7 @@ namespace aga
         void Render (double deltaTime);
 
     private:
-        Editor m_Editor;
+        Editor* m_Editor;
     };
 }
 

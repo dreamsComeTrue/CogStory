@@ -13,8 +13,8 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     StateManager::StateManager (MainLoop* mainLoop)
-        : m_ActiveState (nullptr)
-        , m_MainLoop (mainLoop)
+      : m_ActiveState (nullptr)
+      , m_MainLoop (mainLoop)
     {
     }
 
@@ -65,13 +65,25 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void StateManager::RegisterState (const std::string& name, State* state)
+    std::string StateManager::GetActiveStateName ()
     {
-        std::map<std::string, State*>::iterator it = m_States.find (name);
+        if (m_ActiveState != nullptr)
+        {
+            return m_ActiveState->GetName ();
+        }
+
+        return "";
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void StateManager::RegisterState (State* state)
+    {
+        std::map<std::string, State*>::iterator it = m_States.find (state->GetName ());
 
         if (it == m_States.end ())
         {
-            m_States.insert (std::make_pair (name, state));
+            m_States.insert (std::make_pair (state->GetName (), state));
         }
     }
 
@@ -94,8 +106,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool isEditor = false;
-
     void StateManager::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
         if (m_ActiveState != nullptr)
@@ -108,17 +118,15 @@ namespace aga
             ALLEGRO_KEYBOARD_STATE state;
             al_get_keyboard_state (&state);
 
-            if (al_key_down (&state, ALLEGRO_KEY_ENTER))
+            if (al_key_down (&state, ALLEGRO_KEY_SPACE))
             {
-                isEditor = !isEditor;
-
-                if (isEditor)
+                if (GetActiveStateName () == "GAMEPLAY_STATE")
                 {
-                    SetActiveState ("EDITOR");
+                    SetActiveState ("EDITOR_STATE");
                 }
                 else
                 {
-                    SetActiveState ("GAMEPLAY");
+                    SetActiveState ("GAMEPLAY_STATE");
                 }
             }
         }

@@ -7,11 +7,12 @@ namespace aga
 {
     //---------------------------------------------------------------------------
 
-    Script::Script (asIScriptModule* module, ScriptManager* manager)
+    Script::Script (asIScriptModule* module, ScriptManager* manager, const std::string& name)
       : m_Module (module)
       , m_Manager (manager)
       , m_UpdateFuncContext (nullptr)
       , m_UpdateFunction (nullptr)
+      , m_Name (name)
     {
     }
 
@@ -80,6 +81,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    std::string Script::GetName () { return m_Name; }
+
+    //--------------------------------------------------------------------------------------------------
+
     asIScriptContext* Script::GetContext (const std::string& functionName)
     {
         asIScriptFunction* func = m_Module->GetFunctionByDecl (functionName.c_str ());
@@ -100,6 +105,11 @@ namespace aga
 
     bool Script::InternalRun (asIScriptContext* ctx, bool releaseAfterUse)
     {
+        if (ctx == nullptr)
+        {
+            return false;
+        }
+
         int r = ctx->Execute ();
 
         if (r != asEXECUTION_FINISHED)

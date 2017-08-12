@@ -21,7 +21,8 @@ namespace aga
 
         void SetActiveState (State* state);
         void SetActiveState (const std::string& name);
-        void RegisterState (const std::string& name, State* state);
+        std::string GetActiveStateName ();
+        void RegisterState (State* state);
 
         bool Update (double deltaTime);
         void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);

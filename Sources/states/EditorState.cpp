@@ -12,9 +12,10 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
+    std::string EDITOR_STATE_NAME = "EDITOR_STATE";
+
     EditorState::EditorState (MainLoop* mainLoop)
-      : State (mainLoop, "EDITOR")
-      , m_Editor (mainLoop)
+      : State (mainLoop, EDITOR_STATE_NAME)
     {
     }
 
@@ -34,7 +35,8 @@ namespace aga
 
     bool EditorState::Initialize ()
     {
-        m_Editor.Initialize ();
+        m_Editor = new Editor (m_MainLoop);
+        m_Editor->Initialize ();
 
         Lifecycle::Initialize ();
     }
@@ -43,7 +45,7 @@ namespace aga
 
     bool EditorState::Destroy ()
     {
-        m_Editor.Destroy ();
+        m_Editor->Destroy ();
 
         Lifecycle::Destroy ();
     }
@@ -58,15 +60,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime) { m_Editor.ProcessEvent (event, deltaTime); }
+    void EditorState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime) { m_Editor->ProcessEvent (event, deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::Update (double deltaTime) { m_Editor.Update (deltaTime); }
+    void EditorState::Update (double deltaTime) { m_Editor->Update (deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::Render (double deltaTime) { m_Editor.Render (deltaTime); }
+    void EditorState::Render (double deltaTime) { m_Editor->Render (deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
 }

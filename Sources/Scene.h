@@ -4,6 +4,7 @@
 #define __SCENE_H__
 
 #include "Common.h"
+#include "Scriptable.h"
 
 namespace aga
 {
@@ -16,7 +17,7 @@ namespace aga
         Point Pos;
     };
 
-    class Scene : public Lifecycle
+    class Scene : public Lifecycle, public Scriptable
     {
     public:
         Scene (SceneManager* sceneManager);

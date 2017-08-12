@@ -10,6 +10,8 @@ typedef struct nine_patch_bitmap_tag NINE_PATCH_BITMAP;
 
 namespace aga
 {
+    extern std::string MAIN_MENU_STATE_NAME;
+
     class StateManager;
 
     class MainMenuState : public State

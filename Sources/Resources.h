@@ -10,12 +10,14 @@ namespace aga
     enum ResourceID
     {
         //  Graphics
+        GFX_DEFAULT_SKIN,
         GFX_MENU_COG,
         GFX_TEXT_FRAME,
         GFX_PLAYER,
 
         //  Fonts
         FONT_MAIN,
+        FONT_EDITOR,
 
         //  Scenes
         SCENE_0_0,

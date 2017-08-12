@@ -2,7 +2,25 @@ const double SPEED = 15.0;
 
 void Start ()
 {
+}
 
+bool PlayerTween (int i)
+{
+    player.SetPosition (i, 0);
+    
+    return false; // t.progress () >= 1;
+}
+
+void BeforeEnterScene ()
+{
+    player.SetPosition (0, 0);
+
+    AddTween (0, 0, 500, 1000, PlayerTween);
+
+//    Point playerSize = player.GetSize ();
+//    Point playerPosition = player.GetPosition ();
+//    camera.SetOffset (screenSize.Width * 0.5 - playerSize.Width * 0.5 - playerPosition.X,
+ //           screenSize.Height * 0.5 - playerSize.Height * 0.5 - playerPosition.Y);
 }
 
 void Update (double deltaTime)
