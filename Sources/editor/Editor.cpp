@@ -4,12 +4,11 @@
 #include "MainLoop.h"
 #include "Screen.h"
 
-#include <Gwork/Controls.h>
-
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
+    const int TILES_COUNT = 8;
     const int TILE_SIZE = 90;
 
     //--------------------------------------------------------------------------------------------------
@@ -108,6 +107,8 @@ namespace aga
         {
             DrawTiles ();
         }
+
+        m_Atlas.DrawRegion ("MAIN", 200, 200);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -154,12 +155,13 @@ namespace aga
             }
         }
 
-        int tilesCount = 8;
-        double beginning = screenSize.Width * 0.5 - (tilesCount - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
+        m_Atlas.LoadFromFile (GetResourcePath (PACK_0_0_HOME));
+
+        double beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
         float advance = 0;
 
         //  Back frame
-        for (int i = 0; i < tilesCount; ++i)
+        for (int i = 0; i < TILES_COUNT; ++i)
         {
             advance = beginning + i * TILE_SIZE;
 
@@ -167,6 +169,10 @@ namespace aga
             rect->SetColor (Gwk::Color (0, 255, 0, 255));
             rect->SetShouldDrawBackground (false);
             rect->SetBounds (advance, screenSize.Height - TILE_SIZE - 2, TILE_SIZE, TILE_SIZE);
+
+            Gwk::Controls::ImagePanel* imagePanel = new Gwk::Controls::ImagePanel (m_MainCanvas);
+            const Gwk::Rect bounds = rect->GetBounds ();
+            imagePanel->SetBounds (bounds.x + 1, bounds.y + 1, bounds.w - 2, bounds.h - 2);
         }
 
         Gwk::Controls::Button* nextAssetsButton = new Gwk::Controls::Button (m_MainCanvas);

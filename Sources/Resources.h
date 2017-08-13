@@ -15,6 +15,9 @@ namespace aga
         GFX_TEXT_FRAME,
         GFX_PLAYER,
 
+        //  PACKS
+        PACK_0_0_HOME,
+
         //  Fonts
         FONT_MAIN,
         FONT_EDITOR,

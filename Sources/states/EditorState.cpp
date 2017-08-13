@@ -56,7 +56,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::AfterLeave () {}
+    void EditorState::AfterLeave () { m_MainLoop->GetSceneManager ()->GetCamera ().ClearTransformations (); }
 
     //--------------------------------------------------------------------------------------------------
 

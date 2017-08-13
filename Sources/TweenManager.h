@@ -26,6 +26,7 @@ namespace aga
     private:
         MainLoop* m_MainLoop;
         std::map<int, tweeny::tween<int>> m_Tweens;
+        std::map<int, asIScriptFunction*> m_Callbacks;
     };
 }
 

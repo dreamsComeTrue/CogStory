@@ -34,19 +34,16 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    Scene* scene00;
     bool GamePlayState::Initialize ()
     {
         Lifecycle::Initialize ();
 
-        Scene* scene00 = Scene::LoadScene (m_MainLoop->GetSceneManager (), GetResourcePath (SCENE_0_0));
+        scene00 = Scene::LoadScene (m_MainLoop->GetSceneManager (), GetResourcePath (SCENE_0_0));
         Script* script = m_MainLoop->GetScriptManager ()->LoadScriptFromFile (GetResourcePath (SCRIPT_0_0), "home");
         scene00->AttachScript (script);
 
         m_MainLoop->GetSceneManager ()->AddScene (SCENE_0_0, scene00);
-
-        Point pos = scene00->GetSpawnPoint ("DEFAULT");
-        m_MainLoop->GetSceneManager ()->GetPlayer ().SetPosition (pos);
-
         m_MainLoop->GetSceneManager ()->SetActiveScene (scene00);
 
         return true;
@@ -60,6 +57,9 @@ namespace aga
 
     void GamePlayState::BeforeEnter ()
     {
+        Point pos = scene00->GetSpawnPoint ("DEFAULT");
+        m_MainLoop->GetSceneManager ()->GetPlayer ().SetPosition (pos);
+
         m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (60, 60, 70));
         m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (50, 60, 100));
         m_MainLoop->GetSceneManager ()->SetActiveScene (m_MainLoop->GetSceneManager ()->GetActiveScene ());

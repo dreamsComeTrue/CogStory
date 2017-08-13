@@ -9,6 +9,9 @@ namespace aga
     std::string GFX = "gfx";
     std::string GFX_UI = "gfx/ui";
     std::string GFX_CHARACTERS = "gfx/characters";
+
+    std::string GFX_0_HOME = "gfx/0_home";
+
     std::string FONTS = "fonts";
     std::string SCENES_HOME = "scenes/0_home";
     std::string SCRIPTS_HOME = "scripts/0_home";
@@ -19,6 +22,8 @@ namespace aga
         { GFX_MENU_COG, GFX_UI, "cog.png" },
         { GFX_TEXT_FRAME, GFX_UI, "text_frame.9.png" },
         { GFX_PLAYER, GFX_CHARACTERS, "player.png" },
+
+        { PACK_0_0_HOME, GFX_0_HOME, "0_0_home.pack" },
 
         //  Fonts
         { FONT_MAIN, FONTS, "coders_crux.ttf" },

@@ -26,8 +26,8 @@ namespace aga
         void Move (double dx, double dy);
         void SetPosition (const Point& pos);
         void SetPosition (double x, double y);
-        Point& GetPosition ();
-        Point& GetSize ();
+        Point GetPosition ();
+        Point GetSize ();
 
         std::function<void(double dx, double dy)> MoveCallback;
 

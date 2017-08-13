@@ -50,7 +50,10 @@ namespace aga
 
         m_StateManager.SetActiveState (m_EditorState);
 
-        m_Screen->ProcessEventFunction = [&](ALLEGRO_EVENT* event) { m_StateManager.ProcessEvent (event, m_Screen->GetDeltaTime ()); };
+        m_Screen->ProcessEventFunction = [&](ALLEGRO_EVENT* event) {
+            m_SceneManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
+            m_StateManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
+        };
 
         m_Screen->RenderFunction = [&]() {
             m_SceneManager.Render (m_Screen->GetDeltaTime ());

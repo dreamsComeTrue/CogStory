@@ -54,7 +54,6 @@ namespace aga
         {
             for (std::map<int, tweeny::tween<int>>::iterator it = m_Tweens.begin (); it != m_Tweens.end ();)
             {
-                // printf ("%f\n", it->second.progress());
                 if (it->second.progress () < 1)
                 {
                     it->second.step ((int)(deltaTime * 1000));
@@ -76,19 +75,30 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    asIScriptFunction* callback = nullptr;
     void TweenManager::AddTween (int id, int from, int to, int during, asIScriptFunction* asFunc)
     {
-        if (callback)
-        {
-            callback->Release ();
-        }
+        m_Callbacks.insert (std::make_pair (id, asFunc));
 
-        callback = asFunc;
-
-        std::function<bool(int)> func = [&](int i) {
+        std::function<bool(tweeny::tween<int> & t, int)> func = [&](tweeny::tween<int>& t, int i) {
             asIScriptContext* ctx = m_MainLoop->GetScriptManager ()->GetEngine ()->CreateContext ();
-            ctx->Prepare (callback);
+
+            int callbackID = -1;
+            for (std::map<int, tweeny::tween<int>>::iterator it = m_Tweens.begin (); it != m_Tweens.end (); ++it)
+            {
+                //  Very nasty - address comparison, but it works!
+                if (&it->second == &t)
+                {
+                    callbackID = it->first;
+                    break;
+                }
+            }
+
+            if (callbackID < 0)
+            {
+                return true;
+            }
+
+            ctx->Prepare (m_Callbacks[callbackID]);
             ctx->SetArgDWord (0, i);
 
             int r = ctx->Execute ();
@@ -101,10 +111,15 @@ namespace aga
 
             ctx->Release ();
 
-            return ret;
+            return (bool)ret;
         };
 
-        AddTween (id, from, to, during, func);
+        if (m_Tweens.find (id) == m_Tweens.end ())
+        {
+            tweeny::tween<int> tween = tweeny::from (from).to (to).during (during).onStep (func);
+
+            m_Tweens.insert (std::make_pair (id, tween));
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

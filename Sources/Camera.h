@@ -20,6 +20,7 @@ namespace aga
         void Move (float dx, float dy);
         void Scale (float dx, float dy, float mousePosX = -1, float mousePosY = -1);
         void Reset ();
+        void ClearTransformations ();
 
     private:
         ALLEGRO_TRANSFORM m_Transform;

@@ -158,7 +158,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    static void ConstructPointXY (float x, float y, Point* ptr) { new (ptr) Point (x, y); }
+    static void ConstructPointXY (double x, double y, Point* ptr) { new (ptr) Point (x, y); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -169,17 +169,11 @@ namespace aga
     void ScriptManager::RegisterAPI ()
     {
         //  Point
-        m_ScriptEngine->RegisterObjectType ("Point", sizeof (Point), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_CLASS_CAK);
-        m_ScriptEngine->RegisterObjectBehaviour (
-          "Point", asBEHAVE_CONSTRUCT, "void Point()", asFUNCTION (ConstructPoint), asCALL_CDECL_OBJLAST);
-        m_ScriptEngine->RegisterObjectBehaviour (
-          "Point", asBEHAVE_CONSTRUCT, "void f(const Point &in)", asFUNCTION (ConstructPointCopy), asCALL_CDECL_OBJLAST);
-        m_ScriptEngine->RegisterObjectBehaviour (
-          "Point", asBEHAVE_CONSTRUCT, "void f(double, double)", asFUNCTION (ConstructPointXY), asCALL_CDECL_OBJLAST);
-        m_ScriptEngine->RegisterObjectProperty ("Point", "double X", offsetof (Point, X));
-        m_ScriptEngine->RegisterObjectProperty ("Point", "double Y", offsetof (Point, Y));
-        m_ScriptEngine->RegisterObjectProperty ("Point", "double Width", offsetof (Point, Width));
-        m_ScriptEngine->RegisterObjectProperty ("Point", "double Height", offsetof (Point, Height));
+        m_ScriptEngine->RegisterObjectType ("Point", sizeof (Point), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_PRIMITIVE);
+        m_ScriptEngine->RegisterObjectProperty ("Point", "double X", asOFFSET (Point, X));
+        m_ScriptEngine->RegisterObjectProperty ("Point", "double Y", asOFFSET (Point, Y));
+        m_ScriptEngine->RegisterObjectProperty ("Point", "double Width", asOFFSET (Point, Width));
+        m_ScriptEngine->RegisterObjectProperty ("Point", "double Height", asOFFSET (Point, Height));
 
         m_ScriptEngine->RegisterGlobalFunction ("void Log (Point &in)", asFUNCTIONPR (Log, (Point&), void), asCALL_CDECL);
 
@@ -201,11 +195,11 @@ namespace aga
           "Camera", "void SetOffset (float dx, float dy)", asMETHOD (Camera, SetOffset), asCALL_THISCALL);
 
         //  Global
-        m_ScriptEngine->RegisterGlobalFunction ("void print(const string &in)", asFUNCTION (print), asCALL_CDECL);
+        m_ScriptEngine->RegisterGlobalFunction ("void Log(const string &in)", asFUNCTION (print), asCALL_CDECL);
         m_ScriptEngine->RegisterGlobalFunction (
           "double GetDeltaTime ()", asMETHOD (Screen, GetDeltaTime), asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
-        Point screenSize = m_MainLoop->GetScreen ()->GetScreenSize ();
-        m_ScriptEngine->RegisterGlobalProperty ("Point screenSize", &screenSize);
+        m_ScriptEngine->RegisterGlobalFunction (
+          "Point GetScreenSize ()", asMETHOD (Screen, GetScreenSize), asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
 
         //  Tweening
         m_ScriptEngine->RegisterFuncdef ("bool TweenFunc (int)");

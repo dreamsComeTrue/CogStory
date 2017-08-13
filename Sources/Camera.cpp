@@ -60,4 +60,12 @@ namespace aga
     void Camera::Reset () { al_use_transform (&IdentityTransform); }
 
     //--------------------------------------------------------------------------------------------------
+
+    void Camera::ClearTransformations ()
+    {
+        al_identity_transform (&m_Transform);
+        Reset ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
 }

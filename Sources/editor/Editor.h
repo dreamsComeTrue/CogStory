@@ -3,10 +3,13 @@
 #ifndef __EDITOR_H__
 #define __EDITOR_H__
 
+#include "Atlas.h"
 #include "Common.h"
 
 namespace aga
 {
+    extern const int TILES_COUNT;
+
     class MainLoop;
 
     class Editor : public Lifecycle, public Gwk::Event::Handler
@@ -36,6 +39,9 @@ namespace aga
         Gwk::Renderer::Allegro* m_Renderer;
         Gwk::Skin::TexturedBase* m_Skin;
         Gwk::Controls::Canvas* m_MainCanvas;
+
+        Atlas m_Atlas;
+        std::vector<Gwk::Controls::ImagePanel*> m_ImagePanels;
 
         bool m_DrawTiles;
 
