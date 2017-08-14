@@ -31,6 +31,7 @@ namespace aga
         void OnMenuItemPlay (Gwk::Event::Info info);
         void MenuItemPlay ();
         void OnMenuItemExit (Gwk::Event::Info info);
+        void OnTileSelected (Gwk::Event::Info info);
 
     private:
         MainLoop* m_MainLoop;
@@ -41,6 +42,9 @@ namespace aga
         Gwk::Controls::Canvas* m_MainCanvas;
 
         Atlas m_Atlas;
+        AtlasRegion m_SelectedAtlasRegion;
+        bool m_IsAtlasRegionSelected;
+
         std::vector<Gwk::Controls::ImagePanel*> m_ImagePanels;
 
         bool m_DrawTiles;

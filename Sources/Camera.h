@@ -22,9 +22,12 @@ namespace aga
         void Reset ();
         void ClearTransformations ();
 
+        Point GetScale ();
+
     private:
         ALLEGRO_TRANSFORM m_Transform;
         Point m_Position;
+        Point m_Scale;
         Screen* m_Screen;
     };
 }

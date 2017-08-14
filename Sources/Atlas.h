@@ -7,6 +7,12 @@
 
 namespace aga
 {
+    struct AtlasRegion
+    {
+        Rect Bounds;
+        std::string Name;
+    };
+
     class Atlas
     {
     public:
@@ -14,11 +20,15 @@ namespace aga
 
         void LoadFromFile (const std::string& path);
         void DrawRegion (const std::string& name, int x, int y);
+        void DrawScaledRegion (const std::string& name, int x, int y, float scaleX, float scaleY);
+        ALLEGRO_BITMAP* GetImage ();
+        std::vector<AtlasRegion> GetRegions ();
 
     private:
         ALLEGRO_BITMAP* m_Image;
         std::string m_Path;
-        std::map<std::string, Rect> m_Regions;
+        std::map<std::string, AtlasRegion> m_Regions;
+        std::vector<AtlasRegion> m_RegionsVector;
     };
 }
 

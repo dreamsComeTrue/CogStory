@@ -11,6 +11,7 @@ namespace aga
 
     Camera::Camera (Screen* screen)
       : m_Screen (screen)
+      , m_Scale (1.0, 1.0)
     {
         const Point& size = screen->GetScreenSize ();
         SetOffset (size.Width * 0.5, size.Height * 0.5);
@@ -47,6 +48,9 @@ namespace aga
             al_translate_transform (&m_Transform, -mousePosX, -mousePosY);
         }
 
+        m_Scale.X *= dx;
+        m_Scale.Y *= dy;
+
         al_scale_transform (&m_Transform, dx, dy);
 
         if (mousePosX >= 0 && mousePosY >= 0)
@@ -66,6 +70,10 @@ namespace aga
         al_identity_transform (&m_Transform);
         Reset ();
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Point Camera::GetScale () { return m_Scale; }
 
     //--------------------------------------------------------------------------------------------------
 }

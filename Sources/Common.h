@@ -58,6 +58,42 @@ namespace aga
         double epsilon = 1.0E-8;
         return std::fabs (a - b) < epsilon;
     }
+
+    static std::vector<std::string> SplitString (const std::string& s, char seperator)
+    {
+        std::vector<std::string> output;
+
+        std::string::size_type prev_pos = 0, pos = 0;
+
+        while ((pos = s.find (seperator, pos)) != std::string::npos)
+        {
+            std::string substring (s.substr (prev_pos, pos - prev_pos));
+
+            output.push_back (substring);
+
+            prev_pos = ++pos;
+        }
+
+        output.push_back (s.substr (prev_pos, pos - prev_pos)); // Last word
+
+        return output;
+    }
+
+    static std::string& LeftTrimString (std::string& str)
+    {
+        auto it2 = std::find_if (str.begin (), str.end (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
+        str.erase (str.begin (), it2);
+        return str;
+    }
+
+    static std::string& RightTrimString (std::string& str)
+    {
+        auto it1 = std::find_if (str.rbegin (), str.rend (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
+        str.erase (it1.base (), str.end ());
+        return str;
+    }
+
+    static std::string& TrimString (std::string& str) { return LeftTrimString (RightTrimString (str)); }
 }
 
 #endif //   __COMMON_H__

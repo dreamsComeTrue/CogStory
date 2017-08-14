@@ -22,6 +22,7 @@ namespace aga
       , m_DrawTiles (true)
       , m_MousePan (false)
       , m_MouseWheel (false)
+      , m_IsAtlasRegionSelected (false)
     {
     }
 
@@ -70,6 +71,39 @@ namespace aga
         if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
         {
             m_MousePan = event->mouse.button == 3;
+
+            if (event->mouse.button == 1)
+            {
+                const Point screenSize = m_MainLoop->GetScreen ()->GetScreenSize ();
+                double beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
+                float advance = 0;
+                std::vector<AtlasRegion> regions = m_Atlas.GetRegions ();
+
+                for (int i = 0; i < TILES_COUNT; ++i)
+                {
+                    if (i >= regions.size () - 1)
+                    {
+                        break;
+                    }
+
+                    advance = beginning + i * TILE_SIZE;
+                    double x = advance;
+                    double y = screenSize.Height - TILE_SIZE - 1;
+                    Rect r = Rect{ { x, y }, { x + TILE_SIZE, y + TILE_SIZE - 2 } };
+
+                    if (InsideRect (event->mouse.x, event->mouse.y, r))
+                    {
+                        m_IsAtlasRegionSelected = true;
+                        m_SelectedAtlasRegion = regions[i];
+                        break;
+                    }
+                }
+            }
+
+            if (event->mouse.button == 2)
+            {
+                m_IsAtlasRegionSelected = false;
+            }
         }
         else if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
         {
@@ -101,19 +135,61 @@ namespace aga
 
     void Editor::Render (double deltaTime)
     {
-        m_MainCanvas->RenderCanvas ();
+        if (m_IsAtlasRegionSelected)
+        {
+            ALLEGRO_MOUSE_STATE state;
+            al_get_mouse_state (&state);
+
+            Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
+            m_Atlas.DrawScaledRegion (m_SelectedAtlasRegion.Name, state.x, state.y, scale.X, scale.Y);
+        }
 
         if (m_DrawTiles)
         {
             DrawTiles ();
         }
 
-        m_Atlas.DrawRegion ("MAIN", 200, 200);
+        m_MainCanvas->RenderCanvas ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::DrawTiles () {}
+    void Editor::DrawTiles ()
+    {
+        std::vector<AtlasRegion> regions = m_Atlas.GetRegions ();
+        const Point screenSize = m_MainLoop->GetScreen ()->GetScreenSize ();
+        double beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
+        float advance = 0;
+
+        for (int i = 0; i < TILES_COUNT; ++i)
+        {
+            if (i >= regions.size () - 1)
+            {
+                break;
+            }
+
+            advance = beginning + i * TILE_SIZE;
+
+            Rect region = regions[i].Bounds;
+
+            al_draw_scaled_bitmap (m_Atlas.GetImage (),
+                                   region.TopLeft.X,
+                                   region.TopLeft.Y,
+                                   region.BottomRight.Width,
+                                   region.BottomRight.Height,
+                                   advance,
+                                   screenSize.Height - TILE_SIZE - 1,
+                                   TILE_SIZE,
+                                   TILE_SIZE - 2,
+                                   0);
+
+            std::ostringstream name;
+            name << "TileRect" << i;
+
+            Gwk::Controls::Base* control = m_MainCanvas->GetNamedChildren (name.str (), false).list.front ();
+            control->SetToolTip (regions[i].Name);
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -129,9 +205,9 @@ namespace aga
         // system fonts. So force the skin to use a local one.
         m_Skin->SetDefaultFont (GetResourcePath (FONT_EDITOR), 13);
 
-        // Create a Canvas (it's root, on which all other Gwork panels are created)
         const Point screenSize = m_MainLoop->GetScreen ()->GetScreenSize ();
 
+        // Create a Canvas (it's root, on which all other Gwork panels are created)
         m_MainCanvas = new Gwk::Controls::Canvas (m_Skin);
         m_MainCanvas->SetSize (screenSize.Width, screenSize.Height);
         // m_MainCanvas->SetDrawBackground (true);
@@ -165,14 +241,13 @@ namespace aga
         {
             advance = beginning + i * TILE_SIZE;
 
-            Gwk::Controls::Rectangle* rect = new Gwk::Controls::Rectangle (m_MainCanvas);
+            std::ostringstream name;
+            name << "TileRect" << i;
+
+            Gwk::Controls::Rectangle* rect = new Gwk::Controls::Rectangle (m_MainCanvas, name.str ());
             rect->SetColor (Gwk::Color (0, 255, 0, 255));
             rect->SetShouldDrawBackground (false);
             rect->SetBounds (advance, screenSize.Height - TILE_SIZE - 2, TILE_SIZE, TILE_SIZE);
-
-            Gwk::Controls::ImagePanel* imagePanel = new Gwk::Controls::ImagePanel (m_MainCanvas);
-            const Gwk::Rect bounds = rect->GetBounds ();
-            imagePanel->SetBounds (bounds.x + 1, bounds.y + 1, bounds.w - 2, bounds.h - 2);
         }
 
         Gwk::Controls::Button* nextAssetsButton = new Gwk::Controls::Button (m_MainCanvas);
@@ -197,6 +272,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Editor::OnMenuItemExit (Gwk::Event::Info info) { m_MainLoop->Exit (); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnTileSelected (Gwk::Event::Info info) {}
 
     //--------------------------------------------------------------------------------------------------
 }

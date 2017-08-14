@@ -18,25 +18,46 @@ namespace aga
 
         std::ifstream packFile (m_Path);
         std::string line = "";
-        int lineCounter = 0;
 
-        while (getline (packFile, line))
+        getline (packFile, line); //  empty
+        getline (packFile, line); //  image file
+
+        std::experimental::filesystem::path p{ path };
+        m_Image = al_load_bitmap ((p.parent_path ().string () + "/" + line).c_str ());
+
+        getline (packFile, line); //  skip
+        getline (packFile, line); //  skip
+        getline (packFile, line); //  skip
+
+        std::string name;
+        std::string xy;
+        std::string size;
+
+        while (packFile)
         {
-            ++lineCounter;
+            getline (packFile, name); //    name
+            getline (packFile, line); //    rotate
+            getline (packFile, xy);   //    xy
+            getline (packFile, size); //    size
+            getline (packFile, line); //    orig
+            getline (packFile, line); //    offset
+            getline (packFile, line); //    index
 
-            if (line == "")
-            {
-                continue;
-            }
+            std::vector<std::string> xyData = SplitString (xy.substr (xy.find (":") + 1), ',');
+            int x = atoi (xyData[0].c_str ());
+            int y = atoi (xyData[1].c_str ());
 
-            if (lineCounter == 2)
-            {
-                std::experimental::filesystem::path p{ path };
-                m_Image = al_load_bitmap ((p.parent_path ().string () + "/" + line).c_str ());
-            }
+            std::vector<std::string> sizeData = SplitString (size.substr (size.find (":") + 1), ',');
+            int width = atoi (sizeData[0].c_str ());
+            int height = atoi (sizeData[1].c_str ());
+
+            AtlasRegion region;
+            region.Bounds = Rect{ { x, y }, { width, height } };
+            region.Name = name;
+
+            m_Regions.insert (std::make_pair (name, region));
+            m_RegionsVector.push_back (region);
         }
-
-        m_Regions.insert (std::make_pair ("MAIN", Rect{ { 275, 259 }, { 64, 64 } }));
 
         packFile.close ();
     }
@@ -47,10 +68,38 @@ namespace aga
     {
         if (m_Regions.find (name) != m_Regions.end ())
         {
-            Rect r = m_Regions[name];
+            Rect r = m_Regions[name].Bounds;
             al_draw_bitmap_region (m_Image, r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width, r.BottomRight.Height, x, y, 0);
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Atlas::DrawScaledRegion (const std::string& name, int x, int y, float scaleX, float scaleY)
+    {
+        if (m_Regions.find (name) != m_Regions.end ())
+        {
+            Rect r = m_Regions[name].Bounds;
+            al_draw_scaled_bitmap (m_Image,
+                                   r.TopLeft.X,
+                                   r.TopLeft.Y,
+                                   r.BottomRight.Width,
+                                   r.BottomRight.Height,
+                                   x,
+                                   y,
+                                   r.BottomRight.Width * scaleX,
+                                   r.BottomRight.Height * scaleY,
+                                   0);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    ALLEGRO_BITMAP* Atlas::GetImage () { return m_Image; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::vector<AtlasRegion> Atlas::GetRegions () { return m_RegionsVector; }
 
     //--------------------------------------------------------------------------------------------------
 }
