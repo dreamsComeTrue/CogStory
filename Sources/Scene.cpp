@@ -1,6 +1,8 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Scene.h"
+#include "Atlas.h"
+#include "AtlasManager.h"
 #include "MainLoop.h"
 #include "SceneManager.h"
 #include "Screen.h"
@@ -44,6 +46,18 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Tile::Draw (AtlasManager* atlasManager)
+    {
+        Atlas* atlas = atlasManager->GetAtlas (Tileset);
+
+        if (atlas)
+        {
+            atlas->DrawRegion (Name, Pos.X, Pos.Y, 1, 1, DegressToRadians (Rotation));
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     Scene::Scene (SceneManager* sceneManager)
       : m_SceneManager (sceneManager)
     {
@@ -63,19 +77,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Scene::Initialize () { Lifecycle::Initialize (); }
+    bool Scene::Initialize () { return Lifecycle::Initialize (); }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Scene::Destroy ()
-    {
-        for (Tile& tile : m_Tiles)
-        {
-            al_destroy_bitmap (tile.Image);
-        }
-
-        Lifecycle::Destroy ();
-    }
+    bool Scene::Destroy () { return Lifecycle::Destroy (); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -95,11 +101,11 @@ namespace aga
         for (auto& j_tile : tiles)
         {
             Tile tile;
-            tile.FileName = j_tile["img"];
-
-            std::string filePath = GetDataPath () + std::string ("gfx/") + tile.FileName;
-            tile.Image = al_load_bitmap (filePath.c_str ());
+            tile.Tileset = j_tile["tileset"];
+            tile.Name = j_tile["name"];
             tile.Pos = StringToPoint (j_tile["pos"]);
+            std::string rot = j_tile["rot"];
+            tile.Rotation = atof (rot.c_str ());
 
             scene->m_Tiles.push_back (tile);
         }
@@ -140,7 +146,7 @@ namespace aga
     {
         for (Tile& tile : m_Tiles)
         {
-            al_draw_bitmap (tile.Image, tile.Pos.X, tile.Pos.Y, 0);
+            tile.Draw (m_SceneManager->GetAtlasManager ());
         }
 
         m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
@@ -151,6 +157,10 @@ namespace aga
         m_SceneManager->GetPlayer ().Render (deltaTime);
         m_SceneManager->GetCamera ().Reset ();
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::AddTile (Tile& tile) { m_Tiles.push_back (tile); }
 
     //--------------------------------------------------------------------------------------------------
 

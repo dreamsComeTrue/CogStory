@@ -9,12 +9,16 @@
 namespace aga
 {
     class SceneManager;
+    class AtlasManager;
 
     struct Tile
     {
-        std::string FileName;
-        ALLEGRO_BITMAP* Image;
+        std::string Tileset;
+        std::string Name;
         Point Pos;
+        float Rotation;
+
+        void Draw (AtlasManager* atlasManager);
     };
 
     class Scene : public Lifecycle, public Scriptable
@@ -33,6 +37,8 @@ namespace aga
 
         virtual void Update (double deltaTime);
         virtual void Render (double deltaTime);
+
+        void AddTile (Tile& tile);
 
         Point GetSpawnPoint (const std::string& name);
 

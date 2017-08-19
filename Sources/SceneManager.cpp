@@ -1,6 +1,7 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "SceneManager.h"
+#include "AtlasManager.h"
 #include "Common.h"
 #include "MainLoop.h"
 #include "Scene.h"
@@ -13,10 +14,11 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     SceneManager::SceneManager (MainLoop* mainLoop)
-        : m_ActiveScene (nullptr)
-        , m_MainLoop (mainLoop)
-        , m_Player (mainLoop->GetScreen ())
-        , m_Camera (mainLoop->GetScreen ())
+      : m_ActiveScene (nullptr)
+      , m_MainLoop (mainLoop)
+      , m_Player (mainLoop->GetScreen ())
+      , m_Camera (mainLoop->GetScreen ())
+      , m_AtlasManager (nullptr)
     {
     }
 
@@ -36,6 +38,8 @@ namespace aga
 
     bool SceneManager::Initialize ()
     {
+        m_AtlasManager = new AtlasManager ();
+
         m_Player.Initialize ();
         m_Player.MoveCallback = [&](double dx, double dy) { m_Camera.Move (-dx, -dy); };
 
@@ -46,6 +50,8 @@ namespace aga
 
     bool SceneManager::Destroy ()
     {
+        SAFE_DELETE (m_AtlasManager);
+
         m_Player.Destroy ();
 
         for (std::map<ResourceID, Scene*>::iterator it = m_Scenes.begin (); it != m_Scenes.end (); it++)
@@ -85,10 +91,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneManager::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
-    {
-        m_Player.ProcessEvent (event, deltaTime);
-    }
+    void SceneManager::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime) { m_Player.ProcessEvent (event, deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -123,6 +126,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     MainLoop* SceneManager::GetMainLoop () { return m_MainLoop; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    AtlasManager* SceneManager::GetAtlasManager () { return m_AtlasManager; }
 
     //--------------------------------------------------------------------------------------------------
 }

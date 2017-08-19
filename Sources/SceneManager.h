@@ -11,6 +11,7 @@ namespace aga
 {
     class Scene;
     class MainLoop;
+    class AtlasManager;
 
     class SceneManager : public Lifecycle
     {
@@ -31,11 +32,13 @@ namespace aga
         Player& GetPlayer ();
         Camera& GetCamera ();
         MainLoop* GetMainLoop ();
+        AtlasManager* GetAtlasManager ();
 
     private:
         Player m_Player;
         Camera m_Camera;
 
+        AtlasManager* m_AtlasManager;
         MainLoop* m_MainLoop;
         std::map<ResourceID, Scene*> m_Scenes;
         Scene* m_ActiveScene;

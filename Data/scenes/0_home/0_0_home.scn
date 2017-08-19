@@ -15,8 +15,10 @@
         "tiles" :
         [
             {
-                "img" : "0_home/main_room.png",
-                "pos" : "0 0"
+                "tileset" : "0_0_home",
+                "name" : "main_room",
+                "pos" : "0 0",
+                "rot" : "0"
             }
         ]
     } 

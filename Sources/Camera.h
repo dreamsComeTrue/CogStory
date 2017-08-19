@@ -22,6 +22,7 @@ namespace aga
         void Reset ();
         void ClearTransformations ();
 
+        Point GetTranslate ();
         Point GetScale ();
 
     private:

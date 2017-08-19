@@ -28,6 +28,9 @@ namespace aga
         void InitializeUI ();
         void DrawTiles ();
 
+        void SelectTile (int mouseX, int mouseY);
+        void AddTile (int mouseX, int mouseY);
+
         void OnMenuItemPlay (Gwk::Event::Info info);
         void MenuItemPlay ();
         void OnMenuItemExit (Gwk::Event::Info info);
@@ -45,12 +48,17 @@ namespace aga
         AtlasRegion m_SelectedAtlasRegion;
         bool m_IsAtlasRegionSelected;
 
+        float m_Rotation;
+
         std::vector<Gwk::Controls::ImagePanel*> m_ImagePanels;
 
-        bool m_DrawTiles;
+        bool m_IsDrawTiles;
 
-        bool m_MousePan;
-        bool m_MouseWheel;
+        bool m_IsSnapToGrid;
+        int m_GridSize;
+
+        bool m_IsMousePan;
+        bool m_IsMouseWheel;
     };
 }
 

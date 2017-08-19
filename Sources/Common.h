@@ -14,6 +14,7 @@
 #include <scriptbuilder/scriptbuilder.h>
 #include <scriptstdstring/scriptstdstring.h>
 
+#include <Gwork/Align.h>
 #include <Gwork/Controls.h>
 #include <Gwork/Input/Allegro5.h>
 #include <Gwork/Platform.h>
@@ -24,6 +25,7 @@
 #include <fstream>
 #include <functional>
 #include <map>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -52,6 +54,8 @@ namespace aga
     const ALLEGRO_COLOR COLOR_BLUE{ 0.0f, 0.0f, 1.0f, 1.0f };
     const ALLEGRO_COLOR COLOR_YELLOW{ 1.0f, 1.0f, 0.0f, 1.0f };
     const ALLEGRO_COLOR COLOR_GRAY{ 0.3f, 0.3f, 0.3f, 1.0f };
+
+    static float DegressToRadians (float degrees) { return degrees * ALLEGRO_PI / 180.0; }
 
     static bool AreSame (double a, double b)
     {
@@ -94,6 +98,15 @@ namespace aga
     }
 
     static std::string& TrimString (std::string& str) { return LeftTrimString (RightTrimString (str)); }
+
+    template<typename T>
+    static std::string ToString (T t)
+    {
+        std::stringstream strStream;
+        strStream << t;
+
+        return strStream.str ();
+    }
 }
 
 #endif //   __COMMON_H__

@@ -5,8 +5,6 @@
 #include "Screen.h"
 #include "Script.h"
 
-#include <sstream>
-
 namespace aga
 {
     //---------------------------------------------------------------------------

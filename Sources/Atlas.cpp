@@ -23,6 +23,7 @@ namespace aga
         getline (packFile, line); //  image file
 
         std::experimental::filesystem::path p{ path };
+        m_Name = p.stem ().c_str ();
         m_Image = al_load_bitmap ((p.parent_path ().string () + "/" + line).c_str ());
 
         getline (packFile, line); //  skip
@@ -75,21 +76,25 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Atlas::DrawScaledRegion (const std::string& name, int x, int y, float scaleX, float scaleY)
+    void Atlas::DrawRegion (const std::string& name, int x, int y, float scaleX, float scaleY, float rotation)
     {
         if (m_Regions.find (name) != m_Regions.end ())
         {
             Rect r = m_Regions[name].Bounds;
-            al_draw_scaled_bitmap (m_Image,
-                                   r.TopLeft.X,
-                                   r.TopLeft.Y,
-                                   r.BottomRight.Width,
-                                   r.BottomRight.Height,
-                                   x,
-                                   y,
-                                   r.BottomRight.Width * scaleX,
-                                   r.BottomRight.Height * scaleY,
-                                   0);
+            al_draw_tinted_scaled_rotated_bitmap_region (m_Image,
+                                                         r.TopLeft.X,
+                                                         r.TopLeft.Y,
+                                                         r.BottomRight.Width,
+                                                         r.BottomRight.Height,
+                                                         al_map_rgb (255, 255, 255),
+                                                         r.BottomRight.Width * 0.5,
+                                                         r.BottomRight.Height * 0.5,
+                                                         x,
+                                                         y,
+                                                         scaleX,
+                                                         scaleY,
+                                                         rotation,
+                                                         0);
         }
     }
 
@@ -99,7 +104,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    std::vector<AtlasRegion> Atlas::GetRegions () { return m_RegionsVector; }
+    std::vector<AtlasRegion>& Atlas::GetRegions () { return m_RegionsVector; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string Atlas::GetName () { return m_Name; }
 
     //--------------------------------------------------------------------------------------------------
 }

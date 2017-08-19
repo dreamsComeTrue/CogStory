@@ -31,13 +31,22 @@ namespace aga
 
     void Camera::SetOffset (float dx, float dy)
     {
+        m_Position.X += dx;
+        m_Position.Y += dy;
+
         al_identity_transform (&m_Transform);
         al_translate_transform (&m_Transform, dx, dy);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::Move (float dx, float dy) { al_translate_transform (&m_Transform, dx, dy); }
+    void Camera::Move (float dx, float dy)
+    {
+        m_Position.X += dx;
+        m_Position.Y += dy;
+
+        al_translate_transform (&m_Transform, dx, dy);
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -61,15 +70,28 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::Reset () { al_use_transform (&IdentityTransform); }
+    void Camera::Reset ()
+    {
+        m_Position.X = 0;
+        m_Position.Y = 0;
+
+        al_use_transform (&IdentityTransform);
+    }
 
     //--------------------------------------------------------------------------------------------------
 
     void Camera::ClearTransformations ()
     {
+        m_Position.X = 0;
+        m_Position.Y = 0;
+
         al_identity_transform (&m_Transform);
         Reset ();
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Point Camera::GetTranslate () { return { -m_Transform.m[3][0], -m_Transform.m[3][1] }; }
 
     //--------------------------------------------------------------------------------------------------
 
