@@ -52,7 +52,7 @@ namespace aga
 
         if (atlas)
         {
-            atlas->DrawRegion (Name, Pos.X, Pos.Y, 1, 1, DegressToRadians (Rotation));
+            atlas->DrawRegion (Name, Bounds.TopLeft.X, Bounds.TopLeft.Y, 1, 1, DegressToRadians (Rotation));
         }
     }
 
@@ -96,6 +96,18 @@ namespace aga
         scene->m_Name = j["name"];
         scene->m_Size = StringToPoint (j["size"]);
 
+        auto& scripts = j["scripts"];
+
+        for (auto& j_tile : scripts)
+        {
+            std::string name = j_tile["name"];
+            std::string path = j_tile["path"];
+
+            Script* script =
+              sceneManager->GetMainLoop ()->GetScriptManager ()->LoadScriptFromFile (GetDataPath () + "scripts/" + path, name);
+            scene->AttachScript (script);
+        }
+
         auto& tiles = j["tiles"];
 
         for (auto& j_tile : tiles)
@@ -103,11 +115,14 @@ namespace aga
             Tile tile;
             tile.Tileset = j_tile["tileset"];
             tile.Name = j_tile["name"];
-            tile.Pos = StringToPoint (j_tile["pos"]);
+            tile.Bounds.TopLeft = StringToPoint (j_tile["pos"]);
+            tile.Bounds.BottomRight = sceneManager->GetAtlasManager ()->GetAtlas (tile.Tileset)->GetRegion (tile.Name).Bounds.BottomRight;
+            std::string zOrder = j_tile["z-order"];
+            tile.ZOrder = atof (zOrder.c_str ());
             std::string rot = j_tile["rot"];
             tile.Rotation = atof (rot.c_str ());
 
-            scene->m_Tiles.push_back (tile);
+            scene->AddTile (tile);
         }
 
         auto& spawn_points = j["spawn_points"];
@@ -155,12 +170,20 @@ namespace aga
           FONT_NAME_MAIN, al_map_rgb (0, 255, 0), 0, 0, m_Name, ALLEGRO_ALIGN_LEFT);
 
         m_SceneManager->GetPlayer ().Render (deltaTime);
-        m_SceneManager->GetCamera ().Reset ();
+        m_SceneManager->GetCamera ().UseIdentityTransform ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void Scene::AddTile (Tile& tile) { m_Tiles.push_back (tile); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::RemoveTile (Tile& tile) { m_Tiles.erase (std::remove (m_Tiles.begin (), m_Tiles.end (), tile), m_Tiles.end ()); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::vector<Tile>& Scene::GetTiles () { return m_Tiles; }
 
     //--------------------------------------------------------------------------------------------------
 

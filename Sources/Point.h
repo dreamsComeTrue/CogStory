@@ -8,20 +8,20 @@ namespace aga
     struct Point
     {
         Point ()
-            : X (0.0)
-            , Y (0.0)
+          : X (0.0)
+          , Y (0.0)
         {
         }
 
         Point (int x, int y)
-            : X (x)
-            , Y (y)
+          : X (x)
+          , Y (y)
         {
         }
 
         Point (double x, double y)
-            : X (x)
-            , Y (y)
+          : X (x)
+          , Y (y)
         {
         }
 
@@ -35,6 +35,8 @@ namespace aga
                 double Width, Height;
             };
         };
+
+        bool operator== (const Point& rhs) const { return X == rhs.X && Y == rhs.Y; }
     };
 }
 

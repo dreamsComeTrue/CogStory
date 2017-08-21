@@ -22,6 +22,7 @@
 #include <Gwork/Skins/TexturedBase.h>
 
 #include <cmath>
+#include <experimental/filesystem>
 #include <fstream>
 #include <functional>
 #include <map>
@@ -106,6 +107,12 @@ namespace aga
         strStream << t;
 
         return strStream.str ();
+    }
+
+    static std::string GetBaseName (const std::string& path)
+    {
+        std::experimental::filesystem::path p{ path };
+        return p.stem ().c_str ();
     }
 }
 

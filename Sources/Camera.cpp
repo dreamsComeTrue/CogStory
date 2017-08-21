@@ -11,7 +11,6 @@ namespace aga
 
     Camera::Camera (Screen* screen)
       : m_Screen (screen)
-      , m_Scale (1.0, 1.0)
     {
         const Point& size = screen->GetScreenSize ();
         SetOffset (size.Width * 0.5, size.Height * 0.5);
@@ -31,22 +30,13 @@ namespace aga
 
     void Camera::SetOffset (float dx, float dy)
     {
-        m_Position.X += dx;
-        m_Position.Y += dy;
-
         al_identity_transform (&m_Transform);
         al_translate_transform (&m_Transform, dx, dy);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::Move (float dx, float dy)
-    {
-        m_Position.X += dx;
-        m_Position.Y += dy;
-
-        al_translate_transform (&m_Transform, dx, dy);
-    }
+    void Camera::Move (float dx, float dy) { al_translate_transform (&m_Transform, dx, dy); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -56,9 +46,6 @@ namespace aga
         {
             al_translate_transform (&m_Transform, -mousePosX, -mousePosY);
         }
-
-        m_Scale.X *= dx;
-        m_Scale.Y *= dy;
 
         al_scale_transform (&m_Transform, dx, dy);
 
@@ -70,23 +57,14 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::Reset ()
-    {
-        m_Position.X = 0;
-        m_Position.Y = 0;
-
-        al_use_transform (&IdentityTransform);
-    }
+    void Camera::UseIdentityTransform () { al_use_transform (&IdentityTransform); }
 
     //--------------------------------------------------------------------------------------------------
 
     void Camera::ClearTransformations ()
     {
-        m_Position.X = 0;
-        m_Position.Y = 0;
-
         al_identity_transform (&m_Transform);
-        Reset ();
+        UseIdentityTransform ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -95,7 +73,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Point Camera::GetScale () { return m_Scale; }
+    Point Camera::GetScale () { return { m_Transform.m[0][0], m_Transform.m[1][1] }; }
 
     //--------------------------------------------------------------------------------------------------
 }

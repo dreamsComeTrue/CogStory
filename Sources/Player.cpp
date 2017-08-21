@@ -63,8 +63,6 @@ namespace aga
 
     bool Player::Update (double deltaTime)
     {
-        HandleInput (deltaTime);
-
         m_Animation.Update (deltaTime);
         UpdateScripts (deltaTime);
 

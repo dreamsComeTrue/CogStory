@@ -15,8 +15,14 @@ namespace aga
     {
         std::string Tileset;
         std::string Name;
-        Point Pos;
+        Rect Bounds;
+        int ZOrder;
         float Rotation;
+
+        bool operator== (const Tile& rhs) const
+        {
+            return Tileset == rhs.Tileset && Name == rhs.Name && Bounds == rhs.Bounds && Rotation == rhs.Rotation;
+        }
 
         void Draw (AtlasManager* atlasManager);
     };
@@ -39,6 +45,8 @@ namespace aga
         virtual void Render (double deltaTime);
 
         void AddTile (Tile& tile);
+        void RemoveTile (Tile& tile);
+        std::vector<Tile>& GetTiles ();
 
         Point GetSpawnPoint (const std::string& name);
 

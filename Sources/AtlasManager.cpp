@@ -3,8 +3,6 @@
 #include "AtlasManager.h"
 #include "Atlas.h"
 
-#include <experimental/filesystem>
-
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
@@ -25,7 +23,12 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool AtlasManager::Initialize () { Lifecycle::Initialize (); }
+    bool AtlasManager::Initialize ()
+    {
+        Lifecycle::Initialize ();
+
+        LoadFromFile (GetResourcePath (PACK_0_0_HOME));
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -43,9 +46,7 @@ namespace aga
 
     Atlas* AtlasManager::LoadFromFile (const std::string& path)
     {
-        std::experimental::filesystem::path p{ path };
-        std::string fileName = p.stem ().c_str ();
-
+        std::string fileName = GetBaseName (path);
         Atlas* atlas = GetAtlas (fileName);
 
         if (!atlas)

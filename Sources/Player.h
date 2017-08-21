@@ -20,6 +20,7 @@ namespace aga
         bool Destroy ();
 
         bool Update (double deltaTime);
+        void HandleInput (double deltaTime);
         void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
         void Render (double deltaTime);
 
@@ -33,7 +34,6 @@ namespace aga
 
     private:
         void InitializeAnimations ();
-        void HandleInput (double deltaTime);
 
     private:
         ALLEGRO_BITMAP* m_Image;

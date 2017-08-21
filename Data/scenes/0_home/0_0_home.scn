@@ -1,6 +1,13 @@
     {
         "name" : "Home",
         "size" : "1000 1000",
+        "scripts" :
+        [
+            {
+                "name" : "home",
+                "path" : "0_home/0_0_home.script"
+            }
+        ],
         "spawn_points" :
         [
             {   
@@ -18,6 +25,7 @@
                 "tileset" : "0_0_home",
                 "name" : "main_room",
                 "pos" : "0 0",
+                "z-order" : "0",
                 "rot" : "0"
             }
         ]

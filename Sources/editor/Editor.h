@@ -11,6 +11,14 @@ namespace aga
     extern const int TILES_COUNT;
 
     class MainLoop;
+    struct Tile;
+
+    enum CursorMode
+    {
+        TileInsertMode,
+        TileSelectMode,
+        TileEditMode
+    };
 
     class Editor : public Lifecycle, public Gwk::Event::Handler
     {
@@ -28,8 +36,10 @@ namespace aga
         void InitializeUI ();
         void DrawTiles ();
 
-        void SelectTile (int mouseX, int mouseY);
+        bool SelectTile (int mouseX, int mouseY);
         void AddTile (int mouseX, int mouseY);
+
+        Tile* GetTileUnderCursor (int mouseX, int mouseY, Rect&& outRect);
 
         void OnMenuItemPlay (Gwk::Event::Info info);
         void MenuItemPlay ();
@@ -44,17 +54,21 @@ namespace aga
         Gwk::Skin::TexturedBase* m_Skin;
         Gwk::Controls::Canvas* m_MainCanvas;
 
-        Atlas m_Atlas;
+        Atlas* m_Atlas;
         AtlasRegion m_SelectedAtlasRegion;
-        bool m_IsAtlasRegionSelected;
 
         float m_Rotation;
 
         std::vector<Gwk::Controls::ImagePanel*> m_ImagePanels;
 
+        CursorMode m_CursorMode;
+
+        Tile* m_SelectedTile;
+
         bool m_IsDrawTiles;
 
         bool m_IsSnapToGrid;
+        int m_BaseGridSize;
         int m_GridSize;
 
         bool m_IsMousePan;

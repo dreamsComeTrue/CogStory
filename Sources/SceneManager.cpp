@@ -39,6 +39,7 @@ namespace aga
     bool SceneManager::Initialize ()
     {
         m_AtlasManager = new AtlasManager ();
+        m_AtlasManager->Initialize ();
 
         m_Player.Initialize ();
         m_Player.MoveCallback = [&](double dx, double dy) { m_Camera.Move (-dx, -dy); };
@@ -91,7 +92,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneManager::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime) { m_Player.ProcessEvent (event, deltaTime); }
+    void SceneManager::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime) {}
 
     //--------------------------------------------------------------------------------------------------
 

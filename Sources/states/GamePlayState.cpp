@@ -6,7 +6,6 @@
 #include "Scene.h"
 #include "SceneManager.h"
 #include "Screen.h"
-#include "ScriptManager.h"
 #include "StateManager.h"
 
 namespace aga
@@ -40,8 +39,6 @@ namespace aga
         Lifecycle::Initialize ();
 
         scene00 = Scene::LoadScene (m_MainLoop->GetSceneManager (), GetResourcePath (SCENE_0_0));
-        Script* script = m_MainLoop->GetScriptManager ()->LoadScriptFromFile (GetResourcePath (SCRIPT_0_0), "home");
-        scene00->AttachScript (script);
 
         m_MainLoop->GetSceneManager ()->AddScene (SCENE_0_0, scene00);
         m_MainLoop->GetSceneManager ()->SetActiveScene (scene00);
@@ -71,11 +68,14 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime) {}
+    void GamePlayState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
+    {
+        m_MainLoop->GetSceneManager ()->GetPlayer ().ProcessEvent (event, deltaTime);
+    }
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::Update (double deltaTime) {}
+    void GamePlayState::Update (double deltaTime) { m_MainLoop->GetSceneManager ()->GetPlayer ().HandleInput (deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
 

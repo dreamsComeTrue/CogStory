@@ -19,7 +19,7 @@ namespace aga
         void SetOffset (float dx, float dy);
         void Move (float dx, float dy);
         void Scale (float dx, float dy, float mousePosX = -1, float mousePosY = -1);
-        void Reset ();
+        void UseIdentityTransform ();
         void ClearTransformations ();
 
         Point GetTranslate ();
@@ -27,8 +27,6 @@ namespace aga
 
     private:
         ALLEGRO_TRANSFORM m_Transform;
-        Point m_Position;
-        Point m_Scale;
         Screen* m_Screen;
     };
 }

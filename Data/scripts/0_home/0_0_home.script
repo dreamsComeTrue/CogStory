@@ -9,7 +9,7 @@ void BeforeEnterScene ()
 {
     player.SetPosition (0, 0);
 
-    AddTween (0, 0, 500, 1000, PlayerTween);
+    AddTween (0, 0, 100, 500, PlayerTween);
     
     Point screensize = GetScreenSize ();
     Point playerSize = player.GetSize ();
@@ -23,9 +23,9 @@ bool PlayerTween (int i)
 {
     player.SetPosition (i, player.GetPosition ().Y);
     
-    if (player.GetPosition ().X > 499.0)
+    if (player.GetPosition ().X > 99.0)
     {
-        AddTween (1, 0, 500, 1000, AnotherPlayerTween);          
+        AddTween (1, 0, 100, 500, AnotherPlayerTween);          
     }
     
     return false; // t.progress () >= 1;

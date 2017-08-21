@@ -21,6 +21,7 @@ namespace aga
         //            BottomRight.Width = width;
         //            BottomRight.Height = height;
         //        }
+        bool operator== (const Rect& rhs) const { return TopLeft == rhs.TopLeft && BottomRight == rhs.BottomRight; }
     };
 
     static bool InsideRect (double x, double y, const Rect& rect)

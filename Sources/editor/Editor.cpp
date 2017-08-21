@@ -25,9 +25,11 @@ namespace aga
       , m_IsSnapToGrid (true)
       , m_IsMousePan (false)
       , m_IsMouseWheel (false)
-      , m_IsAtlasRegionSelected (false)
       , m_Rotation (0)
+      , m_BaseGridSize (16)
       , m_GridSize (16)
+      , m_CursorMode (CursorMode::TileSelectMode)
+      , m_SelectedTile (nullptr)
     {
     }
 
@@ -101,17 +103,31 @@ namespace aga
                 {
                     if (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT)
                     {
-                        m_GridSize /= 2;
+                        m_BaseGridSize /= 2;
                     }
                     else
                     {
-                        m_GridSize *= 2;
+                        m_BaseGridSize *= 2;
                     }
 
-                    m_GridSize = std::max (1, std::min (m_GridSize, 1024));
+                    m_BaseGridSize = std::max (1, std::min (m_BaseGridSize, 1024));
+
+                    m_GridSize = m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X;
 
                     Gwk::Controls::Label* gridSizeLabel = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("GridSize").list.front ();
-                    gridSizeLabel->SetText (std::string ("GRID: ") + ToString (m_GridSize));
+                    gridSizeLabel->SetText (std::string ("GRID: ") + ToString (m_BaseGridSize));
+
+                    break;
+                }
+
+                case ALLEGRO_KEY_X:
+                {
+                    if (m_SelectedTile)
+                    {
+                        m_MainLoop->GetSceneManager ()->GetActiveScene ()->RemoveTile (*m_SelectedTile);
+                        m_SelectedTile = nullptr;
+                        m_CursorMode = CursorMode::TileSelectMode;
+                    }
 
                     break;
                 }
@@ -143,11 +159,27 @@ namespace aga
 
             if (event->mouse.button == 1)
             {
-                SelectTile (event->mouse.x, event->mouse.y);
+                bool tileSelected = SelectTile (event->mouse.x, event->mouse.y);
 
-                if (m_IsAtlasRegionSelected)
+                if (m_CursorMode == CursorMode::TileInsertMode && !tileSelected)
                 {
                     AddTile (event->mouse.x, event->mouse.y);
+                }
+
+                if (m_CursorMode == CursorMode::TileSelectMode)
+                {
+                    Rect r;
+                    m_SelectedTile = GetTileUnderCursor (event->mouse.x, event->mouse.y, std::move (r));
+
+                    if (m_SelectedTile)
+                    {
+                        m_Rotation = m_SelectedTile->Rotation;
+                        m_CursorMode = CursorMode::TileEditMode;
+                    }
+                }
+                else if (m_CursorMode == CursorMode::TileEditMode)
+                {
+                    m_CursorMode = CursorMode::TileSelectMode;
                 }
             }
 
@@ -159,7 +191,7 @@ namespace aga
                 Gwk::Controls::Label* heightLabel = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("HeightLabel").list.front ();
                 heightLabel->SetText ("H: 0");
 
-                m_IsAtlasRegionSelected = false;
+                m_CursorMode = CursorMode::TileSelectMode;
             }
         }
         else if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
@@ -171,10 +203,12 @@ namespace aga
             if (event->mouse.dz < 0.0)
             {
                 m_MainLoop->GetSceneManager ()->GetCamera ().Scale (0.75f, 0.75f, event->mouse.x, event->mouse.y);
+                m_GridSize = m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X;
             }
             else if (event->mouse.dz > 0.0)
             {
                 m_MainLoop->GetSceneManager ()->GetCamera ().Scale (1.25f, 1.25f, event->mouse.x, event->mouse.y);
+                m_GridSize = m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X;
             }
 
             Gwk::Controls::Label* scaleLabel = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("ScaleLabel").list.front ();
@@ -206,23 +240,55 @@ namespace aga
 
     void Editor::Render (double deltaTime)
     {
-        if (m_IsAtlasRegionSelected)
+        ALLEGRO_MOUSE_STATE state;
+        al_get_mouse_state (&state);
+
+        Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
+        Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
+
+        int finalX = state.x;
+        int finalY = state.y;
+
+        if (m_IsSnapToGrid)
         {
-            ALLEGRO_MOUSE_STATE state;
-            al_get_mouse_state (&state);
+            finalX = (finalX / m_GridSize) * m_GridSize;
+            finalY = (finalY / m_GridSize) * m_GridSize;
+        }
 
-            Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
+        if (m_CursorMode == CursorMode::TileInsertMode)
+        {
+            m_Atlas->DrawRegion (m_SelectedAtlasRegion.Name, finalX, finalY, scale.X, scale.Y, DegressToRadians (m_Rotation));
+        }
 
-            int finalX = state.x;
-            int finalY = state.y;
+        if (m_CursorMode == CursorMode::TileSelectMode)
+        {
+            Rect r;
+            Tile* tile = GetTileUnderCursor (state.x, state.y, std::move (r));
 
-            if (m_IsSnapToGrid)
+            if (tile)
             {
-                finalX = (finalX / m_GridSize) * m_GridSize;
-                finalY = (finalY / m_GridSize) * m_GridSize;
+                al_draw_rectangle (r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width, r.BottomRight.Height, COLOR_YELLOW, 2);
             }
+        }
 
-            m_Atlas.DrawRegion (m_SelectedAtlasRegion.Name, finalX, finalY, scale.X, scale.Y, DegressToRadians (m_Rotation));
+        if (m_CursorMode == CursorMode::TileEditMode)
+        {
+            if (m_SelectedTile)
+            {
+                Rect b = m_SelectedTile->Bounds;
+                int width = b.BottomRight.Width * 0.5;
+                int height = b.BottomRight.Height * 0.5;
+
+                m_SelectedTile->Rotation = m_Rotation;
+                m_SelectedTile->Bounds.TopLeft = { (translate.X + finalX) * (1 / scale.X), (translate.Y + finalY) * (1 / scale.Y) };
+
+                int x1 = (b.TopLeft.X - translate.X * (1 / scale.X) - width) * (scale.X);
+                int y1 = (b.TopLeft.Y - translate.Y * (1 / scale.Y) - height) * (scale.Y);
+                int x2 = (b.TopLeft.X - translate.X * (1 / scale.X) + width) * (scale.X);
+                int y2 = (b.TopLeft.Y - translate.Y * (1 / scale.Y) + height) * (scale.Y);
+
+                al_draw_rectangle (x1, y1, x2, y2, COLOR_RED, 2);
+            }
         }
 
         if (m_IsDrawTiles)
@@ -237,7 +303,7 @@ namespace aga
 
     void Editor::DrawTiles ()
     {
-        std::vector<AtlasRegion>& regions = m_Atlas.GetRegions ();
+        std::vector<AtlasRegion>& regions = m_Atlas->GetRegions ();
         const Point screenSize = m_MainLoop->GetScreen ()->GetScreenSize ();
         double beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
         float advance = 0;
@@ -253,7 +319,7 @@ namespace aga
 
             Rect region = regions[i].Bounds;
 
-            al_draw_scaled_bitmap (m_Atlas.GetImage (),
+            al_draw_scaled_bitmap (m_Atlas->GetImage (),
                                    region.TopLeft.X,
                                    region.TopLeft.Y,
                                    region.BottomRight.Width,
@@ -268,12 +334,12 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::SelectTile (int mouseX, int mouseY)
+    bool Editor::SelectTile (int mouseX, int mouseY)
     {
         const Point screenSize = m_MainLoop->GetScreen ()->GetScreenSize ();
         double beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
         float advance = 0;
-        std::vector<AtlasRegion> regions = m_Atlas.GetRegions ();
+        std::vector<AtlasRegion> regions = m_Atlas->GetRegions ();
 
         for (int i = 0; i < TILES_COUNT; ++i)
         {
@@ -289,7 +355,7 @@ namespace aga
 
             if (InsideRect (mouseX, mouseY, r))
             {
-                m_IsAtlasRegionSelected = true;
+                m_CursorMode = CursorMode::TileInsertMode;
                 m_SelectedAtlasRegion = regions[i];
 
                 Gwk::Controls::Label* widthLabel = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("WidthLabel").list.front ();
@@ -300,9 +366,11 @@ namespace aga
                 std::string heightString = "H: " + ToString (m_SelectedAtlasRegion.Bounds.BottomRight.Height);
                 heightLabel->SetText (heightString);
 
-                break;
+                return true;
             }
         }
+
+        return false;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -313,13 +381,56 @@ namespace aga
 
         Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
         Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
+        AtlasRegion region = m_Atlas->GetRegion (m_SelectedAtlasRegion.Name);
 
-        tile.Tileset = m_Atlas.GetName ();
+        int finalX = mouseX;
+        int finalY = mouseY;
+
+        if (m_IsSnapToGrid)
+        {
+            finalX = (finalX / m_GridSize) * m_GridSize;
+            finalY = (finalY / m_GridSize) * m_GridSize;
+        }
+
+        tile.Tileset = m_Atlas->GetName ();
         tile.Name = m_SelectedAtlasRegion.Name;
-        tile.Pos = { (translate.X + mouseX) * (1 / scale.X), (translate.Y + mouseY) * (1 / scale.Y) };
+        tile.Bounds = { { (translate.X + finalX) * (1 / scale.X), (translate.Y + finalY) * (1 / scale.Y) },
+                        { region.Bounds.BottomRight.Width, region.Bounds.BottomRight.Height } };
         tile.Rotation = m_Rotation;
 
         m_MainLoop->GetSceneManager ()->GetActiveScene ()->AddTile (tile);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Tile* Editor::GetTileUnderCursor (int mouseX, int mouseY, Rect&& outRect)
+    {
+        Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
+        Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
+
+        std::vector<Tile>& tiles = m_MainLoop->GetSceneManager ()->GetActiveScene ()->GetTiles ();
+
+        for (Tile& tile : tiles)
+        {
+            Rect b = tile.Bounds;
+            int width = b.BottomRight.Width * 0.5;
+            int height = b.BottomRight.Height * 0.5;
+
+            int x1 = (b.TopLeft.X - translate.X * (1 / scale.X) - width) * (scale.X);
+            int y1 = (b.TopLeft.Y - translate.Y * (1 / scale.Y) - height) * (scale.Y);
+            int x2 = (b.TopLeft.X - translate.X * (1 / scale.X) + width) * (scale.X);
+            int y2 = (b.TopLeft.Y - translate.Y * (1 / scale.Y) + height) * (scale.Y);
+
+            Rect r = { { x1, y1 }, { x2, y2 } };
+
+            if (InsideRect (mouseX, mouseY, r))
+            {
+                outRect = r;
+                return &tile;
+            }
+        }
+
+        return nullptr;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -361,7 +472,7 @@ namespace aga
             }
         }
 
-        m_Atlas = *m_MainLoop->GetSceneManager ()->GetAtlasManager ()->LoadFromFile (GetResourcePath (PACK_0_0_HOME));
+        m_Atlas = m_MainLoop->GetSceneManager ()->GetAtlasManager ()->GetAtlas (GetBaseName (GetResourcePath (PACK_0_0_HOME)));
 
         double beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
         float advance = 0;
