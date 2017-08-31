@@ -120,6 +120,35 @@ namespace aga
                     break;
                 }
 
+                case ALLEGRO_KEY_Z:
+                {
+                    int zOrder = 0;
+
+                    if (m_SelectedTile)
+                    {
+                        zOrder = m_SelectedTile->ZOrder;
+
+                        if (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT)
+                        {
+                            zOrder = std::max (0, --zOrder);
+                        }
+                        else
+                        {
+                            ++zOrder;
+                        }
+
+                        m_SelectedTile->ZOrder = zOrder;
+
+                        m_MainLoop->GetSceneManager ()->GetActiveScene ()->SortTiles ();
+                    }
+
+                    Gwk::Controls::Label* gridSizeLabel =
+                      (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("ZOrderLabel").list.front ();
+                    gridSizeLabel->SetText (std::string ("ZORD: ") + ToString (zOrder));
+
+                    break;
+                }
+
                 case ALLEGRO_KEY_X:
                 {
                     if (m_SelectedTile)
@@ -140,6 +169,31 @@ namespace aga
                 case ALLEGRO_KEY_F5:
                 {
                     MenuItemPlay ();
+                    break;
+                }
+
+                case ALLEGRO_KEY_SPACE:
+                {
+                    m_IsDrawTiles = !m_IsDrawTiles;
+
+                    for (int i = 0; i < TILES_COUNT; ++i)
+                    {
+                        std::ostringstream name;
+                        name << "TileRect" << i;
+
+                        Gwk::Controls::Rectangle* rect =
+                          (Gwk::Controls::Rectangle*)m_MainCanvas->GetNamedChildren (name.str ()).list.front ();
+                        rect->SetHidden (!m_IsDrawTiles);
+
+                        Gwk::Controls::Button* nextAssetsButton =
+                          (Gwk::Controls::Button*)m_MainCanvas->GetNamedChildren ("NextAssetsButton").list.front ();
+                        nextAssetsButton->SetHidden (!m_IsDrawTiles);
+
+                        Gwk::Controls::Button* prevAssetsButton =
+                          (Gwk::Controls::Button*)m_MainCanvas->GetNamedChildren ("PrevAssetsButton").list.front ();
+                        prevAssetsButton->SetHidden (!m_IsDrawTiles);
+                    }
+
                     break;
                 }
 
@@ -174,6 +228,15 @@ namespace aga
                     if (m_SelectedTile)
                     {
                         m_Rotation = m_SelectedTile->Rotation;
+
+                        Gwk::Controls::Label* angleLabel =
+                          (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("AngleLabel").list.front ();
+                        angleLabel->SetText (std::string ("A: ") + ToString (m_SelectedTile->Rotation));
+
+                        Gwk::Controls::Label* gridSizeLabel =
+                          (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("ZOrderLabel").list.front ();
+                        gridSizeLabel->SetText (std::string ("ZORD: ") + ToString (m_SelectedTile->ZOrder));
+
                         m_CursorMode = CursorMode::TileEditMode;
                     }
                 }
@@ -275,19 +338,11 @@ namespace aga
         {
             if (m_SelectedTile)
             {
-                Rect b = m_SelectedTile->Bounds;
-                int width = b.BottomRight.Width * 0.5;
-                int height = b.BottomRight.Height * 0.5;
-
                 m_SelectedTile->Rotation = m_Rotation;
                 m_SelectedTile->Bounds.TopLeft = { (translate.X + finalX) * (1 / scale.X), (translate.Y + finalY) * (1 / scale.Y) };
 
-                int x1 = (b.TopLeft.X - translate.X * (1 / scale.X) - width) * (scale.X);
-                int y1 = (b.TopLeft.Y - translate.Y * (1 / scale.Y) - height) * (scale.Y);
-                int x2 = (b.TopLeft.X - translate.X * (1 / scale.X) + width) * (scale.X);
-                int y2 = (b.TopLeft.Y - translate.Y * (1 / scale.Y) + height) * (scale.Y);
-
-                al_draw_rectangle (x1, y1, x2, y2, COLOR_RED, 2);
+                Rect b = GetRenderBounds (*m_SelectedTile);
+                al_draw_rectangle (b.TopLeft.X, b.TopLeft.Y, b.BottomRight.Width, b.BottomRight.Height, COLOR_RED, 2);
             }
         }
 
@@ -405,32 +460,43 @@ namespace aga
 
     Tile* Editor::GetTileUnderCursor (int mouseX, int mouseY, Rect&& outRect)
     {
-        Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
-        Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
-
         std::vector<Tile>& tiles = m_MainLoop->GetSceneManager ()->GetActiveScene ()->GetTiles ();
+        Tile* result = nullptr;
 
         for (Tile& tile : tiles)
         {
-            Rect b = tile.Bounds;
-            int width = b.BottomRight.Width * 0.5;
-            int height = b.BottomRight.Height * 0.5;
-
-            int x1 = (b.TopLeft.X - translate.X * (1 / scale.X) - width) * (scale.X);
-            int y1 = (b.TopLeft.Y - translate.Y * (1 / scale.Y) - height) * (scale.Y);
-            int x2 = (b.TopLeft.X - translate.X * (1 / scale.X) + width) * (scale.X);
-            int y2 = (b.TopLeft.Y - translate.Y * (1 / scale.Y) + height) * (scale.Y);
-
-            Rect r = { { x1, y1 }, { x2, y2 } };
+            Rect r = GetRenderBounds (tile);
 
             if (InsideRect (mouseX, mouseY, r))
             {
-                outRect = r;
-                return &tile;
+                if ((result == nullptr) || (result && result->ZOrder < tile.ZOrder))
+                {
+                    outRect = r;
+                    result = &tile;
+                }
             }
         }
 
-        return nullptr;
+        return result;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Rect Editor::GetRenderBounds (Tile& tile)
+    {
+        Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
+        Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
+
+        Rect b = tile.Bounds;
+        int width = b.BottomRight.Width * 0.5;
+        int height = b.BottomRight.Height * 0.5;
+
+        int x1 = (b.TopLeft.X - translate.X * (1 / scale.X) - width) * (scale.X);
+        int y1 = (b.TopLeft.Y - translate.Y * (1 / scale.Y) - height) * (scale.Y);
+        int x2 = (b.TopLeft.X - translate.X * (1 / scale.X) + width) * (scale.X);
+        int y2 = (b.TopLeft.Y - translate.Y * (1 / scale.Y) + height) * (scale.Y);
+
+        return { { x1, y1 }, { x2, y2 } };
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -491,12 +557,12 @@ namespace aga
             rect->SetBounds (advance, screenSize.Height - TILE_SIZE - 2, TILE_SIZE, TILE_SIZE);
         }
 
-        Gwk::Controls::Button* nextAssetsButton = new Gwk::Controls::Button (m_MainCanvas);
+        Gwk::Controls::Button* nextAssetsButton = new Gwk::Controls::Button (m_MainCanvas, "NextAssetsButton");
         nextAssetsButton->SetText (">>");
         nextAssetsButton->SetPos (advance + TILE_SIZE, screenSize.Height - TILE_SIZE - 2);
         nextAssetsButton->SetSize (40, 22);
 
-        Gwk::Controls::Button* prevAssetsButton = new Gwk::Controls::Button (m_MainCanvas);
+        Gwk::Controls::Button* prevAssetsButton = new Gwk::Controls::Button (m_MainCanvas, "PrevAssetsButton");
         prevAssetsButton->SetText ("<<");
         prevAssetsButton->SetPos (advance + TILE_SIZE, screenSize.Height - TILE_SIZE - 2 + nextAssetsButton->Height ());
         prevAssetsButton->SetSize (40, 22);
@@ -533,11 +599,17 @@ namespace aga
         angleLabel->SetHeight (labelHeight);
         angleLabel->SetPos (screenSize.Width - sideOffset, heightLabel->Bottom ());
 
+        Gwk::Controls::Label* zOrderLabel = new Gwk::Controls::Label (m_MainCanvas, "ZOrderLabel");
+        zOrderLabel->SetText (std::string ("ZORD: ") + ToString (0));
+        zOrderLabel->SetTextColor (Gwk::Color (0, 255, 0));
+        zOrderLabel->SetHeight (labelHeight);
+        zOrderLabel->SetPos (screenSize.Width - sideOffset, angleLabel->Bottom ());
+
         Gwk::Controls::Label* scaleLabel = new Gwk::Controls::Label (m_MainCanvas, "ScaleLabel");
         scaleLabel->SetText (std::string ("S: ") + ToString (m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X));
         scaleLabel->SetTextColor (Gwk::Color (0, 255, 0));
         scaleLabel->SetHeight (labelHeight);
-        scaleLabel->SetPos (screenSize.Width - sideOffset, angleLabel->Bottom ());
+        scaleLabel->SetPos (screenSize.Width - sideOffset, zOrderLabel->Bottom ());
 
         Gwk::Controls::Label* snapToGridLabel = new Gwk::Controls::Label (m_MainCanvas, "SnapToGrid");
         snapToGridLabel->SetText (std::string ("SNAP: ") + (m_IsSnapToGrid ? "YES" : "NO"));

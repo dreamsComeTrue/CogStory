@@ -108,25 +108,33 @@ namespace aga
 
     void StateManager::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
+        std::string before;
+        std::string after;
+
         if (m_ActiveState != nullptr)
         {
+            before = GetActiveStateName ();
             m_ActiveState->ProcessEvent (event, deltaTime);
+            after = GetActiveStateName ();
         }
 
-        if (event->type == ALLEGRO_EVENT_KEY_DOWN)
+        if (before == after)
         {
-            ALLEGRO_KEYBOARD_STATE state;
-            al_get_keyboard_state (&state);
-
-            if (al_key_down (&state, ALLEGRO_KEY_SPACE))
+            if (event->type == ALLEGRO_EVENT_KEY_UP)
             {
-                if (GetActiveStateName () == "GAMEPLAY_STATE")
+                switch (event->keyboard.keycode)
                 {
-                    SetActiveState ("EDITOR_STATE");
-                }
-                else
-                {
-                    SetActiveState ("GAMEPLAY_STATE");
+                    case ALLEGRO_KEY_F5:
+                    {
+                        if (GetActiveStateName () == "GAMEPLAY_STATE")
+                        {
+                            SetActiveState ("EDITOR_STATE");
+                        }
+                        else
+                        {
+                            SetActiveState ("GAMEPLAY_STATE");
+                        }
+                    }
                 }
             }
         }

@@ -16,13 +16,15 @@ namespace aga
         std::string Tileset;
         std::string Name;
         Rect Bounds;
-        int ZOrder;
-        float Rotation;
+        int ZOrder = 0;
+        float Rotation = 0;
 
         bool operator== (const Tile& rhs) const
         {
             return Tileset == rhs.Tileset && Name == rhs.Name && Bounds == rhs.Bounds && Rotation == rhs.Rotation;
         }
+
+        static bool CompareByZOrder (const Tile& a, const Tile& b) { return a.ZOrder < b.ZOrder; }
 
         void Draw (AtlasManager* atlasManager);
     };
@@ -49,6 +51,8 @@ namespace aga
         std::vector<Tile>& GetTiles ();
 
         Point GetSpawnPoint (const std::string& name);
+
+        void SortTiles ();
 
     private:
         std::string m_Name;

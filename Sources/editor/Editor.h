@@ -40,6 +40,7 @@ namespace aga
         void AddTile (int mouseX, int mouseY);
 
         Tile* GetTileUnderCursor (int mouseX, int mouseY, Rect&& outRect);
+        Rect GetRenderBounds (Tile& tile);
 
         void OnMenuItemPlay (Gwk::Event::Info info);
         void MenuItemPlay ();
