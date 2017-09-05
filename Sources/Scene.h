@@ -19,6 +19,8 @@ namespace aga
         int ZOrder = 0;
         float Rotation = 0;
 
+        int RenderID = 0;
+
         bool operator== (const Tile& rhs) const
         {
             return Tileset == rhs.Tileset && Name == rhs.Name && Bounds == rhs.Bounds && Rotation == rhs.Rotation;

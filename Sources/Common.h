@@ -21,8 +21,8 @@
 #include <Gwork/Renderers/Allegro5.h>
 #include <Gwork/Skins/TexturedBase.h>
 
+#include <boost/filesystem.hpp>
 #include <cmath>
-#include <experimental/filesystem>
 #include <fstream>
 #include <functional>
 #include <map>
@@ -37,13 +37,13 @@
 #include "Rect.h"
 #include "Resources.h"
 
-#define SAFE_DELETE(x)                                                                                                                     \
-    {                                                                                                                                      \
-        if (x != nullptr)                                                                                                                  \
-        {                                                                                                                                  \
-            delete x;                                                                                                                      \
-            x = nullptr;                                                                                                                   \
-        }                                                                                                                                  \
+#define SAFE_DELETE(x)                                                                                                 \
+    {                                                                                                                  \
+        if (x != nullptr)                                                                                              \
+        {                                                                                                              \
+            delete x;                                                                                                  \
+            x = nullptr;                                                                                               \
+        }                                                                                                              \
     }
 
 namespace aga
@@ -86,22 +86,23 @@ namespace aga
 
     static std::string& LeftTrimString (std::string& str)
     {
-        auto it2 = std::find_if (str.begin (), str.end (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
+        auto it2 = std::find_if (
+            str.begin (), str.end (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
         str.erase (str.begin (), it2);
         return str;
     }
 
     static std::string& RightTrimString (std::string& str)
     {
-        auto it1 = std::find_if (str.rbegin (), str.rend (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
+        auto it1 = std::find_if (
+            str.rbegin (), str.rend (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
         str.erase (it1.base (), str.end ());
         return str;
     }
 
     static std::string& TrimString (std::string& str) { return LeftTrimString (RightTrimString (str)); }
 
-    template<typename T>
-    static std::string ToString (T t)
+    template <typename T> static std::string ToString (T t)
     {
         std::stringstream strStream;
         strStream << t;
@@ -109,10 +110,16 @@ namespace aga
         return strStream.str ();
     }
 
-    static std::string GetBaseName (const std::string& path)
+    static std::string GetDirectory (const std::string& fullPath)
     {
-        std::experimental::filesystem::path p{ path };
-        return p.stem ().c_str ();
+        boost::filesystem::path p{ fullPath };
+        return p.parent_path ().string ();
+    }
+
+    static std::string GetBaseName (const std::string& fullPath)
+    {
+        boost::filesystem::path p{ fullPath };
+        return p.stem ().string ();
     }
 }
 

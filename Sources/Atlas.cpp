@@ -2,8 +2,6 @@
 
 #include "Atlas.h"
 
-#include <experimental/filesystem>
-
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
@@ -22,9 +20,10 @@ namespace aga
         getline (packFile, line); //  empty
         getline (packFile, line); //  image file
 
-        std::experimental::filesystem::path p{ path };
-        m_Name = p.stem ().c_str ();
-        m_Image = al_load_bitmap ((p.parent_path ().string () + "/" + line).c_str ());
+        m_Name = GetBaseName (path);
+
+        std::string fileName = GetDirectory (path) + "/" + line;
+        m_Image = al_load_bitmap (fileName.c_str ());
 
         getline (packFile, line); //  skip
         getline (packFile, line); //  skip
@@ -38,7 +37,7 @@ namespace aga
         {
             getline (packFile, name); //    name
             getline (packFile, line); //    rotate
-            getline (packFile, xy);   //    xy
+            getline (packFile, xy); //    xy
             getline (packFile, size); //    size
             getline (packFile, line); //    orig
             getline (packFile, line); //    offset
@@ -70,7 +69,8 @@ namespace aga
         if (m_Regions.find (name) != m_Regions.end ())
         {
             Rect r = m_Regions[name].Bounds;
-            al_draw_bitmap_region (m_Image, r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width, r.BottomRight.Height, x, y, 0);
+            al_draw_bitmap_region (
+                m_Image, r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width, r.BottomRight.Height, x, y, 0);
         }
     }
 
@@ -81,20 +81,9 @@ namespace aga
         if (m_Regions.find (name) != m_Regions.end ())
         {
             Rect r = m_Regions[name].Bounds;
-            al_draw_tinted_scaled_rotated_bitmap_region (m_Image,
-                                                         r.TopLeft.X,
-                                                         r.TopLeft.Y,
-                                                         r.BottomRight.Width,
-                                                         r.BottomRight.Height,
-                                                         al_map_rgb (255, 255, 255),
-                                                         r.BottomRight.Width * 0.5,
-                                                         r.BottomRight.Height * 0.5,
-                                                         x,
-                                                         y,
-                                                         scaleX,
-                                                         scaleY,
-                                                         rotation,
-                                                         0);
+            al_draw_tinted_scaled_rotated_bitmap_region (m_Image, r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width,
+                r.BottomRight.Height, al_map_rgb (255, 255, 255), r.BottomRight.Width * 0.5, r.BottomRight.Height * 0.5,
+                x, y, scaleX, scaleY, rotation, 0);
         }
     }
 

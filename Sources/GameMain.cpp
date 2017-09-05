@@ -11,24 +11,18 @@ using namespace aga;
 const int SCREEN_WIDTH = 1000;
 const int SCREEN_HEIGHT = 600;
 
-MainLoop* g_MainLoop;
-Screen* g_Screen;
-
 int main (int argc, char* argv[])
 {
-    g_Screen = new Screen (SCREEN_WIDTH, SCREEN_HEIGHT);
-    g_MainLoop = new MainLoop (g_Screen);
+    Screen mainScreen (SCREEN_WIDTH, SCREEN_HEIGHT);
+    MainLoop mainLoop (&mainScreen);
 
-    if (!g_Screen->Initialize ())
+    if (!mainScreen.Initialize ())
     {
         printf ("Failed to initialize!\n");
     }
 
-    g_MainLoop->Initialize ();
-    g_MainLoop->Start ();
-
-    SAFE_DELETE (g_MainLoop);
-    SAFE_DELETE (g_Screen);
+    mainLoop.Initialize ();
+    mainLoop.Start ();
 
     return 0;
 }

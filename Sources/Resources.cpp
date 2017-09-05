@@ -40,7 +40,7 @@ namespace aga
 
     const std::string GetDataPath ()
     {
-        std::string path = "Data/";
+        std::string path = "C:/Users/B0634624/RobotTales/Data/";
 
         return path;
     }

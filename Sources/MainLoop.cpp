@@ -13,15 +13,15 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     MainLoop::MainLoop (Screen* screen)
-      : m_SceneManager (this)
-      , m_StateManager (this)
-      , m_ScriptManager (this)
-      , m_TweenManager (this)
-      , m_EditorState (nullptr)
-      , m_GamePlayState (nullptr)
-      , m_MainMenuState (nullptr)
-      , m_Screen (screen)
-      , m_IsRunning (true)
+        : m_SceneManager (this)
+        , m_StateManager (this)
+        , m_ScriptManager (this)
+        , m_TweenManager (this)
+        , m_EditorState (nullptr)
+        , m_GamePlayState (nullptr)
+        , m_MainMenuState (nullptr)
+        , m_Screen (screen)
+        , m_IsRunning (true)
     {
     }
 
@@ -55,10 +55,7 @@ namespace aga
             m_StateManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
         };
 
-        m_Screen->RenderFunction = [&]() {
-            m_SceneManager.Render (m_Screen->GetDeltaTime ());
-            m_StateManager.Render (m_Screen->GetDeltaTime ());
-        };
+        m_Screen->RenderFunction = [&]() { m_StateManager.Render (m_Screen->GetDeltaTime ()); };
 
         Lifecycle::Initialize ();
     }

@@ -9,7 +9,7 @@ void BeforeEnterScene ()
 {
     player.SetPosition (0, 0);
 
-    AddTween (0, 0, 100, 500, PlayerTween);
+  //  AddTween (0, 0, 100, 500, PlayerTween);
     
     Point screensize = GetScreenSize ();
     Point playerSize = player.GetSize ();

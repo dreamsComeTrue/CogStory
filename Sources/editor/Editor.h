@@ -35,8 +35,9 @@ namespace aga
     private:
         void InitializeUI ();
         void DrawTiles ();
+        void DrawGrid ();
 
-        bool SelectTile (int mouseX, int mouseY);
+        bool ChooseTile (int mouseX, int mouseY);
         void AddTile (int mouseX, int mouseY);
 
         Tile* GetTileUnderCursor (int mouseX, int mouseY, Rect&& outRect);
@@ -46,6 +47,16 @@ namespace aga
         void MenuItemPlay ();
         void OnMenuItemExit (Gwk::Event::Info info);
         void OnTileSelected (Gwk::Event::Info info);
+
+        void OnResetTranslate (Gwk::Controls::Base* control);
+        void OnResetScale (Gwk::Controls::Base* control);
+        void OnShowGrid (Gwk::Controls::Base* control);
+        void OnHideGrid (Gwk::Controls::Base* control);
+        void OnGridIncrease (Gwk::Controls::Base* control);
+        void OnGridDecrease (Gwk::Controls::Base* control);
+
+        Point CalculateCursorPoint (int mouseX, int mouseY);
+        void UpdateLabels ();
 
     private:
         MainLoop* m_MainLoop;
@@ -64,6 +75,7 @@ namespace aga
 
         CursorMode m_CursorMode;
 
+        Tile* m_TileUnderCursor;
         Tile* m_SelectedTile;
 
         bool m_IsDrawTiles;

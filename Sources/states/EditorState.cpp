@@ -15,7 +15,7 @@ namespace aga
     std::string EDITOR_STATE_NAME = "EDITOR_STATE";
 
     EditorState::EditorState (MainLoop* mainLoop)
-      : State (mainLoop, EDITOR_STATE_NAME)
+        : State (mainLoop, EDITOR_STATE_NAME)
     {
     }
 
@@ -64,7 +64,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime) { m_Editor->ProcessEvent (event, deltaTime); }
+    void EditorState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
+    {
+        m_Editor->ProcessEvent (event, deltaTime);
+    }
 
     //--------------------------------------------------------------------------------------------------
 

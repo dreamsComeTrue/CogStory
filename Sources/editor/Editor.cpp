@@ -17,19 +17,20 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Editor::Editor (MainLoop* mainLoop)
-      : m_MainLoop (mainLoop)
-      , m_Renderer (nullptr)
-      , m_Skin (nullptr)
-      , m_MainCanvas (nullptr)
-      , m_IsDrawTiles (true)
-      , m_IsSnapToGrid (true)
-      , m_IsMousePan (false)
-      , m_IsMouseWheel (false)
-      , m_Rotation (0)
-      , m_BaseGridSize (16)
-      , m_GridSize (16)
-      , m_CursorMode (CursorMode::TileSelectMode)
-      , m_SelectedTile (nullptr)
+        : m_MainLoop (mainLoop)
+        , m_Renderer (nullptr)
+        , m_Skin (nullptr)
+        , m_MainCanvas (nullptr)
+        , m_IsDrawTiles (true)
+        , m_IsSnapToGrid (true)
+        , m_IsMousePan (false)
+        , m_IsMouseWheel (false)
+        , m_Rotation (0)
+        , m_BaseGridSize (16)
+        , m_GridSize (16)
+        , m_CursorMode (CursorMode::TileSelectMode)
+        , m_SelectedTile (nullptr)
+        , m_TileUnderCursor (nullptr)
     {
     }
 
@@ -66,155 +67,163 @@ namespace aga
 
     void Editor::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
-        m_GworkInput.ProcessMessage (*event);
+        bool tileSelected = false;
+
+        if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+        {
+            if (event->mouse.button == 1)
+            {
+                tileSelected = ChooseTile (event->mouse.x, event->mouse.y);
+            }
+        }
+
+        bool guiProcessed = m_GworkInput.ProcessMessage (*event);
+
+        if (guiProcessed)
+        {
+            return;
+        }
 
         if (event->type == ALLEGRO_EVENT_KEY_CHAR)
         {
             switch (event->keyboard.keycode)
             {
-                case ALLEGRO_KEY_R:
+            case ALLEGRO_KEY_R:
+            {
+                m_Rotation += event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT ? 15 : -15;
+
+                if (m_Rotation <= -360)
                 {
+                    m_Rotation = 0;
+                }
+
+                if (m_Rotation >= 360)
+                {
+                    m_Rotation = 0;
+                }
+
+                UpdateLabels ();
+
+                break;
+            }
+
+            case ALLEGRO_KEY_G:
+            {
+                m_BaseGridSize *= event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT ? 0.5 : 2;
+                m_BaseGridSize = std::max (1, std::min (m_BaseGridSize, 1024));
+                m_GridSize
+                    = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X);
+
+                UpdateLabels ();
+
+                break;
+            }
+
+            case ALLEGRO_KEY_Z:
+            {
+                int zOrder = 0;
+
+                if (m_SelectedTile)
+                {
+                    zOrder = m_SelectedTile->ZOrder;
+
                     if (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT)
                     {
-                        m_Rotation -= 15;
+                        zOrder = std::max (0, --zOrder);
                     }
                     else
                     {
-                        m_Rotation += 15;
+                        ++zOrder;
                     }
 
-                    if (m_Rotation <= -360)
-                    {
-                        m_Rotation = 0;
-                    }
+                    m_SelectedTile->ZOrder = zOrder;
 
-                    if (m_Rotation >= 360)
-                    {
-                        m_Rotation = 0;
-                    }
-
-                    Gwk::Controls::Label* angleLabel = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("AngleLabel").list.front ();
-                    angleLabel->SetText (std::string ("A: ") + ToString (m_Rotation));
-
-                    break;
+                    m_MainLoop->GetSceneManager ()->GetActiveScene ()->SortTiles ();
                 }
 
-                case ALLEGRO_KEY_G:
+                Gwk::Controls::Label* gridSizeLabel
+                    = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("ZOrderLabel").list.front ();
+                gridSizeLabel->SetText (std::string ("ZORD: ") + ToString (zOrder));
+
+                break;
+            }
+
+            case ALLEGRO_KEY_X:
+            {
+                if (m_SelectedTile)
                 {
-                    if (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT)
-                    {
-                        m_BaseGridSize /= 2;
-                    }
-                    else
-                    {
-                        m_BaseGridSize *= 2;
-                    }
-
-                    m_BaseGridSize = std::max (1, std::min (m_BaseGridSize, 1024));
-
-                    m_GridSize = m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X;
-
-                    Gwk::Controls::Label* gridSizeLabel = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("GridSize").list.front ();
-                    gridSizeLabel->SetText (std::string ("GRID: ") + ToString (m_BaseGridSize));
-
-                    break;
+                    m_MainLoop->GetSceneManager ()->GetActiveScene ()->RemoveTile (*m_SelectedTile);
+                    m_SelectedTile = nullptr;
+                    m_CursorMode = CursorMode::TileSelectMode;
                 }
 
-                case ALLEGRO_KEY_Z:
+                break;
+            }
+
+            case ALLEGRO_KEY_C:
+            {
+                if (m_TileUnderCursor)
                 {
-                    int zOrder = 0;
-
-                    if (m_SelectedTile)
-                    {
-                        zOrder = m_SelectedTile->ZOrder;
-
-                        if (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT)
-                        {
-                            zOrder = std::max (0, --zOrder);
-                        }
-                        else
-                        {
-                            ++zOrder;
-                        }
-
-                        m_SelectedTile->ZOrder = zOrder;
-
-                        m_MainLoop->GetSceneManager ()->GetActiveScene ()->SortTiles ();
-                    }
-
-                    Gwk::Controls::Label* gridSizeLabel =
-                      (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("ZOrderLabel").list.front ();
-                    gridSizeLabel->SetText (std::string ("ZORD: ") + ToString (zOrder));
-
-                    break;
+                    m_SelectedAtlasRegion = m_Atlas->GetRegion (m_TileUnderCursor->Name);
+                    m_SelectedTile = nullptr;
+                    m_CursorMode = CursorMode::TileInsertMode;
                 }
 
-                case ALLEGRO_KEY_X:
-                {
-                    if (m_SelectedTile)
-                    {
-                        m_MainLoop->GetSceneManager ()->GetActiveScene ()->RemoveTile (*m_SelectedTile);
-                        m_SelectedTile = nullptr;
-                        m_CursorMode = CursorMode::TileSelectMode;
-                    }
-
-                    break;
-                }
+                break;
+            }
             }
         }
+
         if (event->type == ALLEGRO_EVENT_KEY_UP)
         {
             switch (event->keyboard.keycode)
             {
-                case ALLEGRO_KEY_F5:
+            case ALLEGRO_KEY_F5:
+            {
+                MenuItemPlay ();
+                break;
+            }
+
+            case ALLEGRO_KEY_SPACE:
+            {
+                m_IsDrawTiles = !m_IsDrawTiles;
+
+                for (int i = 0; i < TILES_COUNT; ++i)
                 {
-                    MenuItemPlay ();
-                    break;
+                    std::ostringstream name;
+                    name << "TileRect" << i;
+
+                    Gwk::Controls::Rectangle* rect
+                        = (Gwk::Controls::Rectangle*)m_MainCanvas->GetNamedChildren (name.str ()).list.front ();
+                    rect->SetHidden (!m_IsDrawTiles);
+
+                    Gwk::Controls::Button* nextAssetsButton
+                        = (Gwk::Controls::Button*)m_MainCanvas->GetNamedChildren ("NextAssetsButton").list.front ();
+                    nextAssetsButton->SetHidden (!m_IsDrawTiles);
+
+                    Gwk::Controls::Button* prevAssetsButton
+                        = (Gwk::Controls::Button*)m_MainCanvas->GetNamedChildren ("PrevAssetsButton").list.front ();
+                    prevAssetsButton->SetHidden (!m_IsDrawTiles);
                 }
 
-                case ALLEGRO_KEY_SPACE:
-                {
-                    m_IsDrawTiles = !m_IsDrawTiles;
+                break;
+            }
 
-                    for (int i = 0; i < TILES_COUNT; ++i)
-                    {
-                        std::ostringstream name;
-                        name << "TileRect" << i;
-
-                        Gwk::Controls::Rectangle* rect =
-                          (Gwk::Controls::Rectangle*)m_MainCanvas->GetNamedChildren (name.str ()).list.front ();
-                        rect->SetHidden (!m_IsDrawTiles);
-
-                        Gwk::Controls::Button* nextAssetsButton =
-                          (Gwk::Controls::Button*)m_MainCanvas->GetNamedChildren ("NextAssetsButton").list.front ();
-                        nextAssetsButton->SetHidden (!m_IsDrawTiles);
-
-                        Gwk::Controls::Button* prevAssetsButton =
-                          (Gwk::Controls::Button*)m_MainCanvas->GetNamedChildren ("PrevAssetsButton").list.front ();
-                        prevAssetsButton->SetHidden (!m_IsDrawTiles);
-                    }
-
-                    break;
-                }
-
-                case ALLEGRO_KEY_S:
-                {
-                    m_IsSnapToGrid = !m_IsSnapToGrid;
-                    Gwk::Controls::Label* snapToGridLabel =
-                      (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("SnapToGrid").list.front ();
-                    snapToGridLabel->SetText (std::string ("SNAP: ") + (m_IsSnapToGrid ? "YES" : "NO"));
-                    break;
-                }
+            case ALLEGRO_KEY_S:
+            {
+                m_IsSnapToGrid = !m_IsSnapToGrid;
+                UpdateLabels ();
+                break;
+            }
             }
         }
+
         if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
         {
             m_IsMousePan = event->mouse.button == 3;
 
             if (event->mouse.button == 1)
             {
-                bool tileSelected = SelectTile (event->mouse.x, event->mouse.y);
-
                 if (m_CursorMode == CursorMode::TileInsertMode && !tileSelected)
                 {
                     AddTile (event->mouse.x, event->mouse.y);
@@ -227,17 +236,10 @@ namespace aga
 
                     if (m_SelectedTile)
                     {
+                        m_CursorMode = CursorMode::TileEditMode;
                         m_Rotation = m_SelectedTile->Rotation;
 
-                        Gwk::Controls::Label* angleLabel =
-                          (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("AngleLabel").list.front ();
-                        angleLabel->SetText (std::string ("A: ") + ToString (m_SelectedTile->Rotation));
-
-                        Gwk::Controls::Label* gridSizeLabel =
-                          (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("ZOrderLabel").list.front ();
-                        gridSizeLabel->SetText (std::string ("ZORD: ") + ToString (m_SelectedTile->ZOrder));
-
-                        m_CursorMode = CursorMode::TileEditMode;
+                        UpdateLabels ();
                     }
                 }
                 else if (m_CursorMode == CursorMode::TileEditMode)
@@ -248,10 +250,12 @@ namespace aga
 
             if (event->mouse.button == 2)
             {
-                Gwk::Controls::Label* widthLabel = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("WidthLabel").list.front ();
+                Gwk::Controls::Label* widthLabel
+                    = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("WidthLabel").list.front ();
                 widthLabel->SetText ("W: 0");
 
-                Gwk::Controls::Label* heightLabel = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("HeightLabel").list.front ();
+                Gwk::Controls::Label* heightLabel
+                    = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("HeightLabel").list.front ();
                 heightLabel->SetText ("H: 0");
 
                 m_CursorMode = CursorMode::TileSelectMode;
@@ -266,32 +270,23 @@ namespace aga
             if (event->mouse.dz < 0.0)
             {
                 m_MainLoop->GetSceneManager ()->GetCamera ().Scale (0.75f, 0.75f, event->mouse.x, event->mouse.y);
-                m_GridSize = m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X;
+                m_GridSize
+                    = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X);
+                UpdateLabels ();
             }
             else if (event->mouse.dz > 0.0)
             {
                 m_MainLoop->GetSceneManager ()->GetCamera ().Scale (1.25f, 1.25f, event->mouse.x, event->mouse.y);
-                m_GridSize = m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X;
+                m_GridSize
+                    = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X);
             }
-
-            Gwk::Controls::Label* scaleLabel = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("ScaleLabel").list.front ();
-            scaleLabel->SetText (std::string ("S: ") + ToString (m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X));
 
             if (m_IsMousePan)
             {
                 m_MainLoop->GetSceneManager ()->GetCamera ().Move (event->mouse.dx, event->mouse.dy);
             }
 
-            Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
-            Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
-
-            Gwk::Controls::Label* xPositionLabel = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("XPositionLabel").list.front ();
-            std::string xPosString = " X: " + ToString (translate.X * (1 / scale.X));
-            xPositionLabel->SetText (xPosString);
-
-            Gwk::Controls::Label* yPositionLabel = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("YPositionLabel").list.front ();
-            std::string yPosString = " Y: " + ToString (translate.Y * (1 / scale.Y));
-            yPositionLabel->SetText (yPosString);
+            UpdateLabels ();
         }
         else if (event->type == ALLEGRO_EVENT_DISPLAY_RESIZE)
         {
@@ -303,34 +298,42 @@ namespace aga
 
     void Editor::Render (double deltaTime)
     {
+        if (m_IsSnapToGrid)
+        {
+            DrawGrid ();
+        }
+
+        m_MainLoop->GetSceneManager ()->Render (deltaTime);
+
+        if (m_IsDrawTiles)
+        {
+            DrawTiles ();
+        }
+
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
 
+        m_MainLoop->GetSceneManager ()->GetCamera ().UseIdentityTransform ();
+
         Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
         Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
-
-        int finalX = state.x;
-        int finalY = state.y;
-
-        if (m_IsSnapToGrid)
-        {
-            finalX = (finalX / m_GridSize) * m_GridSize;
-            finalY = (finalY / m_GridSize) * m_GridSize;
-        }
+        Point point = CalculateCursorPoint (state.x, state.y);
 
         if (m_CursorMode == CursorMode::TileInsertMode)
         {
-            m_Atlas->DrawRegion (m_SelectedAtlasRegion.Name, finalX, finalY, scale.X, scale.Y, DegressToRadians (m_Rotation));
+            m_Atlas->DrawRegion (
+                m_SelectedAtlasRegion.Name, point.X, point.Y, scale.X, scale.Y, DegressToRadians (m_Rotation));
         }
 
         if (m_CursorMode == CursorMode::TileSelectMode)
         {
             Rect r;
-            Tile* tile = GetTileUnderCursor (state.x, state.y, std::move (r));
+            m_TileUnderCursor = GetTileUnderCursor (state.x, state.y, std::move (r));
 
-            if (tile)
+            if (m_TileUnderCursor)
             {
-                al_draw_rectangle (r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width, r.BottomRight.Height, COLOR_YELLOW, 2);
+                al_draw_rectangle (
+                    r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width, r.BottomRight.Height, COLOR_YELLOW, 2);
             }
         }
 
@@ -339,16 +342,11 @@ namespace aga
             if (m_SelectedTile)
             {
                 m_SelectedTile->Rotation = m_Rotation;
-                m_SelectedTile->Bounds.TopLeft = { (translate.X + finalX) * (1 / scale.X), (translate.Y + finalY) * (1 / scale.Y) };
+                m_SelectedTile->Bounds.TopLeft = { (translate.X + point.X), (translate.Y + point.Y) };
 
                 Rect b = GetRenderBounds (*m_SelectedTile);
                 al_draw_rectangle (b.TopLeft.X, b.TopLeft.Y, b.BottomRight.Width, b.BottomRight.Height, COLOR_RED, 2);
             }
-        }
-
-        if (m_IsDrawTiles)
-        {
-            DrawTiles ();
         }
 
         m_MainCanvas->RenderCanvas ();
@@ -374,22 +372,60 @@ namespace aga
 
             Rect region = regions[i].Bounds;
 
-            al_draw_scaled_bitmap (m_Atlas->GetImage (),
-                                   region.TopLeft.X,
-                                   region.TopLeft.Y,
-                                   region.BottomRight.Width,
-                                   region.BottomRight.Height,
-                                   advance,
-                                   screenSize.Height - TILE_SIZE - 1,
-                                   TILE_SIZE,
-                                   TILE_SIZE - 2,
-                                   0);
+            al_draw_scaled_bitmap (m_Atlas->GetImage (), region.TopLeft.X, region.TopLeft.Y, region.BottomRight.Width,
+                region.BottomRight.Height, advance, screenSize.Height - TILE_SIZE - 1, TILE_SIZE, TILE_SIZE - 2, 0);
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Editor::SelectTile (int mouseX, int mouseY)
+    void Editor::DrawGrid ()
+    {
+        const ALLEGRO_COLOR LIGHT_GRAY{ 0.5f, 0.5f, 0.5f, 1.0f };
+
+        Point t = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
+        Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
+
+        int horBeginX = t.X / 2 * (1 / scale.X);
+
+        if (t.X > 0)
+        {
+            horBeginX *= -1;
+        }
+
+        int horBeginY = t.Y / 1 * (1 / scale.Y);
+
+        if (t.Y > 0)
+        {
+            horBeginY *= -1;
+        }
+
+        int horEndX = 300 + std::fabs (horBeginX);
+        int horEndY = 1000 + std::fabs (horBeginY);
+
+        for (int i = horBeginX; i < horEndX; ++i)
+        {
+            float xOffset = i * m_GridSize - t.X;
+
+            //  |
+            al_draw_line (xOffset, horBeginY, xOffset, horEndY, LIGHT_GRAY, 1);
+        }
+
+        horEndX = 1000 + std::fabs (horBeginX);
+        horEndY = 300 + std::fabs (horBeginY);
+
+        for (int i = horBeginY; i < horEndY; ++i)
+        {
+            float yOffset = i * m_GridSize - t.Y;
+
+            //  --
+            al_draw_line (horBeginX, yOffset, horEndX, yOffset, LIGHT_GRAY, 1);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Editor::ChooseTile (int mouseX, int mouseY)
     {
         const Point screenSize = m_MainLoop->GetScreen ()->GetScreenSize ();
         double beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
@@ -413,13 +449,7 @@ namespace aga
                 m_CursorMode = CursorMode::TileInsertMode;
                 m_SelectedAtlasRegion = regions[i];
 
-                Gwk::Controls::Label* widthLabel = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("WidthLabel").list.front ();
-                std::string widthString = "W: " + ToString (m_SelectedAtlasRegion.Bounds.BottomRight.Width);
-                widthLabel->SetText (widthString);
-
-                Gwk::Controls::Label* heightLabel = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("HeightLabel").list.front ();
-                std::string heightString = "H: " + ToString (m_SelectedAtlasRegion.Bounds.BottomRight.Height);
-                heightLabel->SetText (heightString);
+                UpdateLabels ();
 
                 return true;
             }
@@ -430,27 +460,38 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::AddTile (int mouseX, int mouseY)
+    Point Editor::CalculateCursorPoint (int mouseX, int mouseY)
     {
-        Tile tile;
-
         Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
         Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
-        AtlasRegion region = m_Atlas->GetRegion (m_SelectedAtlasRegion.Name);
-
-        int finalX = mouseX;
-        int finalY = mouseY;
+        int finalX = (mouseX + translate.X);
+        int finalY = (mouseY + translate.Y);
 
         if (m_IsSnapToGrid)
         {
-            finalX = (finalX / m_GridSize) * m_GridSize;
-            finalY = (finalY / m_GridSize) * m_GridSize;
+            finalX = std::floor ((finalX + m_GridSize * 0.5) / m_GridSize) * m_GridSize;
+            finalY = std::floor ((finalY + m_GridSize * 0.5) / m_GridSize) * m_GridSize;
         }
+
+        finalX = (finalX - translate.X);
+        finalY = (finalY - translate.Y);
+
+        return { finalX, finalY };
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::AddTile (int mouseX, int mouseY)
+    {
+        Tile tile;
+        AtlasRegion region = m_Atlas->GetRegion (m_SelectedAtlasRegion.Name);
+        Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
+        Point point = CalculateCursorPoint (mouseX, mouseY);
 
         tile.Tileset = m_Atlas->GetName ();
         tile.Name = m_SelectedAtlasRegion.Name;
-        tile.Bounds = { { (translate.X + finalX) * (1 / scale.X), (translate.Y + finalY) * (1 / scale.Y) },
-                        { region.Bounds.BottomRight.Width, region.Bounds.BottomRight.Height } };
+        tile.Bounds = { { (translate.X + point.X), (translate.Y + point.Y) },
+            { region.Bounds.BottomRight.Width, region.Bounds.BottomRight.Height } };
         tile.Rotation = m_Rotation;
 
         m_MainLoop->GetSceneManager ()->GetActiveScene ()->AddTile (tile);
@@ -469,7 +510,8 @@ namespace aga
 
             if (InsideRect (mouseX, mouseY, r))
             {
-                if ((result == nullptr) || (result && result->ZOrder < tile.ZOrder))
+                if ((result == nullptr)
+                    || (result && (result->ZOrder < tile.ZOrder) || (result->RenderID < tile.RenderID)))
                 {
                     outRect = r;
                     result = &tile;
@@ -478,6 +520,24 @@ namespace aga
         }
 
         return result;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Point RotatePoint (float x, float y, const Point& origin, float angle)
+    {
+        float s = std::sin (DegressToRadians (angle));
+        float c = std::cos (DegressToRadians (angle));
+
+        // translate point back to origin:
+        x -= origin.X;
+        y -= origin.Y;
+
+        double nx = (x * c) - (y * s);
+        double ny = (x * s) + (y * c);
+
+        // translate point back:
+        return { nx + origin.X, ny + origin.Y };
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -491,12 +551,25 @@ namespace aga
         int width = b.BottomRight.Width * 0.5;
         int height = b.BottomRight.Height * 0.5;
 
-        int x1 = (b.TopLeft.X - translate.X * (1 / scale.X) - width) * (scale.X);
-        int y1 = (b.TopLeft.Y - translate.Y * (1 / scale.Y) - height) * (scale.Y);
-        int x2 = (b.TopLeft.X - translate.X * (1 / scale.X) + width) * (scale.X);
-        int y2 = (b.TopLeft.Y - translate.Y * (1 / scale.Y) + height) * (scale.Y);
+        float x1 = (b.TopLeft.X - translate.X * (1 / scale.X) - width) * (scale.X);
+        float y1 = (b.TopLeft.Y - translate.Y * (1 / scale.Y) - height) * (scale.Y);
+        float x2 = (b.TopLeft.X - translate.X * (1 / scale.X) + width) * (scale.X);
+        float y2 = (b.TopLeft.Y - translate.Y * (1 / scale.Y) + height) * (scale.Y);
 
-        return { { x1, y1 }, { x2, y2 } };
+        Point origin = { x1 + (x2 - x1) * 0.5, y1 + (y2 - y1) * 0.5 };
+        Point pointA = RotatePoint (x1, y1, origin, tile.Rotation);
+        Point pointB = RotatePoint (x1, y2, origin, tile.Rotation);
+        Point pointC = RotatePoint (x2, y1, origin, tile.Rotation);
+        Point pointD = RotatePoint (x2, y2, origin, tile.Rotation);
+
+        float minX, minY, maxX, maxY;
+
+        minX = std::min (pointA.X, std::min (pointB.X, std::min (pointC.X, pointD.X)));
+        minY = std::min (pointA.Y, std::min (pointB.Y, std::min (pointC.Y, pointD.Y)));
+        maxX = std::max (pointA.X, std::max (pointB.X, std::max (pointC.X, pointD.X)));
+        maxY = std::max (pointA.Y, std::max (pointB.Y, std::max (pointC.Y, pointD.Y)));
+
+        return { { minX, minY }, { maxX, maxY } };
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -526,19 +599,21 @@ namespace aga
         {
             Gwk::Controls::MenuItem* editorMenu = menu->AddItem ("EDITOR");
             {
-                Gwk::Controls::MenuItem* exitMenu = editorMenu->GetMenu ()->AddItem ("EXIT")->SetAction (this, &Editor::OnMenuItemExit);
+                Gwk::Controls::MenuItem* exitMenu
+                    = editorMenu->GetMenu ()->AddItem ("EXIT")->SetAction (this, &Editor::OnMenuItemExit);
             }
 
             Gwk::Controls::MenuItem* objectMenu = menu->AddItem ("OBJECT");
 
             Gwk::Controls::MenuItem* gameMenu = menu->AddItem ("GAME");
             {
-                Gwk::Controls::MenuItem* playMenu =
-                  gameMenu->GetMenu ()->AddItem ("PLAY", "", "F5")->SetAction (this, &Editor::OnMenuItemPlay);
+                Gwk::Controls::MenuItem* playMenu
+                    = gameMenu->GetMenu ()->AddItem ("PLAY", "", "F5")->SetAction (this, &Editor::OnMenuItemPlay);
             }
         }
 
-        m_Atlas = m_MainLoop->GetSceneManager ()->GetAtlasManager ()->GetAtlas (GetBaseName (GetResourcePath (PACK_0_0_HOME)));
+        m_Atlas = m_MainLoop->GetSceneManager ()->GetAtlasManager ()->GetAtlas (
+            GetBaseName (GetResourcePath (PACK_0_0_HOME)));
 
         double beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
         float advance = 0;
@@ -606,7 +681,8 @@ namespace aga
         zOrderLabel->SetPos (screenSize.Width - sideOffset, angleLabel->Bottom ());
 
         Gwk::Controls::Label* scaleLabel = new Gwk::Controls::Label (m_MainCanvas, "ScaleLabel");
-        scaleLabel->SetText (std::string ("S: ") + ToString (m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X));
+        scaleLabel->SetText (
+            std::string ("S: ") + ToString (m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X));
         scaleLabel->SetTextColor (Gwk::Color (0, 255, 0));
         scaleLabel->SetHeight (labelHeight);
         scaleLabel->SetPos (screenSize.Width - sideOffset, zOrderLabel->Bottom ());
@@ -622,6 +698,36 @@ namespace aga
         gridLabel->SetTextColor (Gwk::Color (0, 255, 0));
         gridLabel->SetHeight (labelHeight);
         gridLabel->SetPos (screenSize.Width - sideOffset, snapToGridLabel->Bottom ());
+
+        Gwk::Controls::Button* resetTranslateButton = new Gwk::Controls::Button (m_MainCanvas, "ResetTranslateButton");
+        resetTranslateButton->SetText ("ZERO MOVE");
+        resetTranslateButton->SetPos (10, 30);
+        resetTranslateButton->onPress.Add (this, &Editor::OnResetTranslate);
+
+        Gwk::Controls::Button* resetScaleButton = new Gwk::Controls::Button (m_MainCanvas, "ResetScaleButton");
+        resetScaleButton->SetText ("ZERO SCALE");
+        resetScaleButton->SetPos (10, resetTranslateButton->Bottom () + 5);
+        resetScaleButton->onPress.Add (this, &Editor::OnResetScale);
+
+        Gwk::Controls::Button* showGridButton = new Gwk::Controls::Button (m_MainCanvas, "ShowGridButton");
+        showGridButton->SetText ("SHOW GRID");
+        showGridButton->SetIsToggle (true);
+        showGridButton->SetPos (10, resetScaleButton->Bottom () + 20);
+        showGridButton->onToggleOn.Add (this, &Editor::OnShowGrid);
+        showGridButton->onToggleOff.Add (this, &Editor::OnHideGrid);
+        showGridButton->Toggle ();
+
+        Gwk::Controls::Button* gridIncreaseButton = new Gwk::Controls::Button (m_MainCanvas, "GridIncreaseButton");
+        gridIncreaseButton->SetText ("++");
+        gridIncreaseButton->SetWidth (48);
+        gridIncreaseButton->SetPos (10, showGridButton->Bottom () + 5);
+        gridIncreaseButton->onPress.Add (this, &Editor::OnGridIncrease);
+
+        Gwk::Controls::Button* gridDecreaseButton = new Gwk::Controls::Button (m_MainCanvas, "GridDecreaseButton");
+        gridDecreaseButton->SetText ("--");
+        gridDecreaseButton->SetWidth (47);
+        gridDecreaseButton->SetPos (gridIncreaseButton->Right () + 5, showGridButton->Bottom () + 5);
+        gridDecreaseButton->onPress.Add (this, &Editor::OnGridDecrease);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -639,6 +745,144 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Editor::OnTileSelected (Gwk::Event::Info info) {}
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnResetTranslate (Gwk::Controls::Base* control)
+    {
+        m_MainLoop->GetSceneManager ()->GetCamera ().SetOffset (0, 0);
+        UpdateLabels ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnResetScale (Gwk::Controls::Base* control)
+    {
+        ALLEGRO_MOUSE_STATE state;
+        al_get_mouse_state (&state);
+        Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
+
+        m_MainLoop->GetSceneManager ()->GetCamera ().Scale (1 / scale.X, 1 / scale.Y, state.x, state.y);
+        m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X);
+        UpdateLabels ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnShowGrid (Gwk::Controls::Base* control)
+    {
+        Gwk::Controls::Button* button = (Gwk::Controls::Button*)control;
+        button->SetText ("HIDE GRID");
+
+        m_IsSnapToGrid = true;
+        UpdateLabels ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnHideGrid (Gwk::Controls::Base* control)
+    {
+        Gwk::Controls::Button* button = (Gwk::Controls::Button*)control;
+        button->SetText ("SHOW GRID");
+
+        m_IsSnapToGrid = false;
+        UpdateLabels ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnGridIncrease (Gwk::Controls::Base* control)
+    {
+        m_BaseGridSize /= 2;
+
+        m_BaseGridSize = std::max (1, std::min (m_BaseGridSize, 1024));
+        m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X);
+
+        UpdateLabels ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnGridDecrease (Gwk::Controls::Base* control)
+    {
+        m_BaseGridSize *= 2;
+
+        m_BaseGridSize = std::max (1, std::min (m_BaseGridSize, 1024));
+        m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X);
+
+        UpdateLabels ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::UpdateLabels ()
+    {
+        Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
+        Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
+
+        Gwk::Controls::Label* xPositionLabel
+            = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("XPositionLabel").list.front ();
+        std::string xPosString = " X: " + ToString (translate.X * (1 / scale.X));
+        xPositionLabel->SetText (xPosString);
+
+        Gwk::Controls::Label* yPositionLabel
+            = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("YPositionLabel").list.front ();
+        std::string yPosString = " Y: " + ToString (translate.Y * (1 / scale.Y));
+        yPositionLabel->SetText (yPosString);
+
+        Gwk::Controls::Label* scaleLabel
+            = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("ScaleLabel").list.front ();
+        scaleLabel->SetText (
+            std::string ("S: ") + ToString (m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X));
+
+        Gwk::Controls::Label* snapToGridLabel
+            = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("SnapToGrid").list.front ();
+        snapToGridLabel->SetText (std::string ("SNAP: ") + (m_IsSnapToGrid ? "YES" : "NO"));
+
+        Gwk::Controls::Label* gridSizeLabel
+            = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("GridSize").list.front ();
+        gridSizeLabel->SetText (std::string ("GRID: ") + ToString (m_BaseGridSize));
+
+        Gwk::Controls::Label* widthLabel
+            = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("WidthLabel").list.front ();
+        std::string widthString = "W: " + ToString (m_SelectedAtlasRegion.Bounds.BottomRight.Width);
+        widthLabel->SetText (widthString);
+
+        Gwk::Controls::Label* heightLabel
+            = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("HeightLabel").list.front ();
+        std::string heightString = "H: " + ToString (m_SelectedAtlasRegion.Bounds.BottomRight.Height);
+        heightLabel->SetText (heightString);
+
+        Gwk::Controls::Label* angleLabel
+            = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("AngleLabel").list.front ();
+        std::string angleText;
+
+        if (m_SelectedTile)
+        {
+            angleText = std::string ("A: ") + ToString (m_SelectedTile->Rotation);
+        }
+        else
+        {
+            angleText = "A: 0";
+        }
+
+        angleLabel->SetText (angleText);
+
+        Gwk::Controls::Label* zOrderLabel
+            = (Gwk::Controls::Label*)m_MainCanvas->GetNamedChildren ("ZOrderLabel").list.front ();
+        std::string zOrderText;
+
+        if (m_SelectedTile)
+        {
+            zOrderText = std::string ("ZORD: ") + ToString (m_SelectedTile->ZOrder);
+        }
+        else
+        {
+            zOrderText = "ZORD: -";
+        }
+
+        zOrderLabel->SetText (zOrderText);
+    }
 
     //--------------------------------------------------------------------------------------------------
 }
