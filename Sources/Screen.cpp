@@ -15,10 +15,11 @@ namespace aga
     Screen::Screen (unsigned width, unsigned height)
       : m_Width (width)
       , m_Height (height)
+      , m_Renderer (nullptr)
       , m_RealWidth (width)
       , m_RealHeight (height)
       , m_Redraw (false)
-      , m_BackgroundColor (al_map_rgb (0, 0, 0))
+      , m_BackgroundColor (SDL_Color{ 0, 0, 0, 0 })
     {
     }
 
@@ -38,17 +39,34 @@ namespace aga
 
     bool Screen::Initialize ()
     {
-        if (!al_init ())
+        if (SDL_Init (SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS | SDL_INIT_AUDIO) != 0)
         {
-            fprintf (stderr, "Failed to initialize allegro!\n");
+            SDL_Log ("Unable to initialize SDL: %s", SDL_GetError ());
             return false;
         }
 
-        al_install_mouse ();
-        al_install_keyboard ();
+        // Initialize PNG loading
+        int imgFlags = IMG_INIT_PNG | IMG_INIT_JPG;
+        if (!(IMG_Init (imgFlags) & imgFlags))
+        {
+            SDL_Log ("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError ());
+            return false;
+        }
 
-        al_set_new_display_flags (ALLEGRO_RESIZABLE);
-        m_Display = al_create_display (m_Width, m_Height);
+        // Initialize SDL_ttf
+        if (TTF_Init () == -1)
+        {
+            SDL_Log ("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError ());
+            return false;
+        }
+
+        m_Display = SDL_CreateWindow (GAME_TITLE,                              // window title
+                                      SDL_WINDOWPOS_UNDEFINED,                 // initial x position
+                                      SDL_WINDOWPOS_UNDEFINED,                 // initial y position
+                                      m_Width,                                 // width, in pixels
+                                      m_Height,                                // height, in pixels
+                                      SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE // flags - see below
+                                      );
 
         if (!m_Display)
         {
@@ -56,47 +74,10 @@ namespace aga
             return false;
         }
 
-        Gwk::Platform::SetPlatformWindow (m_Display);
+        m_Renderer = SDL_CreateRenderer (m_Display, -1, SDL_RENDERER_ACCELERATED);
 
-        if (!al_init_image_addon ())
-        {
-            al_show_native_message_box (
-              m_Display, "Error", "Error", "Failed to initialize al_init_image_addon!", nullptr, ALLEGRO_MESSAGEBOX_ERROR);
-            return false;
-        }
-
-        al_init_font_addon ();
-        al_init_ttf_addon ();
-        al_init_primitives_addon ();
-
-        m_DisplayTimer = al_create_timer (1.0 / TARGET_FPS);
-
-        if (!m_DisplayTimer)
-        {
-            fprintf (stderr, "Failed to create timer!\n");
-            return false;
-        }
-
-        m_EventQueue = al_create_event_queue ();
-
-        if (!m_EventQueue)
-        {
-            fprintf (stderr, "Failed to create event_queue!\n");
-            al_destroy_display (m_Display);
-            return false;
-        }
-
-        al_register_event_source (m_EventQueue, al_get_display_event_source (m_Display));
-        al_register_event_source (m_EventQueue, al_get_timer_event_source (m_DisplayTimer));
-        al_register_event_source (m_EventQueue, al_get_mouse_event_source ());
-        al_register_event_source (m_EventQueue, al_get_keyboard_event_source ());
-
-        al_set_window_title (m_Display, GAME_TITLE);
-        al_set_window_position (m_Display, 0, 0);
-
-        al_start_timer (m_DisplayTimer);
-
-        m_Font.Initialize ();
+        m_Font = new Font (this);
+        m_Font->Initialize ();
 
         Lifecycle::Initialize ();
 
@@ -107,28 +88,23 @@ namespace aga
 
     bool Screen::Destroy ()
     {
-        al_uninstall_keyboard ();
-        al_uninstall_mouse ();
+        SAFE_DELETE (m_Font);
 
-        if (m_DisplayTimer != nullptr)
+        if (m_Renderer != nullptr)
         {
-            al_destroy_timer (m_DisplayTimer);
-            m_DisplayTimer = nullptr;
-        }
-
-        if (m_EventQueue != nullptr)
-        {
-            al_destroy_event_queue (m_EventQueue);
-            m_EventQueue = nullptr;
+            SDL_DestroyRenderer (m_Renderer);
+            m_Renderer = nullptr;
         }
 
         if (m_Display != nullptr)
         {
-            al_destroy_display (m_Display);
+            SDL_DestroyWindow (m_Display);
             m_Display = nullptr;
         }
 
-        m_Font.Destroy ();
+        TTF_Quit ();
+        IMG_Quit ();
+        SDL_Quit ();
 
         Lifecycle::Destroy ();
     }
@@ -139,72 +115,75 @@ namespace aga
     {
         m_DeltaTime = deltaTime;
 
-        ALLEGRO_EVENT ev;
-        al_wait_for_event (m_EventQueue, &ev);
-
-        if (ev.type == ALLEGRO_EVENT_TIMER)
+        SDL_Event e;
+        while (SDL_PollEvent (&e) != 0)
         {
-            m_Redraw = true;
-
-            if (ProcessEventFunction != nullptr)
+            if (e.type == SDL_QUIT)
             {
-                ProcessEventFunction (&ev);
-            }
-        }
-        else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
-        {
-            return false;
-        }
-        else if (ev.type == ALLEGRO_EVENT_DISPLAY_RESIZE)
-        {
-            m_RealWidth = ev.display.width;
-            m_RealHeight = ev.display.height;
-
-            al_acknowledge_resize (m_Display);
-
-            if (ProcessEventFunction != nullptr)
-            {
-                ProcessEventFunction (&ev);
-            }
-        }
-        else if ((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) || (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) ||
-                 (ev.type == ALLEGRO_EVENT_MOUSE_AXES) || (ev.type == ALLEGRO_EVENT_KEY_DOWN) || (ev.type == ALLEGRO_EVENT_KEY_UP) ||
-                 (ev.type == ALLEGRO_EVENT_KEY_CHAR))
-        {
-            if (ProcessEventFunction != nullptr)
-            {
-                ProcessEventFunction (&ev);
-            }
-        }
-
-        if (m_Redraw && al_is_event_queue_empty (m_EventQueue))
-        {
-            m_Redraw = false;
-            al_clear_to_color (m_BackgroundColor);
-
-            if (RenderFunction != nullptr)
-            {
-                RenderFunction ();
+                return false;
             }
 
-            al_flip_display ();
+            if (e.type == SDL_WINDOWEVENT)
+            {
+                switch (e.window.type)
+                {
+                    case SDL_WINDOWEVENT_SIZE_CHANGED:
+                    {
+                        m_RealWidth = e.window.data1;
+                        m_RealHeight = e.window.data2;
+                        SDL_RenderPresent (m_Renderer);
+
+                        if (ProcessEventFunction != nullptr)
+                        {
+                            ProcessEventFunction (&e);
+                        }
+
+                        break;
+                    }
+
+                    // Repaint on exposure
+                    case SDL_WINDOWEVENT_EXPOSED:
+                    {
+                        SDL_RenderPresent (m_Renderer);
+                        break;
+                    }
+                }
+            }
+            else if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP || e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN ||
+                     e.type == SDL_MOUSEBUTTONUP || e.type == SDL_MOUSEWHEEL)
+            {
+                if (ProcessEventFunction != nullptr)
+                {
+                    ProcessEventFunction (&e);
+                }
+            }
         }
+
+        SDL_SetRenderDrawColor (m_Renderer, m_BackgroundColor.r, m_BackgroundColor.g, m_BackgroundColor.b, m_BackgroundColor.a);
+        SDL_RenderClear (m_Renderer);
+
+        if (RenderFunction != nullptr)
+        {
+            RenderFunction ();
+        }
+
+        SDL_RenderPresent (m_Renderer);
 
         return true;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Screen::SetBackgroundColor (ALLEGRO_COLOR color) { m_BackgroundColor = color; }
+    void Screen::SetBackgroundColor (SDL_Color color) { m_BackgroundColor = color; }
 
     //--------------------------------------------------------------------------------------------------
 
     void Screen::SetMouseCursor (const char* path)
     {
-        ALLEGRO_BITMAP* bitmap = al_load_bitmap (path);
-        ALLEGRO_MOUSE_CURSOR* cursor = al_create_mouse_cursor (bitmap, 0, 0);
+        //        ALLEGRO_BITMAP* bitmap = al_load_bitmap (path);
+        //        ALLEGRO_MOUSE_CURSOR* cursor = al_create_mouse_cursor (bitmap, 0, 0);
 
-        al_set_mouse_cursor (m_Display, cursor);
+        //        al_set_mouse_cursor (m_Display, cursor);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -213,7 +192,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Font& Screen::GetFont () { return m_Font; }
+    Font* Screen::GetFont () { return m_Font; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -225,7 +204,40 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    ALLEGRO_EVENT_QUEUE* Screen::GetEventQueue () { return m_EventQueue; }
+    SDL_Window* Screen::GetDisplay () { return m_Display; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    SDL_Renderer* Screen::GetRenderer () { return m_Renderer; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    SDL_Texture* Screen::LoadTexture (const std::string& path)
+    {
+        SDL_Texture* newTexture = nullptr;
+
+        // Load image at specified path
+        SDL_Surface* loadedSurface = IMG_Load (path.c_str ());
+        if (loadedSurface == nullptr)
+        {
+            printf ("Unable to load image %s! SDL_image Error: %s\n", path.c_str (), IMG_GetError ());
+        }
+        else
+        {
+            // Create texture from surface pixels
+            newTexture = SDL_CreateTextureFromSurface (m_Renderer, loadedSurface);
+
+            if (newTexture == nullptr)
+            {
+                printf ("Unable to create texture from %s! SDL Error: %s\n", path.c_str (), SDL_GetError ());
+            }
+
+            // Get rid of old loaded surface
+            SDL_FreeSurface (loadedSurface);
+        }
+
+        return newTexture;
+    }
 
     //--------------------------------------------------------------------------------------------------
 }

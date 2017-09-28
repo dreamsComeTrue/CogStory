@@ -1,6 +1,7 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Resources.h"
+#include "Common.h"
 
 namespace aga
 {
@@ -40,7 +41,7 @@ namespace aga
 
     const std::string GetDataPath ()
     {
-        std::string path = "C:/Users/B0634624/RobotTales/Data/";
+        std::string path = std::experimental::filesystem::current_path ().string () + "/Data/";
 
         return path;
     }

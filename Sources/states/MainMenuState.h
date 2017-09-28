@@ -26,7 +26,7 @@ namespace aga
         void BeforeEnter ();
         void AfterLeave ();
 
-        void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
+        void ProcessEvent (SDL_Event* event, double deltaTime);
         void Update (double deltaTime);
         void Render (double deltaTime);
 

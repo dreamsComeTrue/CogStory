@@ -3,26 +3,22 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_image.h>
-#include <allegro5/allegro_native_dialog.h>
-#include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_ttf.h>
+#define UI_EDITOR 0
+
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <angelscript.h>
 #include <scriptbuilder/scriptbuilder.h>
 #include <scriptstdstring/scriptstdstring.h>
 
-#include <Gwork/Align.h>
-#include <Gwork/Controls.h>
-#include <Gwork/Input/Allegro5.h>
-#include <Gwork/Platform.h>
-#include <Gwork/Renderers/Allegro5.h>
-#include <Gwork/Skins/TexturedBase.h>
-
-#include <boost/filesystem.hpp>
 #include <cmath>
+#include <experimental/filesystem>
 #include <fstream>
 #include <functional>
 #include <map>
@@ -37,26 +33,31 @@
 #include "Rect.h"
 #include "Resources.h"
 
-#define SAFE_DELETE(x)                                                                                                 \
-    {                                                                                                                  \
-        if (x != nullptr)                                                                                              \
-        {                                                                                                              \
-            delete x;                                                                                                  \
-            x = nullptr;                                                                                               \
-        }                                                                                                              \
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
+
+#define SAFE_DELETE(x)                                                                                                                     \
+    {                                                                                                                                      \
+        if (x != nullptr)                                                                                                                  \
+        {                                                                                                                                  \
+            delete x;                                                                                                                      \
+            x = nullptr;                                                                                                                   \
+        }                                                                                                                                  \
     }
 
 namespace aga
 {
-    const ALLEGRO_COLOR COLOR_BLACK{ 0.0f, 0.0f, 0.0f, 1.0f };
-    const ALLEGRO_COLOR COLOR_WHITE{ 1.0f, 1.0f, 1.0f, 1.0f };
-    const ALLEGRO_COLOR COLOR_RED{ 1.0f, 0.0f, 0.0f, 1.0f };
-    const ALLEGRO_COLOR COLOR_GREEN{ 0.0f, 1.0f, 0.0f, 1.0f };
-    const ALLEGRO_COLOR COLOR_BLUE{ 0.0f, 0.0f, 1.0f, 1.0f };
-    const ALLEGRO_COLOR COLOR_YELLOW{ 1.0f, 1.0f, 0.0f, 1.0f };
-    const ALLEGRO_COLOR COLOR_GRAY{ 0.3f, 0.3f, 0.3f, 1.0f };
+    const SDL_Color COLOR_BLACK{ 0, 0, 0, 255 };
+    const SDL_Color COLOR_WHITE{ 255, 255, 255, 255 };
+    const SDL_Color COLOR_RED{ 255, 0, 0, 255 };
+    const SDL_Color COLOR_GREEN{ 0, 255, 0, 255 };
+    const SDL_Color COLOR_BLUE{ 0, 0, 255, 255 };
+    const SDL_Color COLOR_YELLOW{ 255, 255, 0, 255 };
+    const SDL_Color COLOR_GRAY{ 100, 100, 100, 255 };
 
-    static float DegressToRadians (float degrees) { return degrees * ALLEGRO_PI / 180.0; }
+    static float DegressToRadians (float degrees) { return degrees * M_PI / 180.0; }
 
     static bool AreSame (double a, double b)
     {
@@ -86,23 +87,22 @@ namespace aga
 
     static std::string& LeftTrimString (std::string& str)
     {
-        auto it2 = std::find_if (
-            str.begin (), str.end (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
+        auto it2 = std::find_if (str.begin (), str.end (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
         str.erase (str.begin (), it2);
         return str;
     }
 
     static std::string& RightTrimString (std::string& str)
     {
-        auto it1 = std::find_if (
-            str.rbegin (), str.rend (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
+        auto it1 = std::find_if (str.rbegin (), str.rend (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
         str.erase (it1.base (), str.end ());
         return str;
     }
 
     static std::string& TrimString (std::string& str) { return LeftTrimString (RightTrimString (str)); }
 
-    template <typename T> static std::string ToString (T t)
+    template<typename T>
+    static std::string ToString (T t)
     {
         std::stringstream strStream;
         strStream << t;
@@ -112,13 +112,13 @@ namespace aga
 
     static std::string GetDirectory (const std::string& fullPath)
     {
-        boost::filesystem::path p{ fullPath };
+        std::experimental::filesystem::path p{ fullPath };
         return p.parent_path ().string ();
     }
 
     static std::string GetBaseName (const std::string& fullPath)
     {
-        boost::filesystem::path p{ fullPath };
+        std::experimental::filesystem::path p{ fullPath };
         return p.stem ().string ();
     }
 }

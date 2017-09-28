@@ -25,7 +25,7 @@ namespace aga
         void SetActiveScene (Scene* scene);
         Scene* GetActiveScene ();
 
-        void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
+        void ProcessEvent (SDL_Event* event, double deltaTime);
         bool Update (double deltaTime);
         void Render (double deltaTime);
 

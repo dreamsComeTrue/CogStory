@@ -8,11 +8,12 @@
 namespace aga
 {
     class Atlas;
+    class Screen;
 
     class AtlasManager : public Lifecycle
     {
     public:
-        AtlasManager ();
+        AtlasManager (Screen* screen);
         ~AtlasManager ();
 
         bool Initialize ();
@@ -22,6 +23,7 @@ namespace aga
         Atlas* GetAtlas (const std::string& name);
 
     private:
+        Screen* m_Screen;
         std::map<std::string, Atlas*> m_Atlases;
     };
 }

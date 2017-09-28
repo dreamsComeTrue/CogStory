@@ -13,15 +13,15 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     MainLoop::MainLoop (Screen* screen)
-        : m_SceneManager (this)
-        , m_StateManager (this)
-        , m_ScriptManager (this)
-        , m_TweenManager (this)
-        , m_EditorState (nullptr)
-        , m_GamePlayState (nullptr)
-        , m_MainMenuState (nullptr)
-        , m_Screen (screen)
-        , m_IsRunning (true)
+      : m_SceneManager (this)
+      , m_StateManager (this)
+      , m_ScriptManager (this)
+      , m_TweenManager (this)
+      , m_EditorState (nullptr)
+      , m_GamePlayState (nullptr)
+      , m_MainMenuState (nullptr)
+      , m_Screen (screen)
+      , m_IsRunning (true)
     {
     }
 
@@ -50,7 +50,7 @@ namespace aga
 
         m_StateManager.SetActiveState (m_EditorState);
 
-        m_Screen->ProcessEventFunction = [&](ALLEGRO_EVENT* event) {
+        m_Screen->ProcessEventFunction = [&](SDL_Event* event) {
             m_SceneManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
             m_StateManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
         };
@@ -106,12 +106,12 @@ namespace aga
 
     void MainLoop::Start ()
     {
-        double oldTime = al_get_time ();
+        int oldTime = SDL_GetTicks ();
 
         while (m_IsRunning)
         {
-            double newTime = al_get_time ();
-            double deltaTime = (newTime - oldTime);
+            int newTime = SDL_GetTicks ();
+            double deltaTime = (newTime - oldTime) / 1000.0f;
             oldTime = newTime;
 
             m_TweenManager.Update (deltaTime);

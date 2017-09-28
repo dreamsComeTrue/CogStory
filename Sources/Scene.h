@@ -19,6 +19,7 @@ namespace aga
         int ZOrder = 0;
         float Rotation = 0;
 
+        int ID = 0;
         int RenderID = 0;
 
         bool operator== (const Tile& rhs) const
@@ -55,6 +56,8 @@ namespace aga
         Point GetSpawnPoint (const std::string& name);
 
         void SortTiles ();
+
+        void Reset ();
 
     private:
         std::string m_Name;

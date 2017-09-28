@@ -52,14 +52,14 @@ namespace aga
 
         if (atlas)
         {
-            atlas->DrawRegion (Name, Bounds.TopLeft.X, Bounds.TopLeft.Y, 1, 1, DegressToRadians (Rotation));
+            atlas->DrawRegion (Name, Bounds.TopLeft.X, Bounds.TopLeft.Y, 1, 1, Rotation);
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
     Scene::Scene (SceneManager* sceneManager)
-        : m_SceneManager (sceneManager)
+      : m_SceneManager (sceneManager)
     {
     }
 
@@ -103,8 +103,8 @@ namespace aga
             std::string name = j_tile["name"];
             std::string path = j_tile["path"];
 
-            Script* script = sceneManager->GetMainLoop ()->GetScriptManager ()->LoadScriptFromFile (
-                GetDataPath () + "scripts/" + path, name);
+            Script* script =
+              sceneManager->GetMainLoop ()->GetScriptManager ()->LoadScriptFromFile (GetDataPath () + "scripts/" + path, name);
             scene->AttachScript (script);
         }
 
@@ -116,8 +116,7 @@ namespace aga
             tile.Tileset = j_tile["tileset"];
             tile.Name = j_tile["name"];
             tile.Bounds.TopLeft = StringToPoint (j_tile["pos"]);
-            tile.Bounds.BottomRight
-                = sceneManager->GetAtlasManager ()->GetAtlas (tile.Tileset)->GetRegion (tile.Name).Bounds.BottomRight;
+            tile.Bounds.BottomRight = sceneManager->GetAtlasManager ()->GetAtlas (tile.Tileset)->GetRegion (tile.Name).Bounds.BottomRight;
             std::string zOrder = j_tile["z-order"];
             tile.ZOrder = atof (zOrder.c_str ());
             std::string rot = j_tile["rot"];
@@ -169,10 +168,8 @@ namespace aga
             tile.Draw (m_SceneManager->GetAtlasManager ());
         }
 
-        m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
-            FONT_NAME_MAIN, al_map_rgb (255, 255, 255), 200, 200, "Robot Tale");
-        m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
-            FONT_NAME_MAIN, al_map_rgb (0, 255, 0), 0, 0, m_Name, ALLEGRO_ALIGN_LEFT);
+        m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ()->DrawText (
+          FONT_NAME_MAIN, SDL_Color{ 255, 255, 255, 0 }, 0, 0, "Robot Tale");
 
         m_SceneManager->GetPlayer ().Render (deltaTime);
         m_SceneManager->GetCamera ().UseIdentityTransform ();
@@ -184,10 +181,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::RemoveTile (Tile& tile)
-    {
-        m_Tiles.erase (std::remove (m_Tiles.begin (), m_Tiles.end (), tile), m_Tiles.end ());
-    }
+    void Scene::RemoveTile (Tile& tile) { m_Tiles.erase (std::remove (m_Tiles.begin (), m_Tiles.end (), tile), m_Tiles.end ()); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -208,6 +202,10 @@ namespace aga
             return (*it).second;
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::Reset () { m_Tiles.clear (); }
 
     //--------------------------------------------------------------------------------------------------
 }

@@ -18,19 +18,22 @@ namespace aga
 
         bool Update (double deltaTime);
 
-        void SetBackgroundColor (ALLEGRO_COLOR color);
+        void SetBackgroundColor (SDL_Color color);
 
         void SetMouseCursor (const char* path);
 
         Point GetScreenSize ();
-        Font& GetFont ();
+        Font* GetFont ();
 
         double GetDeltaTime () const;
         double GetFPS () const;
 
-        ALLEGRO_EVENT_QUEUE* GetEventQueue ();
+        SDL_Window* GetDisplay ();
+        SDL_Renderer* GetRenderer ();
 
-        std::function<void(ALLEGRO_EVENT*)> ProcessEventFunction;
+        SDL_Texture* LoadTexture (const std::string& path);
+
+        std::function<void(SDL_Event*)> ProcessEventFunction;
         std::function<void()> RenderFunction;
 
     private:
@@ -39,12 +42,11 @@ namespace aga
         bool m_Redraw;
         double m_DeltaTime;
 
-        Font m_Font;
+        Font* m_Font;
 
-        ALLEGRO_COLOR m_BackgroundColor;
-        ALLEGRO_DISPLAY* m_Display;
-        ALLEGRO_EVENT_QUEUE* m_EventQueue;
-        ALLEGRO_TIMER* m_DisplayTimer;
+        SDL_Color m_BackgroundColor;
+        SDL_Window* m_Display;
+        SDL_Renderer* m_Renderer;
     };
 }
 

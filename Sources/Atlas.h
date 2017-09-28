@@ -14,17 +14,19 @@ namespace aga
     };
 
     class AtlasManager;
+    class Screen;
 
     class Atlas
     {
         friend class AtlasManager;
 
     public:
-        Atlas ();
+        Atlas (Screen* screen);
+        ~Atlas ();
 
         void DrawRegion (const std::string& name, int x, int y);
         void DrawRegion (const std::string& name, int x, int y, float scaleX, float scaleY, float rotation);
-        ALLEGRO_BITMAP* GetImage ();
+        SDL_Texture* GetImage ();
         AtlasRegion& GetRegion (const std::string& name);
         std::vector<AtlasRegion>& GetRegions ();
 
@@ -34,7 +36,8 @@ namespace aga
         void LoadFromFile (const std::string& path);
 
     private:
-        ALLEGRO_BITMAP* m_Image;
+        Screen* m_Screen;
+        SDL_Texture* m_Image;
         std::string m_Path;
         std::string m_Name;
         std::map<std::string, AtlasRegion> m_Regions;

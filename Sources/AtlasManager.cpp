@@ -7,7 +7,10 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    AtlasManager::AtlasManager () {}
+    AtlasManager::AtlasManager (Screen* screen)
+      : m_Screen (screen)
+    {
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -51,7 +54,7 @@ namespace aga
 
         if (!atlas)
         {
-            atlas = new Atlas ();
+            atlas = new Atlas (m_Screen);
             atlas->LoadFromFile (path);
 
             m_Atlases.insert (std::make_pair (fileName, atlas));

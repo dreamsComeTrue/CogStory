@@ -26,7 +26,7 @@ namespace aga
         Point GetScale ();
 
     private:
-        ALLEGRO_TRANSFORM m_Transform;
+        // ALLEGRO_TRANSFORM m_Transform;
         Screen* m_Screen;
     };
 }

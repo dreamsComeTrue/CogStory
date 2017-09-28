@@ -7,10 +7,17 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
 set(ROOT_THIRD_PARTY_DIR "/home/squall/RobotGame/ThirdParty")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-LINK_DIRECTORIES(${ROOT_THIRD_PARTY_DIR}/anglescript_2.31.2/angelscript/lib/
-                 ${ROOT_THIRD_PARTY_DIR}/GWork/lib/)
+find_package(wxWidgets COMPONENTS core base REQUIRED)
 
+if(wxWidgets_FOUND)
+    include("${wxWidgets_USE_FILE}")
+endif()
+
+LINK_DIRECTORIES(${ROOT_THIRD_PARTY_DIR}/anglescript_2.31.2/angelscript/lib/
+                 )
+MESSAGE( STATUS "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX: " ${wxWidgets_LIBRARIES} )
 file(GLOB_RECURSE SRC_LIST   "Sources/*")
+file(GLOB_RECURSE IMGUI_SRC_LIST   "ThirdParty/imgui/*.cpp")
 
 include_directories(Sources/
                     Sources/editor/
@@ -18,24 +25,20 @@ include_directories(Sources/
                     Sources/addons/nine-patch/
                     Sources/addons/tweeny/
                     Sources/addons/json/                    
+                    ThirdParty/
                     ThirdParty/anglescript_2.31.2/angelscript/include
                     ThirdParty/anglescript_2.31.2/add_on
-                    ThirdParty/GWork/source/gwork/include
-                    ThirdParty/GWork/source/platform/include
                     )
 
-add_executable(${PROJECT_NAME} ${SRC_LIST})
+add_executable(${PROJECT_NAME} ${SRC_LIST} ${IMGUI_SRC_LIST})
 target_link_libraries(${PROJECT_NAME}
-    allegro
-    allegro_image
-    allegro_dialog
-    allegro_font
-    allegro_ttf
-    allegro_primitives
     libangelscript.a
-    libGwork.a
-    libGworkAllegro5.a
     freetype
     pthread
     stdc++fs
+    SDL2
+    SDL2_image
+    SDL2_ttf
+    m
+    ${wxWidgets_LIBRARIES}
     )

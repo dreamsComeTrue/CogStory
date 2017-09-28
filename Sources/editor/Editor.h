@@ -20,7 +20,7 @@ namespace aga
         TileEditMode
     };
 
-    class Editor : public Lifecycle, public Gwk::Event::Handler
+    class Editor : public Lifecycle
     {
     public:
         Editor (MainLoop* mainLoop);
@@ -29,7 +29,7 @@ namespace aga
         bool Destroy ();
 
         bool Update (double deltaTime);
-        void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
+        void ProcessEvent (SDL_Event* event, double deltaTime);
         void Render (double deltaTime);
 
     private:
@@ -43,35 +43,40 @@ namespace aga
         Tile* GetTileUnderCursor (int mouseX, int mouseY, Rect&& outRect);
         Rect GetRenderBounds (Tile& tile);
 
-        void OnMenuItemPlay (Gwk::Event::Info info);
-        void MenuItemPlay ();
-        void OnMenuItemExit (Gwk::Event::Info info);
-        void OnTileSelected (Gwk::Event::Info info);
+        void OnNewScene ();
+        void OnNewSceneYesButton ();
+        void OnNewSceneNoButton ();
 
-        void OnResetTranslate (Gwk::Controls::Base* control);
-        void OnResetScale (Gwk::Controls::Base* control);
-        void OnShowGrid (Gwk::Controls::Base* control);
-        void OnHideGrid (Gwk::Controls::Base* control);
-        void OnGridIncrease (Gwk::Controls::Base* control);
-        void OnGridDecrease (Gwk::Controls::Base* control);
+        void OnLoadScene ();
+        void OnSaveScene ();
+
+        void OnPlay ();
+        void MenuItemPlay ();
+
+        void OnExit ();
+        void OnExitYesButton ();
+        void OnExitNoButton ();
+
+        void OnTileSelected ();
+
+        void OnResetTranslate ();
+        void OnResetScale ();
+        void OnShowGrid ();
+        void OnGridIncrease ();
+        void OnGridDecrease ();
 
         Point CalculateCursorPoint (int mouseX, int mouseY);
-        void UpdateLabels ();
+        void RenderUI ();
+
+        void Resize ();
 
     private:
         MainLoop* m_MainLoop;
-
-        Gwk::Input::Allegro m_GworkInput;
-        Gwk::Renderer::Allegro* m_Renderer;
-        Gwk::Skin::TexturedBase* m_Skin;
-        Gwk::Controls::Canvas* m_MainCanvas;
 
         Atlas* m_Atlas;
         AtlasRegion m_SelectedAtlasRegion;
 
         float m_Rotation;
-
-        std::vector<Gwk::Controls::ImagePanel*> m_ImagePanels;
 
         CursorMode m_CursorMode;
 
