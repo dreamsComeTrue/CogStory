@@ -190,7 +190,7 @@ namespace aga
         m_ScriptEngine->RegisterObjectType ("Camera", sizeof (Camera), asOBJ_VALUE | asOBJ_POD);
         m_ScriptEngine->RegisterGlobalProperty ("Camera camera", &m_MainLoop->GetSceneManager ()->GetCamera ());
         m_ScriptEngine->RegisterObjectMethod (
-          "Camera", "void SetOffset (float dx, float dy)", asMETHOD (Camera, SetOffset), asCALL_THISCALL);
+          "Camera", "void SetTranslate (float dx, float dy)", asMETHOD (Camera, SetTranslate), asCALL_THISCALL);
 
         //  Global
         m_ScriptEngine->RegisterGlobalFunction ("void Log(const string &in)", asFUNCTION (print), asCALL_CDECL);

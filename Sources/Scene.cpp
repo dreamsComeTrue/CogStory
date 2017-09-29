@@ -52,7 +52,9 @@ namespace aga
 
         if (atlas)
         {
-            atlas->DrawRegion (Name, Bounds.TopLeft.X, Bounds.TopLeft.Y, 1, 1, Rotation);
+            Rect bounds = atlas->GetRegion (Name).Bounds;
+            atlas->DrawRegion (
+              Name, Bounds.TopLeft.X - bounds.BottomRight.Width * 0.5, Bounds.TopLeft.Y - bounds.BottomRight.Height * 0.5, 1, 1, Rotation);
         }
     }
 

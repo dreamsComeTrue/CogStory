@@ -15,7 +15,7 @@ void BeforeEnterScene ()
     Point playerSize = player.GetSize ();
     Point playerPosition = player.GetPosition ();
     
-    camera.SetOffset (screensize.Width * 0.5 - playerSize.Width * 0.5 - playerPosition.X,
+    camera.SetTranslate (screensize.Width * 0.5 - playerSize.Width * 0.5 - playerPosition.X,
             screensize.Height * 0.5 - playerSize.Height * 0.5 - playerPosition.Y);
 }
 

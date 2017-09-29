@@ -288,6 +288,7 @@ namespace aga
         Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
         Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
         Point point = CalculateCursorPoint (x, y);
+        SDL_Renderer* renderer = m_MainLoop->GetScreen ()->GetRenderer ();
 
         if (m_CursorMode == CursorMode::TileInsertMode)
         {
@@ -301,7 +302,10 @@ namespace aga
 
             if (m_TileUnderCursor)
             {
-                //   al_draw_rectangle (r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width, r.BottomRight.Height, COLOR_YELLOW, 2);
+                SDL_Rect srcRect = { r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width - r.TopLeft.X, r.BottomRight.Height - r.TopLeft.Y };
+
+                SDL_SetRenderDrawColor (renderer, COLOR_YELLOW.r, COLOR_YELLOW.g, COLOR_YELLOW.b, COLOR_YELLOW.a);
+                SDL_RenderDrawRect (renderer, &srcRect);
             }
         }
 
@@ -313,7 +317,10 @@ namespace aga
                 m_SelectedTile->Bounds.TopLeft = { (translate.X + point.X), (translate.Y + point.Y) };
 
                 Rect b = GetRenderBounds (*m_SelectedTile);
-                //    al_draw_rectangle (b.TopLeft.X, b.TopLeft.Y, b.BottomRight.Width, b.BottomRight.Height, COLOR_RED, 2);
+                SDL_Rect srcRect = { b.TopLeft.X, b.TopLeft.Y, b.BottomRight.Width - b.TopLeft.X, b.BottomRight.Height - b.TopLeft.Y };
+
+                SDL_SetRenderDrawColor (renderer, COLOR_RED.r, COLOR_RED.g, COLOR_RED.b, COLOR_RED.a);
+                SDL_RenderDrawRect (renderer, &srcRect);
             }
         }
 
@@ -343,18 +350,12 @@ namespace aga
 
             advance = beginning + i * TILE_SIZE;
 
-            Rect region = regions[i].Bounds;
+            Rect r = regions[i].Bounds;
 
-            //            al_draw_scaled_bitmap (m_Atlas->GetImage (),
-            //                                   region.TopLeft.X,
-            //                                   region.TopLeft.Y,
-            //                                   region.BottomRight.Width,
-            //                                   region.BottomRight.Height,
-            //                                   advance + 1,
-            //                                   screenSize.Height - TILE_SIZE + 1,
-            //                                   TILE_SIZE - 2,
-            //                                   TILE_SIZE - 2,
-            //                                   0);
+            SDL_Rect srcRect = { r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width, r.BottomRight.Height };
+            SDL_Rect dstRect = { advance + 1, screenSize.Height - TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2 };
+
+            SDL_RenderCopyEx (m_MainLoop->GetScreen ()->GetRenderer (), m_Atlas->GetImage (), &srcRect, &dstRect, 0, NULL, SDL_FLIP_NONE);
         }
     }
 
@@ -366,6 +367,9 @@ namespace aga
 
         Point t = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
         Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
+        SDL_Renderer* renderer = m_MainLoop->GetScreen ()->GetRenderer ();
+
+        SDL_SetRenderDrawColor (renderer, LIGHT_GRAY.r, LIGHT_GRAY.g, LIGHT_GRAY.b, LIGHT_GRAY.a);
 
         int horBeginX = t.X / 2 * (1 / scale.X);
 
@@ -391,7 +395,7 @@ namespace aga
             float xOffset = i * m_GridSize - t.X;
 
             //  |
-            //    al_draw_line (xOffset, horBeginY, xOffset, horEndY, LIGHT_GRAY, 1);
+            SDL_RenderDrawLine (renderer, xOffset, horBeginY, xOffset, horEndY);
         }
 
         horEndX = screenSize.Width + std::fabs (horBeginX);
@@ -402,7 +406,7 @@ namespace aga
             float yOffset = i * m_GridSize - t.Y;
 
             //  --
-            //     al_draw_line (horBeginX, yOffset, horEndX, yOffset, LIGHT_GRAY, 1);
+            SDL_RenderDrawLine (renderer, horBeginX, yOffset, horEndX, yOffset);
         }
     }
 
@@ -624,7 +628,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnResetTranslate () { m_MainLoop->GetSceneManager ()->GetCamera ().SetOffset (0, 0); }
+    void Editor::OnResetTranslate () { m_MainLoop->GetSceneManager ()->GetCamera ().SetTranslate (0, 0); }
 
     //--------------------------------------------------------------------------------------------------
 

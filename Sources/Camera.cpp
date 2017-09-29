@@ -13,7 +13,7 @@ namespace aga
       : m_Screen (screen)
     {
         const Point& size = screen->GetScreenSize ();
-        SetOffset (size.Width * 0.5, size.Height * 0.5);
+        SetTranslate (size.Width * 0.5, size.Height * 0.5);
 
         //        al_identity_transform (&IdentityTransform);
     }
@@ -31,17 +31,14 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::SetOffset (float dx, float dy)
-    {
-        //    al_identity_transform (&m_Transform);
-        //     al_translate_transform (&m_Transform, dx, dy);
-    }
+    void Camera::SetTranslate (float dx, float dy) { m_Translate = { dx, dy }; }
 
     //--------------------------------------------------------------------------------------------------
 
     void Camera::Move (float dx, float dy)
     {
-        // al_translate_transform (&m_Transform, dx, dy);
+        m_Translate.X += dx;
+        m_Translate.Y += dy;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -78,10 +75,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Point Camera::GetTranslate ()
-    {
-        return { 0, 0 }; // -m_Transform.m[3][0], -m_Transform.m[3][1] };
-    }
+    Point& Camera::GetTranslate () { return m_Translate; }
 
     //--------------------------------------------------------------------------------------------------
 

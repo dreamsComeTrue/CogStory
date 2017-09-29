@@ -16,17 +16,18 @@ namespace aga
         virtual ~Camera ();
 
         void Update (double deltaTime);
-        void SetOffset (float dx, float dy);
+        void SetTranslate (float dx, float dy);
+        Point& GetTranslate ();
         void Move (float dx, float dy);
         void Scale (float dx, float dy, float mousePosX = -1, float mousePosY = -1);
         void UseIdentityTransform ();
         void ClearTransformations ();
 
-        Point GetTranslate ();
         Point GetScale ();
 
     private:
-        // ALLEGRO_TRANSFORM m_Transform;
+        glm::mat3 m_Transform;
+        Point m_Translate;
         Screen* m_Screen;
     };
 }
