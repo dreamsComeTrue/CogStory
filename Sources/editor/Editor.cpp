@@ -6,8 +6,8 @@
 #include "Scene.h"
 #include "Screen.h"
 
-//#include "imgui/imgui.h"
-//#include "imgui/imgui_impl_a5.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_a5.h"
 
 namespace aga
 {
@@ -56,8 +56,8 @@ namespace aga
 
         InitializeUI ();
 
-        //        ImGui_ImplA5_Init (m_MainLoop->GetScreen ()->GetDisplay ());
-        // ImGui::GetIO ().IniFilename = nullptr;
+        ImGui_ImplA5_Init (m_MainLoop->GetScreen ()->GetDisplay ());
+        ImGui::GetIO ().IniFilename = nullptr;
 
         return true;
     }
@@ -66,7 +66,7 @@ namespace aga
 
     bool Editor::Destroy ()
     {
-        // ImGui_ImplA5_Shutdown ();
+        ImGui_ImplA5_Shutdown ();
 
         return Lifecycle::Destroy ();
     }
@@ -77,31 +77,31 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::ProcessEvent (SDL_Event* event, double deltaTime)
+    void Editor::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
-        // ImGui_ImplA5_ProcessEvent (event);
+        ImGui_ImplA5_ProcessEvent (event);
 
-        //  if (ImGui::GetIO ().WantCaptureMouse)
+        if (ImGui::GetIO ().WantCaptureMouse)
         {
-            //       return;
+            return;
         }
 
         bool tileSelected = false;
-        if (event->type == SDL_MOUSEBUTTONDOWN)
+        if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
         {
-            if (event->button.button == SDL_BUTTON_LEFT)
+            if (event->mouse.button == 1)
             {
-                tileSelected = ChooseTile (event->button.x, event->button.y);
+                tileSelected = ChooseTile (event->mouse.x, event->mouse.y);
             }
         }
 
-        if (event->type == SDL_KEYDOWN)
+        if (event->type == ALLEGRO_EVENT_KEY_CHAR)
         {
-            switch (event->key.keysym.sym)
+            switch (event->keyboard.keycode)
             {
-                case SDLK_r:
+                case ALLEGRO_KEY_R:
                 {
-                    m_Rotation += event->key.keysym.mod & KMOD_SHIFT ? 15 : -15;
+                    m_Rotation += event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT ? 15 : -15;
 
                     if (m_Rotation <= -360)
                     {
@@ -116,20 +116,20 @@ namespace aga
                     break;
                 }
 
-                case SDLK_g:
+                case ALLEGRO_KEY_G:
                 {
-                    m_BaseGridSize *= event->key.keysym.mod & KMOD_SHIFT ? 0.5 : 2;
+                    m_BaseGridSize *= event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT ? 0.5 : 2;
                     m_BaseGridSize = std::max (1, std::min (m_BaseGridSize, 1024));
                     m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X);
 
                     break;
                 }
 
-                case SDLK_z:
+                case ALLEGRO_KEY_Z:
                 {
                     if (m_SelectedTile)
                     {
-                        m_SelectedTile->ZOrder += event->key.keysym.mod & KMOD_SHIFT ? -1 : 1;
+                        m_SelectedTile->ZOrder += event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT ? -1 : 1;
 
                         int currentID = m_SelectedTile->ID;
 
@@ -150,8 +150,7 @@ namespace aga
                     break;
                 }
 
-                case SDLK_DELETE:
-                case SDLK_x:
+                case ALLEGRO_KEY_X:
                 {
                     if (m_SelectedTile)
                     {
@@ -163,7 +162,7 @@ namespace aga
                     break;
                 }
 
-                case SDLK_c:
+                case ALLEGRO_KEY_C:
                 {
                     if (m_TileUnderCursor)
                     {
@@ -177,17 +176,17 @@ namespace aga
             }
         }
 
-        if (event->type == SDL_KEYUP)
+        if (event->type == ALLEGRO_EVENT_KEY_UP)
         {
-            switch (event->key.keysym.sym)
+            switch (event->keyboard.keycode)
             {
-                case SDLK_F5:
+                case ALLEGRO_KEY_F5:
                 {
                     MenuItemPlay ();
                     break;
                 }
 
-                case SDLK_SPACE:
+                case ALLEGRO_KEY_SPACE:
                 {
                     m_IsDrawTiles = !m_IsDrawTiles;
 
@@ -200,7 +199,7 @@ namespace aga
                     break;
                 }
 
-                case SDLK_s:
+                case ALLEGRO_KEY_S:
                 {
                     m_IsSnapToGrid = !m_IsSnapToGrid;
                     break;
@@ -208,21 +207,21 @@ namespace aga
             }
         }
 
-        if (event->type == SDL_MOUSEBUTTONDOWN)
+        if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
         {
-            m_IsMousePan = event->button.button == SDL_BUTTON_MIDDLE;
+            m_IsMousePan = event->mouse.button == 3;
 
-            if (event->button.button == SDL_BUTTON_LEFT)
+            if (event->mouse.button == 1)
             {
                 if (m_CursorMode == CursorMode::TileInsertMode && !tileSelected)
                 {
-                    AddTile (event->button.x, event->button.y);
+                    AddTile (event->mouse.x, event->mouse.y);
                 }
 
                 if (m_CursorMode == CursorMode::TileSelectMode)
                 {
                     Rect r;
-                    m_SelectedTile = GetTileUnderCursor (event->button.x, event->button.y, std::move (r));
+                    m_SelectedTile = GetTileUnderCursor (event->mouse.x, event->mouse.y, std::move (r));
 
                     if (m_SelectedTile)
                     {
@@ -236,34 +235,34 @@ namespace aga
                 }
             }
 
-            if (event->button.button == SDL_BUTTON_RIGHT)
+            if (event->mouse.button == 2)
             {
                 m_CursorMode = CursorMode::TileSelectMode;
             }
         }
-        else if (event->type == SDL_MOUSEBUTTONUP)
+        else if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
         {
             m_IsMousePan = false;
         }
-        else if (event->type == SDL_MOUSEMOTION)
+        else if (event->type == ALLEGRO_EVENT_MOUSE_AXES)
         {
-            if (event->wheel.direction < 0.0)
+            if (event->mouse.dz < 0.0)
             {
-                m_MainLoop->GetSceneManager ()->GetCamera ().Scale (0.75f, 0.75f, event->button.x, event->button.y);
+                m_MainLoop->GetSceneManager ()->GetCamera ().Scale (0.75f, 0.75f, event->mouse.x, event->mouse.y);
                 m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X);
             }
-            else if (event->wheel.direction > 0.0)
+            else if (event->mouse.dz > 0.0)
             {
-                m_MainLoop->GetSceneManager ()->GetCamera ().Scale (1.25f, 1.25f, event->button.x, event->button.y);
+                m_MainLoop->GetSceneManager ()->GetCamera ().Scale (1.25f, 1.25f, event->mouse.x, event->mouse.y);
                 m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X);
             }
 
             if (m_IsMousePan)
             {
-                m_MainLoop->GetSceneManager ()->GetCamera ().Move (event->button.x, event->button.y);
+                m_MainLoop->GetSceneManager ()->GetCamera ().Move (event->mouse.dx, event->mouse.dy);
             }
         }
-        else if (event->type == SDL_WINDOWEVENT)
+        else if (event->type == ALLEGRO_EVENT_DISPLAY_RESIZE)
         {
             Resize ();
         }
@@ -280,32 +279,28 @@ namespace aga
 
         m_MainLoop->GetSceneManager ()->Render (deltaTime);
 
-        int x, y;
-        SDL_GetMouseState (&x, &y);
+        ALLEGRO_MOUSE_STATE state;
+        al_get_mouse_state (&state);
 
         m_MainLoop->GetSceneManager ()->GetCamera ().UseIdentityTransform ();
 
         Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
         Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
-        Point point = CalculateCursorPoint (x, y);
-        SDL_Renderer* renderer = m_MainLoop->GetScreen ()->GetRenderer ();
+        Point point = CalculateCursorPoint (state.x, state.y);
 
         if (m_CursorMode == CursorMode::TileInsertMode)
         {
-            m_Atlas->DrawRegion (m_SelectedAtlasRegion.Name, point.X, point.Y, scale.X, scale.Y, m_Rotation);
+            m_Atlas->DrawRegion (m_SelectedAtlasRegion.Name, point.X, point.Y, scale.X, scale.Y, DegressToRadians (m_Rotation));
         }
 
         if (m_CursorMode == CursorMode::TileSelectMode)
         {
             Rect r;
-            m_TileUnderCursor = GetTileUnderCursor (x, y, std::move (r));
+            m_TileUnderCursor = GetTileUnderCursor (state.x, state.y, std::move (r));
 
             if (m_TileUnderCursor)
             {
-                SDL_Rect srcRect = { r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width - r.TopLeft.X, r.BottomRight.Height - r.TopLeft.Y };
-
-                SDL_SetRenderDrawColor (renderer, COLOR_YELLOW.r, COLOR_YELLOW.g, COLOR_YELLOW.b, COLOR_YELLOW.a);
-                SDL_RenderDrawRect (renderer, &srcRect);
+                al_draw_rectangle (r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width, r.BottomRight.Height, COLOR_YELLOW, 2);
             }
         }
 
@@ -317,10 +312,7 @@ namespace aga
                 m_SelectedTile->Bounds.TopLeft = { (translate.X + point.X), (translate.Y + point.Y) };
 
                 Rect b = GetRenderBounds (*m_SelectedTile);
-                SDL_Rect srcRect = { b.TopLeft.X, b.TopLeft.Y, b.BottomRight.Width - b.TopLeft.X, b.BottomRight.Height - b.TopLeft.Y };
-
-                SDL_SetRenderDrawColor (renderer, COLOR_RED.r, COLOR_RED.g, COLOR_RED.b, COLOR_RED.a);
-                SDL_RenderDrawRect (renderer, &srcRect);
+                al_draw_rectangle (b.TopLeft.X, b.TopLeft.Y, b.BottomRight.Width, b.BottomRight.Height, COLOR_RED, 2);
             }
         }
 
@@ -350,12 +342,18 @@ namespace aga
 
             advance = beginning + i * TILE_SIZE;
 
-            Rect r = regions[i].Bounds;
+            Rect region = regions[i].Bounds;
 
-            SDL_Rect srcRect = { r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width, r.BottomRight.Height };
-            SDL_Rect dstRect = { advance + 1, screenSize.Height - TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2 };
-
-            SDL_RenderCopyEx (m_MainLoop->GetScreen ()->GetRenderer (), m_Atlas->GetImage (), &srcRect, &dstRect, 0, NULL, SDL_FLIP_NONE);
+            al_draw_scaled_bitmap (m_Atlas->GetImage (),
+                                   region.TopLeft.X,
+                                   region.TopLeft.Y,
+                                   region.BottomRight.Width,
+                                   region.BottomRight.Height,
+                                   advance + 1,
+                                   screenSize.Height - TILE_SIZE + 1,
+                                   TILE_SIZE - 2,
+                                   TILE_SIZE - 2,
+                                   0);
         }
     }
 
@@ -363,13 +361,10 @@ namespace aga
 
     void Editor::DrawGrid ()
     {
-        const SDL_Color LIGHT_GRAY{ 128, 128, 128, 255 };
+        const ALLEGRO_COLOR LIGHT_GRAY{ 0.5f, 0.5f, 0.5f, 1.0f };
 
         Point t = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
         Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
-        SDL_Renderer* renderer = m_MainLoop->GetScreen ()->GetRenderer ();
-
-        SDL_SetRenderDrawColor (renderer, LIGHT_GRAY.r, LIGHT_GRAY.g, LIGHT_GRAY.b, LIGHT_GRAY.a);
 
         int horBeginX = t.X / 2 * (1 / scale.X);
 
@@ -395,7 +390,7 @@ namespace aga
             float xOffset = i * m_GridSize - t.X;
 
             //  |
-            SDL_RenderDrawLine (renderer, xOffset, horBeginY, xOffset, horEndY);
+            al_draw_line (xOffset, horBeginY, xOffset, horEndY, LIGHT_GRAY, 1);
         }
 
         horEndX = screenSize.Width + std::fabs (horBeginX);
@@ -406,7 +401,7 @@ namespace aga
             float yOffset = i * m_GridSize - t.Y;
 
             //  --
-            SDL_RenderDrawLine (renderer, horBeginX, yOffset, horEndX, yOffset);
+            al_draw_line (horBeginX, yOffset, horEndX, yOffset, LIGHT_GRAY, 1);
         }
     }
 
@@ -634,12 +629,12 @@ namespace aga
 
     void Editor::OnResetScale ()
     {
-        int x, y;
-        SDL_GetMouseState (&x, &y);
+        ALLEGRO_MOUSE_STATE state;
+        al_get_mouse_state (&state);
 
         Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
 
-        m_MainLoop->GetSceneManager ()->GetCamera ().Scale (1 / scale.X, 1 / scale.Y, x, y);
+        m_MainLoop->GetSceneManager ()->GetCamera ().Scale (1 / scale.X, 1 / scale.Y, state.x, state.y);
         m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X);
     }
 
@@ -671,66 +666,73 @@ namespace aga
 
     void Editor::RenderUI ()
     {
-        //        ImGui_ImplA5_NewFrame ();
+        ImGui_ImplA5_NewFrame ();
 
-        //        Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
-        //        Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
-        //        const Point screenSize = m_MainLoop->GetScreen ()->GetScreenSize ();
-        //        bool open = true;
+        Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
+        Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
+        const Point screenSize = m_MainLoop->GetScreen ()->GetScreenSize ();
+        bool open = true;
 
-        //        int winSize = 140.0f;
-        //        int xOffset = 20.0f;
+        int winSize = 140.0f;
+        int xOffset = 20.0f;
 
-        //        ImGui::SetNextWindowPos (ImVec2 (xOffset, 20), ImGuiCond_FirstUseEver);
-        //        ImGui::Begin ("Buttons",
-        //                      &open,
-        //                      ImVec2 (winSize, 120.f),
-        //                      0.0f,
-        //                      0); // ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-        //        ImGui::Button ("ZERO MOVE");
-        //        ImGui::Button ("ZERO SCALE");
+        ImGui::SetNextWindowPos (ImVec2 (xOffset, 20), ImGuiCond_FirstUseEver);
+        ImGui::Begin ("Buttons",
+                      &open,
+                      ImVec2 (winSize, 120.f),
+                      0.0f,
+                      0); // ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        if (ImGui::Button ("ZERO MOVE"))
+        {
+            OnResetTranslate ();
+        }
 
-        //        if (ImGui::Button (m_IsSnapToGrid ? "HIDE GRID" : "SHOW GRID"))
-        //        {
-        //            OnShowGrid ();
-        //        }
+        if (ImGui::Button ("ZERO SCALE"))
+        {
+            OnResetScale ();
+        }
 
-        //        ImGui::Button ("+++", ImVec2 (35, 20));
-        //        ImGui::SameLine ();
-        //        ImGui::Button ("---", ImVec2 (35, 20));
-        //        ImGui::End ();
+        if (ImGui::Button (m_IsSnapToGrid ? "HIDE GRID" : "SHOW GRID"))
+        {
+            OnShowGrid ();
+        }
 
-        //        winSize = 140.0f;
-        //        xOffset = screenSize.Width - winSize - 20.0f;
+        ImGui::Button ("+++", ImVec2 (35, 20));
+        ImGui::SameLine ();
+        ImGui::Button ("---", ImVec2 (35, 20));
+        ImGui::End ();
 
-        //        ImGui::SetNextWindowPos (ImVec2 (xOffset, 20), ImGuiCond_FirstUseEver);
-        //        ImGui::Begin ("ToolBox",
-        //                      &open,
-        //                      ImVec2 (winSize, 220.f),
-        //                      0.0f,
-        //                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-        //        ImGui::SetWindowFontScale (1.2);
+        winSize = 140.0f;
+        xOffset = screenSize.Width - winSize - 20.0f;
 
-        //        ImGui::Text (" AVG: %.2f ms", 1000.0f / ImGui::GetIO ().Framerate);
-        //        ImGui::Text (" FPS: %.1f", ImGui::GetIO ().Framerate);
+        ImGui::SetNextWindowPos (ImVec2 (xOffset, 20), ImGuiCond_FirstUseEver);
+        ImGui::Begin ("ToolBox",
+                      &open,
+                      ImVec2 (winSize, 220.f),
+                      0.0f,
+                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImGui::SetWindowFontScale (1.2);
 
-        //        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   X: " + ToString (translate.X * (1 / scale.X))).c_str ());
-        //        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   Y: " + ToString (translate.Y * (1 / scale.Y))).c_str ());
-        //        ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-        //                            std::string ("   W: " + ToString (m_SelectedAtlasRegion.Bounds.BottomRight.Width)).c_str ());
-        //        ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-        //                            std::string ("   H: " + ToString (m_SelectedAtlasRegion.Bounds.BottomRight.Height)).c_str ());
-        //        ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-        //                            std::string ("   A: " + (m_SelectedTile ? ToString (m_SelectedTile->Rotation) : "-")).c_str ());
-        //        ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-        //                            std::string ("ZORD: " + (m_SelectedTile ? ToString (m_SelectedTile->ZOrder) : "-")).c_str ());
-        //        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   S: " + ToString (scale.X)).c_str ());
-        //        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("SNAP: " + ToString (m_IsSnapToGrid ? "YES" : "NO")).c_str ());
-        //        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("GRID: " + ToString (m_BaseGridSize)).c_str ());
+        ImGui::Text (" AVG: %.2f ms", 1000.0f / ImGui::GetIO ().Framerate);
+        ImGui::Text (" FPS: %.1f", ImGui::GetIO ().Framerate);
 
-        //        ImGui::End ();
+        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   X: " + ToString (translate.X * (1 / scale.X))).c_str ());
+        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   Y: " + ToString (translate.Y * (1 / scale.Y))).c_str ());
+        ImGui::TextColored (ImVec4 (0, 1, 0, 1),
+                            std::string ("   W: " + ToString (m_SelectedAtlasRegion.Bounds.BottomRight.Width)).c_str ());
+        ImGui::TextColored (ImVec4 (0, 1, 0, 1),
+                            std::string ("   H: " + ToString (m_SelectedAtlasRegion.Bounds.BottomRight.Height)).c_str ());
+        ImGui::TextColored (ImVec4 (0, 1, 0, 1),
+                            std::string ("   A: " + (m_SelectedTile ? ToString (m_SelectedTile->Rotation) : "-")).c_str ());
+        ImGui::TextColored (ImVec4 (0, 1, 0, 1),
+                            std::string ("ZORD: " + (m_SelectedTile ? ToString (m_SelectedTile->ZOrder) : "-")).c_str ());
+        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   S: " + ToString (scale.X)).c_str ());
+        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("SNAP: " + ToString (m_IsSnapToGrid ? "YES" : "NO")).c_str ());
+        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("GRID: " + ToString (m_BaseGridSize)).c_str ());
 
-        //        ImGui::Render ();
+        ImGui::End ();
+
+        ImGui::Render ();
     }
 
     //--------------------------------------------------------------------------------------------------

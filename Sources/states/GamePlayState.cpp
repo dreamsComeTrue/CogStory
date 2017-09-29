@@ -57,8 +57,8 @@ namespace aga
         Point pos = scene00->GetSpawnPoint ("DEFAULT");
         m_MainLoop->GetSceneManager ()->GetPlayer ().SetPosition (pos);
 
-        m_MainLoop->GetScreen ()->SetBackgroundColor (SDL_Color{ 60, 60, 70, 0 });
-        m_MainLoop->GetScreen ()->SetBackgroundColor (SDL_Color{ 50, 60, 100, 0 });
+        m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (60, 60, 70));
+        m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (50, 60, 100));
         m_MainLoop->GetSceneManager ()->SetActiveScene (m_MainLoop->GetSceneManager ()->GetActiveScene ());
     }
 
@@ -68,7 +68,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::ProcessEvent (SDL_Event* event, double deltaTime)
+    void GamePlayState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
         m_MainLoop->GetSceneManager ()->GetPlayer ().ProcessEvent (event, deltaTime);
     }

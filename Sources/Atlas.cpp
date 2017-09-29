@@ -7,21 +7,7 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    Atlas::Atlas (Screen* screen)
-      : m_Screen (screen)
-      , m_Image (nullptr)
-    {
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    Atlas::~Atlas ()
-    {
-        if (m_Image)
-        {
-            SDL_DestroyTexture (m_Image);
-        }
-    }
+    Atlas::Atlas () {}
 
     //--------------------------------------------------------------------------------------------------
 
@@ -38,7 +24,7 @@ namespace aga
         m_Name = GetBaseName (path);
 
         std::string fileName = GetDirectory (path) + "/" + line;
-        m_Image = m_Screen->LoadTexture (fileName);
+        m_Image = al_load_bitmap (fileName.c_str ());
 
         getline (packFile, line); //  skip
         getline (packFile, line); //  skip
@@ -84,10 +70,7 @@ namespace aga
         if (m_Regions.find (name) != m_Regions.end ())
         {
             Rect r = m_Regions[name].Bounds;
-            SDL_Rect srcRect = { r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width, r.BottomRight.Height };
-            SDL_Rect dstRect = { x, y, r.BottomRight.Width, r.BottomRight.Height };
-
-            SDL_RenderCopy (m_Screen->GetRenderer (), m_Image, &srcRect, &dstRect);
+            al_draw_bitmap_region (m_Image, r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width, r.BottomRight.Height, x, y, 0);
         }
     }
 
@@ -98,18 +81,26 @@ namespace aga
         if (m_Regions.find (name) != m_Regions.end ())
         {
             Rect r = m_Regions[name].Bounds;
-            SDL_Rect srcRect = { r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width, r.BottomRight.Height };
-            SDL_Rect dstRect = { x, y, r.BottomRight.Width * scaleX, r.BottomRight.Height * scaleY };
-
-            SDL_SetTextureColorMod (m_Image, 255, 255, 255);
-
-            SDL_RenderCopyEx (m_Screen->GetRenderer (), m_Image, &srcRect, &dstRect, rotation, NULL, SDL_FLIP_NONE);
+            al_draw_tinted_scaled_rotated_bitmap_region (m_Image,
+                                                         r.TopLeft.X,
+                                                         r.TopLeft.Y,
+                                                         r.BottomRight.Width,
+                                                         r.BottomRight.Height,
+                                                         al_map_rgb (255, 255, 255),
+                                                         r.BottomRight.Width * 0.5,
+                                                         r.BottomRight.Height * 0.5,
+                                                         x,
+                                                         y,
+                                                         scaleX,
+                                                         scaleY,
+                                                         rotation,
+                                                         0);
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    SDL_Texture* Atlas::GetImage () { return m_Image; }
+    ALLEGRO_BITMAP* Atlas::GetImage () { return m_Image; }
 
     //--------------------------------------------------------------------------------------------------
 

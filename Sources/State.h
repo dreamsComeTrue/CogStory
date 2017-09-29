@@ -25,7 +25,7 @@ namespace aga
         virtual void BeforeEnter () = 0;
         virtual void AfterLeave () = 0;
 
-        virtual void ProcessEvent (SDL_Event* event, double deltaTime) = 0;
+        virtual void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime) = 0;
         virtual void Update (double deltaTime) = 0;
         virtual void Render (double deltaTime) = 0;
 

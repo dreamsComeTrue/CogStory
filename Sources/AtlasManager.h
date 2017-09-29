@@ -13,7 +13,7 @@ namespace aga
     class AtlasManager : public Lifecycle
     {
     public:
-        AtlasManager (Screen* screen);
+        AtlasManager ();
         ~AtlasManager ();
 
         bool Initialize ();
@@ -23,7 +23,6 @@ namespace aga
         Atlas* GetAtlas (const std::string& name);
 
     private:
-        Screen* m_Screen;
         std::map<std::string, Atlas*> m_Atlases;
     };
 }

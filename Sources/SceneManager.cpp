@@ -38,7 +38,7 @@ namespace aga
 
     bool SceneManager::Initialize ()
     {
-        m_AtlasManager = new AtlasManager (m_MainLoop->GetScreen ());
+        m_AtlasManager = new AtlasManager ();
         m_AtlasManager->Initialize ();
 
         m_Player.Initialize ();
@@ -92,7 +92,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneManager::ProcessEvent (SDL_Event* event, double deltaTime) {}
+    void SceneManager::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime) {}
 
     //--------------------------------------------------------------------------------------------------
 

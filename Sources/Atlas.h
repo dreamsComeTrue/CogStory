@@ -21,12 +21,11 @@ namespace aga
         friend class AtlasManager;
 
     public:
-        Atlas (Screen* screen);
-        ~Atlas ();
+        Atlas ();
 
         void DrawRegion (const std::string& name, int x, int y);
         void DrawRegion (const std::string& name, int x, int y, float scaleX, float scaleY, float rotation);
-        SDL_Texture* GetImage ();
+        ALLEGRO_BITMAP* GetImage ();
         AtlasRegion& GetRegion (const std::string& name);
         std::vector<AtlasRegion>& GetRegions ();
 
@@ -36,8 +35,7 @@ namespace aga
         void LoadFromFile (const std::string& path);
 
     private:
-        Screen* m_Screen;
-        SDL_Texture* m_Image;
+        ALLEGRO_BITMAP* m_Image;
         std::string m_Path;
         std::string m_Name;
         std::map<std::string, AtlasRegion> m_Regions;

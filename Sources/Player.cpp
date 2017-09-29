@@ -38,7 +38,7 @@ namespace aga
 
     bool Player::Initialize ()
     {
-        m_Image = m_Screen->LoadTexture (GetResourcePath (ResourceID::GFX_PLAYER));
+        m_Image = al_load_bitmap (GetResourcePath (ResourceID::GFX_PLAYER).c_str ());
         m_Size = { 64, 64 };
 
         InitializeAnimations ();
@@ -52,7 +52,7 @@ namespace aga
     {
         if (m_Image != nullptr)
         {
-            SDL_DestroyTexture (m_Image);
+            al_destroy_bitmap (m_Image);
             m_Image = nullptr;
         }
 
@@ -71,9 +71,9 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Player::ProcessEvent (SDL_Event* event, double deltaTime)
+    void Player::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
-        if (event->type == SDL_KEYUP)
+        if (event->type == ALLEGRO_EVENT_KEY_UP)
         {
             m_Animation.SetCurrentAnimation (ANIM_IDLE);
         }
@@ -85,11 +85,10 @@ namespace aga
     {
         AnimationFrames& frames = m_Animation.GetCurrentAnimation ();
         const Rect& frame = frames.GetFrame (m_Animation.GetCurrentFrame ());
+        int width = frame.BottomRight.Width;
+        int height = frame.BottomRight.Height;
 
-        SDL_Rect srcRect = { frame.TopLeft.X, frame.TopLeft.Y, frame.BottomRight.Width, frame.BottomRight.Height };
-        SDL_Rect dstRect = { m_Position.X, m_Position.Y, frame.BottomRight.Width, frame.BottomRight.Height };
-
-        SDL_RenderCopyEx (m_Screen->GetRenderer (), m_Image, &srcRect, &dstRect, 0, NULL, SDL_FLIP_NONE);
+        al_draw_scaled_bitmap (m_Image, frame.TopLeft.X, frame.TopLeft.Y, width, height, m_Position.X, m_Position.Y, width, height, 0);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -125,28 +124,29 @@ namespace aga
 
     void Player::HandleInput (double deltaTime)
     {
-        const Uint8* state = SDL_GetKeyboardState (NULL);
+        ALLEGRO_KEYBOARD_STATE state;
+        al_get_keyboard_state (&state);
         double dx = 0, dy = 0;
 
-        if (state[SDL_SCANCODE_DOWN] || state[SDL_SCANCODE_S])
+        if (al_key_down (&state, ALLEGRO_KEY_DOWN) || al_key_down (&state, ALLEGRO_KEY_S))
         {
             m_Animation.SetCurrentAnimation (ANIM_IDLE);
             dy = MOVE_SPEED * deltaTime;
         }
 
-        if (state[SDL_SCANCODE_UP] || state[SDL_SCANCODE_W])
+        if (al_key_down (&state, ALLEGRO_KEY_UP) || al_key_down (&state, ALLEGRO_KEY_W))
         {
             m_Animation.SetCurrentAnimation (ANIM_MOVE_UP);
             dy = -MOVE_SPEED * deltaTime;
         }
 
-        if (state[SDL_SCANCODE_RIGHT] || state[SDL_SCANCODE_D])
+        if (al_key_down (&state, ALLEGRO_KEY_RIGHT) || al_key_down (&state, ALLEGRO_KEY_D))
         {
             m_Animation.SetCurrentAnimation (ANIM_MOVE_RIGHT);
             dx = MOVE_SPEED * deltaTime;
         }
 
-        if (state[SDL_SCANCODE_LEFT] || state[SDL_SCANCODE_A])
+        if (al_key_down (&state, ALLEGRO_KEY_LEFT) || al_key_down (&state, ALLEGRO_KEY_A))
         {
             m_Animation.SetCurrentAnimation (ANIM_MOVE_LEFT);
             dx = -MOVE_SPEED * deltaTime;

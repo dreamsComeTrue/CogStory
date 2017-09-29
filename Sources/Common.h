@@ -5,14 +5,12 @@
 
 #define UI_EDITOR 0
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/matrix_transform_2d.hpp>
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_image.h>
+#include <allegro5/allegro_native_dialog.h>
+#include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_ttf.h>
 
 #include <angelscript.h>
 #include <scriptbuilder/scriptbuilder.h>
@@ -50,13 +48,13 @@
 
 namespace aga
 {
-    const SDL_Color COLOR_BLACK{ 0, 0, 0, 255 };
-    const SDL_Color COLOR_WHITE{ 255, 255, 255, 255 };
-    const SDL_Color COLOR_RED{ 255, 0, 0, 255 };
-    const SDL_Color COLOR_GREEN{ 0, 255, 0, 255 };
-    const SDL_Color COLOR_BLUE{ 0, 0, 255, 255 };
-    const SDL_Color COLOR_YELLOW{ 255, 255, 0, 255 };
-    const SDL_Color COLOR_GRAY{ 100, 100, 100, 255 };
+    const ALLEGRO_COLOR COLOR_BLACK{ 0.0f, 0.0f, 0.0f, 1.0f };
+    const ALLEGRO_COLOR COLOR_WHITE{ 1.0f, 1.0f, 1.0f, 1.0f };
+    const ALLEGRO_COLOR COLOR_RED{ 1.0f, 0.0f, 0.0f, 1.0f };
+    const ALLEGRO_COLOR COLOR_GREEN{ 0.0f, 1.0f, 0.0f, 1.0f };
+    const ALLEGRO_COLOR COLOR_BLUE{ 0.0f, 0.0f, 1.0f, 1.0f };
+    const ALLEGRO_COLOR COLOR_YELLOW{ 1.0f, 1.0f, 0.0f, 1.0f };
+    const ALLEGRO_COLOR COLOR_GRAY{ 0.3f, 0.3f, 0.3f, 1.0f };
 
     static float DegressToRadians (float degrees) { return degrees * M_PI / 180.0; }
 

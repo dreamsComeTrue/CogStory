@@ -106,7 +106,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void StateManager::ProcessEvent (SDL_Event* event, double deltaTime)
+    void StateManager::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
         std::string before;
         std::string after;
@@ -120,11 +120,11 @@ namespace aga
 
         if (before == after)
         {
-            if (event->type == SDL_KEYUP)
+            if (event->type == ALLEGRO_EVENT_KEY_UP)
             {
-                switch (event->key.keysym.sym)
+                switch (event->keyboard.keycode)
                 {
-                    case SDLK_F5:
+                    case ALLEGRO_KEY_F5:
                     {
                         if (GetActiveStateName () == "GAMEPLAY_STATE")
                         {

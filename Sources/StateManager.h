@@ -25,7 +25,7 @@ namespace aga
         void RegisterState (State* state);
 
         bool Update (double deltaTime);
-        void ProcessEvent (SDL_Event* event, double deltaTime);
+        void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
         void Render (double deltaTime);
 
         MainLoop* GetMainLoop ();

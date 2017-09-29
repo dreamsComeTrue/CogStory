@@ -54,7 +54,7 @@ namespace aga
 
     void EditorState::BeforeEnter ()
     {
-        m_MainLoop->GetScreen ()->SetBackgroundColor (SDL_Color{ 50, 60, 100, 0 });
+        m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (50, 60, 100));
         m_MainLoop->GetSceneManager ()->GetCamera ().UseIdentityTransform ();
     }
 
@@ -64,7 +64,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::ProcessEvent (SDL_Event* event, double deltaTime) { m_Editor->ProcessEvent (event, deltaTime); }
+    void EditorState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime) { m_Editor->ProcessEvent (event, deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
 

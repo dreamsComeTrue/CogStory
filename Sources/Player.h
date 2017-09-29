@@ -21,7 +21,7 @@ namespace aga
 
         bool Update (double deltaTime);
         void HandleInput (double deltaTime);
-        void ProcessEvent (SDL_Event* event, double deltaTime);
+        void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
         void Render (double deltaTime);
 
         void Move (double dx, double dy);
@@ -36,7 +36,7 @@ namespace aga
         void InitializeAnimations ();
 
     private:
-        SDL_Texture* m_Image;
+        ALLEGRO_BITMAP* m_Image;
         Point m_Position, m_OldPosition;
         Point m_Size;
         Screen* m_Screen;

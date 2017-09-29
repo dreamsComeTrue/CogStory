@@ -50,7 +50,7 @@ namespace aga
 
         m_StateManager.SetActiveState (m_EditorState);
 
-        m_Screen->ProcessEventFunction = [&](SDL_Event* event) {
+        m_Screen->ProcessEventFunction = [&](ALLEGRO_EVENT* event) {
             m_SceneManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
             m_StateManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
         };
@@ -106,12 +106,12 @@ namespace aga
 
     void MainLoop::Start ()
     {
-        int oldTime = SDL_GetTicks ();
+        double oldTime = al_get_time ();
 
         while (m_IsRunning)
         {
-            int newTime = SDL_GetTicks ();
-            double deltaTime = (newTime - oldTime) / 1000.0f;
+            double newTime = al_get_time ();
+            double deltaTime = (newTime - oldTime);
             oldTime = newTime;
 
             m_TweenManager.Update (deltaTime);

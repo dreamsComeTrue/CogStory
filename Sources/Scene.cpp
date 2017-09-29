@@ -52,9 +52,7 @@ namespace aga
 
         if (atlas)
         {
-            Rect bounds = atlas->GetRegion (Name).Bounds;
-            atlas->DrawRegion (
-              Name, Bounds.TopLeft.X - bounds.BottomRight.Width * 0.5, Bounds.TopLeft.Y - bounds.BottomRight.Height * 0.5, 1, 1, Rotation);
+            atlas->DrawRegion (Name, Bounds.TopLeft.X, Bounds.TopLeft.Y, 1, 1, DegressToRadians (Rotation));
         }
     }
 
@@ -170,8 +168,8 @@ namespace aga
             tile.Draw (m_SceneManager->GetAtlasManager ());
         }
 
-        m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ()->DrawText (
-          FONT_NAME_MAIN, SDL_Color{ 255, 255, 255, 0 }, 0, 0, "Robot Tale");
+        m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
+          FONT_NAME_MAIN, al_map_rgb (0, 255, 0), 0, 0, m_Name, ALLEGRO_ALIGN_LEFT);
 
         m_SceneManager->GetPlayer ().Render (deltaTime);
         m_SceneManager->GetCamera ().UseIdentityTransform ();

@@ -32,13 +32,15 @@ include_directories(Sources/
 
 add_executable(${PROJECT_NAME} ${SRC_LIST} ${IMGUI_SRC_LIST})
 target_link_libraries(${PROJECT_NAME}
+    allegro
+    allegro_image
+    allegro_dialog
+    allegro_font
+    allegro_ttf
+    allegro_primitives
     libangelscript.a
     freetype
     pthread
     stdc++fs
-    SDL2
-    SDL2_image
-    SDL2_ttf
-    m
     ${wxWidgets_LIBRARIES}
     )
