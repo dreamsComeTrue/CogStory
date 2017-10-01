@@ -135,13 +135,13 @@ namespace aga
 
                         m_MainLoop->GetSceneManager ()->GetActiveScene ()->SortTiles ();
 
-                        std::vector<Tile>& tiles = m_MainLoop->GetSceneManager ()->GetActiveScene ()->GetTiles ();
+                        std::vector<Tile*>& tiles = m_MainLoop->GetSceneManager ()->GetActiveScene ()->GetTiles ();
 
-                        for (Tile& tile : tiles)
+                        for (Tile* tile : tiles)
                         {
-                            if (tile.ID == currentID)
+                            if (tile->ID == currentID)
                             {
-                                m_SelectedTile = &tile;
+                                m_SelectedTile = tile;
                                 break;
                             }
                         }
@@ -154,7 +154,7 @@ namespace aga
                 {
                     if (m_SelectedTile)
                     {
-                        m_MainLoop->GetSceneManager ()->GetActiveScene ()->RemoveTile (*m_SelectedTile);
+                        m_MainLoop->GetSceneManager ()->GetActiveScene ()->RemoveTile (m_SelectedTile);
                         m_SelectedTile = nullptr;
                         m_CursorMode = CursorMode::TileSelectMode;
                     }
@@ -167,8 +167,14 @@ namespace aga
                     if (m_TileUnderCursor)
                     {
                         m_SelectedAtlasRegion = m_Atlas->GetRegion (m_TileUnderCursor->Name);
-                        m_SelectedTile = nullptr;
-                        m_CursorMode = CursorMode::TileInsertMode;
+
+                        ALLEGRO_MOUSE_STATE state;
+                        al_get_mouse_state (&state);
+
+                        m_SelectedTile = AddTile (state.x, state.y);
+
+                        m_CursorMode = CursorMode::TileEditMode;
+                        m_Rotation = m_SelectedTile->Rotation;
                     }
 
                     break;
@@ -213,11 +219,6 @@ namespace aga
 
             if (event->mouse.button == 1)
             {
-                if (m_CursorMode == CursorMode::TileInsertMode && !tileSelected)
-                {
-                    AddTile (event->mouse.x, event->mouse.y);
-                }
-
                 if (m_CursorMode == CursorMode::TileSelectMode)
                 {
                     Rect r;
@@ -229,7 +230,7 @@ namespace aga
                         m_Rotation = m_SelectedTile->Rotation;
                     }
                 }
-                else if (m_CursorMode == CursorMode::TileEditMode)
+                else if (m_CursorMode == CursorMode::TileEditMode && !tileSelected)
                 {
                     m_CursorMode = CursorMode::TileSelectMode;
                 }
@@ -288,11 +289,6 @@ namespace aga
         Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
         Point point = CalculateCursorPoint (state.x, state.y);
 
-        if (m_CursorMode == CursorMode::TileInsertMode)
-        {
-            m_Atlas->DrawRegion (m_SelectedAtlasRegion.Name, point.X, point.Y, scale.X, scale.Y, DegressToRadians (m_Rotation));
-        }
-
         if (m_CursorMode == CursorMode::TileSelectMode)
         {
             Rect r;
@@ -309,9 +305,9 @@ namespace aga
             if (m_SelectedTile)
             {
                 m_SelectedTile->Rotation = m_Rotation;
-                m_SelectedTile->Bounds.TopLeft = { (translate.X + point.X), (translate.Y + point.Y) };
+                m_SelectedTile->Bounds.TopLeft = { (translate.X + point.X) * 1 / scale.X, (translate.Y + point.Y) * 1 / scale.Y };
 
-                Rect b = GetRenderBounds (*m_SelectedTile);
+                Rect b = GetRenderBounds (m_SelectedTile);
                 al_draw_rectangle (b.TopLeft.X, b.TopLeft.Y, b.BottomRight.Width, b.BottomRight.Height, COLOR_RED, 2);
             }
         }
@@ -319,9 +315,8 @@ namespace aga
         if (m_IsDrawTiles)
         {
             DrawTiles ();
+            RenderUI ();
         }
-
-        RenderUI ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -428,8 +423,11 @@ namespace aga
 
             if (InsideRect (mouseX, mouseY, r))
             {
-                m_CursorMode = CursorMode::TileInsertMode;
                 m_SelectedAtlasRegion = regions[i];
+                m_SelectedTile = AddTile (mouseX, mouseY);
+
+                m_CursorMode = CursorMode::TileEditMode;
+                m_Rotation = m_SelectedTile->Rotation;
 
                 return true;
             }
@@ -461,40 +459,42 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::AddTile (int mouseX, int mouseY)
+    Tile* Editor::AddTile (int mouseX, int mouseY)
     {
-        Tile tile;
+        Tile* tile = new Tile ();
         AtlasRegion region = m_Atlas->GetRegion (m_SelectedAtlasRegion.Name);
         Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
         Point point = CalculateCursorPoint (mouseX, mouseY);
 
-        tile.ID = ++CURRENT_ID;
-        tile.Tileset = m_Atlas->GetName ();
-        tile.Name = m_SelectedAtlasRegion.Name;
-        tile.Bounds = { { (translate.X + point.X), (translate.Y + point.Y) },
-                        { region.Bounds.BottomRight.Width, region.Bounds.BottomRight.Height } };
-        tile.Rotation = m_Rotation;
+        tile->ID = ++CURRENT_ID;
+        tile->Tileset = m_Atlas->GetName ();
+        tile->Name = m_SelectedAtlasRegion.Name;
+        tile->Bounds = { { (translate.X + point.X), (translate.Y + point.Y) },
+                         { region.Bounds.BottomRight.Width, region.Bounds.BottomRight.Height } };
+        tile->Rotation = m_Rotation;
 
         m_MainLoop->GetSceneManager ()->GetActiveScene ()->AddTile (tile);
+
+        return tile;
     }
 
     //--------------------------------------------------------------------------------------------------
 
     Tile* Editor::GetTileUnderCursor (int mouseX, int mouseY, Rect&& outRect)
     {
-        std::vector<Tile>& tiles = m_MainLoop->GetSceneManager ()->GetActiveScene ()->GetTiles ();
+        std::vector<Tile*>& tiles = m_MainLoop->GetSceneManager ()->GetActiveScene ()->GetTiles ();
         Tile* result = nullptr;
 
-        for (Tile& tile : tiles)
+        for (Tile* tile : tiles)
         {
             Rect r = GetRenderBounds (tile);
 
             if (InsideRect (mouseX, mouseY, r))
             {
-                if ((result == nullptr) || (result && ((result->ZOrder < tile.ZOrder) || (result->RenderID < tile.RenderID))))
+                if ((result == nullptr) || (result && ((result->ZOrder < tile->ZOrder) || (result->RenderID < tile->RenderID))))
                 {
                     outRect = r;
-                    result = &tile;
+                    result = tile;
                 }
             }
         }
@@ -522,12 +522,12 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Rect Editor::GetRenderBounds (Tile& tile)
+    Rect Editor::GetRenderBounds (Tile* tile)
     {
         Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
         Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
 
-        Rect b = tile.Bounds;
+        Rect b = tile->Bounds;
         int width = b.BottomRight.Width * 0.5;
         int height = b.BottomRight.Height * 0.5;
 
@@ -537,10 +537,10 @@ namespace aga
         float y2 = (b.TopLeft.Y - translate.Y * (1 / scale.Y) + height) * (scale.Y);
 
         Point origin = { x1 + (x2 - x1) * 0.5, y1 + (y2 - y1) * 0.5 };
-        Point pointA = RotatePoint (x1, y1, origin, tile.Rotation);
-        Point pointB = RotatePoint (x1, y2, origin, tile.Rotation);
-        Point pointC = RotatePoint (x2, y1, origin, tile.Rotation);
-        Point pointD = RotatePoint (x2, y2, origin, tile.Rotation);
+        Point pointA = RotatePoint (x1, y1, origin, tile->Rotation);
+        Point pointB = RotatePoint (x1, y2, origin, tile->Rotation);
+        Point pointC = RotatePoint (x2, y1, origin, tile->Rotation);
+        Point pointD = RotatePoint (x2, y2, origin, tile->Rotation);
 
         float minX, minY, maxX, maxY;
 
@@ -677,11 +677,25 @@ namespace aga
         int xOffset = 20.0f;
 
         ImGui::SetNextWindowPos (ImVec2 (xOffset, 20), ImGuiCond_FirstUseEver);
-        ImGui::Begin ("Buttons",
+        ImGui::Begin ("FileMenu",
+                      &open,
+                      ImVec2 (winSize, 100.f),
+                      0.0f,
+                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImGui::TextColored (ImVec4 (0, 1, 0, 1),
+                            std::string ("SCENE: " + m_MainLoop->GetSceneManager ()->GetActiveScene ()->GetName ()).c_str ());
+        ImGui::Button ("NEW SCENE");
+        ImGui::Button ("OPEN SCENE");
+        ImGui::Button ("SAVE SCENE");
+
+        ImGui::End ();
+
+        ImGui::SetNextWindowPos (ImVec2 (xOffset, 120), ImGuiCond_FirstUseEver);
+        ImGui::Begin ("ToolbarMenu",
                       &open,
                       ImVec2 (winSize, 120.f),
                       0.0f,
-                      0); // ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
         if (ImGui::Button ("ZERO MOVE"))
         {
             OnResetTranslate ();

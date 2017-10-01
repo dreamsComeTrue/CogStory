@@ -27,7 +27,7 @@ namespace aga
             return Tileset == rhs.Tileset && Name == rhs.Name && Bounds == rhs.Bounds && Rotation == rhs.Rotation;
         }
 
-        static bool CompareByZOrder (const Tile& a, const Tile& b) { return a.ZOrder < b.ZOrder; }
+        static bool CompareByZOrder (const Tile* a, const Tile* b) { return a->ZOrder < b->ZOrder; }
 
         void Draw (AtlasManager* atlasManager);
     };
@@ -49,9 +49,9 @@ namespace aga
         virtual void Update (double deltaTime);
         virtual void Render (double deltaTime);
 
-        void AddTile (Tile& tile);
-        void RemoveTile (Tile& tile);
-        std::vector<Tile>& GetTiles ();
+        void AddTile (Tile* tile);
+        void RemoveTile (Tile* tile);
+        std::vector<Tile*>& GetTiles ();
 
         Point GetSpawnPoint (const std::string& name);
 
@@ -59,11 +59,13 @@ namespace aga
 
         void Reset ();
 
+        std::string GetName ();
+
     private:
         std::string m_Name;
         Point m_Size;
         std::map<std::string, Point> m_SpawnPoints;
-        std::vector<Tile> m_Tiles;
+        std::vector<Tile*> m_Tiles;
         SceneManager* m_SceneManager;
     };
 }

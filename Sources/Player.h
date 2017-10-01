@@ -7,6 +7,8 @@
 #include "Common.h"
 #include "Scriptable.h"
 
+#define PLAYER_Z_ORDER 10
+
 namespace aga
 {
     class Screen;

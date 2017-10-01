@@ -15,7 +15,6 @@ namespace aga
 
     enum CursorMode
     {
-        TileInsertMode,
         TileSelectMode,
         TileEditMode
     };
@@ -38,10 +37,10 @@ namespace aga
         void DrawGrid ();
 
         bool ChooseTile (int mouseX, int mouseY);
-        void AddTile (int mouseX, int mouseY);
+        Tile* AddTile (int mouseX, int mouseY);
 
         Tile* GetTileUnderCursor (int mouseX, int mouseY, Rect&& outRect);
-        Rect GetRenderBounds (Tile& tile);
+        Rect GetRenderBounds (Tile* tile);
 
         void OnNewScene ();
         void OnNewSceneYesButton ();
