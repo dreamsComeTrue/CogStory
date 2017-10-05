@@ -43,9 +43,6 @@ namespace aga
         Rect GetRenderBounds (Tile* tile);
 
         void OnNewScene ();
-        void OnNewSceneYesButton ();
-        void OnNewSceneNoButton ();
-
         void OnLoadScene ();
         void OnSaveScene ();
 

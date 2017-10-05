@@ -22,9 +22,10 @@
 
 //---- Don't implement test window functionality (ShowTestWindow()/ShowStyleEditor()/ShowUserGuide() methods will be empty)
 //---- It is very strongly recommended to NOT disable the test windows. Please read the comment at the top of imgui_demo.cpp to learn why.
-#define IMGUI_DISABLE_TEST_WINDOWS
+//#define IMGUI_DISABLE_TEST_WINDOWS
 
-//---- Don't define obsolete functions names. Consider enabling from time to time or when updating to reduce like hood of using already obsolete function/names
+//---- Don't define obsolete functions names. Consider enabling from time to time or when updating to reduce like hood of using already
+//obsolete function/names
 //#define IMGUI_DISABLE_OBSOLETE_FUNCTIONS
 
 //---- Pack colors to BGRA instead of RGBA (remove need to post process vertex buffer in back ends)
@@ -55,4 +56,3 @@ namespace ImGui
     void    Value(const char* prefix, const MyMatrix44& v, const char* float_format = NULL);
 }
 */
-

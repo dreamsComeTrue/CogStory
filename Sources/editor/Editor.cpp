@@ -77,6 +77,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    bool openTest = false;
+
     void Editor::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
         ImGui_ImplA5_ProcessEvent (event);
@@ -89,7 +91,7 @@ namespace aga
         bool tileSelected = false;
         if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
         {
-            if (event->mouse.button == 1)
+            if (event->mouse.button == 1 && m_IsDrawTiles)
             {
                 tileSelected = ChooseTile (event->mouse.x, event->mouse.y);
             }
@@ -186,6 +188,12 @@ namespace aga
         {
             switch (event->keyboard.keycode)
             {
+                case ALLEGRO_KEY_F1:
+                {
+                    openTest = !openTest;
+                    break;
+                }
+
                 case ALLEGRO_KEY_F5:
                 {
                     MenuItemPlay ();
@@ -285,10 +293,6 @@ namespace aga
 
         m_MainLoop->GetSceneManager ()->GetCamera ().UseIdentityTransform ();
 
-        Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
-        Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
-        Point point = CalculateCursorPoint (state.x, state.y);
-
         if (m_CursorMode == CursorMode::TileSelectMode)
         {
             Rect r;
@@ -304,6 +308,10 @@ namespace aga
         {
             if (m_SelectedTile)
             {
+                Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
+                Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
+                Point point = CalculateCursorPoint (state.x, state.y);
+
                 m_SelectedTile->Rotation = m_Rotation;
                 m_SelectedTile->Bounds.TopLeft = { (translate.X + point.X) * 1 / scale.X, (translate.Y + point.Y) * 1 / scale.Y };
 
@@ -330,25 +338,24 @@ namespace aga
 
         for (int i = 0; i < TILES_COUNT; ++i)
         {
-            if (i >= regions.size () - 1)
-            {
-                break;
-            }
-
             advance = beginning + i * TILE_SIZE;
 
-            Rect region = regions[i].Bounds;
+            al_draw_rectangle (advance, screenSize.Height - TILE_SIZE, advance + TILE_SIZE, screenSize.Height, COLOR_GREEN, 1);
 
-            al_draw_scaled_bitmap (m_Atlas->GetImage (),
-                                   region.TopLeft.X,
-                                   region.TopLeft.Y,
-                                   region.BottomRight.Width,
-                                   region.BottomRight.Height,
-                                   advance + 1,
-                                   screenSize.Height - TILE_SIZE + 1,
-                                   TILE_SIZE - 2,
-                                   TILE_SIZE - 2,
-                                   0);
+            if (i < regions.size () - 1)
+            {
+                Rect region = regions[i].Bounds;
+                al_draw_scaled_bitmap (m_Atlas->GetImage (),
+                                       region.TopLeft.X,
+                                       region.TopLeft.Y,
+                                       region.BottomRight.Width,
+                                       region.BottomRight.Height,
+                                       advance + 1,
+                                       screenSize.Height - TILE_SIZE + 1,
+                                       TILE_SIZE - 2,
+                                       TILE_SIZE - 2,
+                                       0);
+            }
         }
     }
 
@@ -572,22 +579,11 @@ namespace aga
 
     void Editor::OnNewScene ()
     {
-        //    window.YesFunction = [=]() {
-        //           Gwk::Controls::Button* yesButton = (Gwk::Controls::Button*)control;
-        //
-        //          m_MainLoop->GetSceneManager ()->GetActiveScene ()->Reset ();
-        //
-        //          OnResetScale ();
-        //    OnResetTranslate ();
+        m_MainLoop->GetSceneManager ()->GetActiveScene ()->Reset ();
+
+        OnResetScale ();
+        OnResetTranslate ();
     }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Editor::OnNewSceneYesButton () {}
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Editor::OnNewSceneNoButton () {}
 
     //--------------------------------------------------------------------------------------------------
 
@@ -664,6 +660,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    bool askNewScene = false;
+
     void Editor::RenderUI ()
     {
         ImGui_ImplA5_NewFrame ();
@@ -674,19 +672,66 @@ namespace aga
         bool open = true;
 
         int winSize = 140.0f;
-        int xOffset = 20.0f;
+        int xOffset = 5.0f;
 
-        ImGui::SetNextWindowPos (ImVec2 (xOffset, 20), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowPos (ImVec2 (xOffset, xOffset), ImGuiCond_FirstUseEver);
         ImGui::Begin ("FileMenu",
                       &open,
                       ImVec2 (winSize, 100.f),
                       0.0f,
                       ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImVec2 buttonSize (100, 20);
+
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
                             std::string ("SCENE: " + m_MainLoop->GetSceneManager ()->GetActiveScene ()->GetName ()).c_str ());
-        ImGui::Button ("NEW SCENE");
-        ImGui::Button ("OPEN SCENE");
-        ImGui::Button ("SAVE SCENE");
+
+        static bool newSceneDontAsk = false;
+        if (ImGui::Button ("NEW SCENE", buttonSize))
+        {
+            if (newSceneDontAsk)
+            {
+                OnNewScene ();
+            }
+            else
+            {
+                ImGui::OpenPopup ("Erase?");
+            }
+        }
+
+        if (ImGui::BeginPopupModal ("Erase?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Text ("All those beautiful files will be deleted.\nThis operation cannot be undone!\n\n");
+            ImGui::Separator ();
+
+            ImGui::PushStyleVar (ImGuiStyleVar_FramePadding, ImVec2 (0, 0));
+            ImGui::Checkbox ("Don't ask me next time", &newSceneDontAsk);
+            ImGui::PopStyleVar ();
+
+            if (ImGui::Button ("OK", ImVec2 (120, 0)))
+            {
+                OnNewScene ();
+                ImGui::CloseCurrentPopup ();
+            }
+
+            ImGui::SameLine ();
+
+            if (ImGui::Button ("Cancel", ImVec2 (120, 0)))
+            {
+                ImGui::CloseCurrentPopup ();
+            }
+
+            ImGui::EndPopup ();
+        }
+
+        if (ImGui::Button ("OPEN SCENE", buttonSize))
+        {
+            OnLoadScene ();
+        }
+
+        if (ImGui::Button ("SAVE SCENE", buttonSize))
+        {
+            OnSaveScene ();
+        }
 
         ImGui::End ();
 
@@ -696,30 +741,39 @@ namespace aga
                       ImVec2 (winSize, 120.f),
                       0.0f,
                       ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-        if (ImGui::Button ("ZERO MOVE"))
+        if (ImGui::Button ("RESET MOVE", buttonSize))
         {
             OnResetTranslate ();
         }
 
-        if (ImGui::Button ("ZERO SCALE"))
+        if (ImGui::Button ("RESET SCALE", buttonSize))
         {
             OnResetScale ();
         }
 
-        if (ImGui::Button (m_IsSnapToGrid ? "HIDE GRID" : "SHOW GRID"))
+        if (ImGui::Button (m_IsSnapToGrid ? "HIDE GRID" : "SHOW GRID", buttonSize))
         {
             OnShowGrid ();
         }
 
-        ImGui::Button ("+++", ImVec2 (35, 20));
+        if (ImGui::Button ("+++", ImVec2 (buttonSize.x / 2 - 4, buttonSize.y)))
+        {
+            OnGridIncrease ();
+        }
+
         ImGui::SameLine ();
-        ImGui::Button ("---", ImVec2 (35, 20));
+
+        if (ImGui::Button ("---", ImVec2 (buttonSize.x / 2 - 4, buttonSize.y)))
+        {
+            OnGridDecrease ();
+        }
+
         ImGui::End ();
 
         winSize = 140.0f;
-        xOffset = screenSize.Width - winSize - 20.0f;
+        xOffset = screenSize.Width - winSize - 5.0f;
 
-        ImGui::SetNextWindowPos (ImVec2 (xOffset, 20), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowPos (ImVec2 (xOffset, 5.0f), ImGuiCond_Always);
         ImGui::Begin ("ToolBox",
                       &open,
                       ImVec2 (winSize, 220.f),
@@ -745,6 +799,13 @@ namespace aga
         ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("GRID: " + ToString (m_BaseGridSize)).c_str ());
 
         ImGui::End ();
+
+        if (openTest)
+        {
+            static bool openTestWindow = false;
+            ImGui::SetNextWindowPos (ImVec2 (5, 5), ImGuiCond_FirstUseEver);
+            ImGui::ShowTestWindow (&openTestWindow);
+        }
 
         ImGui::Render ();
     }
