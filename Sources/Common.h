@@ -17,7 +17,7 @@
 #include <scriptstdstring/scriptstdstring.h>
 
 #include <cmath>
-#include <experimental/filesystem>
+#include <boost/filesystem.hpp>
 #include <fstream>
 #include <functional>
 #include <map>
@@ -32,11 +32,6 @@
 #include "Rect.h"
 #include "Resources.h"
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
 #define SAFE_DELETE(x)                                                                                                                     \
     {                                                                                                                                      \
         if (x != nullptr)                                                                                                                  \
@@ -45,6 +40,8 @@
             x = nullptr;                                                                                                                   \
         }                                                                                                                                  \
     }
+
+#define ARRAY_SIZE(_ARR)  ((int)(sizeof(_ARR)/sizeof(*_ARR)))
 
 namespace aga
 {
@@ -111,13 +108,13 @@ namespace aga
 
     static std::string GetDirectory (const std::string& fullPath)
     {
-        std::experimental::filesystem::path p{ fullPath };
+        boost::filesystem::path p{ fullPath };
         return p.parent_path ().string ();
     }
 
     static std::string GetBaseName (const std::string& fullPath)
     {
-        std::experimental::filesystem::path p{ fullPath };
+        boost::filesystem::path p{ fullPath };
         return p.stem ().string ();
     }
 }

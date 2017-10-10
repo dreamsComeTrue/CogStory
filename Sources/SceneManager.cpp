@@ -75,6 +75,20 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void SceneManager::RemoveScene (Scene* scene)
+    {
+        for (std::map<ResourceID, Scene*>::iterator it = m_Scenes.begin (); it != m_Scenes.end (); it++)
+        {
+            if (it->second == scene)
+            {
+                m_Scenes.erase (it);
+                break;
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void SceneManager::SetActiveScene (Scene* scene)
     {
         if (m_ActiveScene != nullptr)

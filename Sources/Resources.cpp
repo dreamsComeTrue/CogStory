@@ -41,9 +41,7 @@ namespace aga
 
     const std::string GetDataPath ()
     {
-        std::string path = std::experimental::filesystem::current_path ().string () + "/Data/";
-
-        return path;
+        return boost::filesystem::current_path ().string () + "/../Data/";
     }
 
     //--------------------------------------------------------------------------------------------------

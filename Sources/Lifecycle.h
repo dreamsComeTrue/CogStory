@@ -10,12 +10,14 @@ namespace aga
     public:
         virtual bool Initialize ()
         {
+            m_IsDestroyed = false;
             m_IsInitialized = true;
             return true;
         }
         virtual bool Destroy ()
         {
             m_IsDestroyed = true;
+            m_IsInitialized = false;
             return true;
         }
         bool IsInitialized () { return m_IsInitialized; }

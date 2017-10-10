@@ -28,10 +28,10 @@ namespace aga
         void Exit ();
 
         Screen* GetScreen ();
-        StateManager* GetStateManager ();
-        SceneManager* GetSceneManager ();
-        ScriptManager* GetScriptManager ();
-        TweenManager* GetTweenManager ();
+        StateManager& GetStateManager ();
+        SceneManager& GetSceneManager ();
+        ScriptManager& GetScriptManager ();
+        TweenManager& GetTweenManager ();
 
     private:
         void InitializeStates ();

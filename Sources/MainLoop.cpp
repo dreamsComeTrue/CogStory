@@ -41,10 +41,12 @@ namespace aga
 
     bool MainLoop::Initialize ()
     {
+        Lifecycle::Initialize ();
+
         m_SceneManager.Initialize ();
-        m_ScriptManager.Initialize ();
         m_StateManager.Initialize ();
         m_TweenManager.Initialize ();
+        m_ScriptManager.Initialize ();
 
         InitializeStates ();
 
@@ -57,7 +59,7 @@ namespace aga
 
         m_Screen->RenderFunction = [&]() { m_StateManager.Render (m_Screen->GetDeltaTime ()); };
 
-        Lifecycle::Initialize ();
+        return true;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -66,14 +68,12 @@ namespace aga
     {
         DestroyStates ();
 
-        m_TweenManager.Destroy ();
-        m_SceneManager.Destroy ();
         m_ScriptManager.Destroy ();
+        m_TweenManager.Destroy ();
         m_StateManager.Destroy ();
+        m_SceneManager.Destroy ();
 
-        Lifecycle::Destroy ();
-
-        return true;
+        return Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -134,19 +134,19 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    StateManager* MainLoop::GetStateManager () { return &m_StateManager; }
+    StateManager& MainLoop::GetStateManager () { return m_StateManager; }
 
     //--------------------------------------------------------------------------------------------------
 
-    SceneManager* MainLoop::GetSceneManager () { return &m_SceneManager; }
+    SceneManager& MainLoop::GetSceneManager () { return m_SceneManager; }
 
     //--------------------------------------------------------------------------------------------------
 
-    ScriptManager* MainLoop::GetScriptManager () { return &m_ScriptManager; }
+    ScriptManager& MainLoop::GetScriptManager () { return m_ScriptManager; }
 
     //--------------------------------------------------------------------------------------------------
 
-    TweenManager* MainLoop::GetTweenManager () { return &m_TweenManager; }
+    TweenManager& MainLoop::GetTweenManager () { return m_TweenManager; }
 
     //--------------------------------------------------------------------------------------------------
 }

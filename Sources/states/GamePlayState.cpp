@@ -38,10 +38,10 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
-        scene00 = Scene::LoadScene (m_MainLoop->GetSceneManager (), GetResourcePath (SCENE_0_0));
+        scene00 = Scene::LoadScene (&m_MainLoop->GetSceneManager (), GetResourcePath (SCENE_0_0));
 
-        m_MainLoop->GetSceneManager ()->AddScene (SCENE_0_0, scene00);
-        m_MainLoop->GetSceneManager ()->SetActiveScene (scene00);
+        m_MainLoop->GetSceneManager ().AddScene (SCENE_0_0, scene00);
+        m_MainLoop->GetSceneManager ().SetActiveScene (scene00);
 
         return true;
     }
@@ -55,11 +55,11 @@ namespace aga
     void GamePlayState::BeforeEnter ()
     {
         Point pos = scene00->GetSpawnPoint ("DEFAULT");
-        m_MainLoop->GetSceneManager ()->GetPlayer ().SetPosition (pos);
+        m_MainLoop->GetSceneManager ().GetPlayer ().SetPosition (pos);
 
         m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (60, 60, 70));
         m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (50, 60, 100));
-        m_MainLoop->GetSceneManager ()->SetActiveScene (m_MainLoop->GetSceneManager ()->GetActiveScene ());
+        m_MainLoop->GetSceneManager ().SetActiveScene (m_MainLoop->GetSceneManager ().GetActiveScene ());
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -70,16 +70,16 @@ namespace aga
 
     void GamePlayState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
-        m_MainLoop->GetSceneManager ()->GetPlayer ().ProcessEvent (event, deltaTime);
+        m_MainLoop->GetSceneManager ().GetPlayer ().ProcessEvent (event, deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::Update (double deltaTime) { m_MainLoop->GetSceneManager ()->GetPlayer ().HandleInput (deltaTime); }
+    void GamePlayState::Update (double deltaTime) { m_MainLoop->GetSceneManager ().GetPlayer ().HandleInput (deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::Render (double deltaTime) { m_MainLoop->GetSceneManager ()->Render (deltaTime); }
+    void GamePlayState::Render (double deltaTime) { m_MainLoop->GetSceneManager ().Render (deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
 }

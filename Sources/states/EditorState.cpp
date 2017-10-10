@@ -55,12 +55,12 @@ namespace aga
     void EditorState::BeforeEnter ()
     {
         m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (50, 60, 100));
-        m_MainLoop->GetSceneManager ()->GetCamera ().UseIdentityTransform ();
+        m_MainLoop->GetSceneManager ().GetCamera ().UseIdentityTransform ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::AfterLeave () { m_MainLoop->GetSceneManager ()->GetCamera ().ClearTransformations (); }
+    void EditorState::AfterLeave () { m_MainLoop->GetSceneManager ().GetCamera ().ClearTransformations (); }
 
     //--------------------------------------------------------------------------------------------------
 

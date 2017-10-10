@@ -43,7 +43,7 @@ namespace aga
         Rect GetRenderBounds (Tile* tile);
 
         void OnNewScene ();
-        void OnLoadScene ();
+        void OnLoadScene (const std::string& filePath);
         void OnSaveScene ();
 
         void OnPlay ();

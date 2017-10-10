@@ -2,21 +2,19 @@ const double SPEED = 15.0;
 
 void Start ()
 {
-    
 }
 
 void BeforeEnterScene ()
 {
     player.SetPosition (0, 0);
 
-  //  AddTween (0, 0, 100, 500, PlayerTween);
-    
-    Point screensize = GetScreenSize ();
+    //  AddTween (0, 0, 100, 500, PlayerTween);
+    Point screenSize = GetWindowSize ();
     Point playerSize = player.GetSize ();
     Point playerPosition = player.GetPosition ();
     
-    camera.SetTranslate (screensize.Width * 0.5 - playerSize.Width * 0.5 - playerPosition.X,
-            screensize.Height * 0.5 - playerSize.Height * 0.5 - playerPosition.Y);
+    camera.SetTranslate (screenSize.Width * 0.5 - playerSize.Width * 0.5 - playerPosition.X,
+            screenSize.Height * 0.5 - playerSize.Height * 0.5 - playerPosition.Y);
 }
 
 bool PlayerTween (int i)
@@ -38,7 +36,19 @@ bool AnotherPlayerTween (int i)
     return false; // t.progress () >= 1;
 }
 
+double counter = 0;
+
 void Update (double deltaTime)
 {
-//    player.Move (0, SPEED * deltaTime);
+    counter += deltaTime;
+
+    if (counter >= 1.0)
+    {
+        counter = 0.0;
+
+        Log (GetFPS ());
+        Log (GetWindowSize ());
+    }
+
+    //    player.Move (0.0, SPEED * deltaTime);
 }

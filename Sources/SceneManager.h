@@ -22,6 +22,7 @@ namespace aga
         bool Destroy ();
 
         void AddScene (ResourceID id, Scene* scene);
+        void RemoveScene (Scene* scene);
         void SetActiveScene (Scene* scene);
         Scene* GetActiveScene ();
 

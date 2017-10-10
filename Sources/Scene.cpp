@@ -95,56 +95,63 @@ namespace aga
 
     Scene* Scene::LoadScene (SceneManager* sceneManager, const std::string& filePath)
     {
-        Scene* scene = new Scene (sceneManager);
-        std::ifstream file (filePath.c_str ());
-        json j;
-        file >> j;
-        file.close ();
-
-        scene->m_Name = j["name"];
-        scene->m_Size = StringToPoint (j["size"]);
-
-        auto& scripts = j["scripts"];
-
-        for (auto& j_tile : scripts)
+        try
         {
-            std::string name = j_tile["name"];
-            std::string path = j_tile["path"];
+            Scene* scene = new Scene (sceneManager);
+            std::ifstream file (filePath.c_str ());
+            json j;
+            file >> j;
+            file.close ();
 
-            Script* script =
-              sceneManager->GetMainLoop ()->GetScriptManager ()->LoadScriptFromFile (GetDataPath () + "scripts/" + path, name);
-            scene->AttachScript (script);
-        }
+            scene->m_Name = j["name"];
+            scene->m_Size = StringToPoint (j["size"]);
 
-        auto& tiles = j["tiles"];
+            auto& scripts = j["scripts"];
 
-        for (auto& j_tile : tiles)
+            for (auto& j_tile : scripts)
+            {
+                std::string name = j_tile["name"];
+                std::string path = j_tile["path"];
+
+                Script* script =
+                    sceneManager->GetMainLoop ()->GetScriptManager ().LoadScriptFromFile (GetDataPath () + "scripts/" + path, name);
+                scene->AttachScript (script);
+            }
+
+            auto& tiles = j["tiles"];
+
+            for (auto& j_tile : tiles)
+            {
+                Tile* tile = new Tile ();
+                tile->Tileset = j_tile["tileset"];
+                tile->Name = j_tile["name"];
+                tile->Bounds.TopLeft = StringToPoint (j_tile["pos"]);
+                tile->Bounds.BottomRight =
+                    sceneManager->GetAtlasManager ()->GetAtlas (tile->Tileset)->GetRegion (tile->Name).Bounds.BottomRight;
+                std::string zOrder = j_tile["z-order"];
+                tile->ZOrder = atof (zOrder.c_str ());
+                std::string rot = j_tile["rot"];
+                tile->Rotation = atof (rot.c_str ());
+
+                scene->AddTile (tile);
+            }
+
+            auto& spawn_points = j["spawn_points"];
+
+            for (auto& spawn_point : spawn_points)
+            {
+                std::string name = spawn_point["name"];
+                Point pos = StringToPoint (spawn_point["pos"]);
+
+                scene->m_SpawnPoints.insert (make_pair (name, pos));
+            }
+
+            return scene;
+        } 
+        catch (const std::exception& e)
         {
-            Tile* tile = new Tile ();
-            tile->Tileset = j_tile["tileset"];
-            tile->Name = j_tile["name"];
-            tile->Bounds.TopLeft = StringToPoint (j_tile["pos"]);
-            tile->Bounds.BottomRight =
-              sceneManager->GetAtlasManager ()->GetAtlas (tile->Tileset)->GetRegion (tile->Name).Bounds.BottomRight;
-            std::string zOrder = j_tile["z-order"];
-            tile->ZOrder = atof (zOrder.c_str ());
-            std::string rot = j_tile["rot"];
-            tile->Rotation = atof (rot.c_str ());
-
-            scene->AddTile (tile);
+            return nullptr;
         }
-
-        auto& spawn_points = j["spawn_points"];
-
-        for (auto& spawn_point : spawn_points)
-        {
-            std::string name = spawn_point["name"];
-            Point pos = StringToPoint (spawn_point["pos"]);
-
-            scene->m_SpawnPoints.insert (make_pair (name, pos));
-        }
-
-        return scene;
     }
 
     //--------------------------------------------------------------------------------------------------

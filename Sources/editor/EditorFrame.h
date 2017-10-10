@@ -7,7 +7,7 @@
 
 namespace aga
 {
-    class EditorFrame : public wxFrame
+    class EditorFrame
     {
     public:
         EditorFrame (Point size);

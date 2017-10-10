@@ -12,7 +12,7 @@ namespace aga
     Camera::Camera (Screen* screen)
       : m_Screen (screen)
     {
-        const Point& size = screen->GetScreenSize ();
+        const Point& size = screen->GetWindowSize ();
         SetTranslate (size.Width * 0.5, size.Height * 0.5);
 
         al_identity_transform (&IdentityTransform);

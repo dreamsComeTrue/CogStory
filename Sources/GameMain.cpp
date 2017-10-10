@@ -14,28 +14,7 @@ const int SCREEN_HEIGHT = 600;
 
 //--------------------------------------------------------------------------------------------------
 
-#if UI_EDITOR
-class MyApp : public wxApp
-{
-public:
-    virtual bool OnInit ()
-    {
-        EditorFrame* frame = new EditorFrame ({ SCREEN_WIDTH, SCREEN_HEIGHT });
-        frame->Show (true);
-        return true;
-    }
-};
-
-wxIMPLEMENT_APP (MyApp);
-
-//--------------------------------------------------------------------------------------------------
-
-#else
-
-//--------------------------------------------------------------------------------------------------
-
-int
-main (int argc, char** argv)
+int main (int argc, char** argv)
 {
     Screen mainScreen (SCREEN_WIDTH, SCREEN_HEIGHT);
     MainLoop mainLoop (&mainScreen);
@@ -52,4 +31,3 @@ main (int argc, char** argv)
 }
 
 //--------------------------------------------------------------------------------------------------
-#endif

@@ -22,17 +22,17 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Editor::Editor (MainLoop* mainLoop)
-      : m_MainLoop (mainLoop)
-      , m_IsDrawTiles (true)
-      , m_IsSnapToGrid (true)
-      , m_IsMousePan (false)
-      , m_IsMouseWheel (false)
-      , m_Rotation (0)
-      , m_BaseGridSize (16)
-      , m_GridSize (16)
-      , m_CursorMode (CursorMode::TileSelectMode)
-      , m_SelectedTile (nullptr)
-      , m_TileUnderCursor (nullptr)
+        : m_MainLoop (mainLoop)
+        , m_IsDrawTiles (true)
+        , m_IsSnapToGrid (true)
+        , m_IsMousePan (false)
+        , m_IsMouseWheel (false)
+        , m_Rotation (0)
+        , m_BaseGridSize (16)
+        , m_GridSize (16)
+        , m_CursorMode (CursorMode::TileSelectMode)
+        , m_SelectedTile (nullptr)
+        , m_TileUnderCursor (nullptr)
     {
     }
 
@@ -101,86 +101,86 @@ namespace aga
         {
             switch (event->keyboard.keycode)
             {
-                case ALLEGRO_KEY_R:
+            case ALLEGRO_KEY_R:
+            {
+                m_Rotation += event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT ? 15 : -15;
+
+                if (m_Rotation <= -360)
                 {
-                    m_Rotation += event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT ? 15 : -15;
-
-                    if (m_Rotation <= -360)
-                    {
-                        m_Rotation = 0;
-                    }
-
-                    if (m_Rotation >= 360)
-                    {
-                        m_Rotation = 0;
-                    }
-
-                    break;
+                    m_Rotation = 0;
                 }
 
-                case ALLEGRO_KEY_G:
+                if (m_Rotation >= 360)
                 {
-                    m_BaseGridSize *= event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT ? 0.5 : 2;
-                    m_BaseGridSize = std::max (1, std::min (m_BaseGridSize, 1024));
-                    m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X);
-
-                    break;
+                    m_Rotation = 0;
                 }
 
-                case ALLEGRO_KEY_Z:
+                break;
+            }
+
+            case ALLEGRO_KEY_G:
+            {
+                m_BaseGridSize *= event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT ? 0.5 : 2;
+                m_BaseGridSize = std::max (1, std::min (m_BaseGridSize, 1024));
+                m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ().GetCamera ().GetScale ().X);
+
+                break;
+            }
+
+            case ALLEGRO_KEY_Z:
+            {
+                if (m_SelectedTile)
                 {
-                    if (m_SelectedTile)
+                    m_SelectedTile->ZOrder += event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT ? -1 : 1;
+
+                    int currentID = m_SelectedTile->ID;
+
+                    m_MainLoop->GetSceneManager ().GetActiveScene ()->SortTiles ();
+
+                    std::vector<Tile*>& tiles = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetTiles ();
+
+                    for (Tile* tile : tiles)
                     {
-                        m_SelectedTile->ZOrder += event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT ? -1 : 1;
-
-                        int currentID = m_SelectedTile->ID;
-
-                        m_MainLoop->GetSceneManager ()->GetActiveScene ()->SortTiles ();
-
-                        std::vector<Tile*>& tiles = m_MainLoop->GetSceneManager ()->GetActiveScene ()->GetTiles ();
-
-                        for (Tile* tile : tiles)
+                        if (tile->ID == currentID)
                         {
-                            if (tile->ID == currentID)
-                            {
-                                m_SelectedTile = tile;
-                                break;
-                            }
+                            m_SelectedTile = tile;
+                            break;
                         }
                     }
-
-                    break;
                 }
 
-                case ALLEGRO_KEY_X:
+                break;
+            }
+
+            case ALLEGRO_KEY_X:
+            {
+                if (m_SelectedTile)
                 {
-                    if (m_SelectedTile)
-                    {
-                        m_MainLoop->GetSceneManager ()->GetActiveScene ()->RemoveTile (m_SelectedTile);
-                        m_SelectedTile = nullptr;
-                        m_CursorMode = CursorMode::TileSelectMode;
-                    }
-
-                    break;
+                    m_MainLoop->GetSceneManager ().GetActiveScene ()->RemoveTile (m_SelectedTile);
+                    m_SelectedTile = nullptr;
+                    m_CursorMode = CursorMode::TileSelectMode;
                 }
 
-                case ALLEGRO_KEY_C:
+                break;
+            }
+
+            case ALLEGRO_KEY_C:
+            {
+                if (m_TileUnderCursor)
                 {
-                    if (m_TileUnderCursor)
-                    {
-                        m_SelectedAtlasRegion = m_Atlas->GetRegion (m_TileUnderCursor->Name);
+                    m_SelectedAtlasRegion = m_Atlas->GetRegion (m_TileUnderCursor->Name);
 
-                        ALLEGRO_MOUSE_STATE state;
-                        al_get_mouse_state (&state);
+                    ALLEGRO_MOUSE_STATE state;
+                    al_get_mouse_state (&state);
 
-                        m_SelectedTile = AddTile (state.x, state.y);
+                    m_SelectedTile = AddTile (state.x, state.y);
 
-                        m_CursorMode = CursorMode::TileEditMode;
-                        m_Rotation = m_SelectedTile->Rotation;
-                    }
-
-                    break;
+                    m_CursorMode = CursorMode::TileEditMode;
+                    m_Rotation = m_SelectedTile->Rotation;
                 }
+
+                break;
+            }
             }
         }
 
@@ -188,36 +188,36 @@ namespace aga
         {
             switch (event->keyboard.keycode)
             {
-                case ALLEGRO_KEY_F1:
+            case ALLEGRO_KEY_F1:
+            {
+                openTest = !openTest;
+                break;
+            }
+
+            case ALLEGRO_KEY_F5:
+            {
+                MenuItemPlay ();
+                break;
+            }
+
+            case ALLEGRO_KEY_SPACE:
+            {
+                m_IsDrawTiles = !m_IsDrawTiles;
+
+                for (int i = 0; i < TILES_COUNT; ++i)
                 {
-                    openTest = !openTest;
-                    break;
+                    std::ostringstream name;
+                    name << "TileRect" << i;
                 }
 
-                case ALLEGRO_KEY_F5:
-                {
-                    MenuItemPlay ();
-                    break;
-                }
+                break;
+            }
 
-                case ALLEGRO_KEY_SPACE:
-                {
-                    m_IsDrawTiles = !m_IsDrawTiles;
-
-                    for (int i = 0; i < TILES_COUNT; ++i)
-                    {
-                        std::ostringstream name;
-                        name << "TileRect" << i;
-                    }
-
-                    break;
-                }
-
-                case ALLEGRO_KEY_S:
-                {
-                    m_IsSnapToGrid = !m_IsSnapToGrid;
-                    break;
-                }
+            case ALLEGRO_KEY_S:
+            {
+                m_IsSnapToGrid = !m_IsSnapToGrid;
+                break;
+            }
             }
         }
 
@@ -257,18 +257,18 @@ namespace aga
         {
             if (event->mouse.dz < 0.0)
             {
-                m_MainLoop->GetSceneManager ()->GetCamera ().Scale (0.75f, 0.75f, event->mouse.x, event->mouse.y);
-                m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X);
+                m_MainLoop->GetSceneManager ().GetCamera ().Scale (0.75f, 0.75f, event->mouse.x, event->mouse.y);
+                m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ().GetCamera ().GetScale ().X);
             }
             else if (event->mouse.dz > 0.0)
             {
-                m_MainLoop->GetSceneManager ()->GetCamera ().Scale (1.25f, 1.25f, event->mouse.x, event->mouse.y);
-                m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X);
+                m_MainLoop->GetSceneManager ().GetCamera ().Scale (1.25f, 1.25f, event->mouse.x, event->mouse.y);
+                m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ().GetCamera ().GetScale ().X);
             }
 
             if (m_IsMousePan)
             {
-                m_MainLoop->GetSceneManager ()->GetCamera ().Move (event->mouse.dx, event->mouse.dy);
+                m_MainLoop->GetSceneManager ().GetCamera ().Move (event->mouse.dx, event->mouse.dy);
             }
         }
         else if (event->type == ALLEGRO_EVENT_DISPLAY_RESIZE)
@@ -286,12 +286,12 @@ namespace aga
             DrawGrid ();
         }
 
-        m_MainLoop->GetSceneManager ()->Render (deltaTime);
+        m_MainLoop->GetSceneManager ().Render (deltaTime);
 
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
 
-        m_MainLoop->GetSceneManager ()->GetCamera ().UseIdentityTransform ();
+        m_MainLoop->GetSceneManager ().GetCamera ().UseIdentityTransform ();
 
         if (m_CursorMode == CursorMode::TileSelectMode)
         {
@@ -300,7 +300,8 @@ namespace aga
 
             if (m_TileUnderCursor)
             {
-                al_draw_rectangle (r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width, r.BottomRight.Height, COLOR_YELLOW, 2);
+                al_draw_rectangle (
+                    r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width, r.BottomRight.Height, COLOR_YELLOW, 2);
             }
         }
 
@@ -308,12 +309,13 @@ namespace aga
         {
             if (m_SelectedTile)
             {
-                Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
-                Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
+                Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
+                Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
                 Point point = CalculateCursorPoint (state.x, state.y);
 
                 m_SelectedTile->Rotation = m_Rotation;
-                m_SelectedTile->Bounds.TopLeft = { (translate.X + point.X) * 1 / scale.X, (translate.Y + point.Y) * 1 / scale.Y };
+                m_SelectedTile->Bounds.TopLeft
+                    = { (translate.X + point.X) * 1 / scale.X, (translate.Y + point.Y) * 1 / scale.Y };
 
                 Rect b = GetRenderBounds (m_SelectedTile);
                 al_draw_rectangle (b.TopLeft.X, b.TopLeft.Y, b.BottomRight.Width, b.BottomRight.Height, COLOR_RED, 2);
@@ -332,29 +334,23 @@ namespace aga
     void Editor::DrawTiles ()
     {
         std::vector<AtlasRegion>& regions = m_Atlas->GetRegions ();
-        const Point screenSize = m_MainLoop->GetScreen ()->GetScreenSize ();
-        double beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
+        const Point windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+        double beginning = windowSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
         float advance = 0;
 
         for (int i = 0; i < TILES_COUNT; ++i)
         {
             advance = beginning + i * TILE_SIZE;
 
-            al_draw_rectangle (advance, screenSize.Height - TILE_SIZE, advance + TILE_SIZE, screenSize.Height, COLOR_GREEN, 1);
+            al_draw_rectangle (
+                advance, windowSize.Height - TILE_SIZE, advance + TILE_SIZE, windowSize.Height, COLOR_GREEN, 1);
 
             if (i < regions.size () - 1)
             {
                 Rect region = regions[i].Bounds;
-                al_draw_scaled_bitmap (m_Atlas->GetImage (),
-                                       region.TopLeft.X,
-                                       region.TopLeft.Y,
-                                       region.BottomRight.Width,
-                                       region.BottomRight.Height,
-                                       advance + 1,
-                                       screenSize.Height - TILE_SIZE + 1,
-                                       TILE_SIZE - 2,
-                                       TILE_SIZE - 2,
-                                       0);
+                al_draw_scaled_bitmap (m_Atlas->GetImage (), region.TopLeft.X, region.TopLeft.Y,
+                    region.BottomRight.Width, region.BottomRight.Height, advance + 1, windowSize.Height - TILE_SIZE + 1,
+                    TILE_SIZE - 2, TILE_SIZE - 2, 0);
             }
         }
     }
@@ -365,8 +361,8 @@ namespace aga
     {
         const ALLEGRO_COLOR LIGHT_GRAY{ 0.5f, 0.5f, 0.5f, 1.0f };
 
-        Point t = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
-        Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
+        Point t = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
+        Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
 
         int horBeginX = t.X / 2 * (1 / scale.X);
 
@@ -382,7 +378,7 @@ namespace aga
             horBeginY *= -1;
         }
 
-        const Point screenSize = m_MainLoop->GetScreen ()->GetScreenSize ();
+        const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
 
         int horEndX = 300 + std::fabs (horBeginX);
         int horEndY = screenSize.Height + std::fabs (horBeginY);
@@ -411,7 +407,7 @@ namespace aga
 
     bool Editor::ChooseTile (int mouseX, int mouseY)
     {
-        const Point screenSize = m_MainLoop->GetScreen ()->GetScreenSize ();
+        const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
         double beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
         float advance = 0;
         std::vector<AtlasRegion> regions = m_Atlas->GetRegions ();
@@ -447,8 +443,8 @@ namespace aga
 
     Point Editor::CalculateCursorPoint (int mouseX, int mouseY)
     {
-        Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
-        Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
+        Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
+        Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
         int finalX = (mouseX + translate.X);
         int finalY = (mouseY + translate.Y);
 
@@ -470,17 +466,17 @@ namespace aga
     {
         Tile* tile = new Tile ();
         AtlasRegion region = m_Atlas->GetRegion (m_SelectedAtlasRegion.Name);
-        Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
+        Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
         Point point = CalculateCursorPoint (mouseX, mouseY);
 
         tile->ID = ++CURRENT_ID;
         tile->Tileset = m_Atlas->GetName ();
         tile->Name = m_SelectedAtlasRegion.Name;
         tile->Bounds = { { (translate.X + point.X), (translate.Y + point.Y) },
-                         { region.Bounds.BottomRight.Width, region.Bounds.BottomRight.Height } };
+            { region.Bounds.BottomRight.Width, region.Bounds.BottomRight.Height } };
         tile->Rotation = m_Rotation;
 
-        m_MainLoop->GetSceneManager ()->GetActiveScene ()->AddTile (tile);
+        m_MainLoop->GetSceneManager ().GetActiveScene ()->AddTile (tile);
 
         return tile;
     }
@@ -489,7 +485,7 @@ namespace aga
 
     Tile* Editor::GetTileUnderCursor (int mouseX, int mouseY, Rect&& outRect)
     {
-        std::vector<Tile*>& tiles = m_MainLoop->GetSceneManager ()->GetActiveScene ()->GetTiles ();
+        std::vector<Tile*>& tiles = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetTiles ();
         Tile* result = nullptr;
 
         for (Tile* tile : tiles)
@@ -498,7 +494,8 @@ namespace aga
 
             if (InsideRect (mouseX, mouseY, r))
             {
-                if ((result == nullptr) || (result && ((result->ZOrder < tile->ZOrder) || (result->RenderID < tile->RenderID))))
+                if ((result == nullptr)
+                    || (result && ((result->ZOrder < tile->ZOrder) || (result->RenderID < tile->RenderID))))
                 {
                     outRect = r;
                     result = tile;
@@ -531,8 +528,8 @@ namespace aga
 
     Rect Editor::GetRenderBounds (Tile* tile)
     {
-        Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
-        Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
+        Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
+        Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
 
         Rect b = tile->Bounds;
         int width = b.BottomRight.Width * 0.5;
@@ -563,7 +560,8 @@ namespace aga
 
     void Editor::InitializeUI ()
     {
-        m_Atlas = m_MainLoop->GetSceneManager ()->GetAtlasManager ()->GetAtlas (GetBaseName (GetResourcePath (PACK_0_0_HOME)));
+        m_Atlas = m_MainLoop->GetSceneManager ().GetAtlasManager ()->GetAtlas (
+            GetBaseName (GetResourcePath (PACK_0_0_HOME)));
 
         //  Back frame
         for (int i = 0; i < TILES_COUNT; ++i)
@@ -579,7 +577,7 @@ namespace aga
 
     void Editor::OnNewScene ()
     {
-        m_MainLoop->GetSceneManager ()->GetActiveScene ()->Reset ();
+        m_MainLoop->GetSceneManager ().GetActiveScene ()->Reset ();
 
         OnResetScale ();
         OnResetTranslate ();
@@ -587,7 +585,21 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnLoadScene () {}
+    void Editor::OnLoadScene (const std::string& openFileName)
+    {
+        std::string path = GetDataPath () + "scenes/" + openFileName;
+
+        if (boost::filesystem::exists (path))
+        {
+            Scene* scene = Scene::LoadScene (&m_MainLoop->GetSceneManager (), path);
+
+            if (scene)
+            {
+                m_MainLoop->GetSceneManager ().RemoveScene (m_MainLoop->GetSceneManager ().GetActiveScene ());
+                m_MainLoop->GetSceneManager ().SetActiveScene (scene);
+            }
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -599,7 +611,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::MenuItemPlay () { m_MainLoop->GetStateManager ()->SetActiveState ("GAMEPLAY_STATE"); }
+    void Editor::MenuItemPlay () { m_MainLoop->GetStateManager ().SetActiveState ("GAMEPLAY_STATE"); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -619,7 +631,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnResetTranslate () { m_MainLoop->GetSceneManager ()->GetCamera ().SetTranslate (0, 0); }
+    void Editor::OnResetTranslate ()
+    {
+        const Point& windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+        m_MainLoop->GetSceneManager ().GetCamera ().SetTranslate (windowSize.Width * 0.5, windowSize.Height * 0.5);
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -628,10 +644,10 @@ namespace aga
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
 
-        Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
+        Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
 
-        m_MainLoop->GetSceneManager ()->GetCamera ().Scale (1 / scale.X, 1 / scale.Y, state.x, state.y);
-        m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X);
+        m_MainLoop->GetSceneManager ().GetCamera ().Scale (1 / scale.X, 1 / scale.Y, state.x, state.y);
+        m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ().GetCamera ().GetScale ().X);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -645,7 +661,7 @@ namespace aga
         m_BaseGridSize /= 2;
 
         m_BaseGridSize = std::max (1, std::min (m_BaseGridSize, 1024));
-        m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X);
+        m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ().GetCamera ().GetScale ().X);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -655,35 +671,33 @@ namespace aga
         m_BaseGridSize *= 2;
 
         m_BaseGridSize = std::max (1, std::min (m_BaseGridSize, 1024));
-        m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ().X);
+        m_GridSize = std::max (1.0, m_BaseGridSize * m_MainLoop->GetSceneManager ().GetCamera ().GetScale ().X);
     }
 
     //--------------------------------------------------------------------------------------------------
 
     bool askNewScene = false;
+    char openFileName[256] = {};
 
     void Editor::RenderUI ()
     {
         ImGui_ImplA5_NewFrame ();
 
-        Point translate = m_MainLoop->GetSceneManager ()->GetCamera ().GetTranslate ();
-        Point scale = m_MainLoop->GetSceneManager ()->GetCamera ().GetScale ();
-        const Point screenSize = m_MainLoop->GetScreen ()->GetScreenSize ();
+        Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
+        Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
+        const Point windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
         bool open = true;
 
         int winSize = 140.0f;
         int xOffset = 5.0f;
 
         ImGui::SetNextWindowPos (ImVec2 (xOffset, xOffset), ImGuiCond_FirstUseEver);
-        ImGui::Begin ("FileMenu",
-                      &open,
-                      ImVec2 (winSize, 100.f),
-                      0.0f,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImGui::Begin ("FileMenu", &open, ImVec2 (winSize, 100.f), 0.0f,
+            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
         ImVec2 buttonSize (100, 20);
 
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-                            std::string ("SCENE: " + m_MainLoop->GetSceneManager ()->GetActiveScene ()->GetName ()).c_str ());
+            std::string ("SCENE: " + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ()).c_str ());
 
         static bool newSceneDontAsk = false;
         if (ImGui::Button ("NEW SCENE", buttonSize))
@@ -725,7 +739,35 @@ namespace aga
 
         if (ImGui::Button ("OPEN SCENE", buttonSize))
         {
-            OnLoadScene ();
+            ImGui::OpenPopup ("Open Scene");
+        }
+
+        if (ImGui::BeginPopupModal ("Open Scene", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Text ("File path:");
+
+            if (ImGui::IsRootWindowOrAnyChildFocused () && !ImGui::IsAnyItemActive () && !ImGui::IsMouseClicked (0))
+            {
+                ImGui::SetKeyboardFocusHere (0);
+            }
+
+            ImGui::InputText ("##edit", openFileName, sizeof (openFileName));
+            ImGui::Separator ();
+
+            if (ImGui::Button ("OK", ImVec2 (120, 0)))
+            {
+                OnLoadScene (openFileName);
+                ImGui::CloseCurrentPopup ();
+            }
+
+            ImGui::SameLine ();
+
+            if (ImGui::Button ("Cancel", ImVec2 (120, 0)))
+            {
+                ImGui::CloseCurrentPopup ();
+            }
+
+            ImGui::EndPopup ();
         }
 
         if (ImGui::Button ("SAVE SCENE", buttonSize))
@@ -736,11 +778,8 @@ namespace aga
         ImGui::End ();
 
         ImGui::SetNextWindowPos (ImVec2 (xOffset, 120), ImGuiCond_FirstUseEver);
-        ImGui::Begin ("ToolbarMenu",
-                      &open,
-                      ImVec2 (winSize, 120.f),
-                      0.0f,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImGui::Begin ("ToolbarMenu", &open, ImVec2 (winSize, 120.f), 0.0f,
+            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
         if (ImGui::Button ("RESET MOVE", buttonSize))
         {
             OnResetTranslate ();
@@ -770,32 +809,41 @@ namespace aga
 
         ImGui::End ();
 
+        ImGui::SetNextWindowPos (ImVec2 (xOffset, 240), ImGuiCond_FirstUseEver);
+        ImGui::Begin ("GameMenu", &open, ImVec2 (winSize, 120.f), 0.0f,
+            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        if (ImGui::Button ("PLAY", buttonSize))
+        {
+            MenuItemPlay ();
+        }
+
+        ImGui::End ();
         winSize = 140.0f;
-        xOffset = screenSize.Width - winSize - 5.0f;
+        xOffset = windowSize.Width - winSize - 5.0f;
 
         ImGui::SetNextWindowPos (ImVec2 (xOffset, 5.0f), ImGuiCond_Always);
-        ImGui::Begin ("ToolBox",
-                      &open,
-                      ImVec2 (winSize, 220.f),
-                      0.0f,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImGui::Begin ("ToolBox", &open, ImVec2 (winSize, 220.f), 0.0f,
+            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
         ImGui::SetWindowFontScale (1.2);
 
         ImGui::Text (" AVG: %.2f ms", 1000.0f / ImGui::GetIO ().Framerate);
         ImGui::Text (" FPS: %.1f", ImGui::GetIO ().Framerate);
 
-        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   X: " + ToString (translate.X * (1 / scale.X))).c_str ());
-        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   Y: " + ToString (translate.Y * (1 / scale.Y))).c_str ());
+        ImGui::TextColored (
+            ImVec4 (0, 1, 0, 1), std::string ("   X: " + ToString (translate.X * (1 / scale.X))).c_str ());
+        ImGui::TextColored (
+            ImVec4 (0, 1, 0, 1), std::string ("   Y: " + ToString (translate.Y * (1 / scale.Y))).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-                            std::string ("   W: " + ToString (m_SelectedAtlasRegion.Bounds.BottomRight.Width)).c_str ());
+            std::string ("   W: " + ToString (m_SelectedAtlasRegion.Bounds.BottomRight.Width)).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-                            std::string ("   H: " + ToString (m_SelectedAtlasRegion.Bounds.BottomRight.Height)).c_str ());
+            std::string ("   H: " + ToString (m_SelectedAtlasRegion.Bounds.BottomRight.Height)).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-                            std::string ("   A: " + (m_SelectedTile ? ToString (m_SelectedTile->Rotation) : "-")).c_str ());
+            std::string ("   A: " + (m_SelectedTile ? ToString (m_SelectedTile->Rotation) : "-")).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-                            std::string ("ZORD: " + (m_SelectedTile ? ToString (m_SelectedTile->ZOrder) : "-")).c_str ());
+            std::string ("ZORD: " + (m_SelectedTile ? ToString (m_SelectedTile->ZOrder) : "-")).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   S: " + ToString (scale.X)).c_str ());
-        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("SNAP: " + ToString (m_IsSnapToGrid ? "YES" : "NO")).c_str ());
+        ImGui::TextColored (
+            ImVec4 (0, 1, 0, 1), std::string ("SNAP: " + ToString (m_IsSnapToGrid ? "YES" : "NO")).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("GRID: " + ToString (m_BaseGridSize)).c_str ());
 
         ImGui::End ();
@@ -814,9 +862,9 @@ namespace aga
 
     void Editor::Resize ()
     {
-        const Point screenSize = m_MainLoop->GetScreen ()->GetScreenSize ();
+        const Point windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
 
-        double beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
+        double beginning = windowSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
         float advance = 0;
 
         for (int i = 0; i < TILES_COUNT; ++i)

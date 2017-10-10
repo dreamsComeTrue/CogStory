@@ -15,8 +15,7 @@ namespace aga
     Screen::Screen (unsigned width, unsigned height)
       : m_Width (width)
       , m_Height (height)
-      , m_RealWidth (width)
-      , m_RealHeight (height)
+      , m_RealSize ((int) width, (int) height)
       , m_Redraw (false)
       , m_BackgroundColor (al_map_rgb (0, 0, 0))
     {
@@ -153,8 +152,7 @@ namespace aga
         }
         else if (ev.type == ALLEGRO_EVENT_DISPLAY_RESIZE)
         {
-            m_RealWidth = ev.display.width;
-            m_RealHeight = ev.display.height;
+            m_RealSize = { ev.display.width, ev.display.height };
 
             al_acknowledge_resize (m_Display);
 
@@ -205,7 +203,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Point Screen::GetScreenSize () { return Point{ m_RealWidth, m_RealHeight }; }
+    const Point& Screen::GetWindowSize () const 
+    { 
+        return m_RealSize;
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -225,7 +226,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    double Screen::GetFPS () const { return 1 / m_DeltaTime * 1000; }
+    double Screen::GetFPS () const { return 1 / m_DeltaTime; }
 
     //--------------------------------------------------------------------------------------------------
 }

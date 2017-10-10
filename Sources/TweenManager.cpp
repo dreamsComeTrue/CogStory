@@ -80,7 +80,7 @@ namespace aga
         m_Callbacks.insert (std::make_pair (id, asFunc));
 
         std::function<bool(tweeny::tween<int> & t, int)> func = [&](tweeny::tween<int>& t, int i) {
-            asIScriptContext* ctx = m_MainLoop->GetScriptManager ()->GetEngine ()->CreateContext ();
+            asIScriptContext* ctx = m_MainLoop->GetScriptManager ().GetEngine ()->CreateContext ();
 
             int callbackID = -1;
             for (std::map<int, tweeny::tween<int>>::iterator it = m_Tweens.begin (); it != m_Tweens.end (); ++it)

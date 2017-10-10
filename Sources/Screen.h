@@ -22,7 +22,7 @@ namespace aga
 
         void SetMouseCursor (const char* path);
 
-        Point GetScreenSize ();
+        const Point& GetWindowSize () const;
         Font& GetFont ();
 
         double GetDeltaTime () const;
@@ -35,8 +35,8 @@ namespace aga
         std::function<void()> RenderFunction;
 
     private:
+        Point m_RealSize;
         unsigned m_Width, m_Height;
-        int m_RealWidth, m_RealHeight;
         bool m_Redraw;
         double m_DeltaTime;
 
