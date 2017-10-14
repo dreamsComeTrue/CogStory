@@ -7,15 +7,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
 set(ROOT_THIRD_PARTY_DIR "/home/squall/RobotGame/ThirdParty")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package(wxWidgets COMPONENTS core base REQUIRED)
-
-if(wxWidgets_FOUND)
-    include("${wxWidgets_USE_FILE}")
-endif()
-
 LINK_DIRECTORIES(${ROOT_THIRD_PARTY_DIR}/anglescript_2.31.2/angelscript/lib/
                  )
-MESSAGE( STATUS "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX: " ${wxWidgets_LIBRARIES} )
 file(GLOB_RECURSE SRC_LIST   "Sources/*")
 file(GLOB_RECURSE IMGUI_SRC_LIST   "ThirdParty/imgui/*.cpp")
 
@@ -41,6 +34,7 @@ target_link_libraries(${PROJECT_NAME}
     libangelscript.a
     freetype
     pthread
+    boost_system
+    boost_filesystem
     stdc++fs
-    ${wxWidgets_LIBRARIES}
     )

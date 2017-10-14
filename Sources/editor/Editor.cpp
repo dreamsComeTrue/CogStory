@@ -13,8 +13,8 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    const int TILES_COUNT = 8;
-    const int TILE_SIZE = 90;
+    const int TILES_COUNT = 14;
+    const int TILE_SIZE = 50;
 
     static int CURRENT_ID = 0;
 
@@ -204,12 +204,6 @@ namespace aga
             {
                 m_IsDrawTiles = !m_IsDrawTiles;
 
-                for (int i = 0; i < TILES_COUNT; ++i)
-                {
-                    std::ostringstream name;
-                    name << "TileRect" << i;
-                }
-
                 break;
             }
 
@@ -241,6 +235,7 @@ namespace aga
                 else if (m_CursorMode == CursorMode::TileEditMode && !tileSelected)
                 {
                     m_CursorMode = CursorMode::TileSelectMode;
+                    m_SelectedTile = nullptr;
                 }
             }
 
@@ -320,6 +315,11 @@ namespace aga
                 Rect b = GetRenderBounds (m_SelectedTile);
                 al_draw_rectangle (b.TopLeft.X, b.TopLeft.Y, b.BottomRight.Width, b.BottomRight.Height, COLOR_RED, 2);
             }
+        }
+
+        if (m_CursorMode == CursorMode::EditPhysBodyMode)
+        {
+            DrawPhysBody ();
         }
 
         if (m_IsDrawTiles)
@@ -404,6 +404,34 @@ namespace aga
     }
 
     //--------------------------------------------------------------------------------------------------
+    
+    void Editor::DrawPhysBody ()
+    {
+        Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
+        Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
+
+        std::vector<float> vertices = {0, 0, 100, 20, 300, 80, 200, 100};
+
+        for (int i = 0; i < vertices.size (); ++i)
+        {
+            vertices[i] *= (scale.X);
+        }
+        
+        for (int i = 0; i < vertices.size (); i += 2)
+        {
+            vertices[i] -= translate.X; 
+            vertices[i + 1] -= translate.Y;
+        }
+
+        al_draw_polygon (vertices.data (), vertices.size () / 2, 0, COLOR_RED, 2, 0);
+
+        for (int i = 0; i < vertices.size (); i += 2)
+        {
+            al_draw_filled_circle (vertices[i], vertices[i + 1], 4, COLOR_RED);
+        }
+    }
+    
+    //--------------------------------------------------------------------------------------------------
 
     bool Editor::ChooseTile (int mouseX, int mouseY)
     {
@@ -426,6 +454,12 @@ namespace aga
 
             if (InsideRect (mouseX, mouseY, r))
             {
+                if (m_SelectedTile)
+                {
+                    m_MainLoop->GetSceneManager ().GetActiveScene ()->RemoveTile (m_SelectedTile);
+                    m_SelectedTile = nullptr;
+                }
+
                 m_SelectedAtlasRegion = regions[i];
                 m_SelectedTile = AddTile (mouseX, mouseY);
 
@@ -810,6 +844,23 @@ namespace aga
         ImGui::End ();
 
         ImGui::SetNextWindowPos (ImVec2 (xOffset, 240), ImGuiCond_FirstUseEver);
+        ImGui::Begin ("Physics", &open, ImVec2 (winSize, 120.f), 0.0f,
+            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        if (ImGui::Button (m_CursorMode != CursorMode::EditPhysBodyMode ? "TILE MODE" : "PHYS MODE", buttonSize))
+        {
+            if (m_CursorMode != CursorMode::EditPhysBodyMode)
+            {
+                m_CursorMode = CursorMode::EditPhysBodyMode;
+            }
+            else
+            {
+                m_CursorMode = CursorMode::TileSelectMode;
+            }
+        }
+
+        ImGui::End ();
+
+        ImGui::SetNextWindowPos (ImVec2 (xOffset, 360), ImGuiCond_FirstUseEver);
         ImGui::Begin ("GameMenu", &open, ImVec2 (winSize, 120.f), 0.0f,
             ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
         if (ImGui::Button ("PLAY", buttonSize))
@@ -818,6 +869,7 @@ namespace aga
         }
 
         ImGui::End ();
+
         winSize = 140.0f;
         xOffset = windowSize.Width - winSize - 5.0f;
 

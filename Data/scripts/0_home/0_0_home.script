@@ -36,19 +36,7 @@ bool AnotherPlayerTween (int i)
     return false; // t.progress () >= 1;
 }
 
-double counter = 0;
-
 void Update (double deltaTime)
 {
-    counter += deltaTime;
-
-    if (counter >= 1.0)
-    {
-        counter = 0.0;
-
-        Log (GetFPS ());
-        Log (GetWindowSize ());
-    }
-
     //    player.Move (0.0, SPEED * deltaTime);
 }

@@ -16,7 +16,8 @@ namespace aga
     enum CursorMode
     {
         TileSelectMode,
-        TileEditMode
+        TileEditMode,
+        EditPhysBodyMode
     };
 
     class Editor : public Lifecycle
@@ -35,6 +36,7 @@ namespace aga
         void InitializeUI ();
         void DrawTiles ();
         void DrawGrid ();
+        void DrawPhysBody ();
 
         bool ChooseTile (int mouseX, int mouseY);
         Tile* AddTile (int mouseX, int mouseY);
