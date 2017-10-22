@@ -46,6 +46,45 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    auto StringToVector = [](std::string in) -> std::vector<Point> {
+        size_t count = 0;
+        const char* delimiter = " ";
+        std::vector<Point> nums;
+        char* str = const_cast<char*> (in.c_str ());
+
+        for (char* pch = strtok (str, delimiter); pch != NULL; pch = strtok (NULL, delimiter))
+        {
+            float x = atof (pch);
+
+            pch = strtok (NULL, delimiter);
+
+            float y = atof (pch);
+
+            nums.push_back ({ x, y });
+        }
+
+        return nums;
+    };
+
+    //--------------------------------------------------------------------------------------------------
+
+    auto PointToString = [](Point in) -> std::string { return ToString (in.X) + " " + ToString (in.Y); };
+
+    //--------------------------------------------------------------------------------------------------
+
+    auto VectorToString = [](std::vector<Point>& points) -> std::string {
+        std::string out;
+
+        for (Point& p : points)
+        {
+            out += ToString (p.X) + " " + ToString (p.Y) + " ";
+        }
+
+        return out;
+    };
+
+    //--------------------------------------------------------------------------------------------------
+
     void Tile::Draw (AtlasManager* atlasManager)
     {
         Atlas* atlas = atlasManager->GetAtlas (Tileset);
@@ -114,8 +153,8 @@ namespace aga
                 std::string path = j_tile["path"];
 
                 Script* script =
-                    sceneManager->GetMainLoop ()->GetScriptManager ().LoadScriptFromFile (GetDataPath () + "scripts/" + path, name);
-                scene->AttachScript (script);
+                  sceneManager->GetMainLoop ()->GetScriptManager ().LoadScriptFromFile (GetDataPath () + "scripts/" + path, name);
+                scene->AttachScript (script, path);
             }
 
             auto& tiles = j["tiles"];
@@ -127,11 +166,16 @@ namespace aga
                 tile->Name = j_tile["name"];
                 tile->Bounds.TopLeft = StringToPoint (j_tile["pos"]);
                 tile->Bounds.BottomRight =
-                    sceneManager->GetAtlasManager ()->GetAtlas (tile->Tileset)->GetRegion (tile->Name).Bounds.BottomRight;
+                  sceneManager->GetAtlasManager ()->GetAtlas (tile->Tileset)->GetRegion (tile->Name).Bounds.BottomRight;
                 std::string zOrder = j_tile["z-order"];
                 tile->ZOrder = atof (zOrder.c_str ());
                 std::string rot = j_tile["rot"];
                 tile->Rotation = atof (rot.c_str ());
+
+                if (!j_tile["phys"].is_null ())
+                {
+                    tile->PhysVertices = StringToVector (j_tile["phys"]);
+                }
 
                 scene->AddTile (tile);
             }
@@ -147,10 +191,70 @@ namespace aga
             }
 
             return scene;
-        } 
+        }
         catch (const std::exception& e)
         {
             return nullptr;
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::SaveScene (Scene* scene, const std::string& filePath)
+    {
+        try
+        {
+            json j;
+
+            j["name"] = scene->m_Name;
+            j["size"] = PointToString (scene->m_Size);
+
+            j["scripts"] = json::array ({});
+
+            for (std::map<ScriptMetaData, Script*>::iterator it = scene->m_Scripts.begin (); it != scene->m_Scripts.end (); ++it)
+            {
+                json scriptObj = json::object ({});
+
+                scriptObj["name"] = it->first.Name;
+                scriptObj["path"] = it->first.Path;
+
+                j["scripts"].push_back (scriptObj);
+            }
+
+            j["tiles"] = json::array ({});
+
+            for (Tile* tile : scene->m_Tiles)
+            {
+                json tileObj = json::object ({});
+
+                tileObj["tileset"] = tile->Tileset;
+                tileObj["name"] = tile->Name;
+                tileObj["pos"] = PointToString (tile->Bounds.TopLeft);
+                tileObj["z-order"] = ToString (tile->ZOrder);
+                tileObj["rot"] = ToString (tile->Rotation);
+                tileObj["phys"] = VectorToString (tile->PhysVertices);
+
+                j["tiles"].push_back (tileObj);
+            }
+
+            j["spawn_points"] = json::array ({});
+
+            for (std::map<std::string, Point>::iterator it = scene->m_SpawnPoints.begin (); it != scene->m_SpawnPoints.end (); ++it)
+            {
+                json spawnObj = json::object ({});
+
+                spawnObj["name"] = it->first;
+                spawnObj["pos"] = PointToString (it->second);
+
+                j["spawn_points"].push_back (spawnObj);
+            }
+
+            // write prettified JSON to another file
+            std::ofstream out (filePath);
+            out << std::setw (4) << j.dump (4, ' ') << "\n";
+        }
+        catch (const std::exception& e)
+        {
         }
     }
 
@@ -198,7 +302,7 @@ namespace aga
         }
 
         m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
-          FONT_NAME_MAIN, al_map_rgb (0, 255, 0), 0, 0, m_Name, ALLEGRO_ALIGN_LEFT);
+          FONT_NAME_MAIN, al_map_rgb (0, 255, 0), -100, -50, m_Name, ALLEGRO_ALIGN_LEFT);
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -36,17 +36,27 @@ namespace aga
         void InitializeUI ();
         void DrawTiles ();
         void DrawGrid ();
-        void DrawPhysBody ();
+        void DrawPhysBody (float mouseX, float mouseY);
 
         bool ChooseTile (int mouseX, int mouseY);
         Tile* AddTile (int mouseX, int mouseY);
 
+        void ChangeRotation (bool clockwise);
+        void ChangeZOrder (bool clockwise);
+        void ChangeGridSize (bool clockwise);
+        void MoveSelectedTile ();
+        void MoveSelectedPhysPoint ();
+        void RemoveSelectedTile ();
+        void CopySelectedTile ();
+
         Tile* GetTileUnderCursor (int mouseX, int mouseY, Rect&& outRect);
         Rect GetRenderBounds (Tile* tile);
 
+        void HandleCameraMovement (const ALLEGRO_MOUSE_EVENT& event);
+
         void OnNewScene ();
         void OnLoadScene (const std::string& filePath);
-        void OnSaveScene ();
+        void OnSaveScene (const std::string& filePath);
 
         void OnPlay ();
         void MenuItemPlay ();
@@ -62,6 +72,10 @@ namespace aga
         void OnShowGrid ();
         void OnGridIncrease ();
         void OnGridDecrease ();
+
+        void InsertPhysPointAtCursor (int mouseX, int mouseY);
+        Point* GetPhysPointUnderCursor (int mouseX, int mouseY);
+        void RemovePhysPointUnderCursor (int mouseX, int mouseY);
 
         Point CalculateCursorPoint (int mouseX, int mouseY);
         void RenderUI ();
@@ -89,6 +103,8 @@ namespace aga
 
         bool m_IsMousePan;
         bool m_IsMouseWheel;
+
+        Point* m_PhysPoint;
     };
 }
 

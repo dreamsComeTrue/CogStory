@@ -15,7 +15,7 @@ namespace aga
     Screen::Screen (unsigned width, unsigned height)
       : m_Width (width)
       , m_Height (height)
-      , m_RealSize ((int) width, (int) height)
+      , m_RealSize ((int)width, (int)height)
       , m_Redraw (false)
       , m_BackgroundColor (al_map_rgb (0, 0, 0))
     {
@@ -203,10 +203,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    const Point& Screen::GetWindowSize () const 
-    { 
-        return m_RealSize;
-    }
+    const Point& Screen::GetWindowSize () const { return m_RealSize; }
 
     //--------------------------------------------------------------------------------------------------
 

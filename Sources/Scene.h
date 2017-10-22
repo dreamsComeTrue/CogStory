@@ -19,6 +19,8 @@ namespace aga
         int ZOrder = 0;
         float Rotation = 0;
 
+        std::vector<Point> PhysVertices;
+
         int ID = 0;
         int RenderID = 0;
 
@@ -45,6 +47,7 @@ namespace aga
         virtual void AfterLeave ();
 
         static Scene* LoadScene (SceneManager* sceneManager, const std::string& filePath);
+        static void SaveScene (Scene* scene, const std::string& filePath);
 
         virtual void Update (double deltaTime);
         virtual void Render (double deltaTime);
