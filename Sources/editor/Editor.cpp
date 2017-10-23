@@ -287,7 +287,14 @@ namespace aga
             ALLEGRO_MOUSE_STATE state;
             al_get_mouse_state (&state);
 
+            Tile* currentTile = m_SelectedTile;
+
             m_SelectedTile = AddTile (state.x, state.y);
+
+            if (currentTile)
+            {
+                m_SelectedTile->PhysVertices = currentTile->PhysVertices;
+            }
 
             m_CursorMode = CursorMode::TileEditMode;
             m_Rotation = m_SelectedTile->Rotation;
@@ -429,6 +436,10 @@ namespace aga
             RenderUI ();
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::SetDrawUITiles (bool draw) { m_IsDrawTiles = draw; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -848,6 +859,19 @@ namespace aga
             {
                 m_MainLoop->GetSceneManager ().RemoveScene (m_MainLoop->GetSceneManager ().GetActiveScene ());
                 m_MainLoop->GetSceneManager ().SetActiveScene (scene);
+
+                std::vector<Tile*>& tiles = scene->GetTiles ();
+                int maxTileID = 0;
+
+                for (Tile* t : tiles)
+                {
+                    if (t->ID > maxTileID)
+                    {
+                        maxTileID = t->ID + 1;
+                    }
+                }
+
+                CURRENT_ID = maxTileID;
             }
         }
     }
@@ -933,8 +957,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     bool askNewScene = false;
-    char openFileName[512] = {};
-    char saveFileName[512] = {};
+    char menuFileName[512] = {};
 
     void Editor::RenderUI ()
     {
@@ -1011,12 +1034,17 @@ namespace aga
                 ImGui::SetKeyboardFocusHere (0);
             }
 
-            ImGui::InputText ("##edit", openFileName, sizeof (openFileName));
+            if (ImGui::InputText ("##edit", menuFileName, sizeof (menuFileName), ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                OnLoadScene (menuFileName);
+                ImGui::CloseCurrentPopup ();
+            }
+
             ImGui::Separator ();
 
             if (ImGui::Button ("OK", ImVec2 (120, 0)))
             {
-                OnLoadScene (openFileName);
+                OnLoadScene (menuFileName);
                 ImGui::CloseCurrentPopup ();
             }
 
@@ -1044,12 +1072,16 @@ namespace aga
                 ImGui::SetKeyboardFocusHere (0);
             }
 
-            ImGui::InputText ("##edit", saveFileName, sizeof (saveFileName));
+            if (ImGui::InputText ("##edit", menuFileName, sizeof (menuFileName), ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                OnSaveScene (menuFileName);
+                ImGui::CloseCurrentPopup ();
+            }
             ImGui::Separator ();
 
             if (ImGui::Button ("OK", ImVec2 (120, 0)))
             {
-                OnSaveScene (saveFileName);
+                OnSaveScene (menuFileName);
                 ImGui::CloseCurrentPopup ();
             }
 

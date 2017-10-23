@@ -22,6 +22,7 @@
         "tiles" :
         [
             {
+                "id" : "0",
                 "tileset" : "0_0_home",
                 "name" : "main_room",
                 "pos" : "0 0",

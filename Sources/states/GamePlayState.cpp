@@ -60,6 +60,8 @@ namespace aga
         m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (60, 60, 70));
         m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (50, 60, 100));
         m_MainLoop->GetSceneManager ().SetActiveScene (m_MainLoop->GetSceneManager ().GetActiveScene ());
+        const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+        m_MainLoop->GetSceneManager ().GetCamera ().Scale (1.4, 1.4, winSize.Width * 0.5, winSize.Height * 0.5);
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -154,7 +154,15 @@ namespace aga
 
         if (!AreSame (dx, 0) || !AreSame (dy, 0))
         {
-            Move (dx, dy);
+            if (al_key_down (&state, ALLEGRO_KEY_LSHIFT))
+            {
+                float multiplier = 3;
+                Move (dx * multiplier, dy * multiplier);
+            }
+            else
+            {
+                Move (dx, dy);
+            }
         }
     }
 

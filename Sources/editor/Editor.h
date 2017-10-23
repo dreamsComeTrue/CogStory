@@ -32,6 +32,10 @@ namespace aga
         void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
         void Render (double deltaTime);
 
+        void SetDrawUITiles (bool draw);
+        void OnResetTranslate ();
+        void OnResetScale ();
+
     private:
         void InitializeUI ();
         void DrawTiles ();
@@ -67,8 +71,6 @@ namespace aga
 
         void OnTileSelected ();
 
-        void OnResetTranslate ();
-        void OnResetScale ();
         void OnShowGrid ();
         void OnGridIncrease ();
         void OnGridDecrease ();

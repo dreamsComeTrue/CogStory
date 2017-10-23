@@ -42,7 +42,10 @@ namespace aga
         m_AtlasManager->Initialize ();
 
         m_Player.Initialize ();
-        m_Player.MoveCallback = [&](double dx, double dy) { m_Camera.Move (-dx, -dy); };
+        m_Player.MoveCallback = [&](double dx, double dy) {
+            Point scale = m_Camera.GetScale ();
+            m_Camera.Move (-dx * scale.X, -dy * scale.Y);
+        };
 
         Lifecycle::Initialize ();
     }

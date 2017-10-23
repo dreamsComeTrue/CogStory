@@ -30,22 +30,6 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
-    auto StringToPoint = [](std::string in) -> Point {
-        size_t count = 0;
-        const char* delimiter = " ";
-        double nums[2] = { 0, 0 };
-        char* str = const_cast<char*> (in.c_str ());
-
-        for (char* pch = strtok (str, delimiter); pch != NULL; pch = strtok (NULL, delimiter))
-        {
-            nums[count++] = atof (pch);
-        }
-
-        return Point (nums[0], nums[1]);
-    };
-
-    //--------------------------------------------------------------------------------------------------
-
     auto StringToVector = [](std::string in) -> std::vector<Point> {
         size_t count = 0;
         const char* delimiter = " ";
@@ -68,6 +52,14 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    auto StringToPoint = [](std::string in) -> Point {
+        std::vector<Point> vec = StringToVector (in);
+
+        return vec[0];
+    };
+
+    //--------------------------------------------------------------------------------------------------
+
     auto PointToString = [](Point in) -> std::string { return ToString (in.X) + " " + ToString (in.Y); };
 
     //--------------------------------------------------------------------------------------------------
@@ -77,7 +69,7 @@ namespace aga
 
         for (Point& p : points)
         {
-            out += ToString (p.X) + " " + ToString (p.Y) + " ";
+            out += PointToString (p) + " ";
         }
 
         return out;
@@ -162,13 +154,16 @@ namespace aga
             for (auto& j_tile : tiles)
             {
                 Tile* tile = new Tile ();
+
+                std::string id = j_tile["id"];
+                tile->ID = atoi (id.c_str ());
                 tile->Tileset = j_tile["tileset"];
                 tile->Name = j_tile["name"];
                 tile->Bounds.TopLeft = StringToPoint (j_tile["pos"]);
                 tile->Bounds.BottomRight =
                   sceneManager->GetAtlasManager ()->GetAtlas (tile->Tileset)->GetRegion (tile->Name).Bounds.BottomRight;
                 std::string zOrder = j_tile["z-order"];
-                tile->ZOrder = atof (zOrder.c_str ());
+                tile->ZOrder = atoi (zOrder.c_str ());
                 std::string rot = j_tile["rot"];
                 tile->Rotation = atof (rot.c_str ());
 
@@ -227,6 +222,7 @@ namespace aga
             {
                 json tileObj = json::object ({});
 
+                tileObj["id"] = ToString (tile->ID);
                 tileObj["tileset"] = tile->Tileset;
                 tileObj["name"] = tile->Name;
                 tileObj["pos"] = PointToString (tile->Bounds.TopLeft);
