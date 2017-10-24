@@ -13,7 +13,68 @@ using json = nlohmann::json;
 
 namespace aga
 {
-    b2Vec2 gravity (0.0f, 10.0f);
+    class PhysicsDraw : public b2Draw
+    {
+        virtual void DrawPolygon (const b2Vec2* vertices, int32 vertexCount, const b2Color& color)
+        {
+            std::vector<float> out;
+
+            for (int i = 0; i < vertexCount; ++i)
+            {
+                float xPoint = vertices[i].x * PTM_RATIO;
+                float yPoint = vertices[i].y * PTM_RATIO;
+
+                out.push_back (xPoint);
+                out.push_back (yPoint);
+            }
+
+            al_draw_polygon (out.data (), vertexCount, 0, al_map_rgba (color.r * 256, color.g * 256, color.b * 256, color.a * 256), 2, 0);
+        }
+
+        /// Draw a solid closed polygon provided in CCW order.
+        virtual void DrawSolidPolygon (const b2Vec2* vertices, int32 vertexCount, const b2Color& color)
+        {
+            std::vector<float> out;
+
+            for (int i = 0; i < vertexCount; ++i)
+            {
+                float xPoint = vertices[i].x;
+                float yPoint = vertices[i].y;
+
+                out.push_back (xPoint);
+                out.push_back (yPoint);
+            }
+
+            al_draw_filled_polygon (out.data (), vertexCount, al_map_rgba (color.r * 256, color.g * 256, color.b * 256, color.a * 256));
+        }
+
+        /// Draw a circle.
+        virtual void DrawCircle (const b2Vec2& center, float32 radius, const b2Color& color)
+        {
+            al_draw_circle (center.x, center.y, radius, al_map_rgba (color.r * 256, color.g * 256, color.b * 256, color.a * 256), 2);
+        }
+
+        /// Draw a solid circle.
+        virtual void DrawSolidCircle (const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color)
+        {
+            al_draw_filled_circle (center.x, center.y, radius, al_map_rgba (color.r * 256, color.g * 256, color.b * 256, color.a * 256));
+        }
+
+        /// Draw a line segment.
+        virtual void DrawSegment (const b2Vec2& p1, const b2Vec2& p2, const b2Color& color) {}
+
+        /// Draw a transform. Choose your own length scale.
+        /// @param xf a transform.
+        virtual void DrawTransform (const b2Transform& xf) {}
+
+        /// Draw a point.
+        virtual void DrawPoint (const b2Vec2& p, float32 size, const b2Color& color)
+        {
+            al_draw_filled_circle (p.x, p.y, size, al_map_rgba (color.r * 256, color.g * 256, color.b * 256, color.a * 256));
+        }
+    };
+
+    b2Vec2 gravity (0.0f, 0.0f);
 
     //--------------------------------------------------------------------------------------------------
 
@@ -91,10 +152,14 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    PhysicsDraw physDraw;
+
     Scene::Scene (SceneManager* sceneManager)
       : m_SceneManager (sceneManager)
       , m_PhysicsWorld (gravity)
     {
+        m_PhysicsWorld.SetDebugDraw (&physDraw);
+        physDraw.SetFlags (b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_aabbBit | b2Draw::e_pairBit | b2Draw::e_centerOfMassBit);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -177,16 +242,16 @@ namespace aga
                 }
 
                 b2BodyDef physBodyDef;
-                physBodyDef.type = b2_dynamicBody;
-                physBodyDef.position.Set (tile->Bounds.TopLeft.X, tile->Bounds.TopLeft.Y);
+                physBodyDef.type = b2_staticBody;
+                physBodyDef.position.Set (tile->Bounds.TopLeft.X / PTM_RATIO, tile->Bounds.TopLeft.Y / PTM_RATIO);
 
                 tile->PhysBody = scene->m_PhysicsWorld.CreateBody (&physBodyDef);
-                tile->PhysShape.SetAsBox (50.0f, 10.0f);
+                tile->PhysShape.SetAsBox (50.0f / PTM_RATIO / 2, 50.0f / PTM_RATIO / 2);
 
                 b2FixtureDef fixtureDef;
                 fixtureDef.shape = &tile->PhysShape;
-                fixtureDef.density = 1.0f;
-                fixtureDef.friction = 0.3f;
+                fixtureDef.density = 10.0f;
+                fixtureDef.isSensor = true;
 
                 tile->PhysBody->CreateFixture (&fixtureDef);
 
@@ -282,13 +347,13 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::AfterLeave () {}
+    void Scene::AfterLeave () { m_SceneManager->GetPlayer ().DestroyPhysics (this); }
 
     //--------------------------------------------------------------------------------------------------
 
     void Scene::Update (float deltaTime)
     {
-        float32 timeStep = 1.0f / 60.0f;
+        float32 timeStep = m_SceneManager->GetMainLoop ()->GetScreen ()->GetDeltaTime ();
         int32 velocityIterations = 6;
         int32 positionIterations = 2;
 
@@ -302,7 +367,7 @@ namespace aga
             {
                 const b2Vec2 pos = tile->PhysBody->GetPosition ();
 
-                tile->Bounds.TopLeft = { pos.x, pos.y };
+                tile->Bounds.TopLeft = { pos.x * PTM_RATIO, pos.y * PTM_RATIO };
             }
         }
 
@@ -339,6 +404,8 @@ namespace aga
 
         m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
           FONT_NAME_MAIN, al_map_rgb (0, 255, 0), -100, -50, m_Name, ALLEGRO_ALIGN_LEFT);
+
+        // m_PhysicsWorld.DrawDebugData ();
     }
 
     //--------------------------------------------------------------------------------------------------

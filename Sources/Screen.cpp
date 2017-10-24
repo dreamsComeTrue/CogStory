@@ -218,11 +218,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    double Screen::GetDeltaTime () const { return m_DeltaTime; }
+    float Screen::GetDeltaTime () const { return m_DeltaTime; }
 
     //--------------------------------------------------------------------------------------------------
 
-    double Screen::GetFPS () const { return 1 / m_DeltaTime; }
+    float Screen::GetFPS () const { return 1 / m_DeltaTime; }
 
     //--------------------------------------------------------------------------------------------------
 }

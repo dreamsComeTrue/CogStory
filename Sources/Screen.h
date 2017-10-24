@@ -25,8 +25,8 @@ namespace aga
         const Point& GetWindowSize () const;
         Font& GetFont ();
 
-        double GetDeltaTime () const;
-        double GetFPS () const;
+        float GetDeltaTime () const;
+        float GetFPS () const;
 
         ALLEGRO_DISPLAY* GetDisplay ();
         ALLEGRO_EVENT_QUEUE* GetEventQueue ();
@@ -39,7 +39,7 @@ namespace aga
         Point m_RealSize;
         unsigned m_Width, m_Height;
         bool m_Redraw;
-        double m_DeltaTime;
+        float m_DeltaTime;
 
         Font m_Font;
 

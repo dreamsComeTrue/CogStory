@@ -1,5 +1,4 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
-
 #include "Player.h"
 #include "Scene.h"
 #include "SceneManager.h"
@@ -20,6 +19,8 @@ namespace aga
     Player::Player (SceneManager* sceneManager)
       : m_SceneManager (sceneManager)
       , m_Image (nullptr)
+      , m_PhysBody (nullptr)
+      , m_Fixture (nullptr)
     {
     }
 
@@ -65,18 +66,36 @@ namespace aga
     void Player::CreatePhysics (Scene* currentScene)
     {
         b2BodyDef physBodyDef;
-        physBodyDef.type = b2_dynamicBody;
-        physBodyDef.position.Set (m_Position.X, m_Position.Y);
+        physBodyDef.type = b2_kinematicBody;
+        physBodyDef.position.Set (m_Position.X / PTM_RATIO, m_Position.Y / PTM_RATIO);
 
         m_PhysBody = currentScene->GetPhysicsWorld ().CreateBody (&physBodyDef);
-        m_PhysShape.SetAsBox (50.0f, 10.0f);
+        m_PhysShape.SetAsBox (10.0f / PTM_RATIO / 2, 40.0f / PTM_RATIO / 2);
+        m_PhysBody->SetLinearVelocity (b2Vec2 (-0.5, 0));
 
         b2FixtureDef fixtureDef;
         fixtureDef.shape = &m_PhysShape;
         fixtureDef.density = 1.0f;
-        fixtureDef.friction = 0.3f;
+        fixtureDef.isSensor = true;
 
-        m_PhysBody->CreateFixture (&fixtureDef);
+        m_Fixture = m_PhysBody->CreateFixture (&fixtureDef);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::DestroyPhysics (Scene* currentScene)
+    {
+        if (m_PhysBody)
+        {
+            if (m_Fixture)
+            {
+                m_PhysBody->DestroyFixture (m_Fixture);
+                m_Fixture = nullptr;
+            }
+
+            currentScene->GetPhysicsWorld ().DestroyBody (m_PhysBody);
+            m_PhysBody = nullptr;
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -86,8 +105,9 @@ namespace aga
         m_Animation.Update (deltaTime);
         UpdateScripts (deltaTime);
 
-        const b2Vec2 pos = m_PhysBody->GetPosition ();
-        m_Position = { pos.x, pos.y };
+        b2Vec2 b2Position = b2Vec2 (m_Position.X / PTM_RATIO, m_Position.Y / PTM_RATIO);
+
+        //  m_PhysBody->SetTransform (b2Position, m_PhysBody->GetAngle ());
 
         return true;
     }

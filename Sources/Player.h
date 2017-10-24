@@ -23,6 +23,7 @@ namespace aga
         bool Destroy ();
 
         void CreatePhysics (Scene* currentScene);
+        void DestroyPhysics (Scene* currentScene);
 
         bool Update (float deltaTime);
         void HandleInput (float deltaTime);
@@ -48,6 +49,7 @@ namespace aga
         Animation m_Animation;
 
         b2Body* m_PhysBody;
+        b2Fixture* m_Fixture;
         b2PolygonShape m_PhysShape;
     };
 }

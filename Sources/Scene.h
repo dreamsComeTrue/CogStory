@@ -8,6 +8,8 @@
 
 namespace aga
 {
+#define PTM_RATIO 64.0
+
     class SceneManager;
     class AtlasManager;
 
