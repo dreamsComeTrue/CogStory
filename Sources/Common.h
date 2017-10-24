@@ -5,6 +5,11 @@
 
 #define UI_EDITOR 0
 
+#include "Lifecycle.h"
+#include "Point.h"
+#include "Rect.h"
+#include "Resources.h"
+
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_image.h>
@@ -12,12 +17,14 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_ttf.h>
 
+#include <Box2D/Box2D.h>
+
 #include <angelscript.h>
 #include <scriptbuilder/scriptbuilder.h>
 #include <scriptstdstring/scriptstdstring.h>
 
-#include <cmath>
 #include <boost/filesystem.hpp>
+#include <cmath>
 #include <fstream>
 #include <functional>
 #include <map>
@@ -26,11 +33,6 @@
 #include <vector>
 
 #include "addons/tweeny/tweeny.h"
-
-#include "Lifecycle.h"
-#include "Point.h"
-#include "Rect.h"
-#include "Resources.h"
 
 #define SAFE_DELETE(x)                                                                                                                     \
     {                                                                                                                                      \
@@ -41,7 +43,7 @@
         }                                                                                                                                  \
     }
 
-#define ARRAY_SIZE(_ARR)  ((int)(sizeof(_ARR)/sizeof(*_ARR)))
+#define ARRAY_SIZE(_ARR) ((int)(sizeof (_ARR) / sizeof (*_ARR)))
 
 namespace aga
 {

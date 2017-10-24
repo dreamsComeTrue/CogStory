@@ -16,7 +16,7 @@ namespace aga
     SceneManager::SceneManager (MainLoop* mainLoop)
       : m_ActiveScene (nullptr)
       , m_MainLoop (mainLoop)
-      , m_Player (mainLoop->GetScreen ())
+      , m_Player (this)
       , m_Camera (mainLoop->GetScreen ())
       , m_AtlasManager (nullptr)
     {
@@ -109,11 +109,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneManager::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime) {}
+    void SceneManager::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime) {}
 
     //--------------------------------------------------------------------------------------------------
 
-    bool SceneManager::Update (double deltaTime)
+    bool SceneManager::Update (float deltaTime)
     {
         if (m_ActiveScene != nullptr)
         {
@@ -125,7 +125,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneManager::Render (double deltaTime)
+    void SceneManager::Render (float deltaTime)
     {
         if (m_ActiveScene != nullptr)
         {

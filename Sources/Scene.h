@@ -20,6 +20,8 @@ namespace aga
         float Rotation = 0;
 
         std::vector<Point> PhysVertices;
+        b2Body* PhysBody;
+        b2PolygonShape PhysShape;
 
         int ID = 0;
         int RenderID = 0;
@@ -49,8 +51,8 @@ namespace aga
         static Scene* LoadScene (SceneManager* sceneManager, const std::string& filePath);
         static void SaveScene (Scene* scene, const std::string& filePath);
 
-        virtual void Update (double deltaTime);
-        virtual void Render (double deltaTime);
+        virtual void Update (float deltaTime);
+        virtual void Render (float deltaTime);
 
         void AddTile (Tile* tile);
         void RemoveTile (Tile* tile);
@@ -63,6 +65,7 @@ namespace aga
         void Reset ();
 
         std::string GetName ();
+        b2World& GetPhysicsWorld ();
 
     private:
         std::string m_Name;
@@ -70,6 +73,9 @@ namespace aga
         std::map<std::string, Point> m_SpawnPoints;
         std::vector<Tile*> m_Tiles;
         SceneManager* m_SceneManager;
+
+        //  Physics
+        b2World m_PhysicsWorld;
     };
 }
 

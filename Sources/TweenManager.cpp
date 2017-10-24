@@ -48,7 +48,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool TweenManager::Update (double deltaTime)
+    bool TweenManager::Update (float deltaTime)
     {
         if (m_Tweens.size () > 0)
         {

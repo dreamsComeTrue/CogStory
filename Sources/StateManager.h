@@ -24,9 +24,9 @@ namespace aga
         std::string GetActiveStateName ();
         void RegisterState (State* state);
 
-        bool Update (double deltaTime);
-        void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
-        void Render (double deltaTime);
+        bool Update (float deltaTime);
+        void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
+        void Render (float deltaTime);
 
         MainLoop* GetMainLoop ();
 

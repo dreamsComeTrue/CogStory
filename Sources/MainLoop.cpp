@@ -58,6 +58,11 @@ namespace aga
         };
 
         m_Screen->RenderFunction = [&]() { m_StateManager.Render (m_Screen->GetDeltaTime ()); };
+        m_Screen->UpdateFunction = [&](float deltaTime) {
+            m_TweenManager.Update (deltaTime);
+            m_SceneManager.Update (deltaTime);
+            m_StateManager.Update (deltaTime);
+        };
 
         return true;
     }
@@ -110,14 +115,11 @@ namespace aga
 
         while (m_IsRunning)
         {
-            double newTime = al_get_time ();
-            double deltaTime = (newTime - oldTime);
+            float newTime = al_get_time ();
+            float deltaTime = (newTime - oldTime);
             oldTime = newTime;
 
-            m_TweenManager.Update (deltaTime);
-            m_SceneManager.Update (deltaTime);
-
-            if (!m_StateManager.Update (deltaTime))
+            if (!m_Screen->Update (deltaTime))
             {
                 break;
             }

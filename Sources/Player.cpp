@@ -1,7 +1,8 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Player.h"
-#include "Screen.h"
+#include "Scene.h"
+#include "SceneManager.h"
 
 namespace aga
 {
@@ -16,8 +17,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Player::Player (Screen* screen)
-      : m_Screen (screen)
+    Player::Player (SceneManager* sceneManager)
+      : m_SceneManager (sceneManager)
       , m_Image (nullptr)
     {
     }
@@ -61,17 +62,39 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Player::Update (double deltaTime)
+    void Player::CreatePhysics (Scene* currentScene)
+    {
+        b2BodyDef physBodyDef;
+        physBodyDef.type = b2_dynamicBody;
+        physBodyDef.position.Set (m_Position.X, m_Position.Y);
+
+        m_PhysBody = currentScene->GetPhysicsWorld ().CreateBody (&physBodyDef);
+        m_PhysShape.SetAsBox (50.0f, 10.0f);
+
+        b2FixtureDef fixtureDef;
+        fixtureDef.shape = &m_PhysShape;
+        fixtureDef.density = 1.0f;
+        fixtureDef.friction = 0.3f;
+
+        m_PhysBody->CreateFixture (&fixtureDef);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Player::Update (float deltaTime)
     {
         m_Animation.Update (deltaTime);
         UpdateScripts (deltaTime);
+
+        const b2Vec2 pos = m_PhysBody->GetPosition ();
+        m_Position = { pos.x, pos.y };
 
         return true;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Player::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
+    void Player::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
     {
         if (event->type == ALLEGRO_EVENT_KEY_UP)
         {
@@ -81,7 +104,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Player::Render (double deltaTime)
+    void Player::Render (float deltaTime)
     {
         AnimationFrames& frames = m_Animation.GetCurrentAnimation ();
         const Rect& frame = frames.GetFrame (m_Animation.GetCurrentFrame ());
@@ -122,7 +145,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Player::HandleInput (double deltaTime)
+    void Player::HandleInput (float deltaTime)
     {
         ALLEGRO_KEYBOARD_STATE state;
         al_get_keyboard_state (&state);

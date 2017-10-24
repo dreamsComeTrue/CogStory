@@ -11,20 +11,23 @@
 
 namespace aga
 {
-    class Screen;
+    class SceneManager;
+    class Scene;
 
     class Player : public Lifecycle, public Scriptable
     {
     public:
-        Player (Screen* screen);
+        Player (SceneManager* sceneManager);
         virtual ~Player ();
         bool Initialize ();
         bool Destroy ();
 
-        bool Update (double deltaTime);
-        void HandleInput (double deltaTime);
-        void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
-        void Render (double deltaTime);
+        void CreatePhysics (Scene* currentScene);
+
+        bool Update (float deltaTime);
+        void HandleInput (float deltaTime);
+        void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
+        void Render (float deltaTime);
 
         void Move (double dx, double dy);
         void SetPosition (const Point& pos);
@@ -41,8 +44,11 @@ namespace aga
         ALLEGRO_BITMAP* m_Image;
         Point m_Position, m_OldPosition;
         Point m_Size;
-        Screen* m_Screen;
+        SceneManager* m_SceneManager;
         Animation m_Animation;
+
+        b2Body* m_PhysBody;
+        b2PolygonShape m_PhysShape;
     };
 }
 

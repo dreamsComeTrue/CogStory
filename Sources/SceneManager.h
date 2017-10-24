@@ -26,9 +26,9 @@ namespace aga
         void SetActiveScene (Scene* scene);
         Scene* GetActiveScene ();
 
-        void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
-        bool Update (double deltaTime);
-        void Render (double deltaTime);
+        void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
+        bool Update (float deltaTime);
+        void Render (float deltaTime);
 
         Player& GetPlayer ();
         Camera& GetCamera ();

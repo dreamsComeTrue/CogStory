@@ -16,7 +16,7 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
-        bool Update (double deltaTime);
+        bool Update (float deltaTime);
 
         void SetBackgroundColor (ALLEGRO_COLOR color);
 
@@ -32,6 +32,7 @@ namespace aga
         ALLEGRO_EVENT_QUEUE* GetEventQueue ();
 
         std::function<void(ALLEGRO_EVENT*)> ProcessEventFunction;
+        std::function<void(float deltaTime)> UpdateFunction;
         std::function<void()> RenderFunction;
 
     private:

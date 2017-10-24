@@ -89,16 +89,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool StateManager::Update (double deltaTime)
+    bool StateManager::Update (float deltaTime)
     {
         if (m_ActiveState != nullptr)
         {
             m_ActiveState->Update (deltaTime);
-        }
-
-        if (!m_MainLoop->GetScreen ()->Update (deltaTime))
-        {
-            return false;
         }
 
         return true;
@@ -106,7 +101,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void StateManager::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
+    void StateManager::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
     {
         std::string before;
         std::string after;
@@ -142,7 +137,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void StateManager::Render (double deltaTime)
+    void StateManager::Render (float deltaTime)
     {
         if (m_ActiveState != nullptr)
         {

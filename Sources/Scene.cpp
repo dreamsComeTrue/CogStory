@@ -13,6 +13,8 @@ using json = nlohmann::json;
 
 namespace aga
 {
+    b2Vec2 gravity (0.0f, 10.0f);
+
     //--------------------------------------------------------------------------------------------------
 
     /*
@@ -91,6 +93,7 @@ namespace aga
 
     Scene::Scene (SceneManager* sceneManager)
       : m_SceneManager (sceneManager)
+      , m_PhysicsWorld (gravity)
     {
     }
 
@@ -167,10 +170,25 @@ namespace aga
                 std::string rot = j_tile["rot"];
                 tile->Rotation = atof (rot.c_str ());
 
+                //  Physics
                 if (!j_tile["phys"].is_null ())
                 {
                     tile->PhysVertices = StringToVector (j_tile["phys"]);
                 }
+
+                b2BodyDef physBodyDef;
+                physBodyDef.type = b2_dynamicBody;
+                physBodyDef.position.Set (tile->Bounds.TopLeft.X, tile->Bounds.TopLeft.Y);
+
+                tile->PhysBody = scene->m_PhysicsWorld.CreateBody (&physBodyDef);
+                tile->PhysShape.SetAsBox (50.0f, 10.0f);
+
+                b2FixtureDef fixtureDef;
+                fixtureDef.shape = &tile->PhysShape;
+                fixtureDef.density = 1.0f;
+                fixtureDef.friction = 0.3f;
+
+                tile->PhysBody->CreateFixture (&fixtureDef);
 
                 scene->AddTile (tile);
             }
@@ -256,7 +274,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::BeforeEnter () { RunAllScripts ("void BeforeEnterScene ()"); }
+    void Scene::BeforeEnter ()
+    {
+        m_SceneManager->GetPlayer ().CreatePhysics (this);
+        RunAllScripts ("void BeforeEnterScene ()");
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -264,15 +286,33 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::Update (double deltaTime)
+    void Scene::Update (float deltaTime)
     {
+        float32 timeStep = 1.0f / 60.0f;
+        int32 velocityIterations = 6;
+        int32 positionIterations = 2;
+
+        m_PhysicsWorld.Step (timeStep, velocityIterations, positionIterations);
+
+        for (int i = 0; i < m_Tiles.size (); ++i)
+        {
+            Tile* tile = m_Tiles[i];
+
+            if (tile->PhysBody)
+            {
+                const b2Vec2 pos = tile->PhysBody->GetPosition ();
+
+                tile->Bounds.TopLeft = { pos.x, pos.y };
+            }
+        }
+
         m_SceneManager->GetPlayer ().Update (deltaTime);
         UpdateScripts (deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::Render (double deltaTime)
+    void Scene::Render (float deltaTime)
     {
         m_SceneManager->GetCamera ().Update (deltaTime);
 
@@ -336,6 +376,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     std::string Scene::GetName () { return m_Name; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    b2World& Scene::GetPhysicsWorld () { return m_PhysicsWorld; }
 
     //--------------------------------------------------------------------------------------------------
 }

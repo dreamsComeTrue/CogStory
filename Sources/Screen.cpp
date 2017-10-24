@@ -130,7 +130,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Screen::Update (double deltaTime)
+    bool Screen::Update (float deltaTime)
     {
         m_DeltaTime = deltaTime;
 
@@ -141,9 +141,9 @@ namespace aga
         {
             m_Redraw = true;
 
-            if (ProcessEventFunction != nullptr)
+            if (UpdateFunction != nullptr)
             {
-                ProcessEventFunction (&ev);
+                UpdateFunction (deltaTime);
             }
         }
         else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
@@ -173,15 +173,14 @@ namespace aga
 
         if (m_Redraw && al_is_event_queue_empty (m_EventQueue))
         {
-            m_Redraw = false;
-            al_clear_to_color (m_BackgroundColor);
-
             if (RenderFunction != nullptr)
             {
                 RenderFunction ();
             }
 
             al_flip_display ();
+            al_clear_to_color (m_BackgroundColor);
+            m_Redraw = false;
         }
 
         return true;

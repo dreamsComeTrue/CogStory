@@ -18,7 +18,7 @@ namespace aga
         bool Destroy ();
 
         void AddTween (int id, int from, int to, int during, std::function<bool(int)>);
-        bool Update (double deltaTime);
+        bool Update (float deltaTime);
         MainLoop* GetMainLoop ();
 
         void AddTween (int id, int from, int to, int during, asIScriptFunction* func);
