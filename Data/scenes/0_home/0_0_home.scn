@@ -1,33 +1,31 @@
-    {
-        "name" : "Home",
-        "size" : "1000 1000",
-        "scripts" :
-        [
-            {
-                "name" : "home",
-                "path" : "0_home/0_0_home.script"
-            }
-        ],
-        "spawn_points" :
-        [
-            {   
-                "name" : "DEFAULT",
-                "pos"  : "0 0"   
-            },
-            {   
-                "name" : "SPAWN_1",
-                "pos"  : "0 0"   
-            }
-        ],
-        "tiles" :
-        [
-            {
-                "id" : "0",
-                "tileset" : "0_0_home",
-                "name" : "main_room",
-                "pos" : "0 0",
-                "z-order" : "0",
-                "rot" : "0"
-            }
-        ]
-    } 
+{
+    "name": "Home",
+    "scripts": [
+        {
+            "name": "home",
+            "path": "0_home/0_0_home.script"
+        }
+    ],
+    "size": "1000 1000",
+    "spawn_points": [
+        {
+            "name": "DEFAULT",
+            "pos": "0 0"
+        },
+        {
+            "name": "SPAWN_1",
+            "pos": "0 0"
+        }
+    ],
+    "tiles": [
+        {
+            "id": "0",
+            "name": "main_room",
+            "phys": "-224 -80 -144 -80 -144 128 -240 160 -304 48 ",
+            "pos": "0 0",
+            "rot": "0",
+            "tileset": "0_0_home",
+            "z-order": "0"
+        }
+    ]
+}

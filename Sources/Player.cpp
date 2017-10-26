@@ -1,5 +1,7 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 #include "Player.h"
+#include "MainLoop.h"
+#include "PhysicsManager.h"
 #include "Scene.h"
 #include "SceneManager.h"
 
@@ -8,7 +10,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     //  Pixels Per Second
-    const double MOVE_SPEED = 70.0;
+    const double MOVE_SPEED = 90.0;
     const std::string ANIM_IDLE = "ANIM_IDLE";
     const std::string ANIM_MOVE_UP = "ANIM_MOVE_UP";
     const std::string ANIM_MOVE_LEFT = "ANIM_MOVE_LEFT";
@@ -19,8 +21,6 @@ namespace aga
     Player::Player (SceneManager* sceneManager)
       : m_SceneManager (sceneManager)
       , m_Image (nullptr)
-      , m_PhysBody (nullptr)
-      , m_Fixture (nullptr)
     {
     }
 
@@ -65,38 +65,13 @@ namespace aga
 
     void Player::CreatePhysics (Scene* currentScene)
     {
-        b2BodyDef physBodyDef;
-        physBodyDef.type = b2_kinematicBody;
-        physBodyDef.position.Set (m_Position.X / PTM_RATIO, m_Position.Y / PTM_RATIO);
-
-        m_PhysBody = currentScene->GetPhysicsWorld ().CreateBody (&physBodyDef);
-        m_PhysShape.SetAsBox (10.0f / PTM_RATIO / 2, 40.0f / PTM_RATIO / 2);
-        m_PhysBody->SetLinearVelocity (b2Vec2 (-0.5, 0));
-
-        b2FixtureDef fixtureDef;
-        fixtureDef.shape = &m_PhysShape;
-        fixtureDef.density = 1.0f;
-        fixtureDef.isSensor = true;
-
-        m_Fixture = m_PhysBody->CreateFixture (&fixtureDef);
+        PhysPoints = { { 10, 0 }, { 50, 0 }, { 50, 70 }, { 10, 70 } };
+        SetPhysOffset (m_Position);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Player::DestroyPhysics (Scene* currentScene)
-    {
-        if (m_PhysBody)
-        {
-            if (m_Fixture)
-            {
-                m_PhysBody->DestroyFixture (m_Fixture);
-                m_Fixture = nullptr;
-            }
-
-            currentScene->GetPhysicsWorld ().DestroyBody (m_PhysBody);
-            m_PhysBody = nullptr;
-        }
-    }
+    void Player::DestroyPhysics (Scene* currentScene) {}
 
     //--------------------------------------------------------------------------------------------------
 
@@ -104,10 +79,6 @@ namespace aga
     {
         m_Animation.Update (deltaTime);
         UpdateScripts (deltaTime);
-
-        b2Vec2 b2Position = b2Vec2 (m_Position.X / PTM_RATIO, m_Position.Y / PTM_RATIO);
-
-        //  m_PhysBody->SetTransform (b2Position, m_PhysBody->GetAngle ());
 
         return true;
     }
@@ -195,6 +166,22 @@ namespace aga
             dx = -MOVE_SPEED * deltaTime;
         }
 
+        for (Tile* tile : m_SceneManager->GetActiveScene ()->GetTiles ())
+        {
+            if (!tile->PhysPoints.empty ())
+            {
+                PolygonCollisionResult r = m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (
+                  GetPhysPolygon (), tile->GetPhysPolygon (), { dx, dy });
+
+                if (r.WillIntersect)
+                {
+                    dx = dx + r.MinimumTranslationVector.X;
+                    dy = dy + r.MinimumTranslationVector.Y;
+                    break;
+                }
+            }
+        }
+
         if (!AreSame (dx, 0) || !AreSame (dy, 0))
         {
             if (al_key_down (&state, ALLEGRO_KEY_LSHIFT))
@@ -221,6 +208,8 @@ namespace aga
         {
             MoveCallback (dx, dy);
         }
+
+        AddPhysOffset ({ dx, dy });
     }
 
     //--------------------------------------------------------------------------------------------------

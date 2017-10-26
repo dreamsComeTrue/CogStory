@@ -4,6 +4,7 @@
 #define __PLAYER_H__
 
 #include "Animation.h"
+#include "Collidable.h"
 #include "Common.h"
 #include "Scriptable.h"
 
@@ -14,7 +15,7 @@ namespace aga
     class SceneManager;
     class Scene;
 
-    class Player : public Lifecycle, public Scriptable
+    class Player : public Lifecycle, public Scriptable, public Collidable
     {
     public:
         Player (SceneManager* sceneManager);
@@ -47,10 +48,6 @@ namespace aga
         Point m_Size;
         SceneManager* m_SceneManager;
         Animation m_Animation;
-
-        b2Body* m_PhysBody;
-        b2Fixture* m_Fixture;
-        b2PolygonShape m_PhysShape;
     };
 }
 

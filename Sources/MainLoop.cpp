@@ -16,6 +16,7 @@ namespace aga
       : m_SceneManager (this)
       , m_StateManager (this)
       , m_ScriptManager (this)
+      , m_PhysicsManager (this)
       , m_TweenManager (this)
       , m_EditorState (nullptr)
       , m_GamePlayState (nullptr)
@@ -47,6 +48,7 @@ namespace aga
         m_StateManager.Initialize ();
         m_TweenManager.Initialize ();
         m_ScriptManager.Initialize ();
+        m_PhysicsManager.Initialize ();
 
         InitializeStates ();
 
@@ -73,6 +75,7 @@ namespace aga
     {
         DestroyStates ();
 
+        m_PhysicsManager.Destroy ();
         m_ScriptManager.Destroy ();
         m_TweenManager.Destroy ();
         m_StateManager.Destroy ();
@@ -145,6 +148,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     ScriptManager& MainLoop::GetScriptManager () { return m_ScriptManager; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    PhysicsManager& MainLoop::GetPhysicsManager () { return m_PhysicsManager; }
 
     //--------------------------------------------------------------------------------------------------
 

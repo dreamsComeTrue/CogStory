@@ -67,7 +67,7 @@
             "id": "5",
             "name": "parallax-forest-front-trees",
             "phys": "",
-            "pos": "-112 32",
+            "pos": "-112 0",
             "rot": "0",
             "tileset": "0_0_home",
             "z-order": "11"

@@ -7,6 +7,7 @@
 
 #include "Lifecycle.h"
 #include "Point.h"
+#include "Polygon.h"
 #include "Rect.h"
 #include "Resources.h"
 
@@ -16,8 +17,6 @@
 #include <allegro5/allegro_native_dialog.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_ttf.h>
-
-#include <Box2D/Box2D.h>
 
 #include <angelscript.h>
 #include <scriptbuilder/scriptbuilder.h>

@@ -13,69 +13,6 @@ using json = nlohmann::json;
 
 namespace aga
 {
-    class PhysicsDraw : public b2Draw
-    {
-        virtual void DrawPolygon (const b2Vec2* vertices, int32 vertexCount, const b2Color& color)
-        {
-            std::vector<float> out;
-
-            for (int i = 0; i < vertexCount; ++i)
-            {
-                float xPoint = vertices[i].x * PTM_RATIO;
-                float yPoint = vertices[i].y * PTM_RATIO;
-
-                out.push_back (xPoint);
-                out.push_back (yPoint);
-            }
-
-            al_draw_polygon (out.data (), vertexCount, 0, al_map_rgba (color.r * 256, color.g * 256, color.b * 256, color.a * 256), 2, 0);
-        }
-
-        /// Draw a solid closed polygon provided in CCW order.
-        virtual void DrawSolidPolygon (const b2Vec2* vertices, int32 vertexCount, const b2Color& color)
-        {
-            std::vector<float> out;
-
-            for (int i = 0; i < vertexCount; ++i)
-            {
-                float xPoint = vertices[i].x;
-                float yPoint = vertices[i].y;
-
-                out.push_back (xPoint);
-                out.push_back (yPoint);
-            }
-
-            al_draw_filled_polygon (out.data (), vertexCount, al_map_rgba (color.r * 256, color.g * 256, color.b * 256, color.a * 256));
-        }
-
-        /// Draw a circle.
-        virtual void DrawCircle (const b2Vec2& center, float32 radius, const b2Color& color)
-        {
-            al_draw_circle (center.x, center.y, radius, al_map_rgba (color.r * 256, color.g * 256, color.b * 256, color.a * 256), 2);
-        }
-
-        /// Draw a solid circle.
-        virtual void DrawSolidCircle (const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color)
-        {
-            al_draw_filled_circle (center.x, center.y, radius, al_map_rgba (color.r * 256, color.g * 256, color.b * 256, color.a * 256));
-        }
-
-        /// Draw a line segment.
-        virtual void DrawSegment (const b2Vec2& p1, const b2Vec2& p2, const b2Color& color) {}
-
-        /// Draw a transform. Choose your own length scale.
-        /// @param xf a transform.
-        virtual void DrawTransform (const b2Transform& xf) {}
-
-        /// Draw a point.
-        virtual void DrawPoint (const b2Vec2& p, float32 size, const b2Color& color)
-        {
-            al_draw_filled_circle (p.x, p.y, size, al_map_rgba (color.r * 256, color.g * 256, color.b * 256, color.a * 256));
-        }
-    };
-
-    b2Vec2 gravity (0.0f, 0.0f);
-
     //--------------------------------------------------------------------------------------------------
 
     /*
@@ -152,14 +89,9 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    PhysicsDraw physDraw;
-
     Scene::Scene (SceneManager* sceneManager)
       : m_SceneManager (sceneManager)
-      , m_PhysicsWorld (gravity)
     {
-        m_PhysicsWorld.SetDebugDraw (&physDraw);
-        physDraw.SetFlags (b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_aabbBit | b2Draw::e_pairBit | b2Draw::e_centerOfMassBit);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -238,22 +170,10 @@ namespace aga
                 //  Physics
                 if (!j_tile["phys"].is_null ())
                 {
-                    tile->PhysVertices = StringToVector (j_tile["phys"]);
+                    tile->PhysPoints = StringToVector (j_tile["phys"]);
                 }
 
-                b2BodyDef physBodyDef;
-                physBodyDef.type = b2_staticBody;
-                physBodyDef.position.Set (tile->Bounds.TopLeft.X / PTM_RATIO, tile->Bounds.TopLeft.Y / PTM_RATIO);
-
-                tile->PhysBody = scene->m_PhysicsWorld.CreateBody (&physBodyDef);
-                tile->PhysShape.SetAsBox (50.0f / PTM_RATIO / 2, 50.0f / PTM_RATIO / 2);
-
-                b2FixtureDef fixtureDef;
-                fixtureDef.shape = &tile->PhysShape;
-                fixtureDef.density = 10.0f;
-                fixtureDef.isSensor = true;
-
-                tile->PhysBody->CreateFixture (&fixtureDef);
+                tile->SetPhysOffset (tile->Bounds.TopLeft);
 
                 scene->AddTile (tile);
             }
@@ -311,7 +231,7 @@ namespace aga
                 tileObj["pos"] = PointToString (tile->Bounds.TopLeft);
                 tileObj["z-order"] = ToString (tile->ZOrder);
                 tileObj["rot"] = ToString (tile->Rotation);
-                tileObj["phys"] = VectorToString (tile->PhysVertices);
+                tileObj["phys"] = VectorToString (tile->PhysPoints);
 
                 j["tiles"].push_back (tileObj);
             }
@@ -353,24 +273,6 @@ namespace aga
 
     void Scene::Update (float deltaTime)
     {
-        float32 timeStep = m_SceneManager->GetMainLoop ()->GetScreen ()->GetDeltaTime ();
-        int32 velocityIterations = 6;
-        int32 positionIterations = 2;
-
-        m_PhysicsWorld.Step (timeStep, velocityIterations, positionIterations);
-
-        for (int i = 0; i < m_Tiles.size (); ++i)
-        {
-            Tile* tile = m_Tiles[i];
-
-            if (tile->PhysBody)
-            {
-                const b2Vec2 pos = tile->PhysBody->GetPosition ();
-
-                tile->Bounds.TopLeft = { pos.x * PTM_RATIO, pos.y * PTM_RATIO };
-            }
-        }
-
         m_SceneManager->GetPlayer ().Update (deltaTime);
         UpdateScripts (deltaTime);
     }
@@ -395,6 +297,7 @@ namespace aga
 
             tile->RenderID = i;
             tile->Draw (m_SceneManager->GetAtlasManager ());
+            tile->DrawPhysVertices ();
         }
 
         if (!isPlayerDrawn)
@@ -402,10 +305,10 @@ namespace aga
             m_SceneManager->GetPlayer ().Render (deltaTime);
         }
 
+        m_SceneManager->GetPlayer ().DrawPhysVertices ();
+
         m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
           FONT_NAME_MAIN, al_map_rgb (0, 255, 0), -100, -50, m_Name, ALLEGRO_ALIGN_LEFT);
-
-        // m_PhysicsWorld.DrawDebugData ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -443,10 +346,6 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     std::string Scene::GetName () { return m_Name; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    b2World& Scene::GetPhysicsWorld () { return m_PhysicsWorld; }
 
     //--------------------------------------------------------------------------------------------------
 }

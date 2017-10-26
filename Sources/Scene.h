@@ -3,6 +3,7 @@
 #ifndef __SCENE_H__
 #define __SCENE_H__
 
+#include "Collidable.h"
 #include "Common.h"
 #include "Scriptable.h"
 
@@ -13,17 +14,13 @@ namespace aga
     class SceneManager;
     class AtlasManager;
 
-    struct Tile
+    struct Tile : public Collidable
     {
         std::string Tileset;
         std::string Name;
         Rect Bounds;
         int ZOrder = 0;
         float Rotation = 0;
-
-        std::vector<Point> PhysVertices;
-        b2Body* PhysBody;
-        b2PolygonShape PhysShape;
 
         int ID = 0;
         int RenderID = 0;
@@ -67,7 +64,6 @@ namespace aga
         void Reset ();
 
         std::string GetName ();
-        b2World& GetPhysicsWorld ();
 
     private:
         std::string m_Name;
@@ -75,9 +71,6 @@ namespace aga
         std::map<std::string, Point> m_SpawnPoints;
         std::vector<Tile*> m_Tiles;
         SceneManager* m_SceneManager;
-
-        //  Physics
-        b2World m_PhysicsWorld;
     };
 }
 

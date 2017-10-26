@@ -4,6 +4,7 @@
 #define __MAIN_LOOP_H__
 
 #include "Lifecycle.h"
+#include "PhysicsManager.h"
 #include "SceneManager.h"
 #include "ScriptManager.h"
 #include "StateManager.h"
@@ -31,6 +32,7 @@ namespace aga
         StateManager& GetStateManager ();
         SceneManager& GetSceneManager ();
         ScriptManager& GetScriptManager ();
+        PhysicsManager& GetPhysicsManager ();
         TweenManager& GetTweenManager ();
 
     private:
@@ -42,6 +44,7 @@ namespace aga
         StateManager m_StateManager;
         SceneManager m_SceneManager;
         ScriptManager m_ScriptManager;
+        PhysicsManager m_PhysicsManager;
         TweenManager m_TweenManager;
 
         MainMenuState* m_MainMenuState;

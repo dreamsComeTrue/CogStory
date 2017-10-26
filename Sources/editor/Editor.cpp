@@ -162,6 +162,22 @@ namespace aga
                     m_IsSnapToGrid = !m_IsSnapToGrid;
                     break;
                 }
+
+                case ALLEGRO_KEY_TAB:
+                {
+                    if (m_SelectedTile)
+                    {
+                        if (m_CursorMode != CursorMode::EditPhysBodyMode)
+                        {
+                            m_CursorMode = CursorMode::EditPhysBodyMode;
+                        }
+                        else
+                        {
+                            m_CursorMode = CursorMode::TileSelectMode;
+                        }
+                    }
+                    break;
+                }
             }
         }
 
@@ -293,7 +309,7 @@ namespace aga
 
             if (currentTile)
             {
-                m_SelectedTile->PhysVertices = currentTile->PhysVertices;
+                m_SelectedTile->PhysPoints = currentTile->PhysPoints;
             }
 
             m_CursorMode = CursorMode::TileEditMode;
@@ -536,7 +552,7 @@ namespace aga
 
         std::vector<float> vertices;
 
-        for (const Point& p : m_SelectedTile->PhysVertices)
+        for (const Point& p : m_SelectedTile->PhysPoints)
         {
             float xPoint = (origin.X + p.X) * scale.X - translate.X;
             float yPoint = (origin.Y + p.Y) * scale.Y - translate.Y;
@@ -545,13 +561,13 @@ namespace aga
             vertices.push_back (yPoint);
         }
 
-        al_draw_polygon (vertices.data (), vertices.size () / 2, 0, COLOR_YELLOW, 2, 0);
+        al_draw_polygon (vertices.data (), m_SelectedTile->PhysPoints.size (), 0, COLOR_YELLOW, 2, 0);
 
         Point* selectedPoint = GetPhysPointUnderCursor (mouseX, mouseY);
 
         for (int i = 0; i < vertices.size (); i += 2)
         {
-            Point& point = m_SelectedTile->PhysVertices[i / 2];
+            Point& point = m_SelectedTile->PhysPoints[i / 2];
             ALLEGRO_COLOR color;
 
             if (selectedPoint != nullptr && point.X == selectedPoint->X && point.Y == selectedPoint->Y)
@@ -634,12 +650,11 @@ namespace aga
 
         if (m_PhysPoint && !againSelected)
         {
-            for (int i = 0; i < m_SelectedTile->PhysVertices.size (); ++i)
+            for (int i = 0; i < m_SelectedTile->PhysPoints.size (); ++i)
             {
-                if (m_PhysPoint && m_SelectedTile->PhysVertices[i].X == m_PhysPoint->X &&
-                    m_SelectedTile->PhysVertices[i].Y == m_PhysPoint->Y)
+                if (m_PhysPoint && m_SelectedTile->PhysPoints[i].X == m_PhysPoint->X && m_SelectedTile->PhysPoints[i].Y == m_PhysPoint->Y)
                 {
-                    m_SelectedTile->PhysVertices.insert (m_SelectedTile->PhysVertices.begin () + i + 1, pointToInsert);
+                    m_SelectedTile->PhysPoints.insert (m_SelectedTile->PhysPoints.begin () + i + 1, pointToInsert);
                     m_PhysPoint = nullptr;
                     inserted = true;
                     break;
@@ -651,8 +666,10 @@ namespace aga
 
         if (!inserted && !m_PhysPoint)
         {
-            m_SelectedTile->PhysVertices.push_back (pointToInsert);
+            m_SelectedTile->PhysPoints.push_back (pointToInsert);
         }
+
+        m_SelectedTile->SetPhysOffset (origin);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -668,9 +685,9 @@ namespace aga
         Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
         Point origin = m_SelectedTile->Bounds.TopLeft;
 
-        for (int i = 0; i < m_SelectedTile->PhysVertices.size (); ++i)
+        for (int i = 0; i < m_SelectedTile->PhysPoints.size (); ++i)
         {
-            const Point& point = m_SelectedTile->PhysVertices[i];
+            const Point& point = m_SelectedTile->PhysPoints[i];
 
             int outsets = 4;
             Rect r = Rect{ { point.X + origin.X - outsets, point.Y + origin.Y - outsets },
@@ -678,7 +695,7 @@ namespace aga
 
             if (InsideRect ((mouseX + translate.X) * 1 / scale.X, (mouseY + translate.Y) * 1 / scale.Y, r))
             {
-                return &m_SelectedTile->PhysVertices[i];
+                return &m_SelectedTile->PhysPoints[i];
             }
         }
 
@@ -693,11 +710,11 @@ namespace aga
 
         if (m_SelectedTile && point)
         {
-            for (int i = 0; i < m_SelectedTile->PhysVertices.size (); ++i)
+            for (int i = 0; i < m_SelectedTile->PhysPoints.size (); ++i)
             {
-                if (m_SelectedTile->PhysVertices[i] == *point)
+                if (m_SelectedTile->PhysPoints[i] == *point)
                 {
-                    m_SelectedTile->PhysVertices.erase (m_SelectedTile->PhysVertices.begin () + i);
+                    m_SelectedTile->PhysPoints.erase (m_SelectedTile->PhysPoints.begin () + i);
                     break;
                 }
             }
