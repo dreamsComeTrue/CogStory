@@ -6,6 +6,7 @@
 #include "Animation.h"
 #include "Collidable.h"
 #include "Common.h"
+#include "Entity.h"
 #include "Scriptable.h"
 
 #define PLAYER_Z_ORDER 10
@@ -15,7 +16,7 @@ namespace aga
     class SceneManager;
     class Scene;
 
-    class Player : public Lifecycle, public Scriptable, public Collidable
+    class Player : public Entity, public Lifecycle, public Scriptable, public Collidable
     {
     public:
         Player (SceneManager* sceneManager);
@@ -44,8 +45,7 @@ namespace aga
 
     private:
         ALLEGRO_BITMAP* m_Image;
-        Point m_Position, m_OldPosition;
-        Point m_Size;
+        Point m_OldPosition;
         SceneManager* m_SceneManager;
         Animation m_Animation;
     };

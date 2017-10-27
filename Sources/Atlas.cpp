@@ -70,7 +70,7 @@ namespace aga
         if (m_Regions.find (name) != m_Regions.end ())
         {
             Rect r = m_Regions[name].Bounds;
-            al_draw_bitmap_region (m_Image, r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width, r.BottomRight.Height, x, y, 0);
+            al_draw_bitmap_region (m_Image, r.Transform.Pos.X, r.Transform.Pos.Y, r.Transform.Size.Width, r.Transform.Size.Height, x, y, 0);
         }
     }
 
@@ -82,13 +82,13 @@ namespace aga
         {
             Rect r = m_Regions[name].Bounds;
             al_draw_tinted_scaled_rotated_bitmap_region (m_Image,
-                                                         r.TopLeft.X,
-                                                         r.TopLeft.Y,
-                                                         r.BottomRight.Width,
-                                                         r.BottomRight.Height,
+                                                         r.Transform.Pos.X,
+                                                         r.Transform.Pos.Y,
+                                                         r.Transform.Size.Width,
+                                                         r.Transform.Size.Height,
                                                          al_map_rgb (255, 255, 255),
-                                                         r.BottomRight.Width * 0.5,
-                                                         r.BottomRight.Height * 0.5,
+                                                         r.Transform.Size.Width * 0.5,
+                                                         r.Transform.Size.Height * 0.5,
                                                          x,
                                                          y,
                                                          scaleX,

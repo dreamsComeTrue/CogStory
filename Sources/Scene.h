@@ -5,6 +5,7 @@
 
 #include "Collidable.h"
 #include "Common.h"
+#include "Entity.h"
 #include "Scriptable.h"
 
 namespace aga
@@ -14,11 +15,10 @@ namespace aga
     class SceneManager;
     class AtlasManager;
 
-    struct Tile : public Collidable
+    struct Tile : public Entity, public Collidable
     {
         std::string Tileset;
         std::string Name;
-        Rect Bounds;
         int ZOrder = 0;
         float Rotation = 0;
 
@@ -65,12 +65,15 @@ namespace aga
 
         std::string GetName ();
 
+        void SetDrawPhysData (bool enable);
+
     private:
         std::string m_Name;
         Point m_Size;
         std::map<std::string, Point> m_SpawnPoints;
         std::vector<Tile*> m_Tiles;
         SceneManager* m_SceneManager;
+        bool m_DrawPhysData;
     };
 }
 

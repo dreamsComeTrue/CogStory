@@ -9,8 +9,26 @@ namespace aga
 {
     struct Rect
     {
-        Point TopLeft;
-        Point BottomRight;
+        Rect () {}
+
+        Rect (Point topLeft, Point bottomRight)
+        {
+            Dim.TopLeft = topLeft;
+            Dim.BottomRight = bottomRight;
+        }
+
+        union {
+            struct
+            {
+                Point TopLeft;
+                Point BottomRight;
+            } Dim;
+            struct
+            {
+                Point Pos;
+                Point Size;
+            } Transform;
+        };
 
         //        Rect () {}
 
@@ -21,13 +39,15 @@ namespace aga
         //            BottomRight.Width = width;
         //            BottomRight.Height = height;
         //        }
-        bool operator== (const Rect& rhs) const { return TopLeft == rhs.TopLeft && BottomRight == rhs.BottomRight; }
+        bool operator== (const Rect& rhs) const { return Dim.TopLeft == rhs.Dim.TopLeft && Dim.BottomRight == rhs.Dim.BottomRight; }
     };
 
     static bool InsideRect (double x, double y, const Rect& rect)
     {
-        return (x >= rect.TopLeft.X && y >= rect.TopLeft.Y && x <= rect.BottomRight.X && y <= rect.BottomRight.Y);
+        return (x >= rect.Dim.TopLeft.X && y >= rect.Dim.TopLeft.Y && x <= rect.Dim.BottomRight.X && y <= rect.Dim.BottomRight.Y);
     }
+
+    static bool InsideRect (const Point& point, const Rect& rect) { return InsideRect (point.X, point.Y, rect); }
 }
 
 #endif //   __RECT_H__

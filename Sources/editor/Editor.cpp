@@ -239,6 +239,11 @@ namespace aga
         else if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
         {
             m_IsMousePan = false;
+
+            if (m_PhysPoint && m_SelectedTile && event->mouse.button == 1)
+            {
+                m_SelectedTile->UpdatePhysPolygon ();
+            }
         }
         else if (event->type == ALLEGRO_EVENT_MOUSE_AXES)
         {
@@ -330,7 +335,7 @@ namespace aga
             Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
             Point point = CalculateCursorPoint (state.x, state.y);
 
-            m_SelectedTile->Bounds.TopLeft = { (translate.X + point.X) * 1 / scale.X, (translate.Y + point.Y) * 1 / scale.Y };
+            m_SelectedTile->Bounds.Transform.Pos = { (translate.X + point.X) * 1 / scale.X, (translate.Y + point.Y) * 1 / scale.Y };
         }
     }
 
@@ -346,7 +351,7 @@ namespace aga
             Point p = CalculateCursorPoint (state.x, state.y);
             Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
             Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-            Point origin = m_SelectedTile->Bounds.TopLeft;
+            Point origin = m_SelectedTile->Bounds.Transform.Pos;
 
             m_PhysPoint->X = (translate.X + p.X) * 1 / scale.X - origin.X;
             m_PhysPoint->Y = (translate.Y + p.Y) * 1 / scale.Y - origin.Y;
@@ -428,7 +433,7 @@ namespace aga
         if (m_SelectedTile)
         {
             Rect b = GetRenderBounds (m_SelectedTile);
-            al_draw_rectangle (b.TopLeft.X, b.TopLeft.Y, b.BottomRight.Width, b.BottomRight.Height, COLOR_RED, 2);
+            al_draw_rectangle (b.Transform.Pos.X, b.Transform.Pos.Y, b.Transform.Size.Width, b.Transform.Size.Height, COLOR_RED, 2);
         }
 
         if (m_CursorMode == CursorMode::TileSelectMode)
@@ -438,7 +443,7 @@ namespace aga
 
             if (m_TileUnderCursor)
             {
-                al_draw_rectangle (r.TopLeft.X, r.TopLeft.Y, r.BottomRight.Width, r.BottomRight.Height, COLOR_YELLOW, 2);
+                al_draw_rectangle (r.Transform.Pos.X, r.Transform.Pos.Y, r.Transform.Size.Width, r.Transform.Size.Height, COLOR_YELLOW, 2);
             }
         }
         else if (m_CursorMode == CursorMode::EditPhysBodyMode)
@@ -476,10 +481,10 @@ namespace aga
             {
                 Rect region = regions[i].Bounds;
                 al_draw_scaled_bitmap (m_Atlas->GetImage (),
-                                       region.TopLeft.X,
-                                       region.TopLeft.Y,
-                                       region.BottomRight.Width,
-                                       region.BottomRight.Height,
+                                       region.Transform.Pos.X,
+                                       region.Transform.Pos.Y,
+                                       region.Transform.Size.Width,
+                                       region.Transform.Size.Height,
                                        advance + 1,
                                        windowSize.Height - TILE_SIZE + 1,
                                        TILE_SIZE - 2,
@@ -548,7 +553,7 @@ namespace aga
 
         Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
         Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-        Point origin = m_SelectedTile->Bounds.TopLeft;
+        Point origin = m_SelectedTile->Bounds.Transform.Pos;
 
         std::vector<float> vertices;
 
@@ -639,7 +644,7 @@ namespace aga
         Point p = CalculateCursorPoint (mouseX, mouseY);
         Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
         Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-        Point origin = m_SelectedTile->Bounds.TopLeft;
+        Point origin = m_SelectedTile->Bounds.Transform.Pos;
 
         Point pointToInsert = { (translate.X + p.X) * 1 / scale.X - origin.X, (translate.Y + p.Y) * 1 / scale.Y - origin.Y };
 
@@ -683,7 +688,7 @@ namespace aga
 
         Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
         Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-        Point origin = m_SelectedTile->Bounds.TopLeft;
+        Point origin = m_SelectedTile->Bounds.Transform.Pos;
 
         for (int i = 0; i < m_SelectedTile->PhysPoints.size (); ++i)
         {
@@ -715,6 +720,7 @@ namespace aga
                 if (m_SelectedTile->PhysPoints[i] == *point)
                 {
                     m_SelectedTile->PhysPoints.erase (m_SelectedTile->PhysPoints.begin () + i);
+                    m_SelectedTile->UpdatePhysPolygon ();
                     break;
                 }
             }
@@ -754,7 +760,7 @@ namespace aga
         tile->Tileset = m_Atlas->GetName ();
         tile->Name = m_SelectedAtlasRegion.Name;
         tile->Bounds = { { (translate.X + point.X), (translate.Y + point.Y) },
-                         { region.Bounds.BottomRight.Width, region.Bounds.BottomRight.Height } };
+                         { region.Bounds.Transform.Size.Width, region.Bounds.Transform.Size.Height } };
         tile->Rotation = m_Rotation;
 
         m_MainLoop->GetSceneManager ().GetActiveScene ()->AddTile (tile);
@@ -812,13 +818,13 @@ namespace aga
         Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
 
         Rect b = tile->Bounds;
-        int width = b.BottomRight.Width * 0.5;
-        int height = b.BottomRight.Height * 0.5;
+        int width = b.Transform.Size.Width * 0.5;
+        int height = b.Transform.Size.Height * 0.5;
 
-        float x1 = (b.TopLeft.X - translate.X * (1 / scale.X) - width) * (scale.X);
-        float y1 = (b.TopLeft.Y - translate.Y * (1 / scale.Y) - height) * (scale.Y);
-        float x2 = (b.TopLeft.X - translate.X * (1 / scale.X) + width) * (scale.X);
-        float y2 = (b.TopLeft.Y - translate.Y * (1 / scale.Y) + height) * (scale.Y);
+        float x1 = (b.Transform.Pos.X - translate.X * (1 / scale.X) - width) * (scale.X);
+        float y1 = (b.Transform.Pos.Y - translate.Y * (1 / scale.Y) - height) * (scale.Y);
+        float x2 = (b.Transform.Pos.X - translate.X * (1 / scale.X) + width) * (scale.X);
+        float y2 = (b.Transform.Pos.Y - translate.Y * (1 / scale.Y) + height) * (scale.Y);
 
         Point origin = { x1 + (x2 - x1) * 0.5, y1 + (y2 - y1) * 0.5 };
         Point pointA = RotatePoint (x1, y1, origin, tile->Rotation);
@@ -889,6 +895,7 @@ namespace aga
                 }
 
                 CURRENT_ID = maxTileID;
+                m_SelectedTile = nullptr;
             }
         }
     }
@@ -1203,9 +1210,9 @@ namespace aga
         ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   X: " + ToString (translate.X * (1 / scale.X))).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   Y: " + ToString (translate.Y * (1 / scale.Y))).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-                            std::string ("   W: " + ToString (m_SelectedAtlasRegion.Bounds.BottomRight.Width)).c_str ());
+                            std::string ("   W: " + ToString (m_SelectedAtlasRegion.Bounds.Transform.Size.Width)).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-                            std::string ("   H: " + ToString (m_SelectedAtlasRegion.Bounds.BottomRight.Height)).c_str ());
+                            std::string ("   H: " + ToString (m_SelectedAtlasRegion.Bounds.Transform.Size.Height)).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
                             std::string ("   A: " + (m_SelectedTile ? ToString (m_SelectedTile->Rotation) : "-")).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),

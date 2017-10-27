@@ -41,7 +41,7 @@ namespace aga
     bool Player::Initialize ()
     {
         m_Image = al_load_bitmap (GetResourcePath (ResourceID::GFX_PLAYER).c_str ());
-        m_Size = { 64, 64 };
+        Bounds.Transform.Size = { 64, 64 };
 
         InitializeAnimations ();
 
@@ -66,7 +66,7 @@ namespace aga
     void Player::CreatePhysics (Scene* currentScene)
     {
         PhysPoints = { { 10, 0 }, { 50, 0 }, { 50, 70 }, { 10, 70 } };
-        SetPhysOffset (m_Position);
+        SetPhysOffset (Bounds.Transform.Pos);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -99,10 +99,19 @@ namespace aga
     {
         AnimationFrames& frames = m_Animation.GetCurrentAnimation ();
         const Rect& frame = frames.GetFrame (m_Animation.GetCurrentFrame ());
-        int width = frame.BottomRight.Width;
-        int height = frame.BottomRight.Height;
+        int width = frame.Transform.Size.Width;
+        int height = frame.Transform.Size.Height;
 
-        al_draw_scaled_bitmap (m_Image, frame.TopLeft.X, frame.TopLeft.Y, width, height, m_Position.X, m_Position.Y, width, height, 0);
+        al_draw_scaled_bitmap (m_Image,
+                               frame.Dim.TopLeft.X,
+                               frame.Dim.TopLeft.Y,
+                               width,
+                               height,
+                               Bounds.Transform.Pos.X,
+                               Bounds.Transform.Pos.Y,
+                               width,
+                               height,
+                               0);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -200,9 +209,9 @@ namespace aga
 
     void Player::Move (double dx, double dy)
     {
-        m_OldPosition = m_Position;
-        m_Position.X += dx;
-        m_Position.Y += dy;
+        m_OldPosition = Bounds.Transform.Pos;
+        Bounds.Transform.Pos.X += dx;
+        Bounds.Transform.Pos.Y += dy;
 
         if (MoveCallback != nullptr)
         {
@@ -220,23 +229,23 @@ namespace aga
 
     void Player::SetPosition (double x, double y)
     {
-        m_OldPosition = m_Position;
-        m_Position.X = x;
-        m_Position.Y = y;
+        m_OldPosition = Bounds.Transform.Pos;
+        Bounds.Transform.Pos.X = x;
+        Bounds.Transform.Pos.Y = y;
 
         if (MoveCallback != nullptr)
         {
-            MoveCallback (m_Position.X - m_OldPosition.X, m_Position.Y - m_OldPosition.Y);
+            MoveCallback (Bounds.Transform.Pos.X - m_OldPosition.X, Bounds.Transform.Pos.Y - m_OldPosition.Y);
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    Point Player::GetPosition () { return m_Position; }
+    Point Player::GetPosition () { return Bounds.Transform.Pos; }
 
     //--------------------------------------------------------------------------------------------------
 
-    Point Player::GetSize () { return m_Size; }
+    Point Player::GetSize () { return Bounds.Transform.Size; }
 
     //--------------------------------------------------------------------------------------------------
 }

@@ -83,7 +83,7 @@ namespace aga
 
         if (atlas)
         {
-            atlas->DrawRegion (Name, Bounds.TopLeft.X, Bounds.TopLeft.Y, 1, 1, DegressToRadians (Rotation));
+            atlas->DrawRegion (Name, Bounds.Transform.Pos.X, Bounds.Transform.Pos.Y, 1, 1, DegressToRadians (Rotation));
         }
     }
 
@@ -91,6 +91,7 @@ namespace aga
 
     Scene::Scene (SceneManager* sceneManager)
       : m_SceneManager (sceneManager)
+      , m_DrawPhysData (true)
     {
     }
 
@@ -159,9 +160,9 @@ namespace aga
                 tile->ID = atoi (id.c_str ());
                 tile->Tileset = j_tile["tileset"];
                 tile->Name = j_tile["name"];
-                tile->Bounds.TopLeft = StringToPoint (j_tile["pos"]);
-                tile->Bounds.BottomRight =
-                  sceneManager->GetAtlasManager ()->GetAtlas (tile->Tileset)->GetRegion (tile->Name).Bounds.BottomRight;
+                tile->Bounds.Transform.Pos = StringToPoint (j_tile["pos"]);
+                tile->Bounds.Transform.Size =
+                  sceneManager->GetAtlasManager ()->GetAtlas (tile->Tileset)->GetRegion (tile->Name).Bounds.Transform.Size;
                 std::string zOrder = j_tile["z-order"];
                 tile->ZOrder = atoi (zOrder.c_str ());
                 std::string rot = j_tile["rot"];
@@ -173,7 +174,7 @@ namespace aga
                     tile->PhysPoints = StringToVector (j_tile["phys"]);
                 }
 
-                tile->SetPhysOffset (tile->Bounds.TopLeft);
+                tile->SetPhysOffset (tile->Bounds.Transform.Pos);
 
                 scene->AddTile (tile);
             }
@@ -228,7 +229,7 @@ namespace aga
                 tileObj["id"] = ToString (tile->ID);
                 tileObj["tileset"] = tile->Tileset;
                 tileObj["name"] = tile->Name;
-                tileObj["pos"] = PointToString (tile->Bounds.TopLeft);
+                tileObj["pos"] = PointToString (tile->Bounds.Transform.Pos);
                 tileObj["z-order"] = ToString (tile->ZOrder);
                 tileObj["rot"] = ToString (tile->Rotation);
                 tileObj["phys"] = VectorToString (tile->PhysPoints);
@@ -297,7 +298,11 @@ namespace aga
 
             tile->RenderID = i;
             tile->Draw (m_SceneManager->GetAtlasManager ());
-            tile->DrawPhysVertices ();
+
+            if (m_DrawPhysData)
+            {
+                tile->DrawPhysVertices ();
+            }
         }
 
         if (!isPlayerDrawn)
@@ -305,7 +310,10 @@ namespace aga
             m_SceneManager->GetPlayer ().Render (deltaTime);
         }
 
-        m_SceneManager->GetPlayer ().DrawPhysVertices ();
+        if (m_DrawPhysData)
+        {
+            m_SceneManager->GetPlayer ().DrawPhysVertices ();
+        }
 
         m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
           FONT_NAME_MAIN, al_map_rgb (0, 255, 0), -100, -50, m_Name, ALLEGRO_ALIGN_LEFT);
@@ -346,6 +354,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     std::string Scene::GetName () { return m_Name; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::SetDrawPhysData (bool enable) { m_DrawPhysData = enable; }
 
     //--------------------------------------------------------------------------------------------------
 }

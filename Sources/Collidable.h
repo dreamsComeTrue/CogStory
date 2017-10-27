@@ -42,7 +42,6 @@ namespace aga
 
         Polygon& GetPhysPolygon () { return m_PhysPolygon; }
 
-    private:
         void UpdatePhysPolygon ()
         {
             m_PhysPolygon.Points = PhysPoints;
