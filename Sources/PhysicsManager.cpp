@@ -9,7 +9,6 @@ namespace aga
 
     PhysicsManager::PhysicsManager (MainLoop* mainLoop)
       : m_MainLoop (mainLoop)
-      , m_QuadTree (Rect ({ -1000, -1000 }, { 1000, 1000 }))
     {
     }
 
@@ -177,10 +176,6 @@ namespace aga
 
         return { min, max };
     }
-
-    //--------------------------------------------------------------------------------------------------
-
-    const QuadTreeNode& PhysicsManager::GetQuadTree () { return m_QuadTree; }
 
     //--------------------------------------------------------------------------------------------------
 }

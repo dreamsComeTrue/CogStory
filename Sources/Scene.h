@@ -6,6 +6,7 @@
 #include "Collidable.h"
 #include "Common.h"
 #include "Entity.h"
+#include "QuadTree.h"
 #include "Scriptable.h"
 
 namespace aga
@@ -22,7 +23,6 @@ namespace aga
         int ZOrder = 0;
         float Rotation = 0;
 
-        int ID = 0;
         int RenderID = 0;
 
         bool operator== (const Tile& rhs) const
@@ -66,6 +66,10 @@ namespace aga
         std::string GetName ();
 
         void SetDrawPhysData (bool enable);
+        QuadTreeNode& GetQuadTree ();
+
+    private:
+        void DrawQuadTree (QuadTreeNode* node);
 
     private:
         std::string m_Name;
@@ -73,7 +77,9 @@ namespace aga
         std::map<std::string, Point> m_SpawnPoints;
         std::vector<Tile*> m_Tiles;
         SceneManager* m_SceneManager;
+
         bool m_DrawPhysData;
+        QuadTreeNode m_QuadTree;
     };
 }
 

@@ -10,6 +10,7 @@ namespace aga
     class Entity
     {
     public:
+        int ID = 0;
         Rect Bounds;
     };
 }

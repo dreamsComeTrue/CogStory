@@ -89,9 +89,12 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    const float boundSize = 10000;
+
     Scene::Scene (SceneManager* sceneManager)
       : m_SceneManager (sceneManager)
       , m_DrawPhysData (true)
+      , m_QuadTree (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }))
     {
     }
 
@@ -284,6 +287,8 @@ namespace aga
     {
         m_SceneManager->GetCamera ().Update (deltaTime);
 
+        DrawQuadTree (&m_QuadTree);
+
         bool isPlayerDrawn = false;
 
         for (int i = 0; i < m_Tiles.size (); ++i)
@@ -321,11 +326,19 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::AddTile (Tile* tile) { m_Tiles.push_back (tile); }
+    void Scene::AddTile (Tile* tile)
+    {
+        m_Tiles.push_back (tile);
+        m_QuadTree.Insert (tile);
+    }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::RemoveTile (Tile* tile) { m_Tiles.erase (std::remove (m_Tiles.begin (), m_Tiles.end (), tile), m_Tiles.end ()); }
+    void Scene::RemoveTile (Tile* tile)
+    {
+        m_Tiles.erase (std::remove (m_Tiles.begin (), m_Tiles.end (), tile), m_Tiles.end ());
+        m_QuadTree.Remove (tile);
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -358,6 +371,38 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Scene::SetDrawPhysData (bool enable) { m_DrawPhysData = enable; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    QuadTreeNode& Scene::GetQuadTree () { return m_QuadTree; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::DrawQuadTree (QuadTreeNode* node)
+    {
+        Rect bounds = node->GetBounds ();
+        al_draw_rectangle (bounds.Dim.TopLeft.X, bounds.Dim.TopLeft.Y, bounds.Dim.BottomRight.X, bounds.Dim.BottomRight.Y, COLOR_WHITE, 1);
+
+        if (node->GetTopLeftTree ())
+        {
+            DrawQuadTree (node->GetTopLeftTree ());
+        }
+
+        if (node->GetTopRightTree ())
+        {
+            DrawQuadTree (node->GetTopRightTree ());
+        }
+
+        if (node->GetBottomLeftTree ())
+        {
+            DrawQuadTree (node->GetBottomLeftTree ());
+        }
+
+        if (node->GetBottomRightTree ())
+        {
+            DrawQuadTree (node->GetBottomRightTree ());
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 }

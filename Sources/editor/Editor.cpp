@@ -336,6 +336,11 @@ namespace aga
             Point point = CalculateCursorPoint (state.x, state.y);
 
             m_SelectedTile->Bounds.Transform.Pos = { (translate.X + point.X) * 1 / scale.X, (translate.Y + point.Y) * 1 / scale.Y };
+
+            QuadTreeNode& quadTree = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetQuadTree ();
+            quadTree.Remove (m_SelectedTile);
+            quadTree.Insert (m_SelectedTile);
+            quadTree.UpdateStructures ();
         }
     }
 
@@ -621,7 +626,7 @@ namespace aga
             if (InsideRect (mouseX, mouseY, r))
             {
                 m_SelectedAtlasRegion = regions[i];
-                m_SelectedTile = AddTile (-10000000, -10000000);
+                m_SelectedTile = AddTile (mouseX, mouseY);
                 m_CursorMode = CursorMode::TileEditMode;
                 m_Rotation = m_SelectedTile->Rotation;
 
@@ -785,6 +790,7 @@ namespace aga
                 {
                     outRect = r;
                     result = tile;
+                    break;
                 }
             }
         }
@@ -847,13 +853,6 @@ namespace aga
     void Editor::InitializeUI ()
     {
         m_Atlas = m_MainLoop->GetSceneManager ().GetAtlasManager ()->GetAtlas (GetBaseName (GetResourcePath (PACK_0_0_HOME)));
-
-        //  Back frame
-        for (int i = 0; i < TILES_COUNT; ++i)
-        {
-            std::ostringstream nameBack;
-            nameBack << "TileRectBack" << i;
-        }
 
         Resize ();
     }

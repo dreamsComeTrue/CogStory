@@ -8,16 +8,17 @@
 namespace aga
 {
     class Entity;
+    class QuadTreeNode;
 
     // The objects that we want stored in the quadtree
     struct QuadTreeData
     {
-        Point Pos;
+        QuadTreeNode* Container;
         Entity* EntityData;
 
-        QuadTreeData (Point pos, Entity* entityData)
-          : Pos (pos)
-          , EntityData (entityData)
+        QuadTreeData (Entity* entityData, QuadTreeNode* container)
+          : EntityData (entityData)
+          , Container (container)
         {
         }
     };
@@ -26,22 +27,33 @@ namespace aga
     class QuadTreeNode
     {
     public:
-        QuadTreeNode (Rect size);
+        QuadTreeNode (Rect bounds, float quadSize = 32, QuadTreeNode* parent = nullptr);
+        ~QuadTreeNode ();
 
-        void Insert (QuadTreeData*);
+        void Insert (Entity*);
+        void Remove (Entity*);
         QuadTreeData* Search (Point);
+        QuadTreeData* Search (Entity*);
         bool InBoundary (Point);
 
+        QuadTreeNode* GetTopLeftTree ();
+        QuadTreeNode* GetTopRightTree ();
+        QuadTreeNode* GetBottomLeftTree ();
+        QuadTreeNode* GetBottomRightTree ();
+
         Rect GetBounds ();
+        std::vector<QuadTreeData*>& GetData ();
+
+        void UpdateStructures ();
 
     private:
-        // Hold details of the boundary of this node
         Rect m_Bounds;
-
-        // Contains details of node
+        bool m_IsDivided;
         std::vector<QuadTreeData*> m_Data;
+        float m_QuadSize;
 
-        // Children of this tree
+        QuadTreeNode* m_Parent;
+
         QuadTreeNode* m_TopLeftTree;
         QuadTreeNode* m_TopRightTree;
         QuadTreeNode* m_BottomLeftTree;
