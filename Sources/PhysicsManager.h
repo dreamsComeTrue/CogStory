@@ -4,6 +4,7 @@
 #define __PHYSICS_MANAGER_H__
 
 #include "Common.h"
+#include "addons/triangulator/Triangulator.h"
 
 namespace aga
 {
@@ -27,6 +28,8 @@ namespace aga
         // Check if polygon A is going to collide with polygon B for the given velocity
         PolygonCollisionResult PolygonCollision (Polygon& polygonA, Polygon& polygonB, Point velocity);
 
+        Triangulator& GetTriangulator ();
+
     private:
         // Calculate the distance between [minA, maxA] and [minB, maxB]
         // The distance will be negative if the intervals overlap
@@ -37,6 +40,7 @@ namespace aga
 
     private:
         MainLoop* m_MainLoop;
+        Triangulator m_Triangulator;
     };
 }
 

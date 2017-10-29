@@ -157,7 +157,7 @@ namespace aga
 
             for (auto& j_tile : tiles)
             {
-                Tile* tile = new Tile ();
+                Tile* tile = new Tile (&sceneManager->GetMainLoop ()->GetPhysicsManager ());
 
                 std::string id = j_tile["id"];
                 tile->ID = atoi (id.c_str ());
@@ -182,7 +182,6 @@ namespace aga
                     }
 
                     tile->SetPhysOffset (tile->Bounds.Transform.Pos);
-                    tile->UpdatePhysPolygon ();
                 }
 
                 scene->AddTile (tile);

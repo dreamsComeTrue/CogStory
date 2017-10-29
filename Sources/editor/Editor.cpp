@@ -703,9 +703,13 @@ namespace aga
         if (!inserted && !m_PhysPoint)
         {
             m_PhysPoly->push_back (pointToInsert);
+            inserted = true;
         }
 
-        m_SelectedTile->SetPhysOffset (origin);
+        if (inserted)
+        {
+            m_SelectedTile->SetPhysOffset (origin);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -797,7 +801,7 @@ namespace aga
 
     Tile* Editor::AddTile (int mouseX, int mouseY)
     {
-        Tile* tile = new Tile ();
+        Tile* tile = new Tile (&m_MainLoop->GetPhysicsManager ());
         AtlasRegion region = m_Atlas->GetRegion (m_SelectedAtlasRegion.Name);
         Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
         Point point = CalculateCursorPoint (mouseX, mouseY);

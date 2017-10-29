@@ -18,6 +18,11 @@ namespace aga
 
     struct Tile : public Entity, public Collidable
     {
+        Tile (PhysicsManager* physicsManager)
+          : Collidable (physicsManager)
+        {
+        }
+
         std::string Tileset;
         std::string Name;
         int ZOrder = 0;

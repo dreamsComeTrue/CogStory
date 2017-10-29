@@ -44,11 +44,11 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
+        m_PhysicsManager.Initialize ();
         m_SceneManager.Initialize ();
         m_StateManager.Initialize ();
         m_TweenManager.Initialize ();
         m_ScriptManager.Initialize ();
-        m_PhysicsManager.Initialize ();
 
         InitializeStates ();
 

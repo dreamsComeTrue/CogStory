@@ -30,10 +30,9 @@ namespace aga
          * @see b2PolygonShape
          * @see b2PolygonShape.SetAsArray()
          * @see b2PolygonShape.SetAsVector()
-         * @see b2Fixture
          **/
 
-        void ProcessVertices (std::vector<Point>* vertices);
+        void ProcessVertices (std::vector<Point>* vertices, std::vector<std::vector<Point>>& out);
 
         /**
          * Checks whether the vertices in <code>verticesVec</code> can be properly distributed into the new fixtures (more specifically, it
@@ -53,7 +52,6 @@ namespace aga
         int Validate (std::vector<Point>& verticesVec);
 
     private:
-        void CalcShapes (std::vector<Point>& vertices, std::vector<std::vector<Point>>& result);
         Point* HitRay (float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
         Point* HitSegment (float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
         bool IsOnSegment (float px, float py, float x1, float y1, float x2, float y2);

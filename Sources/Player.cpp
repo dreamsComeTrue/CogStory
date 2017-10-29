@@ -19,7 +19,8 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Player::Player (SceneManager* sceneManager)
-      : m_SceneManager (sceneManager)
+      : Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
+      , m_SceneManager (sceneManager)
       , m_Image (nullptr)
     {
     }
@@ -188,13 +189,10 @@ namespace aga
                     {
                         dx = dx + r.MinimumTranslationVector.X;
                         dy = dy + r.MinimumTranslationVector.Y;
-                        goto end;
                     }
                 }
             }
         }
-
-    end:
 
         if (!AreSame (dx, 0) || !AreSame (dy, 0))
         {

@@ -8,77 +8,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Triangulator::ProcessVertices (std::vector<Point>* vertices) {}
-
-    //--------------------------------------------------------------------------------------------------
-
-    int Triangulator::Validate (std::vector<Point>& verticesVec)
-    {
-        int i, n = verticesVec.size (), ret = 0;
-        float j, j2, i2, i3, d;
-        bool fl, fl2 = false;
-
-        for (i = 0; i < n; i++)
-        {
-            i2 = (i < n - 1) ? i + 1 : 0;
-            i3 = (i > 0) ? i - 1 : n - 1;
-
-            fl = false;
-            for (j = 0; j < n; j++)
-            {
-                if ((j != i) && (j != i2))
-                {
-                    if (!fl)
-                    {
-                        d = Det (
-                          verticesVec[i].X, verticesVec[i].Y, verticesVec[i2].X, verticesVec[i2].Y, verticesVec[j].X, verticesVec[j].Y);
-                        if ((d > 0))
-                        {
-                            fl = true;
-                        }
-                    }
-
-                    if ((j != i3))
-                    {
-                        j2 = (j < n - 1) ? j + 1 : 0;
-                        if (HitSegment (verticesVec[i].X,
-                                        verticesVec[i].Y,
-                                        verticesVec[i2].X,
-                                        verticesVec[i2].Y,
-                                        verticesVec[j].X,
-                                        verticesVec[j].Y,
-                                        verticesVec[j2].X,
-                                        verticesVec[j2].Y))
-                        {
-                            ret = 1; // TODO: This may be wrong!!!
-                        }
-                    }
-                }
-            }
-
-            if (!fl)
-            {
-                fl2 = true;
-            }
-        }
-
-        if (fl2)
-        {
-            if (ret == 1)
-            {
-                ret = 3;
-            }
-            else
-            {
-                ret = 2;
-            }
-        }
-        return ret;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Triangulator::CalcShapes (std::vector<Point>& vertices, std::vector<std::vector<Point>>& result)
+    void Triangulator::ProcessVertices (std::vector<Point>* vertices, std::vector<std::vector<Point>>& result)
     {
         std::vector<Point> vec;
         int i, n, j, minLen;
@@ -94,7 +24,7 @@ namespace aga
         std::vector<std::vector<Point>> figsVec;
         std::queue<std::vector<Point>> queue;
 
-        queue.push (vertices);
+        queue.push (*vertices);
 
         while (!queue.empty ())
         {
@@ -253,6 +183,72 @@ namespace aga
         }
 
         result = figsVec;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    int Triangulator::Validate (std::vector<Point>& verticesVec)
+    {
+        int i, n = verticesVec.size (), ret = 0;
+        float j, j2, i2, i3, d;
+        bool fl, fl2 = false;
+
+        for (i = 0; i < n; i++)
+        {
+            i2 = (i < n - 1) ? i + 1 : 0;
+            i3 = (i > 0) ? i - 1 : n - 1;
+
+            fl = false;
+            for (j = 0; j < n; j++)
+            {
+                if ((j != i) && (j != i2))
+                {
+                    if (!fl)
+                    {
+                        d = Det (
+                          verticesVec[i].X, verticesVec[i].Y, verticesVec[i2].X, verticesVec[i2].Y, verticesVec[j].X, verticesVec[j].Y);
+                        if ((d > 0))
+                        {
+                            fl = true;
+                        }
+                    }
+
+                    if ((j != i3))
+                    {
+                        j2 = (j < n - 1) ? j + 1 : 0;
+                        if (HitSegment (verticesVec[i].X,
+                                        verticesVec[i].Y,
+                                        verticesVec[i2].X,
+                                        verticesVec[i2].Y,
+                                        verticesVec[j].X,
+                                        verticesVec[j].Y,
+                                        verticesVec[j2].X,
+                                        verticesVec[j2].Y))
+                        {
+                            ret = 1; // TODO: This may be wrong!!!
+                        }
+                    }
+                }
+            }
+
+            if (!fl)
+            {
+                fl2 = true;
+            }
+        }
+
+        if (fl2)
+        {
+            if (ret == 1)
+            {
+                ret = 3;
+            }
+            else
+            {
+                ret = 2;
+            }
+        }
+        return ret;
     }
 
     //--------------------------------------------------------------------------------------------------
