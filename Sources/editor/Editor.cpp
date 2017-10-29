@@ -34,6 +34,7 @@ namespace aga
       , m_SelectedTile (nullptr)
       , m_TileUnderCursor (nullptr)
       , m_PhysPoint (nullptr)
+      , m_PhysPoly (nullptr)
     {
     }
 
@@ -79,6 +80,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     bool openTest = false;
+    bool saveRequested = false;
 
     void Editor::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
     {
@@ -131,6 +133,26 @@ namespace aga
                     CopySelectedTile ();
                     break;
                 }
+
+                case ALLEGRO_KEY_S:
+                {
+                    if (event->keyboard.modifiers == ALLEGRO_KEYMOD_CTRL)
+                    {
+                        saveRequested = true;
+                    }
+                    else
+                    {
+                        m_IsSnapToGrid = !m_IsSnapToGrid;
+                    }
+                    break;
+                }
+
+                case ALLEGRO_KEY_P:
+                {
+                    m_MainLoop->GetSceneManager ().GetActiveScene ()->SetDrawPhysData (
+                      !m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawPhysData ());
+                    break;
+                }
             }
         }
 
@@ -140,26 +162,18 @@ namespace aga
             {
                 case ALLEGRO_KEY_F1:
                 {
-                    openTest = !openTest;
+                    MenuItemPlay ();
                     break;
                 }
 
                 case ALLEGRO_KEY_F5:
                 {
-                    MenuItemPlay ();
+                    m_IsDrawTiles = !m_IsDrawTiles;
                     break;
                 }
 
                 case ALLEGRO_KEY_SPACE:
                 {
-                    m_IsDrawTiles = !m_IsDrawTiles;
-
-                    break;
-                }
-
-                case ALLEGRO_KEY_S:
-                {
-                    m_IsSnapToGrid = !m_IsSnapToGrid;
                     break;
                 }
 
@@ -336,6 +350,7 @@ namespace aga
             Point point = CalculateCursorPoint (state.x, state.y);
 
             m_SelectedTile->Bounds.Transform.Pos = { (translate.X + point.X) * 1 / scale.X, (translate.Y + point.Y) * 1 / scale.Y };
+            m_SelectedTile->SetPhysOffset (m_SelectedTile->Bounds.Transform.Pos);
 
             QuadTreeNode& quadTree = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetQuadTree ();
             quadTree.Remove (m_SelectedTile);
@@ -367,7 +382,7 @@ namespace aga
 
     void Editor::ChangeRotation (bool clockwise)
     {
-        m_Rotation += clockwise ? 15 : -15;
+        m_Rotation += clockwise ? -15 : 15;
 
         if (m_Rotation <= -360)
         {
@@ -559,46 +574,42 @@ namespace aga
         Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
         Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
         Point origin = m_SelectedTile->Bounds.Transform.Pos;
-
-        std::vector<float> vertices;
-
-        for (const Point& p : m_SelectedTile->PhysPoints)
-        {
-            float xPoint = (origin.X + p.X) * scale.X - translate.X;
-            float yPoint = (origin.Y + p.Y) * scale.Y - translate.Y;
-
-            vertices.push_back (xPoint);
-            vertices.push_back (yPoint);
-        }
-
-        al_draw_polygon (vertices.data (), m_SelectedTile->PhysPoints.size (), 0, COLOR_YELLOW, 2, 0);
-
         Point* selectedPoint = GetPhysPointUnderCursor (mouseX, mouseY);
 
-        for (int i = 0; i < vertices.size (); i += 2)
+        for (std::vector<Point>& points : m_SelectedTile->PhysPoints)
         {
-            Point& point = m_SelectedTile->PhysPoints[i / 2];
-            ALLEGRO_COLOR color;
+            if (!points.empty ())
+            {
+                int i = 0;
+                for (const Point& p : points)
+                {
+                    float xPoint = (origin.X + p.X) * scale.X - translate.X;
+                    float yPoint = (origin.Y + p.Y) * scale.Y - translate.Y;
 
-            if (selectedPoint != nullptr && point.X == selectedPoint->X && point.Y == selectedPoint->Y)
-            {
-                color = COLOR_RED;
-            }
-            else if (i == 0)
-            {
-                color = COLOR_GREEN;
-            }
-            else
-            {
-                color = COLOR_YELLOW;
-            }
+                    ALLEGRO_COLOR color;
 
-            if (m_PhysPoint && point.X == m_PhysPoint->X && point.Y == m_PhysPoint->Y)
-            {
-                color = COLOR_BLUE;
-            }
+                    if (selectedPoint != nullptr && p.X == selectedPoint->X && p.Y == selectedPoint->Y)
+                    {
+                        color = COLOR_RED;
+                    }
+                    else if (i == 0)
+                    {
+                        color = COLOR_GREEN;
+                    }
+                    else
+                    {
+                        color = COLOR_YELLOW;
+                    }
 
-            al_draw_filled_circle (vertices[i], vertices[i + 1], 4, color);
+                    if (m_PhysPoint && p.X == m_PhysPoint->X && p.Y == m_PhysPoint->Y)
+                    {
+                        color = COLOR_BLUE;
+                    }
+
+                    ++i;
+                    al_draw_filled_circle (xPoint, yPoint, 4, color);
+                }
+            }
         }
     }
 
@@ -630,6 +641,11 @@ namespace aga
                 m_CursorMode = CursorMode::TileEditMode;
                 m_Rotation = m_SelectedTile->Rotation;
 
+                if (!m_SelectedTile->PhysPoints.empty ())
+                {
+                    m_PhysPoly = &m_SelectedTile->PhysPoints[0];
+                }
+
                 return true;
             }
         }
@@ -658,13 +674,23 @@ namespace aga
         //  After we select one of physics point, we can insert next one accordingly
         Point* againSelected = GetPhysPointUnderCursor (mouseX, mouseY);
 
+        if (m_SelectedTile->PhysPoints.empty ())
+        {
+            m_SelectedTile->PhysPoints.push_back ({});
+        }
+
+        if (!m_PhysPoly)
+        {
+            m_PhysPoly = &m_SelectedTile->PhysPoints[0];
+        }
+
         if (m_PhysPoint && !againSelected)
         {
-            for (int i = 0; i < m_SelectedTile->PhysPoints.size (); ++i)
+            for (int i = 0; i < m_PhysPoly->size (); ++i)
             {
-                if (m_PhysPoint && m_SelectedTile->PhysPoints[i].X == m_PhysPoint->X && m_SelectedTile->PhysPoints[i].Y == m_PhysPoint->Y)
+                if (m_PhysPoint && (*m_PhysPoly)[i].X == m_PhysPoint->X && (*m_PhysPoly)[i].Y == m_PhysPoint->Y)
                 {
-                    m_SelectedTile->PhysPoints.insert (m_SelectedTile->PhysPoints.begin () + i + 1, pointToInsert);
+                    m_PhysPoly->insert (m_PhysPoly->begin () + i + 1, pointToInsert);
                     m_PhysPoint = nullptr;
                     inserted = true;
                     break;
@@ -676,7 +702,7 @@ namespace aga
 
         if (!inserted && !m_PhysPoint)
         {
-            m_SelectedTile->PhysPoints.push_back (pointToInsert);
+            m_PhysPoly->push_back (pointToInsert);
         }
 
         m_SelectedTile->SetPhysOffset (origin);
@@ -695,17 +721,19 @@ namespace aga
         Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
         Point origin = m_SelectedTile->Bounds.Transform.Pos;
 
-        for (int i = 0; i < m_SelectedTile->PhysPoints.size (); ++i)
+        for (std::vector<Point>& points : m_SelectedTile->PhysPoints)
         {
-            const Point& point = m_SelectedTile->PhysPoints[i];
-
-            int outsets = 4;
-            Rect r = Rect{ { point.X + origin.X - outsets, point.Y + origin.Y - outsets },
-                           { point.X + origin.X + outsets, point.Y + origin.Y + outsets } };
-
-            if (InsideRect ((mouseX + translate.X) * 1 / scale.X, (mouseY + translate.Y) * 1 / scale.Y, r))
+            for (Point& point : points)
             {
-                return &m_SelectedTile->PhysPoints[i];
+                int outsets = 4;
+                Rect r = Rect{ { point.X + origin.X - outsets, point.Y + origin.Y - outsets },
+                               { point.X + origin.X + outsets, point.Y + origin.Y + outsets } };
+
+                if (InsideRect ((mouseX + translate.X) * 1 / scale.X, (mouseY + translate.Y) * 1 / scale.Y, r))
+                {
+                    m_PhysPoly = &points;
+                    return &point;
+                }
             }
         }
 
@@ -720,13 +748,26 @@ namespace aga
 
         if (m_SelectedTile && point)
         {
-            for (int i = 0; i < m_SelectedTile->PhysPoints.size (); ++i)
+            for (int j = 0; j < m_SelectedTile->PhysPoints.size (); ++j)
             {
-                if (m_SelectedTile->PhysPoints[i] == *point)
+                std::vector<Point>& points = m_SelectedTile->PhysPoints[j];
+
+                for (int i = 0; i < points.size (); ++i)
                 {
-                    m_SelectedTile->PhysPoints.erase (m_SelectedTile->PhysPoints.begin () + i);
-                    m_SelectedTile->UpdatePhysPolygon ();
-                    break;
+                    if (points[i] == *point)
+                    {
+                        points.erase (points.begin () + i);
+
+                        //  If no points left, remove polygon itself
+                        if (points.empty ())
+                        {
+                            m_SelectedTile->PhysPoints.erase (m_SelectedTile->PhysPoints.begin () + j);
+                            m_PhysPoly = nullptr;
+                        }
+
+                        m_SelectedTile->UpdatePhysPolygon ();
+                        return;
+                    }
                 }
             }
         }
@@ -1081,9 +1122,10 @@ namespace aga
             ImGui::EndPopup ();
         }
 
-        if (ImGui::Button ("SAVE SCENE", buttonSize))
+        if (ImGui::Button ("SAVE SCENE", buttonSize) || saveRequested)
         {
             ImGui::OpenPopup ("Save Scene");
+            saveRequested = false;
         }
 
         if (ImGui::BeginPopupModal ("Save Scene", NULL, ImGuiWindowFlags_AlwaysAutoResize))
@@ -1173,6 +1215,17 @@ namespace aga
                 else
                 {
                     m_CursorMode = CursorMode::TileSelectMode;
+                }
+            }
+
+            if (m_CursorMode == CursorMode::EditPhysBodyMode)
+            {
+                if (ImGui::Button ("NEW POLY", buttonSize))
+                {
+                    m_PhysPoly = nullptr;
+                    m_PhysPoint = nullptr;
+                    m_SelectedTile->PhysPoints.push_back ({});
+                    m_PhysPoly = &m_SelectedTile->PhysPoints[m_SelectedTile->PhysPoints.size () - 1];
                 }
             }
         }

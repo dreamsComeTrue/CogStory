@@ -44,6 +44,8 @@
 
 #define ARRAY_SIZE(_ARR) ((int)(sizeof (_ARR) / sizeof (*_ARR)))
 
+#define EDITOR_ENABLED
+
 namespace aga
 {
     const ALLEGRO_COLOR COLOR_BLACK{ 0.0f, 0.0f, 0.0f, 1.0f };

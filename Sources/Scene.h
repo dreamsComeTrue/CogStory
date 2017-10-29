@@ -66,6 +66,7 @@ namespace aga
         std::string GetName ();
 
         void SetDrawPhysData (bool enable);
+        bool IsDrawPhysData ();
         QuadTreeNode& GetQuadTree ();
 
     private:

@@ -10,7 +10,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     //  Pixels Per Second
-    const double MOVE_SPEED = 90.0;
+    const double MOVE_SPEED = 110.0;
     const std::string ANIM_IDLE = "ANIM_IDLE";
     const std::string ANIM_MOVE_UP = "ANIM_MOVE_UP";
     const std::string ANIM_MOVE_LEFT = "ANIM_MOVE_LEFT";
@@ -65,7 +65,7 @@ namespace aga
 
     void Player::CreatePhysics (Scene* currentScene)
     {
-        PhysPoints = { { 10, 0 }, { 50, 0 }, { 50, 70 }, { 10, 70 } };
+        PhysPoints.push_back ({ { 10, 0 }, { 50, 0 }, { 50, 70 }, { 10, 70 } });
         SetPhysOffset (Bounds.Transform.Pos);
     }
 
@@ -179,17 +179,22 @@ namespace aga
         {
             if (!tile->PhysPoints.empty ())
             {
-                PolygonCollisionResult r = m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (
-                  GetPhysPolygon (), tile->GetPhysPolygon (), { dx, dy });
-
-                if (r.WillIntersect)
+                for (int i = 0; i < tile->GetPhysPolygonsCount (); ++i)
                 {
-                    dx = dx + r.MinimumTranslationVector.X;
-                    dy = dy + r.MinimumTranslationVector.Y;
-                    break;
+                    PolygonCollisionResult r = m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (
+                      GetPhysPolygon (0), tile->GetPhysPolygon (i), { dx, dy });
+
+                    if (r.WillIntersect)
+                    {
+                        dx = dx + r.MinimumTranslationVector.X;
+                        dy = dy + r.MinimumTranslationVector.Y;
+                        goto end;
+                    }
                 }
             }
         }
+
+    end:
 
         if (!AreSame (dx, 0) || !AreSame (dy, 0))
         {

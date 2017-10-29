@@ -63,7 +63,9 @@ namespace aga
         const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
         m_MainLoop->GetSceneManager ().GetCamera ().Scale (1.4, 1.4, winSize.Width * 0.5, winSize.Height * 0.5);
 
+#ifndef EDITOR_ENABLED
         m_MainLoop->GetSceneManager ().GetActiveScene ()->SetDrawPhysData (false);
+#endif
     }
 
     //--------------------------------------------------------------------------------------------------

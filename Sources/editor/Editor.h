@@ -107,6 +107,7 @@ namespace aga
         bool m_IsMouseWheel;
 
         Point* m_PhysPoint;
+        std::vector<Point>* m_PhysPoly;
     };
 }
 

@@ -174,10 +174,16 @@ namespace aga
                 //  Physics
                 if (!j_tile["phys"].is_null ())
                 {
-                    tile->PhysPoints = StringToVector (j_tile["phys"]);
-                }
+                    auto& physTiles = j_tile["phys"];
 
-                tile->SetPhysOffset (tile->Bounds.Transform.Pos);
+                    for (auto& physTile : physTiles)
+                    {
+                        tile->PhysPoints.push_back (StringToVector (physTile["poly"]));
+                    }
+
+                    tile->SetPhysOffset (tile->Bounds.Transform.Pos);
+                    tile->UpdatePhysPolygon ();
+                }
 
                 scene->AddTile (tile);
             }
@@ -194,7 +200,7 @@ namespace aga
 
             return scene;
         }
-        catch (const std::exception& e)
+        catch (const std::exception&)
         {
             return nullptr;
         }
@@ -235,7 +241,17 @@ namespace aga
                 tileObj["pos"] = PointToString (tile->Bounds.Transform.Pos);
                 tileObj["z-order"] = ToString (tile->ZOrder);
                 tileObj["rot"] = ToString (tile->Rotation);
-                tileObj["phys"] = VectorToString (tile->PhysPoints);
+
+                tileObj["phys"] = json::array ({});
+
+                for (int i = 0; i < tile->PhysPoints.size (); ++i)
+                {
+                    json physObj = json::object ({});
+
+                    physObj["poly"] = VectorToString (tile->PhysPoints[i]);
+
+                    tileObj["phys"].push_back (physObj);
+                }
 
                 j["tiles"].push_back (tileObj);
             }
@@ -358,6 +374,8 @@ namespace aga
         {
             return (*it).second;
         }
+
+        return { 0, 0 };
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -371,6 +389,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Scene::SetDrawPhysData (bool enable) { m_DrawPhysData = enable; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Scene::IsDrawPhysData () { return m_DrawPhysData; }
 
     //--------------------------------------------------------------------------------------------------
 

@@ -137,14 +137,14 @@ namespace aga
         ALLEGRO_EVENT ev;
         al_wait_for_event (m_EventQueue, &ev);
 
+        if (UpdateFunction != nullptr)
+        {
+            UpdateFunction (deltaTime);
+        }
+
         if (ev.type == ALLEGRO_EVENT_TIMER)
         {
             m_Redraw = true;
-
-            if (UpdateFunction != nullptr)
-            {
-                UpdateFunction (deltaTime);
-            }
         }
         else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
         {

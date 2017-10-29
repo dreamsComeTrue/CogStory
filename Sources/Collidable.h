@@ -27,33 +27,52 @@ namespace aga
 
         void DrawPhysVertices ()
         {
-            std::vector<float> out;
-
-            for (int i = 0; i < m_PhysPolygon.Points.size (); ++i)
+            for (int i = 0; i < PhysPoints.size (); ++i)
             {
-                out.push_back (m_Offset.X + PhysPoints[i].X);
-                out.push_back (m_Offset.Y + PhysPoints[i].Y);
-            }
+                std::vector<float> out;
 
-            al_draw_polygon (out.data (), PhysPoints.size (), 0, COLOR_GREEN, 2, 0);
+                for (int j = 0; j < PhysPoints[i].size (); ++j)
+                {
+                    out.push_back (m_Offset.X + PhysPoints[i][j].X);
+                    out.push_back (m_Offset.Y + PhysPoints[i][j].Y);
+                }
+
+                al_draw_polygon (out.data (), PhysPoints[i].size (), 0, COLOR_GREEN, 2, 0);
+            }
         }
 
-        void BuildEdges () { m_PhysPolygon.BuildEdges (); }
+        Polygon& GetPhysPolygon (int index) { return m_PhysPolygons[index]; }
 
-        Polygon& GetPhysPolygon () { return m_PhysPolygon; }
+        int GetPhysPolygonsCount () const { return m_PhysPolygons.size (); }
 
         void UpdatePhysPolygon ()
         {
-            m_PhysPolygon.Points = PhysPoints;
-            m_PhysPolygon.Offset (m_Offset);
-            m_PhysPolygon.BuildEdges ();
+            m_PhysPolygons.clear ();
+
+            for (int i = 0; i < PhysPoints.size (); ++i)
+            {
+                m_PhysPolygons.push_back (Polygon ());
+
+                m_PhysPolygons[i].Points = PhysPoints[i];
+                m_PhysPolygons[i].Offset (m_Offset);
+                m_PhysPolygons[i].BuildEdges ();
+            }
+        }
+
+    private:
+        void BuildEdges ()
+        {
+            for (int i = 0; i < m_PhysPolygons.size (); ++i)
+            {
+                m_PhysPolygons[i].BuildEdges ();
+            }
         }
 
     public:
-        std::vector<Point> PhysPoints;
+        std::vector<std::vector<Point>> PhysPoints;
 
     private:
-        Polygon m_PhysPolygon;
+        std::vector<Polygon> m_PhysPolygons;
         Point m_Offset;
     };
 }

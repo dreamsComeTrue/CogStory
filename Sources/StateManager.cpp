@@ -119,7 +119,7 @@ namespace aga
             {
                 switch (event->keyboard.keycode)
                 {
-                    case ALLEGRO_KEY_F5:
+                    case ALLEGRO_KEY_F1:
                     {
                         if (GetActiveStateName () == "GAMEPLAY_STATE")
                         {
