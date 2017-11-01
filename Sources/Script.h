@@ -17,7 +17,7 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
-        bool Update (double deltaTime);
+        bool Update (float deltaTime);
 
         bool Run (const std::string& functionName);
         bool Run (const std::string& functionName, double arg0);
@@ -26,14 +26,14 @@ namespace aga
 
     private:
         asIScriptContext* GetContext (const std::string& functionName);
-        bool InternalRun (asIScriptContext* ctx, bool releaseAfterUse = true);
+        bool InternalRun ();
 
     private:
         std::string m_Name;
         ScriptManager* m_Manager;
         asIScriptModule* m_Module;
 
-        asIScriptContext* m_UpdateFuncContext;
+        asIScriptContext* m_FuncContext;
         asIScriptFunction* m_UpdateFunction;
     };
 }

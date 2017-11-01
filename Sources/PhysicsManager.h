@@ -12,8 +12,8 @@ namespace aga
 
     struct PolygonCollisionResult
     {
-        bool WillIntersect;             // Are the polygons going to intersect forward in time?
-        bool Intersect;                 // Are the polygons currently intersecting
+        bool WillIntersect; // Are the polygons going to intersect forward in time?
+        bool Intersect; // Are the polygons currently intersecting
         Point MinimumTranslationVector; // The translation to apply to polygon A to push the polygons appart.
     };
 
@@ -29,6 +29,7 @@ namespace aga
         PolygonCollisionResult PolygonCollision (Polygon& polygonA, Polygon& polygonB, Point velocity);
 
         Triangulator& GetTriangulator ();
+        MainLoop* GetMainLoop ();
 
     private:
         // Calculate the distance between [minA, maxA] and [minB, maxB]

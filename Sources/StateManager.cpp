@@ -13,8 +13,8 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     StateManager::StateManager (MainLoop* mainLoop)
-      : m_ActiveState (nullptr)
-      , m_MainLoop (mainLoop)
+        : m_ActiveState (nullptr)
+        , m_MainLoop (mainLoop)
     {
     }
 
@@ -26,8 +26,6 @@ namespace aga
         {
             Destroy ();
         }
-
-        Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -119,17 +117,17 @@ namespace aga
             {
                 switch (event->keyboard.keycode)
                 {
-                    case ALLEGRO_KEY_F1:
+                case ALLEGRO_KEY_F1:
+                {
+                    if (GetActiveStateName () == "GAMEPLAY_STATE")
                     {
-                        if (GetActiveStateName () == "GAMEPLAY_STATE")
-                        {
-                            SetActiveState ("EDITOR_STATE");
-                        }
-                        else
-                        {
-                            SetActiveState ("GAMEPLAY_STATE");
-                        }
+                        SetActiveState ("EDITOR_STATE");
                     }
+                    else
+                    {
+                        SetActiveState ("GAMEPLAY_STATE");
+                    }
+                }
                 }
             }
         }

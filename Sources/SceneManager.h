@@ -35,6 +35,8 @@ namespace aga
         MainLoop* GetMainLoop ();
         AtlasManager* GetAtlasManager ();
 
+        Point GetSpawnPoint (const std::string& name);
+
     private:
         Player m_Player;
         Camera m_Camera;

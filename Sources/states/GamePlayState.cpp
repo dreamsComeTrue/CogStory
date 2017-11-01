@@ -15,7 +15,7 @@ namespace aga
     std::string GAMEPLAY_STATE_NAME = "GAMEPLAY_STATE";
 
     GamePlayState::GamePlayState (MainLoop* mainLoop)
-      : State (mainLoop, GAMEPLAY_STATE_NAME)
+        : State (mainLoop, GAMEPLAY_STATE_NAME)
     {
     }
 
@@ -27,21 +27,18 @@ namespace aga
         {
             Destroy ();
         }
-
-        Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    Scene* scene00;
     bool GamePlayState::Initialize ()
     {
         Lifecycle::Initialize ();
 
-        scene00 = Scene::LoadScene (&m_MainLoop->GetSceneManager (), GetResourcePath (SCENE_0_0));
+        m_CurrentScene = Scene::LoadScene (&m_MainLoop->GetSceneManager (), GetResourcePath (SCENE_0_0));
 
-        m_MainLoop->GetSceneManager ().AddScene (SCENE_0_0, scene00);
-        m_MainLoop->GetSceneManager ().SetActiveScene (scene00);
+        m_MainLoop->GetSceneManager ().AddScene (SCENE_0_0, m_CurrentScene);
+        m_MainLoop->GetSceneManager ().SetActiveScene (m_CurrentScene);
 
         return true;
     }
@@ -54,12 +51,10 @@ namespace aga
 
     void GamePlayState::BeforeEnter ()
     {
-        Point pos = scene00->GetSpawnPoint ("DEFAULT");
-        m_MainLoop->GetSceneManager ().GetPlayer ().SetPosition (pos);
-
         m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (60, 60, 70));
         m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (50, 60, 100));
-        m_MainLoop->GetSceneManager ().SetActiveScene (m_MainLoop->GetSceneManager ().GetActiveScene ());
+        m_MainLoop->GetSceneManager ().GetActiveScene ()->BeforeEnter ();
+
         const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
         m_MainLoop->GetSceneManager ().GetCamera ().Scale (1.4, 1.4, winSize.Width * 0.5, winSize.Height * 0.5);
 
@@ -70,7 +65,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::AfterLeave () {}
+    void GamePlayState::AfterLeave () { m_MainLoop->GetSceneManager ().GetActiveScene ()->AfterLeave (); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -81,7 +76,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::Update (double deltaTime) { m_MainLoop->GetSceneManager ().GetPlayer ().HandleInput (deltaTime); }
+    void GamePlayState::Update (double deltaTime)
+    {
+        m_MainLoop->GetSceneManager ().GetPlayer ().HandleInput (deltaTime);
+    }
 
     //--------------------------------------------------------------------------------------------------
 

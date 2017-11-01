@@ -10,7 +10,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     TweenManager::TweenManager (MainLoop* mainLoop)
-      : m_MainLoop (mainLoop)
+        : m_MainLoop (mainLoop)
     {
     }
 
@@ -22,8 +22,6 @@ namespace aga
         {
             Destroy ();
         }
-
-        Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -10,6 +10,7 @@ namespace aga
     extern std::string GAMEPLAY_STATE_NAME;
 
     class MainLoop;
+    class Scene;
 
     class GamePlayState : public State
     {
@@ -28,6 +29,7 @@ namespace aga
         void Render (double deltaTime);
 
     private:
+        Scene* m_CurrentScene;
     };
 }
 

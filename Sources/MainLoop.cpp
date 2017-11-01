@@ -13,16 +13,16 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     MainLoop::MainLoop (Screen* screen)
-      : m_SceneManager (this)
-      , m_StateManager (this)
-      , m_ScriptManager (this)
-      , m_PhysicsManager (this)
-      , m_TweenManager (this)
-      , m_EditorState (nullptr)
-      , m_GamePlayState (nullptr)
-      , m_MainMenuState (nullptr)
-      , m_Screen (screen)
-      , m_IsRunning (true)
+        : m_SceneManager (this)
+        , m_StateManager (this)
+        , m_ScriptManager (this)
+        , m_PhysicsManager (this)
+        , m_TweenManager (this)
+        , m_EditorState (nullptr)
+        , m_GamePlayState (nullptr)
+        , m_MainMenuState (nullptr)
+        , m_Screen (screen)
+        , m_IsRunning (true)
     {
     }
 
@@ -34,8 +34,6 @@ namespace aga
         {
             Destroy ();
         }
-
-        Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -44,19 +42,11 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
-        m_PhysicsManager.Initialize ();
         m_SceneManager.Initialize ();
+        m_PhysicsManager.Initialize ();
         m_StateManager.Initialize ();
         m_TweenManager.Initialize ();
         m_ScriptManager.Initialize ();
-
-        InitializeStates ();
-
-#ifdef EDITOR_ENABLED
-        m_StateManager.SetActiveState (m_EditorState);
-#else
-        m_StateManager.SetActiveState (m_GamePlayState);
-#endif
 
         m_Screen->ProcessEventFunction = [&](ALLEGRO_EVENT* event) {
             m_SceneManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
@@ -69,6 +59,13 @@ namespace aga
             m_SceneManager.Update (deltaTime);
             m_StateManager.Update (deltaTime);
         };
+
+        InitializeStates ();
+#ifdef EDITOR_ENABLED
+        m_StateManager.SetActiveState (m_EditorState);
+#else
+        m_StateManager.SetActiveState (m_GamePlayState);
+#endif
 
         return true;
     }

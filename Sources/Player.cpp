@@ -19,9 +19,9 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Player::Player (SceneManager* sceneManager)
-      : Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
-      , m_SceneManager (sceneManager)
-      , m_Image (nullptr)
+        : Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
+        , m_SceneManager (sceneManager)
+        , m_Image (nullptr)
     {
     }
 
@@ -33,8 +33,6 @@ namespace aga
         {
             Destroy ();
         }
-
-        Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -51,6 +49,19 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Player::BeforeEnter ()
+    {
+        PhysPoints.clear ();
+        PhysPoints.push_back ({ { 20, 10 }, { 25, 0 }, { 39, 0 }, { 44, 10 }, { 44, 64 }, { 20, 64 } });
+        SetPhysOffset (Bounds.Transform.Pos);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::AfterLeave () {}
+
+    //--------------------------------------------------------------------------------------------------
+
     bool Player::Destroy ()
     {
         if (m_Image != nullptr)
@@ -61,18 +72,6 @@ namespace aga
 
         Lifecycle::Destroy ();
     }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Player::CreatePhysics (Scene* currentScene)
-    {
-        PhysPoints.push_back ({ { 10, 0 }, { 50, 0 }, { 50, 70 }, { 10, 70 } });
-        SetPhysOffset (Bounds.Transform.Pos);
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Player::DestroyPhysics (Scene* currentScene) {}
 
     //--------------------------------------------------------------------------------------------------
 
@@ -103,16 +102,8 @@ namespace aga
         int width = frame.Transform.Size.Width;
         int height = frame.Transform.Size.Height;
 
-        al_draw_scaled_bitmap (m_Image,
-                               frame.Dim.TopLeft.X,
-                               frame.Dim.TopLeft.Y,
-                               width,
-                               height,
-                               Bounds.Transform.Pos.X,
-                               Bounds.Transform.Pos.Y,
-                               width,
-                               height,
-                               0);
+        al_draw_scaled_bitmap (m_Image, frame.Dim.TopLeft.X, frame.Dim.TopLeft.Y, width, height, Bounds.Transform.Pos.X,
+            Bounds.Transform.Pos.Y, width, height, 0);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -183,7 +174,7 @@ namespace aga
                 for (int i = 0; i < tile->GetPhysPolygonsCount (); ++i)
                 {
                     PolygonCollisionResult r = m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (
-                      GetPhysPolygon (0), tile->GetPhysPolygon (i), { dx, dy });
+                        GetPhysPolygon (0), tile->GetPhysPolygon (i), { dx, dy });
 
                     if (r.WillIntersect)
                     {
@@ -240,6 +231,8 @@ namespace aga
         {
             MoveCallback (Bounds.Transform.Pos.X - m_OldPosition.X, Bounds.Transform.Pos.Y - m_OldPosition.Y);
         }
+
+        SetPhysOffset ({ x, y });
     }
 
     //--------------------------------------------------------------------------------------------------

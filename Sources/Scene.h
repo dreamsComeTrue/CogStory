@@ -19,7 +19,7 @@ namespace aga
     struct Tile : public Entity, public Collidable
     {
         Tile (PhysicsManager* physicsManager)
-          : Collidable (physicsManager)
+            : Collidable (physicsManager)
         {
         }
 
@@ -49,19 +49,20 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
-        virtual void BeforeEnter ();
-        virtual void AfterLeave ();
+        void BeforeEnter ();
+        void AfterLeave ();
 
         static Scene* LoadScene (SceneManager* sceneManager, const std::string& filePath);
         static void SaveScene (Scene* scene, const std::string& filePath);
 
-        virtual void Update (float deltaTime);
-        virtual void Render (float deltaTime);
+        void Update (float deltaTime);
+        void Render (float deltaTime);
 
         void AddTile (Tile* tile);
         void RemoveTile (Tile* tile);
         std::vector<Tile*>& GetTiles ();
 
+        void AddSpawnPoint (const std::string& name, Point point);
         Point GetSpawnPoint (const std::string& name);
 
         void SortTiles ();

@@ -92,9 +92,9 @@ namespace aga
     const float boundSize = 10000;
 
     Scene::Scene (SceneManager* sceneManager)
-      : m_SceneManager (sceneManager)
-      , m_DrawPhysData (true)
-      , m_QuadTree (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }))
+        : m_SceneManager (sceneManager)
+        , m_DrawPhysData (true)
+        , m_QuadTree (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }))
     {
     }
 
@@ -106,8 +106,6 @@ namespace aga
         {
             Destroy ();
         }
-
-        Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -127,7 +125,7 @@ namespace aga
     }
 
     //--------------------------------------------------------------------------------------------------
-
+    Script* script;
     Scene* Scene::LoadScene (SceneManager* sceneManager, const std::string& filePath)
     {
         try
@@ -148,8 +146,8 @@ namespace aga
                 std::string name = j_tile["name"];
                 std::string path = j_tile["path"];
 
-                Script* script =
-                  sceneManager->GetMainLoop ()->GetScriptManager ().LoadScriptFromFile (GetDataPath () + "scripts/" + path, name);
+                script = sceneManager->GetMainLoop ()->GetScriptManager ().LoadScriptFromFile (
+                    GetDataPath () + "scripts/" + path, name);
                 scene->AttachScript (script, path);
             }
 
@@ -164,8 +162,10 @@ namespace aga
                 tile->Tileset = j_tile["tileset"];
                 tile->Name = j_tile["name"];
                 tile->Bounds.Transform.Pos = StringToPoint (j_tile["pos"]);
-                tile->Bounds.Transform.Size =
-                  sceneManager->GetAtlasManager ()->GetAtlas (tile->Tileset)->GetRegion (tile->Name).Bounds.Transform.Size;
+                tile->Bounds.Transform.Size = sceneManager->GetAtlasManager ()
+                                                  ->GetAtlas (tile->Tileset)
+                                                  ->GetRegion (tile->Name)
+                                                  .Bounds.Transform.Size;
                 std::string zOrder = j_tile["z-order"];
                 tile->ZOrder = atoi (zOrder.c_str ());
                 std::string rot = j_tile["rot"];
@@ -194,7 +194,7 @@ namespace aga
                 std::string name = spawn_point["name"];
                 Point pos = StringToPoint (spawn_point["pos"]);
 
-                scene->m_SpawnPoints.insert (make_pair (name, pos));
+                scene->AddSpawnPoint (name, pos);
             }
 
             return scene;
@@ -218,7 +218,8 @@ namespace aga
 
             j["scripts"] = json::array ({});
 
-            for (std::map<ScriptMetaData, Script*>::iterator it = scene->m_Scripts.begin (); it != scene->m_Scripts.end (); ++it)
+            for (std::map<ScriptMetaData, Script*>::iterator it = scene->m_Scripts.begin ();
+                 it != scene->m_Scripts.end (); ++it)
             {
                 json scriptObj = json::object ({});
 
@@ -257,7 +258,8 @@ namespace aga
 
             j["spawn_points"] = json::array ({});
 
-            for (std::map<std::string, Point>::iterator it = scene->m_SpawnPoints.begin (); it != scene->m_SpawnPoints.end (); ++it)
+            for (std::map<std::string, Point>::iterator it = scene->m_SpawnPoints.begin ();
+                 it != scene->m_SpawnPoints.end (); ++it)
             {
                 json spawnObj = json::object ({});
 
@@ -280,13 +282,13 @@ namespace aga
 
     void Scene::BeforeEnter ()
     {
-        m_SceneManager->GetPlayer ().CreatePhysics (this);
+        m_SceneManager->GetPlayer ().BeforeEnter ();
         RunAllScripts ("void BeforeEnterScene ()");
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::AfterLeave () { m_SceneManager->GetPlayer ().DestroyPhysics (this); }
+    void Scene::AfterLeave () { m_SceneManager->GetPlayer ().AfterLeave (); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -336,7 +338,7 @@ namespace aga
         }
 
         m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
-          FONT_NAME_MAIN, al_map_rgb (0, 255, 0), -100, -50, m_Name, ALLEGRO_ALIGN_LEFT);
+            FONT_NAME_MAIN, al_map_rgb (0, 255, 0), -100, -50, m_Name, ALLEGRO_ALIGN_LEFT);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -365,16 +367,23 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Scene::AddSpawnPoint (const std::string& name, Point point) { m_SpawnPoints.insert (make_pair (name, point)); }
+
+    //--------------------------------------------------------------------------------------------------
+
     Point Scene::GetSpawnPoint (const std::string& name)
     {
-        std::map<std::string, Point>::iterator it = m_SpawnPoints.find (name);
-
-        if (it != m_SpawnPoints.end ())
+        if (!m_SpawnPoints.empty ())
         {
-            return (*it).second;
+            std::map<std::string, Point>::iterator it = m_SpawnPoints.find (name);
+
+            if (it != m_SpawnPoints.end ())
+            {
+                return (*it).second;
+            }
         }
 
-        return { 0, 0 };
+        return {};
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -402,7 +411,8 @@ namespace aga
     void Scene::DrawQuadTree (QuadTreeNode* node)
     {
         Rect bounds = node->GetBounds ();
-        al_draw_rectangle (bounds.Dim.TopLeft.X, bounds.Dim.TopLeft.Y, bounds.Dim.BottomRight.X, bounds.Dim.BottomRight.Y, COLOR_WHITE, 1);
+        al_draw_rectangle (bounds.Dim.TopLeft.X, bounds.Dim.TopLeft.Y, bounds.Dim.BottomRight.X,
+            bounds.Dim.BottomRight.Y, COLOR_WHITE, 1);
 
         if (node->GetTopLeftTree ())
         {

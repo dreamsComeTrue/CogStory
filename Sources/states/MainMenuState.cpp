@@ -16,7 +16,7 @@ namespace aga
     std::string MAIN_MENU_STATE_NAME = "MAIN_MENU_STATE";
 
     MainMenuState::MainMenuState (MainLoop* mainLoop)
-      : State (mainLoop, MAIN_MENU_STATE_NAME)
+        : State (mainLoop, MAIN_MENU_STATE_NAME)
     {
     }
 
@@ -28,8 +28,6 @@ namespace aga
         {
             Destroy ();
         }
-
-        Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------

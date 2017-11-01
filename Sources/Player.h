@@ -24,8 +24,8 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
-        void CreatePhysics (Scene* currentScene);
-        void DestroyPhysics (Scene* currentScene);
+        void BeforeEnter ();
+        void AfterLeave ();
 
         bool Update (float deltaTime);
         void HandleInput (float deltaTime);

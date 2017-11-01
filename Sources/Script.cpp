@@ -8,11 +8,11 @@ namespace aga
     //---------------------------------------------------------------------------
 
     Script::Script (asIScriptModule* module, ScriptManager* manager, const std::string& name)
-      : m_Module (module)
-      , m_Manager (manager)
-      , m_UpdateFuncContext (nullptr)
-      , m_UpdateFunction (nullptr)
-      , m_Name (name)
+        : m_Module (module)
+        , m_Manager (manager)
+        , m_FuncContext (nullptr)
+        , m_UpdateFunction (nullptr)
+        , m_Name (name)
     {
     }
 
@@ -24,16 +24,17 @@ namespace aga
         {
             Destroy ();
         }
-
-        Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
     bool Script::Initialize ()
     {
-        m_UpdateFuncContext = GetContext ("void Update (double deltaTime)");
-        m_UpdateFunction = m_UpdateFuncContext->GetFunction ();
+        m_FuncContext = m_Manager->GetEngine ()->CreateContext ();
+        m_FuncContext = GetContext ("void Update (double deltaTime)");
+        m_UpdateFunction = m_FuncContext->GetFunction ();
+
+        Run ("void Start ()");
 
         return Lifecycle::Initialize ();
     }
@@ -42,10 +43,9 @@ namespace aga
 
     bool Script::Destroy ()
     {
-        if (m_UpdateFuncContext != nullptr)
+        if (m_FuncContext != nullptr)
         {
-            m_UpdateFuncContext->Release ();
-            m_UpdateFuncContext = nullptr;
+            m_FuncContext = nullptr;
         }
 
         return Lifecycle::Destroy ();
@@ -53,30 +53,32 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Script::Update (double deltaTime)
+    bool Script::Update (float deltaTime)
     {
-        m_UpdateFuncContext->Prepare (m_UpdateFunction);
-        m_UpdateFuncContext->SetArgDouble (0, deltaTime);
+        //      m_FuncContext->Prepare (m_UpdateFunction);
+        //    m_FuncContext->SetArgDouble (0, deltaTime);
 
-        return InternalRun (m_UpdateFuncContext, false);
+        //  return InternalRun ();
+
+        return true;
     }
 
     //--------------------------------------------------------------------------------------------------
 
     bool Script::Run (const std::string& functionName)
     {
-        asIScriptContext* ctx = GetContext (functionName);
-        return InternalRun (ctx);
+        GetContext (functionName);
+        return InternalRun ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
     bool Script::Run (const std::string& functionName, double arg0)
     {
-        asIScriptContext* ctx = GetContext (functionName);
-        ctx->SetArgDouble (0, arg0);
+        GetContext (functionName);
+        m_FuncContext->SetArgDouble (0, arg0);
 
-        return InternalRun (ctx);
+        return InternalRun ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -89,28 +91,23 @@ namespace aga
     {
         asIScriptFunction* func = m_Module->GetFunctionByDecl (functionName.c_str ());
 
-        if (func == 0)
+        if (!func)
         {
             return nullptr;
         }
 
         // Create our context, prepare it, and then execute
-        asIScriptContext* ctx = m_Manager->GetEngine ()->CreateContext ();
-        ctx->Prepare (func);
+        m_FuncContext = m_Module->GetEngine ()->RequestContext ();
+        m_FuncContext->Prepare (func);
 
-        return ctx;
+        return m_FuncContext;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Script::InternalRun (asIScriptContext* ctx, bool releaseAfterUse)
+    bool Script::InternalRun ()
     {
-        if (ctx == nullptr)
-        {
-            return false;
-        }
-
-        int r = ctx->Execute ();
+        int r = m_FuncContext->Execute ();
 
         if (r != asEXECUTION_FINISHED)
         {
@@ -118,17 +115,14 @@ namespace aga
             if (r == asEXECUTION_EXCEPTION)
             {
                 // An exception occurred, let the script writer know what happened so it can be corrected.
-                printf ("An exception '%s' occurred. Please correct the code and try again.\n", ctx->GetExceptionString ());
+                printf ("An exception '%s' occurred. Please correct the code and try again.\n",
+                    m_FuncContext->GetExceptionString ());
             }
 
             return false;
         }
 
-        if (releaseAfterUse)
-        {
-            ctx->Release ();
-            ctx = nullptr;
-        }
+        m_FuncContext->GetEngine ()->ReturnContext (m_FuncContext);
 
         return true;
     }

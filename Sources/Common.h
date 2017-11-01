@@ -33,13 +33,13 @@
 
 #include "addons/tweeny/tweeny.h"
 
-#define SAFE_DELETE(x)                                                                                                                     \
-    {                                                                                                                                      \
-        if (x != nullptr)                                                                                                                  \
-        {                                                                                                                                  \
-            delete x;                                                                                                                      \
-            x = nullptr;                                                                                                                   \
-        }                                                                                                                                  \
+#define SAFE_DELETE(x)                                                                                                 \
+    {                                                                                                                  \
+        if (x != nullptr)                                                                                              \
+        {                                                                                                              \
+            delete x;                                                                                                  \
+            x = nullptr;                                                                                               \
+        }                                                                                                              \
     }
 
 #define ARRAY_SIZE(_ARR) ((int)(sizeof (_ARR) / sizeof (*_ARR)))
@@ -53,10 +53,12 @@ namespace aga
     const ALLEGRO_COLOR COLOR_RED{ 1.0f, 0.0f, 0.0f, 1.0f };
     const ALLEGRO_COLOR COLOR_GREEN{ 0.0f, 1.0f, 0.0f, 1.0f };
     const ALLEGRO_COLOR COLOR_BLUE{ 0.0f, 0.0f, 1.0f, 1.0f };
+    const ALLEGRO_COLOR COLOR_LIGHTBLUE{ 51 / 255.f, 153 / 255.f, 255 / 255.f };
     const ALLEGRO_COLOR COLOR_YELLOW{ 1.0f, 1.0f, 0.0f, 1.0f };
     const ALLEGRO_COLOR COLOR_GRAY{ 0.3f, 0.3f, 0.3f, 1.0f };
     const ALLEGRO_COLOR COLOR_VIOLET{ 138 / 255.f, 43 / 255.f, 226 / 255.f, 1.0f };
     const ALLEGRO_COLOR COLOR_INDIGO{ 75 / 255.f, 0 / 255.f, 130 / 255.f, 1.0f };
+    const ALLEGRO_COLOR COLOR_PINK{ 55 / 255.f, 51 / 255.f, 153 / 255.f };
 
     static float DegressToRadians (float degrees) { return degrees * M_PI / 180.0; }
 
@@ -88,22 +90,23 @@ namespace aga
 
     static std::string& LeftTrimString (std::string& str)
     {
-        auto it2 = std::find_if (str.begin (), str.end (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
+        auto it2 = std::find_if (
+            str.begin (), str.end (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
         str.erase (str.begin (), it2);
         return str;
     }
 
     static std::string& RightTrimString (std::string& str)
     {
-        auto it1 = std::find_if (str.rbegin (), str.rend (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
+        auto it1 = std::find_if (
+            str.rbegin (), str.rend (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
         str.erase (it1.base (), str.end ());
         return str;
     }
 
     static std::string& TrimString (std::string& str) { return LeftTrimString (RightTrimString (str)); }
 
-    template<typename T>
-    static std::string ToString (T t)
+    template <typename T> static std::string ToString (T t)
     {
         std::stringstream strStream;
         strStream << t;

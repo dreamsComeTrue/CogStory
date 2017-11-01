@@ -1,7 +1,9 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Collidable.h"
+#include "MainLoop.h"
 #include "PhysicsManager.h"
+#include "Screen.h"
 #include "addons/triangulator/Triangulator.h"
 
 namespace aga
@@ -38,21 +40,21 @@ namespace aga
         /*add the appropriate pi/2 value based on the quadrant. (one of 0, pi/2, pi, 3pi/2)*/
         switch (quadrant)
         {
-            case 1:
-                angle = std::atan2 (p.X, p.Y) * 180 / M_PI;
-                break;
-            case 2:
-                angle = std::atan2 (p.Y, p.X) * 180 / M_PI;
-                angle += M_PI / 2;
-                break;
-            case 3:
-                angle = std::atan2 (p.X, p.Y) * 180 / M_PI;
-                angle += M_PI;
-                break;
-            case 4:
-                angle = std::atan2 (p.Y, p.X) * 180 / M_PI;
-                angle += 3 * M_PI / 2;
-                break;
+        case 1:
+            angle = std::atan2 (p.X, p.Y) * 180 / M_PI;
+            break;
+        case 2:
+            angle = std::atan2 (p.Y, p.X) * 180 / M_PI;
+            angle += M_PI / 2;
+            break;
+        case 3:
+            angle = std::atan2 (p.X, p.Y) * 180 / M_PI;
+            angle += M_PI;
+            break;
+        case 4:
+            angle = std::atan2 (p.Y, p.X) * 180 / M_PI;
+            angle += 3 * M_PI / 2;
+            break;
         }
 
         return angle;
@@ -66,7 +68,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Collidable::Collidable (PhysicsManager* physicsManager)
-      : m_PhysicsManager (physicsManager)
+        : m_PhysicsManager (physicsManager)
     {
     }
 
@@ -99,8 +101,11 @@ namespace aga
 
             for (int j = 0; j < PhysPoints[i].size (); ++j)
             {
-                out.push_back (m_Offset.X + PhysPoints[i][j].X);
-                out.push_back (m_Offset.Y + PhysPoints[i][j].Y);
+                float xPoint = m_Offset.X + PhysPoints[i][j].X;
+                float yPoint = m_Offset.Y + PhysPoints[i][j].Y;
+
+                out.push_back (xPoint);
+                out.push_back (yPoint);
             }
 
             al_draw_polygon (out.data (), PhysPoints[i].size (), 0, COLOR_GREEN, 2, 0);
@@ -125,52 +130,18 @@ namespace aga
         for (int i = 0; i < PhysPoints.size (); ++i)
         {
             std::vector<std::vector<Point>> result;
+            std::vector<Point> pointsCopy = PhysPoints[i];
 
-            int minX = 10000000, maxX = -100000000;
-            int minY = 10000000, maxY = -100000000;
+            int validate = m_PhysicsManager->GetTriangulator ().Validate (pointsCopy);
 
-            for (int a = 0; a < PhysPoints[i].size (); ++a)
+            if (validate == 2)
             {
-                Point& point = PhysPoints[i][a];
-
-                if (point.X < minX)
-                {
-                    minX = point.X;
-                }
-                if (point.X > maxX)
-                {
-                    maxX = point.X;
-                }
-                if (point.Y < minY)
-                {
-                    minY = point.Y;
-                }
-                if (point.Y < maxY)
-                {
-                    maxY = point.Y;
-                }
+                std::reverse (pointsCopy.begin (), pointsCopy.end ());
             }
 
-            int halfX = (maxX - minX) / 2;
-            int halfY = (maxY - minY) / 2;
-
-            for (int a = 0; a < PhysPoints[i].size (); ++a)
+            if (m_PhysicsManager->GetTriangulator ().Validate (pointsCopy) == 0)
             {
-                PhysPoints[i][a].X -= halfX;
-                PhysPoints[i][a].Y -= halfY;
-            }
-
-            //   std::sort (PhysPoints[i].begin (), PhysPoints[i].end (), ComparePoints);
-
-            for (int a = 0; a < PhysPoints[i].size (); ++a)
-            {
-                PhysPoints[i][a].X += halfX;
-                PhysPoints[i][a].Y += halfY;
-            }
-
-            if (m_PhysicsManager->GetTriangulator ().Validate (PhysPoints[i]) == 0)
-            {
-                m_PhysicsManager->GetTriangulator ().ProcessVertices (&PhysPoints[i], result);
+                m_PhysicsManager->GetTriangulator ().ProcessVertices (&pointsCopy, result);
 
                 for (int j = 0; j < result.size (); ++j)
                 {

@@ -25,7 +25,7 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
-        ALLEGRO_FONT* mainFont = al_load_ttf_font (GetResourcePath (FONT_MAIN).c_str (), 92, 0);
+        ALLEGRO_FONT* mainFont = al_load_ttf_font (GetResourcePath (FONT_MAIN).c_str (), 60, 0);
 
         if (!mainFont)
         {

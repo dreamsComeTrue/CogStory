@@ -2,6 +2,7 @@
 
 #include "ScriptManager.h"
 #include "MainLoop.h"
+#include "Scene.h"
 #include "Screen.h"
 #include "Script.h"
 
@@ -30,10 +31,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void print (std::string& msg) { printf ("%s", msg.c_str ()); }
-
-    //--------------------------------------------------------------------------------------------------
-
     ScriptManager::ScriptManager (MainLoop* mainLoop)
         : m_MainLoop (mainLoop)
     {
@@ -47,8 +44,6 @@ namespace aga
         {
             Destroy ();
         }
-
-        Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -137,13 +132,10 @@ namespace aga
             return nullptr;
         }
 
-        asIScriptModule* mod = m_ScriptEngine->GetModule (moduleName.c_str ());
-        Script* script = new Script (mod, this, moduleName);
-        script->Initialize ();
-
+        Script* script = new Script (builder.GetModule (), this, moduleName);
         m_Scripts.insert (std::make_pair (moduleName, script));
 
-        script->Run ("void Start ()");
+        script->Initialize ();
 
         return script;
     }
@@ -162,8 +154,12 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    static void Log (const std::string& data) { printf ("%s\n", data); }
+
+    //--------------------------------------------------------------------------------------------------
+
     static void Log (Point& point) { printf ("Point [X = %f, Y = %f]\n", point.X, point.Y); }
-    
+
     //--------------------------------------------------------------------------------------------------
 
     static void Log (double data) { printf ("%f\n", data); }
@@ -173,16 +169,17 @@ namespace aga
     void ScriptManager::RegisterAPI ()
     {
         //  Point
-        int r = m_ScriptEngine->RegisterObjectType ("Point", sizeof (Point), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_PRIMITIVE);
+        int r = m_ScriptEngine->RegisterObjectType (
+            "Point", sizeof (Point), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_CLASS_CAK);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectBehaviour (
-            "Point", asBEHAVE_CONSTRUCT, "void Point()", asFUNCTION (ConstructPoint), asCALL_CDECL_OBJLAST);
+            "Point", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION (ConstructPoint), asCALL_CDECL_OBJLAST);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectBehaviour ("Point", asBEHAVE_CONSTRUCT, "void Point(const Point &in)",
+        r = m_ScriptEngine->RegisterObjectBehaviour ("Point", asBEHAVE_CONSTRUCT, "void f(const Point &in)",
             asFUNCTION (ConstructPointCopy), asCALL_CDECL_OBJLAST);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectBehaviour ("Point", asBEHAVE_CONSTRUCT, "void Point(double, double)",
-            asFUNCTION (ConstructPointXY), asCALL_CDECL_OBJLAST);
+        r = m_ScriptEngine->RegisterObjectBehaviour (
+            "Point", asBEHAVE_CONSTRUCT, "void f(double, double)", asFUNCTION (ConstructPointXY), asCALL_CDECL_OBJLAST);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectProperty ("Point", "double X", asOFFSET (Point, X));
         assert (r >= 0);
@@ -197,25 +194,37 @@ namespace aga
             "void Log (Point &in)", asFUNCTIONPR (Log, (Point&), void), asCALL_CDECL);
         assert (r >= 0);
 
+        //  Scene
+        r = m_ScriptEngine->RegisterObjectType ("SceneManager", sizeof (SceneManager), asOBJ_VALUE | asOBJ_POD);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalProperty ("SceneManager sceneManager", &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("SceneManager", "Point GetSpawnPoint (const string &in)",
+            asMETHOD (SceneManager, GetSpawnPoint), asCALL_THISCALL);
+
+        //   r = m_ScriptEngine->RegisterGlobalFunction ("Point GetSpawnPoint (const string &in)",
+        //     asMETHOD (SceneManager, GetSpawnPoint), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+
         //  Player
         r = m_ScriptEngine->RegisterObjectType ("Player", sizeof (Player), asOBJ_VALUE | asOBJ_POD);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalProperty ("Player player", &m_MainLoop->GetSceneManager ().GetPlayer ());
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("Player", "void SetPosition (Point)",
-                asMETHODPR (Player, SetPosition, (const Point&), void), asCALL_THISCALL);
+        r = m_ScriptEngine->RegisterObjectMethod ("Player", "void SetPosition (const Point &in)",
+            asMETHODPR (Player, SetPosition, (const Point&), void), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("Player", "void SetPosition (double, double)",
-                asMETHODPR (Player, SetPosition, (double, double), void), asCALL_THISCALL);
+            asMETHODPR (Player, SetPosition, (double, double), void), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-                "Player", "Point GetPosition ()", asMETHOD (Player, GetPosition), asCALL_THISCALL);
+            "Player", "Point GetPosition ()", asMETHOD (Player, GetPosition), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-                "Player", "Point GetSize ()", asMETHOD (Player, GetSize), asCALL_THISCALL);
+            "Player", "Point GetSize ()", asMETHOD (Player, GetSize), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-                "Player", "void Move (double, double)", asMETHOD (Player, Move), asCALL_THISCALL);
+            "Player", "void Move (double, double)", asMETHOD (Player, Move), asCALL_THISCALL);
         assert (r >= 0);
 
         //  Camera
@@ -234,18 +243,20 @@ namespace aga
         assert (r >= 0);
 
         //  Global
-        r = m_ScriptEngine->RegisterGlobalFunction ("void Log(const string &in)", asFUNCTION (print), asCALL_CDECL);
+        r = m_ScriptEngine->RegisterGlobalFunction (
+            "void Log(const string &in)", asFUNCTIONPR (Log, (const std::string&), void), asCALL_CDECL);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("void Log (double)", asFUNCTIONPR (Log, (double), void), asCALL_CDECL);
+        r = m_ScriptEngine->RegisterGlobalFunction (
+            "void Log (double)", asFUNCTIONPR (Log, (double), void), asCALL_CDECL);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("const Point& GetWindowSize ()", asMETHOD (Screen, GetWindowSize), 
-                asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
+        r = m_ScriptEngine->RegisterGlobalFunction ("const Point& GetWindowSize ()", asMETHOD (Screen, GetWindowSize),
+            asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction ("double GetDeltaTime ()", asMETHOD (Screen, GetDeltaTime),
             asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("double GetFPS ()", asMETHOD (Screen, GetFPS),
-            asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
+        r = m_ScriptEngine->RegisterGlobalFunction (
+            "double GetFPS ()", asMETHOD (Screen, GetFPS), asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
         assert (r >= 0);
 
         //  Tweening

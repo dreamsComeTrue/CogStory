@@ -14,11 +14,11 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     SceneManager::SceneManager (MainLoop* mainLoop)
-      : m_ActiveScene (nullptr)
-      , m_MainLoop (mainLoop)
-      , m_Player (this)
-      , m_Camera (mainLoop->GetScreen ())
-      , m_AtlasManager (nullptr)
+        : m_ActiveScene (nullptr)
+        , m_MainLoop (mainLoop)
+        , m_Player (this)
+        , m_Camera (mainLoop->GetScreen ())
+        , m_AtlasManager (nullptr)
     {
     }
 
@@ -30,8 +30,6 @@ namespace aga
         {
             Destroy ();
         }
-
-        Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -149,5 +147,16 @@ namespace aga
 
     AtlasManager* SceneManager::GetAtlasManager () { return m_AtlasManager; }
 
+    //--------------------------------------------------------------------------------------------------
+
+    Point SceneManager::GetSpawnPoint (const std::string& name)
+    {
+        if (m_ActiveScene)
+        {
+            return m_ActiveScene->GetSpawnPoint (name);
+        }
+
+        return { 0, 0 };
+    }
     //--------------------------------------------------------------------------------------------------
 }

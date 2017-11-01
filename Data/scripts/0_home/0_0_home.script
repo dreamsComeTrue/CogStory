@@ -1,4 +1,8 @@
 const double SPEED = 15.0;
+const int TWEEN_1 = 1;
+const int TWEEN_2 = 2;
+
+Point spawn;
 
 void Start ()
 {
@@ -6,9 +10,12 @@ void Start ()
 
 void BeforeEnterScene ()
 {
-    player.SetPosition (0, 0);
+	spawn = sceneManager.GetSpawnPoint ("SPAWN_1");
+	Log (spawn);
 
-    //  AddTween (0, 0, 100, 500, PlayerTween);
+	player.SetPosition (spawn);
+
+    AddTween (TWEEN_1, 0, 100, 2000, PlayerTween);
     Point screenSize = GetWindowSize ();
     Point playerSize = player.GetSize ();
     Point playerPosition = player.GetPosition ();
@@ -17,13 +24,15 @@ void BeforeEnterScene ()
             screenSize.Height * 0.5 - playerSize.Height * 0.5 - playerPosition.Y);
 }
 
+float startY;
 bool PlayerTween (int i)
 {
-    player.SetPosition (i, player.GetPosition ().Y);
+	startY = player.GetPosition ().Y;
+    player.SetPosition (i, startY);
     
     if (player.GetPosition ().X > 99.0)
     {
-        AddTween (1, 0, 100, 500, AnotherPlayerTween);          
+        AddTween (TWEEN_2, 0, 100, 2000, AnotherPlayerTween);          
     }
     
     return false; // t.progress () >= 1;
@@ -31,7 +40,7 @@ bool PlayerTween (int i)
 
 bool AnotherPlayerTween (int i)
 {
-    player.SetPosition (player.GetPosition ().X, i);
+    player.SetPosition (player.GetPosition ().X, startY + i);
     
     return false; // t.progress () >= 1;
 }

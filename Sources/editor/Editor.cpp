@@ -22,19 +22,20 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Editor::Editor (MainLoop* mainLoop)
-      : m_MainLoop (mainLoop)
-      , m_IsDrawTiles (true)
-      , m_IsSnapToGrid (true)
-      , m_IsMousePan (false)
-      , m_IsMouseWheel (false)
-      , m_Rotation (0)
-      , m_BaseGridSize (16)
-      , m_GridSize (16)
-      , m_CursorMode (CursorMode::TileSelectMode)
-      , m_SelectedTile (nullptr)
-      , m_TileUnderCursor (nullptr)
-      , m_PhysPoint (nullptr)
-      , m_PhysPoly (nullptr)
+        : m_MainLoop (mainLoop)
+        , m_IsDrawTiles (true)
+        , m_IsSnapToGrid (true)
+        , m_IsMousePan (false)
+        , m_IsMouseWheel (false)
+        , m_Rotation (0)
+        , m_BaseGridSize (16)
+        , m_GridSize (16)
+        , m_CursorMode (CursorMode::TileSelectMode)
+        , m_SelectedTile (nullptr)
+        , m_TileUnderCursor (nullptr)
+        , m_PhysPoint (nullptr)
+        , m_PhysPointIndex (-1)
+        , m_PhysPoly (nullptr)
     {
     }
 
@@ -46,8 +47,6 @@ namespace aga
         {
             Destroy ();
         }
-
-        Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -104,55 +103,55 @@ namespace aga
         {
             switch (event->keyboard.keycode)
             {
-                case ALLEGRO_KEY_R:
-                {
-                    ChangeRotation (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
-                    break;
-                }
+            case ALLEGRO_KEY_R:
+            {
+                ChangeRotation (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
+                break;
+            }
 
-                case ALLEGRO_KEY_G:
-                {
-                    ChangeGridSize (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
-                    break;
-                }
+            case ALLEGRO_KEY_G:
+            {
+                ChangeGridSize (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
+                break;
+            }
 
-                case ALLEGRO_KEY_Z:
-                {
-                    ChangeZOrder (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
-                    break;
-                }
+            case ALLEGRO_KEY_Z:
+            {
+                ChangeZOrder (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
+                break;
+            }
 
-                case ALLEGRO_KEY_X:
-                {
-                    RemoveSelectedTile ();
-                    break;
-                }
+            case ALLEGRO_KEY_X:
+            {
+                RemoveSelectedTile ();
+                break;
+            }
 
-                case ALLEGRO_KEY_C:
-                {
-                    CopySelectedTile ();
-                    break;
-                }
+            case ALLEGRO_KEY_C:
+            {
+                CopySelectedTile ();
+                break;
+            }
 
-                case ALLEGRO_KEY_S:
+            case ALLEGRO_KEY_S:
+            {
+                if (event->keyboard.modifiers == ALLEGRO_KEYMOD_CTRL)
                 {
-                    if (event->keyboard.modifiers == ALLEGRO_KEYMOD_CTRL)
-                    {
-                        saveRequested = true;
-                    }
-                    else
-                    {
-                        m_IsSnapToGrid = !m_IsSnapToGrid;
-                    }
-                    break;
+                    saveRequested = true;
                 }
+                else
+                {
+                    m_IsSnapToGrid = !m_IsSnapToGrid;
+                }
+                break;
+            }
 
-                case ALLEGRO_KEY_P:
-                {
-                    m_MainLoop->GetSceneManager ().GetActiveScene ()->SetDrawPhysData (
-                      !m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawPhysData ());
-                    break;
-                }
+            case ALLEGRO_KEY_P:
+            {
+                m_MainLoop->GetSceneManager ().GetActiveScene ()->SetDrawPhysData (
+                    !m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawPhysData ());
+                break;
+            }
             }
         }
 
@@ -160,38 +159,38 @@ namespace aga
         {
             switch (event->keyboard.keycode)
             {
-                case ALLEGRO_KEY_F1:
-                {
-                    MenuItemPlay ();
-                    break;
-                }
+            case ALLEGRO_KEY_F1:
+            {
+                MenuItemPlay ();
+                break;
+            }
 
-                case ALLEGRO_KEY_F5:
-                {
-                    m_IsDrawTiles = !m_IsDrawTiles;
-                    break;
-                }
+            case ALLEGRO_KEY_F5:
+            {
+                m_IsDrawTiles = !m_IsDrawTiles;
+                break;
+            }
 
-                case ALLEGRO_KEY_SPACE:
-                {
-                    break;
-                }
+            case ALLEGRO_KEY_SPACE:
+            {
+                break;
+            }
 
-                case ALLEGRO_KEY_TAB:
+            case ALLEGRO_KEY_TAB:
+            {
+                if (m_SelectedTile)
                 {
-                    if (m_SelectedTile)
+                    if (m_CursorMode != CursorMode::EditPhysBodyMode)
                     {
-                        if (m_CursorMode != CursorMode::EditPhysBodyMode)
-                        {
-                            m_CursorMode = CursorMode::EditPhysBodyMode;
-                        }
-                        else
-                        {
-                            m_CursorMode = CursorMode::TileSelectMode;
-                        }
+                        m_CursorMode = CursorMode::EditPhysBodyMode;
                     }
-                    break;
+                    else
+                    {
+                        m_CursorMode = CursorMode::TileSelectMode;
+                    }
                 }
+                break;
+            }
             }
         }
 
@@ -257,6 +256,11 @@ namespace aga
             if (m_PhysPoint && m_SelectedTile && event->mouse.button == 1)
             {
                 m_SelectedTile->UpdatePhysPolygon ();
+
+                if (m_PhysPointIndex > -1)
+                {
+                    //                    m_PhysPoint = &(*m_PhysPoly)[m_PhysPointIndex];
+                }
             }
         }
         else if (event->type == ALLEGRO_EVENT_MOUSE_AXES)
@@ -349,7 +353,8 @@ namespace aga
             Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
             Point point = CalculateCursorPoint (state.x, state.y);
 
-            m_SelectedTile->Bounds.Transform.Pos = { (translate.X + point.X) * 1 / scale.X, (translate.Y + point.Y) * 1 / scale.Y };
+            m_SelectedTile->Bounds.Transform.Pos
+                = { (translate.X + point.X) * 1 / scale.X, (translate.Y + point.Y) * 1 / scale.Y };
             m_SelectedTile->SetPhysOffset (m_SelectedTile->Bounds.Transform.Pos);
 
             QuadTreeNode& quadTree = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetQuadTree ();
@@ -453,7 +458,8 @@ namespace aga
         if (m_SelectedTile)
         {
             Rect b = GetRenderBounds (m_SelectedTile);
-            al_draw_rectangle (b.Transform.Pos.X, b.Transform.Pos.Y, b.Transform.Size.Width, b.Transform.Size.Height, COLOR_RED, 2);
+            al_draw_rectangle (
+                b.Transform.Pos.X, b.Transform.Pos.Y, b.Transform.Size.Width, b.Transform.Size.Height, COLOR_RED, 2);
         }
 
         if (m_CursorMode == CursorMode::TileSelectMode)
@@ -463,7 +469,8 @@ namespace aga
 
             if (m_TileUnderCursor)
             {
-                al_draw_rectangle (r.Transform.Pos.X, r.Transform.Pos.Y, r.Transform.Size.Width, r.Transform.Size.Height, COLOR_YELLOW, 2);
+                al_draw_rectangle (r.Transform.Pos.X, r.Transform.Pos.Y, r.Transform.Size.Width,
+                    r.Transform.Size.Height, COLOR_YELLOW, 2);
             }
         }
         else if (m_CursorMode == CursorMode::EditPhysBodyMode)
@@ -495,21 +502,15 @@ namespace aga
         {
             advance = beginning + i * TILE_SIZE;
 
-            al_draw_rectangle (advance, windowSize.Height - TILE_SIZE, advance + TILE_SIZE, windowSize.Height, COLOR_GREEN, 1);
+            al_draw_rectangle (
+                advance, windowSize.Height - TILE_SIZE, advance + TILE_SIZE, windowSize.Height, COLOR_GREEN, 1);
 
             if (i < regions.size () - 1)
             {
                 Rect region = regions[i].Bounds;
-                al_draw_scaled_bitmap (m_Atlas->GetImage (),
-                                       region.Transform.Pos.X,
-                                       region.Transform.Pos.Y,
-                                       region.Transform.Size.Width,
-                                       region.Transform.Size.Height,
-                                       advance + 1,
-                                       windowSize.Height - TILE_SIZE + 1,
-                                       TILE_SIZE - 2,
-                                       TILE_SIZE - 2,
-                                       0);
+                al_draw_scaled_bitmap (m_Atlas->GetImage (), region.Transform.Pos.X, region.Transform.Pos.Y,
+                    region.Transform.Size.Width, region.Transform.Size.Height, advance + 1,
+                    windowSize.Height - TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2, 0);
             }
         }
     }
@@ -581,6 +582,17 @@ namespace aga
             if (!points.empty ())
             {
                 int i = 0;
+                int selectedIndex = std::numeric_limits<int>::min ();
+
+                for (int j = 0; j < points.size (); ++j)
+                {
+                    if (m_PhysPoint && points[j] == *m_PhysPoint)
+                    {
+                        selectedIndex = j;
+                        break;
+                    }
+                }
+
                 for (const Point& p : points)
                 {
                     float xPoint = (origin.X + p.X) * scale.X - translate.X;
@@ -588,11 +600,7 @@ namespace aga
 
                     ALLEGRO_COLOR color;
 
-                    if (selectedPoint != nullptr && p.X == selectedPoint->X && p.Y == selectedPoint->Y)
-                    {
-                        color = COLOR_RED;
-                    }
-                    else if (i == 0)
+                    if (i == 0)
                     {
                         color = COLOR_GREEN;
                     }
@@ -601,12 +609,30 @@ namespace aga
                         color = COLOR_YELLOW;
                     }
 
-                    if (m_PhysPoint && p.X == m_PhysPoint->X && p.Y == m_PhysPoint->Y)
+                    if (i == selectedIndex)
                     {
+                        //  Mark selected corner
                         color = COLOR_BLUE;
+                    }
+                    else if ((i == 0 && selectedIndex == points.size () - 1) || (i == selectedIndex + 1))
+                    {
+                        //  Mark also next corner
+                        color = COLOR_LIGHTBLUE;
+                    }
+
+                    if (selectedPoint != nullptr && p == *selectedPoint)
+                    {
+                        color = COLOR_RED;
+                    }
+
+                    if (m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawPhysData () && false)
+                    {
+                        m_MainLoop->GetScreen ()->GetFont ().DrawText (
+                            FONT_NAME_MAIN, al_map_rgb (0, 255, 0), xPoint, yPoint, ToString (i), ALLEGRO_ALIGN_CENTER);
                     }
 
                     ++i;
+
                     al_draw_filled_circle (xPoint, yPoint, 4, color);
                 }
             }
@@ -667,7 +693,8 @@ namespace aga
         Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
         Point origin = m_SelectedTile->Bounds.Transform.Pos;
 
-        Point pointToInsert = { (translate.X + p.X) * 1 / scale.X - origin.X, (translate.Y + p.Y) * 1 / scale.Y - origin.Y };
+        Point pointToInsert
+            = { (translate.X + p.X) * 1 / scale.X - origin.X, (translate.Y + p.Y) * 1 / scale.Y - origin.Y };
 
         bool inserted = false;
 
@@ -688,7 +715,7 @@ namespace aga
         {
             for (int i = 0; i < m_PhysPoly->size (); ++i)
             {
-                if (m_PhysPoint && (*m_PhysPoly)[i].X == m_PhysPoint->X && (*m_PhysPoly)[i].Y == m_PhysPoint->Y)
+                if (m_PhysPoint && (*m_PhysPoly)[i] == *m_PhysPoint)
                 {
                     m_PhysPoly->insert (m_PhysPoly->begin () + i + 1, pointToInsert);
                     m_PhysPoint = nullptr;
@@ -698,17 +725,24 @@ namespace aga
             }
         }
 
+        m_PhysPointIndex = -1;
         m_PhysPoint = GetPhysPointUnderCursor (mouseX, mouseY);
 
         if (!inserted && !m_PhysPoint)
         {
             m_PhysPoly->push_back (pointToInsert);
+            m_PhysPoint = &(*m_PhysPoly)[m_PhysPoly->size () - 1];
             inserted = true;
         }
 
         if (inserted)
         {
             m_SelectedTile->SetPhysOffset (origin);
+
+            if (m_PhysPointIndex > -1)
+            {
+                //    m_PhysPoint = &(*m_PhysPoly)[m_PhysPointIndex];
+            }
         }
     }
 
@@ -727,17 +761,21 @@ namespace aga
 
         for (std::vector<Point>& points : m_SelectedTile->PhysPoints)
         {
+            int index = 0;
             for (Point& point : points)
             {
                 int outsets = 4;
                 Rect r = Rect{ { point.X + origin.X - outsets, point.Y + origin.Y - outsets },
-                               { point.X + origin.X + outsets, point.Y + origin.Y + outsets } };
+                    { point.X + origin.X + outsets, point.Y + origin.Y + outsets } };
 
                 if (InsideRect ((mouseX + translate.X) * 1 / scale.X, (mouseY + translate.Y) * 1 / scale.Y, r))
                 {
                     m_PhysPoly = &points;
+                    m_PhysPointIndex = index;
                     return &point;
                 }
+
+                index++;
             }
         }
 
@@ -770,6 +808,12 @@ namespace aga
                         }
 
                         m_SelectedTile->UpdatePhysPolygon ();
+
+                        if (m_PhysPointIndex == i)
+                        {
+                            m_PhysPointIndex = -1;
+                        }
+
                         return;
                     }
                 }
@@ -810,7 +854,7 @@ namespace aga
         tile->Tileset = m_Atlas->GetName ();
         tile->Name = m_SelectedAtlasRegion.Name;
         tile->Bounds = { { (translate.X + point.X), (translate.Y + point.Y) },
-                         { region.Bounds.Transform.Size.Width, region.Bounds.Transform.Size.Height } };
+            { region.Bounds.Transform.Size.Width, region.Bounds.Transform.Size.Height } };
         tile->Rotation = m_Rotation;
 
         m_MainLoop->GetSceneManager ().GetActiveScene ()->AddTile (tile);
@@ -831,7 +875,8 @@ namespace aga
 
             if (InsideRect (mouseX, mouseY, r))
             {
-                if ((result == nullptr) || (result && ((result->ZOrder < tile->ZOrder) || (result->RenderID < tile->RenderID))))
+                if ((result == nullptr)
+                    || (result && ((result->ZOrder < tile->ZOrder) || (result->RenderID < tile->RenderID))))
                 {
                     outRect = r;
                     result = tile;
@@ -897,7 +942,8 @@ namespace aga
 
     void Editor::InitializeUI ()
     {
-        m_Atlas = m_MainLoop->GetSceneManager ().GetAtlasManager ()->GetAtlas (GetBaseName (GetResourcePath (PACK_0_0_HOME)));
+        m_Atlas = m_MainLoop->GetSceneManager ().GetAtlasManager ()->GetAtlas (
+            GetBaseName (GetResourcePath (PACK_0_0_HOME)));
 
         Resize ();
     }
@@ -1040,15 +1086,12 @@ namespace aga
         int xOffset = 5.0f;
 
         ImGui::SetNextWindowPos (ImVec2 (xOffset, xOffset), ImGuiCond_FirstUseEver);
-        ImGui::Begin ("FileMenu",
-                      &open,
-                      ImVec2 (winSize, 100.f),
-                      0.0f,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImGui::Begin ("FileMenu", &open, ImVec2 (winSize, 100.f), 0.0f,
+            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
         ImVec2 buttonSize (100, 20);
 
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-                            std::string ("SCENE: " + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ()).c_str ());
+            std::string ("SCENE: " + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ()).c_str ());
 
         static bool newSceneDontAsk = false;
         if (ImGui::Button ("NEW SCENE", buttonSize))
@@ -1167,11 +1210,8 @@ namespace aga
         ImGui::End ();
 
         ImGui::SetNextWindowPos (ImVec2 (xOffset, 120), ImGuiCond_FirstUseEver);
-        ImGui::Begin ("ToolbarMenu",
-                      &open,
-                      ImVec2 (winSize, 120.f),
-                      0.0f,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImGui::Begin ("ToolbarMenu", &open, ImVec2 (winSize, 120.f), 0.0f,
+            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
         if (ImGui::Button ("RESET MOVE", buttonSize))
         {
             OnResetTranslate ();
@@ -1202,11 +1242,8 @@ namespace aga
         ImGui::End ();
 
         ImGui::SetNextWindowPos (ImVec2 (xOffset, 240), ImGuiCond_FirstUseEver);
-        ImGui::Begin ("Physics",
-                      &open,
-                      ImVec2 (winSize, 120.f),
-                      0.0f,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImGui::Begin ("Physics", &open, ImVec2 (winSize, 120.f), 0.0f,
+            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
         if (m_SelectedTile)
         {
@@ -1237,11 +1274,8 @@ namespace aga
         ImGui::End ();
 
         ImGui::SetNextWindowPos (ImVec2 (xOffset, 360), ImGuiCond_FirstUseEver);
-        ImGui::Begin ("GameMenu",
-                      &open,
-                      ImVec2 (winSize, 120.f),
-                      0.0f,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImGui::Begin ("GameMenu", &open, ImVec2 (winSize, 120.f), 0.0f,
+            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
         if (ImGui::Button ("PLAY", buttonSize))
         {
             MenuItemPlay ();
@@ -1253,28 +1287,28 @@ namespace aga
         xOffset = windowSize.Width - winSize - 5.0f;
 
         ImGui::SetNextWindowPos (ImVec2 (xOffset, 5.0f), ImGuiCond_Always);
-        ImGui::Begin ("ToolBox",
-                      &open,
-                      ImVec2 (winSize, 220.f),
-                      0.0f,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImGui::Begin ("ToolBox", &open, ImVec2 (winSize, 220.f), 0.0f,
+            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
         ImGui::SetWindowFontScale (1.2);
 
         ImGui::Text (" AVG: %.2f ms", 1000.0f / ImGui::GetIO ().Framerate);
         ImGui::Text (" FPS: %.1f", ImGui::GetIO ().Framerate);
 
-        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   X: " + ToString (translate.X * (1 / scale.X))).c_str ());
-        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   Y: " + ToString (translate.Y * (1 / scale.Y))).c_str ());
+        ImGui::TextColored (
+            ImVec4 (0, 1, 0, 1), std::string ("   X: " + ToString (translate.X * (1 / scale.X))).c_str ());
+        ImGui::TextColored (
+            ImVec4 (0, 1, 0, 1), std::string ("   Y: " + ToString (translate.Y * (1 / scale.Y))).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-                            std::string ("   W: " + ToString (m_SelectedAtlasRegion.Bounds.Transform.Size.Width)).c_str ());
+            std::string ("   W: " + ToString (m_SelectedAtlasRegion.Bounds.Transform.Size.Width)).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-                            std::string ("   H: " + ToString (m_SelectedAtlasRegion.Bounds.Transform.Size.Height)).c_str ());
+            std::string ("   H: " + ToString (m_SelectedAtlasRegion.Bounds.Transform.Size.Height)).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-                            std::string ("   A: " + (m_SelectedTile ? ToString (m_SelectedTile->Rotation) : "-")).c_str ());
+            std::string ("   A: " + (m_SelectedTile ? ToString (m_SelectedTile->Rotation) : "-")).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-                            std::string ("ZORD: " + (m_SelectedTile ? ToString (m_SelectedTile->ZOrder) : "-")).c_str ());
+            std::string ("ZORD: " + (m_SelectedTile ? ToString (m_SelectedTile->ZOrder) : "-")).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   S: " + ToString (scale.X)).c_str ());
-        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("SNAP: " + ToString (m_IsSnapToGrid ? "YES" : "NO")).c_str ());
+        ImGui::TextColored (
+            ImVec4 (0, 1, 0, 1), std::string ("SNAP: " + ToString (m_IsSnapToGrid ? "YES" : "NO")).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("GRID: " + ToString (m_BaseGridSize)).c_str ());
 
         ImGui::End ();
