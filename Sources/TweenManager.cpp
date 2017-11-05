@@ -36,47 +36,44 @@ namespace aga
 
     void TweenManager::AddTween (int id, float from, float to, int during, std::function<bool(float)> func)
     {
-        if (m_Tweens.find (id) == m_Tweens.end ())
-        {
-            tweeny::tween<float> tween = tweeny::from (from).to (to).during (during).onStep (func);
+        //        if (m_Tweens.find (id) == m_Tweens.end ())
+        //        {
+        //            tweeny::tween<float> tween = tweeny::from (from).to (to).during (during).onStep (func);
 
-            m_Tweens.insert (std::make_pair (id, tween));
-        }
+        //            m_Tweens.insert (std::make_pair (id, tween));
+        //        }
     }
 
     //--------------------------------------------------------------------------------------------------
 
     bool TweenManager::Update (float deltaTime)
     {
-        if (m_Tweens.size () > 0)
+        for (int i = 0; i < m_Tweens.size (); ++i)
         {
-            for (std::map<int, tweeny::tween<float>>::iterator it = m_Tweens.begin (); it != m_Tweens.end ();)
+            TweenData& tween = m_Tweens[i];
+
+            if (tween.Tween.progress () >= 1.0f)
             {
-                if (it->second.progress () < 1)
+                if (tween.FinishFunc)
                 {
-                    it->second.step ((int)(deltaTime * 1000));
-                    ++it;
-                }
-                else
-                {
-                    m_Tweens.erase (it++);
+                    asIScriptContext* ctx = tween.FinishFunc->GetModule ()->GetEngine ()->RequestContext ();
+                    ctx->Prepare (tween.FinishFunc);
+                    ctx->SetArgDWord (0, (int)tween.ID);
+
+                    ctx->Execute ();
+                    ctx->GetEngine ()->ReturnContext (ctx);
+                    m_Tweens.erase (m_Tweens.begin () + i);
                 }
             }
         }
 
-        if (m_Tweens2.size () > 0)
+        for (int i = 0; i < m_Tweens.size (); ++i)
         {
-            for (std::map<int, tweeny::tween<float, float>>::iterator it = m_Tweens2.begin (); it != m_Tweens2.end ();)
+            TweenData& tween = m_Tweens[i];
+
+            if (tween.Tween.progress () < 1.0f)
             {
-                if (it->second.progress () < 1)
-                {
-                    it->second.step ((int)(deltaTime * 1000));
-                    ++it;
-                }
-                else
-                {
-                    m_Tweens2.erase (it++);
-                }
+                tween.Tween.step ((int)(deltaTime * 1000));
             }
         }
 
@@ -89,107 +86,129 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void TweenManager::AddTween (int id, float from, float to, int during, asIScriptFunction* asFunc)
+    // void TweenManager::AddTween (int id, float from, float to, int during, asIScriptFunction* asFunc)
+    //  {
+    //        m_Callbacks.insert (std::make_pair (id, asFunc));
+
+    //        std::function<bool(tweeny::tween<float> & t, float)> func = [&](tweeny::tween<float>& t, float i) {
+    //            asIScriptContext* ctx = m_MainLoop->GetScriptManager ().GetEngine ()->CreateContext ();
+
+    //            int callbackID = -1;
+    //            for (std::map<int, tweeny::tween<float>>::iterator it = m_Tweens.begin (); it != m_Tweens.end ();
+    //            ++it)
+    //            {
+    //                //  Very nasty - address comparison, but it works!
+    //                if (&it->second == &t)
+    //                {
+    //                    callbackID = it->first;
+    //                    break;
+    //                }
+    //            }
+
+    //            if (callbackID < 0)
+    //            {
+    //                return true;
+    //            }
+
+    //            ctx->Prepare (m_Callbacks[callbackID]);
+    //            ctx->SetArgFloat (0, t.progress ());
+    //            ctx->SetArgFloat (1, i);
+
+    //            int r = ctx->Execute ();
+
+    //            asDWORD ret = 0;
+    //            if (r == asEXECUTION_FINISHED)
+    //            {
+    //                ret = ctx->GetReturnDWord ();
+    //            }
+
+    //            ctx->Release ();
+
+    //            return (bool)ret;
+    //        };
+
+    //        if (m_Tweens.find (id) == m_Tweens.end ())
+    //        {
+    //            tweeny::tween<float> tween = tweeny::from (from).to (to).during (during).onStep (func);
+
+    //            m_Tweens.insert (std::make_pair (id, tween));
+    //        }
+    //  }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void TweenManager::AddTween (
+        int id, Point from, Point to, int during, asIScriptFunction* asFunc, asIScriptFunction* finishFunc)
     {
-        m_Callbacks.insert (std::make_pair (id, asFunc));
+        bool found = false;
 
-        std::function<bool(tweeny::tween<float> & t, float)> func = [&](tweeny::tween<float>& t, float i) {
-            asIScriptContext* ctx = m_MainLoop->GetScriptManager ().GetEngine ()->CreateContext ();
-
-            int callbackID = -1;
-            for (std::map<int, tweeny::tween<float>>::iterator it = m_Tweens.begin (); it != m_Tweens.end (); ++it)
-            {
-                //  Very nasty - address comparison, but it works!
-                if (&it->second == &t)
-                {
-                    callbackID = it->first;
-                    break;
-                }
-            }
-
-            if (callbackID < 0)
-            {
-                return true;
-            }
-
-            ctx->Prepare (m_Callbacks[callbackID]);
-            ctx->SetArgFloat (0, t.progress ());
-            ctx->SetArgFloat (1, i);
-
-            int r = ctx->Execute ();
-
-            asDWORD ret = 0;
-            if (r == asEXECUTION_FINISHED)
-            {
-                ret = ctx->GetReturnDWord ();
-            }
-
-            ctx->Release ();
-
-            return (bool)ret;
-        };
-
-        if (m_Tweens.find (id) == m_Tweens.end ())
+        for (std::vector<TweenData>::iterator it = m_Tweens.begin (); it != m_Tweens.end (); ++it)
         {
-            tweeny::tween<float> tween = tweeny::from (from).to (to).during (during).onStep (func);
+            if (it->ID == id)
+            {
+                found = true;
+                break;
+            }
+        }
 
-            m_Tweens.insert (std::make_pair (id, tween));
+        if (!found)
+        {
+            std::function<bool(tweeny::tween<float, float> & t, float, float)> func
+                = [&](tweeny::tween<float, float>& t, float x, float y) {
+                      asIScriptFunction* callback = FindCallback (t);
+
+                      if (!callback)
+                      {
+                          return true;
+                      }
+
+                      Point p = { x, y };
+
+                      asIScriptContext* ctx = callback->GetModule ()->GetEngine ()->RequestContext ();
+                      ctx->Prepare (callback);
+                      ctx->SetArgFloat (0, t.progress ());
+                      ctx->SetArgObject (1, &p);
+
+                      int r = ctx->Execute ();
+
+                      asDWORD ret = 0;
+                      if (r == asEXECUTION_FINISHED)
+                      {
+                          ret = ctx->GetReturnDWord ();
+                      }
+
+                      ctx->GetEngine ()->ReturnContext (ctx);
+
+                      return (bool)ret;
+                  };
+
+            tweeny::tween<float, float> tween
+                = tweeny::from (from.X, from.Y).to (to.X, to.Y).during (during).onStep (func);
+
+            TweenData tweenData;
+            tweenData.ID = id;
+            tweenData.CallbackFunc = asFunc;
+            tweenData.FinishFunc = finishFunc;
+            tweenData.Tween = tween;
+
+            m_Tweens.push_back (tweenData);
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void TweenManager::AddTween (int id, Point from, Point to, int during, asIScriptFunction* asFunc)
+    asIScriptFunction* TweenManager::FindCallback (tweeny::tween<float, float>& t)
     {
-        m_Callbacks.insert (std::make_pair (id, asFunc));
-
-        std::function<bool(tweeny::tween<float, float> & t, float, float)> func
-            = [&](tweeny::tween<float, float>& t, float x, float y) {
-                  asIScriptContext* ctx = m_MainLoop->GetScriptManager ().GetEngine ()->CreateContext ();
-
-                  int callbackID = -1;
-                  for (std::map<int, tweeny::tween<float, float>>::iterator it = m_Tweens2.begin ();
-                       it != m_Tweens2.end (); ++it)
-                  {
-                      //  Very nasty - address comparison, but it works!
-                      if (&it->second == &t)
-                      {
-                          callbackID = it->first;
-                          break;
-                      }
-                  }
-
-                  if (callbackID < 0)
-                  {
-                      return true;
-                  }
-
-                  Point p = { x, y };
-
-                  ctx->Prepare (m_Callbacks[callbackID]);
-                  ctx->SetArgFloat (0, t.progress ());
-                  ctx->SetArgObject (1, &p);
-
-                  int r = ctx->Execute ();
-
-                  asDWORD ret = 0;
-                  if (r == asEXECUTION_FINISHED)
-                  {
-                      ret = ctx->GetReturnDWord ();
-                  }
-
-                  ctx->Release ();
-
-                  return (bool)ret;
-              };
-
-        if (m_Tweens2.find (id) == m_Tweens2.end ())
+        for (std::vector<TweenData>::iterator it = m_Tweens.begin (); it != m_Tweens.end (); ++it)
         {
-            tweeny::tween<float, float> tween
-                = tweeny::from (from.X, from.Y).to (to.X, to.Y).during (during).onStep (func);
-
-            m_Tweens2.insert (std::make_pair (id, tween));
+            //  Very nasty - address comparison, but it works!
+            if (&it->Tween == &t)
+            {
+                return it->CallbackFunc;
+            }
         }
+
+        return nullptr;
     }
 
     //--------------------------------------------------------------------------------------------------

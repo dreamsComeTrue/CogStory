@@ -258,17 +258,22 @@ namespace aga
         assert (r >= 0);
 
         //  Tweening
-        r = m_ScriptEngine->RegisterFuncdef ("bool TweenFuncFloat (float, float)");
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("void AddTween (int, float, float, int, TweenFuncFloat @tf)",
-            asMETHODPR (TweenManager, AddTween, (int, float, float, int, asIScriptFunction*), void),
-            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
-        assert (r >= 0);
+        //        r = m_ScriptEngine->RegisterFuncdef ("bool TweenFuncFloat (float, float)");
+        //        assert (r >= 0);
+        //        r = m_ScriptEngine->RegisterGlobalFunction ("void AddTween (int, float, float, int, TweenFuncFloat
+        //        @tf)",
+        //            asMETHODPR (TweenManager, AddTween, (int, float, float, int, asIScriptFunction*), void),
+        //            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
+        //        assert (r >= 0);
 
         r = m_ScriptEngine->RegisterFuncdef ("bool TweenFuncPoint (float, Point)");
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("void AddTween (int, Point, Point, int, TweenFuncPoint @tf)",
-            asMETHODPR (TweenManager, AddTween, (int, Point, Point, int, asIScriptFunction*), void),
+        r = m_ScriptEngine->RegisterFuncdef ("void TweenFuncPointFinish (int)");
+        assert (r >= 0);
+
+        r = m_ScriptEngine->RegisterGlobalFunction (
+            "void AddTween (int, Point, Point, int, TweenFuncPoint @tf, TweenFuncPointFinish @te)",
+            asMETHODPR (TweenManager, AddTween, (int, Point, Point, int, asIScriptFunction*, asIScriptFunction*), void),
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
         assert (r >= 0);
     }

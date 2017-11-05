@@ -42,7 +42,7 @@ namespace aga
         void DrawTiles ();
         void DrawGrid ();
         void DrawPhysBody (float mouseX, float mouseY);
-        void DrawFlagPoints ();
+        void DrawFlagPoints (float mouseX, float mouseY);
 
         bool ChooseTile (int mouseX, int mouseY);
         Tile* AddTile (int mouseX, int mouseY);
@@ -50,12 +50,14 @@ namespace aga
         void ChangeRotation (bool clockwise);
         void ChangeZOrder (bool clockwise);
         void ChangeGridSize (bool clockwise);
-        void MoveSelectedTile ();
-        void MoveSelectedPhysPoint ();
+        bool MoveSelectedTile ();
+        bool MoveSelectedPhysPoint ();
+        bool MoveSelectedFlagPoint ();
         void RemoveSelectedTile ();
         void CopySelectedTile ();
 
         Tile* GetTileUnderCursor (int mouseX, int mouseY, Rect&& outRect);
+        std::string GetFlagPointUnderCursor (int mouseX, int mouseY);
         Rect GetRenderBounds (Tile* tile);
 
         void HandleCameraMovement (const ALLEGRO_MOUSE_EVENT& event);
@@ -119,6 +121,8 @@ namespace aga
         Point* m_PhysPoint;
         int m_PhysPointIndex;
         std::vector<Point>* m_PhysPoly;
+
+        std::string m_FlagPoint;
     };
 }
 

@@ -19,7 +19,8 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Player::Player (SceneManager* sceneManager)
-        : Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
+        : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
+        , Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
         , m_SceneManager (sceneManager)
         , m_Image (nullptr)
     {

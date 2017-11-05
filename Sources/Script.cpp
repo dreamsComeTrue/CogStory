@@ -30,10 +30,6 @@ namespace aga
 
     bool Script::Initialize ()
     {
-        m_FuncContext = m_Manager->GetEngine ()->CreateContext ();
-        m_FuncContext = GetContext ("void Update (float deltaTime)");
-        m_UpdateFunction = m_FuncContext->GetFunction ();
-
         Run ("void Start ()");
 
         return Lifecycle::Initialize ();
@@ -55,12 +51,10 @@ namespace aga
 
     bool Script::Update (float deltaTime)
     {
-        //    m_FuncContext->Prepare (m_UpdateFunction);
-        //   m_FuncContext->SetArgFloat (0, deltaTime);
+        m_FuncContext = GetContext ("void Update (float deltaTime)");
+        m_FuncContext->SetArgFloat (0, deltaTime);
 
-        //    return InternalRun ();
-
-        return true;
+        return InternalRun ();
     }
 
     //--------------------------------------------------------------------------------------------------

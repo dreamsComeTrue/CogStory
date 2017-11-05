@@ -7,6 +7,14 @@
 
 namespace aga
 {
+    struct TweenData
+    {
+        int ID = -1;
+        tweeny::tween<float, float> Tween;
+        asIScriptFunction* CallbackFunc = nullptr;
+        asIScriptFunction* FinishFunc = nullptr;
+    };
+
     class MainLoop;
 
     class TweenManager : public Lifecycle
@@ -21,14 +29,16 @@ namespace aga
         bool Update (float deltaTime);
         MainLoop* GetMainLoop ();
 
-        void AddTween (int id, float from, float to, int during, asIScriptFunction* func);
-        void AddTween (int id, Point from, Point to, int during, asIScriptFunction* func);
+        // void AddTween (int id, float from, float to, int during, asIScriptFunction* func);
+        void AddTween (
+            int id, Point from, Point to, int during, asIScriptFunction* func, asIScriptFunction* finishFunc);
+
+    private:
+        asIScriptFunction* FindCallback (tweeny::tween<float, float>& t);
 
     private:
         MainLoop* m_MainLoop;
-        std::map<int, tweeny::tween<float>> m_Tweens;
-        std::map<int, tweeny::tween<float, float>> m_Tweens2;
-        std::map<int, asIScriptFunction*> m_Callbacks;
+        std::vector<TweenData> m_Tweens;
     };
 }
 

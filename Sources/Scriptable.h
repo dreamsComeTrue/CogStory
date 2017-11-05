@@ -5,6 +5,7 @@
 
 #include "Common.h"
 #include "Script.h"
+#include "ScriptManager.h"
 
 namespace aga
 {
@@ -12,22 +13,26 @@ namespace aga
     {
         std::string Name;
         std::string Path;
+        Script* ScriptObj;
 
         bool const operator< (const ScriptMetaData& other) const { return Name < other.Name; }
     };
 
-    typedef std::map<ScriptMetaData, Script*>::iterator ScripIterator;
-
     class Scriptable
     {
     public:
+        Scriptable (ScriptManager* scriptManager)
+            : m_ScriptManager (scriptManager)
+        {
+        }
+
         void AttachScript (Script* script, const std::string& path)
         {
             bool found = false;
 
-            for (ScripIterator it = m_Scripts.begin (); it != m_Scripts.end (); ++it)
+            for (std::vector<ScriptMetaData>::iterator it = m_Scripts.begin (); it != m_Scripts.end (); ++it)
             {
-                if (it->first.Name == script->GetName ())
+                if (it->Name == script->GetName ())
                 {
                     found = true;
                     break;
@@ -36,8 +41,8 @@ namespace aga
 
             if (!found)
             {
-                ScriptMetaData meta = { script->GetName (), path };
-                m_Scripts.insert (std::make_pair (meta, script));
+                ScriptMetaData meta = { script->GetName (), path, script };
+                m_Scripts.push_back (meta);
             }
         }
 
@@ -45,10 +50,10 @@ namespace aga
         {
             bool found = false;
 
-            ScripIterator it = m_Scripts.begin ();
+            std::vector<ScriptMetaData>::iterator it = m_Scripts.begin ();
             for (; it != m_Scripts.end (); ++it)
             {
-                if (it->first.Name == script->GetName ())
+                if (it->Name == script->GetName ())
                 {
                     found = true;
                     break;
@@ -63,22 +68,53 @@ namespace aga
 
         void UpdateScripts (float deltaTime)
         {
-            for (std::map<ScriptMetaData, Script*>::iterator it = m_Scripts.begin (); it != m_Scripts.end (); ++it)
+            for (std::vector<ScriptMetaData>::iterator it = m_Scripts.begin (); it != m_Scripts.end (); ++it)
             {
-                it->second->Update (deltaTime);
+                it->ScriptObj->Update (deltaTime);
             }
         }
 
         void RunAllScripts (const std::string& functionName)
         {
-            for (std::map<ScriptMetaData, Script*>::iterator it = m_Scripts.begin (); it != m_Scripts.end (); ++it)
+            for (std::vector<ScriptMetaData>::iterator it = m_Scripts.begin (); it != m_Scripts.end (); ++it)
             {
-                it->second->Run (functionName);
+                it->ScriptObj->Run (functionName);
             }
         }
 
+        boost::optional<ScriptMetaData&> GetScriptByName (const std::string& name)
+        {
+            for (std::vector<ScriptMetaData>::iterator it = m_Scripts.begin (); it != m_Scripts.end (); ++it)
+            {
+                if (it->Name == name)
+                {
+                    return *it;
+                }
+            }
+
+            return boost::optional<ScriptMetaData&> ();
+        }
+
+        void ReloadScript (const std::string& name)
+        {
+            boost::optional<ScriptMetaData&> metaScript = GetScriptByName (name);
+
+            if (metaScript.is_initialized ())
+            {
+                std::string path = metaScript.get ().Path;
+                RemoveScript (metaScript.get ().ScriptObj);
+
+                Script* s = m_ScriptManager->LoadScriptFromFile (GetDataPath () + "scripts/" + path, name);
+
+                AttachScript (s, path);
+            }
+        }
+
+        std::vector<ScriptMetaData>& GetScripts () { return m_Scripts; }
+
     protected:
-        std::map<ScriptMetaData, Script*> m_Scripts;
+        ScriptManager* m_ScriptManager;
+        std::vector<ScriptMetaData> m_Scripts;
     };
 }
 

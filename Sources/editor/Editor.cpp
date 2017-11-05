@@ -42,6 +42,7 @@ namespace aga
         , m_PhysPoint (nullptr)
         , m_PhysPointIndex (-1)
         , m_PhysPoly (nullptr)
+        , m_FlagPoint ("")
     {
     }
 
@@ -206,7 +207,9 @@ namespace aga
 
             if (event->mouse.button == 1)
             {
-                if (m_CursorMode == CursorMode::TileSelectMode)
+                m_FlagPoint = GetFlagPointUnderCursor (event->mouse.x, event->mouse.y);
+
+                if (m_CursorMode == CursorMode::TileSelectMode && m_FlagPoint == "")
                 {
                     Rect r;
                     m_SelectedTile = GetTileUnderCursor (event->mouse.x, event->mouse.y, std::move (r));
@@ -277,13 +280,16 @@ namespace aga
         }
         else if (event->type == ALLEGRO_EVENT_MOUSE_AXES)
         {
-            if (m_CursorMode == CursorMode::TileEditMode)
+            if (!MoveSelectedFlagPoint ())
             {
-                MoveSelectedTile ();
-            }
-            else if (m_CursorMode == CursorMode::EditPhysBodyMode)
-            {
-                MoveSelectedPhysPoint ();
+                if (m_CursorMode == CursorMode::TileEditMode)
+                {
+                    MoveSelectedTile ();
+                }
+                else if (m_CursorMode == CursorMode::EditPhysBodyMode)
+                {
+                    MoveSelectedPhysPoint ();
+                }
             }
 
             HandleCameraMovement (event->mouse);
@@ -354,7 +360,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::MoveSelectedTile ()
+    bool Editor::MoveSelectedTile ()
     {
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
@@ -374,11 +380,13 @@ namespace aga
             quadTree.Insert (m_SelectedTile);
             quadTree.UpdateStructures ();
         }
+
+        return true;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::MoveSelectedPhysPoint ()
+    bool Editor::MoveSelectedPhysPoint ()
     {
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
@@ -392,7 +400,39 @@ namespace aga
 
             m_PhysPoint->X = (translate.X + p.X) * 1 / scale.X - origin.X;
             m_PhysPoint->Y = (translate.Y + p.Y) * 1 / scale.Y - origin.Y;
+
+            return true;
         }
+
+        return false;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Editor::MoveSelectedFlagPoint ()
+    {
+        ALLEGRO_MOUSE_STATE state;
+        al_get_mouse_state (&state);
+
+        if (state.buttons == 1)
+        {
+            if (m_FlagPoint != "")
+            {
+                std::map<std::string, Point>& flagPoints
+                    = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
+
+                Point p = CalculateCursorPoint (state.x, state.y);
+                Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
+                Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
+
+                flagPoints[m_FlagPoint].X = (translate.X + p.X) * 1 / scale.X;
+                flagPoints[m_FlagPoint].Y = (translate.Y + p.Y) * 1 / scale.Y;
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -490,7 +530,7 @@ namespace aga
             DrawPhysBody (state.x, state.y);
         }
 
-        DrawFlagPoints ();
+        DrawFlagPoints (state.x, state.y);
 
         if (m_IsDrawTiles)
         {
@@ -655,9 +695,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::DrawFlagPoints ()
+    void Editor::DrawFlagPoints (float mouseX, float mouseY)
     {
         std::map<std::string, Point>& flagPoints = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
+        int outsets = 4;
 
         for (std::map<std::string, Point>::iterator it = flagPoints.begin (); it != flagPoints.end (); ++it)
         {
@@ -669,8 +710,18 @@ namespace aga
 
             m_MainLoop->GetScreen ()->GetFont ().DrawText (
                 FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), xPoint, yPoint - 15, it->first, ALLEGRO_ALIGN_CENTER);
-            al_draw_filled_circle (xPoint, yPoint, 4, COLOR_GREEN);
-            al_draw_filled_circle (xPoint, yPoint, 2, COLOR_RED);
+
+            Point p = { it->second.X, it->second.Y };
+
+            if (IsMouseWithinPointRect (mouseX, mouseY, p, outsets))
+            {
+                al_draw_filled_circle (xPoint, yPoint, 4, COLOR_BLUE);
+            }
+            else
+            {
+                al_draw_filled_circle (xPoint, yPoint, 4, COLOR_GREEN);
+                al_draw_filled_circle (xPoint, yPoint, 2, COLOR_RED);
+            }
         }
     }
 
@@ -787,13 +838,18 @@ namespace aga
     {
         if (std::string (flagPointName) != "")
         {
-            Point p = CalculateCursorPoint (mouseX, mouseY);
-            Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-            Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
+            if (GetFlagPointUnderCursor (mouseX, mouseY) == "")
+            {
+                Point p = CalculateCursorPoint (mouseX, mouseY);
+                Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
+                Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
 
-            Point pointToInsert = { (translate.X + p.X) * 1 / scale.X, (translate.Y + p.Y) * 1 / scale.Y };
+                Point pointToInsert = { (translate.X + p.X) * 1 / scale.X, (translate.Y + p.Y) * 1 / scale.Y };
 
-            m_MainLoop->GetSceneManager ().GetActiveScene ()->AddFlagPoint (flagPointName, pointToInsert);
+                m_MainLoop->GetSceneManager ().GetActiveScene ()->AddFlagPoint (flagPointName, pointToInsert);
+                m_FlagPoint = flagPointName;
+            }
+
             strset (flagPointName, 0);
         }
         else
@@ -895,16 +951,12 @@ namespace aga
 
     bool Editor::RemoveFlagPointUnderCursor (int mouseX, int mouseY)
     {
-        std::map<std::string, Point>& flagPoints = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
+        std::string flgPoint = GetFlagPointUnderCursor (mouseX, mouseY);
 
-        int outsets = 4;
-        for (std::map<std::string, Point>::iterator it = flagPoints.begin (); it != flagPoints.end (); ++it)
+        if (flgPoint != "")
         {
-            if (IsMouseWithinPointRect (mouseX, mouseY, it->second, outsets))
-            {
-                flagPoints.erase (it);
-                return true;
-            }
+            m_MainLoop->GetSceneManager ().GetActiveScene ()->GetFlagPoints ().erase (flgPoint);
+            return true;
         }
 
         return false;
@@ -964,17 +1016,35 @@ namespace aga
 
             if (InsideRect (mouseX, mouseY, r))
             {
-                if ((result == nullptr)
-                    || (result && ((result->ZOrder < tile->ZOrder) || (result->RenderID < tile->RenderID))))
+                if ((result == nullptr) || (result && (result->RenderID < tile->RenderID)))
                 {
                     outRect = r;
                     result = tile;
-                    break;
                 }
             }
         }
 
         return result;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string Editor::GetFlagPointUnderCursor (int mouseX, int mouseY)
+    {
+        std::map<std::string, Point>& flagPoints = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
+        int outsets = 4;
+
+        for (std::map<std::string, Point>::iterator it = flagPoints.begin (); it != flagPoints.end (); ++it)
+        {
+            Point p = { it->second.X, it->second.Y };
+
+            if (IsMouseWithinPointRect (mouseX, mouseY, p, outsets))
+            {
+                return it->first;
+            }
+        }
+
+        return "";
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1465,6 +1535,42 @@ namespace aga
             ImVec4 (0, 1, 0, 1), std::string ("SNAP: " + ToString (m_IsSnapToGrid ? "YES" : "NO")).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("GRID: " + ToString (m_BaseGridSize)).c_str ());
 
+        ImGui::End ();
+
+        winSize = 150.0f;
+        xOffset = windowSize.Width - winSize - 2.0f;
+
+        ImGui::SetNextWindowPos (ImVec2 (xOffset, 230.0f), ImGuiCond_Always);
+        ImGui::Begin ("ScriptsBox", &open, ImVec2 (winSize, 220.f), 0.0f,
+            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImGui::PushItemWidth (-1);
+
+        static int scriptsSelectedIndex = 0;
+
+        std::vector<ScriptMetaData>& scripts = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetScripts ();
+        std::vector<const char*> scriptsList;
+
+        for (auto& sc : scripts)
+        {
+            scriptsList.push_back (sc.Name.c_str ());
+        }
+
+        ImGui::ListBox ("##scripts", &scriptsSelectedIndex, scriptsList.data (), scriptsList.size (), 4);
+
+        if (ImGui::Button ("RELOAD", ImVec2 (winSize - 17, 20)))
+        {
+            m_MainLoop->GetSceneManager ().GetActiveScene ()->ReloadScript (scriptsList[scriptsSelectedIndex]);
+
+            boost::optional<ScriptMetaData&> metaScript
+                = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetScriptByName (scriptsList[scriptsSelectedIndex]);
+
+            if (metaScript.is_initialized ())
+            {
+                metaScript.get ().ScriptObj->Run ("void Start ()");
+            }
+        }
+
+        ImGui::PopItemWidth ();
         ImGui::End ();
 
         if (openTest)

@@ -92,7 +92,8 @@ namespace aga
     const float boundSize = 10000;
 
     Scene::Scene (SceneManager* sceneManager)
-        : m_SceneManager (sceneManager)
+        : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
+        , m_SceneManager (sceneManager)
         , m_DrawPhysData (true)
         , m_QuadTree (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }))
     {
@@ -218,13 +219,13 @@ namespace aga
 
             j["scripts"] = json::array ({});
 
-            for (std::map<ScriptMetaData, Script*>::iterator it = scene->m_Scripts.begin ();
-                 it != scene->m_Scripts.end (); ++it)
+            for (std::vector<ScriptMetaData>::iterator it = scene->m_Scripts.begin (); it != scene->m_Scripts.end ();
+                 ++it)
             {
                 json scriptObj = json::object ({});
 
-                scriptObj["name"] = it->first.Name;
-                scriptObj["path"] = it->first.Path;
+                scriptObj["name"] = it->Name;
+                scriptObj["path"] = it->Path;
 
                 j["scripts"].push_back (scriptObj);
             }
@@ -304,7 +305,10 @@ namespace aga
     {
         m_SceneManager->GetCamera ().Update (deltaTime);
 
-        DrawQuadTree (&m_QuadTree);
+        if (false)
+        {
+            DrawQuadTree (&m_QuadTree);
+        }
 
         bool isPlayerDrawn = false;
 

@@ -23,6 +23,7 @@
 #include <scriptstdstring/scriptstdstring.h>
 
 #include <boost/filesystem.hpp>
+#include <boost/optional.hpp>
 #include <cmath>
 #include <fstream>
 #include <functional>
