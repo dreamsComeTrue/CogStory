@@ -60,15 +60,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void MainMenuState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime) {}
+    void MainMenuState::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime) {}
 
     //--------------------------------------------------------------------------------------------------
 
-    void MainMenuState::Update (double deltaTime) {}
+    void MainMenuState::Update (float deltaTime) {}
 
     //--------------------------------------------------------------------------------------------------
 
-    void MainMenuState::Render (double deltaTime) { draw_nine_patch_bitmap (m_Background, 20, 20, 400, 150); }
+    void MainMenuState::Render (float deltaTime) { draw_nine_patch_bitmap (m_Background, 20, 20, 400, 150); }
 
     //--------------------------------------------------------------------------------------------------
 }

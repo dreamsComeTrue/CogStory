@@ -17,17 +17,17 @@ namespace aga
     {
     public:
         State (MainLoop* mainLoop, const std::string& name)
-          : m_MainLoop (mainLoop)
-          , m_Name (name)
+            : m_MainLoop (mainLoop)
+            , m_Name (name)
         {
         }
 
         virtual void BeforeEnter () = 0;
         virtual void AfterLeave () = 0;
 
-        virtual void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime) = 0;
-        virtual void Update (double deltaTime) = 0;
-        virtual void Render (double deltaTime) = 0;
+        virtual void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime) = 0;
+        virtual void Update (float deltaTime) = 0;
+        virtual void Render (float deltaTime) = 0;
 
         MainLoop* GetMainLoop () { return m_MainLoop; }
         std::string GetName () { return m_Name; }

@@ -31,7 +31,7 @@ namespace aga
     bool Script::Initialize ()
     {
         m_FuncContext = m_Manager->GetEngine ()->CreateContext ();
-        m_FuncContext = GetContext ("void Update (double deltaTime)");
+        m_FuncContext = GetContext ("void Update (float deltaTime)");
         m_UpdateFunction = m_FuncContext->GetFunction ();
 
         Run ("void Start ()");
@@ -55,10 +55,10 @@ namespace aga
 
     bool Script::Update (float deltaTime)
     {
-        //      m_FuncContext->Prepare (m_UpdateFunction);
-        //    m_FuncContext->SetArgDouble (0, deltaTime);
+        //    m_FuncContext->Prepare (m_UpdateFunction);
+        //   m_FuncContext->SetArgFloat (0, deltaTime);
 
-        //  return InternalRun ();
+        //    return InternalRun ();
 
         return true;
     }
@@ -73,10 +73,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Script::Run (const std::string& functionName, double arg0)
+    bool Script::Run (const std::string& functionName, float arg0)
     {
         GetContext (functionName);
-        m_FuncContext->SetArgDouble (0, arg0);
+        m_FuncContext->SetArgFloat (0, arg0);
 
         return InternalRun ();
     }

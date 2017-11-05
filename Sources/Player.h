@@ -32,13 +32,13 @@ namespace aga
         void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
         void Render (float deltaTime);
 
-        void Move (double dx, double dy);
+        void Move (float dx, float dy);
         void SetPosition (const Point& pos);
-        void SetPosition (double x, double y);
+        void SetPosition (float x, float y);
         Point GetPosition ();
         Point GetSize ();
 
-        std::function<void(double dx, double dy)> MoveCallback;
+        std::function<void(float dx, float dy)> MoveCallback;
 
     private:
         void InitializeAnimations ();

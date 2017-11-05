@@ -61,7 +61,7 @@ namespace aga
             }
         }
 
-        void UpdateScripts (double deltaTime)
+        void UpdateScripts (float deltaTime)
         {
             for (std::map<ScriptMetaData, Script*>::iterator it = m_Scripts.begin (); it != m_Scripts.end (); ++it)
             {

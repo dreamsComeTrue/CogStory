@@ -20,7 +20,7 @@ namespace aga
         bool Update (float deltaTime);
 
         bool Run (const std::string& functionName);
-        bool Run (const std::string& functionName, double arg0);
+        bool Run (const std::string& functionName, float arg0);
 
         std::string GetName ();
 

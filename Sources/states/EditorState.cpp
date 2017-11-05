@@ -65,18 +65,18 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::ProcessEvent (ALLEGRO_EVENT* event, double deltaTime)
+    void EditorState::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
     {
         m_Editor->ProcessEvent (event, deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::Update (double deltaTime) { m_Editor->Update (deltaTime); }
+    void EditorState::Update (float deltaTime) { m_Editor->Update (deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::Render (double deltaTime) { m_Editor->Render (deltaTime); }
+    void EditorState::Render (float deltaTime) { m_Editor->Render (deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
 }

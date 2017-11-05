@@ -17,15 +17,17 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
-        void AddTween (int id, int from, int to, int during, std::function<bool(int)>);
+        void AddTween (int id, float from, float to, int during, std::function<bool(float)>);
         bool Update (float deltaTime);
         MainLoop* GetMainLoop ();
 
-        void AddTween (int id, int from, int to, int during, asIScriptFunction* func);
+        void AddTween (int id, float from, float to, int during, asIScriptFunction* func);
+        void AddTween (int id, Point from, Point to, int during, asIScriptFunction* func);
 
     private:
         MainLoop* m_MainLoop;
-        std::map<int, tweeny::tween<int>> m_Tweens;
+        std::map<int, tweeny::tween<float>> m_Tweens;
+        std::map<int, tweeny::tween<float, float>> m_Tweens2;
         std::map<int, asIScriptFunction*> m_Callbacks;
     };
 }

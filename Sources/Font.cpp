@@ -25,15 +25,35 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
-        ALLEGRO_FONT* mainFont = al_load_ttf_font (GetResourcePath (FONT_MAIN).c_str (), 60, 0);
+        ALLEGRO_FONT* smallFont = al_load_ttf_font (GetResourcePath (FONT_MAIN_SMALL).c_str (), 20, 0);
 
-        if (!mainFont)
+        if (!smallFont)
         {
-            fprintf (stderr, "Could not load %s.\n", GetResourcePath (FONT_MAIN).c_str ());
+            fprintf (stderr, "Could not load %s.\n", GetResourcePath (FONT_MAIN_SMALL).c_str ());
             return false;
         }
 
-        m_Fonts.insert (std::make_pair (FONT_NAME_MAIN, mainFont));
+        m_Fonts.insert (std::make_pair (FONT_NAME_MAIN_SMALL, smallFont));
+
+        ALLEGRO_FONT* mediumFont = al_load_ttf_font (GetResourcePath (FONT_MAIN_MEDIUM).c_str (), 30, 0);
+
+        if (!mediumFont)
+        {
+            fprintf (stderr, "Could not load %s.\n", GetResourcePath (FONT_MAIN_MEDIUM).c_str ());
+            return false;
+        }
+
+        m_Fonts.insert (std::make_pair (FONT_NAME_MAIN_MEDIUM, mediumFont));
+
+        ALLEGRO_FONT* normalFont = al_load_ttf_font (GetResourcePath (FONT_MAIN_NORMAL).c_str (), 40, 0);
+
+        if (!normalFont)
+        {
+            fprintf (stderr, "Could not load %s.\n", GetResourcePath (FONT_MAIN_NORMAL).c_str ());
+            return false;
+        }
+
+        m_Fonts.insert (std::make_pair (FONT_NAME_MAIN_NORMAL, normalFont));
 
         return true;
     }
@@ -52,7 +72,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Font::DrawText (const std::string& fontName, ALLEGRO_COLOR color, float x, float y, const std::string& text, int flags)
+    void Font::DrawText (
+        const std::string& fontName, ALLEGRO_COLOR color, float x, float y, const std::string& text, int flags)
     {
         ALLEGRO_FONT* font = m_Fonts[fontName];
 

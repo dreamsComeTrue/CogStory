@@ -35,7 +35,7 @@ namespace aga
         MainLoop* GetMainLoop ();
         AtlasManager* GetAtlasManager ();
 
-        Point GetSpawnPoint (const std::string& name);
+        Point GetFlagPoint (const std::string& name);
 
     private:
         Player m_Player;

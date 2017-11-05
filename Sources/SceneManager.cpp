@@ -40,7 +40,7 @@ namespace aga
         m_AtlasManager->Initialize ();
 
         m_Player.Initialize ();
-        m_Player.MoveCallback = [&](double dx, double dy) {
+        m_Player.MoveCallback = [&](float dx, float dy) {
             Point scale = m_Camera.GetScale ();
             m_Camera.Move (-dx * scale.X, -dy * scale.Y);
         };
@@ -149,11 +149,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Point SceneManager::GetSpawnPoint (const std::string& name)
+    Point SceneManager::GetFlagPoint (const std::string& name)
     {
         if (m_ActiveScene)
         {
-            return m_ActiveScene->GetSpawnPoint (name);
+            return m_ActiveScene->GetFlagPoint (name);
         }
 
         return { 0, 0 };

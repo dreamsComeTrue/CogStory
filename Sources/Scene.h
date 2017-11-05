@@ -62,8 +62,9 @@ namespace aga
         void RemoveTile (Tile* tile);
         std::vector<Tile*>& GetTiles ();
 
-        void AddSpawnPoint (const std::string& name, Point point);
-        Point GetSpawnPoint (const std::string& name);
+        void AddFlagPoint (const std::string& name, Point point);
+        Point GetFlagPoint (const std::string& name);
+        std::map<std::string, Point>& GetFlagPoints ();
 
         void SortTiles ();
 
@@ -81,7 +82,7 @@ namespace aga
     private:
         std::string m_Name;
         Point m_Size;
-        std::map<std::string, Point> m_SpawnPoints;
+        std::map<std::string, Point> m_FlagPoints;
         std::vector<Tile*> m_Tiles;
         SceneManager* m_SceneManager;
 

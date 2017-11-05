@@ -10,7 +10,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     //  Pixels Per Second
-    const double MOVE_SPEED = 110.0;
+    const float MOVE_SPEED = 110.0;
     const std::string ANIM_IDLE = "ANIM_IDLE";
     const std::string ANIM_MOVE_UP = "ANIM_MOVE_UP";
     const std::string ANIM_MOVE_LEFT = "ANIM_MOVE_LEFT";
@@ -141,7 +141,7 @@ namespace aga
     {
         ALLEGRO_KEYBOARD_STATE state;
         al_get_keyboard_state (&state);
-        double dx = 0, dy = 0;
+        float dx = 0, dy = 0;
 
         if (al_key_down (&state, ALLEGRO_KEY_DOWN) || al_key_down (&state, ALLEGRO_KEY_S))
         {
@@ -201,7 +201,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Player::Move (double dx, double dy)
+    void Player::Move (float dx, float dy)
     {
         m_OldPosition = Bounds.Transform.Pos;
         Bounds.Transform.Pos.X += dx;
@@ -221,7 +221,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Player::SetPosition (double x, double y)
+    void Player::SetPosition (float x, float y)
     {
         m_OldPosition = Bounds.Transform.Pos;
         Bounds.Transform.Pos.X = x;

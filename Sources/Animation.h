@@ -34,14 +34,14 @@ namespace aga
         AnimationFrames& GetCurrentAnimation ();
         void SetCurrentAnimation (const std::string& name);
 
-        void Update (double deltaTime);
+        void Update (float deltaTime);
         unsigned GetCurrentFrame () const;
 
     private:
         std::map<std::string, AnimationFrames> m_Animations;
         std::string m_CurrentAnimation;
         unsigned m_CurrentFrame;
-        double m_TimeTaken;
+        float m_TimeTaken;
     };
 }
 

@@ -19,7 +19,7 @@ namespace aga
      *
      *  {
      *      "name": "Home",
-     *      "spawn_points" :
+     *      "flag_points" :
      *      [
      *          "SPAWN_1" : "0 0"
      *      ]
@@ -187,14 +187,14 @@ namespace aga
                 scene->AddTile (tile);
             }
 
-            auto& spawn_points = j["spawn_points"];
+            auto& flag_points = j["flag_points"];
 
-            for (auto& spawn_point : spawn_points)
+            for (auto& flag_point : flag_points)
             {
-                std::string name = spawn_point["name"];
-                Point pos = StringToPoint (spawn_point["pos"]);
+                std::string name = flag_point["name"];
+                Point pos = StringToPoint (flag_point["pos"]);
 
-                scene->AddSpawnPoint (name, pos);
+                scene->AddFlagPoint (name, pos);
             }
 
             return scene;
@@ -256,17 +256,17 @@ namespace aga
                 j["tiles"].push_back (tileObj);
             }
 
-            j["spawn_points"] = json::array ({});
+            j["flag_points"] = json::array ({});
 
-            for (std::map<std::string, Point>::iterator it = scene->m_SpawnPoints.begin ();
-                 it != scene->m_SpawnPoints.end (); ++it)
+            for (std::map<std::string, Point>::iterator it = scene->m_FlagPoints.begin ();
+                 it != scene->m_FlagPoints.end (); ++it)
             {
-                json spawnObj = json::object ({});
+                json flagObj = json::object ({});
 
-                spawnObj["name"] = it->first;
-                spawnObj["pos"] = PointToString (it->second);
+                flagObj["name"] = it->first;
+                flagObj["pos"] = PointToString (it->second);
 
-                j["spawn_points"].push_back (spawnObj);
+                j["flag_points"].push_back (flagObj);
             }
 
             // write prettified JSON to another file
@@ -338,7 +338,7 @@ namespace aga
         }
 
         m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
-            FONT_NAME_MAIN, al_map_rgb (0, 255, 0), -100, -50, m_Name, ALLEGRO_ALIGN_LEFT);
+            FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), -100, -50, m_Name, ALLEGRO_ALIGN_LEFT);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -367,17 +367,17 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::AddSpawnPoint (const std::string& name, Point point) { m_SpawnPoints.insert (make_pair (name, point)); }
+    void Scene::AddFlagPoint (const std::string& name, Point point) { m_FlagPoints.insert (make_pair (name, point)); }
 
     //--------------------------------------------------------------------------------------------------
 
-    Point Scene::GetSpawnPoint (const std::string& name)
+    Point Scene::GetFlagPoint (const std::string& name)
     {
-        if (!m_SpawnPoints.empty ())
+        if (!m_FlagPoints.empty ())
         {
-            std::map<std::string, Point>::iterator it = m_SpawnPoints.find (name);
+            std::map<std::string, Point>::iterator it = m_FlagPoints.find (name);
 
-            if (it != m_SpawnPoints.end ())
+            if (it != m_FlagPoints.end ())
             {
                 return (*it).second;
             }
@@ -388,7 +388,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::Reset () { m_Tiles.clear (); }
+    std::map<std::string, Point>& Scene::GetFlagPoints () { return m_FlagPoints; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::Reset ()
+    {
+        m_Tiles.clear ();
+        m_FlagPoints.clear ();
+    }
 
     //--------------------------------------------------------------------------------------------------
 

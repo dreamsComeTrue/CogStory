@@ -14,17 +14,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void AnimationFrames::SetPlaySpeed (unsigned milliseconds)
-    {
-      m_SpeedMS = milliseconds;
-    }
+    void AnimationFrames::SetPlaySpeed (unsigned milliseconds) { m_SpeedMS = milliseconds; }
 
     //--------------------------------------------------------------------------------------------------
 
-    unsigned AnimationFrames::GetPlaySpeed () const
-    {
-        return m_SpeedMS;
-    }
+    unsigned AnimationFrames::GetPlaySpeed () const { return m_SpeedMS; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -36,17 +30,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Rect& AnimationFrames::GetFrame (unsigned index)
-    {
-        return m_Frames[index];
-    }
+    Rect& AnimationFrames::GetFrame (unsigned index) { return m_Frames[index]; }
 
     //--------------------------------------------------------------------------------------------------
 
-    unsigned AnimationFrames::GetFramesCount () const
-    {
-        return m_Frames.size ();
-    }
+    unsigned AnimationFrames::GetFramesCount () const { return m_Frames.size (); }
 
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
@@ -66,17 +54,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    AnimationFrames& Animation::GetAnimation (const std::string& name)
-    {
-        return m_Animations[name];
-    }
+    AnimationFrames& Animation::GetAnimation (const std::string& name) { return m_Animations[name]; }
 
     //--------------------------------------------------------------------------------------------------
 
-    AnimationFrames& Animation::GetCurrentAnimation ()
-    {
-        return m_Animations[m_CurrentAnimation];
-    }
+    AnimationFrames& Animation::GetCurrentAnimation () { return m_Animations[m_CurrentAnimation]; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -88,7 +70,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Animation::Update (double deltaTime)
+    void Animation::Update (float deltaTime)
     {
         std::map<std::string, AnimationFrames>::iterator it = m_Animations.find (m_CurrentAnimation);
 
@@ -113,10 +95,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    unsigned Animation::GetCurrentFrame () const
-    {
-        return m_CurrentFrame;
-    }
+    unsigned Animation::GetCurrentFrame () const { return m_CurrentFrame; }
 
     //--------------------------------------------------------------------------------------------------
 }

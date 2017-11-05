@@ -10,7 +10,7 @@ namespace aga
     ALLEGRO_TRANSFORM IdentityTransform;
 
     Camera::Camera (Screen* screen)
-      : m_Screen (screen)
+        : m_Screen (screen)
     {
         const Point& size = screen->GetWindowSize ();
         SetTranslate (size.Width * 0.5, size.Height * 0.5);
@@ -24,7 +24,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::Update (double deltaTime) { al_use_transform (&m_Transform); }
+    void Camera::Update (float deltaTime) { al_use_transform (&m_Transform); }
 
     //--------------------------------------------------------------------------------------------------
 

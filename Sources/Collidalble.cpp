@@ -32,9 +32,9 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    double GetClockwiseAngle (const Point& p)
+    float GetClockwiseAngle (const Point& p)
     {
-        double angle = 0.0;
+        float angle = 0.0;
         int quadrant = GetQuadrant (p);
 
         /*add the appropriate pi/2 value based on the quadrant. (one of 0, pi/2, pi, 3pi/2)*/

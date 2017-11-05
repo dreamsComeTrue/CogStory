@@ -15,7 +15,7 @@ namespace aga
         Camera (Screen* screen);
         virtual ~Camera ();
 
-        void Update (double deltaTime);
+        void Update (float deltaTime);
         void SetTranslate (float dx, float dy);
         Point GetTranslate ();
         void Move (float dx, float dy);

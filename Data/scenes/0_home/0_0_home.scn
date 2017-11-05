@@ -1,4 +1,18 @@
 {
+    "flag_points": [
+        {
+            "name": "A",
+            "pos": "352 112"
+        },
+        {
+            "name": "B",
+            "pos": "437 358"
+        },
+        {
+            "name": "CC",
+            "pos": "-834.94 -331.159"
+        }
+    ],
     "name": "Home",
     "scripts": [
         {
@@ -7,16 +21,6 @@
         }
     ],
     "size": "1000 1000",
-    "spawn_points": [
-        {
-            "name": "DEFAULT",
-            "pos": "0 0"
-        },
-        {
-            "name": "SPAWN_1",
-            "pos": "-150 -150"
-        }
-    ],
     "tiles": [
         {
             "id": "0",

@@ -19,16 +19,14 @@ namespace aga
 
     Resource g_Resources[] = {
         //  Graphics
-        { GFX_DEFAULT_SKIN, GFX, "DefaultSkin.png" },
-        { GFX_MENU_COG, GFX_UI, "cog.png" },
-        { GFX_TEXT_FRAME, GFX_UI, "text_frame.9.png" },
-        { GFX_PLAYER, GFX_CHARACTERS, "player.png" },
+        { GFX_DEFAULT_SKIN, GFX, "DefaultSkin.png" }, { GFX_MENU_COG, GFX_UI, "cog.png" },
+        { GFX_TEXT_FRAME, GFX_UI, "text_frame.9.png" }, { GFX_PLAYER, GFX_CHARACTERS, "player.png" },
 
         { PACK_0_0_HOME, GFX_0_HOME, "0_0_home.pack" },
 
         //  Fonts
-        { FONT_MAIN, FONTS, "coders_crux.ttf" },
-        { FONT_EDITOR, FONTS, "OpenSans.ttf" },
+        { FONT_MAIN_SMALL, FONTS, "coders_crux.ttf" }, { FONT_MAIN_MEDIUM, FONTS, "coders_crux.ttf" },
+        { FONT_MAIN_NORMAL, FONTS, "coders_crux.ttf" }, { FONT_EDITOR, FONTS, "OpenSans.ttf" },
 
         //  Scenes
         { SCENE_0_0, SCENES_HOME, "0_0_home.scn" },
@@ -39,10 +37,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    const std::string GetDataPath ()
-    {
-        return boost::filesystem::current_path ().string () + "/../Data/";
-    }
+    const std::string GetDataPath () { return boost::filesystem::current_path ().string () + "/../Data/"; }
 
     //--------------------------------------------------------------------------------------------------
 

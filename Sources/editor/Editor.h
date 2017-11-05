@@ -17,7 +17,8 @@ namespace aga
     {
         TileSelectMode,
         TileEditMode,
-        EditPhysBodyMode
+        EditPhysBodyMode,
+        EditFlagPointsMode
     };
 
     class Editor : public Lifecycle
@@ -28,9 +29,9 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
-        bool Update (double deltaTime);
-        void ProcessEvent (ALLEGRO_EVENT* event, double deltaTime);
-        void Render (double deltaTime);
+        bool Update (float deltaTime);
+        void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
+        void Render (float deltaTime);
 
         void SetDrawUITiles (bool draw);
         void OnResetTranslate ();
@@ -41,6 +42,7 @@ namespace aga
         void DrawTiles ();
         void DrawGrid ();
         void DrawPhysBody (float mouseX, float mouseY);
+        void DrawFlagPoints ();
 
         bool ChooseTile (int mouseX, int mouseY);
         Tile* AddTile (int mouseX, int mouseY);
@@ -75,14 +77,22 @@ namespace aga
         void OnGridIncrease ();
         void OnGridDecrease ();
 
+        void InsertFlagPointAtCursor (int mouseX, int mouseY);
+
         void InsertPhysPointAtCursor (int mouseX, int mouseY);
         Point* GetPhysPointUnderCursor (int mouseX, int mouseY);
         void RemovePhysPointUnderCursor (int mouseX, int mouseY);
 
+        bool RemoveFlagPointUnderCursor (int mouseX, int mouseY);
+
         Point CalculateCursorPoint (int mouseX, int mouseY);
+
+        bool IsMouseWithinPointRect (int mouseX, int mouseY, Point point, int outsets);
+
         void RenderUI ();
 
         void Resize ();
+        void ResetSettings ();
 
     private:
         MainLoop* m_MainLoop;

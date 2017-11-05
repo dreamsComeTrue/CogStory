@@ -19,7 +19,9 @@ namespace aga
         PACK_0_0_HOME,
 
         //  Fonts
-        FONT_MAIN,
+        FONT_MAIN_SMALL,
+        FONT_MAIN_MEDIUM,
+        FONT_MAIN_NORMAL,
         FONT_EDITOR,
 
         //  Scenes

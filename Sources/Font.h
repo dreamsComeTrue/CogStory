@@ -7,7 +7,9 @@
 
 namespace aga
 {
-    const std::string FONT_NAME_MAIN = "FONT_MAIN";
+    const std::string FONT_NAME_MAIN_SMALL = "FONT_MAIN_SMALL";
+    const std::string FONT_NAME_MAIN_MEDIUM = "FONT_MAIN_MEDIUM";
+    const std::string FONT_NAME_MAIN_NORMAL = "FONT_MAIN_NORMAL";
 
     class Font : public Lifecycle
     {
@@ -17,12 +19,8 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
-        void DrawText (const std::string& fontName,
-                       ALLEGRO_COLOR color,
-                       float x,
-                       float y,
-                       const std::string& text,
-                       int flags = ALLEGRO_ALIGN_CENTRE);
+        void DrawText (const std::string& fontName, ALLEGRO_COLOR color, float x, float y, const std::string& text,
+            int flags = ALLEGRO_ALIGN_CENTRE);
         Point GetTextDimensions (const std::string& fontName, const std::string& text);
         unsigned GetFontAscent (const std::string& fontName);
 

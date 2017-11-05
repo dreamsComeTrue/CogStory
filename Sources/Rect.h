@@ -30,21 +30,16 @@ namespace aga
             } Transform;
         };
 
-        //        Rect () {}
-
-        //        Rect (double x, double y, double width, double height)
-        //        {
-        //            TopLeft.X = x;
-        //            TopLeft.Y = y;
-        //            BottomRight.Width = width;
-        //            BottomRight.Height = height;
-        //        }
-        bool operator== (const Rect& rhs) const { return Dim.TopLeft == rhs.Dim.TopLeft && Dim.BottomRight == rhs.Dim.BottomRight; }
+        bool operator== (const Rect& rhs) const
+        {
+            return Dim.TopLeft == rhs.Dim.TopLeft && Dim.BottomRight == rhs.Dim.BottomRight;
+        }
     };
 
-    static bool InsideRect (double x, double y, const Rect& rect)
+    static bool InsideRect (float x, float y, const Rect& rect)
     {
-        return (x >= rect.Dim.TopLeft.X && y >= rect.Dim.TopLeft.Y && x <= rect.Dim.BottomRight.X && y <= rect.Dim.BottomRight.Y);
+        return (x >= rect.Dim.TopLeft.X && y >= rect.Dim.TopLeft.Y && x <= rect.Dim.BottomRight.X
+            && y <= rect.Dim.BottomRight.Y);
     }
 
     static bool InsideRect (const Point& point, const Rect& rect) { return InsideRect (point.X, point.Y, rect); }
