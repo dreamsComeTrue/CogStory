@@ -30,6 +30,8 @@ namespace aga
 
     bool Script::Initialize ()
     {
+        m_FuncContext = m_Module->GetEngine ()->RequestContext ();
+
         Run ("void Start ()");
 
         return Lifecycle::Initialize ();
@@ -41,6 +43,7 @@ namespace aga
     {
         if (m_FuncContext != nullptr)
         {
+            m_FuncContext->GetEngine ()->ReturnContext (m_FuncContext);
             m_FuncContext = nullptr;
         }
 
@@ -51,7 +54,7 @@ namespace aga
 
     bool Script::Update (float deltaTime)
     {
-        m_FuncContext = GetContext ("void Update (float deltaTime)");
+        GetContext ("void Update (float deltaTime)");
         m_FuncContext->SetArgFloat (0, deltaTime);
 
         return InternalRun ();
@@ -81,6 +84,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    asIScriptContext* Script::GetContext () { return m_FuncContext; }
+
+    //--------------------------------------------------------------------------------------------------
+
     asIScriptContext* Script::GetContext (const std::string& functionName)
     {
         asIScriptFunction* func = m_Module->GetFunctionByDecl (functionName.c_str ());
@@ -91,7 +98,6 @@ namespace aga
         }
 
         // Create our context, prepare it, and then execute
-        m_FuncContext = m_Module->GetEngine ()->RequestContext ();
         m_FuncContext->Prepare (func);
 
         return m_FuncContext;
@@ -115,8 +121,6 @@ namespace aga
 
             return false;
         }
-
-        m_FuncContext->GetEngine ()->ReturnContext (m_FuncContext);
 
         return true;
     }

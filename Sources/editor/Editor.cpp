@@ -1566,7 +1566,9 @@ namespace aga
 
             if (metaScript.is_initialized ())
             {
+                metaScript.get ().ScriptObj->Run ("void AfterLeaveScene ()");
                 metaScript.get ().ScriptObj->Run ("void Start ()");
+                metaScript.get ().ScriptObj->Run ("void BeforeEnterScene ()");
             }
         }
 

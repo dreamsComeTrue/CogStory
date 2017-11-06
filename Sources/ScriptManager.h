@@ -22,6 +22,8 @@ namespace aga
         Script* LoadScriptFromText (const std::string& text, const std::string& moduleName);
         asIScriptEngine* GetEngine ();
 
+        Script* GetScriptByModuleName (const std::string& moduleName);
+
     private:
         void RegisterAPI ();
 

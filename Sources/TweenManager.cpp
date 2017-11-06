@@ -56,12 +56,17 @@ namespace aga
             {
                 if (tween.FinishFunc)
                 {
-                    asIScriptContext* ctx = tween.FinishFunc->GetModule ()->GetEngine ()->RequestContext ();
-                    ctx->Prepare (tween.FinishFunc);
-                    ctx->SetArgDWord (0, (int)tween.ID);
+                    const char* moduleName = tween.FinishFunc->GetModuleName ();
+                    Script* script = m_MainLoop->GetScriptManager ().GetScriptByModuleName (moduleName);
 
-                    ctx->Execute ();
-                    ctx->GetEngine ()->ReturnContext (ctx);
+                    if (script)
+                    {
+                        asIScriptContext* ctx = script->GetContext ();
+                        ctx->Prepare (tween.FinishFunc);
+                        ctx->SetArgDWord (0, (int)tween.ID);
+                        ctx->Execute ();
+                    }
+
                     m_Tweens.erase (m_Tweens.begin () + i);
                 }
             }
@@ -164,22 +169,28 @@ namespace aga
 
                       Point p = { x, y };
 
-                      asIScriptContext* ctx = callback->GetModule ()->GetEngine ()->RequestContext ();
-                      ctx->Prepare (callback);
-                      ctx->SetArgFloat (0, t.progress ());
-                      ctx->SetArgObject (1, &p);
+                      const char* moduleName = callback->GetModuleName ();
+                      Script* script = m_MainLoop->GetScriptManager ().GetScriptByModuleName (moduleName);
 
-                      int r = ctx->Execute ();
-
-                      asDWORD ret = 0;
-                      if (r == asEXECUTION_FINISHED)
+                      if (script)
                       {
-                          ret = ctx->GetReturnDWord ();
+                          asIScriptContext* ctx = script->GetContext ();
+                          ctx->Prepare (callback);
+                          ctx->SetArgFloat (0, t.progress ());
+                          ctx->SetArgObject (1, &p);
+
+                          int r = ctx->Execute ();
+
+                          asDWORD ret = 0;
+                          if (r == asEXECUTION_FINISHED)
+                          {
+                              ret = ctx->GetReturnDWord ();
+                          }
+
+                          return (bool)ret;
                       }
 
-                      ctx->GetEngine ()->ReturnContext (ctx);
-
-                      return (bool)ret;
+                      return false;
                   };
 
             tweeny::tween<float, float> tween
@@ -210,6 +221,10 @@ namespace aga
 
         return nullptr;
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void TweenManager::Clear () { m_Tweens.clear (); }
 
     //--------------------------------------------------------------------------------------------------
 }

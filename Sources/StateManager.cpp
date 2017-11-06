@@ -5,6 +5,7 @@
 #include "MainLoop.h"
 #include "Screen.h"
 #include "State.h"
+#include "TweenManager.h"
 
 #include <algorithm>
 
@@ -44,6 +45,9 @@ namespace aga
         {
             m_ActiveState->AfterLeave ();
         }
+
+        m_MainLoop->GetTweenManager ().Clear ();
+        m_MainLoop->GetSceneManager ().GetCamera ().ClearTransformations ();
 
         m_ActiveState = state;
         m_ActiveState->BeforeEnter ();

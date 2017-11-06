@@ -38,6 +38,8 @@ namespace aga
         Point GetPosition ();
         Point GetSize ();
 
+        void SetFollowCamera (bool follow);
+
         std::function<void(float dx, float dy)> MoveCallback;
 
     private:
@@ -48,6 +50,7 @@ namespace aga
         Point m_OldPosition;
         SceneManager* m_SceneManager;
         Animation m_Animation;
+        bool m_FollowCamera;
     };
 }
 

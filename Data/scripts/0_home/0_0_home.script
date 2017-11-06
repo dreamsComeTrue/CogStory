@@ -3,26 +3,13 @@ const int TWEEN_1 = 1;
 const int TWEEN_2 = 2;
 const int TWEEN_3 = 3;
 
-Point screenSize;
-Point playerSize;
-
 void Start ()
 {
-	screenSize = GetWindowSize ();
-	playerSize = player.GetSize ();
+	Point screenSize = GetWindowSize ();
+	Point playerSize = player.GetSize ();
 
 	Point spawn = GetFlagPoint ("XX");
 	player.SetPosition (spawn.X - playerSize.Width * 0.5, spawn.Y - playerSize.Height * 0.5);
-
-	FollowCamera ();
-}
-
-void FollowCamera ()
-{
-	Point playerPosition = player.GetPosition ();
-    
-    camera.SetTranslate (screenSize.Width * 0.5 - playerSize.Width * 0.5 - playerPosition.X,
-            screenSize.Height * 0.5 - playerSize.Height * 0.5 - playerPosition.Y);
 }
 
 void BeforeEnterScene ()
@@ -31,6 +18,11 @@ void BeforeEnterScene ()
 	Point flag2 = GetFlagPoint ("B");
 
     AddTween (TWEEN_1, flag1, flag2, 2000, PlayerTween, NextTween1);
+}
+
+void AfterLeaveScene ()
+{
+
 }
 
 bool PlayerTween (float progress, Point value)
@@ -63,5 +55,4 @@ void FinishFunc (int id)
 
 void Update (float deltaTime)
 {
-    //    player.Move (0.0, SPEED * deltaTime);
 }

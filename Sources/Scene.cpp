@@ -289,7 +289,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::AfterLeave () { m_SceneManager->GetPlayer ().AfterLeave (); }
+    void Scene::AfterLeave ()
+    {
+        m_SceneManager->GetPlayer ().AfterLeave ();
+        RunAllScripts ("void AfterLeaveScene ()");
+    }
 
     //--------------------------------------------------------------------------------------------------
 

@@ -42,7 +42,12 @@ namespace aga
         m_Player.Initialize ();
         m_Player.MoveCallback = [&](float dx, float dy) {
             Point scale = m_Camera.GetScale ();
-            m_Camera.Move (-dx * scale.X, -dy * scale.Y);
+            Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+            Point playerSize = m_Player.GetSize ();
+            Point playerPosition = m_Player.GetPosition ();
+
+            m_Camera.SetTranslate (screenSize.Width * 0.5 - playerSize.Width * 0.5 - playerPosition.X * scale.X,
+                screenSize.Height * 0.5 - playerSize.Height * 0.5 - playerPosition.Y * scale.Y);
         };
 
         Lifecycle::Initialize ();

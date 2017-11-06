@@ -33,6 +33,8 @@ namespace aga
         void AddTween (
             int id, Point from, Point to, int during, asIScriptFunction* func, asIScriptFunction* finishFunc);
 
+        void Clear ();
+
     private:
         asIScriptFunction* FindCallback (tweeny::tween<float, float>& t);
 

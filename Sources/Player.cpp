@@ -23,6 +23,7 @@ namespace aga
         , Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
         , m_SceneManager (sceneManager)
         , m_Image (nullptr)
+        , m_FollowCamera (true)
     {
     }
 
@@ -208,7 +209,7 @@ namespace aga
         Bounds.Transform.Pos.X += dx;
         Bounds.Transform.Pos.Y += dy;
 
-        if (MoveCallback != nullptr)
+        if (MoveCallback != nullptr && m_FollowCamera)
         {
             MoveCallback (dx, dy);
         }
@@ -228,7 +229,7 @@ namespace aga
         Bounds.Transform.Pos.X = x;
         Bounds.Transform.Pos.Y = y;
 
-        if (MoveCallback != nullptr)
+        if (MoveCallback != nullptr && m_FollowCamera)
         {
             MoveCallback (Bounds.Transform.Pos.X - m_OldPosition.X, Bounds.Transform.Pos.Y - m_OldPosition.Y);
         }
@@ -243,6 +244,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Point Player::GetSize () { return Bounds.Transform.Size; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::SetFollowCamera (bool follow) { m_FollowCamera = follow; }
 
     //--------------------------------------------------------------------------------------------------
 }

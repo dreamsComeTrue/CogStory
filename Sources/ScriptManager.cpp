@@ -224,6 +224,9 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod (
             "Player", "void Move (float, float)", asMETHOD (Player, Move), asCALL_THISCALL);
         assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "Player", "void SetFollowCamera (bool)", asMETHOD (Player, SetFollowCamera), asCALL_THISCALL);
+        assert (r >= 0);
 
         //  Camera
         r = m_ScriptEngine->RegisterObjectType ("Camera", sizeof (Camera), asOBJ_VALUE | asOBJ_POD);
@@ -232,6 +235,9 @@ namespace aga
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
             "Camera", "void SetTranslate (float dx, float dy)", asMETHOD (Camera, SetTranslate), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "Camera", "Point GetScale ()", asMETHOD (Camera, GetScale), asCALL_THISCALL);
         assert (r >= 0);
 
         //  Screen
@@ -281,6 +287,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     asIScriptEngine* ScriptManager::GetEngine () { return m_ScriptEngine; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Script* ScriptManager::GetScriptByModuleName (const std::string& moduleName) { return m_Scripts[moduleName]; }
 
     //--------------------------------------------------------------------------------------------------
 }

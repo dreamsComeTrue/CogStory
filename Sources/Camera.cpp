@@ -30,8 +30,8 @@ namespace aga
 
     void Camera::SetTranslate (float dx, float dy)
     {
-        al_identity_transform (&m_Transform);
-        al_translate_transform (&m_Transform, dx, dy);
+        m_Transform.m[3][0] = dx;
+        m_Transform.m[3][1] = dy;
     }
 
     //--------------------------------------------------------------------------------------------------
