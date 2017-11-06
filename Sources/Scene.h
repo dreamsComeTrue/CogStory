@@ -16,6 +16,12 @@ namespace aga
     class SceneManager;
     class AtlasManager;
 
+    struct TriggerArea
+    {
+        std::string Name;
+        std::vector<Point> Points;
+    };
+
     struct Tile : public Entity, public Collidable
     {
         Tile (PhysicsManager* physicsManager)
@@ -66,6 +72,8 @@ namespace aga
         Point GetFlagPoint (const std::string& name);
         std::map<std::string, Point>& GetFlagPoints ();
 
+        void AddTriggerArea (const std::string& name, std::vector<Point>& poly);
+
         void SortTiles ();
 
         void Reset ();
@@ -84,6 +92,7 @@ namespace aga
         Point m_Size;
         std::map<std::string, Point> m_FlagPoints;
         std::vector<Tile*> m_Tiles;
+        std::vector<TriggerArea> m_TriggerAreas;
         SceneManager* m_SceneManager;
 
         bool m_DrawPhysData;

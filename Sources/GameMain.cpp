@@ -4,7 +4,6 @@
 #include "MainLoop.h"
 #include "Resources.h"
 #include "Screen.h"
-#include "editor/EditorFrame.h"
 
 using namespace aga;
 

@@ -3,8 +3,11 @@
 #ifndef __EDITOR_H__
 #define __EDITOR_H__
 
-#include "Atlas.h"
 #include "Common.h"
+#include "EditorFlagPointMode.h"
+#include "EditorPhysMode.h"
+#include "EditorTileMode.h"
+#include "Scene.h"
 
 namespace aga
 {
@@ -18,11 +21,16 @@ namespace aga
         TileSelectMode,
         TileEditMode,
         EditPhysBodyMode,
-        EditFlagPointsMode
+        EditFlagPointsMode,
+        EditTriggerAreaMode
     };
 
     class Editor : public Lifecycle
     {
+        friend class EditorTileMode;
+        friend class EditorPhysMode;
+        friend class EditorFlagPointMode;
+
     public:
         Editor (MainLoop* mainLoop);
         virtual ~Editor ();
@@ -33,32 +41,15 @@ namespace aga
         void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
         void Render (float deltaTime);
 
-        void SetDrawUITiles (bool draw);
         void OnResetTranslate ();
         void OnResetScale ();
 
+        void SetDrawUITiles (bool draw);
+
     private:
-        void InitializeUI ();
-        void DrawTiles ();
         void DrawGrid ();
-        void DrawPhysBody (float mouseX, float mouseY);
-        void DrawFlagPoints (float mouseX, float mouseY);
 
-        bool ChooseTile (int mouseX, int mouseY);
-        Tile* AddTile (int mouseX, int mouseY);
-
-        void ChangeRotation (bool clockwise);
-        void ChangeZOrder (bool clockwise);
         void ChangeGridSize (bool clockwise);
-        bool MoveSelectedTile ();
-        bool MoveSelectedPhysPoint ();
-        bool MoveSelectedFlagPoint ();
-        void RemoveSelectedTile ();
-        void CopySelectedTile ();
-
-        Tile* GetTileUnderCursor (int mouseX, int mouseY, Rect&& outRect);
-        std::string GetFlagPointUnderCursor (int mouseX, int mouseY);
-        Rect GetRenderBounds (Tile* tile);
 
         void HandleCameraMovement (const ALLEGRO_MOUSE_EVENT& event);
 
@@ -70,22 +61,10 @@ namespace aga
         void MenuItemPlay ();
 
         void OnExit ();
-        void OnExitYesButton ();
-        void OnExitNoButton ();
-
-        void OnTileSelected ();
 
         void OnShowGrid ();
         void OnGridIncrease ();
         void OnGridDecrease ();
-
-        void InsertFlagPointAtCursor (int mouseX, int mouseY);
-
-        void InsertPhysPointAtCursor (int mouseX, int mouseY);
-        Point* GetPhysPointUnderCursor (int mouseX, int mouseY);
-        void RemovePhysPointUnderCursor (int mouseX, int mouseY);
-
-        bool RemoveFlagPointUnderCursor (int mouseX, int mouseY);
 
         Point CalculateCursorPoint (int mouseX, int mouseY);
 
@@ -93,23 +72,15 @@ namespace aga
 
         void RenderUI ();
 
-        void Resize ();
         void ResetSettings ();
 
     private:
         MainLoop* m_MainLoop;
-
-        Atlas* m_Atlas;
-        AtlasRegion m_SelectedAtlasRegion;
-
-        float m_Rotation;
+        EditorTileMode m_EditorTileMode;
+        EditorPhysMode m_EditorPhysMode;
+        EditorFlagPointMode m_EditorFlagPointMode;
 
         CursorMode m_CursorMode;
-
-        Tile* m_TileUnderCursor;
-        Tile* m_SelectedTile;
-
-        bool m_IsDrawTiles;
 
         bool m_IsSnapToGrid;
         int m_BaseGridSize;
@@ -118,11 +89,7 @@ namespace aga
         bool m_IsMousePan;
         bool m_IsMouseWheel;
 
-        Point* m_PhysPoint;
-        int m_PhysPointIndex;
-        std::vector<Point>* m_PhysPoly;
-
-        std::string m_FlagPoint;
+        TriggerArea* m_TriggerArea;
     };
 }
 

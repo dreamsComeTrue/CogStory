@@ -3,7 +3,6 @@
 #include "Editor.h"
 #include "AtlasManager.h"
 #include "MainLoop.h"
-#include "Scene.h"
 #include "Screen.h"
 
 #include "imgui/imgui.h"
@@ -13,36 +12,26 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    const int TILES_COUNT = 14;
-    const int TILE_SIZE = 50;
-
-    static int CURRENT_ID = 0;
-
     bool askNewScene = false;
     char menuFileName[512] = "0_home/0_0_home.scn";
 
-    bool askFlagPoint = false;
-    char flagPointName[64] = {};
+    char triggerAreaName[64] = {};
 
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
     Editor::Editor (MainLoop* mainLoop)
-        : m_MainLoop (mainLoop)
-        , m_IsDrawTiles (true)
+        : m_EditorTileMode (this)
+        , m_EditorPhysMode (this)
+        , m_EditorFlagPointMode (this)
+        , m_MainLoop (mainLoop)
         , m_IsSnapToGrid (true)
         , m_IsMousePan (false)
         , m_IsMouseWheel (false)
-        , m_Rotation (0)
         , m_BaseGridSize (16)
         , m_GridSize (16)
         , m_CursorMode (CursorMode::TileSelectMode)
-        , m_SelectedTile (nullptr)
-        , m_TileUnderCursor (nullptr)
-        , m_PhysPoint (nullptr)
-        , m_PhysPointIndex (-1)
-        , m_PhysPoly (nullptr)
-        , m_FlagPoint ("")
+        , m_TriggerArea (nullptr)
     {
     }
 
@@ -62,7 +51,7 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
-        InitializeUI ();
+        m_EditorTileMode.InitializeUI ();
 
         ImGui_ImplA5_Init (m_MainLoop->GetScreen ()->GetDisplay ());
         ImGui::GetIO ().IniFilename = nullptr;
@@ -100,9 +89,9 @@ namespace aga
         bool tileSelected = false;
         if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
         {
-            if (event->mouse.button == 1 && m_IsDrawTiles)
+            if (event->mouse.button == 1 && m_EditorTileMode.m_IsDrawTiles)
             {
-                tileSelected = ChooseTile (event->mouse.x, event->mouse.y);
+                tileSelected = m_EditorTileMode.ChooseTile (event->mouse.x, event->mouse.y);
             }
         }
 
@@ -112,7 +101,7 @@ namespace aga
             {
             case ALLEGRO_KEY_R:
             {
-                ChangeRotation (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
+                m_EditorTileMode.ChangeRotation (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
                 break;
             }
 
@@ -124,19 +113,19 @@ namespace aga
 
             case ALLEGRO_KEY_Z:
             {
-                ChangeZOrder (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
+                m_EditorTileMode.ChangeZOrder (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
                 break;
             }
 
             case ALLEGRO_KEY_X:
             {
-                RemoveSelectedTile ();
+                m_EditorTileMode.RemoveSelectedTile ();
                 break;
             }
 
             case ALLEGRO_KEY_C:
             {
-                CopySelectedTile ();
+                m_EditorTileMode.CopySelectedTile ();
                 break;
             }
 
@@ -174,7 +163,7 @@ namespace aga
 
             case ALLEGRO_KEY_F5:
             {
-                m_IsDrawTiles = !m_IsDrawTiles;
+                m_EditorTileMode.m_IsDrawTiles = !m_EditorTileMode.m_IsDrawTiles;
                 break;
             }
 
@@ -185,7 +174,7 @@ namespace aga
 
             case ALLEGRO_KEY_TAB:
             {
-                if (m_SelectedTile)
+                if (m_EditorTileMode.m_SelectedTile)
                 {
                     if (m_CursorMode != CursorMode::EditPhysBodyMode)
                     {
@@ -207,46 +196,49 @@ namespace aga
 
             if (event->mouse.button == 1)
             {
-                m_FlagPoint = GetFlagPointUnderCursor (event->mouse.x, event->mouse.y);
+                m_EditorFlagPointMode.m_FlagPoint
+                    = m_EditorFlagPointMode.GetFlagPointUnderCursor (event->mouse.x, event->mouse.y);
 
-                if (m_CursorMode == CursorMode::TileSelectMode && m_FlagPoint == "")
+                if (m_CursorMode == CursorMode::TileSelectMode && m_EditorFlagPointMode.m_FlagPoint == "")
                 {
                     Rect r;
-                    m_SelectedTile = GetTileUnderCursor (event->mouse.x, event->mouse.y, std::move (r));
+                    m_EditorTileMode.m_SelectedTile
+                        = m_EditorTileMode.GetTileUnderCursor (event->mouse.x, event->mouse.y, std::move (r));
 
-                    if (m_SelectedTile)
+                    if (m_EditorTileMode.m_SelectedTile)
                     {
                         m_CursorMode = CursorMode::TileEditMode;
-                        m_Rotation = m_SelectedTile->Rotation;
+                        m_EditorTileMode.m_Rotation = m_EditorTileMode.m_SelectedTile->Rotation;
                     }
                 }
                 else if (m_CursorMode == CursorMode::TileEditMode && !tileSelected)
                 {
                     Rect r;
-                    Tile* newSelectedTile = GetTileUnderCursor (event->mouse.x, event->mouse.y, std::move (r));
+                    Tile* newSelectedTile
+                        = m_EditorTileMode.GetTileUnderCursor (event->mouse.x, event->mouse.y, std::move (r));
 
-                    if (newSelectedTile != m_SelectedTile || !newSelectedTile)
+                    if (newSelectedTile != m_EditorTileMode.m_SelectedTile || !newSelectedTile)
                     {
                         if (newSelectedTile)
                         {
-                            m_SelectedTile = newSelectedTile;
+                            m_EditorTileMode.m_SelectedTile = newSelectedTile;
                             m_CursorMode = CursorMode::TileEditMode;
-                            m_Rotation = m_SelectedTile->Rotation;
+                            m_EditorTileMode.m_Rotation = m_EditorTileMode.m_SelectedTile->Rotation;
                         }
                         else
                         {
                             m_CursorMode = CursorMode::TileSelectMode;
-                            m_SelectedTile = nullptr;
+                            m_EditorTileMode.m_SelectedTile = nullptr;
                         }
                     }
                 }
                 else if (m_CursorMode == CursorMode::EditPhysBodyMode)
                 {
-                    InsertPhysPointAtCursor (event->mouse.x, event->mouse.y);
+                    m_EditorPhysMode.InsertPhysPointAtCursor (event->mouse.x, event->mouse.y);
                 }
                 else if (m_CursorMode == CursorMode::EditFlagPointsMode)
                 {
-                    InsertFlagPointAtCursor (event->mouse.x, event->mouse.y);
+                    m_EditorFlagPointMode.InsertFlagPointAtCursor (event->mouse.x, event->mouse.y);
                 }
             }
 
@@ -254,41 +246,36 @@ namespace aga
             {
                 if (m_CursorMode == CursorMode::EditPhysBodyMode)
                 {
-                    RemovePhysPointUnderCursor (event->mouse.x, event->mouse.y);
+                    m_EditorPhysMode.RemovePhysPointUnderCursor (event->mouse.x, event->mouse.y);
                 }
                 else
                 {
                     m_CursorMode = CursorMode::TileSelectMode;
                 }
 
-                RemoveFlagPointUnderCursor (event->mouse.x, event->mouse.y);
+                m_EditorFlagPointMode.RemoveFlagPointUnderCursor (event->mouse.x, event->mouse.y);
             }
         }
         else if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
         {
             m_IsMousePan = false;
 
-            if (m_PhysPoint && m_SelectedTile && event->mouse.button == 1)
+            if (m_EditorPhysMode.m_PhysPoint && m_EditorTileMode.m_SelectedTile && event->mouse.button == 1)
             {
-                m_SelectedTile->UpdatePhysPolygon ();
-
-                if (m_PhysPointIndex > -1)
-                {
-                    //                    m_PhysPoint = &(*m_PhysPoly)[m_PhysPointIndex];
-                }
+                m_EditorTileMode.m_SelectedTile->UpdatePhysPolygon ();
             }
         }
         else if (event->type == ALLEGRO_EVENT_MOUSE_AXES)
         {
-            if (!MoveSelectedFlagPoint ())
+            if (!m_EditorFlagPointMode.MoveSelectedFlagPoint ())
             {
                 if (m_CursorMode == CursorMode::TileEditMode)
                 {
-                    MoveSelectedTile ();
+                    m_EditorTileMode.MoveSelectedTile ();
                 }
                 else if (m_CursorMode == CursorMode::EditPhysBodyMode)
                 {
-                    MoveSelectedPhysPoint ();
+                    m_EditorPhysMode.MoveSelectedPhysPoint ();
                 }
             }
 
@@ -296,7 +283,6 @@ namespace aga
         }
         else if (event->type == ALLEGRO_EVENT_DISPLAY_RESIZE)
         {
-            Resize ();
         }
     }
 
@@ -323,172 +309,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::RemoveSelectedTile ()
-    {
-        if (m_SelectedTile)
-        {
-            m_MainLoop->GetSceneManager ().GetActiveScene ()->RemoveTile (m_SelectedTile);
-            m_SelectedTile = nullptr;
-            m_CursorMode = CursorMode::TileSelectMode;
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Editor::CopySelectedTile ()
-    {
-        if (m_TileUnderCursor)
-        {
-            m_SelectedAtlasRegion = m_Atlas->GetRegion (m_TileUnderCursor->Name);
-
-            ALLEGRO_MOUSE_STATE state;
-            al_get_mouse_state (&state);
-
-            Tile* currentTile = m_SelectedTile;
-
-            m_SelectedTile = AddTile (state.x, state.y);
-
-            if (currentTile)
-            {
-                m_SelectedTile->PhysPoints = currentTile->PhysPoints;
-            }
-
-            m_CursorMode = CursorMode::TileEditMode;
-            m_Rotation = m_SelectedTile->Rotation;
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool Editor::MoveSelectedTile ()
-    {
-        ALLEGRO_MOUSE_STATE state;
-        al_get_mouse_state (&state);
-
-        if (state.buttons == 1)
-        {
-            Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-            Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-            Point point = CalculateCursorPoint (state.x, state.y);
-
-            m_SelectedTile->Bounds.Transform.Pos
-                = { (translate.X + point.X) * 1 / scale.X, (translate.Y + point.Y) * 1 / scale.Y };
-            m_SelectedTile->SetPhysOffset (m_SelectedTile->Bounds.Transform.Pos);
-
-            QuadTreeNode& quadTree = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetQuadTree ();
-            quadTree.Remove (m_SelectedTile);
-            quadTree.Insert (m_SelectedTile);
-            quadTree.UpdateStructures ();
-        }
-
-        return true;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool Editor::MoveSelectedPhysPoint ()
-    {
-        ALLEGRO_MOUSE_STATE state;
-        al_get_mouse_state (&state);
-
-        if (m_PhysPoint && state.buttons == 1)
-        {
-            Point p = CalculateCursorPoint (state.x, state.y);
-            Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-            Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-            Point origin = m_SelectedTile->Bounds.Transform.Pos;
-
-            m_PhysPoint->X = (translate.X + p.X) * 1 / scale.X - origin.X;
-            m_PhysPoint->Y = (translate.Y + p.Y) * 1 / scale.Y - origin.Y;
-
-            return true;
-        }
-
-        return false;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool Editor::MoveSelectedFlagPoint ()
-    {
-        ALLEGRO_MOUSE_STATE state;
-        al_get_mouse_state (&state);
-
-        if (state.buttons == 1)
-        {
-            if (m_FlagPoint != "")
-            {
-                std::map<std::string, Point>& flagPoints
-                    = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
-
-                Point p = CalculateCursorPoint (state.x, state.y);
-                Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-                Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-
-                flagPoints[m_FlagPoint].X = (translate.X + p.X) * 1 / scale.X;
-                flagPoints[m_FlagPoint].Y = (translate.Y + p.Y) * 1 / scale.Y;
-
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Editor::ChangeRotation (bool clockwise)
-    {
-        m_Rotation += clockwise ? -15 : 15;
-
-        if (m_Rotation <= -360)
-        {
-            m_Rotation = 0;
-        }
-
-        if (m_Rotation >= 360)
-        {
-            m_Rotation = 0;
-        }
-
-        if (m_SelectedTile)
-        {
-            m_SelectedTile->Rotation = m_Rotation;
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
     void Editor::ChangeGridSize (bool clockwise)
     {
         m_BaseGridSize *= clockwise ? 0.5 : 2;
         m_BaseGridSize = std::max (1, std::min (m_BaseGridSize, 1024));
         m_GridSize = std::max (1.0f, m_BaseGridSize * m_MainLoop->GetSceneManager ().GetCamera ().GetScale ().X);
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Editor::ChangeZOrder (bool clockwise)
-    {
-        if (m_SelectedTile)
-        {
-            m_SelectedTile->ZOrder += clockwise ? -1 : 1;
-
-            int currentID = m_SelectedTile->ID;
-
-            m_MainLoop->GetSceneManager ().GetActiveScene ()->SortTiles ();
-
-            std::vector<Tile*>& tiles = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetTiles ();
-
-            for (Tile* tile : tiles)
-            {
-                if (tile->ID == currentID)
-                {
-                    m_SelectedTile = tile;
-                    break;
-                }
-            }
-        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -507,9 +332,9 @@ namespace aga
 
         m_MainLoop->GetSceneManager ().GetCamera ().UseIdentityTransform ();
 
-        if (m_SelectedTile)
+        if (m_EditorTileMode.m_SelectedTile)
         {
-            Rect b = GetRenderBounds (m_SelectedTile);
+            Rect b = m_EditorTileMode.GetRenderBounds (m_EditorTileMode.m_SelectedTile);
             al_draw_rectangle (
                 b.Transform.Pos.X, b.Transform.Pos.Y, b.Transform.Size.Width, b.Transform.Size.Height, COLOR_RED, 2);
         }
@@ -517,9 +342,9 @@ namespace aga
         if (m_CursorMode == CursorMode::TileSelectMode)
         {
             Rect r;
-            m_TileUnderCursor = GetTileUnderCursor (state.x, state.y, std::move (r));
+            m_EditorTileMode.m_TileUnderCursor = m_EditorTileMode.GetTileUnderCursor (state.x, state.y, std::move (r));
 
-            if (m_TileUnderCursor)
+            if (m_EditorTileMode.m_TileUnderCursor)
             {
                 al_draw_rectangle (r.Transform.Pos.X, r.Transform.Pos.Y, r.Transform.Size.Width,
                     r.Transform.Size.Height, COLOR_YELLOW, 2);
@@ -527,45 +352,15 @@ namespace aga
         }
         else if (m_CursorMode == CursorMode::EditPhysBodyMode)
         {
-            DrawPhysBody (state.x, state.y);
+            m_EditorPhysMode.DrawPhysBody (state.x, state.y);
         }
 
-        DrawFlagPoints (state.x, state.y);
+        m_EditorFlagPointMode.DrawFlagPoints (state.x, state.y);
 
-        if (m_IsDrawTiles)
+        if (m_EditorTileMode.m_IsDrawTiles)
         {
-            DrawTiles ();
+            m_EditorTileMode.DrawTiles ();
             RenderUI ();
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Editor::SetDrawUITiles (bool draw) { m_IsDrawTiles = draw; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Editor::DrawTiles ()
-    {
-        std::vector<AtlasRegion>& regions = m_Atlas->GetRegions ();
-        const Point windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-        float beginning = windowSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
-        float advance = 0;
-
-        for (int i = 0; i < TILES_COUNT; ++i)
-        {
-            advance = beginning + i * TILE_SIZE;
-
-            al_draw_rectangle (
-                advance, windowSize.Height - TILE_SIZE, advance + TILE_SIZE, windowSize.Height, COLOR_GREEN, 1);
-
-            if (i < regions.size () - 1)
-            {
-                Rect region = regions[i].Bounds;
-                al_draw_scaled_bitmap (m_Atlas->GetImage (), region.Transform.Pos.X, region.Transform.Pos.Y,
-                    region.Transform.Size.Width, region.Transform.Size.Height, advance + 1,
-                    windowSize.Height - TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2, 0);
-            }
         }
     }
 
@@ -619,247 +414,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::DrawPhysBody (float mouseX, float mouseY)
-    {
-        if (!m_SelectedTile)
-        {
-            return;
-        }
-
-        Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-        Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-        Point origin = m_SelectedTile->Bounds.Transform.Pos;
-        Point* selectedPoint = GetPhysPointUnderCursor (mouseX, mouseY);
-
-        for (std::vector<Point>& points : m_SelectedTile->PhysPoints)
-        {
-            if (!points.empty ())
-            {
-                int i = 0;
-                int selectedIndex = std::numeric_limits<int>::min ();
-
-                for (int j = 0; j < points.size (); ++j)
-                {
-                    if (m_PhysPoint && points[j] == *m_PhysPoint)
-                    {
-                        selectedIndex = j;
-                        break;
-                    }
-                }
-
-                for (const Point& p : points)
-                {
-                    float xPoint = (origin.X + p.X) * scale.X - translate.X;
-                    float yPoint = (origin.Y + p.Y) * scale.Y - translate.Y;
-
-                    ALLEGRO_COLOR color;
-
-                    if (i == 0)
-                    {
-                        color = COLOR_GREEN;
-                    }
-                    else
-                    {
-                        color = COLOR_YELLOW;
-                    }
-
-                    if (i == selectedIndex)
-                    {
-                        //  Mark selected corner
-                        color = COLOR_BLUE;
-                    }
-                    else if ((i == 0 && selectedIndex == points.size () - 1) || (i == selectedIndex + 1))
-                    {
-                        //  Mark also next corner
-                        color = COLOR_LIGHTBLUE;
-                    }
-
-                    if (selectedPoint != nullptr && p == *selectedPoint)
-                    {
-                        color = COLOR_RED;
-                    }
-
-                    if (m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawPhysData () && false)
-                    {
-                        m_MainLoop->GetScreen ()->GetFont ().DrawText (FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0),
-                            xPoint, yPoint, ToString (i), ALLEGRO_ALIGN_CENTER);
-                    }
-
-                    ++i;
-
-                    al_draw_filled_circle (xPoint, yPoint, 4, color);
-                }
-            }
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Editor::DrawFlagPoints (float mouseX, float mouseY)
-    {
-        std::map<std::string, Point>& flagPoints = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
-        int outsets = 4;
-
-        for (std::map<std::string, Point>::iterator it = flagPoints.begin (); it != flagPoints.end (); ++it)
-        {
-            Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-            Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-
-            float xPoint = it->second.X * scale.X - translate.X;
-            float yPoint = it->second.Y * scale.Y - translate.Y;
-
-            m_MainLoop->GetScreen ()->GetFont ().DrawText (
-                FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), xPoint, yPoint - 15, it->first, ALLEGRO_ALIGN_CENTER);
-
-            Point p = { it->second.X, it->second.Y };
-
-            if (IsMouseWithinPointRect (mouseX, mouseY, p, outsets))
-            {
-                al_draw_filled_circle (xPoint, yPoint, 4, COLOR_BLUE);
-            }
-            else
-            {
-                al_draw_filled_circle (xPoint, yPoint, 4, COLOR_GREEN);
-                al_draw_filled_circle (xPoint, yPoint, 2, COLOR_RED);
-            }
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool Editor::ChooseTile (int mouseX, int mouseY)
-    {
-        const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-        float beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
-        float advance = 0;
-        std::vector<AtlasRegion> regions = m_Atlas->GetRegions ();
-
-        for (int i = 0; i < TILES_COUNT; ++i)
-        {
-            if (i >= regions.size () - 1)
-            {
-                break;
-            }
-
-            advance = beginning + i * TILE_SIZE;
-            float x = advance;
-            float y = screenSize.Height - TILE_SIZE - 1;
-            Rect r = Rect{ { x, y }, { x + TILE_SIZE, y + TILE_SIZE - 2 } };
-
-            if (InsideRect (mouseX, mouseY, r))
-            {
-                m_SelectedAtlasRegion = regions[i];
-                m_SelectedTile = AddTile (mouseX, mouseY);
-                m_CursorMode = CursorMode::TileEditMode;
-                m_Rotation = m_SelectedTile->Rotation;
-
-                if (!m_SelectedTile->PhysPoints.empty ())
-                {
-                    m_PhysPoly = &m_SelectedTile->PhysPoints[0];
-                }
-
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Editor::InsertPhysPointAtCursor (int mouseX, int mouseY)
-    {
-        if (!m_SelectedTile)
-        {
-            return;
-        }
-
-        Point p = CalculateCursorPoint (mouseX, mouseY);
-        Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-        Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-        Point origin = m_SelectedTile->Bounds.Transform.Pos;
-
-        Point pointToInsert
-            = { (translate.X + p.X) * 1 / scale.X - origin.X, (translate.Y + p.Y) * 1 / scale.Y - origin.Y };
-
-        bool inserted = false;
-
-        //  After we select one of physics point, we can insert next one accordingly
-        Point* againSelected = GetPhysPointUnderCursor (mouseX, mouseY);
-
-        if (m_SelectedTile->PhysPoints.empty ())
-        {
-            m_SelectedTile->PhysPoints.push_back ({});
-        }
-
-        if (!m_PhysPoly)
-        {
-            m_PhysPoly = &m_SelectedTile->PhysPoints[0];
-        }
-
-        if (m_PhysPoint && !againSelected)
-        {
-            for (int i = 0; i < m_PhysPoly->size (); ++i)
-            {
-                if (m_PhysPoint && (*m_PhysPoly)[i] == *m_PhysPoint)
-                {
-                    m_PhysPoly->insert (m_PhysPoly->begin () + i + 1, pointToInsert);
-                    m_PhysPoint = nullptr;
-                    inserted = true;
-                    break;
-                }
-            }
-        }
-
-        m_PhysPointIndex = -1;
-        m_PhysPoint = GetPhysPointUnderCursor (mouseX, mouseY);
-
-        if (!inserted && !m_PhysPoint)
-        {
-            m_PhysPoly->push_back (pointToInsert);
-            m_PhysPoint = &(*m_PhysPoly)[m_PhysPoly->size () - 1];
-            inserted = true;
-        }
-
-        if (inserted)
-        {
-            m_SelectedTile->SetPhysOffset (origin);
-
-            if (m_PhysPointIndex > -1)
-            {
-                //    m_PhysPoint = &(*m_PhysPoly)[m_PhysPointIndex];
-            }
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Editor::InsertFlagPointAtCursor (int mouseX, int mouseY)
-    {
-        if (std::string (flagPointName) != "")
-        {
-            if (GetFlagPointUnderCursor (mouseX, mouseY) == "")
-            {
-                Point p = CalculateCursorPoint (mouseX, mouseY);
-                Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-                Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-
-                Point pointToInsert = { (translate.X + p.X) * 1 / scale.X, (translate.Y + p.Y) * 1 / scale.Y };
-
-                m_MainLoop->GetSceneManager ().GetActiveScene ()->AddFlagPoint (flagPointName, pointToInsert);
-                m_FlagPoint = flagPointName;
-            }
-
-            strset (flagPointName, 0);
-        }
-        else
-        {
-            askFlagPoint = true;
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
     bool Editor::IsMouseWithinPointRect (int mouseX, int mouseY, Point point, int outsets)
     {
         Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
@@ -869,93 +423,6 @@ namespace aga
 
         if (InsideRect ((mouseX + translate.X) * 1 / scale.X, (mouseY + translate.Y) * 1 / scale.Y, r))
         {
-            return true;
-        }
-
-        return false;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    Point* Editor::GetPhysPointUnderCursor (int mouseX, int mouseY)
-    {
-        if (!m_SelectedTile)
-        {
-            return nullptr;
-        }
-
-        Point origin = m_SelectedTile->Bounds.Transform.Pos;
-
-        int outsets = 4;
-        for (std::vector<Point>& points : m_SelectedTile->PhysPoints)
-        {
-            int index = 0;
-            for (Point& point : points)
-            {
-                Point p = { point.X + origin.X, point.Y + origin.Y };
-
-                if (IsMouseWithinPointRect (mouseX, mouseY, p, outsets))
-                {
-                    m_PhysPoly = &points;
-                    m_PhysPointIndex = index;
-                    return &point;
-                }
-
-                index++;
-            }
-        }
-
-        return nullptr;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Editor::RemovePhysPointUnderCursor (int mouseX, int mouseY)
-    {
-        Point* point = GetPhysPointUnderCursor (mouseX, mouseY);
-
-        if (m_SelectedTile && point)
-        {
-            for (int j = 0; j < m_SelectedTile->PhysPoints.size (); ++j)
-            {
-                std::vector<Point>& points = m_SelectedTile->PhysPoints[j];
-
-                for (int i = 0; i < points.size (); ++i)
-                {
-                    if (points[i] == *point)
-                    {
-                        points.erase (points.begin () + i);
-
-                        //  If no points left, remove polygon itself
-                        if (points.empty ())
-                        {
-                            m_SelectedTile->PhysPoints.erase (m_SelectedTile->PhysPoints.begin () + j);
-                            m_PhysPoly = nullptr;
-                        }
-
-                        m_SelectedTile->UpdatePhysPolygon ();
-
-                        if (m_PhysPointIndex == i)
-                        {
-                            m_PhysPointIndex = -1;
-                        }
-
-                        return;
-                    }
-                }
-            }
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool Editor::RemoveFlagPointUnderCursor (int mouseX, int mouseY)
-    {
-        std::string flgPoint = GetFlagPointUnderCursor (mouseX, mouseY);
-
-        if (flgPoint != "")
-        {
-            m_MainLoop->GetSceneManager ().GetActiveScene ()->GetFlagPoints ().erase (flgPoint);
             return true;
         }
 
@@ -980,131 +447,6 @@ namespace aga
         finalY = (finalY - translate.Y);
 
         return { finalX, finalY };
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    Tile* Editor::AddTile (int mouseX, int mouseY)
-    {
-        Tile* tile = new Tile (&m_MainLoop->GetPhysicsManager ());
-        AtlasRegion region = m_Atlas->GetRegion (m_SelectedAtlasRegion.Name);
-        Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-        Point point = CalculateCursorPoint (mouseX, mouseY);
-
-        tile->ID = ++CURRENT_ID;
-        tile->Tileset = m_Atlas->GetName ();
-        tile->Name = m_SelectedAtlasRegion.Name;
-        tile->Bounds = { { (translate.X + point.X), (translate.Y + point.Y) },
-            { region.Bounds.Transform.Size.Width, region.Bounds.Transform.Size.Height } };
-        tile->Rotation = m_Rotation;
-
-        m_MainLoop->GetSceneManager ().GetActiveScene ()->AddTile (tile);
-
-        return tile;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    Tile* Editor::GetTileUnderCursor (int mouseX, int mouseY, Rect&& outRect)
-    {
-        std::vector<Tile*>& tiles = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetTiles ();
-        Tile* result = nullptr;
-
-        for (Tile* tile : tiles)
-        {
-            Rect r = GetRenderBounds (tile);
-
-            if (InsideRect (mouseX, mouseY, r))
-            {
-                if ((result == nullptr) || (result && (result->RenderID < tile->RenderID)))
-                {
-                    outRect = r;
-                    result = tile;
-                }
-            }
-        }
-
-        return result;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    std::string Editor::GetFlagPointUnderCursor (int mouseX, int mouseY)
-    {
-        std::map<std::string, Point>& flagPoints = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
-        int outsets = 4;
-
-        for (std::map<std::string, Point>::iterator it = flagPoints.begin (); it != flagPoints.end (); ++it)
-        {
-            Point p = { it->second.X, it->second.Y };
-
-            if (IsMouseWithinPointRect (mouseX, mouseY, p, outsets))
-            {
-                return it->first;
-            }
-        }
-
-        return "";
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    Point RotatePoint (float x, float y, const Point& origin, float angle)
-    {
-        float s = std::sin (DegressToRadians (angle));
-        float c = std::cos (DegressToRadians (angle));
-
-        // translate point back to origin:
-        x -= origin.X;
-        y -= origin.Y;
-
-        float nx = (x * c) - (y * s);
-        float ny = (x * s) + (y * c);
-
-        // translate point back:
-        return { nx + origin.X, ny + origin.Y };
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    Rect Editor::GetRenderBounds (Tile* tile)
-    {
-        Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-        Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-
-        Rect b = tile->Bounds;
-        int width = b.Transform.Size.Width * 0.5f;
-        int height = b.Transform.Size.Height * 0.5f;
-
-        float x1 = (b.Transform.Pos.X - translate.X * (1 / scale.X) - width) * (scale.X);
-        float y1 = (b.Transform.Pos.Y - translate.Y * (1 / scale.Y) - height) * (scale.Y);
-        float x2 = (b.Transform.Pos.X - translate.X * (1 / scale.X) + width) * (scale.X);
-        float y2 = (b.Transform.Pos.Y - translate.Y * (1 / scale.Y) + height) * (scale.Y);
-
-        Point origin = { x1 + (x2 - x1) * 0.5f, y1 + (y2 - y1) * 0.5f };
-        Point pointA = RotatePoint (x1, y1, origin, tile->Rotation);
-        Point pointB = RotatePoint (x1, y2, origin, tile->Rotation);
-        Point pointC = RotatePoint (x2, y1, origin, tile->Rotation);
-        Point pointD = RotatePoint (x2, y2, origin, tile->Rotation);
-
-        float minX, minY, maxX, maxY;
-
-        minX = std::min (pointA.X, std::min (pointB.X, std::min (pointC.X, pointD.X)));
-        minY = std::min (pointA.Y, std::min (pointB.Y, std::min (pointC.Y, pointD.Y)));
-        maxX = std::max (pointA.X, std::max (pointB.X, std::max (pointC.X, pointD.X)));
-        maxY = std::max (pointA.Y, std::max (pointB.Y, std::max (pointC.Y, pointD.Y)));
-
-        return { { minX, minY }, { maxX, maxY } };
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Editor::InitializeUI ()
-    {
-        m_Atlas = m_MainLoop->GetSceneManager ().GetAtlasManager ()->GetAtlas (
-            GetBaseName (GetResourcePath (PACK_0_0_HOME)));
-
-        Resize ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1142,7 +484,7 @@ namespace aga
                     }
                 }
 
-                CURRENT_ID = maxTileID;
+                m_EditorTileMode.SetCurrentID (maxTileID);
                 ResetSettings ();
             }
         }
@@ -1161,11 +503,8 @@ namespace aga
 
     void Editor::ResetSettings ()
     {
-        m_SelectedTile = nullptr;
-        m_TileUnderCursor = nullptr;
-        m_PhysPoint = nullptr;
-        m_PhysPointIndex = -1;
-        m_PhysPoly = nullptr;
+        m_EditorTileMode.ResetSettings ();
+        m_EditorPhysMode.ResetSettings ();
 
         OnResetScale ();
         OnResetTranslate ();
@@ -1182,18 +521,6 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Editor::OnExit () { m_MainLoop->Exit (); }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void OnExitYesButton () {}
-
-    //--------------------------------------------------------------------------------------------------
-
-    void OnExitNoButton () {}
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Editor::OnTileSelected () {}
 
     //--------------------------------------------------------------------------------------------------
 
@@ -1411,21 +738,21 @@ namespace aga
         ImGui::End ();
 
         ImGui::SetNextWindowPos (ImVec2 (xOffset, 240), ImGuiCond_FirstUseEver);
-        ImGui::Begin ("Points", &open, ImVec2 (winSize, 40.f), 0.0f,
+        ImGui::Begin ("Points", &open, ImVec2 (winSize, 60.f), 0.0f,
             ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
         if (m_CursorMode != CursorMode::EditFlagPointsMode)
         {
             if (ImGui::Button ("FLAG POINT", buttonSize))
             {
-                askFlagPoint = true;
+                m_EditorFlagPointMode.m_AskFlagPoint = true;
             }
         }
 
-        if (askFlagPoint)
+        if (m_EditorFlagPointMode.m_AskFlagPoint)
         {
             ImGui::OpenPopup ("Flag Point");
-            askFlagPoint = false;
+            m_EditorFlagPointMode.m_AskFlagPoint = false;
         }
 
         if (ImGui::BeginPopupModal ("Flag Point", NULL, ImGuiWindowFlags_AlwaysAutoResize))
@@ -1437,8 +764,8 @@ namespace aga
                 ImGui::SetKeyboardFocusHere (0);
             }
 
-            if (ImGui::InputText (
-                    "##flagPoint", flagPointName, sizeof (flagPointName), ImGuiInputTextFlags_EnterReturnsTrue))
+            if (ImGui::InputText ("##flagPoint", m_EditorFlagPointMode.m_FlagPointName,
+                    sizeof (m_EditorFlagPointMode.m_FlagPointName), ImGuiInputTextFlags_EnterReturnsTrue))
             {
                 m_CursorMode = CursorMode::EditFlagPointsMode;
                 ImGui::CloseCurrentPopup ();
@@ -1455,7 +782,47 @@ namespace aga
 
             if (ImGui::Button ("Cancel", ImVec2 (120, 0)))
             {
-                strset (flagPointName, 0);
+                strset (m_EditorFlagPointMode.m_FlagPointName, 0);
+                m_CursorMode = CursorMode::TileSelectMode;
+                ImGui::CloseCurrentPopup ();
+            }
+
+            ImGui::EndPopup ();
+        }
+
+        if (ImGui::Button ("TRIGGER AREA", buttonSize))
+        {
+            ImGui::OpenPopup ("Trigger Area");
+        }
+
+        if (ImGui::BeginPopupModal ("Trigger Area", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Text ("Trigger Area name:");
+
+            if (ImGui::IsRootWindowOrAnyChildFocused () && !ImGui::IsAnyItemActive () && !ImGui::IsMouseClicked (0))
+            {
+                ImGui::SetKeyboardFocusHere (0);
+            }
+
+            if (ImGui::InputText (
+                    "##triggerArea", triggerAreaName, sizeof (triggerAreaName), ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                m_CursorMode = CursorMode::EditTriggerAreaMode;
+                ImGui::CloseCurrentPopup ();
+            }
+            ImGui::Separator ();
+
+            if (ImGui::Button ("OK", ImVec2 (120, 0)))
+            {
+                m_CursorMode = CursorMode::EditTriggerAreaMode;
+                ImGui::CloseCurrentPopup ();
+            }
+
+            ImGui::SameLine ();
+
+            if (ImGui::Button ("Cancel", ImVec2 (120, 0)))
+            {
+                strset (triggerAreaName, 0);
                 m_CursorMode = CursorMode::TileSelectMode;
                 ImGui::CloseCurrentPopup ();
             }
@@ -1465,11 +832,11 @@ namespace aga
 
         ImGui::End ();
 
-        ImGui::SetNextWindowPos (ImVec2 (xOffset, 280), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowPos (ImVec2 (xOffset, 300), ImGuiCond_FirstUseEver);
         ImGui::Begin ("Physics", &open, ImVec2 (winSize, 60.f), 0.0f,
             ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
-        if (m_SelectedTile)
+        if (m_EditorTileMode.m_SelectedTile)
         {
             if (ImGui::Button (m_CursorMode != CursorMode::EditPhysBodyMode ? "TILE MODE" : "PHYS MODE", buttonSize))
             {
@@ -1487,17 +854,19 @@ namespace aga
             {
                 if (ImGui::Button ("NEW POLY", buttonSize))
                 {
-                    m_PhysPoly = nullptr;
-                    m_PhysPoint = nullptr;
-                    m_SelectedTile->PhysPoints.push_back ({});
-                    m_PhysPoly = &m_SelectedTile->PhysPoints[m_SelectedTile->PhysPoints.size () - 1];
+                    m_EditorPhysMode.m_PhysPoly = nullptr;
+                    m_EditorPhysMode.m_PhysPoint = nullptr;
+                    m_EditorTileMode.m_SelectedTile->PhysPoints.push_back ({});
+                    m_EditorPhysMode.m_PhysPoly
+                        = &m_EditorTileMode.m_SelectedTile
+                               ->PhysPoints[m_EditorTileMode.m_SelectedTile->PhysPoints.size () - 1];
                 }
             }
         }
 
         ImGui::End ();
 
-        ImGui::SetNextWindowPos (ImVec2 (xOffset, 340), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowPos (ImVec2 (xOffset, 360), ImGuiCond_FirstUseEver);
         ImGui::Begin ("GameMenu", &open, ImVec2 (winSize, 40.f), 0.0f,
             ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
         if (ImGui::Button ("PLAY", buttonSize))
@@ -1523,13 +892,19 @@ namespace aga
         ImGui::TextColored (
             ImVec4 (0, 1, 0, 1), std::string ("   Y: " + ToString (translate.Y * (1 / scale.Y))).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-            std::string ("   W: " + ToString (m_SelectedAtlasRegion.Bounds.Transform.Size.Width)).c_str ());
+            std::string ("   W: " + ToString (m_EditorTileMode.m_SelectedAtlasRegion.Bounds.Transform.Size.Width))
+                .c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-            std::string ("   H: " + ToString (m_SelectedAtlasRegion.Bounds.Transform.Size.Height)).c_str ());
+            std::string ("   H: " + ToString (m_EditorTileMode.m_SelectedAtlasRegion.Bounds.Transform.Size.Height))
+                .c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-            std::string ("   A: " + (m_SelectedTile ? ToString (m_SelectedTile->Rotation) : "-")).c_str ());
+            std::string ("   A: "
+                + (m_EditorTileMode.m_SelectedTile ? ToString (m_EditorTileMode.m_SelectedTile->Rotation) : "-"))
+                .c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-            std::string ("ZORD: " + (m_SelectedTile ? ToString (m_SelectedTile->ZOrder) : "-")).c_str ());
+            std::string (
+                "ZORD: " + (m_EditorTileMode.m_SelectedTile ? ToString (m_EditorTileMode.m_SelectedTile->ZOrder) : "-"))
+                .c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   S: " + ToString (scale.X)).c_str ());
         ImGui::TextColored (
             ImVec4 (0, 1, 0, 1), std::string ("SNAP: " + ToString (m_IsSnapToGrid ? "YES" : "NO")).c_str ());
@@ -1587,21 +962,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::Resize ()
-    {
-        const Point windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-
-        float beginning = windowSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
-        float advance = 0;
-
-        for (int i = 0; i < TILES_COUNT; ++i)
-        {
-            advance = beginning + i * TILE_SIZE;
-
-            std::ostringstream nameBack;
-            nameBack << "TileRectBack" << i;
-        }
-    }
+    void Editor::SetDrawUITiles (bool draw) { m_EditorTileMode.m_IsDrawTiles = draw; }
 
     //--------------------------------------------------------------------------------------------------
 }

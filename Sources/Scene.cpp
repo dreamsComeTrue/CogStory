@@ -198,6 +198,16 @@ namespace aga
                 scene->AddFlagPoint (name, pos);
             }
 
+            auto& triggerAreas = j["trigger_areas"];
+
+            for (auto& triggerArea : triggerAreas)
+            {
+                std::string name = triggerArea["name"];
+                std::vector<Point> poly = StringToVector (triggerArea["poly"]);
+
+                scene->AddTriggerArea (name, poly);
+            }
+
             return scene;
         }
         catch (const std::exception&)
@@ -268,6 +278,19 @@ namespace aga
                 flagObj["pos"] = PointToString (it->second);
 
                 j["flag_points"].push_back (flagObj);
+            }
+
+            j["trigger_areas"] = json::array ({});
+
+            for (std::vector<TriggerArea>::iterator it = scene->m_TriggerAreas.begin ();
+                 it != scene->m_TriggerAreas.end (); ++it)
+            {
+                json triggerObj = json::object ({});
+
+                triggerObj["name"] = it->Name;
+                triggerObj["poly"] = VectorToString (it->Points);
+
+                j["trigger_areas"].push_back (triggerObj);
             }
 
             // write prettified JSON to another file
@@ -397,6 +420,15 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     std::map<std::string, Point>& Scene::GetFlagPoints () { return m_FlagPoints; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::AddTriggerArea (const std::string& name, std::vector<Point>& poly)
+    {
+        TriggerArea area{ name, poly };
+
+        m_TriggerAreas.push_back (area);
+    }
 
     //--------------------------------------------------------------------------------------------------
 
