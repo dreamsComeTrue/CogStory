@@ -35,6 +35,9 @@ namespace aga
         MainLoop* GetMainLoop ();
         AtlasManager* GetAtlasManager ();
 
+        void AddTriggerCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
+        void AddTriggerCallback (const std::string& triggerName, asIScriptFunction* func);
+
         Point GetFlagPoint (const std::string& name);
 
     private:

@@ -20,6 +20,8 @@ namespace aga
         std::string Name = "";
         std::vector<Point> Points = {};
         std::vector<Polygon> Polygons = {};
+        std::function<void(float dx, float dy)> TriggerCallback = nullptr;
+        asIScriptFunction* ScriptTriggerCallback = nullptr;
 
         void UpdatePolygons (Triangulator* triangulator);
     };
@@ -88,6 +90,9 @@ namespace aga
         void SetDrawPhysData (bool enable);
         bool IsDrawPhysData ();
         QuadTreeNode& GetQuadTree ();
+
+        void AddTriggerCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
+        void AddTriggerCallback (const std::string& triggerName, asIScriptFunction* func);
 
     private:
         void DrawQuadTree (QuadTreeNode* node);

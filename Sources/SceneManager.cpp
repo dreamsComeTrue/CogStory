@@ -154,6 +154,26 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void SceneManager::AddTriggerCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func)
+    {
+        if (m_ActiveScene)
+        {
+            m_ActiveScene->AddTriggerCallback (triggerName, func);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::AddTriggerCallback (const std::string& triggerName, asIScriptFunction* func)
+    {
+        if (m_ActiveScene)
+        {
+            m_ActiveScene->AddTriggerCallback (triggerName, func);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     Point SceneManager::GetFlagPoint (const std::string& name)
     {
         if (m_ActiveScene)
@@ -163,5 +183,6 @@ namespace aga
 
         return { 0, 0 };
     }
+
     //--------------------------------------------------------------------------------------------------
 }

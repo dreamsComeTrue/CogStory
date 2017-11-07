@@ -169,6 +169,47 @@ namespace aga
             dx = -MOVE_SPEED * deltaTime;
         }
 
+        std::map<std::string, TriggerArea>& triggerAreas = m_SceneManager->GetActiveScene ()->GetTriggerAreas ();
+
+        for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)
+        {
+            TriggerArea& area = it->second;
+
+            for (Polygon& polygon : area.Polygons)
+            {
+                if (area.TriggerCallback || area.ScriptTriggerCallback)
+                {
+                    PolygonCollisionResult r = m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (
+                        GetPhysPolygon (0), polygon, { dx, dy });
+
+                    if (r.WillIntersect)
+                    {
+                        if (area.TriggerCallback)
+                        {
+                            area.TriggerCallback (dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y);
+                        }
+
+                        if (area.ScriptTriggerCallback)
+                        {
+                            const char* moduleName = area.ScriptTriggerCallback->GetModuleName ();
+                            Script* script = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (
+                                moduleName);
+
+                            if (script)
+                            {
+                                Point point = { dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y };
+                                asIScriptContext* ctx = script->GetContext ();
+                                ctx->Prepare (area.ScriptTriggerCallback);
+                                ctx->SetArgObject (0, &point);
+
+                                ctx->Execute ();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         for (Tile* tile : m_SceneManager->GetActiveScene ()->GetTiles ())
         {
             if (!tile->PhysPoints.empty ())

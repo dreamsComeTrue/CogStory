@@ -17,12 +17,23 @@ void BeforeEnterScene ()
 	Point flag1 = GetFlagPoint ("A");
 	Point flag2 = GetFlagPoint ("B");
 
-    AddTween (TWEEN_1, flag1, flag2, 2000, PlayerTween, NextTween1);
+	AddTriggerCallback ("sad", Func);
+
+  //  AddTween (TWEEN_1, flag1, flag2, 2000, PlayerTween, NextTween1);
 }
 
 void AfterLeaveScene ()
 {
 
+}
+
+void Func (Point p)
+{
+	Point screenSize = GetWindowSize ();
+	Point playerSize = player.GetSize ();
+
+	Point spawn = GetFlagPoint ("XX");
+	player.SetPosition (spawn.X - playerSize.Width * 0.5, spawn.Y - playerSize.Height * 0.5);
 }
 
 bool PlayerTween (float progress, Point value)

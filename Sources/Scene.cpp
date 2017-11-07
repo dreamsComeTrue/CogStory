@@ -463,6 +463,7 @@ namespace aga
     void Scene::AddTriggerArea (const std::string& name, std::vector<Point> points)
     {
         TriggerArea area{ name, points };
+        area.UpdatePolygons (&m_SceneManager->GetMainLoop ()->GetPhysicsManager ().GetTriangulator ());
 
         m_TriggerAreas.insert (std::make_pair (name, area));
     }
@@ -530,6 +531,26 @@ namespace aga
         if (node->GetBottomRightTree ())
         {
             DrawQuadTree (node->GetBottomRightTree ());
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::AddTriggerCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func)
+    {
+        if (m_TriggerAreas.find (triggerName) != m_TriggerAreas.end ())
+        {
+            m_TriggerAreas[triggerName].TriggerCallback = func;
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::AddTriggerCallback (const std::string& triggerName, asIScriptFunction* func)
+    {
+        if (m_TriggerAreas.find (triggerName) != m_TriggerAreas.end ())
+        {
+            m_TriggerAreas[triggerName].ScriptTriggerCallback = func;
         }
     }
 

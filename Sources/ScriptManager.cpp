@@ -246,6 +246,14 @@ namespace aga
         r = m_ScriptEngine->RegisterGlobalProperty ("Screen screen", m_MainLoop->GetScreen ());
         assert (r >= 0);
 
+        //  Trigger Area
+        r = m_ScriptEngine->RegisterFuncdef ("void TriggerFunc (Point)");
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction ("void AddTriggerCallback (const string &in, TriggerFunc @tf)",
+            asMETHODPR (SceneManager, AddTriggerCallback, (const std::string&, asIScriptFunction*), void),
+            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+
         //  Global
         r = m_ScriptEngine->RegisterGlobalFunction (
             "void Log(const string &in)", asFUNCTIONPR (Log, (const std::string&), void), asCALL_CDECL);
