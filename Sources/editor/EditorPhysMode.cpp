@@ -222,7 +222,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorPhysMode::RemovePhysPointUnderCursor (int mouseX, int mouseY)
+    bool EditorPhysMode::RemovePhysPointUnderCursor (int mouseX, int mouseY)
     {
         Point* point = GetPhysPointUnderCursor (mouseX, mouseY);
 
@@ -253,11 +253,13 @@ namespace aga
                             m_PhysPointIndex = -1;
                         }
 
-                        return;
+                        return true;
                     }
                 }
             }
         }
+
+        return false;
     }
 
     //--------------------------------------------------------------------------------------------------

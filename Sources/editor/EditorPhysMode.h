@@ -27,7 +27,7 @@ namespace aga
 
         void InsertPhysPointAtCursor (int mouseX, int mouseY);
         Point* GetPhysPointUnderCursor (int mouseX, int mouseY);
-        void RemovePhysPointUnderCursor (int mouseX, int mouseY);
+        bool RemovePhysPointUnderCursor (int mouseX, int mouseY);
 
         void ResetSettings ();
 

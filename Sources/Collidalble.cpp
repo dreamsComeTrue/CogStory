@@ -10,63 +10,6 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    int GetQuadrant (const Point& p)
-    {
-        int result = 4; // origin
-
-        if (p.X > 0 && p.Y > 0)
-        {
-            return 1;
-        }
-        else if (p.X < 0 && p.Y > 0)
-        {
-            return 2;
-        }
-        else if (p.X < 0 && p.Y < 0)
-        {
-            return 3;
-        }
-        // else 4th quadrant
-        return result;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    float GetClockwiseAngle (const Point& p)
-    {
-        float angle = 0.0;
-        int quadrant = GetQuadrant (p);
-
-        /*add the appropriate pi/2 value based on the quadrant. (one of 0, pi/2, pi, 3pi/2)*/
-        switch (quadrant)
-        {
-        case 1:
-            angle = std::atan2 (p.X, p.Y) * 180 / M_PI;
-            break;
-        case 2:
-            angle = std::atan2 (p.Y, p.X) * 180 / M_PI;
-            angle += M_PI / 2;
-            break;
-        case 3:
-            angle = std::atan2 (p.X, p.Y) * 180 / M_PI;
-            angle += M_PI;
-            break;
-        case 4:
-            angle = std::atan2 (p.Y, p.X) * 180 / M_PI;
-            angle += 3 * M_PI / 2;
-            break;
-        }
-
-        return angle;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool ComparePoints (const Point& a, const Point& b) { return (GetClockwiseAngle (a) < GetClockwiseAngle (b)); }
-
-    //--------------------------------------------------------------------------------------------------
-    //--------------------------------------------------------------------------------------------------
-
     Collidable::Collidable (PhysicsManager* physicsManager)
         : m_PhysicsManager (physicsManager)
     {

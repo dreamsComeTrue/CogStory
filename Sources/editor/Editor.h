@@ -7,6 +7,7 @@
 #include "EditorFlagPointMode.h"
 #include "EditorPhysMode.h"
 #include "EditorTileMode.h"
+#include "EditorTriggerAreaMode.h"
 #include "Scene.h"
 
 namespace aga
@@ -30,6 +31,7 @@ namespace aga
         friend class EditorTileMode;
         friend class EditorPhysMode;
         friend class EditorFlagPointMode;
+        friend class EditorTriggerAreaMode;
 
     public:
         Editor (MainLoop* mainLoop);
@@ -79,6 +81,7 @@ namespace aga
         EditorTileMode m_EditorTileMode;
         EditorPhysMode m_EditorPhysMode;
         EditorFlagPointMode m_EditorFlagPointMode;
+        EditorTriggerAreaMode m_EditorTriggerAreaMode;
 
         CursorMode m_CursorMode;
 
@@ -88,8 +91,6 @@ namespace aga
 
         bool m_IsMousePan;
         bool m_IsMouseWheel;
-
-        TriggerArea* m_TriggerArea;
     };
 }
 

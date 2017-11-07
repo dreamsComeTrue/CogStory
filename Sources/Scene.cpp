@@ -8,6 +8,7 @@
 #include "Screen.h"
 
 #include "addons/json/json.hpp"
+#include "addons/triangulator/Triangulator.h"
 
 using json = nlohmann::json;
 
@@ -26,6 +27,42 @@ namespace aga
      *  }
      *
      */
+
+    //--------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
+
+    void TriggerArea::UpdatePolygons (Triangulator* triangulator)
+    {
+        if (Points.size () > 2)
+        {
+            Polygons.clear ();
+
+            int counter = 0;
+            std::vector<std::vector<Point>> result;
+            std::vector<Point> pointsCopy = Points;
+
+            int validate = triangulator->Validate (pointsCopy);
+
+            if (validate == 2)
+            {
+                std::reverse (pointsCopy.begin (), pointsCopy.end ());
+            }
+
+            if (triangulator->Validate (pointsCopy) == 0)
+            {
+                triangulator->ProcessVertices (&pointsCopy, result);
+
+                for (int j = 0; j < result.size (); ++j)
+                {
+                    Polygons.push_back (Polygon ());
+                    Polygons[counter].Points = result[j];
+                    Polygons[counter].BuildEdges ();
+
+                    ++counter;
+                }
+            }
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
@@ -282,13 +319,13 @@ namespace aga
 
             j["trigger_areas"] = json::array ({});
 
-            for (std::vector<TriggerArea>::iterator it = scene->m_TriggerAreas.begin ();
+            for (std::map<std::string, TriggerArea>::iterator it = scene->m_TriggerAreas.begin ();
                  it != scene->m_TriggerAreas.end (); ++it)
             {
                 json triggerObj = json::object ({});
 
-                triggerObj["name"] = it->Name;
-                triggerObj["poly"] = VectorToString (it->Points);
+                triggerObj["name"] = it->second.Name;
+                triggerObj["poly"] = VectorToString (it->second.Points);
 
                 j["trigger_areas"].push_back (triggerObj);
             }
@@ -423,12 +460,24 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::AddTriggerArea (const std::string& name, std::vector<Point>& poly)
+    void Scene::AddTriggerArea (const std::string& name, std::vector<Point> points)
     {
-        TriggerArea area{ name, poly };
+        TriggerArea area{ name, points };
 
-        m_TriggerAreas.push_back (area);
+        m_TriggerAreas.insert (std::make_pair (name, area));
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::map<std::string, TriggerArea>& Scene::GetTriggerAreas () { return m_TriggerAreas; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    TriggerArea& Scene::GetTriggerArea (const std::string& name) { return m_TriggerAreas[name]; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::RemoveTriggerArea (const std::string& name) { m_TriggerAreas.erase (name); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -436,6 +485,7 @@ namespace aga
     {
         m_Tiles.clear ();
         m_FlagPoints.clear ();
+        m_TriggerAreas.clear ();
     }
 
     //--------------------------------------------------------------------------------------------------

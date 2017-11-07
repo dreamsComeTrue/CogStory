@@ -59,7 +59,9 @@ namespace aga
     const ALLEGRO_COLOR COLOR_GRAY{ 0.3f, 0.3f, 0.3f, 1.0f };
     const ALLEGRO_COLOR COLOR_VIOLET{ 138 / 255.f, 43 / 255.f, 226 / 255.f, 1.0f };
     const ALLEGRO_COLOR COLOR_INDIGO{ 75 / 255.f, 0 / 255.f, 130 / 255.f, 1.0f };
-    const ALLEGRO_COLOR COLOR_PINK{ 55 / 255.f, 51 / 255.f, 153 / 255.f };
+    const ALLEGRO_COLOR COLOR_DARKBLUE{ 55 / 255.f, 51 / 255.f, 153 / 255.f };
+    const ALLEGRO_COLOR COLOR_ORANGE{ 255 / 255.f, 165 / 255.f, 0 / 255.f };
+    const ALLEGRO_COLOR COLOR_PINK{ 191 / 255.f, 63 / 255.f, 191 / 255.f };
 
     static float DegressToRadians (float degrees) { return degrees * M_PI / 180.0; }
 

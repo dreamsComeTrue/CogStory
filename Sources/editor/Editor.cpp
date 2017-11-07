@@ -15,8 +15,6 @@ namespace aga
     bool askNewScene = false;
     char menuFileName[512] = "0_home/0_0_home.scn";
 
-    char triggerAreaName[64] = {};
-
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
@@ -24,6 +22,7 @@ namespace aga
         : m_EditorTileMode (this)
         , m_EditorPhysMode (this)
         , m_EditorFlagPointMode (this)
+        , m_EditorTriggerAreaMode (this)
         , m_MainLoop (mainLoop)
         , m_IsSnapToGrid (true)
         , m_IsMousePan (false)
@@ -31,7 +30,6 @@ namespace aga
         , m_BaseGridSize (16)
         , m_GridSize (16)
         , m_CursorMode (CursorMode::TileSelectMode)
-        , m_TriggerArea (nullptr)
     {
     }
 
@@ -196,9 +194,6 @@ namespace aga
 
             if (event->mouse.button == 1)
             {
-                m_EditorFlagPointMode.m_FlagPoint
-                    = m_EditorFlagPointMode.GetFlagPointUnderCursor (event->mouse.x, event->mouse.y);
-
                 if (m_CursorMode == CursorMode::TileSelectMode && m_EditorFlagPointMode.m_FlagPoint == "")
                 {
                     Rect r;
@@ -240,20 +235,42 @@ namespace aga
                 {
                     m_EditorFlagPointMode.InsertFlagPointAtCursor (event->mouse.x, event->mouse.y);
                 }
+                else if (m_CursorMode == CursorMode::EditTriggerAreaMode)
+                {
+                    m_EditorTriggerAreaMode.InsertTriggerAreaAtCursor (event->mouse.x, event->mouse.y);
+                }
+
+                m_EditorFlagPointMode.m_FlagPoint
+                    = m_EditorFlagPointMode.GetFlagPointUnderCursor (event->mouse.x, event->mouse.y);
+
+                m_EditorTriggerAreaMode.m_TriggerPoint
+                    = m_EditorTriggerAreaMode.GetTriggerPointUnderCursor (event->mouse.x, event->mouse.y);
+                m_EditorTriggerAreaMode.m_TriggerArea
+                    = m_EditorTriggerAreaMode.GetTriggerAreaUnderCursor (event->mouse.x, event->mouse.y);
+
+                if (m_EditorTriggerAreaMode.m_TriggerPoint && m_EditorTriggerAreaMode.m_TriggerArea)
+                {
+                    m_CursorMode = CursorMode::EditTriggerAreaMode;
+                }
             }
 
             if (event->mouse.button == 2)
             {
+                bool flagPointRemoved
+                    = m_EditorFlagPointMode.RemoveFlagPointUnderCursor (event->mouse.x, event->mouse.y);
+                bool triggerPointRemoved
+                    = m_EditorTriggerAreaMode.RemoveTriggerPointUnderCursor (event->mouse.x, event->mouse.y);
+                bool physPointRemoved = false;
+
                 if (m_CursorMode == CursorMode::EditPhysBodyMode)
                 {
-                    m_EditorPhysMode.RemovePhysPointUnderCursor (event->mouse.x, event->mouse.y);
+                    physPointRemoved = m_EditorPhysMode.RemovePhysPointUnderCursor (event->mouse.x, event->mouse.y);
                 }
-                else
+
+                if (!flagPointRemoved && !triggerPointRemoved && !physPointRemoved)
                 {
                     m_CursorMode = CursorMode::TileSelectMode;
                 }
-
-                m_EditorFlagPointMode.RemoveFlagPointUnderCursor (event->mouse.x, event->mouse.y);
             }
         }
         else if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
@@ -263,11 +280,29 @@ namespace aga
             if (m_EditorPhysMode.m_PhysPoint && m_EditorTileMode.m_SelectedTile && event->mouse.button == 1)
             {
                 m_EditorTileMode.m_SelectedTile->UpdatePhysPolygon ();
+
+                if (!m_EditorPhysMode.m_PhysPoint && m_EditorPhysMode.m_PhysPoly
+                    && !(*m_EditorPhysMode.m_PhysPoly).empty ())
+                {
+                    m_EditorPhysMode.m_PhysPoint = &(*m_EditorPhysMode.m_PhysPoly)[0];
+                }
+            }
+
+            if (m_EditorTriggerAreaMode.m_TriggerArea && event->mouse.button == 1)
+            {
+                m_EditorTriggerAreaMode.m_TriggerArea->UpdatePolygons (
+                    &m_MainLoop->GetPhysicsManager ().GetTriangulator ());
+
+                if (!m_EditorTriggerAreaMode.m_TriggerPoint && m_EditorTriggerAreaMode.m_TriggerArea
+                    && !m_EditorTriggerAreaMode.m_TriggerArea->Points.empty ())
+                {
+                    m_EditorTriggerAreaMode.m_TriggerPoint = &m_EditorTriggerAreaMode.m_TriggerArea->Points[0];
+                }
             }
         }
         else if (event->type == ALLEGRO_EVENT_MOUSE_AXES)
         {
-            if (!m_EditorFlagPointMode.MoveSelectedFlagPoint ())
+            if (!m_EditorFlagPointMode.MoveSelectedFlagPoint () && !m_EditorTriggerAreaMode.MoveSelectedTriggerPoint ())
             {
                 if (m_CursorMode == CursorMode::TileEditMode)
                 {
@@ -280,9 +315,6 @@ namespace aga
             }
 
             HandleCameraMovement (event->mouse);
-        }
-        else if (event->type == ALLEGRO_EVENT_DISPLAY_RESIZE)
-        {
         }
     }
 
@@ -356,6 +388,7 @@ namespace aga
         }
 
         m_EditorFlagPointMode.DrawFlagPoints (state.x, state.y);
+        m_EditorTriggerAreaMode.DrawTriggerAreas (state.x, state.y);
 
         if (m_EditorTileMode.m_IsDrawTiles)
         {
@@ -792,6 +825,7 @@ namespace aga
 
         if (ImGui::Button ("TRIGGER AREA", buttonSize))
         {
+            strset (m_EditorTriggerAreaMode.m_TriggerAreaName, 0);
             ImGui::OpenPopup ("Trigger Area");
         }
 
@@ -804,10 +838,11 @@ namespace aga
                 ImGui::SetKeyboardFocusHere (0);
             }
 
-            if (ImGui::InputText (
-                    "##triggerArea", triggerAreaName, sizeof (triggerAreaName), ImGuiInputTextFlags_EnterReturnsTrue))
+            if (ImGui::InputText ("##triggerArea", m_EditorTriggerAreaMode.m_TriggerAreaName,
+                    sizeof (m_EditorTriggerAreaMode.m_TriggerAreaName), ImGuiInputTextFlags_EnterReturnsTrue))
             {
                 m_CursorMode = CursorMode::EditTriggerAreaMode;
+                m_EditorTriggerAreaMode.NewTriggerArea ();
                 ImGui::CloseCurrentPopup ();
             }
             ImGui::Separator ();
@@ -815,6 +850,7 @@ namespace aga
             if (ImGui::Button ("OK", ImVec2 (120, 0)))
             {
                 m_CursorMode = CursorMode::EditTriggerAreaMode;
+                m_EditorTriggerAreaMode.NewTriggerArea ();
                 ImGui::CloseCurrentPopup ();
             }
 
@@ -822,7 +858,7 @@ namespace aga
 
             if (ImGui::Button ("Cancel", ImVec2 (120, 0)))
             {
-                strset (triggerAreaName, 0);
+                strset (m_EditorTriggerAreaMode.m_TriggerAreaName, 0);
                 m_CursorMode = CursorMode::TileSelectMode;
                 ImGui::CloseCurrentPopup ();
             }

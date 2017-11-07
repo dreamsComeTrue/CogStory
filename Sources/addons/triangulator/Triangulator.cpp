@@ -1,9 +1,67 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
+#define _USE_MATH_DEFINES
 #include "Triangulator.h"
+#include <cmath>
 
 namespace aga
 {
+    //--------------------------------------------------------------------------------------------------
+
+    int GetQuadrant (const Point& p)
+    {
+        int result = 4; // origin
+
+        if (p.X > 0 && p.Y > 0)
+        {
+            return 1;
+        }
+        else if (p.X < 0 && p.Y > 0)
+        {
+            return 2;
+        }
+        else if (p.X < 0 && p.Y < 0)
+        {
+            return 3;
+        }
+        // else 4th quadrant
+        return result;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    float GetClockwiseAngle (const Point& p)
+    {
+        float angle = 0.0;
+        int quadrant = GetQuadrant (p);
+
+        /*add the appropriate pi/2 value based on the quadrant. (one of 0, pi/2, pi, 3pi/2)*/
+        switch (quadrant)
+        {
+        case 1:
+            angle = std::atan2 (p.X, p.Y) * 180 / M_PI;
+            break;
+        case 2:
+            angle = std::atan2 (p.Y, p.X) * 180 / M_PI;
+            angle += M_PI / 2;
+            break;
+        case 3:
+            angle = std::atan2 (p.X, p.Y) * 180 / M_PI;
+            angle += M_PI;
+            break;
+        case 4:
+            angle = std::atan2 (p.Y, p.X) * 180 / M_PI;
+            angle += 3 * M_PI / 2;
+            break;
+        }
+
+        return angle;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool ComparePoints (const Point& a, const Point& b) { return (GetClockwiseAngle (a) < GetClockwiseAngle (b)); }
+
 #define MAX_VALUE 2147483647
 
     //--------------------------------------------------------------------------------------------------
@@ -205,8 +263,8 @@ namespace aga
                 {
                     if (!fl)
                     {
-                        d = Det (
-                          verticesVec[i].X, verticesVec[i].Y, verticesVec[i2].X, verticesVec[i2].Y, verticesVec[j].X, verticesVec[j].Y);
+                        d = Det (verticesVec[i].X, verticesVec[i].Y, verticesVec[i2].X, verticesVec[i2].Y,
+                            verticesVec[j].X, verticesVec[j].Y);
                         if ((d > 0))
                         {
                             fl = true;
@@ -216,14 +274,8 @@ namespace aga
                     if ((j != i3))
                     {
                         j2 = (j < n - 1) ? j + 1 : 0;
-                        if (HitSegment (verticesVec[i].X,
-                                        verticesVec[i].Y,
-                                        verticesVec[i2].X,
-                                        verticesVec[i2].Y,
-                                        verticesVec[j].X,
-                                        verticesVec[j].Y,
-                                        verticesVec[j2].X,
-                                        verticesVec[j2].Y))
+                        if (HitSegment (verticesVec[i].X, verticesVec[i].Y, verticesVec[i2].X, verticesVec[i2].Y,
+                                verticesVec[j].X, verticesVec[j].Y, verticesVec[j2].X, verticesVec[j2].Y))
                         {
                             ret = 1; // TODO: This may be wrong!!!
                         }

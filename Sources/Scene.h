@@ -11,15 +11,17 @@
 
 namespace aga
 {
-#define PTM_RATIO 64.0
-
     class SceneManager;
     class AtlasManager;
+    class Triangulator;
 
     struct TriggerArea
     {
-        std::string Name;
-        std::vector<Point> Points;
+        std::string Name = "";
+        std::vector<Point> Points = {};
+        std::vector<Polygon> Polygons = {};
+
+        void UpdatePolygons (Triangulator* triangulator);
     };
 
     struct Tile : public Entity, public Collidable
@@ -72,7 +74,10 @@ namespace aga
         Point GetFlagPoint (const std::string& name);
         std::map<std::string, Point>& GetFlagPoints ();
 
-        void AddTriggerArea (const std::string& name, std::vector<Point>& poly);
+        void AddTriggerArea (const std::string& name, std::vector<Point> points);
+        std::map<std::string, TriggerArea>& GetTriggerAreas ();
+        TriggerArea& GetTriggerArea (const std::string& name);
+        void RemoveTriggerArea (const std::string& name);
 
         void SortTiles ();
 
@@ -91,8 +96,8 @@ namespace aga
         std::string m_Name;
         Point m_Size;
         std::map<std::string, Point> m_FlagPoints;
+        std::map<std::string, TriggerArea> m_TriggerAreas;
         std::vector<Tile*> m_Tiles;
-        std::vector<TriggerArea> m_TriggerAreas;
         SceneManager* m_SceneManager;
 
         bool m_DrawPhysData;
