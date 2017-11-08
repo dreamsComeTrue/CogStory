@@ -343,24 +343,33 @@ namespace aga
 
     void Scene::BeforeEnter ()
     {
-        m_SceneManager->GetPlayer ().BeforeEnter ();
-        RunAllScripts ("void BeforeEnterScene ()");
+        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
+        {
+            m_SceneManager->GetPlayer ().BeforeEnter ();
+            RunAllScripts ("void BeforeEnterScene ()");
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void Scene::AfterLeave ()
     {
-        m_SceneManager->GetPlayer ().AfterLeave ();
-        RunAllScripts ("void AfterLeaveScene ()");
+        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
+        {
+            m_SceneManager->GetPlayer ().AfterLeave ();
+            RunAllScripts ("void AfterLeaveScene ()");
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void Scene::Update (float deltaTime)
     {
-        m_SceneManager->GetPlayer ().Update (deltaTime);
-        UpdateScripts (deltaTime);
+        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
+        {
+            m_SceneManager->GetPlayer ().Update (deltaTime);
+            UpdateScripts (deltaTime);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -536,21 +545,41 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::AddTriggerCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func)
+    void Scene::AddOnEnterCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func)
     {
         if (m_TriggerAreas.find (triggerName) != m_TriggerAreas.end ())
         {
-            m_TriggerAreas[triggerName].TriggerCallback = func;
+            m_TriggerAreas[triggerName].OnEnterCallback = func;
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::AddTriggerCallback (const std::string& triggerName, asIScriptFunction* func)
+    void Scene::AddOnEnterCallback (const std::string& triggerName, asIScriptFunction* func)
     {
         if (m_TriggerAreas.find (triggerName) != m_TriggerAreas.end ())
         {
-            m_TriggerAreas[triggerName].ScriptTriggerCallback = func;
+            m_TriggerAreas[triggerName].ScriptOnEnterCallback = func;
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::AddOnLeaveCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func)
+    {
+        if (m_TriggerAreas.find (triggerName) != m_TriggerAreas.end ())
+        {
+            m_TriggerAreas[triggerName].OnLeaveCallback = func;
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::AddOnLeaveCallback (const std::string& triggerName, asIScriptFunction* func)
+    {
+        if (m_TriggerAreas.find (triggerName) != m_TriggerAreas.end ())
+        {
+            m_TriggerAreas[triggerName].ScriptOnLeaveCallback = func;
         }
     }
 

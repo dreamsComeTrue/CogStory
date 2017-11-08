@@ -2,14 +2,20 @@ const float SPEED = 15.0;
 const int TWEEN_1 = 1;
 const int TWEEN_2 = 2;
 const int TWEEN_3 = 3;
+SpeechFrame@ frame;
 
 void Start ()
 {
 	Point screenSize = GetWindowSize ();
 	Point playerSize = player.GetSize ();
 
-	Point spawn = GetFlagPoint ("XX");
+	Point spawn = GetFlagPoint ("D");
 	player.SetPosition (spawn.X - playerSize.Width * 0.5, spawn.Y - playerSize.Height * 0.5);
+
+	Point frameSize (300, 100);
+	Rect r (Point (screenSize.Width / 2 - frameSize.Width / 2, screenSize.Height - frameSize.Height - 10), frameSize);
+	@frame = AddSpeechFrame ("SPEECH", "Hello!", r);
+	frame.SetVisible (false);
 }
 
 void BeforeEnterScene ()
@@ -17,7 +23,9 @@ void BeforeEnterScene ()
 	Point flag1 = GetFlagPoint ("A");
 	Point flag2 = GetFlagPoint ("B");
 
-	AddTriggerCallback ("sad", Func);
+	AddOnEnterCallback ("sad", Func);
+	AddOnEnterCallback ("TOP", Func1);
+	AddOnLeaveCallback ("TOP", Func2);
 
   //  AddTween (TWEEN_1, flag1, flag2, 2000, PlayerTween, NextTween1);
 }
@@ -31,9 +39,27 @@ void Func (Point p)
 {
 	Point screenSize = GetWindowSize ();
 	Point playerSize = player.GetSize ();
+	Point playerPos = player.GetPosition ();
 
-	Point spawn = GetFlagPoint ("XX");
-	player.SetPosition (spawn.X - playerSize.Width * 0.5, spawn.Y - playerSize.Height * 0.5);
+//	Point spawn = GetFlagPoint ("XX");
+	//player.SetPosition (spawn.X - playerSize.Width * 0.5, spawn.Y - playerSize.Height * 0.5);
+	//player.SetPosition (playerPos.X + 60, playerPos.Y);
+}
+
+void Func1 (Point p)
+{
+	Point playerPos = player.GetPosition ();
+
+//	Point spawn = GetFlagPoint ("XX");
+	//player.SetPosition (spawn.X - playerSize.Width * 0.5, spawn.Y - playerSize.Height * 0.5);
+	//player.SetPosition (playerPos.X, playerPos.Y - 60);
+
+	frame.SetVisible (true);	
+}
+
+void Func2 (Point p)
+{
+	frame.SetVisible (false);	
 }
 
 bool PlayerTween (float progress, Point value)

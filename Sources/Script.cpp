@@ -7,6 +7,40 @@ namespace aga
 {
     //---------------------------------------------------------------------------
 
+    std::string GetCallStack (asIScriptContext* context)
+    {
+        std::string str ("AngelScript callstack:\n");
+
+        // Append the call stack
+        for (asUINT i = 0; i < context->GetCallstackSize (); i++)
+        {
+            const char* scriptSection;
+            int column;
+            asIScriptFunction* func = context->GetFunction (i);
+            int line = context->GetLineNumber (i, &column, &scriptSection);
+
+            char buffer[1024] = {};
+            sprintf (buffer, "\t%s:%s:%d,%d\n", scriptSection, func->GetDeclaration (), line, column);
+            str += buffer;
+        }
+
+        return str;
+    }
+
+    //---------------------------------------------------------------------------
+
+    void ExceptionCallback (asIScriptContext* context)
+    {
+        char buffer[1024] = {};
+        sprintf (buffer, "- Exception '%s' in '%s'\n%s", context->GetExceptionString (),
+            context->GetExceptionFunction ()->GetDeclaration (), GetCallStack (context));
+
+        printf (buffer);
+    }
+
+    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+
     Script::Script (asIScriptModule* module, ScriptManager* manager, const std::string& name)
         : m_Module (module)
         , m_Manager (manager)
@@ -31,6 +65,7 @@ namespace aga
     bool Script::Initialize ()
     {
         m_FuncContext = m_Module->GetEngine ()->RequestContext ();
+        m_FuncContext->SetExceptionCallback (asFUNCTION (ExceptionCallback), this, asCALL_THISCALL);
 
         Run ("void Start ()");
 

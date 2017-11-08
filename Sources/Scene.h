@@ -20,10 +20,14 @@ namespace aga
         std::string Name = "";
         std::vector<Point> Points = {};
         std::vector<Polygon> Polygons = {};
-        std::function<void(float dx, float dy)> TriggerCallback = nullptr;
-        asIScriptFunction* ScriptTriggerCallback = nullptr;
+        std::function<void(float dx, float dy)> OnEnterCallback = nullptr;
+        std::function<void(float dx, float dy)> OnLeaveCallback = nullptr;
+        asIScriptFunction* ScriptOnEnterCallback = nullptr;
+        asIScriptFunction* ScriptOnLeaveCallback = nullptr;
 
         void UpdatePolygons (Triangulator* triangulator);
+
+        bool WasEntered = false;
     };
 
     struct Tile : public Entity, public Collidable
@@ -91,8 +95,11 @@ namespace aga
         bool IsDrawPhysData ();
         QuadTreeNode& GetQuadTree ();
 
-        void AddTriggerCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
-        void AddTriggerCallback (const std::string& triggerName, asIScriptFunction* func);
+        void AddOnEnterCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
+        void AddOnEnterCallback (const std::string& triggerName, asIScriptFunction* func);
+
+        void AddOnLeaveCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
+        void AddOnLeaveCallback (const std::string& triggerName, asIScriptFunction* func);
 
     private:
         void DrawQuadTree (QuadTreeNode* node);

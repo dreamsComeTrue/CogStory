@@ -18,6 +18,10 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_ttf.h>
 
+extern "C" {
+#include "addons/nine-patch/nine_patch.h"
+}
+
 #include <angelscript.h>
 #include <scriptbuilder/scriptbuilder.h>
 #include <scriptstdstring/scriptstdstring.h>

@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "Common.h"
 #include "Player.h"
+#include "SpeechFrameManager.h"
 
 namespace aga
 {
@@ -35,12 +36,18 @@ namespace aga
         MainLoop* GetMainLoop ();
         AtlasManager* GetAtlasManager ();
 
-        void AddTriggerCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
-        void AddTriggerCallback (const std::string& triggerName, asIScriptFunction* func);
+        void AddOnEnterCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
+        void AddOnEnterCallback (const std::string& triggerName, asIScriptFunction* func);
+
+        void AddOnLeaveCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
+        void AddOnLeaveCallback (const std::string& triggerName, asIScriptFunction* func);
 
         Point GetFlagPoint (const std::string& name);
 
+        SpeechFrameManager& GetSpeechFrameManager ();
+
     private:
+        SpeechFrameManager m_SpeechFrameManager;
         Player m_Player;
         Camera m_Camera;
 

@@ -14,7 +14,8 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     SceneManager::SceneManager (MainLoop* mainLoop)
-        : m_ActiveScene (nullptr)
+        : m_SpeechFrameManager (this)
+        , m_ActiveScene (nullptr)
         , m_MainLoop (mainLoop)
         , m_Player (this)
         , m_Camera (mainLoop->GetScreen ())
@@ -36,6 +37,8 @@ namespace aga
 
     bool SceneManager::Initialize ()
     {
+        Lifecycle::Initialize ();
+
         m_AtlasManager = new AtlasManager ();
         m_AtlasManager->Initialize ();
 
@@ -50,7 +53,9 @@ namespace aga
                 screenSize.Height * 0.5 - playerSize.Height * 0.5 - playerPosition.Y * scale.Y);
         };
 
-        Lifecycle::Initialize ();
+        m_SpeechFrameManager.Initialize ();
+
+        return true;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -60,13 +65,14 @@ namespace aga
         SAFE_DELETE (m_AtlasManager);
 
         m_Player.Destroy ();
+        m_SpeechFrameManager.Destroy ();
 
         for (std::map<ResourceID, Scene*>::iterator it = m_Scenes.begin (); it != m_Scenes.end (); it++)
         {
             SAFE_DELETE (it->second);
         }
 
-        Lifecycle::Destroy ();
+        return Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -121,6 +127,7 @@ namespace aga
         if (m_ActiveScene != nullptr)
         {
             m_ActiveScene->Update (deltaTime);
+            m_SpeechFrameManager.Update (deltaTime);
         }
 
         return true;
@@ -133,6 +140,9 @@ namespace aga
         if (m_ActiveScene != nullptr)
         {
             m_ActiveScene->Render (deltaTime);
+
+            m_Camera.UseIdentityTransform ();
+            m_SpeechFrameManager.Render (deltaTime);
         }
     }
 
@@ -154,21 +164,41 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneManager::AddTriggerCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func)
+    void SceneManager::AddOnEnterCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func)
     {
         if (m_ActiveScene)
         {
-            m_ActiveScene->AddTriggerCallback (triggerName, func);
+            m_ActiveScene->AddOnEnterCallback (triggerName, func);
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneManager::AddTriggerCallback (const std::string& triggerName, asIScriptFunction* func)
+    void SceneManager::AddOnEnterCallback (const std::string& triggerName, asIScriptFunction* func)
     {
         if (m_ActiveScene)
         {
-            m_ActiveScene->AddTriggerCallback (triggerName, func);
+            m_ActiveScene->AddOnEnterCallback (triggerName, func);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::AddOnLeaveCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func)
+    {
+        if (m_ActiveScene)
+        {
+            m_ActiveScene->AddOnLeaveCallback (triggerName, func);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::AddOnLeaveCallback (const std::string& triggerName, asIScriptFunction* func)
+    {
+        if (m_ActiveScene)
+        {
+            m_ActiveScene->AddOnLeaveCallback (triggerName, func);
         }
     }
 
@@ -183,6 +213,10 @@ namespace aga
 
         return { 0, 0 };
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    SpeechFrameManager& SceneManager::GetSpeechFrameManager () { return m_SpeechFrameManager; }
 
     //--------------------------------------------------------------------------------------------------
 }

@@ -5,10 +5,6 @@
 #include "Screen.h"
 #include "StateManager.h"
 
-extern "C" {
-#include "addons/nine-patch/nine_patch.h"
-}
-
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------

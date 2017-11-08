@@ -4,6 +4,8 @@
 #include "MainLoop.h"
 #include "Screen.h"
 #include "Script.h"
+#include "SpeechFrame.h"
+#include "SpeechFrameManager.h"
 
 namespace aga
 {
@@ -153,6 +155,18 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    static void ConstructRect (Rect* ptr) { new (ptr) Rect (); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    static void ConstructRectCopy (const Rect& vector, Rect* ptr) { new (ptr) Rect (vector); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    static void ConstructRectXY (Point topLeft, Point bottomRight, Rect* ptr) { new (ptr) Rect (topLeft, bottomRight); }
+
+    //--------------------------------------------------------------------------------------------------
+
     static void Log (const std::string& data) { printf ("%s\n", data); }
 
     //--------------------------------------------------------------------------------------------------
@@ -191,6 +205,28 @@ namespace aga
 
         r = m_ScriptEngine->RegisterGlobalFunction (
             "void Log (Point &in)", asFUNCTIONPR (Log, (Point&), void), asCALL_CDECL);
+        assert (r >= 0);
+
+        // Rect
+        r = m_ScriptEngine->RegisterObjectType (
+            "Rect", sizeof (Rect), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_CLASS_CA | asOBJ_APP_CLASS_ALLFLOATS);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectBehaviour (
+            "Rect", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION (ConstructRect), asCALL_CDECL_OBJLAST);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectBehaviour (
+            "Rect", asBEHAVE_CONSTRUCT, "void f(const Rect &in)", asFUNCTION (ConstructRectCopy), asCALL_CDECL_OBJLAST);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectBehaviour (
+            "Rect", asBEHAVE_CONSTRUCT, "void f(Point, Point)", asFUNCTION (ConstructRectXY), asCALL_CDECL_OBJLAST);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectProperty ("Rect", "Point TopLeft", asOFFSET (Rect, Dim.TopLeft));
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectProperty ("Rect", "Point BottomRight", asOFFSET (Rect, Dim.BottomRight));
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectProperty ("Rect", "Point Pos", asOFFSET (Rect, Transform.Pos));
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectProperty ("Rect", "Point Size", asOFFSET (Rect, Transform.Size));
         assert (r >= 0);
 
         //        //  Scene
@@ -249,9 +285,30 @@ namespace aga
         //  Trigger Area
         r = m_ScriptEngine->RegisterFuncdef ("void TriggerFunc (Point)");
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("void AddTriggerCallback (const string &in, TriggerFunc @tf)",
-            asMETHODPR (SceneManager, AddTriggerCallback, (const std::string&, asIScriptFunction*), void),
+        r = m_ScriptEngine->RegisterGlobalFunction ("void AddOnEnterCallback (const string &in, TriggerFunc @tf)",
+            asMETHODPR (SceneManager, AddOnEnterCallback, (const std::string&, asIScriptFunction*), void),
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction ("void AddOnLeaveCallback (const string &in, TriggerFunc @tf)",
+            asMETHODPR (SceneManager, AddOnLeaveCallback, (const std::string&, asIScriptFunction*), void),
+            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+
+        //  Speech Frame
+        r = m_ScriptEngine->RegisterObjectType ("SpeechFrame", 0, asOBJ_REF | asOBJ_NOCOUNT);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "SpeechFrame", "void SetVisible (bool)", asMETHOD (SpeechFrame, SetVisible), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "SpeechFrame", "bool IsVisible ()", asMETHOD (SpeechFrame, IsVisible), asCALL_THISCALL);
+        assert (r >= 0);
+
+        //  Speech Frame Manager
+        r = m_ScriptEngine->RegisterGlobalFunction (
+            "SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Rect)",
+            asMETHOD (SpeechFrameManager, AddSpeechFrame), asCALL_THISCALL_ASGLOBAL,
+            &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);
 
         //  Global

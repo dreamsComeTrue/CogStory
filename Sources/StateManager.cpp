@@ -31,11 +31,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool StateManager::Initialize () { Lifecycle::Initialize (); }
+    bool StateManager::Initialize () { return Lifecycle::Initialize (); }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool StateManager::Destroy () { Lifecycle::Destroy (); }
+    bool StateManager::Destroy () { return Lifecycle::Destroy (); }
 
     //--------------------------------------------------------------------------------------------------
 
