@@ -32,8 +32,11 @@ namespace aga
     void ExceptionCallback (asIScriptContext* context)
     {
         char buffer[1024] = {};
-        sprintf (buffer, "- Exception '%s' in '%s'\n%s", context->GetExceptionString (),
-            context->GetExceptionFunction ()->GetDeclaration (), GetCallStack (context));
+        sprintf (buffer,
+                 "- Exception '%s' in '%s'\n%s",
+                 context->GetExceptionString (),
+                 context->GetExceptionFunction ()->GetDeclaration (),
+                 GetCallStack (context));
 
         printf (buffer);
     }
@@ -42,11 +45,11 @@ namespace aga
     //---------------------------------------------------------------------------
 
     Script::Script (asIScriptModule* module, ScriptManager* manager, const std::string& name)
-        : m_Module (module)
-        , m_Manager (manager)
-        , m_FuncContext (nullptr)
-        , m_UpdateFunction (nullptr)
-        , m_Name (name)
+      : m_Module (module)
+      , m_Manager (manager)
+      , m_FuncContext (nullptr)
+      , m_UpdateFunction (nullptr)
+      , m_Name (name)
     {
     }
 
@@ -64,12 +67,14 @@ namespace aga
 
     bool Script::Initialize ()
     {
+        Lifecycle::Initialize ();
+
         m_FuncContext = m_Module->GetEngine ()->RequestContext ();
         m_FuncContext->SetExceptionCallback (asFUNCTION (ExceptionCallback), this, asCALL_THISCALL);
 
         Run ("void Start ()");
 
-        return Lifecycle::Initialize ();
+        return true;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -150,8 +155,7 @@ namespace aga
             if (r == asEXECUTION_EXCEPTION)
             {
                 // An exception occurred, let the script writer know what happened so it can be corrected.
-                printf ("An exception '%s' occurred. Please correct the code and try again.\n",
-                    m_FuncContext->GetExceptionString ());
+                printf ("An exception '%s' occurred. Please correct the code and try again.\n", m_FuncContext->GetExceptionString ());
             }
 
             return false;

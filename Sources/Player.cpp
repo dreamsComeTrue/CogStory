@@ -1,5 +1,6 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 #include "Player.h"
+#include "AudioSample.h"
 #include "MainLoop.h"
 #include "PhysicsManager.h"
 #include "Scene.h"
@@ -19,11 +20,11 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Player::Player (SceneManager* sceneManager)
-        : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
-        , Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
-        , m_SceneManager (sceneManager)
-        , m_Image (nullptr)
-        , m_FollowCamera (true)
+      : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
+      , Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
+      , m_SceneManager (sceneManager)
+      , m_Image (nullptr)
+      , m_FollowCamera (true)
     {
     }
 
@@ -39,12 +40,16 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    AudioSample* sample;
+
     bool Player::Initialize ()
     {
         m_Image = al_load_bitmap (GetResourcePath (ResourceID::GFX_PLAYER).c_str ());
         Bounds.Transform.Size = { 64, 64 };
 
         InitializeAnimations ();
+
+        sample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile ("FOOT_STEP", GetResourcePath (SOUND_FOOT_STEP));
 
         Lifecycle::Initialize ();
     }
@@ -104,8 +109,16 @@ namespace aga
         int width = frame.Transform.Size.Width;
         int height = frame.Transform.Size.Height;
 
-        al_draw_scaled_bitmap (m_Image, frame.Dim.TopLeft.X, frame.Dim.TopLeft.Y, width, height, Bounds.Transform.Pos.X,
-            Bounds.Transform.Pos.Y, width, height, 0);
+        al_draw_scaled_bitmap (m_Image,
+                               frame.Dim.TopLeft.X,
+                               frame.Dim.TopLeft.Y,
+                               width,
+                               height,
+                               Bounds.Transform.Pos.X,
+                               Bounds.Transform.Pos.Y,
+                               width,
+                               height,
+                               0);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -138,6 +151,8 @@ namespace aga
     }
 
     //--------------------------------------------------------------------------------------------------
+
+    float sampleCounter = 0;
 
     void Player::HandleInput (float deltaTime)
     {
@@ -177,11 +192,10 @@ namespace aga
 
             for (Polygon& polygon : area.Polygons)
             {
-                if (area.OnEnterCallback || area.ScriptOnEnterCallback || area.OnLeaveCallback
-                    || area.ScriptOnLeaveCallback)
+                if (area.OnEnterCallback || area.ScriptOnEnterCallback || area.OnLeaveCallback || area.ScriptOnLeaveCallback)
                 {
-                    PolygonCollisionResult r = m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (
-                        GetPhysPolygon (0), polygon, { dx, dy });
+                    PolygonCollisionResult r =
+                      m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (GetPhysPolygon (0), polygon, { dx, dy });
 
                     if (r.WillIntersect || r.Intersect)
                     {
@@ -189,21 +203,17 @@ namespace aga
                         {
                             if (area.OnEnterCallback)
                             {
-                                area.OnEnterCallback (
-                                    dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y);
+                                area.OnEnterCallback (dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y);
                             }
 
                             if (area.ScriptOnEnterCallback)
                             {
                                 const char* moduleName = area.ScriptOnEnterCallback->GetModuleName ();
-                                Script* script
-                                    = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (
-                                        moduleName);
+                                Script* script = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (moduleName);
 
                                 if (script)
                                 {
-                                    Point point
-                                        = { dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y };
+                                    Point point = { dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y };
                                     asIScriptContext* ctx = script->GetContext ();
                                     ctx->Prepare (area.ScriptOnEnterCallback);
                                     ctx->SetArgObject (0, &point);
@@ -227,8 +237,7 @@ namespace aga
                         if (area.ScriptOnLeaveCallback)
                         {
                             const char* moduleName = area.ScriptOnLeaveCallback->GetModuleName ();
-                            Script* script = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (
-                                moduleName);
+                            Script* script = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (moduleName);
 
                             if (script)
                             {
@@ -252,7 +261,7 @@ namespace aga
                 for (int i = 0; i < tile->GetPhysPolygonsCount (); ++i)
                 {
                     PolygonCollisionResult r = m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (
-                        GetPhysPolygon (0), tile->GetPhysPolygon (i), { dx, dy });
+                      GetPhysPolygon (0), tile->GetPhysPolygon (i), { dx, dy });
 
                     if (r.WillIntersect)
                     {
@@ -274,7 +283,15 @@ namespace aga
             {
                 Move (dx, dy);
             }
+
+            if (sampleCounter > 0.4f)
+            {
+                sample->Play ();
+                sampleCounter = 0;
+            }
         }
+
+        sampleCounter += deltaTime;
     }
 
     //--------------------------------------------------------------------------------------------------

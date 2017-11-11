@@ -16,23 +16,31 @@ namespace aga
     std::string FONTS = "fonts";
     std::string SCENES_HOME = "scenes/0_home";
     std::string SCRIPTS_HOME = "scripts/0_home";
+    std::string SOUNDS = "sounds";
 
     Resource g_Resources[] = {
         //  Graphics
-        { GFX_DEFAULT_SKIN, GFX, "DefaultSkin.png" }, { GFX_MENU_COG, GFX_UI, "cog.png" },
-        { GFX_TEXT_FRAME, GFX_UI, "text_frame.9.png" }, { GFX_PLAYER, GFX_CHARACTERS, "player.png" },
+        { GFX_DEFAULT_SKIN, GFX, "DefaultSkin.png" },
+        { GFX_MENU_COG, GFX_UI, "cog.png" },
+        { GFX_TEXT_FRAME, GFX_UI, "text_frame.9.png" },
+        { GFX_PLAYER, GFX_CHARACTERS, "player.png" },
 
         { PACK_0_0_HOME, GFX_0_HOME, "0_0_home.pack" },
 
         //  Fonts
-        { FONT_MAIN_SMALL, FONTS, "coders_crux.ttf" }, { FONT_MAIN_MEDIUM, FONTS, "coders_crux.ttf" },
-        { FONT_MAIN_NORMAL, FONTS, "coders_crux.ttf" }, { FONT_EDITOR, FONTS, "OpenSans.ttf" },
+        { FONT_MAIN_SMALL, FONTS, "coders_crux.ttf" },
+        { FONT_MAIN_MEDIUM, FONTS, "coders_crux.ttf" },
+        { FONT_MAIN_NORMAL, FONTS, "coders_crux.ttf" },
+        { FONT_EDITOR, FONTS, "OpenSans.ttf" },
 
         //  Scenes
         { SCENE_0_0, SCENES_HOME, "0_0_home.scn" },
 
         //  Scripts
-        { SCRIPT_0_0, SCRIPTS_HOME, "0_0_home.script" }
+        { SCRIPT_0_0, SCRIPTS_HOME, "0_0_home.script" },
+
+        //  Sounds
+        { SOUND_FOOT_STEP, SOUNDS, "38874__swuing__footstep-grass.wav" }
     };
 
     //--------------------------------------------------------------------------------------------------

@@ -28,7 +28,10 @@ namespace aga
         SCENE_0_0,
 
         //  Scripts
-        SCRIPT_0_0
+        SCRIPT_0_0,
+
+        //  Sounds
+        SOUND_FOOT_STEP
     };
 
     struct Resource

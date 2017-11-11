@@ -12,11 +12,11 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Screen::Screen (unsigned width, unsigned height)
-        : m_Width (width)
-        , m_Height (height)
-        , m_RealSize ((int)width, (int)height)
-        , m_Redraw (false)
-        , m_BackgroundColor (al_map_rgb (0, 0, 0))
+      : m_Width (width)
+      , m_Height (height)
+      , m_RealSize ((int)width, (int)height)
+      , m_Redraw (false)
+      , m_BackgroundColor (al_map_rgb (0, 0, 0))
     {
     }
 
@@ -54,6 +54,24 @@ namespace aga
 
         if (!al_init_image_addon ())
         {
+            return false;
+        }
+
+        if (!al_install_audio ())
+        {
+            fprintf (stderr, "failed to initialize audio!\n");
+            return false;
+        }
+
+        if (!al_init_acodec_addon ())
+        {
+            fprintf (stderr, "failed to initialize audio codecs!\n");
+            return false;
+        }
+
+        if (!al_reserve_samples (3))
+        {
+            fprintf (stderr, "failed to reserve samples!\n");
             return false;
         }
 
@@ -158,9 +176,9 @@ namespace aga
                 ProcessEventFunction (&ev);
             }
         }
-        else if ((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) || (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
-            || (ev.type == ALLEGRO_EVENT_MOUSE_AXES) || (ev.type == ALLEGRO_EVENT_KEY_DOWN)
-            || (ev.type == ALLEGRO_EVENT_KEY_UP) || (ev.type == ALLEGRO_EVENT_KEY_CHAR))
+        else if ((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) || (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) ||
+                 (ev.type == ALLEGRO_EVENT_MOUSE_AXES) || (ev.type == ALLEGRO_EVENT_KEY_DOWN) || (ev.type == ALLEGRO_EVENT_KEY_UP) ||
+                 (ev.type == ALLEGRO_EVENT_KEY_CHAR))
         {
             if (ProcessEventFunction != nullptr)
             {

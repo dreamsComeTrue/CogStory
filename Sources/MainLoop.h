@@ -3,6 +3,7 @@
 #ifndef __MAIN_LOOP_H__
 #define __MAIN_LOOP_H__
 
+#include "AudioManager.h"
 #include "Lifecycle.h"
 #include "PhysicsManager.h"
 #include "SceneManager.h"
@@ -34,6 +35,7 @@ namespace aga
         ScriptManager& GetScriptManager ();
         PhysicsManager& GetPhysicsManager ();
         TweenManager& GetTweenManager ();
+        AudioManager& GetAudioManager ();
 
     private:
         void InitializeStates ();
@@ -41,6 +43,7 @@ namespace aga
 
     private:
         Screen* m_Screen;
+        AudioManager m_AudioManager;
         StateManager m_StateManager;
         SceneManager m_SceneManager;
         ScriptManager m_ScriptManager;

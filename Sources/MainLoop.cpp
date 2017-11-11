@@ -13,16 +13,17 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     MainLoop::MainLoop (Screen* screen)
-        : m_SceneManager (this)
-        , m_StateManager (this)
-        , m_ScriptManager (this)
-        , m_PhysicsManager (this)
-        , m_TweenManager (this)
-        , m_EditorState (nullptr)
-        , m_GamePlayState (nullptr)
-        , m_MainMenuState (nullptr)
-        , m_Screen (screen)
-        , m_IsRunning (true)
+      : m_AudioManager (this)
+      , m_SceneManager (this)
+      , m_StateManager (this)
+      , m_ScriptManager (this)
+      , m_PhysicsManager (this)
+      , m_TweenManager (this)
+      , m_EditorState (nullptr)
+      , m_GamePlayState (nullptr)
+      , m_MainMenuState (nullptr)
+      , m_Screen (screen)
+      , m_IsRunning (true)
     {
     }
 
@@ -42,6 +43,7 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
+        m_AudioManager.Initialize ();
         m_SceneManager.Initialize ();
         m_PhysicsManager.Initialize ();
         m_StateManager.Initialize ();
@@ -85,6 +87,7 @@ namespace aga
         m_TweenManager.Destroy ();
         m_StateManager.Destroy ();
         m_SceneManager.Destroy ();
+        m_AudioManager.Destroy ();
 
         return Lifecycle::Destroy ();
     }
@@ -141,6 +144,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Screen* MainLoop::GetScreen () { return m_Screen; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    AudioManager& MainLoop::GetAudioManager () { return m_AudioManager; }
 
     //--------------------------------------------------------------------------------------------------
 

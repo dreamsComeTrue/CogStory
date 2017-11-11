@@ -1,11 +1,13 @@
-project(RobotTale)
+project(RobotTales)
 cmake_minimum_required(VERSION 2.8)
 
 set(BIN_DIR Binaries)
 set(CMAKE_BUILD_TYPE "Debug")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
-set(ROOT_THIRD_PARTY_DIR "/home/squall/RobotGame/ThirdParty")
+set(ROOT_THIRD_PARTY_DIR "/home/squall/RobotTales/ThirdParty")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/Cotire/CMake")
+include(cotire)
 
 LINK_DIRECTORIES(   ${ROOT_THIRD_PARTY_DIR}/anglescript_2.31.2/angelscript/lib/                    
                  )
@@ -30,9 +32,12 @@ target_link_libraries(${PROJECT_NAME}
     allegro_font
     allegro_ttf
     allegro_primitives
+    allegro_audio
+    allegro_acodec
     libangelscript.a
     freetype
     pthread
-    boost_system
-    boost_filesystem
     )
+
+#set_target_properties(${PROJECT_NAME} PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
+cotire(${PROJECT_NAME})

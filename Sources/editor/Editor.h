@@ -49,6 +49,9 @@ namespace aga
         void SetDrawUITiles (bool draw);
 
     private:
+        void LoadConfig ();
+        void SaveConfig ();
+
         void DrawGrid ();
 
         void ChangeGridSize (bool clockwise);

@@ -16,13 +16,13 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     SpeechFrame::SpeechFrame (SpeechFrameManager* manager)
-        : m_Manager (manager)
-        , m_Visible (true)
-        , m_DrawTextCenter (false)
-        , m_DrawSpeed (40)
-        , m_CurrentDrawTime (0)
-        , m_CurrentIndex (0)
-        , m_StillUpdating (true)
+      : m_Manager (manager)
+      , m_Visible (true)
+      , m_DrawTextCenter (false)
+      , m_DrawSpeed (40)
+      , m_CurrentDrawTime (0)
+      , m_CurrentIndex (0)
+      , m_StillUpdating (true)
     {
         m_FrameBitmap = load_nine_patch_bitmap (GetResourcePath (ResourceID::GFX_TEXT_FRAME).c_str ());
     }
@@ -30,15 +30,15 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     SpeechFrame::SpeechFrame (SpeechFrameManager* manager, const std::string& text, Rect rect)
-        : m_Manager (manager)
-        , m_Text (text)
-        , m_DrawRect (rect)
-        , m_Visible (true)
-        , m_DrawTextCenter (false)
-        , m_DrawSpeed (40)
-        , m_CurrentDrawTime (0)
-        , m_CurrentIndex (0)
-        , m_StillUpdating (true)
+      : m_Manager (manager)
+      , m_Text (text)
+      , m_DrawRect (rect)
+      , m_Visible (true)
+      , m_DrawTextCenter (false)
+      , m_DrawSpeed (40)
+      , m_CurrentDrawTime (0)
+      , m_CurrentIndex (0)
+      , m_StillUpdating (true)
     {
         m_FrameBitmap = load_nine_patch_bitmap (GetResourcePath (ResourceID::GFX_TEXT_FRAME).c_str ());
     }
@@ -81,8 +81,11 @@ namespace aga
     {
         if (m_Visible)
         {
-            draw_nine_patch_bitmap (m_FrameBitmap, m_DrawRect.Transform.Pos.X, m_DrawRect.Transform.Pos.Y,
-                m_DrawRect.Transform.Size.Width, m_DrawRect.Transform.Size.Height);
+            draw_nine_patch_bitmap (m_FrameBitmap,
+                                    m_DrawRect.Transform.Pos.X,
+                                    m_DrawRect.Transform.Pos.Y,
+                                    m_DrawRect.Transform.Size.Width,
+                                    m_DrawRect.Transform.Size.Height);
 
             int xPoint;
             int yPoint;
@@ -95,8 +98,7 @@ namespace aga
                 Point textDimensions = font.GetTextDimensions (FONT_NAME_MAIN_MEDIUM, text);
 
                 xPoint = m_DrawRect.Transform.Pos.X + m_DrawRect.Transform.Size.Width * 0.5;
-                yPoint
-                    = m_DrawRect.Transform.Pos.Y + m_DrawRect.Transform.Size.Height * 0.5 - textDimensions.Height * 0.5;
+                yPoint = m_DrawRect.Transform.Pos.Y + m_DrawRect.Transform.Size.Height * 0.5 - textDimensions.Height * 0.5;
                 align = ALLEGRO_ALIGN_CENTER;
             }
             else

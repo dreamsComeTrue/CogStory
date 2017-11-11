@@ -12,6 +12,8 @@
 #include "Resources.h"
 
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_acodec.h>
+#include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_native_dialog.h>
@@ -26,8 +28,8 @@ extern "C" {
 #include <scriptbuilder/scriptbuilder.h>
 #include <scriptstdstring/scriptstdstring.h>
 
-#include <experimental/optional>
 #include <cmath>
+#include <experimental/optional>
 #include <fstream>
 #include <functional>
 #include <map>
@@ -37,13 +39,13 @@ extern "C" {
 
 #include "addons/tweeny/tweeny.h"
 
-#define SAFE_DELETE(x)                                                                                                 \
-    {                                                                                                                  \
-        if (x != nullptr)                                                                                              \
-        {                                                                                                              \
-            delete x;                                                                                                  \
-            x = nullptr;                                                                                               \
-        }                                                                                                              \
+#define SAFE_DELETE(x)                                                                                                                     \
+    {                                                                                                                                      \
+        if (x != nullptr)                                                                                                                  \
+        {                                                                                                                                  \
+            delete x;                                                                                                                      \
+            x = nullptr;                                                                                                                   \
+        }                                                                                                                                  \
     }
 
 #define ARRAY_SIZE(_ARR) ((int)(sizeof (_ARR) / sizeof (*_ARR)))
@@ -66,7 +68,7 @@ namespace aga
     const ALLEGRO_COLOR COLOR_ORANGE{ 255 / 255.f, 165 / 255.f, 0 / 255.f };
     const ALLEGRO_COLOR COLOR_PINK{ 191 / 255.f, 63 / 255.f, 191 / 255.f };
 
-    float DegressToRadians (float degrees); 
+    float DegressToRadians (float degrees);
 
     bool AreSame (double a, double b);
 
@@ -76,9 +78,10 @@ namespace aga
 
     std::string& RightTrimString (std::string& str);
 
-    std::string& TrimString (std::string& str); 
+    std::string& TrimString (std::string& str);
 
-    template <typename T>  std::string ToString (T t)
+    template<typename T>
+    std::string ToString (T t)
     {
         std::stringstream strStream;
         strStream << t;
