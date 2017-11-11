@@ -14,12 +14,12 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     SceneManager::SceneManager (MainLoop* mainLoop)
-        : m_SpeechFrameManager (this)
-        , m_ActiveScene (nullptr)
-        , m_MainLoop (mainLoop)
-        , m_Player (this)
-        , m_Camera (mainLoop->GetScreen ())
-        , m_AtlasManager (nullptr)
+      : m_SpeechFrameManager (this)
+      , m_ActiveScene (nullptr)
+      , m_MainLoop (mainLoop)
+      , m_Player (this)
+      , m_Camera (mainLoop->GetScreen ())
+      , m_AtlasManager (nullptr)
     {
     }
 
@@ -50,7 +50,7 @@ namespace aga
             Point playerPosition = m_Player.GetPosition ();
 
             m_Camera.SetTranslate (screenSize.Width * 0.5 - playerSize.Width * 0.5 - playerPosition.X * scale.X,
-                screenSize.Height * 0.5 - playerSize.Height * 0.5 - playerPosition.Y * scale.Y);
+                                   screenSize.Height * 0.5 - playerSize.Height * 0.5 - playerPosition.Y * scale.Y);
         };
 
         m_SpeechFrameManager.Initialize ();
@@ -118,7 +118,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneManager::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime) {}
+    void SceneManager::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime) { m_SpeechFrameManager.ProcessEvent (event, deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
 

@@ -152,11 +152,6 @@ namespace aga
         ALLEGRO_EVENT ev;
         al_wait_for_event (m_EventQueue, &ev);
 
-        if (UpdateFunction != nullptr)
-        {
-            UpdateFunction (deltaTime);
-        }
-
         if (ev.type == ALLEGRO_EVENT_TIMER)
         {
             m_Redraw = true;
@@ -184,6 +179,11 @@ namespace aga
             {
                 ProcessEventFunction (&ev);
             }
+        }
+
+        if (UpdateFunction != nullptr)
+        {
+            UpdateFunction (deltaTime);
         }
 
         if (m_Redraw && al_is_event_queue_empty (m_EventQueue))

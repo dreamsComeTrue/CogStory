@@ -19,11 +19,14 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
+        void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
+
         bool Update (float deltaTime);
         void Render (float deltaTime);
         void Clear ();
 
         SpeechFrame* AddSpeechFrame (const std::string& id, const std::string& text, Rect rect);
+        SpeechFrame* AddMultiLineSpeechFrame (const std::string& id, const std::string& text, Rect rect);
 
         SceneManager* GetSceneManager ();
 

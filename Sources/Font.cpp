@@ -72,12 +72,33 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Font::DrawText (
-        const std::string& fontName, ALLEGRO_COLOR color, float x, float y, const std::string& text, int flags)
+    void Font::DrawText (const std::string& fontName, ALLEGRO_COLOR color, float x, float y, const std::string& text, int flags)
     {
         ALLEGRO_FONT* font = m_Fonts[fontName];
 
         al_draw_text (font, color, x, y, flags, text.c_str ());
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Font::DrawMultilineText (const std::string& fontName,
+                                  ALLEGRO_COLOR color,
+                                  float x,
+                                  float y,
+                                  float max_width,
+                                  float line_height,
+                                  int flags,
+                                  const char* text,
+                                  ...)
+    {
+        ALLEGRO_FONT* font = m_Fonts[fontName];
+
+        va_list args;
+        va_start (args, text);
+
+        al_draw_multiline_textf (font, color, x, y, max_width, line_height, flags, text, args);
+
+        va_end (args);
     }
 
     //--------------------------------------------------------------------------------------------------

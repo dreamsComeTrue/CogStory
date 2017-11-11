@@ -19,12 +19,14 @@ namespace aga
         bool Destroy ();
 
         void Play ();
+        void SetVolume (float volume = 1.0f);
 
     private:
         AudioManager* m_AudioManager;
         std::string m_Name;
         std::string m_FilePath;
         ALLEGRO_SAMPLE* m_Sample;
+        float m_Gain;
     };
 }
 

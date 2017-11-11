@@ -3,14 +3,21 @@ const int TWEEN_1 = 1;
 const int TWEEN_2 = 2;
 const int TWEEN_3 = 3;
 SpeechFrame@ frame;
+SpeechFrame@ mainFrame;
 
 void Start ()
 {
 	Point screenSize = GetWindowSize ();
 
+	Point frameSize1 (350, 100);
+	Rect rect (Point (screenSize.Width / 2 - frameSize1.Width / 2, screenSize.Height - frameSize1.Height - 10), frameSize1);
+    string txt = "Hello. PTR4617!\nWhat's up?\nRecently I've found this map i think you should check out.\nGood luck on your journey!";
+    txt = "Recently agata is very fine I'm saying\n I've found this map think you should check out.\n But the most important part of this is to be happy !!! Oh, wait...";
+	@mainFrame = AddSpeechFrame ("MAIN_SPEECH", txt, rect);
+
 	Point frameSize (250, 40);
 	Rect r (Point (screenSize.Width / 2 - frameSize.Width / 2, 10), frameSize);
-	@frame = AddSpeechFrame ("SPEECH", "Hello. PTR4617!", r);
+    @frame = AddSpeechFrame ("SPEECH", "Hello. PTR4617!", r);
 	frame.SetVisible (false);
 	frame.SetDrawTextCenter (true);
 }
@@ -27,6 +34,8 @@ void BeforeEnterScene ()
 	AddOnEnterCallback ("sad", Func);
 	AddOnEnterCallback ("TOP", Func1);
 	AddOnLeaveCallback ("TOP", Func2);
+
+    mainFrame.SetVisible (true);
 
   //  AddTween (TWEEN_1, flag1, flag2, 2000, PlayerTween, NextTween1);
 }

@@ -11,6 +11,7 @@ namespace aga
       , m_Name (name)
       , m_FilePath (path)
       , m_Sample (nullptr)
+      , m_Gain (1.0f)
     {
     }
 
@@ -53,9 +54,13 @@ namespace aga
     {
         if (m_Sample)
         {
-            al_play_sample (m_Sample, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+            al_play_sample (m_Sample, m_Gain, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void AudioSample::SetVolume (float volume) { m_Gain = volume; }
 
     //--------------------------------------------------------------------------------------------------
 }

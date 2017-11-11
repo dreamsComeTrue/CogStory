@@ -29,6 +29,7 @@ extern "C" {
 #include <scriptstdstring/scriptstdstring.h>
 
 #include <cmath>
+#include <cstdarg>
 #include <experimental/optional>
 #include <fstream>
 #include <functional>

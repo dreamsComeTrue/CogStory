@@ -16,6 +16,7 @@ namespace aga
         GFX_PLAYER,
 
         //  PACKS
+        PACK_MENU_UI,
         PACK_0_0_HOME,
 
         //  Fonts

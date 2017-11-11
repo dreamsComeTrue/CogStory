@@ -50,6 +50,7 @@ namespace aga
         InitializeAnimations ();
 
         sample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile ("FOOT_STEP", GetResourcePath (SOUND_FOOT_STEP));
+        sample->SetVolume (3.0f);
 
         Lifecycle::Initialize ();
     }

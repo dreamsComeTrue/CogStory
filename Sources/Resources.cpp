@@ -25,6 +25,7 @@ namespace aga
         { GFX_TEXT_FRAME, GFX_UI, "text_frame.9.png" },
         { GFX_PLAYER, GFX_CHARACTERS, "player.png" },
 
+        { PACK_MENU_UI, GFX_UI, "menu_ui.pack" },
         { PACK_0_0_HOME, GFX_0_HOME, "0_0_home.pack" },
 
         //  Fonts

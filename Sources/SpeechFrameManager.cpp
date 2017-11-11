@@ -10,7 +10,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     SpeechFrameManager::SpeechFrameManager (SceneManager* sceneManager)
-        : m_SceneManager (sceneManager)
+      : m_SceneManager (sceneManager)
     {
     }
 
@@ -38,6 +38,16 @@ namespace aga
         }
 
         return Lifecycle::Destroy ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SpeechFrameManager::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
+    {
+        for (SpeechFrameIterator it = m_Frames.begin (); it != m_Frames.end (); ++it)
+        {
+            it->second->ProcessEvent (event, deltaTime);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
