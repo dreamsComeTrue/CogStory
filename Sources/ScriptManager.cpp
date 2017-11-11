@@ -303,6 +303,12 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod (
             "SpeechFrame", "bool IsVisible ()", asMETHOD (SpeechFrame, IsVisible), asCALL_THISCALL);
         assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "SpeechFrame", "void SetDrawTextCenter (bool)", asMETHOD (SpeechFrame, SetDrawTextCenter), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "SpeechFrame", "bool IsDrawTextCenter ()", asMETHOD (SpeechFrame, IsDrawTextCenter), asCALL_THISCALL);
+        assert (r >= 0);
 
         //  Speech Frame Manager
         r = m_ScriptEngine->RegisterGlobalFunction (

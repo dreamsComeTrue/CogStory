@@ -68,7 +68,40 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Editor::Update (float deltaTime) { return true; }
+    bool Editor::Update (float deltaTime)
+    {
+        ALLEGRO_KEYBOARD_STATE state;
+        al_get_keyboard_state (&state);
+
+        int delta = 5;
+
+        if (al_key_down (&state, ALLEGRO_KEY_LSHIFT))
+        {
+            delta *= 3;
+        }
+
+        if (al_key_down (&state, ALLEGRO_KEY_DOWN))
+        {
+            m_MainLoop->GetSceneManager ().GetCamera ().Move (0, -delta);
+        }
+
+        if (al_key_down (&state, ALLEGRO_KEY_UP))
+        {
+            m_MainLoop->GetSceneManager ().GetCamera ().Move (0, delta);
+        }
+
+        if (al_key_down (&state, ALLEGRO_KEY_RIGHT))
+        {
+            m_MainLoop->GetSceneManager ().GetCamera ().Move (-delta, 0);
+        }
+
+        if (al_key_down (&state, ALLEGRO_KEY_LEFT))
+        {
+            m_MainLoop->GetSceneManager ().GetCamera ().Move (delta, 0);
+        }
+
+        return true;
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -497,7 +530,7 @@ namespace aga
     {
         std::string path = GetDataPath () + "scenes/" + openFileName;
 
-        if (boost::filesystem::exists (path))
+        if (IsFileExists (path))
         {
             Scene* scene = Scene::LoadScene (&m_MainLoop->GetSceneManager (), path);
 
@@ -972,14 +1005,14 @@ namespace aga
         {
             m_MainLoop->GetSceneManager ().GetActiveScene ()->ReloadScript (scriptsList[scriptsSelectedIndex]);
 
-            boost::optional<ScriptMetaData&> metaScript
+            std::experimental::optional<ScriptMetaData> metaScript
                 = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetScriptByName (scriptsList[scriptsSelectedIndex]);
 
-            if (metaScript.is_initialized ())
+            if (metaScript)
             {
-                metaScript.get ().ScriptObj->Run ("void AfterLeaveScene ()");
-                metaScript.get ().ScriptObj->Run ("void Start ()");
-                metaScript.get ().ScriptObj->Run ("void BeforeEnterScene ()");
+                metaScript.value ().ScriptObj->Run ("void AfterLeaveScene ()");
+                metaScript.value ().ScriptObj->Run ("void Start ()");
+                metaScript.value ().ScriptObj->Run ("void BeforeEnterScene ()");
             }
         }
 

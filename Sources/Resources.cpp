@@ -37,7 +37,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    const std::string GetDataPath () { return boost::filesystem::current_path ().string () + "/../Data/"; }
+    const std::string GetDataPath () { return GetCurrentDir () + "/../Data/"; }
 
     //--------------------------------------------------------------------------------------------------
 

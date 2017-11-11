@@ -23,12 +23,24 @@ namespace aga
         void SetVisible (bool visible);
         bool IsVisible () const;
 
+        void SetDrawTextCenter (bool center);
+        bool IsDrawTextCenter () const;
+
+        void SetDrawSpeed (float speedInMs);
+
     private:
         SpeechFrameManager* m_Manager;
         NINE_PATCH_BITMAP* m_FrameBitmap;
         std::string m_Text;
         Rect m_DrawRect;
         bool m_Visible;
+        bool m_DrawTextCenter;
+
+        bool m_StillUpdating;
+
+        float m_DrawSpeed;
+        float m_CurrentDrawTime;
+        int m_CurrentIndex;
     };
 }
 

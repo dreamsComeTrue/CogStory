@@ -185,29 +185,35 @@ namespace aga
 
                     if (r.WillIntersect || r.Intersect)
                     {
-                        area.WasEntered = true;
-
-                        if (area.OnEnterCallback)
+                        if (!area.WasEntered)
                         {
-                            area.OnEnterCallback (dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y);
-                        }
-
-                        if (area.ScriptOnEnterCallback)
-                        {
-                            const char* moduleName = area.ScriptOnEnterCallback->GetModuleName ();
-                            Script* script = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (
-                                moduleName);
-
-                            if (script)
+                            if (area.OnEnterCallback)
                             {
-                                Point point = { dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y };
-                                asIScriptContext* ctx = script->GetContext ();
-                                ctx->Prepare (area.ScriptOnEnterCallback);
-                                ctx->SetArgObject (0, &point);
+                                area.OnEnterCallback (
+                                    dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y);
+                            }
 
-                                ctx->Execute ();
+                            if (area.ScriptOnEnterCallback)
+                            {
+                                const char* moduleName = area.ScriptOnEnterCallback->GetModuleName ();
+                                Script* script
+                                    = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (
+                                        moduleName);
+
+                                if (script)
+                                {
+                                    Point point
+                                        = { dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y };
+                                    asIScriptContext* ctx = script->GetContext ();
+                                    ctx->Prepare (area.ScriptOnEnterCallback);
+                                    ctx->SetArgObject (0, &point);
+
+                                    ctx->Execute ();
+                                }
                             }
                         }
+
+                        area.WasEntered = true;
                     }
                     else if (area.WasEntered)
                     {

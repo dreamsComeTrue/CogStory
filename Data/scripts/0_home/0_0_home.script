@@ -7,19 +7,20 @@ SpeechFrame@ frame;
 void Start ()
 {
 	Point screenSize = GetWindowSize ();
-	Point playerSize = player.GetSize ();
 
-	Point spawn = GetFlagPoint ("D");
-	player.SetPosition (spawn.X - playerSize.Width * 0.5, spawn.Y - playerSize.Height * 0.5);
-
-	Point frameSize (300, 100);
-	Rect r (Point (screenSize.Width / 2 - frameSize.Width / 2, screenSize.Height - frameSize.Height - 10), frameSize);
-	@frame = AddSpeechFrame ("SPEECH", "Hello!", r);
+	Point frameSize (250, 40);
+	Rect r (Point (screenSize.Width / 2 - frameSize.Width / 2, 10), frameSize);
+	@frame = AddSpeechFrame ("SPEECH", "Hello. PTR4617!", r);
 	frame.SetVisible (false);
+	frame.SetDrawTextCenter (true);
 }
 
 void BeforeEnterScene ()
 {
+	Point playerSize = player.GetSize ();
+	Point spawn = GetFlagPoint ("B");
+	player.SetPosition (spawn.X - playerSize.Width * 0.5, spawn.Y - playerSize.Height * 0.5);
+
 	Point flag1 = GetFlagPoint ("A");
 	Point flag2 = GetFlagPoint ("B");
 

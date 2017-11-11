@@ -82,27 +82,27 @@ namespace aga
             }
         }
 
-        boost::optional<ScriptMetaData&> GetScriptByName (const std::string& name)
+        std::experimental::optional<ScriptMetaData> GetScriptByName (const std::string& name)
         {
             for (std::vector<ScriptMetaData>::iterator it = m_Scripts.begin (); it != m_Scripts.end (); ++it)
             {
                 if (it->Name == name)
                 {
-                    return *it;
+                    return std::experimental::make_optional (*it);
                 }
             }
 
-            return boost::optional<ScriptMetaData&> ();
+            return std::experimental::optional<ScriptMetaData> ();
         }
 
         void ReloadScript (const std::string& name)
         {
-            boost::optional<ScriptMetaData&> metaScript = GetScriptByName (name);
+            std::experimental::optional<ScriptMetaData> metaScript = GetScriptByName (name);
 
-            if (metaScript.is_initialized ())
+            if (metaScript)
             {
-                std::string path = metaScript.get ().Path;
-                RemoveScript (metaScript.get ().ScriptObj);
+                std::string path = metaScript.value ().Path;
+                RemoveScript (metaScript.value ().ScriptObj);
 
                 Script* s = m_ScriptManager->LoadScriptFromFile (GetDataPath () + "scripts/" + path, name);
 

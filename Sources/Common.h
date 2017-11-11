@@ -26,8 +26,7 @@ extern "C" {
 #include <scriptbuilder/scriptbuilder.h>
 #include <scriptstdstring/scriptstdstring.h>
 
-#include <boost/filesystem.hpp>
-#include <boost/optional.hpp>
+#include <experimental/optional>
 #include <cmath>
 #include <fstream>
 #include <functional>
@@ -67,53 +66,19 @@ namespace aga
     const ALLEGRO_COLOR COLOR_ORANGE{ 255 / 255.f, 165 / 255.f, 0 / 255.f };
     const ALLEGRO_COLOR COLOR_PINK{ 191 / 255.f, 63 / 255.f, 191 / 255.f };
 
-    static float DegressToRadians (float degrees) { return degrees * M_PI / 180.0; }
+    float DegressToRadians (float degrees); 
 
-    static bool AreSame (double a, double b)
-    {
-        double epsilon = 1.0E-8;
-        return std::fabs (a - b) < epsilon;
-    }
+    bool AreSame (double a, double b);
 
-    static std::vector<std::string> SplitString (const std::string& s, char seperator)
-    {
-        std::vector<std::string> output;
+    std::vector<std::string> SplitString (const std::string& s, char seperator);
 
-        std::string::size_type prev_pos = 0, pos = 0;
+    std::string& LeftTrimString (std::string& str);
 
-        while ((pos = s.find (seperator, pos)) != std::string::npos)
-        {
-            std::string substring (s.substr (prev_pos, pos - prev_pos));
+    std::string& RightTrimString (std::string& str);
 
-            output.push_back (substring);
+    std::string& TrimString (std::string& str); 
 
-            prev_pos = ++pos;
-        }
-
-        output.push_back (s.substr (prev_pos, pos - prev_pos)); // Last word
-
-        return output;
-    }
-
-    static std::string& LeftTrimString (std::string& str)
-    {
-        auto it2 = std::find_if (
-            str.begin (), str.end (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
-        str.erase (str.begin (), it2);
-        return str;
-    }
-
-    static std::string& RightTrimString (std::string& str)
-    {
-        auto it1 = std::find_if (
-            str.rbegin (), str.rend (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
-        str.erase (it1.base (), str.end ());
-        return str;
-    }
-
-    static std::string& TrimString (std::string& str) { return LeftTrimString (RightTrimString (str)); }
-
-    template <typename T> static std::string ToString (T t)
+    template <typename T>  std::string ToString (T t)
     {
         std::stringstream strStream;
         strStream << t;
@@ -121,17 +86,13 @@ namespace aga
         return strStream.str ();
     }
 
-    static std::string GetDirectory (const std::string& fullPath)
-    {
-        boost::filesystem::path p{ fullPath };
-        return p.parent_path ().string ();
-    }
+    std::string GetDirectory (const std::string& fullPath);
 
-    static std::string GetBaseName (const std::string& fullPath)
-    {
-        boost::filesystem::path p{ fullPath };
-        return p.stem ().string ();
-    }
+    std::string GetBaseName (const std::string& fullPath);
+
+    bool IsFileExists (const std::string& filePath);
+
+    std::string GetCurrentDir ();
 }
 
 #endif //   __COMMON_H__
