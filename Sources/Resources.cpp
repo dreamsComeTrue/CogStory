@@ -41,7 +41,8 @@ namespace aga
         { SCRIPT_0_0, SCRIPTS_HOME, "0_0_home.script" },
 
         //  Sounds
-        { SOUND_FOOT_STEP, SOUNDS, "38874__swuing__footstep-grass.wav" }
+        { SOUND_FOOT_STEP, SOUNDS, "38874__swuing__footstep-grass.wav" },
+        { SOUND_MENU_SELECT, SOUNDS, "sfx_movement_ladder2a.wav" }
     };
 
     //--------------------------------------------------------------------------------------------------

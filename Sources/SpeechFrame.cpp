@@ -3,12 +3,14 @@
 #include "SpeechFrame.h"
 #include "Atlas.h"
 #include "AtlasManager.h"
+#include "AudioSample.h"
 #include "Font.h"
 #include "MainLoop.h"
 #include "SceneManager.h"
 #include "Screen.h"
 #include "SpeechFrameManager.h"
-#include <ctime>
+
+#include <stack>
 
 namespace aga
 {
@@ -32,6 +34,7 @@ namespace aga
       , m_StillUpdating (true)
       , m_MaxKeyDelta (200)
       , m_KeyEventHandled (false)
+      , m_ScrollPossible (false)
     {
         m_FrameBitmap = load_nine_patch_bitmap (GetResourcePath (ResourceID::GFX_TEXT_FRAME).c_str ());
     }
@@ -40,11 +43,10 @@ namespace aga
 
     SpeechFrame::SpeechFrame (SpeechFrameManager* manager, const std::string& text, Rect rect)
       : m_Manager (manager)
-      , m_Text (text)
       , m_DrawRect (rect)
       , m_Visible (true)
       , m_DrawTextCenter (false)
-      , m_DrawSpeed (20)
+      , m_DrawSpeed (11)
       , m_ArrowDrawSpeed (300)
       , m_DrawLightArrow (true)
       , m_CurrentDrawTime (0)
@@ -54,8 +56,11 @@ namespace aga
       , m_StillUpdating (true)
       , m_MaxKeyDelta (200)
       , m_KeyEventHandled (false)
+      , m_ScrollPossible (false)
     {
         m_FrameBitmap = load_nine_patch_bitmap (GetResourcePath (ResourceID::GFX_TEXT_FRAME).c_str ());
+        m_SelectSample = m_Manager->GetSceneManager ()->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
+          "SELECT_MENU", GetResourcePath (SOUND_MENU_SELECT));
         SetText (text);
     }
 
@@ -88,14 +93,29 @@ namespace aga
             ALLEGRO_KEYBOARD_STATE state;
             al_get_keyboard_state (&state);
 
-            if (al_key_down (&state, ALLEGRO_KEY_DOWN) || al_key_down (&state, ALLEGRO_KEY_S))
-            {
-                ++m_DisplayLine;
-            }
+            int lineCounter = GetLineCounter ();
 
             if (al_key_down (&state, ALLEGRO_KEY_UP) || al_key_down (&state, ALLEGRO_KEY_W))
             {
                 --m_DisplayLine;
+
+                if (lineCounter > 0)
+                {
+                    m_SelectSample->Play ();
+                }
+            }
+
+            if (al_key_down (&state, ALLEGRO_KEY_DOWN) || al_key_down (&state, ALLEGRO_KEY_S))
+            {
+                ++m_DisplayLine;
+
+                int maxLines = (m_DrawRect.Transform.Size.Height - 2 * TEXT_INSETS) / m_LineHeight;
+                int diff = m_CurrentLine + 1 - maxLines;
+
+                if (lineCounter < diff)
+                {
+                    m_SelectSample->Play ();
+                }
             }
 
             m_KeyDelta = 0.0f;
@@ -128,7 +148,7 @@ namespace aga
                 {
                     m_StillUpdating = false;
                     m_CurrentLine = m_TextLines.size () - 1;
-                    m_CurrentIndex = m_TextLines[m_CurrentLine].size () - 1;
+                    m_CurrentIndex = m_TextLines[m_CurrentLine].size ();
                 }
             }
         }
@@ -140,11 +160,19 @@ namespace aga
     {
         if (event->type == ALLEGRO_EVENT_KEY_DOWN)
         {
+            int lineCounter = GetLineCounter ();
+
             switch (event->keyboard.keycode)
             {
                 case ALLEGRO_KEY_UP:
                 {
                     --m_DisplayLine;
+
+                    if (lineCounter > 0)
+                    {
+                        m_SelectSample->Play ();
+                    }
+
                     m_KeyEventHandled = true;
 
                     break;
@@ -152,6 +180,15 @@ namespace aga
                 case ALLEGRO_KEY_DOWN:
                 {
                     ++m_DisplayLine;
+
+                    int maxLines = (m_DrawRect.Transform.Size.Height - 2 * TEXT_INSETS) / m_LineHeight;
+                    int diff = m_CurrentLine + 1 - maxLines;
+
+                    if (lineCounter < diff)
+                    {
+                        m_SelectSample->Play ();
+                    }
+
                     m_KeyEventHandled = true;
 
                     break;
@@ -162,24 +199,44 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    int SpeechFrame::GetLineCounter ()
+    {
+        int maxLines = (m_DrawRect.Transform.Size.Height - 2 * TEXT_INSETS) / m_LineHeight;
+        int lineCounter = 0;
+        int diff = m_CurrentLine + 1 - maxLines;
+
+        if (m_CurrentLine + 1 >= maxLines)
+        {
+            lineCounter = diff;
+        }
+
+        lineCounter += m_DisplayLine;
+
+        if (lineCounter < 0)
+        {
+            lineCounter = 0;
+        }
+
+        if (diff >= 0 && lineCounter > diff)
+        {
+            lineCounter = diff;
+        }
+
+        return lineCounter;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void SpeechFrame::SetText (const std::string& text)
     {
         m_Text = text;
+        m_Attributes.clear ();
+        PreprocessText (m_Text);
+
         m_LineHeight =
-          m_Manager->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetFont ().GetTextDimensions (FONT_NAME_MAIN_MEDIUM, text).Height;
+          m_Manager->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetFont ().GetTextDimensions (FONT_NAME_MAIN_MEDIUM, m_Text).Height;
 
-        m_TextLines = SplitString (text, '\n');
-
-        for (int i = 0; i < m_TextLines.size (); ++i)
-        {
-            std::vector<std::string> lines = BreakLine (TrimString (m_TextLines[i]), m_DrawRect.Transform.Size.Width - 2 * TEXT_INSETS);
-
-            if (lines.size () > 1)
-            {
-                m_TextLines.erase (m_TextLines.begin () + i);
-                m_TextLines.insert (m_TextLines.begin () + i, lines.begin (), lines.end ());
-            }
-        }
+        m_TextLines = BreakLine (m_Text, m_DrawRect.Transform.Size.Width - 2 * TEXT_INSETS);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -200,6 +257,7 @@ namespace aga
             Font& font = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetFont ();
             std::string text = m_Text.substr (0, m_CurrentIndex);
 
+            int centerOffset = 0;
             if (m_DrawTextCenter)
             {
                 Point textDimensions = font.GetTextDimensions (FONT_NAME_MAIN_MEDIUM, text);
@@ -207,6 +265,7 @@ namespace aga
                 xPoint = m_DrawRect.Transform.Pos.X + m_DrawRect.Transform.Size.Width * 0.5;
                 yPoint = m_DrawRect.Transform.Pos.Y + m_DrawRect.Transform.Size.Height * 0.5 - textDimensions.Height * 0.5;
                 align = ALLEGRO_ALIGN_CENTER;
+                centerOffset = -textDimensions.Width * 0.5f + 2 * TEXT_INSETS;
             }
             else
             {
@@ -275,6 +334,12 @@ namespace aga
 
             for (int i = 0; lineCounter < m_CurrentLine + 1; ++lineCounter, ++i)
             {
+                int currentCharIndex = 0;
+                for (int j = 0; j < lineCounter; ++j)
+                {
+                    currentCharIndex += m_TextLines[j].size ();
+                }
+
                 if (lineCounter > m_TextLines.size () - 1)
                 {
                     break;
@@ -289,7 +354,52 @@ namespace aga
 
                 int y = yPoint + i * (m_LineHeight + margin);
 
-                font.DrawText (FONT_NAME_MAIN_MEDIUM, COLOR_WHITE, xPoint, y, t, align);
+                float advance = 0;
+
+                if (m_DrawTextCenter)
+                {
+                    advance = centerOffset;
+                }
+
+                for (int j = 0; j < t.length (); ++j)
+                {
+                    ALLEGRO_COLOR color = COLOR_WHITE;
+
+                    for (int k = 0; k < m_Attributes.size (); ++k)
+                    {
+                        SpeechTextAttribute& attr = m_Attributes[k];
+
+                        if (currentCharIndex >= attr.BeginIndex && currentCharIndex <= attr.EndIndex)
+                        {
+                            color = attr.Color;
+                            break;
+                        }
+                    }
+
+                    ++currentCharIndex;
+
+                    std::string begin = t.substr (0, j);
+                    if (!(isspace (t[j]) && TrimString (begin) == ""))
+                    {
+                        std::string textToDraw = std::string (1, t[j]);
+
+                        font.DrawText (FONT_NAME_MAIN_MEDIUM, color, xPoint + advance, y, textToDraw, align);
+
+                        if (textToDraw == " ")
+                        {
+                            advance += 10;
+                        }
+                        else
+                        {
+                            advance += m_Manager->GetSceneManager ()
+                                         ->GetMainLoop ()
+                                         ->GetScreen ()
+                                         ->GetFont ()
+                                         .GetTextDimensions (FONT_NAME_MAIN_MEDIUM, textToDraw)
+                                         .Width;
+                        }
+                    }
+                }
             }
 
             al_set_clipping_rectangle (x, y, w, h);
@@ -308,38 +418,55 @@ namespace aga
         if (width >= maxWidth)
         {
             std::string workLine = line;
-            int length = 0;
+            int currentIndex = 0;
 
-            while (length < workLine.size () - 2)
+            while (currentIndex < workLine.size ())
             {
-                std::string currentPart = workLine.substr (0, length + 1);
+                std::string currentPart = workLine.substr (0, currentIndex + 1);
 
-                width = m_Manager->GetSceneManager ()
-                          ->GetMainLoop ()
-                          ->GetScreen ()
-                          ->GetFont ()
-                          .GetTextDimensions (FONT_NAME_MAIN_MEDIUM, currentPart)
-                          .Width;
-
-                if (width >= maxWidth)
+                if (currentPart[currentPart.length () - 1] == '\n')
                 {
-                    length = currentPart.rfind (' ');
-
-                    std::string str = workLine.substr (0, length);
-                    ret.push_back (TrimString (str));
-                    workLine = workLine.substr (length);
+                    std::string str = workLine.substr (0, currentIndex);
+                    ret.push_back (str);
+                    workLine = workLine.substr (currentIndex + 1);
                 }
                 else
                 {
-                    ++length;
+                    width = m_Manager->GetSceneManager ()
+                              ->GetMainLoop ()
+                              ->GetScreen ()
+                              ->GetFont ()
+                              .GetTextDimensions (FONT_NAME_MAIN_MEDIUM, currentPart)
+                              .Width;
+
+                    if (width >= maxWidth)
+                    {
+                        currentIndex = currentPart.rfind (' ');
+
+                        std::string str = workLine.substr (0, currentIndex);
+                        ret.push_back (str);
+                        workLine = workLine.substr (currentIndex);
+                        currentIndex = 0;
+                    }
+                    else
+                    {
+                        ++currentIndex;
+                    }
                 }
             }
 
             if (workLine != "")
             {
-                ret.push_back (TrimString (workLine));
+                ret.push_back (workLine);
             }
         }
+        else
+        {
+            std::string txt = std::string (line);
+            ret.push_back (txt);
+        }
+
+        //  PreprocessText ("");
 
         return ret;
     }
@@ -357,6 +484,7 @@ namespace aga
         m_CurrentLine = 0;
         m_CurrentDrawTime = 0;
         m_DisplayLine = 0;
+        m_ScrollPossible = false;
         m_StillUpdating = true;
     }
 
@@ -371,6 +499,77 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     bool SpeechFrame::IsDrawTextCenter () const { return m_DrawTextCenter; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SpeechFrame::PreprocessText (std::string& text)
+    {
+        std::stack<SpeechTextAttribute> attributes;
+        int currIndex = 0;
+        int newLinesCount = 0;
+
+        while (currIndex < text.length ())
+        {
+            if (text[currIndex] == '\n')
+            {
+                ++newLinesCount;
+            }
+            else if (text[currIndex] == '[')
+            {
+                if (text[currIndex + 1] == '/')
+                {
+                    SpeechTextAttribute& attr = attributes.top ();
+                    attributes.pop ();
+
+                    attr.EndIndex = currIndex - newLinesCount;
+                    m_Attributes.push_back (attr);
+
+                    int close = text.find (']', currIndex);
+
+                    text.erase (currIndex, close - currIndex + 1);
+                }
+                else
+                {
+                    int keyIndex = text.find ('=', currIndex + 1);
+                    std::string key = text.substr (currIndex + 1, keyIndex - 1 - currIndex);
+                    std::transform (key.begin (), key.end (), key.begin (), ::toupper);
+
+                    int close = text.find (']', currIndex);
+                    std::string value = text.substr (keyIndex + 1, close - 1 - keyIndex);
+                    std::transform (value.begin (), value.end (), value.begin (), ::toupper);
+
+                    SpeechTextAttribute attr;
+                    attr.BeginIndex = currIndex - newLinesCount;
+
+                    if (key == "COLOR")
+                    {
+                        if (value == "RED")
+                        {
+                            attr.Color = COLOR_RED;
+                        }
+                        else if (value == "YELLOW")
+                        {
+                            attr.Color = COLOR_YELLOW;
+                        }
+                        else if (value == "GREEN")
+                        {
+                            attr.Color = COLOR_GREEN;
+                        }
+                        else if (value == "LIGHTBLUE")
+                        {
+                            attr.Color = COLOR_LIGHTBLUE;
+                        }
+                    }
+
+                    attributes.push (attr);
+
+                    text.erase (currIndex, close - currIndex + 1);
+                }
+            }
+
+            ++currIndex;
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 }

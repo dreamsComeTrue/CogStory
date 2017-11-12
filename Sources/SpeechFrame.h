@@ -8,6 +8,16 @@
 namespace aga
 {
     class SpeechFrameManager;
+    class AudioSample;
+
+    struct SpeechTextAttribute
+    {
+        int LineIndex;
+        int BeginIndex;
+        int EndIndex;
+        ALLEGRO_COLOR Color;
+        float Delay = 0.0f;
+    };
 
     class SpeechFrame
     {
@@ -33,6 +43,8 @@ namespace aga
         void SetDrawSpeed (float speedInMs);
 
     private:
+        void PreprocessText (std::string& text);
+        int GetLineCounter ();
         std::vector<std::string> BreakLine (const std::string& line, float maxWidth);
 
     private:
@@ -40,6 +52,7 @@ namespace aga
         NINE_PATCH_BITMAP* m_FrameBitmap;
         std::string m_Text;
         std::vector<std::string> m_TextLines;
+        std::vector<SpeechTextAttribute> m_Attributes;
         Rect m_DrawRect;
         bool m_Visible;
         bool m_DrawTextCenter;
@@ -62,6 +75,9 @@ namespace aga
         float m_KeyDelta;
         float m_MaxKeyDelta;
         bool m_KeyEventHandled;
+
+        AudioSample* m_SelectSample;
+        bool m_ScrollPossible;
     };
 }
 

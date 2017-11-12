@@ -32,7 +32,8 @@ namespace aga
         SCRIPT_0_0,
 
         //  Sounds
-        SOUND_FOOT_STEP
+        SOUND_FOOT_STEP,
+        SOUND_MENU_SELECT
     };
 
     struct Resource
