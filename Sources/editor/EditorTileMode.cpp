@@ -19,11 +19,11 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     EditorTileMode::EditorTileMode (Editor* editor)
-        : m_Editor (editor)
-        , m_IsDrawTiles (true)
-        , m_Rotation (0)
-        , m_SelectedTile (nullptr)
-        , m_TileUnderCursor (nullptr)
+      : m_Editor (editor)
+      , m_IsDrawTiles (true)
+      , m_Rotation (0)
+      , m_SelectedTile (nullptr)
+      , m_TileUnderCursor (nullptr)
     {
     }
 
@@ -81,9 +81,8 @@ namespace aga
             Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
             Point point = m_Editor->CalculateCursorPoint (state.x, state.y);
 
-            m_SelectedTile->Bounds.Transform.Pos
-                = { (translate.X + point.X) * 1 / scale.X, (translate.Y + point.Y) * 1 / scale.Y };
-            m_SelectedTile->SetPhysOffset (m_SelectedTile->Bounds.Transform.Pos);
+            m_SelectedTile->Bounds.SetPos ({ (translate.X + point.X) * 1 / scale.X, (translate.Y + point.Y) * 1 / scale.Y });
+            m_SelectedTile->SetPhysOffset (m_SelectedTile->Bounds.GetPos ());
 
             QuadTreeNode& quadTree = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetQuadTree ();
             quadTree.Remove (m_SelectedTile);
@@ -154,15 +153,21 @@ namespace aga
         {
             advance = beginning + i * TILE_SIZE;
 
-            al_draw_rectangle (
-                advance, windowSize.Height - TILE_SIZE, advance + TILE_SIZE, windowSize.Height, COLOR_GREEN, 1);
+            al_draw_rectangle (advance, windowSize.Height - TILE_SIZE, advance + TILE_SIZE, windowSize.Height, COLOR_GREEN, 1);
 
             if (i < regions.size () - 1)
             {
                 Rect region = regions[i].Bounds;
-                al_draw_scaled_bitmap (m_Atlas->GetImage (), region.Transform.Pos.X, region.Transform.Pos.Y,
-                    region.Transform.Size.Width, region.Transform.Size.Height, advance + 1,
-                    windowSize.Height - TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2, 0);
+                al_draw_scaled_bitmap (m_Atlas->GetImage (),
+                                       region.GetPos ().X,
+                                       region.GetPos ().Y,
+                                       region.GetSize ().Width,
+                                       region.GetSize ().Height,
+                                       advance + 1,
+                                       windowSize.Height - TILE_SIZE + 1,
+                                       TILE_SIZE - 2,
+                                       TILE_SIZE - 2,
+                                       0);
             }
         }
     }
@@ -220,7 +225,7 @@ namespace aga
         tile->Tileset = m_Atlas->GetName ();
         tile->Name = m_SelectedAtlasRegion.Name;
         tile->Bounds = { { (translate.X + point.X), (translate.Y + point.Y) },
-            { region.Bounds.Transform.Size.Width, region.Bounds.Transform.Size.Height } };
+                         { region.Bounds.GetSize ().Width, region.Bounds.GetSize ().Height } };
         tile->Rotation = m_Rotation;
 
         m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->AddTile (tile);
@@ -278,13 +283,13 @@ namespace aga
         Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
 
         Rect b = tile->Bounds;
-        int width = b.Transform.Size.Width * 0.5f;
-        int height = b.Transform.Size.Height * 0.5f;
+        int width = b.GetSize ().Width * 0.5f;
+        int height = b.GetSize ().Height * 0.5f;
 
-        float x1 = (b.Transform.Pos.X - translate.X * (1 / scale.X) - width) * (scale.X);
-        float y1 = (b.Transform.Pos.Y - translate.Y * (1 / scale.Y) - height) * (scale.Y);
-        float x2 = (b.Transform.Pos.X - translate.X * (1 / scale.X) + width) * (scale.X);
-        float y2 = (b.Transform.Pos.Y - translate.Y * (1 / scale.Y) + height) * (scale.Y);
+        float x1 = (b.GetPos ().X - translate.X * (1 / scale.X) - width) * (scale.X);
+        float y1 = (b.GetPos ().Y - translate.Y * (1 / scale.Y) - height) * (scale.Y);
+        float x2 = (b.GetPos ().X - translate.X * (1 / scale.X) + width) * (scale.X);
+        float y2 = (b.GetPos ().Y - translate.Y * (1 / scale.Y) + height) * (scale.Y);
 
         Point origin = { x1 + (x2 - x1) * 0.5f, y1 + (y2 - y1) * 0.5f };
         Point pointA = RotatePoint (x1, y1, origin, tile->Rotation);
@@ -306,8 +311,7 @@ namespace aga
 
     void EditorTileMode::InitializeUI ()
     {
-        m_Atlas = m_Editor->m_MainLoop->GetSceneManager ().GetAtlasManager ()->GetAtlas (
-            GetBaseName (GetResourcePath (PACK_0_0_HOME)));
+        m_Atlas = m_Editor->m_MainLoop->GetSceneManager ().GetAtlasManager ()->GetAtlas (GetBaseName (GetResourcePath (PACK_0_0_HOME)));
     }
 
     //--------------------------------------------------------------------------------------------------

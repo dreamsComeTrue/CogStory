@@ -53,7 +53,7 @@ namespace aga
             int height = atoi (sizeData[1].c_str ());
 
             AtlasRegion region;
-            region.Bounds = Rect{ { x, y }, { width, height } };
+            region.Bounds = Rect{ { x, y }, { x + width, y + height } };
             region.Name = name;
 
             m_Regions.insert (std::make_pair (name, region));
@@ -70,7 +70,7 @@ namespace aga
         if (m_Regions.find (name) != m_Regions.end ())
         {
             Rect r = m_Regions[name].Bounds;
-            al_draw_bitmap_region (m_Image, r.Transform.Pos.X, r.Transform.Pos.Y, r.Transform.Size.Width, r.Transform.Size.Height, x, y, 0);
+            al_draw_bitmap_region (m_Image, r.GetPos ().X, r.GetPos ().Y, r.GetSize ().Width, r.GetSize ().Height, x, y, 0);
         }
     }
 
@@ -82,13 +82,13 @@ namespace aga
         {
             Rect r = m_Regions[name].Bounds;
             al_draw_tinted_scaled_rotated_bitmap_region (m_Image,
-                                                         r.Transform.Pos.X,
-                                                         r.Transform.Pos.Y,
-                                                         r.Transform.Size.Width,
-                                                         r.Transform.Size.Height,
+                                                         r.GetPos ().X,
+                                                         r.GetPos ().Y,
+                                                         r.GetSize ().Width,
+                                                         r.GetSize ().Height,
                                                          al_map_rgb (255, 255, 255),
-                                                         r.Transform.Size.Width * 0.5,
-                                                         r.Transform.Size.Height * 0.5,
+                                                         r.GetSize ().Width * 0.5,
+                                                         r.GetSize ().Height * 0.5,
                                                          x,
                                                          y,
                                                          scaleX,

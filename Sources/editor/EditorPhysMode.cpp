@@ -10,10 +10,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     EditorPhysMode::EditorPhysMode (Editor* editor)
-        : m_Editor (editor)
-        , m_PhysPoint (nullptr)
-        , m_PhysPointIndex (-1)
-        , m_PhysPoly (nullptr)
+      : m_Editor (editor)
+      , m_PhysPoint (nullptr)
+      , m_PhysPointIndex (-1)
+      , m_PhysPoly (nullptr)
     {
     }
 
@@ -33,7 +33,7 @@ namespace aga
             Point p = m_Editor->CalculateCursorPoint (state.x, state.y);
             Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
             Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-            Point origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.Transform.Pos;
+            Point origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.GetPos ();
 
             m_PhysPoint->X = (translate.X + p.X) * 1 / scale.X - origin.X;
             m_PhysPoint->Y = (translate.Y + p.Y) * 1 / scale.Y - origin.Y;
@@ -55,7 +55,7 @@ namespace aga
 
         Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
         Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-        Point origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.Transform.Pos;
+        Point origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.GetPos ();
         Point* selectedPoint = GetPhysPointUnderCursor (mouseX, mouseY);
 
         for (std::vector<Point>& points : m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints)
@@ -108,8 +108,8 @@ namespace aga
 
                     if (m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawPhysData () && false)
                     {
-                        m_Editor->m_MainLoop->GetScreen ()->GetFont ().DrawText (FONT_NAME_MAIN_SMALL,
-                            al_map_rgb (0, 255, 0), xPoint, yPoint, ToString (i), ALLEGRO_ALIGN_CENTER);
+                        m_Editor->m_MainLoop->GetScreen ()->GetFont ().DrawText (
+                          FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), xPoint, yPoint, ToString (i), ALLEGRO_ALIGN_CENTER);
                     }
 
                     ++i;
@@ -132,10 +132,9 @@ namespace aga
         Point p = m_Editor->CalculateCursorPoint (mouseX, mouseY);
         Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
         Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-        Point origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.Transform.Pos;
+        Point origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.GetPos ();
 
-        Point pointToInsert
-            = { (translate.X + p.X) * 1 / scale.X - origin.X, (translate.Y + p.Y) * 1 / scale.Y - origin.Y };
+        Point pointToInsert = { (translate.X + p.X) * 1 / scale.X - origin.X, (translate.Y + p.Y) * 1 / scale.Y - origin.Y };
 
         bool inserted = false;
 
@@ -196,7 +195,7 @@ namespace aga
             return nullptr;
         }
 
-        Point origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.Transform.Pos;
+        Point origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.GetPos ();
 
         int outsets = 4;
         for (std::vector<Point>& points : m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints)
@@ -242,7 +241,7 @@ namespace aga
                         if (points.empty ())
                         {
                             m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints.erase (
-                                m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints.begin () + j);
+                              m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints.begin () + j);
                             m_PhysPoly = nullptr;
                         }
 

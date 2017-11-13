@@ -6,8 +6,9 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    AnimationFrames::AnimationFrames (unsigned howManyFrames)
-        : m_SpeedMS (1000)
+    AnimationFrames::AnimationFrames (unsigned howManyFrames, Point cellSize)
+      : m_SpeedMS (1000)
+      , m_CellSize (cellSize)
     {
         m_Frames.reserve (howManyFrames);
     }
@@ -22,10 +23,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void AnimationFrames::AddFrame (unsigned index, const Rect& rect)
+    void AnimationFrames::AddFrame (unsigned index, const Rect& rect) { m_Frames.insert (m_Frames.begin () + index, rect); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void AnimationFrames::AddFrame (unsigned index, int col, int row)
     {
-        std::vector<Rect>::iterator it = m_Frames.begin ();
-        m_Frames.insert (it + index, rect);
+        Rect rect = Rect ({ row * m_CellSize.Width, col * m_CellSize.Height },
+                          { row * m_CellSize.Width + m_CellSize.Width, col * m_CellSize.Height + m_CellSize.Height });
+        m_Frames.insert (m_Frames.begin () + index, rect);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -37,11 +43,15 @@ namespace aga
     unsigned AnimationFrames::GetFramesCount () const { return m_Frames.size (); }
 
     //--------------------------------------------------------------------------------------------------
+
+    void AnimationFrames::SetCellSize (Point p) { m_CellSize = p; }
+
+    //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
     Animation::Animation ()
-        : m_CurrentAnimation ("")
-        , m_CurrentFrame (0)
+      : m_CurrentAnimation ("")
+      , m_CurrentFrame (0)
     {
     }
 

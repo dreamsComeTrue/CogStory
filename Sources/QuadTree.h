@@ -46,6 +46,8 @@ namespace aga
 
         void UpdateStructures ();
 
+        std::vector<Entity*> GetEntitiesWithinRect (Rect rect);
+
     private:
         Rect m_Bounds;
         bool m_IsDivided;

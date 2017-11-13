@@ -13,36 +13,40 @@ namespace aga
 
         Rect (Point topLeft, Point bottomRight)
         {
-            Dim.TopLeft = topLeft;
-            Dim.BottomRight = bottomRight;
+            SetTopLeft (topLeft);
+            SetBottomRight (bottomRight);
         }
 
-        union {
-            struct
-            {
-                Point TopLeft;
-                Point BottomRight;
-            } Dim;
-            struct
-            {
-                Point Pos;
-                Point Size;
-            } Transform;
-        };
+        Point GetTopLeft () { return Pos; }
+        void SetTopLeft (Point p) { Pos = p; }
 
-        bool operator== (const Rect& rhs) const
-        {
-            return Dim.TopLeft == rhs.Dim.TopLeft && Dim.BottomRight == rhs.Dim.BottomRight;
-        }
+        Point GetBottomRight () { return Pos + Size; }
+        void SetBottomRight (Point p) { Size = p - Pos; }
+
+        Point GetPos () { return Pos; }
+        void SetPos (Point p) { Pos = p; }
+
+        Point GetSize () { return Size; }
+        void SetSize (Point p) { Size = p; }
+
+        Point Pos;
+        Point Size;
+
+        bool operator== (const Rect& rhs) const { return Pos == rhs.Pos && Size == rhs.Size; }
     };
 
-    static bool InsideRect (float x, float y, const Rect& rect)
+    static bool Intersect (Rect rectA, Rect rectB)
     {
-        return (x >= rect.Dim.TopLeft.X && y >= rect.Dim.TopLeft.Y && x <= rect.Dim.BottomRight.X
-            && y <= rect.Dim.BottomRight.Y);
+        return rectA.GetTopLeft ().X < rectB.GetBottomRight ().X && rectB.GetTopLeft ().X < rectA.GetBottomRight ().X &&
+               rectA.GetTopLeft ().Y < rectB.GetBottomRight ().Y && rectB.GetTopLeft ().Y < rectA.GetBottomRight ().Y;
     }
 
-    static bool InsideRect (const Point& point, const Rect& rect) { return InsideRect (point.X, point.Y, rect); }
+    static bool InsideRect (float x, float y, Rect& rect)
+    {
+        return (x >= rect.GetTopLeft ().X && y >= rect.GetTopLeft ().Y && x <= rect.GetBottomRight ().X && y <= rect.GetBottomRight ().Y);
+    }
+
+    static bool InsideRect (const Point& point, Rect& rect) { return InsideRect (point.X, point.Y, rect); }
 }
 
 #endif //   __RECT_H__

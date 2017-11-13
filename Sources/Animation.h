@@ -10,16 +10,21 @@ namespace aga
     class AnimationFrames
     {
     public:
-        AnimationFrames (unsigned howManyFrames = 0);
+        AnimationFrames (unsigned howManyFrames = 0, Point cellSize = Point (32, 32));
 
         void SetPlaySpeed (unsigned milliseconds);
         unsigned GetPlaySpeed () const;
 
         void AddFrame (unsigned index, const Rect& rect);
+        void AddFrame (unsigned index, int row, int col);
+
         Rect& GetFrame (unsigned index);
         unsigned GetFramesCount () const;
 
+        void SetCellSize (Point p);
+
     private:
+        Point m_CellSize;
         std::vector<Rect> m_Frames;
         unsigned m_SpeedMS;
     };

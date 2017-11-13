@@ -219,13 +219,13 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectBehaviour (
           "Rect", asBEHAVE_CONSTRUCT, "void f(Point, Point)", asFUNCTION (ConstructRectXY), asCALL_CDECL_OBJLAST);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectProperty ("Rect", "Point TopLeft", asOFFSET (Rect, Dim.TopLeft));
+        r = m_ScriptEngine->RegisterObjectMethod ("Rect", "void SetPos (Point)", asMETHOD (Rect, SetPos), asCALL_THISCALL);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectProperty ("Rect", "Point BottomRight", asOFFSET (Rect, Dim.BottomRight));
+        r = m_ScriptEngine->RegisterObjectMethod ("Rect", "Point GetPos ()", asMETHOD (Rect, GetPos), asCALL_THISCALL);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectProperty ("Rect", "Point Pos", asOFFSET (Rect, Transform.Pos));
+        r = m_ScriptEngine->RegisterObjectMethod ("Rect", "void SetSize (Point)", asMETHOD (Rect, SetSize), asCALL_THISCALL);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectProperty ("Rect", "Point Size", asOFFSET (Rect, Transform.Size));
+        r = m_ScriptEngine->RegisterObjectMethod ("Rect", "Point GetSize ()", asMETHOD (Rect, GetSize), asCALL_THISCALL);
         assert (r >= 0);
 
         //        //  Scene

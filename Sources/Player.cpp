@@ -45,7 +45,7 @@ namespace aga
     bool Player::Initialize ()
     {
         m_Image = al_load_bitmap (GetResourcePath (ResourceID::GFX_PLAYER).c_str ());
-        Bounds.Transform.Size = { 64, 64 };
+        Bounds.SetSize ({ 64, 64 });
 
         InitializeAnimations ();
 
@@ -61,7 +61,7 @@ namespace aga
     {
         PhysPoints.clear ();
         PhysPoints.push_back ({ { 20, 10 }, { 25, 0 }, { 39, 0 }, { 44, 10 }, { 44, 64 }, { 20, 64 } });
-        SetPhysOffset (Bounds.Transform.Pos);
+        SetPhysOffset (Bounds.GetPos ());
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -106,45 +106,38 @@ namespace aga
     void Player::Render (float deltaTime)
     {
         AnimationFrames& frames = m_Animation.GetCurrentAnimation ();
-        const Rect& frame = frames.GetFrame (m_Animation.GetCurrentFrame ());
-        int width = frame.Transform.Size.Width;
-        int height = frame.Transform.Size.Height;
+        Rect& frame = frames.GetFrame (m_Animation.GetCurrentFrame ());
+        float width = frame.GetSize ().Width;
+        float height = frame.GetSize ().Height;
 
-        al_draw_scaled_bitmap (m_Image,
-                               frame.Dim.TopLeft.X,
-                               frame.Dim.TopLeft.Y,
-                               width,
-                               height,
-                               Bounds.Transform.Pos.X,
-                               Bounds.Transform.Pos.Y,
-                               width,
-                               height,
-                               0);
+        al_draw_scaled_bitmap (
+          m_Image, frame.GetPos ().X, frame.GetPos ().Y, width, height, Bounds.GetPos ().X, Bounds.GetPos ().Y, width, height, 0);
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void Player::InitializeAnimations ()
     {
-        AnimationFrames idleFrames (3);
-        idleFrames.AddFrame (0, Rect{ Point (0, 0), Point (64, 64) });
-        idleFrames.AddFrame (1, Rect{ Point (64, 0), Point (64, 64) });
-        idleFrames.AddFrame (2, Rect{ Point (128, 0), Point (64, 64) });
+        Point cellSize (64, 64);
+        AnimationFrames idleFrames (3, cellSize);
+        idleFrames.AddFrame (0, 0, 0);
+        idleFrames.AddFrame (1, 0, 1);
+        idleFrames.AddFrame (2, 0, 2);
         idleFrames.SetPlaySpeed (500);
         m_Animation.AddAnimationFrames (ANIM_IDLE, idleFrames);
 
-        AnimationFrames moveLeftFrames (1);
-        moveLeftFrames.AddFrame (0, Rect{ Point (0, 64), Point (64, 64) });
+        AnimationFrames moveLeftFrames (1, cellSize);
+        moveLeftFrames.AddFrame (0, 1, 0);
         moveLeftFrames.SetPlaySpeed (500);
         m_Animation.AddAnimationFrames (ANIM_MOVE_LEFT, moveLeftFrames);
 
-        AnimationFrames moveRightFrames (1);
-        moveRightFrames.AddFrame (0, Rect{ Point (0, 128), Point (64, 64) });
+        AnimationFrames moveRightFrames (1, cellSize);
+        moveRightFrames.AddFrame (0, 2, 0);
         moveRightFrames.SetPlaySpeed (500);
         m_Animation.AddAnimationFrames (ANIM_MOVE_RIGHT, moveRightFrames);
 
-        AnimationFrames moveUpFrames (1);
-        moveUpFrames.AddFrame (0, Rect{ Point (0, 64 * 3), Point (64, 64) });
+        AnimationFrames moveUpFrames (1, cellSize);
+        moveUpFrames.AddFrame (0, 3, 0);
         moveUpFrames.SetPlaySpeed (500);
         m_Animation.AddAnimationFrames (ANIM_MOVE_UP, moveUpFrames);
 
@@ -255,8 +248,10 @@ namespace aga
             }
         }
 
-        for (Tile* tile : m_SceneManager->GetActiveScene ()->GetTiles ())
+        for (Entity* ent : m_SceneManager->GetActiveScene ()->GetVisibleEntities ())
         {
+            Tile* tile = (Tile*)ent;
+
             if (!tile->PhysPoints.empty ())
             {
                 for (int i = 0; i < tile->GetPhysPolygonsCount (); ++i)
@@ -299,9 +294,8 @@ namespace aga
 
     void Player::Move (float dx, float dy)
     {
-        m_OldPosition = Bounds.Transform.Pos;
-        Bounds.Transform.Pos.X += dx;
-        Bounds.Transform.Pos.Y += dy;
+        m_OldPosition = Bounds.GetPos ();
+        Bounds.SetPos (Bounds.GetPos () + Point (dx, dy));
 
         if (MoveCallback != nullptr && m_FollowCamera)
         {
@@ -319,13 +313,12 @@ namespace aga
 
     void Player::SetPosition (float x, float y)
     {
-        m_OldPosition = Bounds.Transform.Pos;
-        Bounds.Transform.Pos.X = x;
-        Bounds.Transform.Pos.Y = y;
+        m_OldPosition = Bounds.GetPos ();
+        Bounds.SetPos ({ x, y });
 
         if (MoveCallback != nullptr && m_FollowCamera)
         {
-            MoveCallback (Bounds.Transform.Pos.X - m_OldPosition.X, Bounds.Transform.Pos.Y - m_OldPosition.Y);
+            MoveCallback (Bounds.GetPos ().X - m_OldPosition.X, Bounds.GetPos ().Y - m_OldPosition.Y);
         }
 
         SetPhysOffset ({ x, y });
@@ -333,11 +326,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Point Player::GetPosition () { return Bounds.Transform.Pos; }
+    Point Player::GetPosition () { return Bounds.GetPos (); }
 
     //--------------------------------------------------------------------------------------------------
 
-    Point Player::GetSize () { return Bounds.Transform.Size; }
+    Point Player::GetSize () { return Bounds.GetSize (); }
 
     //--------------------------------------------------------------------------------------------------
 

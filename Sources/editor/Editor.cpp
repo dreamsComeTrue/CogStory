@@ -91,7 +91,6 @@ namespace aga
         catch (const std::exception&)
         {
         }
-
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -112,7 +111,6 @@ namespace aga
         catch (const std::exception&)
         {
         }
-
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -441,7 +439,7 @@ namespace aga
         if (m_EditorTileMode.m_SelectedTile)
         {
             Rect b = m_EditorTileMode.GetRenderBounds (m_EditorTileMode.m_SelectedTile);
-            al_draw_rectangle (b.Transform.Pos.X, b.Transform.Pos.Y, b.Transform.Size.Width, b.Transform.Size.Height, COLOR_RED, 2);
+            al_draw_rectangle (b.GetPos ().X, b.GetPos ().Y, b.GetBottomRight ().X, b.GetBottomRight ().Y, COLOR_RED, 2);
         }
 
         if (m_CursorMode == CursorMode::TileSelectMode)
@@ -451,7 +449,7 @@ namespace aga
 
             if (m_EditorTileMode.m_TileUnderCursor)
             {
-                al_draw_rectangle (r.Transform.Pos.X, r.Transform.Pos.Y, r.Transform.Size.Width, r.Transform.Size.Height, COLOR_YELLOW, 2);
+                al_draw_rectangle (r.GetPos ().X, r.GetPos ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y, COLOR_YELLOW, 2);
             }
         }
         else if (m_CursorMode == CursorMode::EditPhysBodyMode)
@@ -1015,12 +1013,10 @@ namespace aga
 
         ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   X: " + ToString (translate.X * (1 / scale.X))).c_str ());
         ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   Y: " + ToString (translate.Y * (1 / scale.Y))).c_str ());
-        ImGui::TextColored (
-          ImVec4 (0, 1, 0, 1),
-          std::string ("   W: " + ToString (m_EditorTileMode.m_SelectedAtlasRegion.Bounds.Transform.Size.Width)).c_str ());
-        ImGui::TextColored (
-          ImVec4 (0, 1, 0, 1),
-          std::string ("   H: " + ToString (m_EditorTileMode.m_SelectedAtlasRegion.Bounds.Transform.Size.Height)).c_str ());
+        ImGui::TextColored (ImVec4 (0, 1, 0, 1),
+                            std::string ("   W: " + ToString (m_EditorTileMode.m_SelectedAtlasRegion.Bounds.GetSize ().Width)).c_str ());
+        ImGui::TextColored (ImVec4 (0, 1, 0, 1),
+                            std::string ("   H: " + ToString (m_EditorTileMode.m_SelectedAtlasRegion.Bounds.GetSize ().Height)).c_str ());
         ImGui::TextColored (
           ImVec4 (0, 1, 0, 1),
           std::string ("   A: " + (m_EditorTileMode.m_SelectedTile ? ToString (m_EditorTileMode.m_SelectedTile->Rotation) : "-")).c_str ());

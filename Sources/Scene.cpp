@@ -120,7 +120,7 @@ namespace aga
 
         if (atlas)
         {
-            atlas->DrawRegion (Name, Bounds.Transform.Pos.X, Bounds.Transform.Pos.Y, 1, 1, DegressToRadians (Rotation));
+            atlas->DrawRegion (Name, Bounds.GetPos ().X, Bounds.GetPos ().Y, 1, 1, DegressToRadians (Rotation));
         }
     }
 
@@ -129,10 +129,10 @@ namespace aga
     const float boundSize = 10000;
 
     Scene::Scene (SceneManager* sceneManager)
-        : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
-        , m_SceneManager (sceneManager)
-        , m_DrawPhysData (true)
-        , m_QuadTree (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }))
+      : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
+      , m_SceneManager (sceneManager)
+      , m_DrawPhysData (true)
+      , m_QuadTree (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }))
     {
     }
 
@@ -175,7 +175,9 @@ namespace aga
             file.close ();
 
             scene->m_Name = j["name"];
-            scene->m_Size = StringToPoint (j["size"]);
+            scene->m_Size = Rect (StringToPoint (j["min_size"]), StringToPoint (j["max_size"]));
+
+            scene->m_QuadTree = QuadTreeNode (scene->m_Size);
 
             auto& scripts = j["scripts"];
 
@@ -184,8 +186,7 @@ namespace aga
                 std::string name = j_tile["name"];
                 std::string path = j_tile["path"];
 
-                script = sceneManager->GetMainLoop ()->GetScriptManager ().LoadScriptFromFile (
-                    GetDataPath () + "scripts/" + path, name);
+                script = sceneManager->GetMainLoop ()->GetScriptManager ().LoadScriptFromFile (GetDataPath () + "scripts/" + path, name);
                 scene->AttachScript (script, path);
             }
 
@@ -199,11 +200,8 @@ namespace aga
                 tile->ID = atoi (id.c_str ());
                 tile->Tileset = j_tile["tileset"];
                 tile->Name = j_tile["name"];
-                tile->Bounds.Transform.Pos = StringToPoint (j_tile["pos"]);
-                tile->Bounds.Transform.Size = sceneManager->GetAtlasManager ()
-                                                  ->GetAtlas (tile->Tileset)
-                                                  ->GetRegion (tile->Name)
-                                                  .Bounds.Transform.Size;
+                tile->Bounds.SetPos (StringToPoint (j_tile["pos"]));
+                tile->Bounds.SetSize (sceneManager->GetAtlasManager ()->GetAtlas (tile->Tileset)->GetRegion (tile->Name).Bounds.GetSize ());
                 std::string zOrder = j_tile["z-order"];
                 tile->ZOrder = atoi (zOrder.c_str ());
                 std::string rot = j_tile["rot"];
@@ -219,7 +217,7 @@ namespace aga
                         tile->PhysPoints.push_back (StringToVector (physTile["poly"]));
                     }
 
-                    tile->SetPhysOffset (tile->Bounds.Transform.Pos);
+                    tile->SetPhysOffset (tile->Bounds.GetPos ());
                 }
 
                 scene->AddTile (tile);
@@ -257,17 +255,18 @@ namespace aga
 
     void Scene::SaveScene (Scene* scene, const std::string& filePath)
     {
+        Point minRect{ std::numeric_limits<float>::max (), std::numeric_limits<float>::max () };
+        Point maxRect{ std::numeric_limits<float>::min (), std::numeric_limits<float>::min () };
+
         try
         {
             json j;
 
             j["name"] = scene->m_Name;
-            j["size"] = PointToString (scene->m_Size);
 
             j["scripts"] = json::array ({});
 
-            for (std::vector<ScriptMetaData>::iterator it = scene->m_Scripts.begin (); it != scene->m_Scripts.end ();
-                 ++it)
+            for (std::vector<ScriptMetaData>::iterator it = scene->m_Scripts.begin (); it != scene->m_Scripts.end (); ++it)
             {
                 json scriptObj = json::object ({});
 
@@ -281,12 +280,29 @@ namespace aga
 
             for (Tile* tile : scene->m_Tiles)
             {
+                if (tile->Bounds.GetTopLeft ().X < minRect.X)
+                {
+                    minRect.X = tile->Bounds.GetTopLeft ().X;
+                }
+                if (tile->Bounds.GetTopLeft ().Y < minRect.Y)
+                {
+                    minRect.Y = tile->Bounds.GetTopLeft ().Y;
+                }
+                if (tile->Bounds.GetBottomRight ().X > maxRect.X)
+                {
+                    maxRect.X = tile->Bounds.GetBottomRight ().X;
+                }
+                if (tile->Bounds.GetBottomRight ().Y > maxRect.Y)
+                {
+                    maxRect.Y = tile->Bounds.GetBottomRight ().Y;
+                }
+
                 json tileObj = json::object ({});
 
                 tileObj["id"] = ToString (tile->ID);
                 tileObj["tileset"] = tile->Tileset;
                 tileObj["name"] = tile->Name;
-                tileObj["pos"] = PointToString (tile->Bounds.Transform.Pos);
+                tileObj["pos"] = PointToString (tile->Bounds.GetPos ());
                 tileObj["z-order"] = ToString (tile->ZOrder);
                 tileObj["rot"] = ToString (tile->Rotation);
 
@@ -304,10 +320,12 @@ namespace aga
                 j["tiles"].push_back (tileObj);
             }
 
+            j["min_size"] = PointToString (minRect);
+            j["max_size"] = PointToString (maxRect);
+
             j["flag_points"] = json::array ({});
 
-            for (std::map<std::string, Point>::iterator it = scene->m_FlagPoints.begin ();
-                 it != scene->m_FlagPoints.end (); ++it)
+            for (std::map<std::string, Point>::iterator it = scene->m_FlagPoints.begin (); it != scene->m_FlagPoints.end (); ++it)
             {
                 json flagObj = json::object ({});
 
@@ -319,8 +337,7 @@ namespace aga
 
             j["trigger_areas"] = json::array ({});
 
-            for (std::map<std::string, TriggerArea>::iterator it = scene->m_TriggerAreas.begin ();
-                 it != scene->m_TriggerAreas.end (); ++it)
+            for (std::map<std::string, TriggerArea>::iterator it = scene->m_TriggerAreas.begin (); it != scene->m_TriggerAreas.end (); ++it)
             {
                 json triggerObj = json::object ({});
 
@@ -334,7 +351,7 @@ namespace aga
             std::ofstream out (filePath);
             out << std::setw (4) << j.dump (4, ' ') << "\n";
         }
-        catch (const std::exception& e)
+        catch (const std::exception&)
         {
         }
     }
@@ -378,29 +395,56 @@ namespace aga
     {
         m_SceneManager->GetCamera ().Update (deltaTime);
 
-        if (false)
+        if (m_DrawPhysData)
         {
             DrawQuadTree (&m_QuadTree);
         }
 
         bool isPlayerDrawn = false;
+        std::vector<Entity*> tiles;
 
-        for (int i = 0; i < m_Tiles.size (); ++i)
+        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
         {
-            Tile* tile = m_Tiles[i];
+            tiles = GetVisibleEntities ();
 
-            if (!isPlayerDrawn && tile->ZOrder >= PLAYER_Z_ORDER)
+            for (int i = 0; i < tiles.size (); ++i)
             {
-                m_SceneManager->GetPlayer ().Render (deltaTime);
-                isPlayerDrawn = true;
+                Tile* tile = (Tile*)tiles[i];
+
+                if (!isPlayerDrawn && tile->ZOrder >= PLAYER_Z_ORDER)
+                {
+                    m_SceneManager->GetPlayer ().Render (deltaTime);
+                    isPlayerDrawn = true;
+                }
+
+                tile->RenderID = i;
+                tile->Draw (m_SceneManager->GetAtlasManager ());
+
+                if (m_DrawPhysData)
+                {
+                    tile->DrawPhysVertices ();
+                }
             }
-
-            tile->RenderID = i;
-            tile->Draw (m_SceneManager->GetAtlasManager ());
-
-            if (m_DrawPhysData)
+        }
+        else
+        {
+            for (int i = 0; i < m_Tiles.size (); ++i)
             {
-                tile->DrawPhysVertices ();
+                Tile* tile = m_Tiles[i];
+
+                if (!isPlayerDrawn && tile->ZOrder >= PLAYER_Z_ORDER)
+                {
+                    m_SceneManager->GetPlayer ().Render (deltaTime);
+                    isPlayerDrawn = true;
+                }
+
+                tile->RenderID = i;
+                tile->Draw (m_SceneManager->GetAtlasManager ());
+
+                if (m_DrawPhysData)
+                {
+                    tile->DrawPhysVertices ();
+                }
             }
         }
 
@@ -415,7 +459,29 @@ namespace aga
         }
 
         m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
-            FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), -100, -50, m_Name, ALLEGRO_ALIGN_LEFT);
+          FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), -100, -50, m_Name, ALLEGRO_ALIGN_LEFT);
+
+        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
+        {
+            m_SceneManager->GetCamera ().UseIdentityTransform ();
+
+            m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
+              FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), 10, 10, ToString (tiles.size ()), ALLEGRO_ALIGN_LEFT);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::vector<Entity*> Scene::GetVisibleEntities ()
+    {
+        Point pos = m_SceneManager->GetCamera ().GetTranslate ();
+        Point size = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+        float offsetMultiplier = 0.5f;
+
+        std::vector<Entity*> tiles =
+          m_QuadTree.GetEntitiesWithinRect (Rect (pos - size * offsetMultiplier, pos + size + size * offsetMultiplier));
+
+        return tiles;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -519,8 +585,8 @@ namespace aga
     void Scene::DrawQuadTree (QuadTreeNode* node)
     {
         Rect bounds = node->GetBounds ();
-        al_draw_rectangle (bounds.Dim.TopLeft.X, bounds.Dim.TopLeft.Y, bounds.Dim.BottomRight.X,
-            bounds.Dim.BottomRight.Y, COLOR_WHITE, 1);
+        al_draw_rectangle (
+          bounds.GetTopLeft ().X, bounds.GetTopLeft ().Y, bounds.GetBottomRight ().X, bounds.GetBottomRight ().Y, COLOR_WHITE, 1);
 
         if (node->GetTopLeftTree ())
         {

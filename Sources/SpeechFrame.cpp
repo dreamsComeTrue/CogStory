@@ -109,7 +109,7 @@ namespace aga
             {
                 ++m_DisplayLine;
 
-                int maxLines = (m_DrawRect.Transform.Size.Height - 2 * TEXT_INSETS) / m_LineHeight;
+                int maxLines = (m_DrawRect.GetSize ().Height - 2 * TEXT_INSETS) / m_LineHeight;
                 int diff = m_CurrentLine + 1 - maxLines;
 
                 if (lineCounter < diff)
@@ -181,7 +181,7 @@ namespace aga
                 {
                     ++m_DisplayLine;
 
-                    int maxLines = (m_DrawRect.Transform.Size.Height - 2 * TEXT_INSETS) / m_LineHeight;
+                    int maxLines = (m_DrawRect.GetSize ().Height - 2 * TEXT_INSETS) / m_LineHeight;
                     int diff = m_CurrentLine + 1 - maxLines;
 
                     if (lineCounter < diff)
@@ -201,7 +201,7 @@ namespace aga
 
     int SpeechFrame::GetLineCounter ()
     {
-        int maxLines = (m_DrawRect.Transform.Size.Height - 2 * TEXT_INSETS) / m_LineHeight;
+        int maxLines = (m_DrawRect.GetSize ().Height - 2 * TEXT_INSETS) / m_LineHeight;
         int lineCounter = 0;
         int diff = m_CurrentLine + 1 - maxLines;
 
@@ -236,7 +236,7 @@ namespace aga
         m_LineHeight =
           m_Manager->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetFont ().GetTextDimensions (FONT_NAME_MAIN_MEDIUM, m_Text).Height;
 
-        m_TextLines = BreakLine (m_Text, m_DrawRect.Transform.Size.Width - 2 * TEXT_INSETS);
+        m_TextLines = BreakLine (m_Text, m_DrawRect.GetSize ().Width - 2 * TEXT_INSETS);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -245,11 +245,8 @@ namespace aga
     {
         if (m_Visible)
         {
-            draw_nine_patch_bitmap (m_FrameBitmap,
-                                    m_DrawRect.Transform.Pos.X,
-                                    m_DrawRect.Transform.Pos.Y,
-                                    m_DrawRect.Transform.Size.Width,
-                                    m_DrawRect.Transform.Size.Height);
+            draw_nine_patch_bitmap (
+              m_FrameBitmap, m_DrawRect.GetPos ().X, m_DrawRect.GetPos ().Y, m_DrawRect.GetSize ().Width, m_DrawRect.GetSize ().Height);
 
             int xPoint;
             int yPoint;
@@ -262,19 +259,19 @@ namespace aga
             {
                 Point textDimensions = font.GetTextDimensions (FONT_NAME_MAIN_MEDIUM, text);
 
-                xPoint = m_DrawRect.Transform.Pos.X + m_DrawRect.Transform.Size.Width * 0.5;
-                yPoint = m_DrawRect.Transform.Pos.Y + m_DrawRect.Transform.Size.Height * 0.5 - textDimensions.Height * 0.5;
+                xPoint = m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width * 0.5;
+                yPoint = m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Height * 0.5 - textDimensions.Height * 0.5;
                 align = ALLEGRO_ALIGN_CENTER;
                 centerOffset = -textDimensions.Width * 0.5f + 2 * TEXT_INSETS;
             }
             else
             {
-                xPoint = m_DrawRect.Transform.Pos.X + TEXT_INSETS;
-                yPoint = m_DrawRect.Transform.Pos.Y + TEXT_INSETS;
+                xPoint = m_DrawRect.GetPos ().X + TEXT_INSETS;
+                yPoint = m_DrawRect.GetPos ().Y + TEXT_INSETS;
                 align = ALLEGRO_ALIGN_LEFT;
             }
 
-            int maxLines = (m_DrawRect.Transform.Size.Height - 2 * TEXT_INSETS) / m_LineHeight;
+            int maxLines = (m_DrawRect.GetSize ().Height - 2 * TEXT_INSETS) / m_LineHeight;
             int margin = 5;
             int lineCounter = 0;
             int diff = m_CurrentLine + 1 - maxLines;
@@ -309,8 +306,8 @@ namespace aga
                   ->GetAtlasManager ()
                   ->GetAtlas (GetBaseName (GetResourcePath (PACK_MENU_UI)))
                   ->DrawRegion (regionName,
-                                m_DrawRect.Transform.Pos.X + m_DrawRect.Transform.Size.Width - xOffset,
-                                m_DrawRect.Transform.Pos.Y + yOffset,
+                                m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width - xOffset,
+                                m_DrawRect.GetPos ().Y + yOffset,
                                 1.0f,
                                 1.0f,
                                 DegressToRadians (180.0f));
@@ -323,14 +320,14 @@ namespace aga
                   ->GetAtlasManager ()
                   ->GetAtlas (GetBaseName (GetResourcePath (PACK_MENU_UI)))
                   ->DrawRegion (regionName,
-                                m_DrawRect.Transform.Pos.X + m_DrawRect.Transform.Size.Width - xOffset - 10,
-                                m_DrawRect.Transform.Pos.Y + m_DrawRect.Transform.Size.Height - yOffset - 6);
+                                m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width - xOffset - 10,
+                                m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Height - yOffset - 6);
             }
 
             int x, y, w, h;
             al_get_clipping_rectangle (&x, &y, &w, &h);
             al_set_clipping_rectangle (
-              m_DrawRect.Transform.Pos.X, m_DrawRect.Transform.Pos.Y, m_DrawRect.Transform.Size.Width, m_DrawRect.Transform.Size.Height);
+              m_DrawRect.GetPos ().X, m_DrawRect.GetPos ().Y, m_DrawRect.GetSize ().Width, m_DrawRect.GetSize ().Height);
 
             for (int i = 0; lineCounter < m_CurrentLine + 1; ++lineCounter, ++i)
             {

@@ -5,25 +5,20 @@ const int TWEEN_3 = 3;
 SpeechFrame@ frame;
 SpeechFrame@ mainFrame;
 
-Point frameSize1 (350, 100);
-
 void Start ()
 {
 	Point screenSize = GetWindowSize ();
 
-	Rect rect (Point (screenSize.Width / 2 - frameSize1.Width / 2, screenSize.Height - frameSize1.Height - 10), frameSize1);
-    string txt = "Hello. PTR4617!\nWhat's up?\nRecently I've found this map i think you should check out.\nGood luck on your journey!";
-    
-    
-    
-    txt = "[color=RED]Hello[/color] !!!\n I've found [color=YELLOW]think[/color] take.\n[color=GREEN]But the most[/color] part of [color=LIGHTBLUE]this, is to[/color] be [color=RED]happy[/color] !!!\n   \n Oh, wait...";
-	
-	
+    Point frameSize1 (350, 100);
+	Point framePos1 (screenSize.Width / 2 - frameSize1.Width / 2, screenSize.Height - frameSize1.Height - 10);
+	Rect rect (framePos1, Point (framePos1.X + frameSize1.Width, framePos1.Y + frameSize1.Height));    
+    string txt = "[color=RED]Hello[/color] !!!\n I've found [color=YELLOW]think[/color] take.\n[color=GREEN]But the most[/color] part of [color=LIGHTBLUE]this, is to[/color] be [color=RED]happy[/color] !!!\n   \n Oh, wait...";
 	
 	@mainFrame = AddSpeechFrame ("MAIN_SPEECH", txt, rect);
 
-	Point frameSize (250, 40);
-	Rect r (Point (screenSize.Width / 2 - frameSize.Width / 2, 10), frameSize);
+	Point frameSize2 (250, 40);
+	Point framePos2 (screenSize.Width / 2 - frameSize2.Width / 2, 10);
+	Rect r (framePos2, Point (framePos2.X + frameSize2.Width, framePos2.Y + frameSize2.Height));
     @frame = AddSpeechFrame ("SPEECH", "Hello. PTR4617!", r);
 	frame.SetVisible (false);
 	frame.SetDrawTextCenter (true);
@@ -44,9 +39,6 @@ void BeforeEnterScene ()
 	AddOnLeaveCallback ("TOP", Func2);
 
     mainFrame.SetVisible (true);
-
-	Rect rect (Point (screenSize.Width / 2 - frameSize1.Width / 2, screenSize.Height - frameSize1.Height - 10), frameSize1);
-    mainFrame.SetDrawRect (rect);
   //  AddTween (TWEEN_1, flag1, flag2, 2000, PlayerTween, NextTween1);
 }
 

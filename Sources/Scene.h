@@ -33,7 +33,7 @@ namespace aga
     struct Tile : public Entity, public Collidable
     {
         Tile (PhysicsManager* physicsManager)
-            : Collidable (physicsManager)
+          : Collidable (physicsManager)
         {
         }
 
@@ -75,6 +75,7 @@ namespace aga
         void AddTile (Tile* tile);
         void RemoveTile (Tile* tile);
         std::vector<Tile*>& GetTiles ();
+        std::vector<Entity*> GetVisibleEntities ();
 
         void AddFlagPoint (const std::string& name, Point point);
         Point GetFlagPoint (const std::string& name);
@@ -106,7 +107,7 @@ namespace aga
 
     private:
         std::string m_Name;
-        Point m_Size;
+        Rect m_Size;
         std::map<std::string, Point> m_FlagPoints;
         std::map<std::string, TriggerArea> m_TriggerAreas;
         std::vector<Tile*> m_Tiles;
