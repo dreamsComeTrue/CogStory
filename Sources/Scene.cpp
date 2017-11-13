@@ -362,6 +362,7 @@ namespace aga
     {
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
         {
+            m_SceneManager->FadeInOut ();
             m_SceneManager->GetPlayer ().BeforeEnter ();
             RunAllScripts ("void BeforeEnterScene ()");
         }

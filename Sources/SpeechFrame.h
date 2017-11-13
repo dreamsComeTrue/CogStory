@@ -8,7 +8,6 @@
 namespace aga
 {
     class SpeechFrameManager;
-    class AudioSample;
 
     struct SpeechTextAttribute
     {
@@ -23,7 +22,7 @@ namespace aga
     {
     public:
         SpeechFrame (SpeechFrameManager* manager);
-        SpeechFrame (SpeechFrameManager* manager, const std::string& text, Rect rect);
+        SpeechFrame (SpeechFrameManager* manager, const std::string& text, Rect rect, bool shouldBeHandled = true);
         virtual ~SpeechFrame ();
 
         bool Update (float deltaTime);
@@ -34,13 +33,21 @@ namespace aga
         void SetText (const std::string& text);
 
         void SetDrawRect (Rect rect);
-        void SetVisible (bool visible);
+        void Show ();
+        void Hide ();
         bool IsVisible () const;
 
         void SetDrawTextCenter (bool center);
         bool IsDrawTextCenter () const;
 
         void SetDrawSpeed (float speedInMs);
+
+        bool IsShouldBeHandled ();
+        bool IsHandled ();
+
+        std::function<void()> ScrollUpFunction;
+        std::function<void()> ScrollDownFunction;
+        std::function<void()> HandledFunction;
 
     private:
         void PreprocessText (std::string& text);
@@ -76,8 +83,9 @@ namespace aga
         float m_MaxKeyDelta;
         bool m_KeyEventHandled;
 
-        AudioSample* m_SelectSample;
         bool m_ScrollPossible;
+        bool m_ShouldBeHandled;
+        bool m_Handled;
     };
 }
 

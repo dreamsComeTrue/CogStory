@@ -3,7 +3,6 @@
 #include "SpeechFrame.h"
 #include "Atlas.h"
 #include "AtlasManager.h"
-#include "AudioSample.h"
 #include "Font.h"
 #include "MainLoop.h"
 #include "SceneManager.h"
@@ -35,13 +34,16 @@ namespace aga
       , m_MaxKeyDelta (200)
       , m_KeyEventHandled (false)
       , m_ScrollPossible (false)
+      , m_ShouldBeHandled (true)
+      , m_Handled (false)
+
     {
         m_FrameBitmap = load_nine_patch_bitmap (GetResourcePath (ResourceID::GFX_TEXT_FRAME).c_str ());
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    SpeechFrame::SpeechFrame (SpeechFrameManager* manager, const std::string& text, Rect rect)
+    SpeechFrame::SpeechFrame (SpeechFrameManager* manager, const std::string& text, Rect rect, bool shouldBeHandled)
       : m_Manager (manager)
       , m_DrawRect (rect)
       , m_Visible (true)
@@ -57,10 +59,10 @@ namespace aga
       , m_MaxKeyDelta (200)
       , m_KeyEventHandled (false)
       , m_ScrollPossible (false)
+      , m_ShouldBeHandled (shouldBeHandled)
+      , m_Handled (false)
     {
         m_FrameBitmap = load_nine_patch_bitmap (GetResourcePath (ResourceID::GFX_TEXT_FRAME).c_str ());
-        m_SelectSample = m_Manager->GetSceneManager ()->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
-          "SELECT_MENU", GetResourcePath (SOUND_MENU_SELECT));
         SetText (text);
     }
 
@@ -101,7 +103,10 @@ namespace aga
 
                 if (lineCounter > 0)
                 {
-                    m_SelectSample->Play ();
+                    if (ScrollUpFunction)
+                    {
+                        ScrollUpFunction ();
+                    }
                 }
             }
 
@@ -114,7 +119,10 @@ namespace aga
 
                 if (lineCounter < diff)
                 {
-                    m_SelectSample->Play ();
+                    if (ScrollDownFunction)
+                    {
+                        ScrollDownFunction ();
+                    }
                 }
             }
 
@@ -170,13 +178,17 @@ namespace aga
 
                     if (lineCounter > 0)
                     {
-                        m_SelectSample->Play ();
+                        if (ScrollUpFunction)
+                        {
+                            ScrollUpFunction ();
+                        }
                     }
 
                     m_KeyEventHandled = true;
 
                     break;
                 }
+
                 case ALLEGRO_KEY_DOWN:
                 {
                     ++m_DisplayLine;
@@ -186,10 +198,25 @@ namespace aga
 
                     if (lineCounter < diff)
                     {
-                        m_SelectSample->Play ();
+                        if (ScrollDownFunction)
+                        {
+                            ScrollDownFunction ();
+                        }
                     }
 
                     m_KeyEventHandled = true;
+
+                    break;
+                }
+
+                case ALLEGRO_KEY_ENTER:
+                {
+                    m_Handled = true;
+
+                    if (HandledFunction)
+                    {
+                        HandledFunction ();
+                    }
 
                     break;
                 }
@@ -474,16 +501,21 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SpeechFrame::SetVisible (bool visible)
+    void SpeechFrame::Show ()
     {
-        m_Visible = visible;
+        m_Visible = true;
         m_CurrentIndex = 0;
         m_CurrentLine = 0;
         m_CurrentDrawTime = 0;
         m_DisplayLine = 0;
         m_ScrollPossible = false;
         m_StillUpdating = true;
+        m_Handled = false;
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SpeechFrame::Hide () { m_Visible = false; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -567,6 +599,14 @@ namespace aga
             ++currIndex;
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool SpeechFrame::IsShouldBeHandled () { return m_ShouldBeHandled; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool SpeechFrame::IsHandled () { return m_Handled; }
 
     //--------------------------------------------------------------------------------------------------
 }

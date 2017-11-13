@@ -15,7 +15,7 @@ namespace aga
     std::string GAMEPLAY_STATE_NAME = "GAMEPLAY_STATE";
 
     GamePlayState::GamePlayState (MainLoop* mainLoop)
-        : State (mainLoop, GAMEPLAY_STATE_NAME)
+      : State (mainLoop, GAMEPLAY_STATE_NAME)
     {
     }
 
@@ -81,7 +81,10 @@ namespace aga
 
     void GamePlayState::Update (float deltaTime)
     {
-        m_MainLoop->GetSceneManager ().GetPlayer ().HandleInput (deltaTime);
+        if (!m_MainLoop->GetSceneManager ().GetPlayer ().IsPreventInput ())
+        {
+            m_MainLoop->GetSceneManager ().GetPlayer ().HandleInput (deltaTime);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -3,15 +3,18 @@
 #ifndef __ENTITY_H__
 #define __ENTITY_H__
 
-#include "Rect.h"
+#include "Transformable.h"
 
 namespace aga
 {
-    class Entity
+    static int GlobalID = 0;
+
+    class Entity : public Transformable
     {
     public:
         int ID = 0;
-        Rect Bounds;
+
+        static int GetNextID () { return GlobalID++; }
     };
 }
 

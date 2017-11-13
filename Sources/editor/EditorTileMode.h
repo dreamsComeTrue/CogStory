@@ -26,8 +26,6 @@ namespace aga
         virtual ~EditorTileMode ();
 
     private:
-        void SetCurrentID (int id);
-
         void InitializeUI ();
         void DrawTiles ();
 

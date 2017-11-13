@@ -28,6 +28,9 @@ namespace aga
         void AfterLeave ();
 
         bool Update (float deltaTime);
+
+        void SetPreventInput (bool prevent = false);
+        bool IsPreventInput () const;
         void HandleInput (float deltaTime);
         void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
         void Render (float deltaTime);
@@ -51,6 +54,7 @@ namespace aga
         SceneManager* m_SceneManager;
         Animation m_Animation;
         bool m_FollowCamera;
+        bool m_PreventInput;
     };
 }
 

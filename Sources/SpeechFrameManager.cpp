@@ -1,6 +1,11 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "SpeechFrameManager.h"
+#include "AudioManager.h"
+#include "AudioSample.h"
+#include "MainLoop.h"
+#include "Player.h"
+#include "SceneManager.h"
 #include "SpeechFrame.h"
 
 namespace aga
@@ -26,7 +31,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool SpeechFrameManager::Initialize () { return Lifecycle::Initialize (); }
+    bool SpeechFrameManager::Initialize ()
+    {
+        Lifecycle::Initialize ();
+
+        m_SelectSample =
+          m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile ("SELECT_MENU", GetResourcePath (SOUND_MENU_SELECT));
+
+        return true;
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -46,7 +59,19 @@ namespace aga
     {
         for (SpeechFrameIterator it = m_Frames.begin (); it != m_Frames.end (); ++it)
         {
-            it->second->ProcessEvent (event, deltaTime);
+            SpeechFrame* frame = it->second;
+
+            if (frame->IsVisible ())
+            {
+                frame->ProcessEvent (event, deltaTime);
+
+                if (frame->IsHandled () && frame->IsShouldBeHandled ())
+                {
+                    frame->Hide ();
+
+                    m_SceneManager->GetPlayer ().SetPreventInput (false);
+                }
+            }
         }
     }
 
@@ -56,7 +81,17 @@ namespace aga
     {
         for (SpeechFrameIterator it = m_Frames.begin (); it != m_Frames.end (); ++it)
         {
-            it->second->Update (deltaTime);
+            SpeechFrame* frame = it->second;
+
+            if (frame->IsVisible ())
+            {
+                if (frame->IsShouldBeHandled ())
+                {
+                    m_SceneManager->GetPlayer ().SetPreventInput (true);
+                }
+
+                frame->Update (deltaTime);
+            }
         }
     }
 
@@ -66,7 +101,12 @@ namespace aga
     {
         for (SpeechFrameIterator it = m_Frames.begin (); it != m_Frames.end (); ++it)
         {
-            it->second->Render (deltaTime);
+            SpeechFrame* frame = it->second;
+
+            if (frame->IsVisible ())
+            {
+                frame->Render (deltaTime);
+            }
         }
     }
 
@@ -76,12 +116,16 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& id, const std::string& text, Rect rect)
+    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& id, const std::string& text, Rect rect, bool shouldBeHandled)
     {
         if (m_Frames.find (id) == m_Frames.end ())
         {
-            SpeechFrame* frame = new SpeechFrame (this, text, rect);
+            SpeechFrame* frame = new SpeechFrame (this, text, rect, shouldBeHandled);
             m_Frames.insert (std::make_pair (id, frame));
+
+            frame->ScrollDownFunction = [&]() { m_SelectSample->Play (); };
+            frame->ScrollUpFunction = [&]() { m_SelectSample->Play (); };
+            frame->HandledFunction = [&]() { m_SelectSample->Play (); };
         }
 
         return m_Frames[id];

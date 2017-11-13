@@ -46,6 +46,8 @@ namespace aga
 
         SpeechFrameManager& GetSpeechFrameManager ();
 
+        void FadeInOut ();
+
     private:
         SpeechFrameManager m_SpeechFrameManager;
         Player m_Player;
@@ -55,6 +57,11 @@ namespace aga
         MainLoop* m_MainLoop;
         std::map<ResourceID, Scene*> m_Scenes;
         Scene* m_ActiveScene;
+
+        float m_FadeTime;
+        bool m_FadeDirection;
+        bool m_Transitioning;
+        ALLEGRO_COLOR m_FadeColor;
     };
 }
 

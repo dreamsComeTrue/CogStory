@@ -587,7 +587,7 @@ namespace aga
                     }
                 }
 
-                m_EditorTileMode.SetCurrentID (maxTileID);
+                GlobalID = maxTileID;
                 ResetSettings ();
             }
         }

@@ -9,6 +9,7 @@ namespace aga
 {
     class SpeechFrame;
     class SceneManager;
+    class AudioSample;
 
     class SpeechFrameManager : public Lifecycle
     {
@@ -25,14 +26,14 @@ namespace aga
         void Render (float deltaTime);
         void Clear ();
 
-        SpeechFrame* AddSpeechFrame (const std::string& id, const std::string& text, Rect rect);
-        SpeechFrame* AddMultiLineSpeechFrame (const std::string& id, const std::string& text, Rect rect);
+        SpeechFrame* AddSpeechFrame (const std::string& id, const std::string& text, Rect rect, bool shouldBeHandled = true);
 
         SceneManager* GetSceneManager ();
 
     private:
         SceneManager* m_SceneManager;
         std::map<std::string, SpeechFrame*> m_Frames;
+        AudioSample* m_SelectSample;
     };
 }
 

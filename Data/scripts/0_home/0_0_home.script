@@ -2,7 +2,7 @@ const float SPEED = 15.0;
 const int TWEEN_1 = 1;
 const int TWEEN_2 = 2;
 const int TWEEN_3 = 3;
-SpeechFrame@ frame;
+SpeechFrame@ topFrame;
 SpeechFrame@ mainFrame;
 
 void Start ()
@@ -19,9 +19,9 @@ void Start ()
 	Point frameSize2 (250, 40);
 	Point framePos2 (screenSize.Width / 2 - frameSize2.Width / 2, 10);
 	Rect r (framePos2, Point (framePos2.X + frameSize2.Width, framePos2.Y + frameSize2.Height));
-    @frame = AddSpeechFrame ("SPEECH", "Hello. PTR4617!", r);
-	frame.SetVisible (false);
-	frame.SetDrawTextCenter (true);
+    @topFrame = AddSpeechFrame ("SPEECH", "Hello. PTR4617!", r);
+	topFrame.Hide ();
+	topFrame.SetDrawTextCenter (true);
 }
 
 void BeforeEnterScene ()
@@ -38,7 +38,7 @@ void BeforeEnterScene ()
 	AddOnEnterCallback ("TOP", Func1);
 	AddOnLeaveCallback ("TOP", Func2);
 
-    mainFrame.SetVisible (true);
+    mainFrame.Show ();
   //  AddTween (TWEEN_1, flag1, flag2, 2000, PlayerTween, NextTween1);
 }
 
@@ -66,12 +66,12 @@ void Func1 (Point p)
 	//player.SetPosition (spawn.X - playerSize.Width * 0.5, spawn.Y - playerSize.Height * 0.5);
 	//player.SetPosition (playerPos.X, playerPos.Y - 60);
 
-	frame.SetVisible (true);	
+	topFrame.Show ();	
 }
 
 void Func2 (Point p)
 {
-	frame.SetVisible (false);	
+	topFrame.Hide ();	
 }
 
 bool PlayerTween (float progress, Point value)

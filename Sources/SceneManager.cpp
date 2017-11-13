@@ -11,6 +11,8 @@
 
 namespace aga
 {
+    const float FADE_MAX_TIME = 1500;
+
     //--------------------------------------------------------------------------------------------------
 
     SceneManager::SceneManager (MainLoop* mainLoop)
@@ -20,6 +22,10 @@ namespace aga
       , m_Player (this)
       , m_Camera (mainLoop->GetScreen ())
       , m_AtlasManager (nullptr)
+      , m_FadeTime (0.0f)
+      , m_Transitioning (true)
+      , m_FadeColor (COLOR_BLACK)
+      , m_FadeDirection (true)
     {
     }
 
@@ -103,6 +109,8 @@ namespace aga
 
     void SceneManager::SetActiveScene (Scene* scene)
     {
+        FadeInOut ();
+
         if (m_ActiveScene != nullptr)
         {
             m_ActiveScene->AfterLeave ();
@@ -124,7 +132,7 @@ namespace aga
 
     bool SceneManager::Update (float deltaTime)
     {
-        if (m_ActiveScene != nullptr)
+        if (!m_Transitioning && m_ActiveScene != nullptr)
         {
             m_ActiveScene->Update (deltaTime);
             m_SpeechFrameManager.Update (deltaTime);
@@ -137,12 +145,44 @@ namespace aga
 
     void SceneManager::Render (float deltaTime)
     {
+        if (m_FadeDirection == true)
+        {
+            if (m_FadeTime < FADE_MAX_TIME)
+            {
+                m_FadeTime += deltaTime * 1000;
+                m_FadeColor.a += 0.01;
+            }
+            else
+            {
+                m_FadeDirection = false;
+                m_FadeTime = 0.0f;
+            }
+        }
+        else
+        {
+            if (m_FadeTime < FADE_MAX_TIME)
+            {
+                m_FadeTime += deltaTime * 1000;
+                m_FadeColor.a -= 0.01;
+            }
+            else
+            {
+                m_Transitioning = false;
+            }
+        }
+
         if (m_ActiveScene != nullptr)
         {
             m_ActiveScene->Render (deltaTime);
 
             m_Camera.UseIdentityTransform ();
             m_SpeechFrameManager.Render (deltaTime);
+        }
+
+        if (m_Transitioning)
+        {
+            const Point size = m_MainLoop->GetScreen ()->GetWindowSize ();
+            al_draw_filled_rectangle (0, 0, size.Width, size.Height, m_FadeColor);
         }
     }
 
@@ -217,6 +257,16 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     SpeechFrameManager& SceneManager::GetSpeechFrameManager () { return m_SpeechFrameManager; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::FadeInOut ()
+    {
+        m_FadeDirection = true;
+        m_FadeColor.a = 0.0f;
+        m_Transitioning = true;
+        m_FadeTime = 0.0f;
+    }
 
     //--------------------------------------------------------------------------------------------------
 }

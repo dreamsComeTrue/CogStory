@@ -25,7 +25,9 @@ namespace aga
       , m_SceneManager (sceneManager)
       , m_Image (nullptr)
       , m_FollowCamera (true)
+      , m_PreventInput (false)
     {
+        ID = Entity::GetNextID ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -146,10 +148,23 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Player::SetPreventInput (bool prevent) { m_PreventInput = prevent; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Player::IsPreventInput () const { return m_PreventInput; }
+
+    //--------------------------------------------------------------------------------------------------
+
     float sampleCounter = 0;
 
     void Player::HandleInput (float deltaTime)
     {
+        if (m_PreventInput)
+        {
+            return;
+        }
+
         ALLEGRO_KEYBOARD_STATE state;
         al_get_keyboard_state (&state);
         float dx = 0, dy = 0;

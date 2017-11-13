@@ -298,8 +298,9 @@ namespace aga
         //  Speech Frame
         r = m_ScriptEngine->RegisterObjectType ("SpeechFrame", 0, asOBJ_REF | asOBJ_NOCOUNT);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-          "SpeechFrame", "void SetVisible (bool)", asMETHOD (SpeechFrame, SetVisible), asCALL_THISCALL);
+        r = m_ScriptEngine->RegisterObjectMethod ("SpeechFrame", "void Show ()", asMETHOD (SpeechFrame, Show), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("SpeechFrame", "void Hide ()", asMETHOD (SpeechFrame, Hide), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("SpeechFrame", "bool IsVisible ()", asMETHOD (SpeechFrame, IsVisible), asCALL_THISCALL);
         assert (r >= 0);
@@ -314,7 +315,7 @@ namespace aga
         assert (r >= 0);
 
         //  Speech Frame Manager
-        r = m_ScriptEngine->RegisterGlobalFunction ("SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Rect)",
+        r = m_ScriptEngine->RegisterGlobalFunction ("SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Rect, bool = true)",
                                                     asMETHOD (SpeechFrameManager, AddSpeechFrame),
                                                     asCALL_THISCALL_ASGLOBAL,
                                                     &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());

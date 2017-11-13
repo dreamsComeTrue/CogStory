@@ -13,8 +13,6 @@ namespace aga
     const int TILES_COUNT = 14;
     const int TILE_SIZE = 50;
 
-    static int CURRENT_ID = 0;
-
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
@@ -221,7 +219,7 @@ namespace aga
         Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
         Point point = m_Editor->CalculateCursorPoint (mouseX, mouseY);
 
-        tile->ID = ++CURRENT_ID;
+        tile->ID = Entity::GetNextID ();
         tile->Tileset = m_Atlas->GetName ();
         tile->Name = m_SelectedAtlasRegion.Name;
         tile->Bounds = { { (translate.X + point.X), (translate.Y + point.Y) },
@@ -321,10 +319,6 @@ namespace aga
         m_SelectedTile = nullptr;
         m_TileUnderCursor = nullptr;
     }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void EditorTileMode::SetCurrentID (int id) { CURRENT_ID = id; }
 
     //--------------------------------------------------------------------------------------------------
 }
