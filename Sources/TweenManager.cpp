@@ -10,7 +10,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     TweenManager::TweenManager (MainLoop* mainLoop)
-        : m_MainLoop (mainLoop)
+      : m_MainLoop (mainLoop)
     {
     }
 
@@ -34,40 +34,53 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void TweenManager::AddTween (int id, float from, float to, int during, std::function<bool(float)> func)
-    {
-        //        if (m_Tweens.find (id) == m_Tweens.end ())
-        //        {
-        //            tweeny::tween<float> tween = tweeny::from (from).to (to).during (during).onStep (func);
-
-        //            m_Tweens.insert (std::make_pair (id, tween));
-        //        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
     bool TweenManager::Update (float deltaTime)
     {
         for (int i = 0; i < m_Tweens.size (); ++i)
         {
             TweenData& tween = m_Tweens[i];
 
-            if (tween.Tween.progress () >= 1.0f)
+            if (tween.TweenMask & TWEEN_F)
             {
-                if (tween.FinishFunc)
+                if (tween.TweenF.progress () >= 1.0f)
                 {
-                    const char* moduleName = tween.FinishFunc->GetModuleName ();
-                    Script* script = m_MainLoop->GetScriptManager ().GetScriptByModuleName (moduleName);
-
-                    if (script)
+                    if (tween.FinishFunc)
                     {
-                        asIScriptContext* ctx = script->GetContext ();
-                        ctx->Prepare (tween.FinishFunc);
-                        ctx->SetArgDWord (0, (int)tween.ID);
-                        ctx->Execute ();
-                    }
+                        const char* moduleName = tween.FinishFunc->GetModuleName ();
+                        Script* script = m_MainLoop->GetScriptManager ().GetScriptByModuleName (moduleName);
 
-                    m_Tweens.erase (m_Tweens.begin () + i);
+                        if (script)
+                        {
+                            asIScriptContext* ctx = script->GetContext ();
+                            ctx->Prepare (tween.FinishFunc);
+                            ctx->SetArgDWord (0, (int)tween.ID);
+                            ctx->Execute ();
+                        }
+
+                        m_Tweens.erase (m_Tweens.begin () + i);
+                    }
+                }
+            }
+
+            if (tween.TweenMask & TWEEN_FF)
+            {
+                if (tween.TweenFF.progress () >= 1.0f)
+                {
+                    if (tween.FinishFunc)
+                    {
+                        const char* moduleName = tween.FinishFunc->GetModuleName ();
+                        Script* script = m_MainLoop->GetScriptManager ().GetScriptByModuleName (moduleName);
+
+                        if (script)
+                        {
+                            asIScriptContext* ctx = script->GetContext ();
+                            ctx->Prepare (tween.FinishFunc);
+                            ctx->SetArgDWord (0, (int)tween.ID);
+                            ctx->Execute ();
+                        }
+
+                        m_Tweens.erase (m_Tweens.begin () + i);
+                    }
                 }
             }
         }
@@ -76,9 +89,20 @@ namespace aga
         {
             TweenData& tween = m_Tweens[i];
 
-            if (tween.Tween.progress () < 1.0f)
+            if (tween.TweenMask & TWEEN_F)
             {
-                tween.Tween.step ((int)(deltaTime * 1000));
+                if (tween.TweenF.progress () < 1.0f)
+                {
+                    tween.TweenF.step ((int)(deltaTime * 1000));
+                }
+            }
+
+            if (tween.TweenMask & TWEEN_FF)
+            {
+                if (tween.TweenFF.progress () < 1.0f)
+                {
+                    tween.TweenFF.step ((int)(deltaTime * 1000));
+                }
             }
         }
 
@@ -142,8 +166,51 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void TweenManager::AddTween (
-        int id, Point from, Point to, int during, asIScriptFunction* asFunc, asIScriptFunction* finishFunc)
+    TweenData& TweenManager::AddTween (int id, float from, float to, int during, std::function<bool(float)> func)
+    {
+        TweenData* foundTween = GetTween (id);
+
+        if (foundTween)
+        {
+            return *foundTween;
+        }
+
+        tweeny::tween<float> tween = tweeny::from (from).to (to).during (during).onStep (func);
+
+        TweenData tweenData;
+        tweenData.ID = id;
+        tweenData.TweenF = tween;
+        tweenData.TweenMask |= TWEEN_F;
+
+        m_Tweens.push_back (tweenData);
+
+        return m_Tweens.back ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    TweenData& TweenManager::AddTween (int id, tweeny::tween<float>& func)
+    {
+        TweenData* foundTween = GetTween (id);
+
+        if (foundTween)
+        {
+            return *foundTween;
+        }
+
+        TweenData tweenData;
+        tweenData.ID = id;
+        tweenData.TweenF = func;
+        tweenData.TweenMask |= TWEEN_F;
+
+        m_Tweens.push_back (tweenData);
+
+        return m_Tweens.back ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void TweenManager::AddTween (int id, Point from, Point to, int during, asIScriptFunction* asFunc, asIScriptFunction* finishFunc)
     {
         bool found = false;
 
@@ -158,49 +225,49 @@ namespace aga
 
         if (!found)
         {
-            std::function<bool(tweeny::tween<float, float> & t, float, float)> func
-                = [&](tweeny::tween<float, float>& t, float x, float y) {
-                      asIScriptFunction* callback = FindCallback (t);
+            std::function<bool(tweeny::tween<float, float> & t, float, float)> func =
+              [&](tweeny::tween<float, float>& t, float x, float y) {
+                  asIScriptFunction* callback = FindCallback (t);
 
-                      if (!callback)
+                  if (!callback)
+                  {
+                      return true;
+                  }
+
+                  Point p = { x, y };
+
+                  const char* moduleName = callback->GetModuleName ();
+                  Script* script = m_MainLoop->GetScriptManager ().GetScriptByModuleName (moduleName);
+
+                  if (script)
+                  {
+                      asIScriptContext* ctx = script->GetContext ();
+                      ctx->Prepare (callback);
+                      ctx->SetArgFloat (0, t.progress ());
+                      ctx->SetArgObject (1, &p);
+
+                      int r = ctx->Execute ();
+
+                      asDWORD ret = 0;
+                      if (r == asEXECUTION_FINISHED)
                       {
-                          return true;
+                          ret = ctx->GetReturnDWord ();
                       }
 
-                      Point p = { x, y };
+                      return (bool)ret;
+                  }
 
-                      const char* moduleName = callback->GetModuleName ();
-                      Script* script = m_MainLoop->GetScriptManager ().GetScriptByModuleName (moduleName);
+                  return false;
+              };
 
-                      if (script)
-                      {
-                          asIScriptContext* ctx = script->GetContext ();
-                          ctx->Prepare (callback);
-                          ctx->SetArgFloat (0, t.progress ());
-                          ctx->SetArgObject (1, &p);
-
-                          int r = ctx->Execute ();
-
-                          asDWORD ret = 0;
-                          if (r == asEXECUTION_FINISHED)
-                          {
-                              ret = ctx->GetReturnDWord ();
-                          }
-
-                          return (bool)ret;
-                      }
-
-                      return false;
-                  };
-
-            tweeny::tween<float, float> tween
-                = tweeny::from (from.X, from.Y).to (to.X, to.Y).during (during).onStep (func);
+            tweeny::tween<float, float> tween = tweeny::from (from.X, from.Y).to (to.X, to.Y).during (during).onStep (func);
 
             TweenData tweenData;
             tweenData.ID = id;
             tweenData.CallbackFunc = asFunc;
             tweenData.FinishFunc = finishFunc;
-            tweenData.Tween = tween;
+            tweenData.TweenFF = tween;
+            tweenData.TweenMask |= TWEEN_FF;
 
             m_Tweens.push_back (tweenData);
         }
@@ -212,10 +279,13 @@ namespace aga
     {
         for (std::vector<TweenData>::iterator it = m_Tweens.begin (); it != m_Tweens.end (); ++it)
         {
-            //  Very nasty - address comparison, but it works!
-            if (&it->Tween == &t)
+            if (it->TweenMask & TWEEN_FF)
             {
-                return it->CallbackFunc;
+                //  Very nasty - address comparison, but it works!
+                if (&it->TweenFF == &t)
+                {
+                    return it->CallbackFunc;
+                }
             }
         }
 
@@ -225,6 +295,21 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void TweenManager::Clear () { m_Tweens.clear (); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    TweenData* TweenManager::GetTween (int id)
+    {
+        for (std::vector<TweenData>::iterator it = m_Tweens.begin (); it != m_Tweens.end (); ++it)
+        {
+            if (it->ID == id)
+            {
+                return &(*it);
+            }
+        }
+
+        return nullptr;
+    }
 
     //--------------------------------------------------------------------------------------------------
 }

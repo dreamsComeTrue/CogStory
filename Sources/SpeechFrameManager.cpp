@@ -116,11 +116,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& id, const std::string& text, Rect rect, bool shouldBeHandled)
+    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& id,
+                                                     const std::string& text,
+                                                     Rect rect,
+                                                     bool shouldBeHandled,
+                                                     const std::string& regionName)
     {
         if (m_Frames.find (id) == m_Frames.end ())
         {
-            SpeechFrame* frame = new SpeechFrame (this, text, rect, shouldBeHandled);
+            SpeechFrame* frame = new SpeechFrame (this, text, rect, shouldBeHandled, regionName);
             m_Frames.insert (std::make_pair (id, frame));
 
             frame->ScrollDownFunction = [&]() { m_SelectSample->Play (); };

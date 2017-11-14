@@ -13,6 +13,7 @@ namespace aga
     class Scene;
     class MainLoop;
     class AtlasManager;
+    struct TweenData;
 
     class SceneManager : public Lifecycle
     {
@@ -58,8 +59,7 @@ namespace aga
         std::map<ResourceID, Scene*> m_Scenes;
         Scene* m_ActiveScene;
 
-        float m_FadeTime;
-        bool m_FadeDirection;
+        TweenData* m_TweenFade;
         bool m_Transitioning;
         ALLEGRO_COLOR m_FadeColor;
     };

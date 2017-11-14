@@ -7,12 +7,18 @@
 
 namespace aga
 {
+#define TWEEN_F 0x01
+#define TWEEN_FF 0x02
+
     struct TweenData
     {
         int ID = -1;
-        tweeny::tween<float, float> Tween;
+        tweeny::tween<float> TweenF;
+        tweeny::tween<float, float> TweenFF;
         asIScriptFunction* CallbackFunc = nullptr;
         asIScriptFunction* FinishFunc = nullptr;
+
+        char TweenMask = 0;
     };
 
     class MainLoop;
@@ -25,13 +31,14 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
-        void AddTween (int id, float from, float to, int during, std::function<bool(float)>);
+        TweenData& AddTween (int id, float from, float to, int during, std::function<bool(float)>);
+        TweenData& AddTween (int id, tweeny::tween<float>& func);
         bool Update (float deltaTime);
         MainLoop* GetMainLoop ();
 
         // void AddTween (int id, float from, float to, int during, asIScriptFunction* func);
-        void AddTween (
-            int id, Point from, Point to, int during, asIScriptFunction* func, asIScriptFunction* finishFunc);
+        void AddTween (int id, Point from, Point to, int during, asIScriptFunction* func, asIScriptFunction* finishFunc);
+        TweenData* GetTween (int id);
 
         void Clear ();
 

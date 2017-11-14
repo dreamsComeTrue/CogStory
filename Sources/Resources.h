@@ -17,6 +17,7 @@ namespace aga
 
         //  PACKS
         PACK_MENU_UI,
+        PACK_CHARACTERS_UI,
         PACK_0_0_HOME,
 
         //  Fonts

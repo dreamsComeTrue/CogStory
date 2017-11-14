@@ -36,14 +36,18 @@ namespace aga
       , m_ScrollPossible (false)
       , m_ShouldBeHandled (true)
       , m_Handled (false)
-
     {
         m_FrameBitmap = load_nine_patch_bitmap (GetResourcePath (ResourceID::GFX_TEXT_FRAME).c_str ());
+        m_Atlas = m_Manager->GetSceneManager ()->GetAtlasManager ()->GetAtlas (GetBaseName (GetResourcePath (PACK_CHARACTERS_UI)));
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    SpeechFrame::SpeechFrame (SpeechFrameManager* manager, const std::string& text, Rect rect, bool shouldBeHandled)
+    SpeechFrame::SpeechFrame (SpeechFrameManager* manager,
+                              const std::string& text,
+                              Rect rect,
+                              bool shouldBeHandled,
+                              const std::string& regionName)
       : m_Manager (manager)
       , m_DrawRect (rect)
       , m_Visible (true)
@@ -61,8 +65,15 @@ namespace aga
       , m_ScrollPossible (false)
       , m_ShouldBeHandled (shouldBeHandled)
       , m_Handled (false)
+      , m_RegionName (regionName)
     {
         m_FrameBitmap = load_nine_patch_bitmap (GetResourcePath (ResourceID::GFX_TEXT_FRAME).c_str ());
+
+        if (m_RegionName != "")
+        {
+            m_Atlas = m_Manager->GetSceneManager ()->GetAtlasManager ()->GetAtlas (GetBaseName (GetResourcePath (PACK_CHARACTERS_UI)));
+        }
+
         SetText (text);
     }
 
@@ -272,6 +283,22 @@ namespace aga
     {
         if (m_Visible)
         {
+            if (m_Atlas && m_RegionName != "")
+            {
+                Point characterOffset = Point (20, 10);
+                int edgeLength = m_DrawRect.GetSize ().Height - 2 * characterOffset.Y;
+                AtlasRegion region = m_Atlas->GetRegion (m_RegionName);
+
+                float ratio = std::min ((float)edgeLength / region.Bounds.Size.Width, (float)edgeLength / region.Bounds.Size.Height);
+
+                m_Atlas->DrawRegion (m_RegionName,
+                                     m_DrawRect.GetPos ().X - ratio * region.Bounds.Size.Width * 0.5f - characterOffset.X,
+                                     m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Y * 0.5f,
+                                     ratio,
+                                     ratio,
+                                     0);
+            }
+
             draw_nine_patch_bitmap (
               m_FrameBitmap, m_DrawRect.GetPos ().X, m_DrawRect.GetPos ().Y, m_DrawRect.GetSize ().Width, m_DrawRect.GetSize ().Height);
 

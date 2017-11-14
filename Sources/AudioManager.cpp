@@ -10,6 +10,7 @@ namespace aga
 
     AudioManager::AudioManager (MainLoop* mainLoop)
       : m_MainLoop (mainLoop)
+      , m_MasterVolume (1.0f)
     {
     }
 
@@ -62,6 +63,14 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     MainLoop* AudioManager::GetMainLoop () { return m_MainLoop; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void AudioManager::SetMasterVolume (float volume) { m_MasterVolume = volume; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    float AudioManager::GetMasterVolume () const { return m_MasterVolume; }
 
     //--------------------------------------------------------------------------------------------------
 }

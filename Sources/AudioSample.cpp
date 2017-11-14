@@ -1,6 +1,7 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "AudioSample.h"
+#include "AudioManager.h"
 
 namespace aga
 {
@@ -54,7 +55,15 @@ namespace aga
     {
         if (m_Sample)
         {
-            al_play_sample (m_Sample, m_Gain, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+            float volume = m_Gain;
+            float masterVolume = m_AudioManager->GetMasterVolume ();
+
+            if (!AreSame (masterVolume, 1.0))
+            {
+                volume = masterVolume;
+            }
+
+            al_play_sample (m_Sample, volume, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         }
     }
 

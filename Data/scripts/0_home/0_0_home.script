@@ -14,7 +14,7 @@ void Start ()
 	Rect rect (framePos1, Point (framePos1.X + frameSize1.Width, framePos1.Y + frameSize1.Height));    
     string txt = "[color=RED]Hello[/color] !!!\n I've found [color=YELLOW]think[/color] take.\n[color=GREEN]But the most[/color] part of [color=LIGHTBLUE]this, is to[/color] be [color=RED]happy[/color] !!!\n   \n Oh, wait...";
 	
-	@mainFrame = AddSpeechFrame ("MAIN_SPEECH", txt, rect);
+	@mainFrame = AddSpeechFrame ("MAIN_SPEECH", txt, rect, true, "player_head");
 
 	Point frameSize2 (250, 40);
 	Point framePos2 (screenSize.Width / 2 - frameSize2.Width / 2, 10);
@@ -87,7 +87,7 @@ void NextTween1 (int tweenID)
 	Point flag1 = GetFlagPoint ("B");
 	Point flag2 = GetFlagPoint ("C");
 
-    AddTween (TWEEN_2, flag1, flag2, 1000, PlayerTween, NextTween2);
+  //  AddTween (TWEEN_2, flag1, flag2, 1000, PlayerTween, NextTween2);
 }
 
 void NextTween2 (int tweenID)
@@ -95,7 +95,7 @@ void NextTween2 (int tweenID)
 	Point flag1 = GetFlagPoint ("C");
 	Point flag2 = GetFlagPoint ("D");
 
-    AddTween (TWEEN_3, flag1, flag2, 2000, PlayerTween, FinishFunc);
+ //   AddTween (TWEEN_3, flag1, flag2, 2000, PlayerTween, FinishFunc);
 }
 
 void FinishFunc (int id)

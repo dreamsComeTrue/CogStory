@@ -22,8 +22,12 @@ namespace aga
 
         MainLoop* GetMainLoop ();
 
+        void SetMasterVolume (float volume = 1.0f);
+        float GetMasterVolume () const;
+
     private:
         MainLoop* m_MainLoop;
+        float m_MasterVolume;
         std::map<std::string, AudioSample*> m_Samples;
     };
 }

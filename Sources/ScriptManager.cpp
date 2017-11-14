@@ -315,10 +315,11 @@ namespace aga
         assert (r >= 0);
 
         //  Speech Frame Manager
-        r = m_ScriptEngine->RegisterGlobalFunction ("SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Rect, bool = true)",
-                                                    asMETHOD (SpeechFrameManager, AddSpeechFrame),
-                                                    asCALL_THISCALL_ASGLOBAL,
-                                                    &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
+        r = m_ScriptEngine->RegisterGlobalFunction (
+          "SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Rect, bool = true, const string &in = \"\")",
+          asMETHOD (SpeechFrameManager, AddSpeechFrame),
+          asCALL_THISCALL_ASGLOBAL,
+          &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);
 
         //  Global

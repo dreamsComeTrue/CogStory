@@ -26,6 +26,7 @@ namespace aga
         { GFX_PLAYER, GFX_CHARACTERS, "player.png" },
 
         { PACK_MENU_UI, GFX_UI, "menu_ui.pack" },
+        { PACK_CHARACTERS_UI, GFX_CHARACTERS, "characters_ui.pack" },
         { PACK_0_0_HOME, GFX_0_HOME, "0_0_home.pack" },
 
         //  Fonts

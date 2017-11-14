@@ -7,6 +7,7 @@
 
 namespace aga
 {
+    class Atlas;
     class SpeechFrameManager;
 
     struct SpeechTextAttribute
@@ -22,7 +23,11 @@ namespace aga
     {
     public:
         SpeechFrame (SpeechFrameManager* manager);
-        SpeechFrame (SpeechFrameManager* manager, const std::string& text, Rect rect, bool shouldBeHandled = true);
+        SpeechFrame (SpeechFrameManager* manager,
+                     const std::string& text,
+                     Rect rect,
+                     bool shouldBeHandled = true,
+                     const std::string& regionName = "");
         virtual ~SpeechFrame ();
 
         bool Update (float deltaTime);
@@ -57,6 +62,9 @@ namespace aga
     private:
         SpeechFrameManager* m_Manager;
         NINE_PATCH_BITMAP* m_FrameBitmap;
+        Atlas* m_Atlas;
+        std::string m_RegionName;
+
         std::string m_Text;
         std::vector<std::string> m_TextLines;
         std::vector<SpeechTextAttribute> m_Attributes;

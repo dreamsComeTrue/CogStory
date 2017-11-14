@@ -11,7 +11,7 @@
 
 namespace aga
 {
-    const float FADE_MAX_TIME = 1500;
+    const int FADE_MAX_TIME = 500;
 
     //--------------------------------------------------------------------------------------------------
 
@@ -22,10 +22,9 @@ namespace aga
       , m_Player (this)
       , m_Camera (mainLoop->GetScreen ())
       , m_AtlasManager (nullptr)
-      , m_FadeTime (0.0f)
       , m_Transitioning (true)
       , m_FadeColor (COLOR_BLACK)
-      , m_FadeDirection (true)
+      , m_TweenFade (nullptr)
     {
     }
 
@@ -109,8 +108,6 @@ namespace aga
 
     void SceneManager::SetActiveScene (Scene* scene)
     {
-        FadeInOut ();
-
         if (m_ActiveScene != nullptr)
         {
             m_ActiveScene->AfterLeave ();
@@ -145,32 +142,6 @@ namespace aga
 
     void SceneManager::Render (float deltaTime)
     {
-        if (m_FadeDirection == true)
-        {
-            if (m_FadeTime < FADE_MAX_TIME)
-            {
-                m_FadeTime += deltaTime * 1000;
-                m_FadeColor.a += 0.01;
-            }
-            else
-            {
-                m_FadeDirection = false;
-                m_FadeTime = 0.0f;
-            }
-        }
-        else
-        {
-            if (m_FadeTime < FADE_MAX_TIME)
-            {
-                m_FadeTime += deltaTime * 1000;
-                m_FadeColor.a -= 0.01;
-            }
-            else
-            {
-                m_Transitioning = false;
-            }
-        }
-
         if (m_ActiveScene != nullptr)
         {
             m_ActiveScene->Render (deltaTime);
@@ -262,10 +233,35 @@ namespace aga
 
     void SceneManager::FadeInOut ()
     {
-        m_FadeDirection = true;
         m_FadeColor.a = 0.0f;
         m_Transitioning = true;
-        m_FadeTime = 0.0f;
+
+        auto fadeOutFunc = [&](float v) {
+            if (m_TweenFade->TweenF.progress () < 1.0f)
+            {
+                m_FadeColor.a = v;
+            }
+            else
+            {
+                m_Transitioning = false;
+            }
+
+            return false;
+        };
+
+        auto fadeInFunc = [&](float v) {
+            if (m_TweenFade->TweenF.progress () < 1.0f)
+            {
+                m_FadeColor.a = v;
+            }
+
+            return false;
+        };
+
+        tweeny::tween<float> tween =
+          tweeny::from (0.0f).to (1.0f).during (FADE_MAX_TIME).onStep (fadeInFunc).to (0.0f).during (FADE_MAX_TIME).onStep (fadeOutFunc);
+
+        m_TweenFade = &m_MainLoop->GetTweenManager ().AddTween (200, tween);
     }
 
     //--------------------------------------------------------------------------------------------------
