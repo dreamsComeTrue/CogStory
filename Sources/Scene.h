@@ -15,6 +15,13 @@ namespace aga
     class AtlasManager;
     class Triangulator;
 
+    struct FlagPoint
+    {
+        std::string Name = "";
+        Point Pos = {};
+        std::vector<FlagPoint*> Connections;
+    };
+
     struct TriggerArea
     {
         std::string Name = "";
@@ -78,8 +85,8 @@ namespace aga
         std::vector<Entity*> GetVisibleEntities ();
 
         void AddFlagPoint (const std::string& name, Point point);
-        Point GetFlagPoint (const std::string& name);
-        std::map<std::string, Point>& GetFlagPoints ();
+        FlagPoint* GetFlagPoint (const std::string& name);
+        std::map<std::string, FlagPoint>& GetFlagPoints ();
 
         void AddTriggerArea (const std::string& name, std::vector<Point> points);
         std::map<std::string, TriggerArea>& GetTriggerAreas ();
@@ -108,7 +115,7 @@ namespace aga
     private:
         std::string m_Name;
         Rect m_Size;
-        std::map<std::string, Point> m_FlagPoints;
+        std::map<std::string, FlagPoint> m_FlagPoints;
         std::map<std::string, TriggerArea> m_TriggerAreas;
         std::vector<Tile*> m_Tiles;
         SceneManager* m_SceneManager;

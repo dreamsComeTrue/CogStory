@@ -336,6 +336,8 @@ namespace aga
                 bool triggerPointRemoved = m_EditorTriggerAreaMode.RemoveTriggerPointUnderCursor (event->mouse.x, event->mouse.y);
                 bool physPointRemoved = false;
 
+                m_EditorFlagPointMode.m_FlagPoint = "";
+
                 if (m_CursorMode == CursorMode::EditPhysBodyMode)
                 {
                     physPointRemoved = m_EditorPhysMode.RemovePhysPointUnderCursor (event->mouse.x, event->mouse.y);

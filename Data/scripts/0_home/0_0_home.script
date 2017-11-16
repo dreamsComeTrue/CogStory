@@ -26,6 +26,7 @@ void Start ()
 
 void BeforeEnterScene ()
 {
+    //SceneFadeInOut ();
 	Point screenSize = GetWindowSize ();
 	Point playerSize = player.GetSize ();
 	Point spawn = GetFlagPoint ("B");

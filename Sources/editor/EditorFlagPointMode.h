@@ -31,6 +31,8 @@ namespace aga
         bool m_AskFlagPoint;
         char m_FlagPointName[64];
         std::string m_FlagPoint;
+
+        bool m_DrawConnection;
     };
 }
 

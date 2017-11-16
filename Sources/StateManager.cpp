@@ -14,8 +14,8 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     StateManager::StateManager (MainLoop* mainLoop)
-        : m_ActiveState (nullptr)
-        , m_MainLoop (mainLoop)
+      : m_ActiveState (nullptr)
+      , m_MainLoop (mainLoop)
     {
     }
 
@@ -47,7 +47,7 @@ namespace aga
         }
 
         m_MainLoop->GetTweenManager ().Clear ();
-        m_MainLoop->GetSceneManager ().GetCamera ().ClearTransformations ();
+        m_MainLoop->GetSceneManager ().Reset ();
 
         m_ActiveState = state;
         m_ActiveState->BeforeEnter ();
@@ -121,17 +121,17 @@ namespace aga
             {
                 switch (event->keyboard.keycode)
                 {
-                case ALLEGRO_KEY_F1:
-                {
-                    if (GetActiveStateName () == "GAMEPLAY_STATE")
+                    case ALLEGRO_KEY_F1:
                     {
-                        SetActiveState ("EDITOR_STATE");
+                        if (GetActiveStateName () == "GAMEPLAY_STATE")
+                        {
+                            SetActiveState ("EDITOR_STATE");
+                        }
+                        else
+                        {
+                            SetActiveState ("GAMEPLAY_STATE");
+                        }
                     }
-                    else
-                    {
-                        SetActiveState ("GAMEPLAY_STATE");
-                    }
-                }
                 }
             }
         }

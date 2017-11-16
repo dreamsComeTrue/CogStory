@@ -14,6 +14,7 @@ namespace aga
     class MainLoop;
     class AtlasManager;
     struct TweenData;
+    struct FlagPoint;
 
     class SceneManager : public Lifecycle
     {
@@ -43,11 +44,12 @@ namespace aga
         void AddOnLeaveCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
         void AddOnLeaveCallback (const std::string& triggerName, asIScriptFunction* func);
 
-        Point GetFlagPoint (const std::string& name);
+        FlagPoint* GetFlagPoint (const std::string& name);
 
         SpeechFrameManager& GetSpeechFrameManager ();
 
-        void FadeInOut ();
+        void Reset ();
+        void SceneFadeInOut ();
 
     private:
         SpeechFrameManager m_SpeechFrameManager;

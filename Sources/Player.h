@@ -3,11 +3,7 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 
-#include "Animation.h"
-#include "Collidable.h"
-#include "Common.h"
-#include "Entity.h"
-#include "Scriptable.h"
+#include "Actor.h"
 
 #define PLAYER_Z_ORDER 10
 
@@ -16,43 +12,27 @@ namespace aga
     class SceneManager;
     class Scene;
 
-    class Player : public Entity, public Lifecycle, public Scriptable, public Collidable
+    class Player : public Actor
     {
     public:
         Player (SceneManager* sceneManager);
         virtual ~Player ();
-        bool Initialize ();
-        bool Destroy ();
-
-        void BeforeEnter ();
-        void AfterLeave ();
-
-        bool Update (float deltaTime);
+        bool Initialize () override;
 
         void SetPreventInput (bool prevent = false);
         bool IsPreventInput () const;
         void HandleInput (float deltaTime);
         void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
-        void Render (float deltaTime);
 
-        void Move (float dx, float dy);
-        void SetPosition (const Point& pos);
-        void SetPosition (float x, float y);
-        Point GetPosition ();
-        Point GetSize ();
+        void Move (float dx, float dy) override;
+        void SetPosition (float x, float y) override;
 
         void SetFollowCamera (bool follow);
-
-        std::function<void(float dx, float dy)> MoveCallback;
 
     private:
         void InitializeAnimations ();
 
     private:
-        ALLEGRO_BITMAP* m_Image;
-        Point m_OldPosition;
-        SceneManager* m_SceneManager;
-        Animation m_Animation;
         bool m_FollowCamera;
         bool m_PreventInput;
     };

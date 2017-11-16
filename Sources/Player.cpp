@@ -10,8 +10,6 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    //  Pixels Per Second
-    const float MOVE_SPEED = 110.0;
     const std::string ANIM_IDLE = "ANIM_IDLE";
     const std::string ANIM_MOVE_UP = "ANIM_MOVE_UP";
     const std::string ANIM_MOVE_LEFT = "ANIM_MOVE_LEFT";
@@ -20,14 +18,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Player::Player (SceneManager* sceneManager)
-      : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
-      , Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
-      , m_SceneManager (sceneManager)
-      , m_Image (nullptr)
+      : Actor (sceneManager)
       , m_FollowCamera (true)
       , m_PreventInput (false)
     {
-        ID = Entity::GetNextID ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -46,74 +40,13 @@ namespace aga
 
     bool Player::Initialize ()
     {
-        m_Image = al_load_bitmap (GetResourcePath (ResourceID::GFX_PLAYER).c_str ());
-        Bounds.SetSize ({ 64, 64 });
-
+        Actor::Initialize ();
         InitializeAnimations ();
 
         sample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile ("FOOT_STEP", GetResourcePath (SOUND_FOOT_STEP));
         sample->SetVolume (3.0f);
 
-        Lifecycle::Initialize ();
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Player::BeforeEnter ()
-    {
-        PhysPoints.clear ();
-        PhysPoints.push_back ({ { 20, 10 }, { 25, 0 }, { 39, 0 }, { 44, 10 }, { 44, 64 }, { 20, 64 } });
-        SetPhysOffset (Bounds.GetPos ());
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Player::AfterLeave () {}
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool Player::Destroy ()
-    {
-        if (m_Image != nullptr)
-        {
-            al_destroy_bitmap (m_Image);
-            m_Image = nullptr;
-        }
-
-        Lifecycle::Destroy ();
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool Player::Update (float deltaTime)
-    {
-        m_Animation.Update (deltaTime);
-        UpdateScripts (deltaTime);
-
         return true;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Player::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
-    {
-        if (event->type == ALLEGRO_EVENT_KEY_UP)
-        {
-            m_Animation.SetCurrentAnimation (ANIM_IDLE);
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Player::Render (float deltaTime)
-    {
-        AnimationFrames& frames = m_Animation.GetCurrentAnimation ();
-        Rect& frame = frames.GetFrame (m_Animation.GetCurrentFrame ());
-        float width = frame.GetSize ().Width;
-        float height = frame.GetSize ().Height;
-
-        al_draw_scaled_bitmap (
-          m_Image, frame.GetPos ().X, frame.GetPos ().Y, width, height, Bounds.GetPos ().X, Bounds.GetPos ().Y, width, height, 0);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -144,6 +77,16 @@ namespace aga
         m_Animation.AddAnimationFrames (ANIM_MOVE_UP, moveUpFrames);
 
         m_Animation.SetCurrentAnimation (ANIM_IDLE);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
+    {
+        if (event->type == ALLEGRO_EVENT_KEY_UP)
+        {
+            m_Animation.SetCurrentAnimation (ANIM_IDLE);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -322,10 +265,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Player::SetPosition (const Point& pos) { SetPosition (pos.X, pos.Y); }
-
-    //--------------------------------------------------------------------------------------------------
-
     void Player::SetPosition (float x, float y)
     {
         m_OldPosition = Bounds.GetPos ();
@@ -338,14 +277,6 @@ namespace aga
 
         SetPhysOffset ({ x, y });
     }
-
-    //--------------------------------------------------------------------------------------------------
-
-    Point Player::GetPosition () { return Bounds.GetPos (); }
-
-    //--------------------------------------------------------------------------------------------------
-
-    Point Player::GetSize () { return Bounds.GetSize (); }
 
     //--------------------------------------------------------------------------------------------------
 

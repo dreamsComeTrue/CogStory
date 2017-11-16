@@ -247,7 +247,7 @@ namespace aga
         r = m_ScriptEngine->RegisterGlobalProperty ("Player player", &m_MainLoop->GetSceneManager ().GetPlayer ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-          "Player", "void SetPosition (const Point &in)", asMETHODPR (Player, SetPosition, (const Point&), void), asCALL_THISCALL);
+          "Player", "void SetPosition (const Point &in)", asMETHODPR (Actor, SetPosition, (const Point&), void), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
           "Player", "void SetPosition (float, float)", asMETHODPR (Player, SetPosition, (float, float), void), asCALL_THISCALL);
@@ -336,6 +336,9 @@ namespace aga
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction (
           "float GetFPS ()", asMETHOD (Screen, GetFPS), asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction (
+          "void SceneFadeInOut ()", asMETHOD (SceneManager, SceneFadeInOut), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
 
         //  Tweening

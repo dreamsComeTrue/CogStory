@@ -16,12 +16,12 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     SceneManager::SceneManager (MainLoop* mainLoop)
-      : m_SpeechFrameManager (this)
-      , m_ActiveScene (nullptr)
-      , m_MainLoop (mainLoop)
-      , m_Player (this)
+      : m_MainLoop (mainLoop)
       , m_Camera (mainLoop->GetScreen ())
+      , m_Player (this)
+      , m_SpeechFrameManager (this)
       , m_AtlasManager (nullptr)
+      , m_ActiveScene (nullptr)
       , m_Transitioning (true)
       , m_FadeColor (COLOR_BLACK)
       , m_TweenFade (nullptr)
@@ -132,7 +132,11 @@ namespace aga
         if (!m_Transitioning && m_ActiveScene != nullptr)
         {
             m_ActiveScene->Update (deltaTime);
-            m_SpeechFrameManager.Update (deltaTime);
+
+            if (m_MainLoop->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
+            {
+                m_SpeechFrameManager.Update (deltaTime);
+            }
         }
 
         return true;
@@ -147,7 +151,11 @@ namespace aga
             m_ActiveScene->Render (deltaTime);
 
             m_Camera.UseIdentityTransform ();
-            m_SpeechFrameManager.Render (deltaTime);
+
+            if (m_MainLoop->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
+            {
+                m_SpeechFrameManager.Render (deltaTime);
+            }
         }
 
         if (m_Transitioning)
@@ -215,14 +223,14 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Point SceneManager::GetFlagPoint (const std::string& name)
+    FlagPoint* SceneManager::GetFlagPoint (const std::string& name)
     {
         if (m_ActiveScene)
         {
             return m_ActiveScene->GetFlagPoint (name);
         }
 
-        return { 0, 0 };
+        return nullptr;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -231,7 +239,16 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneManager::FadeInOut ()
+    void SceneManager::Reset ()
+    {
+        m_Camera.ClearTransformations ();
+        m_FadeColor.a = 0.0f;
+        m_Transitioning = false;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::SceneFadeInOut ()
     {
         m_FadeColor.a = 0.0f;
         m_Transitioning = true;

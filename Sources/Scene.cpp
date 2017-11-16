@@ -67,7 +67,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
-    auto StringToVector = [](std::string in) -> std::vector<Point> {
+    auto StringToVectorPoints = [](std::string in) -> std::vector<Point> {
         size_t count = 0;
         const char* delimiter = " ";
         std::vector<Point> nums;
@@ -89,8 +89,24 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    auto StringToVectorStrings = [](std::string in) -> std::vector<std::string> {
+        size_t count = 0;
+        const char* delimiter = " ";
+        std::vector<std::string> strings;
+        char* str = const_cast<char*> (in.c_str ());
+
+        for (char* pch = strtok (str, delimiter); pch != NULL; pch = strtok (NULL, delimiter))
+        {
+            strings.push_back (pch);
+        }
+
+        return strings;
+    };
+
+    //--------------------------------------------------------------------------------------------------
+
     auto StringToPoint = [](std::string in) -> Point {
-        std::vector<Point> vec = StringToVector (in);
+        std::vector<Point> vec = StringToVectorPoints (in);
 
         return vec[0];
     };
@@ -101,12 +117,25 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    auto VectorToString = [](std::vector<Point>& points) -> std::string {
+    auto VectorPointsToString = [](std::vector<Point>& points) -> std::string {
         std::string out;
 
         for (Point& p : points)
         {
             out += PointToString (p) + " ";
+        }
+
+        return out;
+    };
+
+    //--------------------------------------------------------------------------------------------------
+
+    auto VectorStringsToString = [](std::vector<std::string>& strings) -> std::string {
+        std::string out;
+
+        for (std::string& s : strings)
+        {
+            out += s + " ";
         }
 
         return out;
@@ -214,7 +243,7 @@ namespace aga
 
                     for (auto& physTile : physTiles)
                     {
-                        tile->PhysPoints.push_back (StringToVector (physTile["poly"]));
+                        tile->PhysPoints.push_back (StringToVectorPoints (physTile["poly"]));
                     }
 
                     tile->SetPhysOffset (tile->Bounds.GetPos ());
@@ -233,12 +262,44 @@ namespace aga
                 scene->AddFlagPoint (name, pos);
             }
 
+            for (std::map<std::string, FlagPoint>::iterator it = scene->m_FlagPoints.begin (); it != scene->m_FlagPoints.end (); ++it)
+            {
+                for (auto& flag_point : flag_points)
+                {
+                    std::string name = flag_point["name"];
+
+                    if (name == it->first)
+                    {
+                        std::vector<std::string> connections = StringToVectorStrings (flag_point["connections"]);
+
+                        if (!connections.empty ())
+                        {
+                            for (std::map<std::string, FlagPoint>::iterator it2 = scene->m_FlagPoints.begin ();
+                                 it2 != scene->m_FlagPoints.end ();
+                                 ++it2)
+                            {
+                                for (int i = 0; i < connections.size (); ++i)
+                                {
+                                    if (connections[i] == it2->first)
+                                    {
+                                        it->second.Connections.push_back (&it2->second);
+                                        break;
+                                    }
+                                }
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            }
+
             auto& triggerAreas = j["trigger_areas"];
 
             for (auto& triggerArea : triggerAreas)
             {
                 std::string name = triggerArea["name"];
-                std::vector<Point> poly = StringToVector (triggerArea["poly"]);
+                std::vector<Point> poly = StringToVectorPoints (triggerArea["poly"]);
 
                 scene->AddTriggerArea (name, poly);
             }
@@ -312,7 +373,7 @@ namespace aga
                 {
                     json physObj = json::object ({});
 
-                    physObj["poly"] = VectorToString (tile->PhysPoints[i]);
+                    physObj["poly"] = VectorPointsToString (tile->PhysPoints[i]);
 
                     tileObj["phys"].push_back (physObj);
                 }
@@ -325,12 +386,20 @@ namespace aga
 
             j["flag_points"] = json::array ({});
 
-            for (std::map<std::string, Point>::iterator it = scene->m_FlagPoints.begin (); it != scene->m_FlagPoints.end (); ++it)
+            for (std::map<std::string, FlagPoint>::iterator it = scene->m_FlagPoints.begin (); it != scene->m_FlagPoints.end (); ++it)
             {
                 json flagObj = json::object ({});
 
                 flagObj["name"] = it->first;
-                flagObj["pos"] = PointToString (it->second);
+                flagObj["pos"] = PointToString (it->second.Pos);
+
+                std::vector<std::string> connections;
+                for (int i = 0; i < it->second.Connections.size (); ++i)
+                {
+                    connections.push_back (it->second.Connections[i]->Name);
+                }
+
+                flagObj["connections"] = VectorStringsToString (connections);
 
                 j["flag_points"].push_back (flagObj);
             }
@@ -342,7 +411,7 @@ namespace aga
                 json triggerObj = json::object ({});
 
                 triggerObj["name"] = it->second.Name;
-                triggerObj["poly"] = VectorToString (it->second.Points);
+                triggerObj["poly"] = VectorPointsToString (it->second.Points);
 
                 j["trigger_areas"].push_back (triggerObj);
             }
@@ -362,7 +431,6 @@ namespace aga
     {
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
         {
-            m_SceneManager->FadeInOut ();
             m_SceneManager->GetPlayer ().BeforeEnter ();
             RunAllScripts ("void BeforeEnterScene ()");
         }
@@ -511,28 +579,35 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::AddFlagPoint (const std::string& name, Point point) { m_FlagPoints.insert (make_pair (name, point)); }
-
-    //--------------------------------------------------------------------------------------------------
-
-    Point Scene::GetFlagPoint (const std::string& name)
+    void Scene::AddFlagPoint (const std::string& name, Point point)
     {
-        if (!m_FlagPoints.empty ())
-        {
-            std::map<std::string, Point>::iterator it = m_FlagPoints.find (name);
+        FlagPoint fp;
+        fp.Name = name;
+        fp.Pos = point;
 
-            if (it != m_FlagPoints.end ())
-            {
-                return (*it).second;
-            }
-        }
-
-        return {};
+        m_FlagPoints.insert (make_pair (name, fp));
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    std::map<std::string, Point>& Scene::GetFlagPoints () { return m_FlagPoints; }
+    FlagPoint* Scene::GetFlagPoint (const std::string& name)
+    {
+        if (!m_FlagPoints.empty ())
+        {
+            std::map<std::string, FlagPoint>::iterator it = m_FlagPoints.find (name);
+
+            if (it != m_FlagPoints.end ())
+            {
+                return &(*it).second;
+            }
+        }
+
+        return nullptr;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::map<std::string, FlagPoint>& Scene::GetFlagPoints () { return m_FlagPoints; }
 
     //--------------------------------------------------------------------------------------------------
 

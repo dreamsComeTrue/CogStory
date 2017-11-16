@@ -222,8 +222,10 @@ namespace aga
         tile->ID = Entity::GetNextID ();
         tile->Tileset = m_Atlas->GetName ();
         tile->Name = m_SelectedAtlasRegion.Name;
-        tile->Bounds = { { (translate.X + point.X), (translate.Y + point.Y) },
-                         { region.Bounds.GetSize ().Width, region.Bounds.GetSize ().Height } };
+
+        int x = translate.X + point.X;
+        int y = translate.Y + point.Y;
+        tile->Bounds = { { x, y }, { x + region.Bounds.GetSize ().Width, y + region.Bounds.GetSize ().Height } };
         tile->Rotation = m_Rotation;
 
         m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->AddTile (tile);
@@ -281,13 +283,13 @@ namespace aga
         Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
 
         Rect b = tile->Bounds;
-        int width = b.GetSize ().Width * 0.5f;
-        int height = b.GetSize ().Height * 0.5f;
+        int halfWidth = b.GetSize ().Width * 0.5f;
+        int halfHeight = b.GetSize ().Height * 0.5f;
 
-        float x1 = (b.GetPos ().X - translate.X * (1 / scale.X) - width) * (scale.X);
-        float y1 = (b.GetPos ().Y - translate.Y * (1 / scale.Y) - height) * (scale.Y);
-        float x2 = (b.GetPos ().X - translate.X * (1 / scale.X) + width) * (scale.X);
-        float y2 = (b.GetPos ().Y - translate.Y * (1 / scale.Y) + height) * (scale.Y);
+        float x1 = (b.GetPos ().X - translate.X * (1 / scale.X) - halfWidth) * (scale.X);
+        float y1 = (b.GetPos ().Y - translate.Y * (1 / scale.Y) - halfHeight) * (scale.Y);
+        float x2 = (b.GetPos ().X - translate.X * (1 / scale.X) + halfWidth) * (scale.X);
+        float y2 = (b.GetPos ().Y - translate.Y * (1 / scale.Y) + halfHeight) * (scale.Y);
 
         Point origin = { x1 + (x2 - x1) * 0.5f, y1 + (y2 - y1) * 0.5f };
         Point pointA = RotatePoint (x1, y1, origin, tile->Rotation);
