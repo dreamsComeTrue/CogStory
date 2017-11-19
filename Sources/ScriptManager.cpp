@@ -12,9 +12,11 @@ namespace aga
 {
     //---------------------------------------------------------------------------
 
+    char g_ScriptErrorBuffer[1024];
+
     void MessageCallback (const asSMessageInfo* msg, void* param)
     {
-        const char* type = "ERR ";
+        const char* type = "ERROR";
 
         if (msg->type == asMSGTYPE_WARNING)
         {
@@ -25,10 +27,9 @@ namespace aga
             type = "INFO";
         }
 
-        char buffer[512];
-        sprintf (buffer, "%s (%d, %d) : %s : %s\n", msg->section, msg->row, msg->col, type, msg->message);
+        sprintf (g_ScriptErrorBuffer, "%s [%d, %d]: %s: %s\n", msg->section, msg->row, msg->col, type, msg->message);
 
-        printf (buffer);
+        printf (g_ScriptErrorBuffer);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -99,6 +100,8 @@ namespace aga
 
     Script* ScriptManager::LoadScriptFromText (const std::string& text, const std::string& moduleName)
     {
+        memset (g_ScriptErrorBuffer, 0, sizeof (g_ScriptErrorBuffer));
+
         // The CScriptBuilder helper is an add-on that loads the file,
         // performs a pre-processing pass if necessary, and then tells
         // the engine to build a script module.

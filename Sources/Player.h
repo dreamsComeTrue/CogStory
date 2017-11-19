@@ -19,6 +19,8 @@ namespace aga
         virtual ~Player ();
         bool Initialize () override;
 
+        void BeforeEnter () override;
+
         void SetPreventInput (bool prevent = false);
         bool IsPreventInput () const;
         void HandleInput (float deltaTime);

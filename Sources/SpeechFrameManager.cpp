@@ -65,10 +65,9 @@ namespace aga
             {
                 frame->ProcessEvent (event, deltaTime);
 
-                if (frame->IsHandled () && frame->IsShouldBeHandled ())
+                if (frame->IsShouldBeHandled () && frame->IsHandled ())
                 {
                     frame->Hide ();
-
                     m_SceneManager->GetPlayer ().SetPreventInput (false);
                 }
             }

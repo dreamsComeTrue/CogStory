@@ -240,13 +240,9 @@ namespace aga
                 }
 
                 case ALLEGRO_KEY_F5:
-                {
-                    m_EditorTileMode.m_IsDrawTiles = !m_EditorTileMode.m_IsDrawTiles;
-                    break;
-                }
-
                 case ALLEGRO_KEY_SPACE:
                 {
+                    m_EditorTileMode.m_IsDrawTiles = !m_EditorTileMode.m_IsDrawTiles;
                     break;
                 }
 
@@ -1049,24 +1045,47 @@ namespace aga
 
         for (auto& sc : scripts)
         {
-            scriptsList.push_back (sc.Name.c_str ());
+            scriptsList.push_back ((std::string ("> ") + sc.Name).c_str ());
         }
 
         ImGui::ListBox ("##scripts", &scriptsSelectedIndex, scriptsList.data (), scriptsList.size (), 4);
 
-        if (ImGui::Button ("RELOAD", ImVec2 (winSize - 17, 20)) && !scriptsList.empty ())
+        if (ImGui::Button ("RELOAD", ImVec2 (winSize - 17, 20)) && !scripts.empty ())
         {
-            m_MainLoop->GetSceneManager ().GetActiveScene ()->ReloadScript (scriptsList[scriptsSelectedIndex]);
+            m_MainLoop->GetSceneManager ().GetActiveScene ()->ReloadScript (scripts[scriptsSelectedIndex].Name);
 
-            std::experimental::optional<ScriptMetaData> metaScript =
-              m_MainLoop->GetSceneManager ().GetActiveScene ()->GetScriptByName (scriptsList[scriptsSelectedIndex]);
-
-            if (metaScript)
+            if (strlen (g_ScriptErrorBuffer) != 0)
             {
-                (*metaScript).ScriptObj->Run ("void AfterLeaveScene ()");
-                (*metaScript).ScriptObj->Run ("void Start ()");
-                (*metaScript).ScriptObj->Run ("void BeforeEnterScene ()");
+                ImGui::OpenPopup ("Script Error");
             }
+            else
+            {
+                std::experimental::optional<ScriptMetaData> metaScript =
+                  m_MainLoop->GetSceneManager ().GetActiveScene ()->GetScriptByName (scripts[scriptsSelectedIndex].Name);
+
+                if (metaScript)
+                {
+                    (*metaScript).ScriptObj->Run ("void AfterLeaveScene ()");
+                    (*metaScript).ScriptObj->Run ("void Start ()");
+                    (*metaScript).ScriptObj->Run ("void BeforeEnterScene ()");
+                }
+            }
+        }
+
+        if (ImGui::BeginPopupModal ("Script Error", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::TextWrapped (g_ScriptErrorBuffer);
+            ImGui::Separator ();
+
+            ImGui::SetKeyboardFocusHere (0);
+            if (ImGui::Button ("OK", ImVec2 (400, 0)))
+            {
+                ImGui::CloseCurrentPopup ();
+
+                memset (g_ScriptErrorBuffer, 0, sizeof (g_ScriptErrorBuffer));
+            }
+
+            ImGui::EndPopup ();
         }
 
         ImGui::PopItemWidth ();

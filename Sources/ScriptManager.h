@@ -32,6 +32,8 @@ namespace aga
         asIScriptEngine* m_ScriptEngine;
         std::map<std::string, Script*> m_Scripts;
     };
+
+    extern char g_ScriptErrorBuffer[1024];
 }
 
 #endif //   __SCRIPT_MANAGER_H__

@@ -95,12 +95,11 @@ namespace aga
             if (metaScript)
             {
                 std::string path = metaScript.value ().Path;
-                RemoveScript (metaScript.value ().ScriptObj);
-
                 Script* s = m_ScriptManager->LoadScriptFromFile (GetDataPath () + "scripts/" + path, name);
 
                 if (s)
                 {
+                    RemoveScript (metaScript.value ().ScriptObj);
                     AttachScript (s, path);
                 }
             }

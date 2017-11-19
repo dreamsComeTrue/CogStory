@@ -25,8 +25,8 @@ namespace aga
         virtual bool Initialize ();
         bool Destroy ();
 
-        void BeforeEnter ();
-        void AfterLeave ();
+        virtual void BeforeEnter ();
+        virtual void AfterLeave ();
 
         virtual bool Update (float deltaTime);
         void Render (float deltaTime);

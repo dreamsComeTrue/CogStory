@@ -41,12 +41,25 @@ namespace aga
     bool Player::Initialize ()
     {
         Actor::Initialize ();
+
+        m_Image = al_load_bitmap (GetResourcePath (ResourceID::GFX_PLAYER).c_str ());
+        Bounds.SetSize ({ 64, 64 });
+
         InitializeAnimations ();
 
         sample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile ("FOOT_STEP", GetResourcePath (SOUND_FOOT_STEP));
         sample->SetVolume (3.0f);
 
         return true;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::BeforeEnter ()
+    {
+        PhysPoints.clear ();
+        PhysPoints.push_back ({ { 20, 10 }, { 25, 0 }, { 39, 0 }, { 44, 10 }, { 44, 64 }, { 20, 64 } });
+        SetPhysOffset (Bounds.GetPos ());
     }
 
     //--------------------------------------------------------------------------------------------------

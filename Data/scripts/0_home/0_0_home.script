@@ -8,22 +8,22 @@ SpeechFrame@ mainFrame;
 Point lastPoint;
 
 Point playerSize = player.GetSize ();
+Point screenSize = GetWindowSize ();
 
 void Start ()
 {
-	Point screenSize = GetWindowSize ();
-
     Point frameSize1 (350, 100);
 	Point framePos1 (screenSize.Width / 2 - frameSize1.Width / 2, screenSize.Height - frameSize1.Height - 10);
 	Rect rect (framePos1, Point (framePos1.X + frameSize1.Width, framePos1.Y + frameSize1.Height));    
     string txt = "[color=RED]Hello[/color] !!!\n I've found [color=YELLOW]think[/color] take.\n[color=GREEN]But the most[/color] part of [color=LIGHTBLUE]this, is to[/color] be [color=RED]happy[/color] !!!\n   \n Oh, wait...";
 	
-	//@mainFrame = AddSpeechFrame ("MAIN_SPEECH", txt, rect, true, "player_head");
+	@mainFrame = AddSpeechFrame ("MAIN_SPEECH", txt, rect, true, "player_head");
+	mainFrame.Hide ();
 
 	Point frameSize2 (250, 40);
 	Point framePos2 (screenSize.Width / 2 - frameSize2.Width / 2, 10);
 	Rect r (framePos2, Point (framePos2.X + frameSize2.Width, framePos2.Y + frameSize2.Height));
-    @topFrame = AddSpeechFrame ("SPEECH", "Hello. PTR4617!", r);
+    @topFrame = AddSpeechFrame ("SPEECH", "Hello. PTR4617!", r, false);
 	topFrame.Hide ();
 	topFrame.SetDrawTextCenter (true);
 }
@@ -32,18 +32,16 @@ void BeforeEnterScene ()
 {
     //SceneFadeInOut ();
 
-	//AddOnEnterCallback ("TOP", Func1);
-	//AddOnLeaveCallback ("TOP", Func2);
+	AddOnEnterCallback ("TOP", TopOnEnter);
+	AddOnLeaveCallback ("TOP", TopOnLeave);
 
-  //  mainFrame.Show ();
-  
     lastPoint = GetFlagPoint ("A").Pos;
     player.SetPosition (lastPoint.X - playerSize.Width * 0.5, lastPoint.Y - playerSize.Height * 0.5);	
 
   	Point flag1 = lastPoint;
 	Point flag2 = GetFlagPoint ("B").Pos;
 	
-    AddTween (TWEEN_1, flag1, flag2, 1000, PlayerTween, NextTween1);
+    AddTween (TWEEN_1, flag1, flag2, 800, PlayerTween, NextTween1);
 }
 
 void AfterLeaveScene ()
@@ -51,18 +49,12 @@ void AfterLeaveScene ()
 
 }
 
-void Func1 (Point p)
+void TopOnEnter (Point p)
 {
-	Point playerPos = player.GetPosition ();
-
-//	Point spawn = GetFlagPoint ("XX");
-	//player.SetPosition (spawn.X - playerSize.Width * 0.5, spawn.Y - playerSize.Height * 0.5);
-	//player.SetPosition (playerPos.X, playerPos.Y - 60);
-
-//	topFrame.Show ();	
+	topFrame.Show ();	
 }
 
-void Func2 (Point p)
+void TopOnLeave (Point p)
 {
 	topFrame.Hide ();	
 }
@@ -84,7 +76,7 @@ void NextTween1 (int tweenID)
 	Point flag1 = GetFlagPoint ("B").Pos;
 	Point flag2 = GetFlagPoint ("C").Pos;
 
-    AddTween (TWEEN_2, flag1, flag2, 1000, PlayerTween, NextTween2);
+    AddTween (TWEEN_2, flag1, flag2, 700, PlayerTween, NextTween2);
 }
 
 void NextTween2 (int tweenID)
@@ -92,12 +84,13 @@ void NextTween2 (int tweenID)
 	Point flag1 = GetFlagPoint ("C").Pos;
 	Point flag2 = GetFlagPoint ("D").Pos;
 
-    AddTween (TWEEN_3, flag1, flag2, 2000, PlayerTween, FinishFunc);
+    AddTween (TWEEN_3, flag1, flag2, 1000, PlayerTween, FinishFunc);
 }
 
 void FinishFunc (int id)
 {
     player.SetCurrentAnimation ("ANIM_IDLE");
+    mainFrame.Show ();
 }
 
 void Update (float deltaTime)
