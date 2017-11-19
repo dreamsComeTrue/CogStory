@@ -5,6 +5,10 @@ const int TWEEN_3 = 3;
 SpeechFrame@ topFrame;
 SpeechFrame@ mainFrame;
 
+Point lastPoint;
+
+Point playerSize = player.GetSize ();
+
 void Start ()
 {
 	Point screenSize = GetWindowSize ();
@@ -14,7 +18,7 @@ void Start ()
 	Rect rect (framePos1, Point (framePos1.X + frameSize1.Width, framePos1.Y + frameSize1.Height));    
     string txt = "[color=RED]Hello[/color] !!!\n I've found [color=YELLOW]think[/color] take.\n[color=GREEN]But the most[/color] part of [color=LIGHTBLUE]this, is to[/color] be [color=RED]happy[/color] !!!\n   \n Oh, wait...";
 	
-	@mainFrame = AddSpeechFrame ("MAIN_SPEECH", txt, rect, true, "player_head");
+	//@mainFrame = AddSpeechFrame ("MAIN_SPEECH", txt, rect, true, "player_head");
 
 	Point frameSize2 (250, 40);
 	Point framePos2 (screenSize.Width / 2 - frameSize2.Width / 2, 10);
@@ -27,36 +31,24 @@ void Start ()
 void BeforeEnterScene ()
 {
     //SceneFadeInOut ();
-	Point screenSize = GetWindowSize ();
-	Point playerSize = player.GetSize ();
-	Point spawn = GetFlagPoint ("B");
-	player.SetPosition (spawn.X - playerSize.Width * 0.5, spawn.Y - playerSize.Height * 0.5);
 
-	Point flag1 = GetFlagPoint ("A");
-	Point flag2 = GetFlagPoint ("B");
+	//AddOnEnterCallback ("TOP", Func1);
+	//AddOnLeaveCallback ("TOP", Func2);
 
-	AddOnEnterCallback ("sad", Func);
-	AddOnEnterCallback ("TOP", Func1);
-	AddOnLeaveCallback ("TOP", Func2);
+  //  mainFrame.Show ();
+  
+    lastPoint = GetFlagPoint ("A").Pos;
+    player.SetPosition (lastPoint.X - playerSize.Width * 0.5, lastPoint.Y - playerSize.Height * 0.5);	
 
-    mainFrame.Show ();
-  //  AddTween (TWEEN_1, flag1, flag2, 2000, PlayerTween, NextTween1);
+  	Point flag1 = lastPoint;
+	Point flag2 = GetFlagPoint ("B").Pos;
+	
+    AddTween (TWEEN_1, flag1, flag2, 1000, PlayerTween, NextTween1);
 }
 
 void AfterLeaveScene ()
 {
 
-}
-
-void Func (Point p)
-{
-	Point screenSize = GetWindowSize ();
-	Point playerSize = player.GetSize ();
-	Point playerPos = player.GetPosition ();
-
-//	Point spawn = GetFlagPoint ("XX");
-	//player.SetPosition (spawn.X - playerSize.Width * 0.5, spawn.Y - playerSize.Height * 0.5);
-	//player.SetPosition (playerPos.X + 60, playerPos.Y);
 }
 
 void Func1 (Point p)
@@ -67,7 +59,7 @@ void Func1 (Point p)
 	//player.SetPosition (spawn.X - playerSize.Width * 0.5, spawn.Y - playerSize.Height * 0.5);
 	//player.SetPosition (playerPos.X, playerPos.Y - 60);
 
-	topFrame.Show ();	
+//	topFrame.Show ();	
 }
 
 void Func2 (Point p)
@@ -76,31 +68,36 @@ void Func2 (Point p)
 }
 
 bool PlayerTween (float progress, Point value)
-{
-	Point playerSize = player.GetSize ();
-	player.SetPosition (value.X - playerSize.Width * 0.5, value.Y - playerSize.Height * 0.5);
+{	
+	Point delta = Point (value.X - lastPoint.X, value.Y - lastPoint.Y);
+	
+	//player.SetPosition (value.X - playerSize.Width * 0.5, value.Y - playerSize.Height * 0.5);	
+	player.Move (delta.X, delta.Y);
+	
+	lastPoint = value;
 
     return false; 
 }
 
 void NextTween1 (int tweenID)
 {
-	Point flag1 = GetFlagPoint ("B");
-	Point flag2 = GetFlagPoint ("C");
+	Point flag1 = GetFlagPoint ("B").Pos;
+	Point flag2 = GetFlagPoint ("C").Pos;
 
-  //  AddTween (TWEEN_2, flag1, flag2, 1000, PlayerTween, NextTween2);
+    AddTween (TWEEN_2, flag1, flag2, 1000, PlayerTween, NextTween2);
 }
 
 void NextTween2 (int tweenID)
 {
-	Point flag1 = GetFlagPoint ("C");
-	Point flag2 = GetFlagPoint ("D");
+	Point flag1 = GetFlagPoint ("C").Pos;
+	Point flag2 = GetFlagPoint ("D").Pos;
 
- //   AddTween (TWEEN_3, flag1, flag2, 2000, PlayerTween, FinishFunc);
+    AddTween (TWEEN_3, flag1, flag2, 2000, PlayerTween, FinishFunc);
 }
 
 void FinishFunc (int id)
 {
+    player.SetCurrentAnimation ("ANIM_IDLE");
 }
 
 void Update (float deltaTime)

@@ -4,11 +4,27 @@
 
 namespace aga
 {
+    float RadiansToRadians (float radians) { return radians * 180.0 / M_PI; }
+
     float DegressToRadians (float degrees) { return degrees * M_PI / 180.0; }
 
-    bool AreSame (double a, double b)
+    float ToPositiveAngle (float degrees)
     {
-        double epsilon = 1.0E-8;
+        degrees = fmod (degrees, 360);
+
+        if (degrees < 0)
+        {
+            degrees += 360;
+        }
+
+        return degrees;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool AreSame (float a, float b)
+    {
+        float epsilon = 1.0E-8;
         return std::fabs (a - b) < epsilon;
     }
 
@@ -34,16 +50,14 @@ namespace aga
 
     std::string& LeftTrimString (std::string& str)
     {
-        auto it2 = std::find_if (
-            str.begin (), str.end (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
+        auto it2 = std::find_if (str.begin (), str.end (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
         str.erase (str.begin (), it2);
         return str;
     }
 
     std::string& RightTrimString (std::string& str)
     {
-        auto it1 = std::find_if (
-            str.rbegin (), str.rend (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
+        auto it1 = std::find_if (str.rbegin (), str.rend (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
         str.erase (it1.base (), str.end ());
         return str;
     }

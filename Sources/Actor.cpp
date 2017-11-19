@@ -131,4 +131,8 @@ namespace aga
     Point Actor::GetSize () { return Bounds.GetSize (); }
 
     //--------------------------------------------------------------------------------------------------
+
+    void Actor::SetCurrentAnimation (const std::string& name) { m_Animation.SetCurrentAnimation (name); }
+
+    //--------------------------------------------------------------------------------------------------
 }

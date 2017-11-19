@@ -2,6 +2,7 @@
 
 #include "ScriptManager.h"
 #include "MainLoop.h"
+#include "Scene.h"
 #include "Screen.h"
 #include "Script.h"
 #include "SpeechFrame.h"
@@ -228,6 +229,14 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod ("Rect", "Point GetSize ()", asMETHOD (Rect, GetSize), asCALL_THISCALL);
         assert (r >= 0);
 
+        // FlagPoint
+        r = m_ScriptEngine->RegisterObjectType ("FlagPoint", 0, asOBJ_REF | asOBJ_NOCOUNT);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectProperty ("FlagPoint", "Point Pos", asOFFSET (FlagPoint, Pos));
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectProperty ("FlagPoint", "string Name", asOFFSET (FlagPoint, Name));
+        assert (r >= 0);
+
         //        //  Scene
         //        r = m_ScriptEngine->RegisterObjectType ("SceneManager", sizeof (SceneManager), asOBJ_VALUE |
         //        asOBJ_POD); assert (r >= 0); r = m_ScriptEngine->RegisterGlobalProperty ("SceneManager sceneManager",
@@ -235,7 +244,7 @@ namespace aga
         //        ("SceneManager", "Point GetFlagPoint (const string &in)",
         //            asMETHOD (SceneManager, GetFlagPoint), asCALL_THISCALL);
 
-        r = m_ScriptEngine->RegisterGlobalFunction ("Point GetFlagPoint (const string &in)",
+        r = m_ScriptEngine->RegisterGlobalFunction ("FlagPoint@ GetFlagPoint (const string &in)",
                                                     asMETHOD (SceneManager, GetFlagPoint),
                                                     asCALL_THISCALL_ASGLOBAL,
                                                     &m_MainLoop->GetSceneManager ());
@@ -260,6 +269,9 @@ namespace aga
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
           "Player", "void SetFollowCamera (bool)", asMETHOD (Player, SetFollowCamera), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+          "Player", "void SetCurrentAnimation (const string &in)", asMETHOD (Player, SetCurrentAnimation), asCALL_THISCALL);
         assert (r >= 0);
 
         //  Camera

@@ -1054,7 +1054,7 @@ namespace aga
 
         ImGui::ListBox ("##scripts", &scriptsSelectedIndex, scriptsList.data (), scriptsList.size (), 4);
 
-        if (ImGui::Button ("RELOAD", ImVec2 (winSize - 17, 20)))
+        if (ImGui::Button ("RELOAD", ImVec2 (winSize - 17, 20)) && !scriptsList.empty ())
         {
             m_MainLoop->GetSceneManager ().GetActiveScene ()->ReloadScript (scriptsList[scriptsSelectedIndex]);
 
@@ -1063,9 +1063,9 @@ namespace aga
 
             if (metaScript)
             {
-                metaScript.value ().ScriptObj->Run ("void AfterLeaveScene ()");
-                metaScript.value ().ScriptObj->Run ("void Start ()");
-                metaScript.value ().ScriptObj->Run ("void BeforeEnterScene ()");
+                (*metaScript).ScriptObj->Run ("void AfterLeaveScene ()");
+                (*metaScript).ScriptObj->Run ("void Start ()");
+                (*metaScript).ScriptObj->Run ("void BeforeEnterScene ()");
             }
         }
 

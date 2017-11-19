@@ -192,7 +192,7 @@ namespace aga
     }
 
     //--------------------------------------------------------------------------------------------------
-    Script* script;
+
     Scene* Scene::LoadScene (SceneManager* sceneManager, const std::string& filePath)
     {
         try
@@ -215,8 +215,13 @@ namespace aga
                 std::string name = j_tile["name"];
                 std::string path = j_tile["path"];
 
-                script = sceneManager->GetMainLoop ()->GetScriptManager ().LoadScriptFromFile (GetDataPath () + "scripts/" + path, name);
-                scene->AttachScript (script, path);
+                Script* script =
+                  sceneManager->GetMainLoop ()->GetScriptManager ().LoadScriptFromFile (GetDataPath () + "scripts/" + path, name);
+
+                if (script)
+                {
+                    scene->AttachScript (script, path);
+                }
             }
 
             auto& tiles = j["tiles"];

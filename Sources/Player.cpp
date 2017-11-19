@@ -76,7 +76,7 @@ namespace aga
         moveUpFrames.SetPlaySpeed (500);
         m_Animation.AddAnimationFrames (ANIM_MOVE_UP, moveUpFrames);
 
-        m_Animation.SetCurrentAnimation (ANIM_IDLE);
+        SetCurrentAnimation (ANIM_IDLE);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ namespace aga
     {
         if (event->type == ALLEGRO_EVENT_KEY_UP)
         {
-            m_Animation.SetCurrentAnimation (ANIM_IDLE);
+            SetCurrentAnimation (ANIM_IDLE);
         }
     }
 
@@ -114,25 +114,21 @@ namespace aga
 
         if (al_key_down (&state, ALLEGRO_KEY_DOWN) || al_key_down (&state, ALLEGRO_KEY_S))
         {
-            m_Animation.SetCurrentAnimation (ANIM_IDLE);
             dy = MOVE_SPEED * deltaTime;
         }
 
         if (al_key_down (&state, ALLEGRO_KEY_UP) || al_key_down (&state, ALLEGRO_KEY_W))
         {
-            m_Animation.SetCurrentAnimation (ANIM_MOVE_UP);
             dy = -MOVE_SPEED * deltaTime;
         }
 
         if (al_key_down (&state, ALLEGRO_KEY_RIGHT) || al_key_down (&state, ALLEGRO_KEY_D))
         {
-            m_Animation.SetCurrentAnimation (ANIM_MOVE_RIGHT);
             dx = MOVE_SPEED * deltaTime;
         }
 
         if (al_key_down (&state, ALLEGRO_KEY_LEFT) || al_key_down (&state, ALLEGRO_KEY_A))
         {
-            m_Animation.SetCurrentAnimation (ANIM_MOVE_LEFT);
             dx = -MOVE_SPEED * deltaTime;
         }
 
@@ -237,12 +233,6 @@ namespace aga
             {
                 Move (dx, dy);
             }
-
-            if (sampleCounter > 0.4f)
-            {
-                sample->Play ();
-                sampleCounter = 0;
-            }
         }
 
         sampleCounter += deltaTime;
@@ -250,10 +240,45 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    bool Player::Update (float deltaTime) { Actor::Update (deltaTime); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::ChooseAnimation (float angleDeg)
+    {
+        //  printf ("%f\n", angleDeg);
+        if (angleDeg > 225 && angleDeg < 315)
+        {
+            SetCurrentAnimation (ANIM_MOVE_UP);
+        }
+        else if (angleDeg >= 135 && angleDeg <= 225)
+        {
+            SetCurrentAnimation (ANIM_MOVE_LEFT);
+        }
+        else if (angleDeg > 45 && angleDeg < 135)
+        {
+            SetCurrentAnimation (ANIM_IDLE);
+        }
+        else if (angleDeg <= 45 || angleDeg >= 315)
+        {
+            SetCurrentAnimation (ANIM_MOVE_RIGHT);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Player::Move (float dx, float dy)
     {
+        if (sampleCounter > 0.4f)
+        {
+            sample->Play ();
+            sampleCounter = 0;
+        }
+
         m_OldPosition = Bounds.GetPos ();
         Bounds.SetPos (Bounds.GetPos () + Point (dx, dy));
+
+        ChooseAnimation (ToPositiveAngle (RadiansToRadians (std::atan2 (dy, dx))));
 
         if (MoveCallback != nullptr && m_FollowCamera)
         {

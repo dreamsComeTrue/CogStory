@@ -28,7 +28,7 @@ namespace aga
         void BeforeEnter ();
         void AfterLeave ();
 
-        bool Update (float deltaTime);
+        virtual bool Update (float deltaTime);
         void Render (float deltaTime);
 
         virtual void Move (float dx, float dy);
@@ -36,6 +36,8 @@ namespace aga
         void SetPosition (const Point& pos);
         Point GetPosition ();
         Point GetSize ();
+
+        void SetCurrentAnimation (const std::string& name);
 
         std::function<void(float dx, float dy)> MoveCallback;
 

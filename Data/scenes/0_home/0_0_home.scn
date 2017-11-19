@@ -1,24 +1,24 @@
 {
     "flag_points": [
         {
-            "connections": "C B ",
+            "connections": "B ",
             "name": "A",
-            "pos": "194.6 385.8"
+            "pos": "16.24 175.36"
         },
         {
-            "connections": "A ",
+            "connections": "A C ",
             "name": "B",
-            "pos": "12.272 125.992"
+            "pos": "12 45"
         },
         {
-            "connections": "D A ",
+            "connections": "B D ",
             "name": "C",
-            "pos": "127 127"
+            "pos": "127 42"
         },
         {
             "connections": "C ",
             "name": "D",
-            "pos": "123 -66"
+            "pos": "131 -109"
         },
         {
             "connections": "",
@@ -26,8 +26,8 @@
             "pos": "-243 -236"
         }
     ],
-    "max_size": "517 367",
-    "min_size": "5 -63",
+    "max_size": "517 372",
+    "min_size": "-86 -63",
     "name": "Home",
     "scripts": [
         {
@@ -53,7 +53,7 @@
             "id": "1",
             "name": "bed",
             "phys": [],
-            "pos": "6 303",
+            "pos": "-86 308",
             "rot": "90",
             "tileset": "0_0_home",
             "z-order": "0"
@@ -63,10 +63,6 @@
         {
             "name": "TOP",
             "poly": "-17.2983 204.992 -17.0746 193.36 41.0864 193.36 40.8627 203.65 "
-        },
-        {
-            "name": "sad",
-            "poly": "16.8248 271.05 18.8519 333.6 27.2498 333.31 26.9602 271.629 "
         }
     ]
 }

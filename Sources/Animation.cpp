@@ -74,8 +74,11 @@ namespace aga
 
     void Animation::SetCurrentAnimation (const std::string& name)
     {
-        m_CurrentAnimation = name;
-        m_CurrentFrame = 0;
+        if (m_CurrentAnimation != name)
+        {
+            m_CurrentAnimation = name;
+            m_CurrentFrame = 0;
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

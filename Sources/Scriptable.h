@@ -22,7 +22,7 @@ namespace aga
     {
     public:
         Scriptable (ScriptManager* scriptManager)
-            : m_ScriptManager (scriptManager)
+          : m_ScriptManager (scriptManager)
         {
         }
 
@@ -48,21 +48,14 @@ namespace aga
 
         void RemoveScript (Script* script)
         {
-            bool found = false;
-
-            std::vector<ScriptMetaData>::iterator it = m_Scripts.begin ();
-            for (; it != m_Scripts.end (); ++it)
+            for (std::vector<ScriptMetaData>::iterator it = m_Scripts.begin (); it != m_Scripts.end (); ++it)
             {
                 if (it->Name == script->GetName ())
                 {
-                    found = true;
+                    m_Scripts.erase (it);
+
                     break;
                 }
-            }
-
-            if (!found)
-            {
-                m_Scripts.erase (it);
             }
         }
 
@@ -106,7 +99,10 @@ namespace aga
 
                 Script* s = m_ScriptManager->LoadScriptFromFile (GetDataPath () + "scripts/" + path, name);
 
-                AttachScript (s, path);
+                if (s)
+                {
+                    AttachScript (s, path);
+                }
             }
         }
 

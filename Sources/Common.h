@@ -69,9 +69,12 @@ namespace aga
     const ALLEGRO_COLOR COLOR_ORANGE{ 255 / 255.f, 165 / 255.f, 0 / 255.f };
     const ALLEGRO_COLOR COLOR_PINK{ 191 / 255.f, 63 / 255.f, 191 / 255.f };
 
+    float RadiansToRadians (float radians);
     float DegressToRadians (float degrees);
 
-    bool AreSame (double a, double b);
+    float ToPositiveAngle (float degrees);
+
+    bool AreSame (float a, float b);
 
     std::vector<std::string> SplitString (const std::string& s, char seperator);
 

@@ -24,6 +24,8 @@ namespace aga
         void HandleInput (float deltaTime);
         void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
 
+        bool Update (float deltaTime) override;
+
         void Move (float dx, float dy) override;
         void SetPosition (float x, float y) override;
 
@@ -31,6 +33,7 @@ namespace aga
 
     private:
         void InitializeAnimations ();
+        void ChooseAnimation (float angleDeg);
 
     private:
         bool m_FollowCamera;
