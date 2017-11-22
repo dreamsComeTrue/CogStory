@@ -63,6 +63,7 @@ namespace aga
     const ALLEGRO_COLOR COLOR_LIGHTBLUE{ 51 / 255.f, 153 / 255.f, 255 / 255.f };
     const ALLEGRO_COLOR COLOR_YELLOW{ 1.0f, 1.0f, 0.0f, 1.0f };
     const ALLEGRO_COLOR COLOR_GRAY{ 0.3f, 0.3f, 0.3f, 1.0f };
+    const ALLEGRO_COLOR COLOR_LIGHTGRAY{ 0.8f, 0.8f, 0.8f, 1.0f };
     const ALLEGRO_COLOR COLOR_VIOLET{ 138 / 255.f, 43 / 255.f, 226 / 255.f, 1.0f };
     const ALLEGRO_COLOR COLOR_INDIGO{ 75 / 255.f, 0 / 255.f, 130 / 255.f, 1.0f };
     const ALLEGRO_COLOR COLOR_DARKBLUE{ 55 / 255.f, 51 / 255.f, 153 / 255.f };

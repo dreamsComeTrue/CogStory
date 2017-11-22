@@ -28,6 +28,7 @@ namespace aga
       , m_EditorPhysMode (this)
       , m_EditorFlagPointMode (this)
       , m_EditorTriggerAreaMode (this)
+      , m_EditorSpeechMode (this)
       , m_MainLoop (mainLoop)
       , m_IsSnapToGrid (true)
       , m_IsMousePan (false)
@@ -670,25 +671,20 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::RenderUI ()
+    bool openWindowSection = true;
+    ImVec2 buttonSize (100, 20);
+
+    void Editor::DrawFileSection ()
     {
-        ImGui_ImplA5_NewFrame ();
-
-        Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-        Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-        const Point windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-        bool open = true;
-
         int winSize = 140.0f;
         int xOffset = 5.0f;
 
-        ImGui::SetNextWindowPos (ImVec2 (xOffset, xOffset), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowPos (ImVec2 (xOffset, 20.0f), ImGuiCond_FirstUseEver);
         ImGui::Begin ("FileMenu",
-                      &open,
+                      &openWindowSection,
                       ImVec2 (winSize, 100.f),
                       0.0f,
                       ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-        ImVec2 buttonSize (100, 20);
 
         ImGui::TextColored (ImVec4 (0, 1, 0, 1),
                             std::string ("SCENE: " + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ()).c_str ());
@@ -808,10 +804,18 @@ namespace aga
         }
 
         ImGui::End ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::DrawToolBarSection ()
+    {
+        int winSize = 140.0f;
+        int xOffset = 5.0f;
 
         ImGui::SetNextWindowPos (ImVec2 (xOffset, 120), ImGuiCond_FirstUseEver);
         ImGui::Begin ("ToolbarMenu",
-                      &open,
+                      &openWindowSection,
                       ImVec2 (winSize, 120.f),
                       0.0f,
                       ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
@@ -845,8 +849,11 @@ namespace aga
         ImGui::End ();
 
         ImGui::SetNextWindowPos (ImVec2 (xOffset, 240), ImGuiCond_FirstUseEver);
-        ImGui::Begin (
-          "Points", &open, ImVec2 (winSize, 60.f), 0.0f, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImGui::Begin ("Points",
+                      &openWindowSection,
+                      ImVec2 (winSize, 60.f),
+                      0.0f,
+                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
         if (m_CursorMode != CursorMode::EditFlagPointsMode)
         {
@@ -945,10 +952,18 @@ namespace aga
         }
 
         ImGui::End ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::DrawPhysicsSection ()
+    {
+        int winSize = 140.0f;
+        int xOffset = 5.0f;
 
         ImGui::SetNextWindowPos (ImVec2 (xOffset, 300), ImGuiCond_FirstUseEver);
         ImGui::Begin ("Physics",
-                      &open,
+                      &openWindowSection,
                       ImVec2 (winSize, 60.f),
                       0.0f,
                       ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
@@ -981,10 +996,130 @@ namespace aga
         }
 
         ImGui::End ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool openSpeechSection = false;
+
+    void Editor::DrawSpeechSection ()
+    {
+        int winSize = 140.0f;
+        int xOffset = 5.0f;
 
         ImGui::SetNextWindowPos (ImVec2 (xOffset, 360), ImGuiCond_FirstUseEver);
+        ImGui::Begin ("SpeechMenu",
+                      &openWindowSection,
+                      ImVec2 (winSize, 40.f),
+                      0.0f,
+                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        if (ImGui::Button ("SPEECH", buttonSize))
+        {
+            openSpeechSection = !openSpeechSection;
+        }
+
+        //            window_flags |= ImGuiWindowFlags_NoScrollbar;
+        //            window_flags |= ImGuiWindowFlags_NoCollapse;
+        //        ImGuiStyle& style = ImGui::GetStyle ();
+        //        style.Colors[ImGuiCol_WindowBg] = ImVec4 (0.09f, 0.09f, 0.15f, 1.00f);
+
+        if (openSpeechSection)
+        {
+            const Point windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+            ImGui::SetNextWindowPos (ImVec2 (0, 0), ImGuiCond_FirstUseEver);
+            ImGui::Begin ("Speech Editor",
+                          &openSpeechSection,
+                          ImVec2 (windowSize.Width, windowSize.Height),
+                          0.7,
+                          ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+
+            ImGui::Columns (2, "columns", true); // 3-ways, no border
+
+            ImGui::Text ("SPEECH LIST");
+
+            if (ImGui::TreeNode ("ROOT"))
+            {
+                for (int i = 0; i < 5; i++)
+                    if (ImGui::TreeNode ((void*)(intptr_t)i, "Child %d", i))
+                    {
+                        ImGui::Text ("blah blah");
+                        ImGui::SameLine ();
+                        if (ImGui::SmallButton ("print"))
+                            printf ("Child %d pressed", i);
+                        ImGui::TreePop ();
+                    }
+
+                ImGui::TreePop ();
+            }
+
+            ImGui::NextColumn ();
+
+            if (ImGui::Button ("ADD", ImVec2 (60, 0)))
+            {
+                ImGui::OpenPopup ("Add Speech");
+            }
+            ImGui::SameLine ();
+            if (ImGui::Button ("REMOVE", ImVec2 (60, 0)))
+            {
+                ImGui::OpenPopup ("Remove Speech");
+            }
+
+            if (ImGui::Button ("CLOSE", ImVec2 (400, 0)))
+            {
+                openSpeechSection = false;
+            }
+
+            if (ImGui::BeginPopupModal ("Add Speech", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::Text ("ID:");
+                ImGui::Text ("Text:");
+                ImGui::Separator ();
+
+                ImGui::SetKeyboardFocusHere (0);
+                if (ImGui::Button ("OK", ImVec2 (100, 0)))
+                {
+                    ImGui::CloseCurrentPopup ();
+                }
+
+                ImGui::EndPopup ();
+            }
+
+            if (ImGui::BeginPopupModal ("Remove Speech", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::Text ("\t\tAre you sure to remove\n\t\t\t<SPEECH ID> ???\n\n");
+                ImGui::Separator ();
+
+                if (ImGui::Button ("Yes", ImVec2 (120, 0)))
+                {
+                    ImGui::CloseCurrentPopup ();
+                }
+
+                ImGui::SameLine ();
+
+                if (ImGui::Button ("No", ImVec2 (120, 0)))
+                {
+                    ImGui::CloseCurrentPopup ();
+                }
+
+                ImGui::EndPopup ();
+            }
+
+            ImGui::End ();
+        }
+
+        ImGui::End ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::DrawGamePlaySection ()
+    {
+        int winSize = 140.0f;
+        int xOffset = 5.0f;
+
+        ImGui::SetNextWindowPos (ImVec2 (xOffset, 400), ImGuiCond_FirstUseEver);
         ImGui::Begin ("GameMenu",
-                      &open,
+                      &openWindowSection,
                       ImVec2 (winSize, 40.f),
                       0.0f,
                       ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
@@ -994,13 +1129,22 @@ namespace aga
         }
 
         ImGui::End ();
+    }
 
-        winSize = 140.0f;
-        xOffset = windowSize.Width - winSize - 5.0f;
+    //--------------------------------------------------------------------------------------------------
 
-        ImGui::SetNextWindowPos (ImVec2 (xOffset, 5.0f), ImGuiCond_Always);
-        ImGui::Begin ("ToolBox",
-                      &open,
+    void Editor::DrawInfoSection ()
+    {
+        Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
+        Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
+
+        const Point windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+        int winSize = 140.0f;
+        int xOffset = windowSize.Width - winSize - 5.0f;
+
+        ImGui::SetNextWindowPos (ImVec2 (xOffset, 20.0f), ImGuiCond_Always);
+        ImGui::Begin ("Info",
+                      &openWindowSection,
                       ImVec2 (winSize, 220.f),
                       0.0f,
                       ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
@@ -1026,14 +1170,20 @@ namespace aga
         ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("GRID: " + ToString (m_BaseGridSize)).c_str ());
 
         ImGui::End ();
+    }
 
-        winSize = 150.0f;
-        xOffset = windowSize.Width - winSize - 2.0f;
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::DrawScriptsSection ()
+    {
+        const Point windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+        int winSize = 150.0f;
+        int xOffset = windowSize.Width - winSize - 2.0f;
 
         ImGui::SetNextWindowPos (ImVec2 (xOffset, 230.0f), ImGuiCond_Always);
         ImGui::Begin ("ScriptsBox",
-                      &open,
-                      ImVec2 (winSize, 220.f),
+                      &openWindowSection,
+                      ImVec2 (winSize, 230.f),
                       0.0f,
                       ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
         ImGui::PushItemWidth (-1);
@@ -1090,6 +1240,51 @@ namespace aga
 
         ImGui::PopItemWidth ();
         ImGui::End ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::RenderUI ()
+    {
+        ImGui_ImplA5_NewFrame ();
+
+        if (ImGui::BeginMainMenuBar ())
+        {
+            if (ImGui::BeginMenu ("File"))
+            {
+                ImGui::EndMenu ();
+            }
+            if (ImGui::BeginMenu ("Edit"))
+            {
+                if (ImGui::MenuItem ("Undo", "CTRL+Z"))
+                {
+                }
+                if (ImGui::MenuItem ("Redo", "CTRL+Y", false, false))
+                {
+                } // Disabled item
+                ImGui::Separator ();
+                if (ImGui::MenuItem ("Cut", "CTRL+X"))
+                {
+                }
+                if (ImGui::MenuItem ("Copy", "CTRL+C"))
+                {
+                }
+                if (ImGui::MenuItem ("Paste", "CTRL+V"))
+                {
+                }
+                ImGui::EndMenu ();
+            }
+            ImGui::EndMainMenuBar ();
+        }
+
+        DrawFileSection ();
+        DrawToolBarSection ();
+        DrawPhysicsSection ();
+        DrawSpeechSection ();
+        DrawGamePlaySection ();
+
+        DrawInfoSection ();
+        DrawScriptsSection ();
 
         if (openTest)
         {

@@ -414,7 +414,7 @@ namespace aga
 
                 for (int j = 0; j < t.length (); ++j)
                 {
-                    ALLEGRO_COLOR color = COLOR_WHITE;
+                    ALLEGRO_COLOR color = { 0.9f, 0.9f, 0.9f, 1.0f };
 
                     for (int k = 0; k < m_Attributes.size (); ++k)
                     {

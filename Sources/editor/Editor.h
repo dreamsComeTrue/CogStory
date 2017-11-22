@@ -6,6 +6,7 @@
 #include "Common.h"
 #include "EditorFlagPointMode.h"
 #include "EditorPhysMode.h"
+#include "EditorSpeechMode.h"
 #include "EditorTileMode.h"
 #include "EditorTriggerAreaMode.h"
 #include "Scene.h"
@@ -23,7 +24,8 @@ namespace aga
         TileEditMode,
         EditPhysBodyMode,
         EditFlagPointsMode,
-        EditTriggerAreaMode
+        EditTriggerAreaMode,
+        SpeechMode
     };
 
     class Editor : public Lifecycle
@@ -79,12 +81,21 @@ namespace aga
 
         void ResetSettings ();
 
+        void DrawFileSection ();
+        void DrawToolBarSection ();
+        void DrawPhysicsSection ();
+        void DrawSpeechSection ();
+        void DrawGamePlaySection ();
+        void DrawInfoSection ();
+        void DrawScriptsSection ();
+
     private:
         MainLoop* m_MainLoop;
         EditorTileMode m_EditorTileMode;
         EditorPhysMode m_EditorPhysMode;
         EditorFlagPointMode m_EditorFlagPointMode;
         EditorTriggerAreaMode m_EditorTriggerAreaMode;
+        EditorSpeechMode m_EditorSpeechMode;
 
         CursorMode m_CursorMode;
 
