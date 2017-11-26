@@ -9,10 +9,12 @@
 namespace aga
 {
     class Editor;
+    struct TriggerAreaWindow;
 
     class EditorTriggerAreaMode
     {
         friend class Editor;
+        friend class TriggerAreaWindow;
 
     public:
         EditorTriggerAreaMode (Editor* editor);
@@ -34,7 +36,7 @@ namespace aga
 
         TriggerArea* m_TriggerArea;
         Point* m_TriggerPoint;
-        char m_TriggerAreaName[64];
+        std::string m_TriggerAreaName;
     };
 }
 

@@ -8,10 +8,12 @@
 namespace aga
 {
     class Editor;
+    struct FlagPointWindow;
 
     class EditorFlagPointMode
     {
         friend class Editor;
+        friend class FlagPointWindow;
         friend class EditorTileMode;
 
     public:
@@ -29,7 +31,7 @@ namespace aga
         Editor* m_Editor;
 
         bool m_AskFlagPoint;
-        char m_FlagPointName[64];
+        std::string m_FlagPointName;
         std::string m_FlagPoint;
 
         bool m_DrawConnection;

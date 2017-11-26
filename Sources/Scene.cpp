@@ -586,11 +586,14 @@ namespace aga
 
     void Scene::AddFlagPoint (const std::string& name, Point point)
     {
-        FlagPoint fp;
-        fp.Name = name;
-        fp.Pos = point;
+        if (m_FlagPoints.find (name) == m_FlagPoints.end ())
+        {
+            FlagPoint fp;
+            fp.Name = name;
+            fp.Pos = point;
 
-        m_FlagPoints.insert (make_pair (name, fp));
+            m_FlagPoints.insert (make_pair (name, fp));
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -618,10 +621,13 @@ namespace aga
 
     void Scene::AddTriggerArea (const std::string& name, std::vector<Point> points)
     {
-        TriggerArea area{ name, points };
-        area.UpdatePolygons (&m_SceneManager->GetMainLoop ()->GetPhysicsManager ().GetTriangulator ());
+        if (m_TriggerAreas.find (name) == m_TriggerAreas.end ())
+        {
+            TriggerArea area{ name, points };
+            area.UpdatePolygons (&m_SceneManager->GetMainLoop ()->GetPhysicsManager ().GetTriangulator ());
 
-        m_TriggerAreas.insert (std::make_pair (name, area));
+            m_TriggerAreas.insert (std::make_pair (name, area));
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -635,6 +641,46 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Scene::RemoveTriggerArea (const std::string& name) { m_TriggerAreas.erase (name); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Scene::AddSpeech (const std::string& name, SpeechData data)
+    {
+        if (m_Speeches.find (name) == m_Speeches.end ())
+        {
+            m_Speeches.insert (std::make_pair (name, data));
+
+            return true;
+        }
+
+        return false;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::map<std::string, SpeechData>& Scene::GetSpeeches () { return m_Speeches; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    SpeechData* Scene::GetSpeech (const std::string& name)
+    {
+        if (m_Speeches.find (name) != m_Speeches.end ())
+        {
+            return &m_Speeches[name];
+        }
+
+        return nullptr;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::RemoveSpeech (const std::string& name)
+    {
+        if (m_Speeches.find (name) != m_Speeches.end ())
+        {
+            m_Speeches.erase (name);
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 

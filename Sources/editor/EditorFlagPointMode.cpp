@@ -118,7 +118,7 @@ namespace aga
                 m_FlagPoint = m_FlagPointName;
             }
 
-            memset (m_FlagPointName, 0, sizeof (m_FlagPointName));
+            m_FlagPointName = "";
         }
         else
         {

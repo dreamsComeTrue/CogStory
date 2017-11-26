@@ -9,7 +9,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/Cotire/CMake")
 include(cotire)
 
-LINK_DIRECTORIES(   ${ROOT_THIRD_PARTY_DIR}/anglescript_2.31.2/angelscript/lib/                    
+LINK_DIRECTORIES(   ${ROOT_THIRD_PARTY_DIR}/anglescript_2.31.2/angelscript/lib/
+                    ${ROOT_THIRD_PARTY_DIR}/GWork/lib/
                  )
 file(GLOB_RECURSE SRC_LIST   "Sources/*")
 file(GLOB_RECURSE IMGUI_SRC_LIST   "ThirdParty/imgui/*.cpp")
@@ -20,7 +21,9 @@ include_directories(Sources/
                     Sources/addons/nine-patch/
                     Sources/addons/tweeny/
                     Sources/addons/json/                    
-                    ThirdParty/                    
+                    ThirdParty/
+                    ThirdParty/GWork/source/gwork/include/
+                    ThirdParty/GWork/source/platform/include/
                     ThirdParty/anglescript_2.31.2/angelscript/include
                     ThirdParty/anglescript_2.31.2/add_on
                     )
@@ -32,9 +35,12 @@ target_link_libraries(${PROJECT_NAME}
     allegro_font
     allegro_ttf
     allegro_primitives
+    allegro_dialog
     allegro_audio
     allegro_acodec
     libangelscript.a
+    libGwork.a
+    libGworkAllegro5.a
     freetype
     pthread
     )

@@ -4,21 +4,29 @@
 #define __EDITOR_SPEECH_MODE_H__
 
 #include "Common.h"
+#include "Scene.h"
 
 namespace aga
 {
     class Editor;
+    struct SpeechWindow;
 
     class EditorSpeechMode
     {
         friend class Editor;
+        friend class SpeechWindow;
 
     public:
         EditorSpeechMode (Editor* editor);
         virtual ~EditorSpeechMode ();
 
+        void AddOrUpdateSpeech ();
+        void RemoveSpeech (const std::string& name);
+        void Clear ();
+
     private:
         Editor* m_Editor;
+        SpeechData m_Speech;
     };
 }
 

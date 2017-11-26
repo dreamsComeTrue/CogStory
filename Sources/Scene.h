@@ -11,9 +11,25 @@
 
 namespace aga
 {
+#define LANG_EN 0
+#define LANG_PL 1
+
     class SceneManager;
     class AtlasManager;
     class Triangulator;
+
+    struct SpeechOutcome
+    {
+        std::string Name = "";
+        std::string Text = "";
+    };
+
+    struct SpeechData
+    {
+        std::string Name = "";
+        std::map<int, std::string> Text;                    //  LangID, data
+        std::map<int, std::vector<SpeechOutcome>> Outcomes; //  LangID, outcomes
+    };
 
     struct FlagPoint
     {
@@ -93,6 +109,11 @@ namespace aga
         TriggerArea& GetTriggerArea (const std::string& name);
         void RemoveTriggerArea (const std::string& name);
 
+        bool AddSpeech (const std::string& name, SpeechData data);
+        std::map<std::string, SpeechData>& GetSpeeches ();
+        SpeechData* GetSpeech (const std::string& name);
+        void RemoveSpeech (const std::string& name);
+
         void SortTiles ();
 
         void Reset ();
@@ -117,6 +138,7 @@ namespace aga
         Rect m_Size;
         std::map<std::string, FlagPoint> m_FlagPoints;
         std::map<std::string, TriggerArea> m_TriggerAreas;
+        std::map<std::string, SpeechData> m_Speeches;
         std::vector<Tile*> m_Tiles;
         SceneManager* m_SceneManager;
 

@@ -6,7 +6,6 @@
 #include "Screen.h"
 
 #include "imgui/imgui.h"
-#include "imgui/imgui_impl_a5.h"
 
 #include "addons/json/json.hpp"
 
@@ -18,7 +17,152 @@ namespace aga
 
     const char* configFileName = "editor_config.json";
     bool askNewScene = false;
-    char menuFileName[512] = "0_home/0_0_home.scn";
+    std::string menuFileName = "0_home/0_0_home.scn";
+
+    //--------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
+
+    SpeechWindow::SpeechWindow (Editor* editor, Gwk::Controls::Canvas* canvas)
+    {
+        m_Editor = editor;
+        m_LangIndex = 0;
+
+        m_SceneWindow = new Gwk::Controls::WindowControl (canvas);
+        m_SceneWindow->SetTitle ("Speech Editor");
+        m_SceneWindow->SetSize (canvas->Width () - 350, canvas->Height () - 80);
+        m_SceneWindow->DisableResizing ();
+        m_SceneWindow->CloseButtonPressed ();
+
+        m_SpeechesTree = new Gwk::Controls::TreeControl (m_SceneWindow);
+        m_SpeechesTree->SetBounds (10, 10, 300, m_SceneWindow->Height () - 55);
+        m_SpeechesTree->ExpandAll ();
+        m_SpeechesTree->onSelect.Add (this, &SpeechWindow::OnSpeechSelect);
+
+        int xOffset = 340;
+
+        Gwk::Controls::Label* nameLabel = new Gwk::Controls::Label (m_SceneWindow);
+        nameLabel->SetPos (xOffset, 10);
+        nameLabel->SetText ("Name:");
+        nameLabel->SizeToContents ();
+
+        m_NameTextBox = new Gwk::Controls::TextBox (m_SceneWindow);
+        m_NameTextBox->SetText ("");
+        m_NameTextBox->SetWidth (250);
+        m_NameTextBox->SetPos (xOffset, nameLabel->Bottom () + 5);
+        m_NameTextBox->onTextChanged.Add (this, &SpeechWindow::OnNameEdit);
+
+        Gwk::Controls::Label* langLabel = new Gwk::Controls::Label (m_SceneWindow);
+        langLabel->SetPos (xOffset, m_NameTextBox->Bottom () + 5);
+        langLabel->SetText ("Lang:");
+        langLabel->SizeToContents ();
+
+        m_LanguageCombo = new Gwk::Controls::ComboBox (m_SceneWindow);
+        m_LanguageCombo->SetPos (xOffset, langLabel->Bottom () + 5);
+        m_LanguageCombo->SetWidth (250);
+        m_LanguageCombo->AddItem ("EN", "EN");
+        m_LanguageCombo->AddItem ("PL", "PL");
+        m_LanguageCombo->onSelection.Add (this, &SpeechWindow::OnLangSelected);
+
+        Gwk::Controls::Label* textLabel = new Gwk::Controls::Label (m_SceneWindow);
+        textLabel->SetPos (xOffset, m_LanguageCombo->Bottom () + 5);
+        textLabel->SetText ("Text:");
+        textLabel->SizeToContents ();
+
+        m_TextData = new Gwk::Controls::TextBoxMultiline (m_SceneWindow);
+        m_TextData->SetPos (xOffset, textLabel->Bottom () + 5);
+        m_TextData->SetSize (250, 90);
+        m_TextData->onTextChanged.Add (this, &SpeechWindow::OnTextChanged);
+
+        Gwk::Controls::Button* addSpeechButton = new Gwk::Controls::Button (m_SceneWindow);
+        addSpeechButton->SetText ("ADD");
+        addSpeechButton->SetWidth (80);
+        addSpeechButton->SetPos (xOffset, m_TextData->Bottom () + 10);
+        addSpeechButton->onPress.Add (this, &SpeechWindow::OnAdd);
+
+        Gwk::Controls::Button* removeSpeechButton = new Gwk::Controls::Button (m_SceneWindow);
+        removeSpeechButton->SetText ("REMOVE");
+        removeSpeechButton->SetWidth (80);
+        removeSpeechButton->SetPos (xOffset + 85, m_TextData->Bottom () + 10);
+        removeSpeechButton->onPress.Add (this, &SpeechWindow::OnRemove);
+
+        Gwk::Controls::Button* outcomeButton = new Gwk::Controls::Button (m_SceneWindow);
+        outcomeButton->SetText ("OUTCOME");
+        outcomeButton->SetWidth (80);
+        outcomeButton->SetPos (xOffset + 2 * 85, m_TextData->Bottom () + 10);
+        outcomeButton->onPress.Add (this, &SpeechWindow::OnOutcome);
+
+        Gwk::Controls::Button* okButton = new Gwk::Controls::Button (m_SceneWindow);
+        okButton->SetText ("ACCEPT");
+        okButton->SetPos (m_SceneWindow->Width () - 125, m_SceneWindow->Height () - 65);
+        okButton->onPress.Add (this, &SpeechWindow::OnAccept);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SpeechWindow::OnAdd ()
+    {
+        if (m_NameTextBox->GetText () != "")
+        {
+            m_Editor->m_EditorSpeechMode.AddOrUpdateSpeech ();
+            UpdateSpeechesTree ();
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SpeechWindow::OnRemove ()
+    {
+        if (m_NameTextBox->GetText () != "")
+        {
+            m_Editor->m_EditorSpeechMode.RemoveSpeech (m_NameTextBox->GetText ());
+            UpdateSpeechesTree ();
+
+            m_Editor->m_EditorSpeechMode.Clear ();
+            m_NameTextBox->SetText ("");
+            m_TextData->SetText ("");
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SpeechWindow::OnOutcome () { UpdateOutcomes (); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SpeechWindow::UpdateOutcomes () {}
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SpeechWindow::UpdateSpeechesTree ()
+    {
+        m_SpeechesTree->Clear ();
+
+        std::map<std::string, SpeechData>& speeches = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
+
+        for (std::map<std::string, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
+        {
+            Gwk::Controls::TreeNode* node = m_SpeechesTree->AddNode ((*it).first);
+            node->onSelect.Add (this, &SpeechWindow::OnSpeechSelect);
+        }
+
+        m_SpeechesTree->ExpandAll ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SpeechWindow::OnSpeechSelect (Gwk::Controls::Base* control)
+    {
+        Gwk::Controls::TreeNode* node = (Gwk::Controls::TreeNode*)control;
+
+        if (node != nullptr && node->IsSelected ())
+        {
+            std::map<std::string, SpeechData>& speeches = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
+            m_Editor->m_EditorSpeechMode.m_Speech = speeches[node->GetText ()];
+
+            m_NameTextBox->SetText (m_Editor->m_EditorSpeechMode.m_Speech.Name);
+            m_TextData->SetText (m_Editor->m_EditorSpeechMode.m_Speech.Text[m_LangIndex]);
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
@@ -51,14 +195,230 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    Gwk::Renderer::Allegro* guiRenderer;
+    Gwk::Controls::Canvas* mainCanvas;
+    Gwk::Skin::TexturedBase* guiSkin;
+
+    Gwk::Input::Allegro guiInput;
+
+    Gwk::Controls::Label* sceneNameLabel;
+    Gwk::Controls::Button* newSceneButton;
+    Gwk::Controls::Button* openSceneButton;
+    Gwk::Controls::Button* saveSceneButton;
+
+    Gwk::Controls::Button* resetMoveButton;
+    Gwk::Controls::Button* resetScaleButton;
+    Gwk::Controls::Button* showGridButton;
+    Gwk::Controls::Button* increaseGridButton;
+    Gwk::Controls::Button* decreaseGridButton;
+
+    Gwk::Controls::Button* flagPointButton;
+    Gwk::Controls::Button* triggerAreaButton;
+
+    Gwk::Controls::Button* tileModeButton;
+    Gwk::Controls::Button* newPolyButton;
+
+    Gwk::Controls::Button* speechButton;
+
+    Gwk::Controls::Button* playButton;
+
+    Gwk::Controls::Label* avgFPSLabel;
+    Gwk::Controls::Label* fpsLabel;
+    Gwk::Controls::Label* xPosLabel;
+    Gwk::Controls::Label* yPosLabel;
+    Gwk::Controls::Label* widthLabel;
+    Gwk::Controls::Label* heightLabel;
+    Gwk::Controls::Label* angleLabel;
+    Gwk::Controls::Label* zOrderLabel;
+    Gwk::Controls::Label* scaleLabel;
+    Gwk::Controls::Label* snapLabel;
+    Gwk::Controls::Label* gridLabel;
+
+    Gwk::Controls::ListBox* scriptsBox;
+    Gwk::Controls::Button* scriptReloadButton;
+
     bool Editor::Initialize ()
     {
         Lifecycle::Initialize ();
 
-        m_EditorTileMode.InitializeUI ();
+        Gwk::Platform::SetPlatformWindow (m_MainLoop->GetScreen ()->GetDisplay ());
 
-        ImGui_ImplA5_Init (m_MainLoop->GetScreen ()->GetDisplay ());
-        ImGui::GetIO ().IniFilename = nullptr;
+        Gwk::Platform::RelativeToExecutablePaths paths ("../Data/");
+        Gwk::Renderer::AllegroResourceLoader loader (paths);
+
+        guiRenderer = new Gwk::Renderer::Allegro (loader);
+
+        guiSkin = new Gwk::Skin::TexturedBase (guiRenderer);
+        guiSkin->SetRender (guiRenderer);
+        guiSkin->Init ("DefaultSkin.png");
+
+        // The fonts work differently in Allegro - it can't use
+        // system fonts. So force the skin to use a local one.
+        guiSkin->SetDefaultFont ("fonts/OpenSans.ttf", 12);
+
+        // Create a Canvas (it's root, on which all other Gwork panels are created)
+        const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+
+        mainCanvas = new Gwk::Controls::Canvas (guiSkin);
+        mainCanvas->SetSize (screenSize.Width, screenSize.Height);
+        mainCanvas->SetDrawBackground (false);
+
+        guiInput.Initialize (mainCanvas);
+
+        //  Add GUI Controls
+        sceneNameLabel = new Gwk::Controls::Label (mainCanvas);
+        sceneNameLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
+        sceneNameLabel->SetPos (20, 10);
+        sceneNameLabel->SetText ("SCENE: " + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ());
+        sceneNameLabel->SizeToContents ();
+
+        newSceneButton = new Gwk::Controls::Button (mainCanvas);
+        newSceneButton->SetText ("NEW SCENE");
+        newSceneButton->SetPos (20, 30);
+        newSceneButton->onPress.Add (this, &Editor::OnNewScene);
+
+        openSceneButton = new Gwk::Controls::Button (mainCanvas);
+        openSceneButton->SetText ("OPEN SCENE");
+        openSceneButton->SetPos (20, 55);
+        openSceneButton->onPress.Add (this, &Editor::OnOpenScene);
+
+        saveSceneButton = new Gwk::Controls::Button (mainCanvas);
+        saveSceneButton->SetText ("SAVE SCENE");
+        saveSceneButton->SetPos (20, 80);
+        saveSceneButton->onPress.Add (this, &Editor::OnSaveScene);
+
+        //  Diaglos & windows
+        {
+            m_OpenSceneWindow = new OpenSceneWindow (this, mainCanvas, "0_home/0_0_home.scn");
+            m_SaveSceneWindow = new SaveSceneWindow (this, mainCanvas, "0_home/0_0_home.scn");
+            m_FlagPointWindow = new FlagPointWindow (this, mainCanvas);
+            m_TriggerAreaWindow = new TriggerAreaWindow (this, mainCanvas);
+            m_SpeechWindow = new SpeechWindow (this, mainCanvas);
+            m_InfoWindow = new InfoWindow (this, mainCanvas);
+        }
+
+        resetMoveButton = new Gwk::Controls::Button (mainCanvas);
+        resetMoveButton->SetText ("RESET MOVE");
+        resetMoveButton->SetPos (20, 120);
+        resetMoveButton->onPress.Add (this, &Editor::OnResetTranslate);
+
+        resetScaleButton = new Gwk::Controls::Button (mainCanvas);
+        resetScaleButton->SetText ("RESET SCALE");
+        resetScaleButton->SetPos (20, 145);
+        resetScaleButton->onPress.Add (this, &Editor::OnResetScale);
+
+        showGridButton = new Gwk::Controls::Button (mainCanvas);
+        showGridButton->SetText ("SHOW GRID");
+        showGridButton->SetPos (20, 170);
+        showGridButton->onPress.Add (this, &Editor::OnShowGrid);
+
+        increaseGridButton = new Gwk::Controls::Button (mainCanvas);
+        increaseGridButton->SetText ("+++");
+        increaseGridButton->SetWidth (45);
+        increaseGridButton->SetPos (20, 195);
+        increaseGridButton->onPress.Add (this, &Editor::OnGridIncrease);
+
+        decreaseGridButton = new Gwk::Controls::Button (mainCanvas);
+        decreaseGridButton->SetText ("---");
+        decreaseGridButton->SetWidth (45);
+        decreaseGridButton->SetPos (increaseGridButton->GetPos ().x + increaseGridButton->GetSize ().x + 10, 195);
+        decreaseGridButton->onPress.Add (this, &Editor::OnGridDecrease);
+
+        flagPointButton = new Gwk::Controls::Button (mainCanvas);
+        flagPointButton->SetText ("FLAG POINT");
+        flagPointButton->SetPos (20, 235);
+        flagPointButton->onPress.Add (this, &Editor::OnFlagPoint);
+
+        triggerAreaButton = new Gwk::Controls::Button (mainCanvas);
+        triggerAreaButton->SetText ("TRIGGER AREA");
+        triggerAreaButton->SetPos (20, 260);
+        triggerAreaButton->onPress.Add (this, &Editor::OnTriggerArea);
+
+        tileModeButton = new Gwk::Controls::Button (mainCanvas);
+        tileModeButton->SetText (m_CursorMode != CursorMode::EditPhysBodyMode ? "TILE MODE" : "PHYS MODE");
+        tileModeButton->SetPos (20, 285);
+        tileModeButton->onPress.Add (this, &Editor::OnTileMode);
+        tileModeButton->Hide ();
+
+        newPolyButton = new Gwk::Controls::Button (mainCanvas);
+        newPolyButton->SetText ("NEW POLY");
+        newPolyButton->SetPos (20, 310);
+        newPolyButton->onPress.Add (this, &Editor::OnNewPoly);
+        newPolyButton->Hide ();
+
+        speechButton = new Gwk::Controls::Button (mainCanvas);
+        speechButton->SetText ("SPEECH");
+        speechButton->SetPos (20, 350);
+        speechButton->onPress.Add (this, &Editor::OnSpeech);
+
+        playButton = new Gwk::Controls::Button (mainCanvas);
+        playButton->SetText ("PLAY");
+        playButton->SetPos (20, 390);
+        playButton->onPress.Add (this, &Editor::OnPlay);
+
+        avgFPSLabel = new Gwk::Controls::Label (mainCanvas);
+        avgFPSLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
+        avgFPSLabel->SetPos (mainCanvas->Width () - 120.0f, 10);
+
+        fpsLabel = new Gwk::Controls::Label (mainCanvas);
+        fpsLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
+        fpsLabel->SetPos (mainCanvas->Width () - 120.0f, 30);
+
+        xPosLabel = new Gwk::Controls::Label (mainCanvas);
+        xPosLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
+        xPosLabel->SetPos (mainCanvas->Width () - 120.0f, 50);
+
+        yPosLabel = new Gwk::Controls::Label (mainCanvas);
+        yPosLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
+        yPosLabel->SetPos (mainCanvas->Width () - 120.0f, 70);
+
+        widthLabel = new Gwk::Controls::Label (mainCanvas);
+        widthLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
+        widthLabel->SetPos (mainCanvas->Width () - 120.0f, 90);
+
+        heightLabel = new Gwk::Controls::Label (mainCanvas);
+        heightLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
+        heightLabel->SetPos (mainCanvas->Width () - 120.0f, 110);
+
+        angleLabel = new Gwk::Controls::Label (mainCanvas);
+        angleLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
+        angleLabel->SetPos (mainCanvas->Width () - 120.0f, 130);
+
+        zOrderLabel = new Gwk::Controls::Label (mainCanvas);
+        zOrderLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
+        zOrderLabel->SetPos (mainCanvas->Width () - 120.0f, 150);
+
+        scaleLabel = new Gwk::Controls::Label (mainCanvas);
+        scaleLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
+        scaleLabel->SetPos (mainCanvas->Width () - 120.0f, 170);
+
+        snapLabel = new Gwk::Controls::Label (mainCanvas);
+        snapLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
+        snapLabel->SetPos (mainCanvas->Width () - 120.0f, 190);
+
+        gridLabel = new Gwk::Controls::Label (mainCanvas);
+        gridLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
+        gridLabel->SetPos (mainCanvas->Width () - 120.0f, 210);
+
+        scriptsBox = new Gwk::Controls::ListBox (mainCanvas);
+        scriptsBox->SetBounds (mainCanvas->Width () - 150.0f, 240, 140, 100);
+        scriptsBox->SetKeyboardInputEnabled (true);
+        //        ctrl->onRowSelected.Add(this, &ThisClass::RowSelected);
+
+        std::vector<ScriptMetaData>& scripts = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetScripts ();
+
+        for (auto& sc : scripts)
+        {
+            scriptsBox->AddItem ((std::string ("> ") + sc.Name));
+        }
+
+        scriptReloadButton = new Gwk::Controls::Button (mainCanvas);
+        scriptReloadButton->SetText ("RELOAD");
+        scriptReloadButton->SetPos (mainCanvas->Width () - 130.0f, 350);
+        scriptReloadButton->onPress.Add (this, &Editor::OnReloadScript);
+
+        m_EditorTileMode.InitializeUI ();
+        m_EditorSpeechMode.Clear ();
 
         LoadConfig ();
 
@@ -70,7 +430,10 @@ namespace aga
     bool Editor::Destroy ()
     {
         SaveConfig ();
-        ImGui_ImplA5_Shutdown ();
+
+        delete mainCanvas;
+        // delete guiSkin;
+        delete guiRenderer;
 
         return Lifecycle::Destroy ();
     }
@@ -158,9 +521,7 @@ namespace aga
 
     void Editor::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
     {
-        ImGui_ImplA5_ProcessEvent (event);
-
-        if (ImGui::GetIO ().WantCaptureMouse)
+        if (guiInput.ProcessMessage (*event))
         {
             return;
         }
@@ -278,6 +639,8 @@ namespace aga
 
                     if (m_EditorTileMode.m_SelectedTile)
                     {
+                        tileModeButton->Show ();
+
                         m_CursorMode = CursorMode::TileEditMode;
                         m_EditorTileMode.m_Rotation = m_EditorTileMode.m_SelectedTile->Rotation;
                     }
@@ -294,11 +657,15 @@ namespace aga
                             m_EditorTileMode.m_SelectedTile = newSelectedTile;
                             m_CursorMode = CursorMode::TileEditMode;
                             m_EditorTileMode.m_Rotation = m_EditorTileMode.m_SelectedTile->Rotation;
+
+                            tileModeButton->Show ();
                         }
                         else
                         {
                             m_CursorMode = CursorMode::TileSelectMode;
                             m_EditorTileMode.m_SelectedTile = nullptr;
+
+                            tileModeButton->Hide ();
                         }
                     }
                 }
@@ -553,16 +920,27 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnNewScene ()
+    void Editor::OnNewScene (Gwk::Controls::Base* control)
     {
         m_MainLoop->GetSceneManager ().GetActiveScene ()->Reset ();
 
         ResetSettings ();
+
+        sceneNameLabel->SetText (std::string ("SCENE: -"));
+        sceneNameLabel->SizeToContents ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnLoadScene (const std::string& openFileName)
+    void Editor::OnOpenScene (Gwk::Controls::Base* control) { m_OpenSceneWindow->Show (); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnSaveScene (Gwk::Controls::Base* control) { m_SaveSceneWindow->Show (); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::LoadScene (const std::string& openFileName)
     {
         std::string path = GetDataPath () + "scenes/" + openFileName;
 
@@ -588,16 +966,18 @@ namespace aga
 
                 GlobalID = maxTileID;
                 ResetSettings ();
+
+                sceneNameLabel->SetText (std::string ("SCENE: " + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ()));
+                sceneNameLabel->SizeToContents ();
             }
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnSaveScene (const std::string& saveFileName)
+    void Editor::SaveScene (const std::string& filePath)
     {
-        std::string path = GetDataPath () + "scenes/" + saveFileName;
-
+        std::string path = GetDataPath () + "scenes/" + filePath;
         Scene::SaveScene (m_MainLoop->GetSceneManager ().GetActiveScene (), path);
     }
 
@@ -647,7 +1027,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnShowGrid () { m_IsSnapToGrid = !m_IsSnapToGrid; }
+    void Editor::OnShowGrid ()
+    {
+        m_IsSnapToGrid = !m_IsSnapToGrid;
+        showGridButton->SetText (m_IsSnapToGrid ? "HIDE GRID" : "SHOW GRID");
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -671,547 +1055,66 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool openWindowSection = true;
-    ImVec2 buttonSize (100, 20);
+    void Editor::OnFlagPoint () { m_FlagPointWindow->Show (); }
 
-    void Editor::DrawFileSection ()
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnTriggerArea () { m_TriggerAreaWindow->Show (); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnTileMode ()
     {
-        int winSize = 140.0f;
-        int xOffset = 5.0f;
-
-        ImGui::SetNextWindowPos (ImVec2 (xOffset, 20.0f), ImGuiCond_FirstUseEver);
-        ImGui::Begin ("FileMenu",
-                      &openWindowSection,
-                      ImVec2 (winSize, 100.f),
-                      0.0f,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-
-        ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-                            std::string ("SCENE: " + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ()).c_str ());
-
-        static bool newSceneDontAsk = false;
-        if (ImGui::Button ("NEW SCENE", buttonSize))
+        if (m_CursorMode != CursorMode::EditPhysBodyMode)
         {
-            if (newSceneDontAsk)
-            {
-                OnNewScene ();
-            }
-            else
-            {
-                ImGui::OpenPopup ("Erase?");
-            }
+            m_CursorMode = CursorMode::EditPhysBodyMode;
+
+            newPolyButton->Show ();
+        }
+        else
+        {
+            m_CursorMode = CursorMode::TileSelectMode;
+
+            newPolyButton->Hide ();
         }
 
-        if (ImGui::BeginPopupModal ("Erase?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            ImGui::Text ("All those beautiful files will be deleted.\nThis operation cannot be undone!\n\n");
-            ImGui::Separator ();
-
-            ImGui::PushStyleVar (ImGuiStyleVar_FramePadding, ImVec2 (0, 0));
-            ImGui::Checkbox ("Don't ask me next time", &newSceneDontAsk);
-            ImGui::PopStyleVar ();
-
-            if (ImGui::Button ("OK", ImVec2 (120, 0)))
-            {
-                OnNewScene ();
-                ImGui::CloseCurrentPopup ();
-            }
-
-            ImGui::SameLine ();
-
-            if (ImGui::Button ("Cancel", ImVec2 (120, 0)))
-            {
-                ImGui::CloseCurrentPopup ();
-            }
-
-            ImGui::EndPopup ();
-        }
-
-        if (ImGui::Button ("OPEN SCENE", buttonSize))
-        {
-            ImGui::OpenPopup ("Open Scene");
-        }
-
-        if (ImGui::BeginPopupModal ("Open Scene", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            ImGui::Text ("File path:");
-
-            if (ImGui::IsRootWindowOrAnyChildFocused () && !ImGui::IsAnyItemActive () && !ImGui::IsMouseClicked (0))
-            {
-                ImGui::SetKeyboardFocusHere (0);
-            }
-
-            if (ImGui::InputText ("##edit", menuFileName, sizeof (menuFileName), ImGuiInputTextFlags_EnterReturnsTrue))
-            {
-                OnLoadScene (menuFileName);
-                ImGui::CloseCurrentPopup ();
-            }
-
-            ImGui::Separator ();
-
-            if (ImGui::Button ("OK", ImVec2 (120, 0)))
-            {
-                OnLoadScene (menuFileName);
-                ImGui::CloseCurrentPopup ();
-            }
-
-            ImGui::SameLine ();
-
-            if (ImGui::Button ("Cancel", ImVec2 (120, 0)))
-            {
-                ImGui::CloseCurrentPopup ();
-            }
-
-            ImGui::EndPopup ();
-        }
-
-        if (ImGui::Button ("SAVE SCENE", buttonSize) || saveRequested)
-        {
-            ImGui::OpenPopup ("Save Scene");
-            saveRequested = false;
-        }
-
-        if (ImGui::BeginPopupModal ("Save Scene", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            ImGui::Text ("File path:");
-
-            if (ImGui::IsRootWindowOrAnyChildFocused () && !ImGui::IsAnyItemActive () && !ImGui::IsMouseClicked (0))
-            {
-                ImGui::SetKeyboardFocusHere (0);
-            }
-
-            if (ImGui::InputText ("##edit", menuFileName, sizeof (menuFileName), ImGuiInputTextFlags_EnterReturnsTrue))
-            {
-                OnSaveScene (menuFileName);
-                ImGui::CloseCurrentPopup ();
-            }
-            ImGui::Separator ();
-
-            if (ImGui::Button ("OK", ImVec2 (120, 0)))
-            {
-                OnSaveScene (menuFileName);
-                ImGui::CloseCurrentPopup ();
-            }
-
-            ImGui::SameLine ();
-
-            if (ImGui::Button ("Cancel", ImVec2 (120, 0)))
-            {
-                ImGui::CloseCurrentPopup ();
-            }
-
-            ImGui::EndPopup ();
-        }
-
-        ImGui::End ();
+        tileModeButton->SetText (m_CursorMode != CursorMode::EditPhysBodyMode ? "TILE MODE" : "PHYS MODE");
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::DrawToolBarSection ()
+    void Editor::OnNewPoly ()
     {
-        int winSize = 140.0f;
-        int xOffset = 5.0f;
-
-        ImGui::SetNextWindowPos (ImVec2 (xOffset, 120), ImGuiCond_FirstUseEver);
-        ImGui::Begin ("ToolbarMenu",
-                      &openWindowSection,
-                      ImVec2 (winSize, 120.f),
-                      0.0f,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-        if (ImGui::Button ("RESET MOVE", buttonSize))
-        {
-            OnResetTranslate ();
-        }
-
-        if (ImGui::Button ("RESET SCALE", buttonSize))
-        {
-            OnResetScale ();
-        }
-
-        if (ImGui::Button (m_IsSnapToGrid ? "HIDE GRID" : "SHOW GRID", buttonSize))
-        {
-            OnShowGrid ();
-        }
-
-        if (ImGui::Button ("+++", ImVec2 (buttonSize.x / 2 - 4, buttonSize.y)))
-        {
-            OnGridIncrease ();
-        }
-
-        ImGui::SameLine ();
-
-        if (ImGui::Button ("---", ImVec2 (buttonSize.x / 2 - 4, buttonSize.y)))
-        {
-            OnGridDecrease ();
-        }
-
-        ImGui::End ();
-
-        ImGui::SetNextWindowPos (ImVec2 (xOffset, 240), ImGuiCond_FirstUseEver);
-        ImGui::Begin ("Points",
-                      &openWindowSection,
-                      ImVec2 (winSize, 60.f),
-                      0.0f,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-
-        if (m_CursorMode != CursorMode::EditFlagPointsMode)
-        {
-            if (ImGui::Button ("FLAG POINT", buttonSize))
-            {
-                m_EditorFlagPointMode.m_AskFlagPoint = true;
-            }
-        }
-
-        if (m_EditorFlagPointMode.m_AskFlagPoint)
-        {
-            ImGui::OpenPopup ("Flag Point");
-            m_EditorFlagPointMode.m_AskFlagPoint = false;
-        }
-
-        if (ImGui::BeginPopupModal ("Flag Point", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            ImGui::Text ("Flag Point name:");
-
-            if (ImGui::IsRootWindowOrAnyChildFocused () && !ImGui::IsAnyItemActive () && !ImGui::IsMouseClicked (0))
-            {
-                ImGui::SetKeyboardFocusHere (0);
-            }
-
-            if (ImGui::InputText ("##flagPoint",
-                                  m_EditorFlagPointMode.m_FlagPointName,
-                                  sizeof (m_EditorFlagPointMode.m_FlagPointName),
-                                  ImGuiInputTextFlags_EnterReturnsTrue))
-            {
-                m_CursorMode = CursorMode::EditFlagPointsMode;
-                ImGui::CloseCurrentPopup ();
-            }
-            ImGui::Separator ();
-
-            if (ImGui::Button ("OK", ImVec2 (120, 0)))
-            {
-                m_CursorMode = CursorMode::EditFlagPointsMode;
-                ImGui::CloseCurrentPopup ();
-            }
-
-            ImGui::SameLine ();
-
-            if (ImGui::Button ("Cancel", ImVec2 (120, 0)))
-            {
-                memset (m_EditorFlagPointMode.m_FlagPointName, 0, sizeof (m_EditorFlagPointMode.m_FlagPointName));
-                m_CursorMode = CursorMode::TileSelectMode;
-                ImGui::CloseCurrentPopup ();
-            }
-
-            ImGui::EndPopup ();
-        }
-
-        if (ImGui::Button ("TRIGGER AREA", buttonSize))
-        {
-            memset (m_EditorTriggerAreaMode.m_TriggerAreaName, 0, sizeof (m_EditorFlagPointMode.m_FlagPointName));
-            ImGui::OpenPopup ("Trigger Area");
-        }
-
-        if (ImGui::BeginPopupModal ("Trigger Area", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            ImGui::Text ("Trigger Area name:");
-
-            if (ImGui::IsRootWindowOrAnyChildFocused () && !ImGui::IsAnyItemActive () && !ImGui::IsMouseClicked (0))
-            {
-                ImGui::SetKeyboardFocusHere (0);
-            }
-
-            if (ImGui::InputText ("##triggerArea",
-                                  m_EditorTriggerAreaMode.m_TriggerAreaName,
-                                  sizeof (m_EditorTriggerAreaMode.m_TriggerAreaName),
-                                  ImGuiInputTextFlags_EnterReturnsTrue))
-            {
-                m_CursorMode = CursorMode::EditTriggerAreaMode;
-                m_EditorTriggerAreaMode.NewTriggerArea ();
-                ImGui::CloseCurrentPopup ();
-            }
-            ImGui::Separator ();
-
-            if (ImGui::Button ("OK", ImVec2 (120, 0)))
-            {
-                m_CursorMode = CursorMode::EditTriggerAreaMode;
-                m_EditorTriggerAreaMode.NewTriggerArea ();
-                ImGui::CloseCurrentPopup ();
-            }
-
-            ImGui::SameLine ();
-
-            if (ImGui::Button ("Cancel", ImVec2 (120, 0)))
-            {
-                memset (m_EditorTriggerAreaMode.m_TriggerAreaName, 0, sizeof (m_EditorTriggerAreaMode.m_TriggerAreaName));
-                m_CursorMode = CursorMode::TileSelectMode;
-                ImGui::CloseCurrentPopup ();
-            }
-
-            ImGui::EndPopup ();
-        }
-
-        ImGui::End ();
+        m_EditorPhysMode.m_PhysPoly = nullptr;
+        m_EditorPhysMode.m_PhysPoint = nullptr;
+        m_EditorTileMode.m_SelectedTile->PhysPoints.push_back ({});
+        m_EditorPhysMode.m_PhysPoly = &m_EditorTileMode.m_SelectedTile->PhysPoints[m_EditorTileMode.m_SelectedTile->PhysPoints.size () - 1];
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::DrawPhysicsSection ()
-    {
-        int winSize = 140.0f;
-        int xOffset = 5.0f;
-
-        ImGui::SetNextWindowPos (ImVec2 (xOffset, 300), ImGuiCond_FirstUseEver);
-        ImGui::Begin ("Physics",
-                      &openWindowSection,
-                      ImVec2 (winSize, 60.f),
-                      0.0f,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-
-        if (m_EditorTileMode.m_SelectedTile)
-        {
-            if (ImGui::Button (m_CursorMode != CursorMode::EditPhysBodyMode ? "TILE MODE" : "PHYS MODE", buttonSize))
-            {
-                if (m_CursorMode != CursorMode::EditPhysBodyMode)
-                {
-                    m_CursorMode = CursorMode::EditPhysBodyMode;
-                }
-                else
-                {
-                    m_CursorMode = CursorMode::TileSelectMode;
-                }
-            }
-
-            if (m_CursorMode == CursorMode::EditPhysBodyMode)
-            {
-                if (ImGui::Button ("NEW POLY", buttonSize))
-                {
-                    m_EditorPhysMode.m_PhysPoly = nullptr;
-                    m_EditorPhysMode.m_PhysPoint = nullptr;
-                    m_EditorTileMode.m_SelectedTile->PhysPoints.push_back ({});
-                    m_EditorPhysMode.m_PhysPoly =
-                      &m_EditorTileMode.m_SelectedTile->PhysPoints[m_EditorTileMode.m_SelectedTile->PhysPoints.size () - 1];
-                }
-            }
-        }
-
-        ImGui::End ();
-    }
+    void Editor::OnSpeech () { m_SpeechWindow->Show (); }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool openSpeechSection = false;
-
-    void Editor::DrawSpeechSection ()
+    void Editor::OnReloadScript ()
     {
-        int winSize = 140.0f;
-        int xOffset = 5.0f;
-
-        ImGui::SetNextWindowPos (ImVec2 (xOffset, 360), ImGuiCond_FirstUseEver);
-        ImGui::Begin ("SpeechMenu",
-                      &openWindowSection,
-                      ImVec2 (winSize, 40.f),
-                      0.0f,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-        if (ImGui::Button ("SPEECH", buttonSize))
+        if (scriptsBox->GetSelectedRow ())
         {
-            openSpeechSection = !openSpeechSection;
-        }
+            std::vector<ScriptMetaData>& scripts = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetScripts ();
+            std::string name = scripts[scriptsBox->GetSelectedRowIndex ()].Name;
 
-        //            window_flags |= ImGuiWindowFlags_NoScrollbar;
-        //            window_flags |= ImGuiWindowFlags_NoCollapse;
-        //        ImGuiStyle& style = ImGui::GetStyle ();
-        //        style.Colors[ImGuiCol_WindowBg] = ImVec4 (0.09f, 0.09f, 0.15f, 1.00f);
-
-        if (openSpeechSection)
-        {
-            const Point windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-            ImGui::SetNextWindowPos (ImVec2 (0, 0), ImGuiCond_FirstUseEver);
-            ImGui::Begin ("Speech Editor",
-                          &openSpeechSection,
-                          ImVec2 (windowSize.Width, windowSize.Height),
-                          0.7,
-                          ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
-
-            ImGui::Columns (2, "columns", true); // 3-ways, no border
-
-            ImGui::Text ("SPEECH LIST");
-
-            if (ImGui::TreeNode ("ROOT"))
-            {
-                for (int i = 0; i < 5; i++)
-                    if (ImGui::TreeNode ((void*)(intptr_t)i, "Child %d", i))
-                    {
-                        ImGui::Text ("blah blah");
-                        ImGui::SameLine ();
-                        if (ImGui::SmallButton ("print"))
-                            printf ("Child %d pressed", i);
-                        ImGui::TreePop ();
-                    }
-
-                ImGui::TreePop ();
-            }
-
-            ImGui::NextColumn ();
-
-            if (ImGui::Button ("ADD", ImVec2 (60, 0)))
-            {
-                ImGui::OpenPopup ("Add Speech");
-            }
-            ImGui::SameLine ();
-            if (ImGui::Button ("REMOVE", ImVec2 (60, 0)))
-            {
-                ImGui::OpenPopup ("Remove Speech");
-            }
-
-            if (ImGui::Button ("CLOSE", ImVec2 (400, 0)))
-            {
-                openSpeechSection = false;
-            }
-
-            if (ImGui::BeginPopupModal ("Add Speech", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-            {
-                ImGui::Text ("ID:");
-                ImGui::Text ("Text:");
-                ImGui::Separator ();
-
-                ImGui::SetKeyboardFocusHere (0);
-                if (ImGui::Button ("OK", ImVec2 (100, 0)))
-                {
-                    ImGui::CloseCurrentPopup ();
-                }
-
-                ImGui::EndPopup ();
-            }
-
-            if (ImGui::BeginPopupModal ("Remove Speech", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-            {
-                ImGui::Text ("\t\tAre you sure to remove\n\t\t\t<SPEECH ID> ???\n\n");
-                ImGui::Separator ();
-
-                if (ImGui::Button ("Yes", ImVec2 (120, 0)))
-                {
-                    ImGui::CloseCurrentPopup ();
-                }
-
-                ImGui::SameLine ();
-
-                if (ImGui::Button ("No", ImVec2 (120, 0)))
-                {
-                    ImGui::CloseCurrentPopup ();
-                }
-
-                ImGui::EndPopup ();
-            }
-
-            ImGui::End ();
-        }
-
-        ImGui::End ();
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Editor::DrawGamePlaySection ()
-    {
-        int winSize = 140.0f;
-        int xOffset = 5.0f;
-
-        ImGui::SetNextWindowPos (ImVec2 (xOffset, 400), ImGuiCond_FirstUseEver);
-        ImGui::Begin ("GameMenu",
-                      &openWindowSection,
-                      ImVec2 (winSize, 40.f),
-                      0.0f,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-        if (ImGui::Button ("PLAY", buttonSize))
-        {
-            MenuItemPlay ();
-        }
-
-        ImGui::End ();
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Editor::DrawInfoSection ()
-    {
-        Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-        Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-
-        const Point windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-        int winSize = 140.0f;
-        int xOffset = windowSize.Width - winSize - 5.0f;
-
-        ImGui::SetNextWindowPos (ImVec2 (xOffset, 20.0f), ImGuiCond_Always);
-        ImGui::Begin ("Info",
-                      &openWindowSection,
-                      ImVec2 (winSize, 220.f),
-                      0.0f,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-        ImGui::SetWindowFontScale (1.2);
-
-        ImGui::Text (" AVG: %.2f ms", 1000.0f / ImGui::GetIO ().Framerate);
-        ImGui::Text (" FPS: %.1f", ImGui::GetIO ().Framerate);
-
-        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   X: " + ToString (translate.X * (1 / scale.X))).c_str ());
-        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   Y: " + ToString (translate.Y * (1 / scale.Y))).c_str ());
-        ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-                            std::string ("   W: " + ToString (m_EditorTileMode.m_SelectedAtlasRegion.Bounds.GetSize ().Width)).c_str ());
-        ImGui::TextColored (ImVec4 (0, 1, 0, 1),
-                            std::string ("   H: " + ToString (m_EditorTileMode.m_SelectedAtlasRegion.Bounds.GetSize ().Height)).c_str ());
-        ImGui::TextColored (
-          ImVec4 (0, 1, 0, 1),
-          std::string ("   A: " + (m_EditorTileMode.m_SelectedTile ? ToString (m_EditorTileMode.m_SelectedTile->Rotation) : "-")).c_str ());
-        ImGui::TextColored (
-          ImVec4 (0, 1, 0, 1),
-          std::string ("ZORD: " + (m_EditorTileMode.m_SelectedTile ? ToString (m_EditorTileMode.m_SelectedTile->ZOrder) : "-")).c_str ());
-        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("   S: " + ToString (scale.X)).c_str ());
-        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("SNAP: " + ToString (m_IsSnapToGrid ? "YES" : "NO")).c_str ());
-        ImGui::TextColored (ImVec4 (0, 1, 0, 1), std::string ("GRID: " + ToString (m_BaseGridSize)).c_str ());
-
-        ImGui::End ();
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Editor::DrawScriptsSection ()
-    {
-        const Point windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-        int winSize = 150.0f;
-        int xOffset = windowSize.Width - winSize - 2.0f;
-
-        ImGui::SetNextWindowPos (ImVec2 (xOffset, 230.0f), ImGuiCond_Always);
-        ImGui::Begin ("ScriptsBox",
-                      &openWindowSection,
-                      ImVec2 (winSize, 230.f),
-                      0.0f,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-        ImGui::PushItemWidth (-1);
-
-        static int scriptsSelectedIndex = 0;
-
-        std::vector<ScriptMetaData>& scripts = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetScripts ();
-        std::vector<const char*> scriptsList;
-
-        for (auto& sc : scripts)
-        {
-            scriptsList.push_back ((std::string ("> ") + sc.Name).c_str ());
-        }
-
-        ImGui::ListBox ("##scripts", &scriptsSelectedIndex, scriptsList.data (), scriptsList.size (), 4);
-
-        if (ImGui::Button ("RELOAD", ImVec2 (winSize - 17, 20)) && !scripts.empty ())
-        {
-            m_MainLoop->GetSceneManager ().GetActiveScene ()->ReloadScript (scripts[scriptsSelectedIndex].Name);
+            m_MainLoop->GetSceneManager ().GetActiveScene ()->ReloadScript (name);
 
             if (strlen (g_ScriptErrorBuffer) != 0)
             {
-                ImGui::OpenPopup ("Script Error");
+                m_InfoWindow->Show (g_ScriptErrorBuffer);
+                memset (g_ScriptErrorBuffer, 0, sizeof (g_ScriptErrorBuffer));
             }
             else
             {
                 std::experimental::optional<ScriptMetaData> metaScript =
-                  m_MainLoop->GetSceneManager ().GetActiveScene ()->GetScriptByName (scripts[scriptsSelectedIndex].Name);
+                  m_MainLoop->GetSceneManager ().GetActiveScene ()->GetScriptByName (name);
 
                 if (metaScript)
                 {
@@ -1221,79 +1124,51 @@ namespace aga
                 }
             }
         }
-
-        if (ImGui::BeginPopupModal ("Script Error", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            ImGui::TextWrapped (g_ScriptErrorBuffer);
-            ImGui::Separator ();
-
-            ImGui::SetKeyboardFocusHere (0);
-            if (ImGui::Button ("OK", ImVec2 (400, 0)))
-            {
-                ImGui::CloseCurrentPopup ();
-
-                memset (g_ScriptErrorBuffer, 0, sizeof (g_ScriptErrorBuffer));
-            }
-
-            ImGui::EndPopup ();
-        }
-
-        ImGui::PopItemWidth ();
-        ImGui::End ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void Editor::RenderUI ()
     {
-        ImGui_ImplA5_NewFrame ();
+        Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
+        Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
 
-        if (ImGui::BeginMainMenuBar ())
-        {
-            if (ImGui::BeginMenu ("File"))
-            {
-                ImGui::EndMenu ();
-            }
-            if (ImGui::BeginMenu ("Edit"))
-            {
-                if (ImGui::MenuItem ("Undo", "CTRL+Z"))
-                {
-                }
-                if (ImGui::MenuItem ("Redo", "CTRL+Y", false, false))
-                {
-                } // Disabled item
-                ImGui::Separator ();
-                if (ImGui::MenuItem ("Cut", "CTRL+X"))
-                {
-                }
-                if (ImGui::MenuItem ("Copy", "CTRL+C"))
-                {
-                }
-                if (ImGui::MenuItem ("Paste", "CTRL+V"))
-                {
-                }
-                ImGui::EndMenu ();
-            }
-            ImGui::EndMainMenuBar ();
-        }
+        avgFPSLabel->SetText (Gwk::Utility::Format ("    AVG: %.2f ms", 1000.0f / m_MainLoop->GetScreen ()->GetFPS ()));
+        avgFPSLabel->SizeToContents ();
 
-        DrawFileSection ();
-        DrawToolBarSection ();
-        DrawPhysicsSection ();
-        DrawSpeechSection ();
-        DrawGamePlaySection ();
+        fpsLabel->SetText (Gwk::Utility::Format ("    FPS: %.1f", m_MainLoop->GetScreen ()->GetFPS ()));
+        fpsLabel->SizeToContents ();
 
-        DrawInfoSection ();
-        DrawScriptsSection ();
+        xPosLabel->SetText (std::string ("        X: " + ToString (translate.X * (1 / scale.X))));
+        xPosLabel->SizeToContents ();
 
-        if (openTest)
-        {
-            static bool openTestWindow = false;
-            ImGui::SetNextWindowPos (ImVec2 (5, 5), ImGuiCond_FirstUseEver);
-            ImGui::ShowTestWindow (&openTestWindow);
-        }
+        yPosLabel->SetText (std::string ("        Y: " + ToString (translate.Y * (1 / scale.Y))));
+        yPosLabel->SizeToContents ();
 
-        ImGui::Render ();
+        widthLabel->SetText (std::string ("       W: " + ToString (m_EditorTileMode.m_SelectedAtlasRegion.Bounds.GetSize ().Width)));
+        widthLabel->SizeToContents ();
+
+        heightLabel->SetText (std::string ("        H: " + ToString (m_EditorTileMode.m_SelectedAtlasRegion.Bounds.GetSize ().Height)));
+        heightLabel->SizeToContents ();
+
+        angleLabel->SetText (
+          std::string ("        A: " + (m_EditorTileMode.m_SelectedTile ? ToString (m_EditorTileMode.m_SelectedTile->Rotation) : "-")));
+        angleLabel->SizeToContents ();
+
+        zOrderLabel->SetText (
+          std::string ("ZORD: " + (m_EditorTileMode.m_SelectedTile ? ToString (m_EditorTileMode.m_SelectedTile->ZOrder) : "-")));
+        zOrderLabel->SizeToContents ();
+
+        scaleLabel->SetText (std::string ("         S: " + ToString (scale.X)));
+        scaleLabel->SizeToContents ();
+
+        snapLabel->SetText (std::string ("SNAP: " + ToString (m_IsSnapToGrid ? "YES" : "NO")));
+        snapLabel->SizeToContents ();
+
+        gridLabel->SetText (std::string (" GRID: " + ToString (m_BaseGridSize)));
+        gridLabel->SizeToContents ();
+
+        mainCanvas->RenderCanvas ();
     }
 
     //--------------------------------------------------------------------------------------------------
