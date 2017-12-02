@@ -20,7 +20,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorSpeechMode::AddOrUpdateSpeech ()
+    bool EditorSpeechMode::AddOrUpdateSpeech ()
     {
         if (strlen (m_Speech.Name.c_str ()) > 0)
         {
@@ -30,7 +30,12 @@ namespace aga
             }
 
             m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->AddSpeech (m_Speech.Name, m_Speech);
+            m_Editor->m_EditorSpeechMode.Clear ();
+
+            return true;
         }
+
+        return false;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -44,14 +49,9 @@ namespace aga
 
     void EditorSpeechMode::Clear ()
     {
-        std::string shortS (50, 0);
-        std::string longS (1000, 0);
-        m_Speech.Name = shortS;
+        m_Speech.Name = "";
         m_Speech.Text.clear ();
         m_Speech.Outcomes.clear ();
-
-        m_Speech.Text.insert (std::make_pair (LANG_EN, longS));
-        m_Speech.Text.insert (std::make_pair (LANG_PL, longS));
     }
 
     //--------------------------------------------------------------------------------------------------

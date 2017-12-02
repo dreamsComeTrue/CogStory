@@ -35,6 +35,44 @@
             "path": "0_home/0_0_home.script"
         }
     ],
+    "speeches": [
+        {
+            "name": "CC",
+            "outcomes": [
+                {
+                    "langID": "EN",
+                    "texts": [
+                        {
+                            "data": "a",
+                            "name": "1"
+                        },
+                        {
+                            "data": "b",
+                            "name": "2"
+                        },
+                        {
+                            "data": "c",
+                            "name": "3"
+                        }
+                    ]
+                },
+                {
+                    "langID": "PL",
+                    "texts": []
+                }
+            ],
+            "texts": [
+                {
+                    "data": "abcd",
+                    "langID": "EN"
+                },
+                {
+                    "data": "",
+                    "langID": "PL"
+                }
+            ]
+        }
+    ],
     "tiles": [
         {
             "id": "0",

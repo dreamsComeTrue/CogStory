@@ -309,6 +309,54 @@ namespace aga
                 scene->AddTriggerArea (name, poly);
             }
 
+            auto& speeches = j["speeches"];
+
+            for (auto& speech : speeches)
+            {
+                SpeechData speechData;
+                speechData.Name = speech["name"];
+
+                auto& texts = speech["texts"];
+
+                for (auto& text : texts)
+                {
+                    if (text["langID"] == "EN")
+                    {
+                        speechData.Text[LANG_EN] = text["data"];
+                    }
+
+                    if (text["langID"] == "PL")
+                    {
+                        speechData.Text[LANG_PL] = text["data"];
+                    }
+                }
+
+                auto& outcomes = speech["outcomes"];
+
+                for (auto& outcome : outcomes)
+                {
+                    auto& texts = outcome["texts"];
+
+                    for (auto& text : texts)
+                    {
+                        SpeechOutcome out;
+                        out.Name = text["name"];
+                        out.Text = text["data"];
+
+                        if (outcome["langID"] == "EN")
+                        {
+                            speechData.Outcomes[LANG_EN].push_back (out);
+                        }
+                        else if (outcome["langID"] == "PL")
+                        {
+                            speechData.Outcomes[LANG_PL].push_back (out);
+                        }
+                    }
+                }
+
+                scene->AddSpeech (speechData.Name, speechData);
+            }
+
             return scene;
         }
         catch (const std::exception&)
@@ -419,6 +467,65 @@ namespace aga
                 triggerObj["poly"] = VectorPointsToString (it->second.Points);
 
                 j["trigger_areas"].push_back (triggerObj);
+            }
+
+            j["speeches"] = json::array ({});
+
+            for (std::map<std::string, SpeechData>::iterator it = scene->m_Speeches.begin (); it != scene->m_Speeches.end (); ++it)
+            {
+                json speechObj = json::object ({});
+
+                speechObj["name"] = it->first;
+                speechObj["texts"] = json::array ({});
+
+                json textObj = json::object ({});
+                textObj["langID"] = "EN";
+                textObj["data"] = it->second.Text[LANG_EN];
+
+                speechObj["texts"].push_back (textObj);
+
+                textObj["langID"] = "PL";
+                textObj["data"] = it->second.Text[LANG_PL];
+
+                speechObj["texts"].push_back (textObj);
+
+                speechObj["outcomes"] = json::array ({});
+
+                //  EN - Outcome
+                json outcomeObj = json::object ({});
+                outcomeObj["langID"] = "EN";
+
+                outcomeObj["texts"] = json::array ({});
+
+                for (int i = 0; i < it->second.Outcomes[LANG_EN].size (); ++i)
+                {
+                    json outComeTextObj = json::object ({});
+                    outComeTextObj["name"] = it->second.Outcomes[LANG_EN][i].Name;
+                    outComeTextObj["data"] = it->second.Outcomes[LANG_EN][i].Text;
+
+                    outcomeObj["texts"].push_back (outComeTextObj);
+                }
+
+                speechObj["outcomes"].push_back (outcomeObj);
+
+                //  PL - Outcome
+                outcomeObj = json::object ({});
+                outcomeObj["langID"] = "PL";
+
+                outcomeObj["texts"] = json::array ({});
+
+                for (int i = 0; i < it->second.Outcomes[LANG_PL].size (); ++i)
+                {
+                    json outComeTextObj = json::object ({});
+                    outComeTextObj["name"] = it->second.Outcomes[LANG_PL][i].Name;
+                    outComeTextObj["data"] = it->second.Outcomes[LANG_PL][i].Text;
+
+                    outcomeObj["texts"].push_back (outComeTextObj);
+                }
+
+                speechObj["outcomes"].push_back (outcomeObj);
+
+                j["speeches"].push_back (speechObj);
             }
 
             // write prettified JSON to another file

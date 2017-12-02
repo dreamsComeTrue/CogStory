@@ -453,6 +453,10 @@ namespace aga
         void UpdateOutcomes ();
         void UpdateSpeechesTree ();
 
+        void OnOutcomeIDTextChanged (Gwk::Controls::Base* control);
+        void OnOutcomeDataTextChanged (Gwk::Controls::Base* control);
+        void OnRemoveOutcome (Gwk::Controls::Base* control);
+
     private:
         Editor* m_Editor;
 
@@ -463,6 +467,7 @@ namespace aga
         Gwk::Controls::TextBox* m_NameTextBox;
         Gwk::Controls::ComboBox* m_LanguageCombo;
         Gwk::Controls::TextBoxMultiline* m_TextData;
+        Gwk::Controls::ScrollControl* m_OutcomesContainer;
     };
 
     struct InfoWindow : public Gwk::Event::Handler
@@ -497,7 +502,7 @@ namespace aga
             m_SceneWindow->MakeModal (true);
         }
 
-        void OnAccept (Gwk::Controls::Base*) { m_SceneWindow->CloseButtonPressed (); }
+        void OnAccept () { m_SceneWindow->CloseButtonPressed (); }
 
     private:
         Editor* m_Editor;
