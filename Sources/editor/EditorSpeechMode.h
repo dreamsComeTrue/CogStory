@@ -20,7 +20,7 @@ namespace aga
         EditorSpeechMode (Editor* editor);
         virtual ~EditorSpeechMode ();
 
-        bool AddOrUpdateSpeech ();
+        bool AddOrUpdateSpeech (const std::string& oldName);
         void RemoveSpeech (const std::string& name);
         void Clear ();
 

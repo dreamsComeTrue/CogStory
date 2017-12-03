@@ -5,8 +5,6 @@
 #include "MainLoop.h"
 #include "Screen.h"
 
-#include "imgui/imgui.h"
-
 #include "addons/json/json.hpp"
 
 using json = nlohmann::json;
@@ -46,6 +44,7 @@ namespace aga
         nameLabel->SizeToContents ();
 
         m_NameTextBox = new Gwk::Controls::TextBox (m_SceneWindow);
+        m_NameTextBox->SetTextColor (Gwk::Colors::White);
         m_NameTextBox->SetText ("");
         m_NameTextBox->SetWidth (480);
         m_NameTextBox->SetPos (xOffset, nameLabel->Bottom () + 5);
@@ -69,6 +68,7 @@ namespace aga
         textLabel->SizeToContents ();
 
         m_TextData = new Gwk::Controls::TextBoxMultiline (m_SceneWindow);
+        m_TextData->SetTextColor (Gwk::Colors::White);
         m_TextData->SetPos (xOffset, textLabel->Bottom () + 5);
         m_TextData->SetSize (480, 90);
         m_TextData->onTextChanged.Add (this, &SpeechWindow::OnTextChanged);
@@ -77,7 +77,7 @@ namespace aga
         addSpeechButton->SetText ("SAVE");
         addSpeechButton->SetWidth (155);
         addSpeechButton->SetPos (xOffset, m_TextData->Bottom () + 10);
-        addSpeechButton->onPress.Add (this, &SpeechWindow::OnAdd);
+        addSpeechButton->onPress.Add (this, &SpeechWindow::OnSave);
 
         Gwk::Controls::Button* removeSpeechButton = new Gwk::Controls::Button (m_SceneWindow);
         removeSpeechButton->SetText ("REMOVE");
@@ -102,21 +102,34 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SpeechWindow::OnAdd ()
+    void SpeechWindow::OnSave ()
     {
         if (m_NameTextBox->GetText () != "")
         {
-            bool ret = m_Editor->m_EditorSpeechMode.AddOrUpdateSpeech ();
+            Gwk::Controls::Base::List& childNodes = m_SpeechesTree->GetChildNodes ();
+            std::string oldName = "";
+
+            for (Gwk::Controls::Base* control : childNodes)
+            {
+                Gwk::Controls::TreeNode* node = (Gwk::Controls::TreeNode*)control;
+
+                if (node->IsSelected ())
+                {
+                    oldName = node->GetText ();
+                    break;
+                }
+            }
+
+            bool ret = m_Editor->m_EditorSpeechMode.AddOrUpdateSpeech (oldName);
 
             if (ret)
             {
-                UpdateSpeechesTree ();
-
                 m_NameTextBox->SetText ("");
                 m_TextData->SetText ("");
                 m_LanguageCombo->SelectItemByName ("EN");
                 m_Editor->m_EditorSpeechMode.Clear ();
 
+                UpdateSpeechesTree ();
                 UpdateOutcomes ();
             }
         }
@@ -157,7 +170,7 @@ namespace aga
                 break;
             }
 
-            childIndex += 3;
+            childIndex += 5;
         }
     }
 
@@ -178,8 +191,70 @@ namespace aga
                 break;
             }
 
-            childIndex += 3;
+            childIndex += 5;
         }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SpeechWindow::OnUpOutcome (Gwk::Controls::Base* control)
+    {
+        std::vector<SpeechOutcome>& outcomes = m_Editor->m_EditorSpeechMode.m_Speech.Outcomes[m_LangIndex];
+
+        int childIndex = 2;
+        for (int i = 0; i < outcomes.size (); ++i)
+        {
+            Gwk::Controls::Base* child = m_OutcomesContainer->GetChild (childIndex);
+
+            if (control == child)
+            {
+                if (i == 0)
+                {
+                    std::iter_swap (outcomes.begin (), outcomes.end () - 1);
+                }
+                else
+                {
+                    std::iter_swap (outcomes.begin () + i, outcomes.begin () + i - 1);
+                }
+
+                break;
+            }
+
+            childIndex += 5;
+        }
+
+        UpdateOutcomes ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SpeechWindow::OnDownOutcome (Gwk::Controls::Base* control)
+    {
+        std::vector<SpeechOutcome>& outcomes = m_Editor->m_EditorSpeechMode.m_Speech.Outcomes[m_LangIndex];
+
+        int childIndex = 3;
+        for (int i = 0; i < outcomes.size (); ++i)
+        {
+            Gwk::Controls::Base* child = m_OutcomesContainer->GetChild (childIndex);
+
+            if (control == child)
+            {
+                if (i == outcomes.size () - 1)
+                {
+                    std::iter_swap (outcomes.begin (), outcomes.end () - 1);
+                }
+                else
+                {
+                    std::iter_swap (outcomes.begin () + i, outcomes.begin () + i + 1);
+                }
+
+                break;
+            }
+
+            childIndex += 5;
+        }
+
+        UpdateOutcomes ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -188,10 +263,9 @@ namespace aga
     {
         std::vector<SpeechOutcome>& outcomes = m_Editor->m_EditorSpeechMode.m_Speech.Outcomes[m_LangIndex];
 
-        int childIndex = -1;
+        int childIndex = 4;
         for (int i = 0; i < outcomes.size (); ++i)
         {
-            childIndex += 3;
             Gwk::Controls::Base* child = m_OutcomesContainer->GetChild (childIndex);
 
             if (control == child)
@@ -199,6 +273,8 @@ namespace aga
                 outcomes.erase (outcomes.begin () + i);
                 break;
             }
+
+            childIndex += 5;
         }
 
         UpdateOutcomes ();
@@ -220,33 +296,43 @@ namespace aga
     {
         m_OutcomesContainer->RemoveAllChildren ();
 
-        for (int i = 0; i < m_OutcomesContainer->Children.size (); ++i)
-        {
-            Gwk::Controls::Base* child = m_OutcomesContainer->GetChild (i);
-            //            SAFE_DELETE (child);
-        }
-
         std::vector<SpeechOutcome>& outcomes = m_Editor->m_EditorSpeechMode.m_Speech.Outcomes[m_LangIndex];
 
         int currentY = 0;
         for (int i = 0; i < outcomes.size (); ++i)
         {
             Gwk::Controls::TextBox* idTextBox = new Gwk::Controls::TextBox (m_OutcomesContainer);
+            idTextBox->SetTextColor (Gwk::Colors::White);
             idTextBox->SetText (outcomes[i].Name);
             idTextBox->SetWidth (65);
             idTextBox->SetPos (0, currentY);
             idTextBox->onTextChanged.Add (this, &SpeechWindow::OnOutcomeIDTextChanged);
 
             Gwk::Controls::TextBox* dataTextBox = new Gwk::Controls::TextBox (m_OutcomesContainer);
+            dataTextBox->SetTextColor (Gwk::Colors::White);
             dataTextBox->SetText (outcomes[i].Text);
-            dataTextBox->SetWidth (305);
-            dataTextBox->SetPos (70, currentY);
+            dataTextBox->SetWidth (255);
+            dataTextBox->SetPos (idTextBox->Right () + 5, currentY);
             dataTextBox->onTextChanged.Add (this, &SpeechWindow::OnOutcomeDataTextChanged);
+
+            Gwk::Controls::Button* upButton = new Gwk::Controls::Button (m_OutcomesContainer);
+            upButton->SetText (" ^");
+            upButton->SetWidth (20);
+            upButton->SetName (ToString (i));
+            upButton->SetPos (dataTextBox->Right () + 5, currentY);
+            upButton->onPress.Add (this, &SpeechWindow::OnUpOutcome);
+
+            Gwk::Controls::Button* downButton = new Gwk::Controls::Button (m_OutcomesContainer);
+            downButton->SetText (" v");
+            downButton->SetWidth (20);
+            downButton->SetName (ToString (i));
+            downButton->SetPos (upButton->Right () + 5, currentY);
+            downButton->onPress.Add (this, &SpeechWindow::OnDownOutcome);
 
             Gwk::Controls::Button* removeButton = new Gwk::Controls::Button (m_OutcomesContainer);
             removeButton->SetText ("REMOVE");
             removeButton->SetName (ToString (i));
-            removeButton->SetPos (380, currentY);
+            removeButton->SetPos (downButton->Right () + 5, currentY);
             removeButton->onPress.Add (this, &SpeechWindow::OnRemoveOutcome);
 
             currentY += 22;
@@ -374,7 +460,7 @@ namespace aga
 
         guiSkin = new Gwk::Skin::TexturedBase (guiRenderer);
         guiSkin->SetRender (guiRenderer);
-        guiSkin->Init ("DefaultSkin.png");
+        guiSkin->Init ("UISkin.png");
 
         // The fonts work differently in Allegro - it can't use
         // system fonts. So force the skin to use a local one.
@@ -643,7 +729,7 @@ namespace aga
     bool openTest = false;
     bool saveRequested = false;
 
-    void Editor::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
+    void Editor::ProcessEvent (ALLEGRO_EVENT* event, float)
     {
         if (guiInput.ProcessMessage (*event))
         {

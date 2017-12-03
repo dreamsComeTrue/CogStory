@@ -20,16 +20,20 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool EditorSpeechMode::AddOrUpdateSpeech ()
+    bool EditorSpeechMode::AddOrUpdateSpeech (const std::string& oldName)
     {
         if (strlen (m_Speech.Name.c_str ()) > 0)
         {
-            if (m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetSpeech (m_Speech.Name))
+            std::string nameToFind = oldName != "" ? oldName : m_Speech.Name;
+            SpeechData* speech = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetSpeech (nameToFind);
+
+            if (speech)
             {
-                m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->RemoveSpeech (m_Speech.Name);
+                m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->RemoveSpeech (nameToFind);
             }
 
             m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->AddSpeech (m_Speech.Name, m_Speech);
+
             m_Editor->m_EditorSpeechMode.Clear ();
 
             return true;

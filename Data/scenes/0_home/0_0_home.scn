@@ -37,7 +37,43 @@
     ],
     "speeches": [
         {
-            "name": "CC",
+            "name": "GREET_1",
+            "outcomes": [
+                {
+                    "langID": "EN",
+                    "texts": [
+                        {
+                            "data": "a",
+                            "name": "1"
+                        },
+                        {
+                            "data": "b",
+                            "name": "2"
+                        },
+                        {
+                            "data": "c",
+                            "name": "3"
+                        }
+                    ]
+                },
+                {
+                    "langID": "PL",
+                    "texts": []
+                }
+            ],
+            "texts": [
+                {
+                    "data": "Hey, what  's  up",
+                    "langID": "EN"
+                },
+                {
+                    "data": "",
+                    "langID": "PL"
+                }
+            ]
+        },
+        {
+            "name": "Hello2",
             "outcomes": [
                 {
                     "langID": "EN",

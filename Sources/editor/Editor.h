@@ -161,6 +161,7 @@ namespace aga
 
             Gwk::Controls::TextBox* pathTextBox = new Gwk::Controls::TextBox (m_SceneWindow);
             pathTextBox->SetText (m_FileName);
+            pathTextBox->SetTextColor (Gwk::Colors::White);
             pathTextBox->SetWidth (300);
             pathTextBox->SetPos (20, 30);
             pathTextBox->onTextChanged.Add (this, &OpenSceneWindow::OnEdit);
@@ -229,6 +230,7 @@ namespace aga
 
             Gwk::Controls::TextBox* pathTextBox = new Gwk::Controls::TextBox (m_SceneWindow);
             pathTextBox->SetText (m_FileName);
+            pathTextBox->SetTextColor (Gwk::Colors::White);
             pathTextBox->SetWidth (300);
             pathTextBox->SetPos (20, 30);
             pathTextBox->onTextChanged.Add (this, &SaveSceneWindow::OnEdit);
@@ -294,6 +296,7 @@ namespace aga
 
             Gwk::Controls::TextBox* pathTextBox = new Gwk::Controls::TextBox (m_SceneWindow);
             pathTextBox->SetText (m_Editor->m_EditorFlagPointMode.m_FlagPointName);
+            pathTextBox->SetTextColor (Gwk::Colors::White);
             pathTextBox->SetWidth (350);
             pathTextBox->SetPos (20, 30);
             pathTextBox->onTextChanged.Add (this, &FlagPointWindow::OnEdit);
@@ -360,6 +363,7 @@ namespace aga
 
             Gwk::Controls::TextBox* pathTextBox = new Gwk::Controls::TextBox (m_SceneWindow);
             pathTextBox->SetText (m_Editor->m_EditorTriggerAreaMode.m_TriggerAreaName);
+            pathTextBox->SetTextColor (Gwk::Colors::White);
             pathTextBox->SetWidth (350);
             pathTextBox->SetPos (20, 30);
             pathTextBox->onTextChanged.Add (this, &TriggerAreaWindow::OnEdit);
@@ -420,7 +424,7 @@ namespace aga
             m_SceneWindow->MakeModal (true);
         }
 
-        void OnAdd ();
+        void OnSave ();
         void OnRemove ();
         void OnOutcome ();
 
@@ -455,6 +459,8 @@ namespace aga
 
         void OnOutcomeIDTextChanged (Gwk::Controls::Base* control);
         void OnOutcomeDataTextChanged (Gwk::Controls::Base* control);
+        void OnUpOutcome (Gwk::Controls::Base* control);
+        void OnDownOutcome (Gwk::Controls::Base* control);
         void OnRemoveOutcome (Gwk::Controls::Base* control);
 
     private:

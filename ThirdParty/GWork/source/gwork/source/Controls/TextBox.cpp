@@ -313,6 +313,12 @@ bool TextBox::OnKeyEnd(bool /*bDown*/)
     return true;
 }
 
+bool TextBox::OnKeySpace (bool bDown)
+{
+    //  Must be overriden!!!
+    return true;
+}
+
 void TextBox::SetCursorPos(int i)
 {
     if (m_cursorPos == i)
