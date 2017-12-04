@@ -59,6 +59,28 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Actor::ChooseAnimation (float angleDeg)
+    {
+        if (angleDeg > 225 && angleDeg < 315)
+        {
+            SetCurrentAnimation (ANIM_MOVE_UP_NAME);
+        }
+        else if (angleDeg >= 135 && angleDeg <= 225)
+        {
+            SetCurrentAnimation (ANIM_MOVE_LEFT_NAME);
+        }
+        else if (angleDeg > 45 && angleDeg < 135)
+        {
+            SetCurrentAnimation (ANIM_IDLE_NAME);
+        }
+        else if (angleDeg <= 45 || angleDeg >= 315)
+        {
+            SetCurrentAnimation (ANIM_MOVE_RIGHT_NAME);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     bool Actor::Update (float deltaTime)
     {
         m_Animation.Update (deltaTime);
@@ -86,6 +108,8 @@ namespace aga
     {
         m_OldPosition = Bounds.GetPos ();
         Bounds.SetPos (Bounds.GetPos () + Point (dx, dy));
+
+        ChooseAnimation (ToPositiveAngle (RadiansToRadians (std::atan2 (dy, dx))));
 
         if (MoveCallback != nullptr)
         {

@@ -459,6 +459,7 @@ namespace aga
 
         void OnOutcomeIDTextChanged (Gwk::Controls::Base* control);
         void OnOutcomeDataTextChanged (Gwk::Controls::Base* control);
+        void OnOutcomeActionChanged (Gwk::Controls::Base* control);
         void OnUpOutcome (Gwk::Controls::Base* control);
         void OnDownOutcome (Gwk::Controls::Base* control);
         void OnRemoveOutcome (Gwk::Controls::Base* control);

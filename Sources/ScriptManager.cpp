@@ -171,7 +171,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    static void Log (const std::string& data) { printf ("%s\n", data); }
+    static void Log (const std::string& data) { printf ("%s\n", data.c_str ()); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -365,16 +365,24 @@ namespace aga
         //            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
         //        assert (r >= 0);
 
-        r = m_ScriptEngine->RegisterFuncdef ("bool TweenFuncPoint (float, Point)");
+        r = m_ScriptEngine->RegisterFuncdef ("bool TweenFuncPoint (int id, float progress, Point value)");
         assert (r >= 0);
         r = m_ScriptEngine->RegisterFuncdef ("void TweenFuncPointFinish (int)");
         assert (r >= 0);
 
         r = m_ScriptEngine->RegisterGlobalFunction (
-          "void AddTween (int, Point, Point, int, TweenFuncPoint @tf, TweenFuncPointFinish @te)",
-          asMETHODPR (TweenManager, AddTween, (int, Point, Point, int, asIScriptFunction*, asIScriptFunction*), void),
-          asCALL_THISCALL_ASGLOBAL,
-          &m_MainLoop->GetTweenManager ());
+                "void AddTween (int, Point, Point, int, TweenFuncPoint @tf, TweenFuncPointFinish @te)",
+                asMETHODPR (TweenManager, AddTween, (int, Point, Point, int, asIScriptFunction*, asIScriptFunction*), void),
+                asCALL_THISCALL_ASGLOBAL,
+                &m_MainLoop->GetTweenManager ());
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction (
+                "void PauseTween (int)",
+                asMETHOD (TweenManager, PauseTween), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction (
+                "void ResumeTween (int)",
+                asMETHOD (TweenManager, ResumeTween), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
         assert (r >= 0);
     }
 

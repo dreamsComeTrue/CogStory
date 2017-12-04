@@ -28,75 +28,87 @@ namespace aga
         m_SceneWindow = new Gwk::Controls::WindowControl (canvas);
         m_SceneWindow->SetTitle ("Speech Editor");
         m_SceneWindow->SetSize (canvas->Width () - 150, canvas->Height () - 80);
-        m_SceneWindow->DisableResizing ();
         m_SceneWindow->CloseButtonPressed ();
 
-        m_SpeechesTree = new Gwk::Controls::TreeControl (m_SceneWindow);
-        m_SpeechesTree->SetBounds (10, 10, 300, m_SceneWindow->Height () - 55);
+        Gwk::Controls::DockBase* dock = new Gwk::Controls::DockBase (m_SceneWindow);
+        dock->Dock (Gwk::Position::Fill);
+
+        m_SpeechesTree = new Gwk::Controls::TreeControl (dock);
+        m_SpeechesTree->SetBounds (10, 10, 300, dock->Height () - 55);
         m_SpeechesTree->ExpandAll ();
+        m_SpeechesTree->Dock (Gwk::Position::Fill);
         m_SpeechesTree->onSelect.Add (this, &SpeechWindow::OnSpeechSelect);
 
-        int xOffset = 340;
+        dock->GetLeft ()->GetTabControl ()->AddPage ("Speeches", m_SpeechesTree);
+        m_SpeechesTree->SetMargin (Gwk::Margin ());
+        dock->GetLeft ()->GetTabControl ()->GetTab (0)->Hide ();
 
-        Gwk::Controls::Label* nameLabel = new Gwk::Controls::Label (m_SceneWindow);
+        int xOffset = 10;
+
+        Gwk::Controls::Base* center = new Gwk::Controls::Base (dock);
+        center->Dock (Gwk::Position::Fill);
+
+        Gwk::Controls::Label* nameLabel = new Gwk::Controls::Label (center);
         nameLabel->SetPos (xOffset, 10);
         nameLabel->SetText ("Name:");
         nameLabel->SizeToContents ();
 
-        m_NameTextBox = new Gwk::Controls::TextBox (m_SceneWindow);
+        int controlWidth = 610;
+
+        m_NameTextBox = new Gwk::Controls::TextBox (center);
         m_NameTextBox->SetTextColor (Gwk::Colors::White);
         m_NameTextBox->SetText ("");
-        m_NameTextBox->SetWidth (480);
+        m_NameTextBox->SetWidth (controlWidth);
         m_NameTextBox->SetPos (xOffset, nameLabel->Bottom () + 5);
         m_NameTextBox->onTextChanged.Add (this, &SpeechWindow::OnNameEdit);
 
-        Gwk::Controls::Label* langLabel = new Gwk::Controls::Label (m_SceneWindow);
+        Gwk::Controls::Label* langLabel = new Gwk::Controls::Label (center);
         langLabel->SetPos (xOffset, m_NameTextBox->Bottom () + 5);
         langLabel->SetText ("Lang:");
         langLabel->SizeToContents ();
 
-        m_LanguageCombo = new Gwk::Controls::ComboBox (m_SceneWindow);
+        m_LanguageCombo = new Gwk::Controls::ComboBox (center);
         m_LanguageCombo->SetPos (xOffset, langLabel->Bottom () + 5);
-        m_LanguageCombo->SetWidth (480);
+        m_LanguageCombo->SetWidth (controlWidth);
         m_LanguageCombo->AddItem ("EN", "EN");
         m_LanguageCombo->AddItem ("PL", "PL");
         m_LanguageCombo->onSelection.Add (this, &SpeechWindow::OnLangSelected);
 
-        Gwk::Controls::Label* textLabel = new Gwk::Controls::Label (m_SceneWindow);
+        Gwk::Controls::Label* textLabel = new Gwk::Controls::Label (center);
         textLabel->SetPos (xOffset, m_LanguageCombo->Bottom () + 5);
         textLabel->SetText ("Text:");
         textLabel->SizeToContents ();
 
-        m_TextData = new Gwk::Controls::TextBoxMultiline (m_SceneWindow);
+        m_TextData = new Gwk::Controls::TextBoxMultiline (center);
         m_TextData->SetTextColor (Gwk::Colors::White);
         m_TextData->SetPos (xOffset, textLabel->Bottom () + 5);
-        m_TextData->SetSize (480, 90);
+        m_TextData->SetSize (controlWidth, 90);
         m_TextData->onTextChanged.Add (this, &SpeechWindow::OnTextChanged);
 
-        Gwk::Controls::Button* addSpeechButton = new Gwk::Controls::Button (m_SceneWindow);
+        Gwk::Controls::Button* addSpeechButton = new Gwk::Controls::Button (center);
         addSpeechButton->SetText ("SAVE");
         addSpeechButton->SetWidth (155);
         addSpeechButton->SetPos (xOffset, m_TextData->Bottom () + 10);
         addSpeechButton->onPress.Add (this, &SpeechWindow::OnSave);
 
-        Gwk::Controls::Button* removeSpeechButton = new Gwk::Controls::Button (m_SceneWindow);
+        Gwk::Controls::Button* removeSpeechButton = new Gwk::Controls::Button (center);
         removeSpeechButton->SetText ("REMOVE");
         removeSpeechButton->SetWidth (155);
         removeSpeechButton->SetPos (addSpeechButton->Right () + 5, m_TextData->Bottom () + 10);
         removeSpeechButton->onPress.Add (this, &SpeechWindow::OnRemove);
 
-        Gwk::Controls::Button* outcomeButton = new Gwk::Controls::Button (m_SceneWindow);
+        Gwk::Controls::Button* outcomeButton = new Gwk::Controls::Button (center);
         outcomeButton->SetText ("OUTCOME");
         outcomeButton->SetWidth (160);
         outcomeButton->SetPos (removeSpeechButton->Right () + 5, m_TextData->Bottom () + 10);
         outcomeButton->onPress.Add (this, &SpeechWindow::OnOutcome);
 
-        m_OutcomesContainer = new Gwk::Controls::ScrollControl (m_SceneWindow);
-        m_OutcomesContainer->SetBounds (xOffset, outcomeButton->Bottom () + 10, 495, 190);
+        m_OutcomesContainer = new Gwk::Controls::ScrollControl (center);
+        m_OutcomesContainer->SetBounds (xOffset, outcomeButton->Bottom () + 10, 610, 190);
 
-        Gwk::Controls::Button* okButton = new Gwk::Controls::Button (m_SceneWindow);
+        Gwk::Controls::Button* okButton = new Gwk::Controls::Button (center);
         okButton->SetText ("ACCEPT");
-        okButton->SetPos (m_SceneWindow->Width () - 125, m_SceneWindow->Height () - 65);
+        okButton->SetPos (m_SceneWindow->Width () - 330, m_SceneWindow->Height () - 65);
         okButton->onPress.Add (this, &SpeechWindow::OnAccept);
     }
 
@@ -170,7 +182,7 @@ namespace aga
                 break;
             }
 
-            childIndex += 5;
+            childIndex += 6;
         }
     }
 
@@ -191,8 +203,33 @@ namespace aga
                 break;
             }
 
-            childIndex += 5;
+            childIndex += 6;
         }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SpeechWindow::OnOutcomeActionChanged (Gwk::Controls::Base* control)
+    {
+        std::vector<SpeechOutcome>& outcomes = m_Editor->m_EditorSpeechMode.m_Speech.Outcomes[m_LangIndex];
+
+        int childIndex = 2;
+        for (int i = 0; i < outcomes.size (); ++i)
+        {
+            Gwk::Controls::Base* child = m_OutcomesContainer->GetChild (childIndex);
+
+            if (control == child)
+            {
+                Gwk::Controls::ComboBox* actionCombo = (Gwk::Controls::ComboBox*)control;
+
+                outcomes[i].Action = actionCombo->GetSelectedItem ()->GetText ();
+                break;
+            }
+
+            childIndex += 6;
+        }
+
+        UpdateOutcomes ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -201,7 +238,7 @@ namespace aga
     {
         std::vector<SpeechOutcome>& outcomes = m_Editor->m_EditorSpeechMode.m_Speech.Outcomes[m_LangIndex];
 
-        int childIndex = 2;
+        int childIndex = 3;
         for (int i = 0; i < outcomes.size (); ++i)
         {
             Gwk::Controls::Base* child = m_OutcomesContainer->GetChild (childIndex);
@@ -220,7 +257,7 @@ namespace aga
                 break;
             }
 
-            childIndex += 5;
+            childIndex += 6;
         }
 
         UpdateOutcomes ();
@@ -232,7 +269,7 @@ namespace aga
     {
         std::vector<SpeechOutcome>& outcomes = m_Editor->m_EditorSpeechMode.m_Speech.Outcomes[m_LangIndex];
 
-        int childIndex = 3;
+        int childIndex = 4;
         for (int i = 0; i < outcomes.size (); ++i)
         {
             Gwk::Controls::Base* child = m_OutcomesContainer->GetChild (childIndex);
@@ -251,7 +288,7 @@ namespace aga
                 break;
             }
 
-            childIndex += 5;
+            childIndex += 6;
         }
 
         UpdateOutcomes ();
@@ -263,7 +300,7 @@ namespace aga
     {
         std::vector<SpeechOutcome>& outcomes = m_Editor->m_EditorSpeechMode.m_Speech.Outcomes[m_LangIndex];
 
-        int childIndex = 4;
+        int childIndex = 5;
         for (int i = 0; i < outcomes.size (); ++i)
         {
             Gwk::Controls::Base* child = m_OutcomesContainer->GetChild (childIndex);
@@ -274,7 +311,7 @@ namespace aga
                 break;
             }
 
-            childIndex += 5;
+            childIndex += 6;
         }
 
         UpdateOutcomes ();
@@ -298,6 +335,8 @@ namespace aga
 
         std::vector<SpeechOutcome>& outcomes = m_Editor->m_EditorSpeechMode.m_Speech.Outcomes[m_LangIndex];
 
+        std::map<std::string, SpeechData>& speeches = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
+
         int currentY = 0;
         for (int i = 0; i < outcomes.size (); ++i)
         {
@@ -315,11 +354,24 @@ namespace aga
             dataTextBox->SetPos (idTextBox->Right () + 5, currentY);
             dataTextBox->onTextChanged.Add (this, &SpeechWindow::OnOutcomeDataTextChanged);
 
+            Gwk::Controls::ComboBox* actionCombo = new Gwk::Controls::ComboBox (m_OutcomesContainer);
+            actionCombo->SetPos (dataTextBox->Right () + 5, currentY);
+            actionCombo->SetWidth (150);
+            actionCombo->AddItem ("[CLOSE]", "[CLOSE]");
+
+            for (std::map<std::string, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
+            {
+                actionCombo->AddItem ((*it).first, (*it).first);
+            }
+
+            actionCombo->SelectItemByName (outcomes[i].Action, false);
+            actionCombo->onSelection.Add (this, &SpeechWindow::OnOutcomeActionChanged);
+
             Gwk::Controls::Button* upButton = new Gwk::Controls::Button (m_OutcomesContainer);
             upButton->SetText (" ^");
             upButton->SetWidth (20);
             upButton->SetName (ToString (i));
-            upButton->SetPos (dataTextBox->Right () + 5, currentY);
+            upButton->SetPos (actionCombo->Right () + 5, currentY);
             upButton->onPress.Add (this, &SpeechWindow::OnUpOutcome);
 
             Gwk::Controls::Button* downButton = new Gwk::Controls::Button (m_OutcomesContainer);
@@ -331,6 +383,7 @@ namespace aga
 
             Gwk::Controls::Button* removeButton = new Gwk::Controls::Button (m_OutcomesContainer);
             removeButton->SetText ("REMOVE");
+            removeButton->SetWidth (60);
             removeButton->SetName (ToString (i));
             removeButton->SetPos (downButton->Right () + 5, currentY);
             removeButton->onPress.Add (this, &SpeechWindow::OnRemoveOutcome);

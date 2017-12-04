@@ -43,14 +43,17 @@
                     "langID": "EN",
                     "texts": [
                         {
+                            "action": "",
                             "data": "a",
                             "name": "1"
                         },
                         {
+                            "action": "",
                             "data": "b",
                             "name": "2"
                         },
                         {
+                            "action": "GREET_1",
                             "data": "c",
                             "name": "3"
                         }
@@ -79,14 +82,17 @@
                     "langID": "EN",
                     "texts": [
                         {
+                            "action": "Hello2",
                             "data": "a",
                             "name": "1"
                         },
                         {
+                            "action": "GREET_1",
                             "data": "b",
                             "name": "2"
                         },
                         {
+                            "action": "Hello2",
                             "data": "c",
                             "name": "3"
                         }

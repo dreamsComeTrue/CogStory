@@ -36,6 +36,39 @@ namespace aga
 
     bool TweenManager::Update (float deltaTime)
     {
+        CleanupFinishedTweens ();
+
+        for (int i = 0; i < m_Tweens.size (); ++i)
+        {
+            TweenData& tween = m_Tweens[i];
+
+            if (!tween.IsPaused)
+            {
+                if (tween.TweenMask & TWEEN_F)
+                {
+                    if (tween.TweenF.progress () < 1.0f)
+                    {
+                        tween.TweenF.step ((int)(deltaTime * 1000));
+                    }
+                }
+
+                if (tween.TweenMask & TWEEN_FF)
+                {
+                    if (tween.TweenFF.progress () < 1.0f)
+                    {
+                        tween.TweenFF.step ((int)(deltaTime * 1000));
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+    
+    void TweenManager::CleanupFinishedTweens ()
+    {
         for (int i = 0; i < m_Tweens.size (); ++i)
         {
             TweenData& tween = m_Tweens[i];
@@ -84,33 +117,11 @@ namespace aga
                 }
             }
         }
-
-        for (int i = 0; i < m_Tweens.size (); ++i)
-        {
-            TweenData& tween = m_Tweens[i];
-
-            if (tween.TweenMask & TWEEN_F)
-            {
-                if (tween.TweenF.progress () < 1.0f)
-                {
-                    tween.TweenF.step ((int)(deltaTime * 1000));
-                }
-            }
-
-            if (tween.TweenMask & TWEEN_FF)
-            {
-                if (tween.TweenFF.progress () < 1.0f)
-                {
-                    tween.TweenFF.step ((int)(deltaTime * 1000));
-                }
-            }
-        }
-
-        return true;
+        
     }
 
     //--------------------------------------------------------------------------------------------------
-
+    
     MainLoop* TweenManager::GetMainLoop () { return m_MainLoop; }
 
     //--------------------------------------------------------------------------------------------------
@@ -227,13 +238,14 @@ namespace aga
         {
             std::function<bool(tweeny::tween<float, float> & t, float, float)> func =
               [&](tweeny::tween<float, float>& t, float x, float y) {
-                  asIScriptFunction* callback = FindCallback (t);
+                  TweenData* tweenData = FindTweenData (t);
 
-                  if (!callback)
+                  if (!tweenData || !tweenData->CallbackFunc)
                   {
                       return true;
                   }
 
+                  asIScriptFunction* callback = tweenData->CallbackFunc; 
                   Point p = { x, y };
 
                   const char* moduleName = callback->GetModuleName ();
@@ -243,8 +255,9 @@ namespace aga
                   {
                       asIScriptContext* ctx = script->GetContext ();
                       ctx->Prepare (callback);
-                      ctx->SetArgFloat (0, t.progress ());
-                      ctx->SetArgObject (1, &p);
+                      ctx->SetArgDWord (0, tweenData->ID);
+                      ctx->SetArgFloat (1, t.progress ());
+                      ctx->SetArgObject (2, &p);
 
                       int r = ctx->Execute ();
 
@@ -275,7 +288,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    asIScriptFunction* TweenManager::FindCallback (tweeny::tween<float, float>& t)
+    TweenData* TweenManager::FindTweenData (tweeny::tween<float, float>& t)
     {
         for (std::vector<TweenData>::iterator it = m_Tweens.begin (); it != m_Tweens.end (); ++it)
         {
@@ -284,7 +297,7 @@ namespace aga
                 //  Very nasty - address comparison, but it works!
                 if (&it->TweenFF == &t)
                 {
-                    return it->CallbackFunc;
+                    return &(*it);
                 }
             }
         }
@@ -309,6 +322,30 @@ namespace aga
         }
 
         return nullptr;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+    
+    void TweenManager::PauseTween (int id)
+    {
+        TweenData* tween = GetTween (id);
+
+        if (tween)
+        {
+            tween->IsPaused = true;
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void TweenManager::ResumeTween (int id)
+    {
+        TweenData* tween = GetTween (id);
+
+        if (tween)
+        {
+            tween->IsPaused = false;
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

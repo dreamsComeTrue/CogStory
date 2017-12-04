@@ -10,13 +10,6 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    const std::string ANIM_IDLE = "ANIM_IDLE";
-    const std::string ANIM_MOVE_UP = "ANIM_MOVE_UP";
-    const std::string ANIM_MOVE_LEFT = "ANIM_MOVE_LEFT";
-    const std::string ANIM_MOVE_RIGHT = "ANIM_MOVE_RIGHT";
-
-    //--------------------------------------------------------------------------------------------------
-
     Player::Player (SceneManager* sceneManager)
       : Actor (sceneManager)
       , m_FollowCamera (true)
@@ -72,24 +65,24 @@ namespace aga
         idleFrames.AddFrame (1, 0, 1);
         idleFrames.AddFrame (2, 0, 2);
         idleFrames.SetPlaySpeed (500);
-        m_Animation.AddAnimationFrames (ANIM_IDLE, idleFrames);
+        m_Animation.AddAnimationFrames (ANIM_IDLE_NAME, idleFrames);
 
         AnimationFrames moveLeftFrames (1, cellSize);
         moveLeftFrames.AddFrame (0, 1, 0);
         moveLeftFrames.SetPlaySpeed (500);
-        m_Animation.AddAnimationFrames (ANIM_MOVE_LEFT, moveLeftFrames);
+        m_Animation.AddAnimationFrames (ANIM_MOVE_LEFT_NAME, moveLeftFrames);
 
         AnimationFrames moveRightFrames (1, cellSize);
         moveRightFrames.AddFrame (0, 2, 0);
         moveRightFrames.SetPlaySpeed (500);
-        m_Animation.AddAnimationFrames (ANIM_MOVE_RIGHT, moveRightFrames);
+        m_Animation.AddAnimationFrames (ANIM_MOVE_RIGHT_NAME, moveRightFrames);
 
         AnimationFrames moveUpFrames (1, cellSize);
         moveUpFrames.AddFrame (0, 3, 0);
         moveUpFrames.SetPlaySpeed (500);
-        m_Animation.AddAnimationFrames (ANIM_MOVE_UP, moveUpFrames);
+        m_Animation.AddAnimationFrames (ANIM_MOVE_UP_NAME, moveUpFrames);
 
-        SetCurrentAnimation (ANIM_IDLE);
+        SetCurrentAnimation (ANIM_IDLE_NAME);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -98,7 +91,7 @@ namespace aga
     {
         if (event->type == ALLEGRO_EVENT_KEY_UP)
         {
-            SetCurrentAnimation (ANIM_IDLE);
+            SetCurrentAnimation (ANIM_IDLE_NAME);
         }
     }
 
@@ -235,7 +228,7 @@ namespace aga
             }
         }
 
-        if (!AreSame (dx, 0) || !AreSame (dy, 0))
+        if (!(AreSame (dx, 0) && AreSame (dy, 0)))
         {
             if (al_key_down (&state, ALLEGRO_KEY_LSHIFT))
             {
@@ -257,29 +250,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Player::ChooseAnimation (float angleDeg)
-    {
-        //  printf ("%f\n", angleDeg);
-        if (angleDeg > 225 && angleDeg < 315)
-        {
-            SetCurrentAnimation (ANIM_MOVE_UP);
-        }
-        else if (angleDeg >= 135 && angleDeg <= 225)
-        {
-            SetCurrentAnimation (ANIM_MOVE_LEFT);
-        }
-        else if (angleDeg > 45 && angleDeg < 135)
-        {
-            SetCurrentAnimation (ANIM_IDLE);
-        }
-        else if (angleDeg <= 45 || angleDeg >= 315)
-        {
-            SetCurrentAnimation (ANIM_MOVE_RIGHT);
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
     void Player::Move (float dx, float dy)
     {
         if (sampleCounter > 0.4f)
@@ -293,7 +263,7 @@ namespace aga
 
         ChooseAnimation (ToPositiveAngle (RadiansToRadians (std::atan2 (dy, dx))));
 
-        if (MoveCallback != nullptr && m_FollowCamera)
+        if (MoveCallback != nullptr)
         {
             MoveCallback (dx, dy);
         }

@@ -19,6 +19,7 @@ namespace aga
         asIScriptFunction* FinishFunc = nullptr;
 
         char TweenMask = 0;
+        bool IsPaused = false;
     };
 
     class MainLoop;
@@ -40,10 +41,14 @@ namespace aga
         void AddTween (int id, Point from, Point to, int during, asIScriptFunction* func, asIScriptFunction* finishFunc);
         TweenData* GetTween (int id);
 
+        void PauseTween (int id);
+        void ResumeTween (int id);
+
         void Clear ();
 
     private:
-        asIScriptFunction* FindCallback (tweeny::tween<float, float>& t);
+        void CleanupFinishedTweens ();
+        TweenData* FindTweenData (tweeny::tween<float, float>& t);
 
     private:
         MainLoop* m_MainLoop;

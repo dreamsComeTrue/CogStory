@@ -35,7 +35,6 @@ namespace aga
 
     private:
         void InitializeAnimations ();
-        void ChooseAnimation (float angleDeg);
 
     private:
         bool m_FollowCamera;

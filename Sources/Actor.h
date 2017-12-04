@@ -11,6 +11,11 @@
 
 namespace aga
 {
+    const std::string ANIM_IDLE_NAME = "ANIM_IDLE";
+    const std::string ANIM_MOVE_UP_NAME = "ANIM_MOVE_UP";
+    const std::string ANIM_MOVE_LEFT_NAME = "ANIM_MOVE_LEFT";
+    const std::string ANIM_MOVE_RIGHT_NAME = "ANIM_MOVE_RIGHT";
+    
     //  Pixels Per Second
     const float MOVE_SPEED = 110.0;
 
@@ -40,6 +45,9 @@ namespace aga
         void SetCurrentAnimation (const std::string& name);
 
         std::function<void(float dx, float dy)> MoveCallback;
+
+    protected:
+        void ChooseAnimation (float angleDeg);
 
     protected:
         ALLEGRO_BITMAP* m_Image;

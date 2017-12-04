@@ -59,11 +59,15 @@ void TopOnLeave (Point p)
 	topFrame.Hide ();	
 }
 
-bool PlayerTween (float progress, Point value)
+bool PlayerTween (int id, float progress, Point value)
 {	
+    if (id == TWEEN_2 && progress > 0.7)
+    {
+        PauseTween (TWEEN_2);
+    }
+
 	Point delta = Point (value.X - lastPoint.X, value.Y - lastPoint.Y);
 	
-	//player.SetPosition (value.X - playerSize.Width * 0.5, value.Y - playerSize.Height * 0.5);	
 	player.Move (delta.X, delta.Y);
 	
 	lastPoint = value;

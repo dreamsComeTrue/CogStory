@@ -22,6 +22,8 @@ namespace aga
     {
         std::string Name = "";
         std::string Text = "";
+
+        std::string Action = "";
     };
 
     struct SpeechData

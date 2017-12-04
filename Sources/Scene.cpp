@@ -342,6 +342,7 @@ namespace aga
                         SpeechOutcome out;
                         out.Name = text["name"];
                         out.Text = text["data"];
+                        out.Action = text["action"];
 
                         if (outcome["langID"] == "EN")
                         {
@@ -502,6 +503,7 @@ namespace aga
                     json outComeTextObj = json::object ({});
                     outComeTextObj["name"] = it->second.Outcomes[LANG_EN][i].Name;
                     outComeTextObj["data"] = it->second.Outcomes[LANG_EN][i].Text;
+                    outComeTextObj["action"] = it->second.Outcomes[LANG_EN][i].Action;
 
                     outcomeObj["texts"].push_back (outComeTextObj);
                 }
@@ -519,6 +521,7 @@ namespace aga
                     json outComeTextObj = json::object ({});
                     outComeTextObj["name"] = it->second.Outcomes[LANG_PL][i].Name;
                     outComeTextObj["data"] = it->second.Outcomes[LANG_PL][i].Text;
+                    outComeTextObj["action"] = it->second.Outcomes[LANG_PL][i].Action;
 
                     outcomeObj["texts"].push_back (outComeTextObj);
                 }
