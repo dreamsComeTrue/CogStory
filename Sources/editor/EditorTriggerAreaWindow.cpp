@@ -7,8 +7,8 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    TriggerAreaWindow::TriggerAreaWindow (Editor* editor, Gwk::Controls::Canvas* canvas) :
-        m_Editor (editor)
+    EditorTriggerAreaWindow::EditorTriggerAreaWindow (Editor* editor, Gwk::Controls::Canvas* canvas)
+        : m_Editor (editor)
     {
         m_SceneWindow = new Gwk::Controls::WindowControl (canvas);
         m_SceneWindow->SetTitle ("Trigger Area");
@@ -25,22 +25,22 @@ namespace aga
         pathTextBox->SetTextColor (Gwk::Colors::White);
         pathTextBox->SetWidth (350);
         pathTextBox->SetPos (20, 30);
-        pathTextBox->onTextChanged.Add (this, &TriggerAreaWindow::OnEdit);
+        pathTextBox->onTextChanged.Add (this, &EditorTriggerAreaWindow::OnEdit);
 
         Gwk::Controls::Button* okButton = new Gwk::Controls::Button (m_SceneWindow);
         okButton->SetText ("ACCEPT");
         okButton->SetPos (120, 60);
-        okButton->onPress.Add (this, &TriggerAreaWindow::OnAccept);
+        okButton->onPress.Add (this, &EditorTriggerAreaWindow::OnAccept);
 
         Gwk::Controls::Button* cancelButton = new Gwk::Controls::Button (m_SceneWindow);
         cancelButton->SetText ("CANCEL");
         cancelButton->SetPos (okButton->GetPos ().x + okButton->GetSize ().x + 10, 60);
-        cancelButton->onPress.Add (this, &TriggerAreaWindow::OnCancel);
+        cancelButton->onPress.Add (this, &EditorTriggerAreaWindow::OnCancel);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void TriggerAreaWindow::Show ()
+    void EditorTriggerAreaWindow::Show ()
     {
         m_Editor->m_EditorTriggerAreaMode.m_TriggerAreaName = "";
 
@@ -51,7 +51,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void TriggerAreaWindow::OnAccept (Gwk::Controls::Base*)
+    void EditorTriggerAreaWindow::OnAccept (Gwk::Controls::Base*)
     {
         m_Editor->m_CursorMode = CursorMode::EditTriggerAreaMode;
         m_Editor->m_EditorTriggerAreaMode.NewTriggerArea ();
@@ -60,7 +60,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void TriggerAreaWindow::OnCancel ()
+    void EditorTriggerAreaWindow::OnCancel ()
     {
         m_Editor->m_CursorMode = CursorMode::TileSelectMode;
         m_Editor->m_EditorTriggerAreaMode.m_TriggerAreaName = "";
@@ -69,7 +69,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void TriggerAreaWindow::OnEdit (Gwk::Controls::Base* control)
+    void EditorTriggerAreaWindow::OnEdit (Gwk::Controls::Base* control)
     {
         Gwk::Controls::TextBox* textbox = (Gwk::Controls::TextBox*)(control);
         m_Editor->m_EditorTriggerAreaMode.m_TriggerAreaName = textbox->GetText ();
@@ -77,6 +77,3 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 }
-
-
-

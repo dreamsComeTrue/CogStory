@@ -5,17 +5,14 @@
 
 #include "Common.h"
 
-#include <Gwork/Controls.h>
-#include <Gwork/Controls/WindowControl.h>
-
 namespace aga
 {
     class Editor;
 
-    class FlagPointWindow : public Gwk::Event::Handler
+    class EditorFlagPointWindow : public Gwk::Event::Handler
     {
     public:
-        FlagPointWindow (Editor* editor, Gwk::Controls::Canvas* canvas);
+        EditorFlagPointWindow (Editor* editor, Gwk::Controls::Canvas* canvas);
 
         void Show ();
         void OnAccept (Gwk::Controls::Base*);

@@ -7,7 +7,6 @@
 #include "SceneManager.h"
 #include "Screen.h"
 
-#include "addons/json/json.hpp"
 #include "addons/triangulator/Triangulator.h"
 
 using json = nlohmann::json;
@@ -158,10 +157,10 @@ namespace aga
     const float boundSize = 10000;
 
     Scene::Scene (SceneManager* sceneManager)
-      : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
-      , m_SceneManager (sceneManager)
-      , m_DrawPhysData (true)
-      , m_QuadTree (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }))
+        : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
+        , m_SceneManager (sceneManager)
+        , m_DrawPhysData (true)
+        , m_QuadTree (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }))
     {
     }
 
@@ -215,8 +214,8 @@ namespace aga
                 std::string name = j_tile["name"];
                 std::string path = j_tile["path"];
 
-                Script* script =
-                  sceneManager->GetMainLoop ()->GetScriptManager ().LoadScriptFromFile (GetDataPath () + "scripts/" + path, name);
+                Script* script = sceneManager->GetMainLoop ()->GetScriptManager ().LoadScriptFromFile (
+                    GetDataPath () + "scripts/" + path, name);
 
                 if (script)
                 {
@@ -235,7 +234,10 @@ namespace aga
                 tile->Tileset = j_tile["tileset"];
                 tile->Name = j_tile["name"];
                 tile->Bounds.SetPos (StringToPoint (j_tile["pos"]));
-                tile->Bounds.SetSize (sceneManager->GetAtlasManager ()->GetAtlas (tile->Tileset)->GetRegion (tile->Name).Bounds.GetSize ());
+                tile->Bounds.SetSize (sceneManager->GetAtlasManager ()
+                                          ->GetAtlas (tile->Tileset)
+                                          ->GetRegion (tile->Name)
+                                          .Bounds.GetSize ());
                 std::string zOrder = j_tile["z-order"];
                 tile->ZOrder = atoi (zOrder.c_str ());
                 std::string rot = j_tile["rot"];
@@ -267,7 +269,8 @@ namespace aga
                 scene->AddFlagPoint (name, pos);
             }
 
-            for (std::map<std::string, FlagPoint>::iterator it = scene->m_FlagPoints.begin (); it != scene->m_FlagPoints.end (); ++it)
+            for (std::map<std::string, FlagPoint>::iterator it = scene->m_FlagPoints.begin ();
+                 it != scene->m_FlagPoints.end (); ++it)
             {
                 for (auto& flag_point : flag_points)
                 {
@@ -280,8 +283,7 @@ namespace aga
                         if (!connections.empty ())
                         {
                             for (std::map<std::string, FlagPoint>::iterator it2 = scene->m_FlagPoints.begin ();
-                                 it2 != scene->m_FlagPoints.end ();
-                                 ++it2)
+                                 it2 != scene->m_FlagPoints.end (); ++it2)
                             {
                                 for (int i = 0; i < connections.size (); ++i)
                                 {
@@ -381,7 +383,8 @@ namespace aga
 
             j["scripts"] = json::array ({});
 
-            for (std::vector<ScriptMetaData>::iterator it = scene->m_Scripts.begin (); it != scene->m_Scripts.end (); ++it)
+            for (std::vector<ScriptMetaData>::iterator it = scene->m_Scripts.begin (); it != scene->m_Scripts.end ();
+                 ++it)
             {
                 json scriptObj = json::object ({});
 
@@ -440,7 +443,8 @@ namespace aga
 
             j["flag_points"] = json::array ({});
 
-            for (std::map<std::string, FlagPoint>::iterator it = scene->m_FlagPoints.begin (); it != scene->m_FlagPoints.end (); ++it)
+            for (std::map<std::string, FlagPoint>::iterator it = scene->m_FlagPoints.begin ();
+                 it != scene->m_FlagPoints.end (); ++it)
             {
                 json flagObj = json::object ({});
 
@@ -460,7 +464,8 @@ namespace aga
 
             j["trigger_areas"] = json::array ({});
 
-            for (std::map<std::string, TriggerArea>::iterator it = scene->m_TriggerAreas.begin (); it != scene->m_TriggerAreas.end (); ++it)
+            for (std::map<std::string, TriggerArea>::iterator it = scene->m_TriggerAreas.begin ();
+                 it != scene->m_TriggerAreas.end (); ++it)
             {
                 json triggerObj = json::object ({});
 
@@ -472,7 +477,8 @@ namespace aga
 
             j["speeches"] = json::array ({});
 
-            for (std::map<std::string, SpeechData>::iterator it = scene->m_Speeches.begin (); it != scene->m_Speeches.end (); ++it)
+            for (std::map<std::string, SpeechData>::iterator it = scene->m_Speeches.begin ();
+                 it != scene->m_Speeches.end (); ++it)
             {
                 json speechObj = json::object ({});
 
@@ -643,14 +649,14 @@ namespace aga
         }
 
         m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
-          FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), -100, -50, m_Name, ALLEGRO_ALIGN_LEFT);
+            FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), -100, -50, m_Name, ALLEGRO_ALIGN_LEFT);
 
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
         {
             m_SceneManager->GetCamera ().UseIdentityTransform ();
 
             m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
-              FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), 10, 10, ToString (tiles.size ()), ALLEGRO_ALIGN_LEFT);
+                FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), 10, 10, ToString (tiles.size ()), ALLEGRO_ALIGN_LEFT);
         }
     }
 
@@ -662,8 +668,8 @@ namespace aga
         Point size = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
         float offsetMultiplier = 0.5f;
 
-        std::vector<Entity*> tiles =
-          m_QuadTree.GetEntitiesWithinRect (Rect (pos - size * offsetMultiplier, pos + size + size * offsetMultiplier));
+        std::vector<Entity*> tiles = m_QuadTree.GetEntitiesWithinRect (
+            Rect (pos - size * offsetMultiplier, pos + size + size * offsetMultiplier));
 
         return tiles;
     }
@@ -796,9 +802,12 @@ namespace aga
 
     void Scene::Reset ()
     {
+        RemoveAllScripts ();
         m_Tiles.clear ();
         m_FlagPoints.clear ();
         m_TriggerAreas.clear ();
+
+        m_QuadTree = QuadTreeNode (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }));
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -822,8 +831,8 @@ namespace aga
     void Scene::DrawQuadTree (QuadTreeNode* node)
     {
         Rect bounds = node->GetBounds ();
-        al_draw_rectangle (
-          bounds.GetTopLeft ().X, bounds.GetTopLeft ().Y, bounds.GetBottomRight ().X, bounds.GetBottomRight ().Y, COLOR_WHITE, 1);
+        al_draw_rectangle (bounds.GetTopLeft ().X, bounds.GetTopLeft ().Y, bounds.GetBottomRight ().X,
+            bounds.GetBottomRight ().Y, COLOR_WHITE, 1);
 
         if (node->GetTopLeftTree ())
         {

@@ -20,58 +20,57 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     SpeechFrame::SpeechFrame (SpeechFrameManager* manager)
-      : m_Manager (manager)
-      , m_Visible (true)
-      , m_DrawTextCenter (false)
-      , m_DrawSpeed (10)
-      , m_ArrowDrawSpeed (300)
-      , m_DrawLightArrow (true)
-      , m_CurrentDrawTime (0)
-      , m_CurrentIndex (0)
-      , m_CurrentLine (0)
-      , m_DisplayLine (0)
-      , m_StillUpdating (true)
-      , m_MaxKeyDelta (200)
-      , m_KeyEventHandled (false)
-      , m_ScrollPossible (false)
-      , m_ShouldBeHandled (true)
-      , m_Handled (false)
+        : m_Manager (manager)
+        , m_Visible (true)
+        , m_DrawTextCenter (false)
+        , m_DrawSpeed (10)
+        , m_ArrowDrawSpeed (300)
+        , m_DrawLightArrow (true)
+        , m_CurrentDrawTime (0)
+        , m_CurrentIndex (0)
+        , m_CurrentLine (0)
+        , m_DisplayLine (0)
+        , m_StillUpdating (true)
+        , m_MaxKeyDelta (200)
+        , m_KeyEventHandled (false)
+        , m_ScrollPossible (false)
+        , m_ShouldBeHandled (true)
+        , m_Handled (false)
     {
         m_FrameBitmap = load_nine_patch_bitmap (GetResourcePath (ResourceID::GFX_TEXT_FRAME).c_str ());
-        m_Atlas = m_Manager->GetSceneManager ()->GetAtlasManager ()->GetAtlas (GetBaseName (GetResourcePath (PACK_CHARACTERS_UI)));
+        m_Atlas = m_Manager->GetSceneManager ()->GetAtlasManager ()->GetAtlas (
+            GetBaseName (GetResourcePath (PACK_CHARACTERS_UI)));
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    SpeechFrame::SpeechFrame (SpeechFrameManager* manager,
-                              const std::string& text,
-                              Rect rect,
-                              bool shouldBeHandled,
-                              const std::string& regionName)
-      : m_Manager (manager)
-      , m_DrawRect (rect)
-      , m_Visible (true)
-      , m_DrawTextCenter (false)
-      , m_DrawSpeed (11)
-      , m_ArrowDrawSpeed (300)
-      , m_DrawLightArrow (true)
-      , m_CurrentDrawTime (0)
-      , m_CurrentIndex (0)
-      , m_CurrentLine (0)
-      , m_DisplayLine (0)
-      , m_StillUpdating (true)
-      , m_MaxKeyDelta (200)
-      , m_KeyEventHandled (false)
-      , m_ScrollPossible (false)
-      , m_ShouldBeHandled (shouldBeHandled)
-      , m_Handled (false)
-      , m_RegionName (regionName)
+    SpeechFrame::SpeechFrame (SpeechFrameManager* manager, const std::string& text, Rect rect, bool shouldBeHandled,
+        const std::string& regionName)
+        : m_Manager (manager)
+        , m_DrawRect (rect)
+        , m_Visible (true)
+        , m_DrawTextCenter (false)
+        , m_DrawSpeed (11)
+        , m_ArrowDrawSpeed (300)
+        , m_DrawLightArrow (true)
+        , m_CurrentDrawTime (0)
+        , m_CurrentIndex (0)
+        , m_CurrentLine (0)
+        , m_DisplayLine (0)
+        , m_StillUpdating (true)
+        , m_MaxKeyDelta (200)
+        , m_KeyEventHandled (false)
+        , m_ScrollPossible (false)
+        , m_ShouldBeHandled (shouldBeHandled)
+        , m_Handled (false)
+        , m_RegionName (regionName)
     {
         m_FrameBitmap = load_nine_patch_bitmap (GetResourcePath (ResourceID::GFX_TEXT_FRAME).c_str ());
 
         if (m_RegionName != "")
         {
-            m_Atlas = m_Manager->GetSceneManager ()->GetAtlasManager ()->GetAtlas (GetBaseName (GetResourcePath (PACK_CHARACTERS_UI)));
+            m_Atlas = m_Manager->GetSceneManager ()->GetAtlasManager ()->GetAtlas (
+                GetBaseName (GetResourcePath (PACK_CHARACTERS_UI)));
         }
 
         SetText (text);
@@ -183,44 +182,46 @@ namespace aga
 
             switch (event->keyboard.keycode)
             {
-                case ALLEGRO_KEY_UP:
+            case ALLEGRO_KEY_UP:
+            {
+                --m_DisplayLine;
+
+                if (lineCounter > 0)
                 {
-                    --m_DisplayLine;
-
-                    if (lineCounter > 0)
+                    if (ScrollUpFunction)
                     {
-                        if (ScrollUpFunction)
-                        {
-                            ScrollUpFunction ();
-                        }
+                        ScrollUpFunction ();
                     }
-
-                    m_KeyEventHandled = true;
-
-                    break;
                 }
 
-                case ALLEGRO_KEY_DOWN:
+                m_KeyEventHandled = true;
+
+                break;
+            }
+
+            case ALLEGRO_KEY_DOWN:
+            {
+                ++m_DisplayLine;
+
+                int maxLines = (m_DrawRect.GetSize ().Height - 2 * TEXT_INSETS) / m_LineHeight;
+                int diff = m_CurrentLine + 1 - maxLines;
+
+                if (lineCounter < diff)
                 {
-                    ++m_DisplayLine;
-
-                    int maxLines = (m_DrawRect.GetSize ().Height - 2 * TEXT_INSETS) / m_LineHeight;
-                    int diff = m_CurrentLine + 1 - maxLines;
-
-                    if (lineCounter < diff)
+                    if (ScrollDownFunction)
                     {
-                        if (ScrollDownFunction)
-                        {
-                            ScrollDownFunction ();
-                        }
+                        ScrollDownFunction ();
                     }
-
-                    m_KeyEventHandled = true;
-
-                    break;
                 }
 
-                case ALLEGRO_KEY_ENTER:
+                m_KeyEventHandled = true;
+
+                break;
+            }
+
+            case ALLEGRO_KEY_ENTER:
+            {
+                if (m_ShouldBeHandled)
                 {
                     m_Handled = true;
 
@@ -228,9 +229,10 @@ namespace aga
                     {
                         HandledFunction ();
                     }
-
-                    break;
                 }
+
+                break;
+            }
             }
         }
     }
@@ -271,8 +273,12 @@ namespace aga
         m_Attributes.clear ();
         PreprocessText (m_Text);
 
-        m_LineHeight =
-          m_Manager->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetFont ().GetTextDimensions (FONT_NAME_MAIN_MEDIUM, m_Text).Height;
+        m_LineHeight = m_Manager->GetSceneManager ()
+                           ->GetMainLoop ()
+                           ->GetScreen ()
+                           ->GetFont ()
+                           .GetTextDimensions (FONT_NAME_MAIN_MEDIUM, m_Text)
+                           .Height;
 
         m_TextLines = BreakLine (m_Text, m_DrawRect.GetSize ().Width - 2 * TEXT_INSETS);
     }
@@ -289,18 +295,16 @@ namespace aga
                 int edgeLength = m_DrawRect.GetSize ().Height - 2 * characterOffset.Y;
                 AtlasRegion region = m_Atlas->GetRegion (m_RegionName);
 
-                float ratio = std::min ((float)edgeLength / region.Bounds.Size.Width, (float)edgeLength / region.Bounds.Size.Height);
+                float ratio = std::min (
+                    (float)edgeLength / region.Bounds.Size.Width, (float)edgeLength / region.Bounds.Size.Height);
 
                 m_Atlas->DrawRegion (m_RegionName,
-                                     m_DrawRect.GetPos ().X - ratio * region.Bounds.Size.Width * 0.5f - characterOffset.X,
-                                     m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Y * 0.5f,
-                                     ratio,
-                                     ratio,
-                                     0);
+                    m_DrawRect.GetPos ().X - ratio * region.Bounds.Size.Width * 0.5f - characterOffset.X,
+                    m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Y * 0.5f, ratio, ratio, 0);
             }
 
-            draw_nine_patch_bitmap (
-              m_FrameBitmap, m_DrawRect.GetPos ().X, m_DrawRect.GetPos ().Y, m_DrawRect.GetSize ().Width, m_DrawRect.GetSize ().Height);
+            draw_nine_patch_bitmap (m_FrameBitmap, m_DrawRect.GetPos ().X, m_DrawRect.GetPos ().Y,
+                m_DrawRect.GetSize ().Width, m_DrawRect.GetSize ().Height);
 
             int xPoint;
             int yPoint;
@@ -357,31 +361,26 @@ namespace aga
             if (lineCounter > 0)
             {
                 m_Manager->GetSceneManager ()
-                  ->GetAtlasManager ()
-                  ->GetAtlas (GetBaseName (GetResourcePath (PACK_MENU_UI)))
-                  ->DrawRegion (regionName,
-                                m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width - xOffset,
-                                m_DrawRect.GetPos ().Y + yOffset,
-                                1.0f,
-                                1.0f,
-                                DegressToRadians (180.0f));
+                    ->GetAtlasManager ()
+                    ->GetAtlas (GetBaseName (GetResourcePath (PACK_MENU_UI)))
+                    ->DrawRegion (regionName, m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width - xOffset,
+                        m_DrawRect.GetPos ().Y + yOffset, 1.0f, 1.0f, DegressToRadians (180.0f));
             }
 
             //  Down arrow
             if (lineCounter < diff)
             {
                 m_Manager->GetSceneManager ()
-                  ->GetAtlasManager ()
-                  ->GetAtlas (GetBaseName (GetResourcePath (PACK_MENU_UI)))
-                  ->DrawRegion (regionName,
-                                m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width - xOffset - 10,
-                                m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Height - yOffset - 6);
+                    ->GetAtlasManager ()
+                    ->GetAtlas (GetBaseName (GetResourcePath (PACK_MENU_UI)))
+                    ->DrawRegion (regionName, m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width - xOffset - 10,
+                        m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Height - yOffset - 6);
             }
 
             int x, y, w, h;
             al_get_clipping_rectangle (&x, &y, &w, &h);
-            al_set_clipping_rectangle (
-              m_DrawRect.GetPos ().X, m_DrawRect.GetPos ().Y, m_DrawRect.GetSize ().Width, m_DrawRect.GetSize ().Height);
+            al_set_clipping_rectangle (m_DrawRect.GetPos ().X, m_DrawRect.GetPos ().Y, m_DrawRect.GetSize ().Width,
+                m_DrawRect.GetSize ().Height);
 
             for (int i = 0; lineCounter < m_CurrentLine + 1; ++lineCounter, ++i)
             {
@@ -443,11 +442,12 @@ namespace aga
                         else
                         {
                             advance += m_Manager->GetSceneManager ()
-                                         ->GetMainLoop ()
-                                         ->GetScreen ()
-                                         ->GetFont ()
-                                         .GetTextDimensions (FONT_NAME_MAIN_MEDIUM, textToDraw)
-                                         .Width;
+                                           ->GetMainLoop ()
+                                           ->GetScreen ()
+                                           ->GetFont ()
+                                           .GetTextDimensions (FONT_NAME_MAIN_MEDIUM, textToDraw)
+                                           .Width
+                                + 5;
                         }
                     }
                 }
@@ -463,8 +463,12 @@ namespace aga
     {
         std::vector<std::string> ret;
 
-        float width =
-          m_Manager->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetFont ().GetTextDimensions (FONT_NAME_MAIN_MEDIUM, line).Width;
+        float width = m_Manager->GetSceneManager ()
+                          ->GetMainLoop ()
+                          ->GetScreen ()
+                          ->GetFont ()
+                          .GetTextDimensions (FONT_NAME_MAIN_MEDIUM, line)
+                          .Width;
 
         if (width >= maxWidth)
         {
@@ -484,11 +488,11 @@ namespace aga
                 else
                 {
                     width = m_Manager->GetSceneManager ()
-                              ->GetMainLoop ()
-                              ->GetScreen ()
-                              ->GetFont ()
-                              .GetTextDimensions (FONT_NAME_MAIN_MEDIUM, currentPart)
-                              .Width;
+                                ->GetMainLoop ()
+                                ->GetScreen ()
+                                ->GetFont ()
+                                .GetTextDimensions (FONT_NAME_MAIN_MEDIUM, currentPart)
+                                .Width;
 
                     if (width >= maxWidth)
                     {

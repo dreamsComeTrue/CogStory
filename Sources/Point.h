@@ -27,7 +27,8 @@ namespace aga
         {
         }
 
-        union {
+        union 
+        {
             struct
             {
                 float X, Y;

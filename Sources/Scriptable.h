@@ -22,7 +22,7 @@ namespace aga
     {
     public:
         Scriptable (ScriptManager* scriptManager)
-          : m_ScriptManager (scriptManager)
+            : m_ScriptManager (scriptManager)
         {
         }
 
@@ -57,6 +57,16 @@ namespace aga
                     break;
                 }
             }
+        }
+
+        void RemoveAllScripts ()
+        {
+            for (int i = 0; i < m_Scripts.size (); ++i)
+            {
+                RemoveScript (m_Scripts[i].ScriptObj);
+            }
+
+            m_Scripts.clear ();
         }
 
         void UpdateScripts (float deltaTime)

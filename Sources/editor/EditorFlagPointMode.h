@@ -13,7 +13,7 @@ namespace aga
     class EditorFlagPointMode
     {
         friend class Editor;
-        friend class FlagPointWindow;
+        friend class EditorFlagPointWindow;
         friend class EditorTileMode;
 
     public:

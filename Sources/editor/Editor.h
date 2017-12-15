@@ -4,6 +4,7 @@
 #define __EDITOR_H__
 
 #include "Common.h"
+#include "EditorActorMode.h"
 #include "EditorFlagPointMode.h"
 #include "EditorPhysMode.h"
 #include "EditorSpeechMode.h"
@@ -11,23 +12,18 @@
 #include "EditorTriggerAreaMode.h"
 #include "Scene.h"
 
-#include <Gwork/Controls.h>
-#include <Gwork/Controls/WindowControl.h>
-#include <Gwork/Input/Allegro5.h>
-#include <Gwork/Platform.h>
-#include <Gwork/Renderers/Allegro5.h>
-#include <Gwork/Skins/TexturedBase.h>
-
 namespace aga
 {
     extern const int TILES_COUNT;
 
-    class OpenSceneWindow;
-    class SaveSceneWindow;
-    class FlagPointWindow;
-    class TriggerAreaWindow;
-    class SpeechWindow;
-    class InfoWindow;
+    class EditorOpenSceneWindow;
+    class EditorSaveSceneWindow;
+    class EditorFlagPointWindow;
+    class EditorTriggerAreaWindow;
+    class EditorSpeechWindow;
+    class EditorActorWindow;
+    class EditorInfoWindow;
+    class EditorQuestionWindow;
 
     class MainLoop;
     struct Tile;
@@ -39,22 +35,25 @@ namespace aga
         EditPhysBodyMode,
         EditFlagPointsMode,
         EditTriggerAreaMode,
-        SpeechMode
+        SpeechMode,
+        ActorMode
     };
 
     class Editor : public Lifecycle, public Gwk::Event::Handler
     {
-        friend class OpenSceneWindow;
-        friend class SaveSceneWindow;
-        friend class FlagPointWindow;
-        friend class TriggerAreaWindow;
-        friend class SpeechWindow;
+        friend class EditorOpenSceneWindow;
+        friend class EditorSaveSceneWindow;
+        friend class EditorFlagPointWindow;
+        friend class EditorTriggerAreaWindow;
+        friend class EditorSpeechWindow;
+        friend class EditorActorWindow;
 
         friend class EditorTileMode;
         friend class EditorPhysMode;
         friend class EditorFlagPointMode;
         friend class EditorTriggerAreaMode;
         friend class EditorSpeechMode;
+        friend class EditorActorMode;
 
     public:
         Editor (MainLoop* mainLoop);
@@ -104,7 +103,9 @@ namespace aga
         void OnNewPoly ();
 
         void OnSpeech ();
+        void OnActor ();
 
+        void UpdateScriptsBox ();
         void OnReloadScript ();
 
         Point CalculateCursorPoint (int mouseX, int mouseY);
@@ -122,6 +123,7 @@ namespace aga
         EditorFlagPointMode m_EditorFlagPointMode;
         EditorTriggerAreaMode m_EditorTriggerAreaMode;
         EditorSpeechMode m_EditorSpeechMode;
+        EditorActorMode m_EditorActorMode;
 
         CursorMode m_CursorMode;
 
@@ -132,53 +134,14 @@ namespace aga
         bool m_IsMousePan;
         bool m_IsMouseWheel;
 
-        OpenSceneWindow* m_OpenSceneWindow;
-        SaveSceneWindow* m_SaveSceneWindow;
-        FlagPointWindow* m_FlagPointWindow;
-        TriggerAreaWindow* m_TriggerAreaWindow;
-        SpeechWindow* m_SpeechWindow;
-        InfoWindow* m_InfoWindow;
-    };
-
-    struct InfoWindow : public Gwk::Event::Handler
-    {
-        InfoWindow (Editor* editor, Gwk::Controls::Canvas* canvas)
-        {
-            m_Editor = editor;
-
-            m_SceneWindow = new Gwk::Controls::WindowControl (canvas);
-            m_SceneWindow->SetTitle ("Info");
-            m_SceneWindow->SetSize (450, 120);
-            m_SceneWindow->CloseButtonPressed ();
-
-            m_Label = new Gwk::Controls::Label (m_SceneWindow);
-            m_Label->SetBounds (20, 10, m_SceneWindow->Width () - 40, m_SceneWindow->Height () - 40);
-            m_Label->SetText (m_Text);
-
-            Gwk::Controls::Button* okButton = new Gwk::Controls::Button (m_SceneWindow);
-            okButton->SetText ("OK");
-            okButton->SetPos (m_SceneWindow->Width () / 2 - 50, m_SceneWindow->Height () - 60);
-            okButton->onPress.Add (this, &InfoWindow::OnAccept);
-        }
-
-        void Show (const std::string& text)
-        {
-            m_Text = text;
-
-            m_Label->SetText (m_Text);
-            m_Label->SetWrap (true);
-            m_SceneWindow->SetPosition (Gwk::Position::Center);
-            m_SceneWindow->SetHidden (false);
-            m_SceneWindow->MakeModal (true);
-        }
-
-        void OnAccept () { m_SceneWindow->CloseButtonPressed (); }
-
-    private:
-        Editor* m_Editor;
-        Gwk::Controls::WindowControl* m_SceneWindow;
-        Gwk::Controls::Label* m_Label;
-        std::string m_Text;
+        EditorOpenSceneWindow* m_OpenSceneWindow;
+        EditorSaveSceneWindow* m_SaveSceneWindow;
+        EditorFlagPointWindow* m_FlagPointWindow;
+        EditorTriggerAreaWindow* m_TriggerAreaWindow;
+        EditorSpeechWindow* m_SpeechWindow;
+        EditorActorWindow* m_ActorWindow;
+        EditorInfoWindow* m_InfoWindow;
+        EditorQuestionWindow* m_QuestionWindow;
     };
 }
 

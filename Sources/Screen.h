@@ -19,6 +19,7 @@ namespace aga
         bool Update (float deltaTime);
 
         void SetBackgroundColor (ALLEGRO_COLOR color);
+        void SetBackgroundColor (float r, float g, float b, float a);
 
         void SetMouseCursor (const char* path);
 

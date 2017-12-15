@@ -15,7 +15,7 @@ namespace aga
     std::string GAMEPLAY_STATE_NAME = "GAMEPLAY_STATE";
 
     GamePlayState::GamePlayState (MainLoop* mainLoop)
-      : State (mainLoop, GAMEPLAY_STATE_NAME)
+        : State (mainLoop, GAMEPLAY_STATE_NAME)
     {
     }
 
@@ -59,7 +59,7 @@ namespace aga
         m_MainLoop->GetSceneManager ().GetCamera ().Scale (1.4, 1.4, winSize.Width * 0.5, winSize.Height * 0.5);
 
         //  Reset camera to player
-        m_MainLoop->GetSceneManager ().GetPlayer ().Move (0, 0);
+        m_MainLoop->GetSceneManager ().GetPlayer ().Move (0, 0.00001);
 
 #ifndef EDITOR_ENABLED
         m_MainLoop->GetSceneManager ().GetActiveScene ()->SetDrawPhysData (false);

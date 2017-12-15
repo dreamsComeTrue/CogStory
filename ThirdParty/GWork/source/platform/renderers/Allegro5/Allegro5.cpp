@@ -217,9 +217,9 @@ Gwk::Point Allegro::MeasureText(Gwk::Font* font, const Gwk::String& text)
     int x, y, width, height;
     al_get_text_dimensions (afont, text.c_str (), &x, &y, &width, &height);
 
-    return Point (width, height);
+    //return Point (width, height - 3);
 
-    //return Point(al_get_text_width(afont, text.c_str()), al_get_font_line_height(afont) - 40);
+    return Point(al_get_text_width(afont, text.c_str()), al_get_font_line_height(afont));
 }
 
 void Allegro::StartClip()

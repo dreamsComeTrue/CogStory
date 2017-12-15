@@ -12,11 +12,11 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Screen::Screen (unsigned width, unsigned height)
-      : m_Width (width)
-      , m_Height (height)
-      , m_RealSize ((int)width, (int)height)
-      , m_Redraw (false)
-      , m_BackgroundColor (al_map_rgb (0, 0, 0))
+        : m_Width (width)
+        , m_Height (height)
+        , m_RealSize ((int)width, (int)height)
+        , m_Redraw (false)
+        , m_BackgroundColor (al_map_rgb (0, 0, 0))
     {
     }
 
@@ -171,9 +171,9 @@ namespace aga
                 ProcessEventFunction (&ev);
             }
         }
-        else if ((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) || (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) ||
-                 (ev.type == ALLEGRO_EVENT_MOUSE_AXES) || (ev.type == ALLEGRO_EVENT_KEY_DOWN) || (ev.type == ALLEGRO_EVENT_KEY_UP) ||
-                 (ev.type == ALLEGRO_EVENT_KEY_CHAR))
+        else if ((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) || (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
+            || (ev.type == ALLEGRO_EVENT_MOUSE_AXES) || (ev.type == ALLEGRO_EVENT_KEY_DOWN)
+            || (ev.type == ALLEGRO_EVENT_KEY_UP) || (ev.type == ALLEGRO_EVENT_KEY_CHAR))
         {
             if (ProcessEventFunction != nullptr)
             {
@@ -204,6 +204,13 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Screen::SetBackgroundColor (ALLEGRO_COLOR color) { m_BackgroundColor = color; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Screen::SetBackgroundColor (float r, float g, float b, float a)
+    {
+        m_BackgroundColor = al_map_rgba (r, g, b, a);
+    }
 
     //--------------------------------------------------------------------------------------------------
 

@@ -5,17 +5,14 @@
 
 #include "Common.h"
 
-#include <Gwork/Controls.h>
-#include <Gwork/Controls/WindowControl.h>
-
 namespace aga
 {
     class Editor;
 
-    class SpeechWindow : public Gwk::Event::Handler
+    class EditorSpeechWindow : public Gwk::Event::Handler
     {
     public:
-        SpeechWindow (Editor* editor, Gwk::Controls::Canvas* canvas);
+        EditorSpeechWindow (Editor* editor, Gwk::Controls::Canvas* canvas);
 
         void Show ();
 

@@ -14,7 +14,7 @@ namespace aga
     class EditorTriggerAreaMode
     {
         friend class Editor;
-        friend class TriggerAreaWindow;
+        friend class EditorTriggerAreaWindow;
 
     public:
         EditorTriggerAreaMode (Editor* editor);

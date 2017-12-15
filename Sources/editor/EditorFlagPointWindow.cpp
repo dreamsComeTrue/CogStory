@@ -7,8 +7,8 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    FlagPointWindow::FlagPointWindow (Editor* editor, Gwk::Controls::Canvas* canvas) :
-        m_Editor (editor)
+    EditorFlagPointWindow::EditorFlagPointWindow (Editor* editor, Gwk::Controls::Canvas* canvas)
+        : m_Editor (editor)
     {
         m_SceneWindow = new Gwk::Controls::WindowControl (canvas);
         m_SceneWindow->SetTitle ("Flag Point");
@@ -25,22 +25,22 @@ namespace aga
         pathTextBox->SetTextColor (Gwk::Colors::White);
         pathTextBox->SetWidth (350);
         pathTextBox->SetPos (20, 30);
-        pathTextBox->onTextChanged.Add (this, &FlagPointWindow::OnEdit);
+        pathTextBox->onTextChanged.Add (this, &EditorFlagPointWindow::OnEdit);
 
         Gwk::Controls::Button* okButton = new Gwk::Controls::Button (m_SceneWindow);
         okButton->SetText ("ACCEPT");
         okButton->SetPos (120, 60);
-        okButton->onPress.Add (this, &FlagPointWindow::OnAccept);
+        okButton->onPress.Add (this, &EditorFlagPointWindow::OnAccept);
 
         Gwk::Controls::Button* cancelButton = new Gwk::Controls::Button (m_SceneWindow);
         cancelButton->SetText ("CANCEL");
         cancelButton->SetPos (okButton->GetPos ().x + okButton->GetSize ().x + 10, 60);
-        cancelButton->onPress.Add (this, &FlagPointWindow::OnCancel);
+        cancelButton->onPress.Add (this, &EditorFlagPointWindow::OnCancel);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void FlagPointWindow::Show ()
+    void EditorFlagPointWindow::Show ()
     {
         m_Editor->m_EditorFlagPointMode.m_AskFlagPoint = false;
 
@@ -51,7 +51,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void FlagPointWindow::OnAccept (Gwk::Controls::Base*)
+    void EditorFlagPointWindow::OnAccept (Gwk::Controls::Base*)
     {
         m_Editor->m_CursorMode = CursorMode::EditFlagPointsMode;
         m_SceneWindow->CloseButtonPressed ();
@@ -59,7 +59,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void FlagPointWindow::OnCancel ()
+    void EditorFlagPointWindow::OnCancel ()
     {
         m_Editor->m_CursorMode = CursorMode::TileSelectMode;
         m_Editor->m_EditorFlagPointMode.m_FlagPointName = "";
@@ -68,7 +68,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void FlagPointWindow::OnEdit (Gwk::Controls::Base* control)
+    void EditorFlagPointWindow::OnEdit (Gwk::Controls::Base* control)
     {
         Gwk::Controls::TextBox* textbox = (Gwk::Controls::TextBox*)(control);
         m_Editor->m_EditorFlagPointMode.m_FlagPointName = textbox->GetText ();
@@ -76,5 +76,3 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 }
-
-

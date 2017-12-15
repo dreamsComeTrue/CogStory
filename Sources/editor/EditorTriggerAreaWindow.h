@@ -5,17 +5,14 @@
 
 #include "Common.h"
 
-#include <Gwork/Controls.h>
-#include <Gwork/Controls/WindowControl.h>
-
 namespace aga
 {
     class Editor;
 
-    class TriggerAreaWindow : public Gwk::Event::Handler
+    class EditorTriggerAreaWindow : public Gwk::Event::Handler
     {
     public:
-        TriggerAreaWindow (Editor* editor, Gwk::Controls::Canvas* canvas);
+        EditorTriggerAreaWindow (Editor* editor, Gwk::Controls::Canvas* canvas);
 
         void Show ();
         void OnAccept (Gwk::Controls::Base*);
@@ -29,4 +26,3 @@ namespace aga
 }
 
 #endif //   __EDITOR_TRIGGER_AREA_WINDOW_H__
-

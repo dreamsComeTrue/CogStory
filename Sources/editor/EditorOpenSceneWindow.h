@@ -5,17 +5,14 @@
 
 #include "Common.h"
 
-#include <Gwork/Controls.h>
-#include <Gwork/Controls/WindowControl.h>
-
 namespace aga
 {
     class Editor;
 
-    class OpenSceneWindow : public Gwk::Event::Handler
+    class EditorOpenSceneWindow : public Gwk::Event::Handler
     {
     public:
-        OpenSceneWindow (Editor* editor, Gwk::Controls::Canvas* canvas, const std::string& fileName);
+        EditorOpenSceneWindow (Editor* editor, Gwk::Controls::Canvas* canvas, const std::string& fileName);
 
         void Show ();
         void OnOpen (Gwk::Controls::Base*);
@@ -30,5 +27,3 @@ namespace aga
 }
 
 #endif //   __EDITOR_OPEN_SCENE_WINDOW_H__
-
-

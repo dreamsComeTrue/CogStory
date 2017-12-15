@@ -7,9 +7,10 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    SaveSceneWindow::SaveSceneWindow (Editor* editor, Gwk::Controls::Canvas* canvas, const std::string& fileName) :
-        m_Editor (editor),
-        m_FileName (fileName)
+    EditorSaveSceneWindow::EditorSaveSceneWindow (
+        Editor* editor, Gwk::Controls::Canvas* canvas, const std::string& fileName)
+        : m_Editor (editor)
+        , m_FileName (fileName)
     {
         m_SceneWindow = new Gwk::Controls::WindowControl (canvas);
         m_SceneWindow->SetTitle ("Save Scene");
@@ -28,27 +29,27 @@ namespace aga
         pathTextBox->SetTextColor (Gwk::Colors::White);
         pathTextBox->SetWidth (300);
         pathTextBox->SetPos (20, 30);
-        pathTextBox->onTextChanged.Add (this, &SaveSceneWindow::OnEdit);
+        pathTextBox->onTextChanged.Add (this, &EditorSaveSceneWindow::OnEdit);
 
         Gwk::Controls::Button* browseButton = new Gwk::Controls::Button (m_SceneWindow);
         browseButton->SetText ("BROWSE");
         browseButton->SetPos (330, 30);
-        browseButton->onPress.Add (this, &SaveSceneWindow::OnSave);
+        browseButton->onPress.Add (this, &EditorSaveSceneWindow::OnSave);
 
         Gwk::Controls::Button* okButton = new Gwk::Controls::Button (m_SceneWindow);
         okButton->SetText ("SAVE");
         okButton->SetPos (120, 60);
-        okButton->onPress.Add (this, &SaveSceneWindow::OnSave);
+        okButton->onPress.Add (this, &EditorSaveSceneWindow::OnSave);
 
         Gwk::Controls::Button* cancelButton = new Gwk::Controls::Button (m_SceneWindow);
         cancelButton->SetText ("CANCEL");
         cancelButton->SetPos (okButton->GetPos ().x + okButton->GetSize ().x + 10, 60);
-        cancelButton->onPress.Add (this, &SaveSceneWindow::OnCancel);
+        cancelButton->onPress.Add (this, &EditorSaveSceneWindow::OnCancel);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void SaveSceneWindow::Show ()
+    void EditorSaveSceneWindow::Show ()
     {
         m_SceneWindow->SetPosition (Gwk::Position::Center);
         m_SceneWindow->SetHidden (false);
@@ -57,7 +58,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SaveSceneWindow::OnSave (Gwk::Controls::Base*)
+    void EditorSaveSceneWindow::OnSave (Gwk::Controls::Base*)
     {
         m_Editor->SaveScene (m_FileName);
         m_SceneWindow->CloseButtonPressed ();
@@ -65,11 +66,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SaveSceneWindow::OnCancel () { m_SceneWindow->CloseButtonPressed (); }
+    void EditorSaveSceneWindow::OnCancel () { m_SceneWindow->CloseButtonPressed (); }
 
     //--------------------------------------------------------------------------------------------------
 
-    void SaveSceneWindow::OnEdit (Gwk::Controls::Base* control)
+    void EditorSaveSceneWindow::OnEdit (Gwk::Controls::Base* control)
     {
         Gwk::Controls::TextBox* textbox = (Gwk::Controls::TextBox*)(control);
         m_FileName = textbox->GetText ();
@@ -77,5 +78,3 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 }
-
-

@@ -5,17 +5,14 @@
 
 #include "Common.h"
 
-#include <Gwork/Controls.h>
-#include <Gwork/Controls/WindowControl.h>
-
 namespace aga
 {
     class Editor;
 
-    class SaveSceneWindow : public Gwk::Event::Handler
+    class EditorSaveSceneWindow : public Gwk::Event::Handler
     {
     public:
-        SaveSceneWindow (Editor* editor, Gwk::Controls::Canvas* canvas, const std::string& fileName);
+        EditorSaveSceneWindow (Editor* editor, Gwk::Controls::Canvas* canvas, const std::string& fileName);
 
         void Show ();
         void OnSave (Gwk::Controls::Base*);
@@ -30,4 +27,3 @@ namespace aga
 }
 
 #endif //   __EDITOR_SAVE_SCENE_WINDOW_H__
-
