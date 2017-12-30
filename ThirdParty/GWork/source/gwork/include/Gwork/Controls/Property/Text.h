@@ -21,39 +21,25 @@ namespace Gwk
             class GWK_EXPORT Text : public Property::Base
             {
             public:
-
-                GWK_CONTROL_INLINE(Text, Property::Base)
+                GWK_CONTROL_INLINE (Text, Property::Base)
                 {
-                    m_textBox = new TextBox(this);
-                    m_textBox->Dock(Position::Fill);
-                    m_textBox->SetShouldDrawBackground(false);
-                    m_textBox->onTextChanged.Add(this, &ParentClass::OnPropertyValueChanged);
+                    m_textBox = new TextBox (this);
+                    m_textBox->Dock (Position::Fill);
+                    m_textBox->SetShouldDrawBackground (false);
+                    m_textBox->onTextChanged.Add (this, &ParentClass::OnPropertyValueChanged);
+                    m_textBox->SetTextColor (Gwk::Colors::White);
                 }
 
-                String GetPropertyValue() override
-                {
-                    return m_textBox->GetText();
-                }
+                String GetPropertyValue () override { return m_textBox->GetText (); }
 
-                void SetPropertyValue(const String& v, bool bFireChangeEvents) override
-                {
-                    m_textBox->SetText(v, bFireChangeEvents);
-                }
+                void SetPropertyValue (const String& v, bool bFireChangeEvents) override { m_textBox->SetText (v, bFireChangeEvents); }
 
-                bool IsEditing() override
-                {
-                    return m_textBox->IsFocussed();
-                }
+                bool IsEditing () override { return m_textBox->IsFocussed (); }
 
-                bool IsHovered() const override
-                {
-                    return ParentClass::IsHovered() || m_textBox->IsHovered();
-                }
+                bool IsHovered () const override { return ParentClass::IsHovered () || m_textBox->IsHovered (); }
 
                 TextBox* m_textBox;
             };
-
-
         }
     }
 }

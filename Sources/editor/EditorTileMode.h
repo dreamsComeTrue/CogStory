@@ -55,6 +55,7 @@ namespace aga
         float m_Rotation;
 
         Tile* m_TileUnderCursor;
+        Point m_TileSelectionOffset;
         Tile* m_SelectedTile;
 
         bool m_IsDrawTiles;

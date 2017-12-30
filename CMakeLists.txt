@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 set(BIN_DIR Binaries)
 set(CMAKE_BUILD_TYPE "Debug")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
-set(ROOT_THIRD_PARTY_DIR "/home/squall/RobotTales/ThirdParty")
+set(ROOT_THIRD_PARTY_DIR "/home/squall/Dropbox/RobotTales/ThirdParty")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/Cotire/CMake")
 include(cotire)
@@ -30,6 +30,10 @@ include_directories(Sources/
 
 add_executable(${PROJECT_NAME} ${SRC_LIST} ${IMGUI_SRC_LIST})
 target_link_libraries(${PROJECT_NAME}
+    libGwork.a
+    libGworkAllegro5.a
+    libangelscript.a
+
     allegro
     allegro_image
     allegro_font
@@ -38,9 +42,6 @@ target_link_libraries(${PROJECT_NAME}
     allegro_dialog
     allegro_audio
     allegro_acodec
-    libangelscript.a
-    libGwork.a
-    libGworkAllegro5.a
     freetype
     pthread
     )

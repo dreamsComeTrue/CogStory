@@ -5,6 +5,8 @@
 
 #include "Common.h"
 
+#include <Gwork/Controls.h>
+
 namespace aga
 {
     class Editor;

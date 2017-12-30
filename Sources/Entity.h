@@ -13,8 +13,13 @@ namespace aga
     {
     public:
         int ID = 0;
+        std::string Name;
+        int ZOrder = 0;
+        int RenderID = 0;
 
         static int GetNextID () { return GlobalID++; }
+
+        static bool CompareByZOrder (const Entity* a, const Entity* b) { return a->ZOrder < b->ZOrder; }
     };
 }
 

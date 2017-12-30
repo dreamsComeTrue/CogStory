@@ -20,10 +20,10 @@ void Start ()
 	@mainFrame = AddSpeechFrame ("MAIN_SPEECH", txt, rect, true, "player_head");
 	mainFrame.Hide ();
 
-	Point frameSize2 (250, 40);
+	Point frameSize2 (350, 40);
 	Point framePos2 (screenSize.Width / 2 - frameSize2.Width / 2, 10);
 	Rect r (framePos2, Point (framePos2.X + frameSize2.Width, framePos2.Y + frameSize2.Height));
-    @topFrame = AddSpeechFrame ("SPEECH", "Hello. PTR4617!", r, false);
+    @topFrame = AddSpeechFrame ("SPEECH", "PTR4617", r, false);
 	topFrame.Hide ();
 	topFrame.SetDrawTextCenter (true);
 }

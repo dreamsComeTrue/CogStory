@@ -35,6 +35,7 @@ option(ALLOC_STATS "Track memory allocations" OFF)
 #-----------------------------------------------------------
 # Configure once options known
 
+set(RENDER_ALLEGRO5 "Renderer: Allegro5")
 set(GWK_TARGET_ARCH "Unknown")      # default architecture e.g. x86, x64
 
 # Set the default build type to release with debug info

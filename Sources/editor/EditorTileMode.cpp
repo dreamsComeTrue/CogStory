@@ -73,13 +73,14 @@ namespace aga
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
 
-        if (state.buttons == 1)
+        if (state.buttons == 1 && m_SelectedTile)
         {
             Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
             Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
             Point point = m_Editor->CalculateCursorPoint (state.x, state.y);
 
-            m_SelectedTile->Bounds.SetPos ({ (translate.X + point.X) * 1 / scale.X, (translate.Y + point.Y) * 1 / scale.Y });
+            m_SelectedTile->Bounds.SetPos ({ (translate.X + point.X + m_TileSelectionOffset.X) * 1 / scale.X,
+                                             (translate.Y + point.Y + m_TileSelectionOffset.Y) * 1 / scale.Y });
             m_SelectedTile->SetPhysOffset (m_SelectedTile->Bounds.GetPos ());
 
             QuadTreeNode& quadTree = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetQuadTree ();
@@ -151,7 +152,8 @@ namespace aga
         {
             advance = beginning + i * TILE_SIZE;
 
-            al_draw_rectangle (advance, windowSize.Height - TILE_SIZE, advance + TILE_SIZE, windowSize.Height, COLOR_GREEN, 1);
+            al_draw_rectangle (
+              advance, windowSize.Height - TILE_SIZE, advance + TILE_SIZE, windowSize.Height, COLOR_GREEN, 1);
 
             if (i < regions.size () - 1)
             {
@@ -250,6 +252,9 @@ namespace aga
                 {
                     outRect = r;
                     result = tile;
+
+                    m_TileSelectionOffset = { r.GetTopLeft ().X - mouseX + r.GetSize ().Width * 0.5f,
+                                              r.GetTopLeft ().Y - mouseY + r.GetSize ().Height * 0.5f };
                 }
             }
         }
@@ -311,7 +316,8 @@ namespace aga
 
     void EditorTileMode::InitializeUI ()
     {
-        m_Atlas = m_Editor->m_MainLoop->GetSceneManager ().GetAtlasManager ()->GetAtlas (GetBaseName (GetResourcePath (PACK_0_0_HOME)));
+        m_Atlas = m_Editor->m_MainLoop->GetSceneManager ().GetAtlasManager ()->GetAtlas (
+          GetBaseName (GetResourcePath (PACK_0_0_HOME)));
     }
 
     //--------------------------------------------------------------------------------------------------

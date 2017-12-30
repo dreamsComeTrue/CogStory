@@ -12,6 +12,8 @@
 #include "EditorTriggerAreaMode.h"
 #include "Scene.h"
 
+#include <Gwork/Controls.h>
+
 namespace aga
 {
     extern const int TILES_COUNT;

@@ -1,6 +1,7 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "SceneManager.h"
+#include "ActorFactory.h"
 #include "AtlasManager.h"
 #include "Common.h"
 #include "MainLoop.h"
@@ -43,6 +44,8 @@ namespace aga
     bool SceneManager::Initialize ()
     {
         Lifecycle::Initialize ();
+
+        ActorFactory::RegisterActorTypes ();
 
         m_AtlasManager = new AtlasManager ();
         m_AtlasManager->Initialize ();

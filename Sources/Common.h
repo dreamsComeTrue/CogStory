@@ -20,13 +20,6 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_ttf.h>
 
-#include <Gwork/Controls.h>
-#include <Gwork/Controls/WindowControl.h>
-#include <Gwork/Input/Allegro5.h>
-#include <Gwork/Platform.h>
-#include <Gwork/Renderers/Allegro5.h>
-#include <Gwork/Skins/TexturedBase.h>
-
 extern "C" {
 #include "addons/nine-patch/nine_patch.h"
 }
@@ -49,13 +42,13 @@ extern "C" {
 
 #include "addons/tweeny/tweeny.h"
 
-#define SAFE_DELETE(x)                                                                                                 \
-    {                                                                                                                  \
-        if (x != nullptr)                                                                                              \
-        {                                                                                                              \
-            delete x;                                                                                                  \
-            x = nullptr;                                                                                               \
-        }                                                                                                              \
+#define SAFE_DELETE(x)                                                                                                                     \
+    {                                                                                                                                      \
+        if (x != nullptr)                                                                                                                  \
+        {                                                                                                                                  \
+            delete x;                                                                                                                      \
+            x = nullptr;                                                                                                                   \
+        }                                                                                                                                  \
     }
 
 #define ARRAY_SIZE(_ARR) ((int)(sizeof (_ARR) / sizeof (*_ARR)))
@@ -79,7 +72,7 @@ namespace aga
     const ALLEGRO_COLOR COLOR_ORANGE{ 255 / 255.f, 165 / 255.f, 0 / 255.f };
     const ALLEGRO_COLOR COLOR_PINK{ 191 / 255.f, 63 / 255.f, 191 / 255.f };
 
-    float RadiansToRadians (float radians);
+    float RadiansToDegrees (float radians);
     float DegressToRadians (float degrees);
 
     float ToPositiveAngle (float degrees);
@@ -94,7 +87,8 @@ namespace aga
 
     std::string& TrimString (std::string& str);
 
-    template <typename T> std::string ToString (T t)
+    template<typename T>
+    std::string ToString (T t)
     {
         std::stringstream strStream;
         strStream << t;

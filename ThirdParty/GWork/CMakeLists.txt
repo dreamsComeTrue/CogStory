@@ -10,7 +10,6 @@ project(gwork)
 
 set(GWK_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(GWK_HEADER_FOLDER "Headers")
-set(GWK_SOURCE_FOLDER "Source")
 
 # some build options
 set(CMAKE_FIND_FRAMEWORK LAST)

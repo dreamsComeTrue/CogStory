@@ -12,11 +12,11 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Screen::Screen (unsigned width, unsigned height)
-        : m_Width (width)
-        , m_Height (height)
-        , m_RealSize ((int)width, (int)height)
-        , m_Redraw (false)
-        , m_BackgroundColor (al_map_rgb (0, 0, 0))
+      : m_Width (width)
+      , m_Height (height)
+      , m_RealSize ((int)width, (int)height)
+      , m_Redraw (false)
+      , m_BackgroundColor (al_map_rgb (0, 0, 0))
     {
     }
 
@@ -102,7 +102,13 @@ namespace aga
         al_register_event_source (m_EventQueue, al_get_keyboard_event_source ());
 
         al_set_window_title (m_Display, GAME_TITLE);
-        al_set_window_position (m_Display, 0, 0);
+
+        ALLEGRO_MONITOR_INFO aminfo;
+        al_get_monitor_info (0, &aminfo);
+        int desktopWidth = aminfo.x2 - aminfo.x1 + 1;
+        int desktopHeight = aminfo.y2 - aminfo.y1 + 1;
+
+        al_set_window_position (m_Display, desktopWidth / 2 - m_RealSize.Width / 2, desktopHeight / 2 - m_RealSize.Height / 2);
 
         al_start_timer (m_DisplayTimer);
 
@@ -171,9 +177,9 @@ namespace aga
                 ProcessEventFunction (&ev);
             }
         }
-        else if ((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) || (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
-            || (ev.type == ALLEGRO_EVENT_MOUSE_AXES) || (ev.type == ALLEGRO_EVENT_KEY_DOWN)
-            || (ev.type == ALLEGRO_EVENT_KEY_UP) || (ev.type == ALLEGRO_EVENT_KEY_CHAR))
+        else if ((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) || (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) ||
+                 (ev.type == ALLEGRO_EVENT_MOUSE_AXES) || (ev.type == ALLEGRO_EVENT_KEY_DOWN) || (ev.type == ALLEGRO_EVENT_KEY_UP) ||
+                 (ev.type == ALLEGRO_EVENT_KEY_CHAR))
         {
             if (ProcessEventFunction != nullptr)
             {
@@ -207,10 +213,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Screen::SetBackgroundColor (float r, float g, float b, float a)
-    {
-        m_BackgroundColor = al_map_rgba (r, g, b, a);
-    }
+    void Screen::SetBackgroundColor (float r, float g, float b, float a) { m_BackgroundColor = al_map_rgba (r, g, b, a); }
 
     //--------------------------------------------------------------------------------------------------
 

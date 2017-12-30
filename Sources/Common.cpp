@@ -4,7 +4,7 @@
 
 namespace aga
 {
-    float RadiansToRadians (float radians) { return radians * 180.0 / M_PI; }
+    float RadiansToDegrees (float radians) { return radians * 180.0 / M_PI; }
 
     float DegressToRadians (float degrees) { return degrees * M_PI / 180.0; }
 
@@ -16,6 +16,8 @@ namespace aga
         {
             degrees += 360;
         }
+
+        degrees = 360 - degrees;
 
         return degrees;
     }

@@ -10,7 +10,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     EditorActorMode::EditorActorMode (Editor* editor)
-        : m_Editor (editor)
+      : m_Editor (editor)
     {
     }
 
@@ -20,43 +20,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool EditorActorMode::AddOrUpdateSpeech (const std::string& oldName)
-    {
-        if (strlen (m_Speech.Name.c_str ()) > 0)
-        {
-            std::string nameToFind = oldName != "" ? oldName : m_Speech.Name;
-            SpeechData* speech = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetSpeech (nameToFind);
-
-            if (speech)
-            {
-                m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->RemoveSpeech (nameToFind);
-            }
-
-            m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->AddSpeech (m_Speech.Name, m_Speech);
-
-            m_Editor->m_EditorSpeechMode.Clear ();
-
-            return true;
-        }
-
-        return false;
-    }
+    bool EditorActorMode::AddOrUpdateActor (const std::string& oldName) { return false; }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorActorMode::RemoveSpeech (const std::string& name)
-    {
-        m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->RemoveSpeech (name);
-    }
+    void EditorActorMode::RemoveActor (const std::string& name) {}
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorActorMode::Clear ()
-    {
-        m_Speech.Name = "";
-        m_Speech.Text.clear ();
-        m_Speech.Outcomes.clear ();
-    }
+    void EditorActorMode::Clear () {}
 
     //--------------------------------------------------------------------------------------------------
 }

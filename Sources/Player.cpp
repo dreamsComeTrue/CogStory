@@ -51,7 +51,7 @@ namespace aga
     void Player::BeforeEnter ()
     {
         PhysPoints.clear ();
-        PhysPoints.push_back ({ { 20, 10 }, { 25, 0 }, { 39, 0 }, { 44, 10 }, { 44, 64 }, { 20, 64 } });
+        PhysPoints.push_back ({ { 20, 30 }, { 25, 20 }, { 39, 20 }, { 44, 30 }, { 44, 64 }, { 20, 64 } });
         SetPhysOffset (Bounds.GetPos ());
     }
 
@@ -121,21 +121,25 @@ namespace aga
         if (al_key_down (&state, ALLEGRO_KEY_DOWN) || al_key_down (&state, ALLEGRO_KEY_S))
         {
             dy = MOVE_SPEED * deltaTime;
+            SetCurrentAnimation (ANIM_IDLE_NAME);
         }
 
         if (al_key_down (&state, ALLEGRO_KEY_UP) || al_key_down (&state, ALLEGRO_KEY_W))
         {
             dy = -MOVE_SPEED * deltaTime;
+            SetCurrentAnimation (ANIM_MOVE_UP_NAME);
         }
 
         if (al_key_down (&state, ALLEGRO_KEY_RIGHT) || al_key_down (&state, ALLEGRO_KEY_D))
         {
             dx = MOVE_SPEED * deltaTime;
+            SetCurrentAnimation (ANIM_MOVE_RIGHT_NAME);
         }
 
         if (al_key_down (&state, ALLEGRO_KEY_LEFT) || al_key_down (&state, ALLEGRO_KEY_A))
         {
             dx = -MOVE_SPEED * deltaTime;
+            SetCurrentAnimation (ANIM_MOVE_LEFT_NAME);
         }
 
         std::map<std::string, TriggerArea>& triggerAreas = m_SceneManager->GetActiveScene ()->GetTriggerAreas ();
@@ -261,7 +265,10 @@ namespace aga
         m_OldPosition = Bounds.GetPos ();
         Bounds.SetPos (Bounds.GetPos () + Point (dx, dy));
 
-        ChooseAnimation (ToPositiveAngle (RadiansToRadians (std::atan2 (dy, dx))));
+        if (!(std::abs (dx) < 0.1 && std::abs (dy) < 0.1f))
+        {
+            ChooseAnimation (ToPositiveAngle (RadiansToDegrees (std::atan2 (dy, dx))));
+        }
 
         if (MoveCallback != nullptr)
         {
@@ -289,6 +296,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Player::SetFollowCamera (bool follow) { m_FollowCamera = follow; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string Player::GetTypeName () { return "Player"; }
 
     //--------------------------------------------------------------------------------------------------
 }

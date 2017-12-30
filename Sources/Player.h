@@ -33,6 +33,8 @@ namespace aga
 
         void SetFollowCamera (bool follow);
 
+        static std::string GetTypeName ();
+
     private:
         void InitializeAnimations ();
 

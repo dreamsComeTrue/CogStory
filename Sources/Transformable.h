@@ -11,6 +11,7 @@ namespace aga
     {
     public:
         Rect Bounds;
+        float Rotation = 0;
     };
 }
 

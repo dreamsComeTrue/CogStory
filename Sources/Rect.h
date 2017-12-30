@@ -29,6 +29,8 @@ namespace aga
         Point GetSize () { return Size; }
         void SetSize (Point p) { Size = p; }
 
+        Point GetCenter () { return Point{ Pos.X + Pos.Width * 0.5f, Pos.Y + Pos.Height * 0.5f }; }
+
         Point Pos;
         Point Size;
 
@@ -43,7 +45,8 @@ namespace aga
 
     static bool InsideRect (float x, float y, Rect& rect)
     {
-        return (x >= rect.GetTopLeft ().X && y >= rect.GetTopLeft ().Y && x <= rect.GetBottomRight ().X && y <= rect.GetBottomRight ().Y);
+        return (x >= rect.GetTopLeft ().X && y >= rect.GetTopLeft ().Y && x <= rect.GetBottomRight ().X &&
+                y <= rect.GetBottomRight ().Y);
     }
 
     static bool InsideRect (const Point& point, Rect& rect) { return InsideRect (point.X, point.Y, rect); }
