@@ -89,6 +89,7 @@ namespace aga
 
     Gwk::Controls::Label* avgFPSLabel;
     Gwk::Controls::Label* fpsLabel;
+    Gwk::Controls::Label* idLabel;
     Gwk::Controls::Label* xPosLabel;
     Gwk::Controls::Label* yPosLabel;
     Gwk::Controls::Label* widthLabel;
@@ -231,50 +232,41 @@ namespace aga
 
         avgFPSLabel = new Gwk::Controls::Label (mainCanvas);
         avgFPSLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-        avgFPSLabel->SetPos (mainCanvas->Width () - 120.0f, 10);
 
         fpsLabel = new Gwk::Controls::Label (mainCanvas);
         fpsLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-        fpsLabel->SetPos (mainCanvas->Width () - 120.0f, 30);
+
+        idLabel = new Gwk::Controls::Label (mainCanvas);
+        idLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
 
         xPosLabel = new Gwk::Controls::Label (mainCanvas);
         xPosLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-        xPosLabel->SetPos (mainCanvas->Width () - 120.0f, 50);
 
         yPosLabel = new Gwk::Controls::Label (mainCanvas);
         yPosLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-        yPosLabel->SetPos (mainCanvas->Width () - 120.0f, 70);
 
         widthLabel = new Gwk::Controls::Label (mainCanvas);
         widthLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-        widthLabel->SetPos (mainCanvas->Width () - 120.0f, 90);
 
         heightLabel = new Gwk::Controls::Label (mainCanvas);
         heightLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-        heightLabel->SetPos (mainCanvas->Width () - 120.0f, 110);
 
         angleLabel = new Gwk::Controls::Label (mainCanvas);
         angleLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-        angleLabel->SetPos (mainCanvas->Width () - 120.0f, 130);
 
         zOrderLabel = new Gwk::Controls::Label (mainCanvas);
         zOrderLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-        zOrderLabel->SetPos (mainCanvas->Width () - 120.0f, 150);
 
         scaleLabel = new Gwk::Controls::Label (mainCanvas);
         scaleLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-        scaleLabel->SetPos (mainCanvas->Width () - 120.0f, 170);
 
         snapLabel = new Gwk::Controls::Label (mainCanvas);
         snapLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-        snapLabel->SetPos (mainCanvas->Width () - 120.0f, 190);
 
         gridLabel = new Gwk::Controls::Label (mainCanvas);
         gridLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-        gridLabel->SetPos (mainCanvas->Width () - 120.0f, 210);
 
         scriptsBox = new Gwk::Controls::ListBox (mainCanvas);
-        scriptsBox->SetBounds (mainCanvas->Width () - 150.0f, 240, 140, 100);
         scriptsBox->SetKeyboardInputEnabled (true);
         //        ctrl->onRowSelected.Add(this, &ThisClass::RowSelected);
 
@@ -282,13 +274,13 @@ namespace aga
 
         scriptReloadButton = new Gwk::Controls::Button (mainCanvas);
         scriptReloadButton->SetText ("RELOAD");
-        scriptReloadButton->SetPos (mainCanvas->Width () - 130.0f, 350);
         scriptReloadButton->onPress.Add (this, &Editor::OnReloadScript);
 
         m_EditorTileMode.InitializeUI ();
         m_EditorSpeechMode.Clear ();
 
         LoadConfig ();
+        ScreenResize ();
 
         return true;
     }
@@ -398,7 +390,7 @@ namespace aga
 
     void Editor::ProcessEvent (ALLEGRO_EVENT* event, float)
     {
-        if (guiInput.ProcessMessage (*event))
+        if (m_EditorTileMode.m_IsDrawTiles && guiInput.ProcessMessage (*event))
         {
             return;
         }
@@ -639,6 +631,10 @@ namespace aga
 
             HandleCameraMovement (event->mouse);
         }
+        else if (event->type == ALLEGRO_EVENT_DISPLAY_RESIZE)
+        {
+            ScreenResize ();
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -789,18 +785,32 @@ namespace aga
 
     Point Editor::CalculateCursorPoint (int mouseX, int mouseY)
     {
+        Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
         Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-        int finalX = (mouseX + translate.X);
-        int finalY = (mouseY + translate.Y);
+
+        float finalX = (mouseX + translate.X);
+        float finalY = (mouseY + translate.Y);
 
         if (m_IsSnapToGrid)
         {
-            finalX = std::floor ((finalX + m_GridSize * 0.5) / m_GridSize) * m_GridSize;
-            finalY = std::floor ((finalY + m_GridSize * 0.5) / m_GridSize) * m_GridSize;
+            float gridSizeScale = m_GridSize; // * 1 / scale.X;
+
+            if (scale.X < 1.0f)
+            {
+                // gridSizeScale *= 1.0f - scale.X;
+            }
+
+            finalX = std::floor ((finalX) / gridSizeScale) * gridSizeScale;
+            finalY = std::floor ((finalY) / gridSizeScale) * gridSizeScale;
+
+            std::string txt = "[" + ToString (finalX) + ", " + ToString (finalY) + "]";
+
+            m_MainLoop->GetSceneManager ().GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
+              FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), 120, 20, txt, ALLEGRO_ALIGN_LEFT);
         }
 
-        finalX = (finalX - translate.X);
-        finalY = (finalY - translate.Y);
+        finalX -= translate.X;
+        finalY -= translate.Y;
 
         return { finalX, finalY };
     }
@@ -845,18 +855,6 @@ namespace aga
                 m_MainLoop->GetSceneManager ().RemoveScene (m_MainLoop->GetSceneManager ().GetActiveScene ());
                 m_MainLoop->GetSceneManager ().SetActiveScene (scene);
 
-                std::vector<Tile*>& tiles = scene->GetTiles ();
-                int maxTileID = 0;
-
-                for (Tile* t : tiles)
-                {
-                    if (t->ID > maxTileID)
-                    {
-                        maxTileID = t->ID + 1;
-                    }
-                }
-
-                GlobalID = maxTileID;
                 ResetSettings ();
 
                 sceneNameLabel->SetText (
@@ -1055,6 +1053,10 @@ namespace aga
         fpsLabel->SetText (Gwk::Utility::Format ("    FPS: %.1f", m_MainLoop->GetScreen ()->GetFPS ()));
         fpsLabel->SizeToContents ();
 
+        idLabel->SetText (std::string (
+          "       ID: " + (m_EditorTileMode.m_SelectedTile ? ToString (m_EditorTileMode.m_SelectedTile->ID) : "-")));
+        idLabel->SizeToContents ();
+
         xPosLabel->SetText (std::string ("        X: " + ToString (translate.X * (1 / scale.X))));
         xPosLabel->SizeToContents ();
 
@@ -1095,4 +1097,25 @@ namespace aga
     void Editor::SetDrawUITiles (bool draw) { m_EditorTileMode.m_IsDrawTiles = draw; }
 
     //--------------------------------------------------------------------------------------------------
+
+    void Editor::ScreenResize ()
+    {
+        const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+        mainCanvas->SetSize (screenSize.Width, screenSize.Height);
+
+        avgFPSLabel->SetPos (mainCanvas->Width () - 120.0f, 10);
+        fpsLabel->SetPos (mainCanvas->Width () - 120.0f, avgFPSLabel->Bottom () + 5);
+        idLabel->SetPos (mainCanvas->Width () - 120.0f, fpsLabel->Bottom () + 10);
+        xPosLabel->SetPos (mainCanvas->Width () - 120.0f, idLabel->Bottom () + 5);
+        yPosLabel->SetPos (mainCanvas->Width () - 120.0f, xPosLabel->Bottom () + 5);
+        widthLabel->SetPos (mainCanvas->Width () - 120.0f, yPosLabel->Bottom () + 5);
+        heightLabel->SetPos (mainCanvas->Width () - 120.0f, widthLabel->Bottom () + 5);
+        angleLabel->SetPos (mainCanvas->Width () - 120.0f, heightLabel->Bottom () + 5);
+        zOrderLabel->SetPos (mainCanvas->Width () - 120.0f, angleLabel->Bottom () + 5);
+        scaleLabel->SetPos (mainCanvas->Width () - 120.0f, zOrderLabel->Bottom () + 5);
+        snapLabel->SetPos (mainCanvas->Width () - 120.0f, scaleLabel->Bottom () + 5);
+        gridLabel->SetPos (mainCanvas->Width () - 120.0f, snapLabel->Bottom () + 5);
+        scriptsBox->SetBounds (mainCanvas->Width () - 150.0f, gridLabel->Bottom () + 10, 140, 100);
+        scriptReloadButton->SetPos (mainCanvas->Width () - 130.0f, scriptsBox->Bottom () + 5);
+    }
 }

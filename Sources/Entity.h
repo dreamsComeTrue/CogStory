@@ -7,8 +7,6 @@
 
 namespace aga
 {
-    static int GlobalID = 0;
-
     class Entity : public Transformable
     {
     public:
@@ -17,9 +15,11 @@ namespace aga
         int ZOrder = 0;
         int RenderID = 0;
 
-        static int GetNextID () { return GlobalID++; }
+        static int GetNextID () { return ++GlobalID; }
 
         static bool CompareByZOrder (const Entity* a, const Entity* b) { return a->ZOrder < b->ZOrder; }
+
+        static int GlobalID;
     };
 }
 

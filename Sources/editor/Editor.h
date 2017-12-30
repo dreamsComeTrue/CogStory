@@ -117,6 +117,7 @@ namespace aga
         void RenderUI ();
 
         void ResetSettings ();
+        void ScreenResize ();
 
     private:
         MainLoop* m_MainLoop;

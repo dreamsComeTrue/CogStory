@@ -29,13 +29,13 @@ namespace aga
 
         sprintf (g_ScriptErrorBuffer, "%s [%d, %d]: %s: %s\n", msg->section, msg->row, msg->col, type, msg->message);
 
-        printf (g_ScriptErrorBuffer);
+        printf ("%s", g_ScriptErrorBuffer);
     }
 
     //--------------------------------------------------------------------------------------------------
 
     ScriptManager::ScriptManager (MainLoop* mainLoop)
-        : m_MainLoop (mainLoop)
+      : m_MainLoop (mainLoop)
     {
     }
 
@@ -90,7 +90,7 @@ namespace aga
         std::stringstream strStream;
 
         strStream << file.rdbuf (); // read the file
-        text = strStream.str (); // str holds the content of the file
+        text = strStream.str ();    // str holds the content of the file
         file.close ();
 
         return LoadScriptFromText (text, moduleName);
@@ -187,16 +187,19 @@ namespace aga
     {
         //  Point
         int r = m_ScriptEngine->RegisterObjectType (
-            "Point", sizeof (Point), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_CLASS_CA | asOBJ_APP_CLASS_ALLFLOATS);
+          "Point", sizeof (Point), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_CLASS_CA | asOBJ_APP_CLASS_ALLFLOATS);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectBehaviour (
-            "Point", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION (ConstructPoint), asCALL_CDECL_OBJLAST);
+          "Point", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION (ConstructPoint), asCALL_CDECL_OBJLAST);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectBehaviour ("Point", asBEHAVE_CONSTRUCT, "void f(const Point &in)",
-            asFUNCTION (ConstructPointCopy), asCALL_CDECL_OBJLAST);
+        r = m_ScriptEngine->RegisterObjectBehaviour ("Point",
+                                                     asBEHAVE_CONSTRUCT,
+                                                     "void f(const Point &in)",
+                                                     asFUNCTION (ConstructPointCopy),
+                                                     asCALL_CDECL_OBJLAST);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectBehaviour (
-            "Point", asBEHAVE_CONSTRUCT, "void f(float, float)", asFUNCTION (ConstructPointXY), asCALL_CDECL_OBJLAST);
+          "Point", asBEHAVE_CONSTRUCT, "void f(float, float)", asFUNCTION (ConstructPointXY), asCALL_CDECL_OBJLAST);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectProperty ("Point", "float X", asOFFSET (Point, X));
         assert (r >= 0);
@@ -208,32 +211,32 @@ namespace aga
         assert (r >= 0);
 
         r = m_ScriptEngine->RegisterGlobalFunction (
-            "void Log (Point &in)", asFUNCTIONPR (Log, (Point&), void), asCALL_CDECL);
+          "void Log (Point &in)", asFUNCTIONPR (Log, (Point&), void), asCALL_CDECL);
         assert (r >= 0);
 
         // Rect
         r = m_ScriptEngine->RegisterObjectType (
-            "Rect", sizeof (Rect), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_CLASS_CA | asOBJ_APP_CLASS_ALLFLOATS);
+          "Rect", sizeof (Rect), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_CLASS_CA | asOBJ_APP_CLASS_ALLFLOATS);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectBehaviour (
-            "Rect", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION (ConstructRect), asCALL_CDECL_OBJLAST);
+          "Rect", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION (ConstructRect), asCALL_CDECL_OBJLAST);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectBehaviour (
-            "Rect", asBEHAVE_CONSTRUCT, "void f(const Rect &in)", asFUNCTION (ConstructRectCopy), asCALL_CDECL_OBJLAST);
+          "Rect", asBEHAVE_CONSTRUCT, "void f(const Rect &in)", asFUNCTION (ConstructRectCopy), asCALL_CDECL_OBJLAST);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectBehaviour (
-            "Rect", asBEHAVE_CONSTRUCT, "void f(Point, Point)", asFUNCTION (ConstructRectXY), asCALL_CDECL_OBJLAST);
+          "Rect", asBEHAVE_CONSTRUCT, "void f(Point, Point)", asFUNCTION (ConstructRectXY), asCALL_CDECL_OBJLAST);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-            "Rect", "void SetPos (Point)", asMETHOD (Rect, SetPos), asCALL_THISCALL);
+          "Rect", "void SetPos (Point)", asMETHOD (Rect, SetPos), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("Rect", "Point GetPos ()", asMETHOD (Rect, GetPos), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-            "Rect", "void SetSize (Point)", asMETHOD (Rect, SetSize), asCALL_THISCALL);
+          "Rect", "void SetSize (Point)", asMETHOD (Rect, SetSize), asCALL_THISCALL);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-            "Rect", "Point GetSize ()", asMETHOD (Rect, GetSize), asCALL_THISCALL);
+        r =
+          m_ScriptEngine->RegisterObjectMethod ("Rect", "Point GetSize ()", asMETHOD (Rect, GetSize), asCALL_THISCALL);
         assert (r >= 0);
 
         // FlagPoint
@@ -252,7 +255,9 @@ namespace aga
         //            asMETHOD (SceneManager, GetFlagPoint), asCALL_THISCALL);
 
         r = m_ScriptEngine->RegisterGlobalFunction ("FlagPoint@ GetFlagPoint (const string &in)",
-            asMETHOD (SceneManager, GetFlagPoint), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+                                                    asMETHOD (SceneManager, GetFlagPoint),
+                                                    asCALL_THISCALL_ASGLOBAL,
+                                                    &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
 
         //  Player
@@ -260,26 +265,32 @@ namespace aga
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalProperty ("Player player", &m_MainLoop->GetSceneManager ().GetPlayer ());
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("Player", "void SetPosition (const Point &in)",
-            asMETHODPR (Actor, SetPosition, (const Point&), void), asCALL_THISCALL);
+        r = m_ScriptEngine->RegisterObjectMethod ("Player",
+                                                  "void SetPosition (const Point &in)",
+                                                  asMETHODPR (Actor, SetPosition, (const Point&), void),
+                                                  asCALL_THISCALL);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("Player", "void SetPosition (float, float)",
-            asMETHODPR (Player, SetPosition, (float, float), void), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-            "Player", "Point GetPosition ()", asMETHOD (Player, GetPosition), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-            "Player", "Point GetSize ()", asMETHOD (Player, GetSize), asCALL_THISCALL);
+        r = m_ScriptEngine->RegisterObjectMethod ("Player",
+                                                  "void SetPosition (float, float)",
+                                                  asMETHODPR (Player, SetPosition, (float, float), void),
+                                                  asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-            "Player", "void Move (float, float)", asMETHOD (Player, Move), asCALL_THISCALL);
+          "Player", "Point GetPosition ()", asMETHOD (Player, GetPosition), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-            "Player", "void SetFollowCamera (bool)", asMETHOD (Player, SetFollowCamera), asCALL_THISCALL);
+          "Player", "Point GetSize ()", asMETHOD (Player, GetSize), asCALL_THISCALL);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("Player", "void SetCurrentAnimation (const string &in)",
-            asMETHOD (Player, SetCurrentAnimation), asCALL_THISCALL);
+        r = m_ScriptEngine->RegisterObjectMethod (
+          "Player", "void Move (float, float)", asMETHOD (Player, Move), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+          "Player", "void SetFollowCamera (bool)", asMETHOD (Player, SetFollowCamera), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Player",
+                                                  "void SetCurrentAnimation (const string &in)",
+                                                  asMETHOD (Player, SetCurrentAnimation),
+                                                  asCALL_THISCALL);
         assert (r >= 0);
 
         //  Camera
@@ -288,10 +299,10 @@ namespace aga
         r = m_ScriptEngine->RegisterGlobalProperty ("Camera camera", &m_MainLoop->GetSceneManager ().GetCamera ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-            "Camera", "void SetTranslate (float dx, float dy)", asMETHOD (Camera, SetTranslate), asCALL_THISCALL);
+          "Camera", "void SetTranslate (float dx, float dy)", asMETHOD (Camera, SetTranslate), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-            "Camera", "Point GetScale ()", asMETHOD (Camera, GetScale), asCALL_THISCALL);
+          "Camera", "Point GetScale ()", asMETHOD (Camera, GetScale), asCALL_THISCALL);
         assert (r >= 0);
 
         //  Screen
@@ -303,66 +314,77 @@ namespace aga
         //  Trigger Area
         r = m_ScriptEngine->RegisterFuncdef ("void TriggerFunc (Point)");
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("void AddOnEnterCallback (const string &in, TriggerFunc @tf)",
-            asMETHODPR (SceneManager, AddOnEnterCallback, (const std::string&, asIScriptFunction*), void),
-            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        r = m_ScriptEngine->RegisterGlobalFunction (
+          "void AddOnEnterCallback (const string &in, TriggerFunc @tf)",
+          asMETHODPR (SceneManager, AddOnEnterCallback, (const std::string&, asIScriptFunction*), void),
+          asCALL_THISCALL_ASGLOBAL,
+          &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("void AddOnLeaveCallback (const string &in, TriggerFunc @tf)",
-            asMETHODPR (SceneManager, AddOnLeaveCallback, (const std::string&, asIScriptFunction*), void),
-            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        r = m_ScriptEngine->RegisterGlobalFunction (
+          "void AddOnLeaveCallback (const string &in, TriggerFunc @tf)",
+          asMETHODPR (SceneManager, AddOnLeaveCallback, (const std::string&, asIScriptFunction*), void),
+          asCALL_THISCALL_ASGLOBAL,
+          &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
 
         //  Speech Frame
         r = m_ScriptEngine->RegisterObjectType ("SpeechFrame", 0, asOBJ_REF | asOBJ_NOCOUNT);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-            "SpeechFrame", "void Show ()", asMETHOD (SpeechFrame, Show), asCALL_THISCALL);
+          "SpeechFrame", "void Show ()", asMETHOD (SpeechFrame, Show), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-            "SpeechFrame", "void Hide ()", asMETHOD (SpeechFrame, Hide), asCALL_THISCALL);
+          "SpeechFrame", "void Hide ()", asMETHOD (SpeechFrame, Hide), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-            "SpeechFrame", "bool IsVisible ()", asMETHOD (SpeechFrame, IsVisible), asCALL_THISCALL);
+          "SpeechFrame", "bool IsVisible ()", asMETHOD (SpeechFrame, IsVisible), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-            "SpeechFrame", "void SetDrawRect (Rect)", asMETHOD (SpeechFrame, SetDrawRect), asCALL_THISCALL);
+          "SpeechFrame", "void SetDrawRect (Rect)", asMETHOD (SpeechFrame, SetDrawRect), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-            "SpeechFrame", "void SetDrawTextCenter (bool)", asMETHOD (SpeechFrame, SetDrawTextCenter), asCALL_THISCALL);
+          "SpeechFrame", "void SetDrawTextCenter (bool)", asMETHOD (SpeechFrame, SetDrawTextCenter), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-            "SpeechFrame", "bool IsDrawTextCenter ()", asMETHOD (SpeechFrame, IsDrawTextCenter), asCALL_THISCALL);
+          "SpeechFrame", "bool IsDrawTextCenter ()", asMETHOD (SpeechFrame, IsDrawTextCenter), asCALL_THISCALL);
         assert (r >= 0);
 
         //  Speech Frame Manager
         r = m_ScriptEngine->RegisterGlobalFunction ("SpeechFrame@ AddSpeechFrame (const string &in, const string &in, "
                                                     "Rect, bool = true, const string &in = \"\")",
-            asMETHOD (SpeechFrameManager, AddSpeechFrame), asCALL_THISCALL_ASGLOBAL,
-            &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
+                                                    asMETHOD (SpeechFrameManager, AddSpeechFrame),
+                                                    asCALL_THISCALL_ASGLOBAL,
+                                                    &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);
 
         //  Global
         r = m_ScriptEngine->RegisterGlobalFunction (
-            "void Log(const string &in)", asFUNCTIONPR (Log, (const std::string&), void), asCALL_CDECL);
+          "void Log(const string &in)", asFUNCTIONPR (Log, (const std::string&), void), asCALL_CDECL);
+        assert (r >= 0);
+        r =
+          m_ScriptEngine->RegisterGlobalFunction ("void Log (float)", asFUNCTIONPR (Log, (float), void), asCALL_CDECL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction ("const Point& GetWindowSize ()",
+                                                    asMETHOD (Screen, GetWindowSize),
+                                                    asCALL_THISCALL_ASGLOBAL,
+                                                    m_MainLoop->GetScreen ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction (
-            "void Log (float)", asFUNCTIONPR (Log, (float), void), asCALL_CDECL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("const Point& GetWindowSize ()", asMETHOD (Screen, GetWindowSize),
-            asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("float GetDeltaTime ()", asMETHOD (Screen, GetDeltaTime),
-            asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
+          "float GetDeltaTime ()", asMETHOD (Screen, GetDeltaTime), asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction (
-            "float GetFPS ()", asMETHOD (Screen, GetFPS), asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
+          "float GetFPS ()", asMETHOD (Screen, GetFPS), asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("void SceneFadeInOut ()", asMETHOD (SceneManager, SceneFadeInOut),
-            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        r = m_ScriptEngine->RegisterGlobalFunction ("void SceneFadeInOut ()",
+                                                    asMETHOD (SceneManager, SceneFadeInOut),
+                                                    asCALL_THISCALL_ASGLOBAL,
+                                                    &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("void SetBackgroundColor (float, float, float, float)",
-            asMETHODPR (Screen, SetBackgroundColor, (float, float, float, float), void), asCALL_THISCALL_ASGLOBAL,
-            m_MainLoop->GetScreen ());
+        r = m_ScriptEngine->RegisterGlobalFunction (
+          "void SetBackgroundColor (float, float, float, float)",
+          asMETHODPR (Screen, SetBackgroundColor, (float, float, float, float), void),
+          asCALL_THISCALL_ASGLOBAL,
+          m_MainLoop->GetScreen ());
         assert (r >= 0);
 
         //  Tweening
@@ -380,15 +402,20 @@ namespace aga
         assert (r >= 0);
 
         r = m_ScriptEngine->RegisterGlobalFunction (
-            "void AddTween (int, Point, Point, int, TweenFuncPoint @tf, TweenFuncPointFinish @te)",
-            asMETHODPR (TweenManager, AddTween, (int, Point, Point, int, asIScriptFunction*, asIScriptFunction*), void),
-            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
+          "void AddTween (int, Point, Point, int, TweenFuncPoint @tf, TweenFuncPointFinish @te)",
+          asMETHODPR (TweenManager, AddTween, (int, Point, Point, int, asIScriptFunction*, asIScriptFunction*), void),
+          asCALL_THISCALL_ASGLOBAL,
+          &m_MainLoop->GetTweenManager ());
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("void PauseTween (int)", asMETHOD (TweenManager, PauseTween),
-            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
+        r = m_ScriptEngine->RegisterGlobalFunction ("void PauseTween (int)",
+                                                    asMETHOD (TweenManager, PauseTween),
+                                                    asCALL_THISCALL_ASGLOBAL,
+                                                    &m_MainLoop->GetTweenManager ());
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("void ResumeTween (int)", asMETHOD (TweenManager, ResumeTween),
-            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
+        r = m_ScriptEngine->RegisterGlobalFunction ("void ResumeTween (int)",
+                                                    asMETHOD (TweenManager, ResumeTween),
+                                                    asCALL_THISCALL_ASGLOBAL,
+                                                    &m_MainLoop->GetTweenManager ());
         assert (r >= 0);
     }
 

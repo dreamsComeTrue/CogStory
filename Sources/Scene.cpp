@@ -30,6 +30,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
+    int Entity::GlobalID = 0;
+
+    //--------------------------------------------------------------------------------------------------
+
     void TriggerArea::UpdatePolygons (Triangulator* triangulator)
     {
         if (Points.size () > 2)
@@ -361,6 +365,8 @@ namespace aga
                 scene->AddSpeech (speechData.Name, speechData);
             }
 
+            UpdateMaxTileID (scene);
+
             return scene;
         }
         catch (const std::exception&)
@@ -597,13 +603,11 @@ namespace aga
         bool isPlayerDrawn = false;
         std::vector<Entity*> tiles;
 
-        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
+        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () == "EDITOR_STATE")
         {
-            tiles = GetVisibleEntities ();
-
-            for (int i = 0; i < tiles.size (); ++i)
+            for (int i = 0; i < m_Tiles.size (); ++i)
             {
-                Tile* tile = (Tile*)tiles[i];
+                Tile* tile = m_Tiles[i];
 
                 if (!isPlayerDrawn && tile->ZOrder >= PLAYER_Z_ORDER)
                 {
@@ -622,9 +626,11 @@ namespace aga
         }
         else
         {
-            for (int i = 0; i < m_Tiles.size (); ++i)
+            tiles = GetVisibleEntities ();
+
+            for (int i = 0; i < tiles.size (); ++i)
             {
-                Tile* tile = m_Tiles[i];
+                Tile* tile = (Tile*)tiles[i];
 
                 if (!isPlayerDrawn && tile->ZOrder >= PLAYER_Z_ORDER)
                 {
@@ -835,6 +841,24 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     QuadTreeNode& Scene::GetQuadTree () { return m_QuadTree; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::UpdateMaxTileID (Scene* scene)
+    {
+        std::vector<Tile*>& tiles = scene->GetTiles ();
+        int maxTileID = -1;
+
+        for (Tile* t : tiles)
+        {
+            if (t->ID > maxTileID)
+            {
+                maxTileID = t->ID + 1;
+            }
+        }
+
+        Entity::GlobalID = maxTileID;
+    }
 
     //--------------------------------------------------------------------------------------------------
 

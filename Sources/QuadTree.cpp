@@ -88,11 +88,12 @@ namespace aga
             {
                 if (!m_TopLeftTree)
                 {
-                    m_TopLeftTree = new QuadTreeNode (Rect ({ m_Bounds.GetTopLeft ().X, m_Bounds.GetTopLeft ().Y },
-                                                            { (m_Bounds.GetTopLeft ().X + m_Bounds.GetBottomRight ().X) / 2,
-                                                              (m_Bounds.GetTopLeft ().Y + m_Bounds.GetBottomRight ().Y) / 2 }),
-                                                      m_QuadSize,
-                                                      this);
+                    m_TopLeftTree =
+                      new QuadTreeNode (Rect ({ m_Bounds.GetTopLeft ().X, m_Bounds.GetTopLeft ().Y },
+                                              { (m_Bounds.GetTopLeft ().X + m_Bounds.GetBottomRight ().X) / 2,
+                                                (m_Bounds.GetTopLeft ().Y + m_Bounds.GetBottomRight ().Y) / 2 }),
+                                        m_QuadSize,
+                                        this);
                 }
 
                 m_TopLeftTree->Insert (node);
@@ -103,7 +104,8 @@ namespace aga
                 {
                     m_BottomLeftTree = new QuadTreeNode (
                       Rect ({ m_Bounds.GetTopLeft ().X, (m_Bounds.GetTopLeft ().Y + m_Bounds.GetBottomRight ().Y) / 2 },
-                            { (m_Bounds.GetTopLeft ().X + m_Bounds.GetBottomRight ().X) / 2, m_Bounds.GetBottomRight ().Y }),
+                            { (m_Bounds.GetTopLeft ().X + m_Bounds.GetBottomRight ().X) / 2,
+                              m_Bounds.GetBottomRight ().Y }),
                       m_QuadSize,
                       this);
                 }
@@ -119,7 +121,8 @@ namespace aga
                 {
                     m_TopRightTree = new QuadTreeNode (
                       Rect ({ (m_Bounds.GetTopLeft ().X + m_Bounds.GetBottomRight ().X) / 2, m_Bounds.GetTopLeft ().Y },
-                            { m_Bounds.GetBottomRight ().X, (m_Bounds.GetTopLeft ().Y + m_Bounds.GetBottomRight ().Y) / 2 }),
+                            { m_Bounds.GetBottomRight ().X,
+                              (m_Bounds.GetTopLeft ().Y + m_Bounds.GetBottomRight ().Y) / 2 }),
                       m_QuadSize,
                       this);
                 }
@@ -130,11 +133,12 @@ namespace aga
             {
                 if (!m_BottomRightTree)
                 {
-                    m_BottomRightTree = new QuadTreeNode (Rect ({ (m_Bounds.GetTopLeft ().X + m_Bounds.GetBottomRight ().X) / 2,
-                                                                  (m_Bounds.GetTopLeft ().Y + m_Bounds.GetBottomRight ().Y) / 2 },
-                                                                { m_Bounds.GetBottomRight ().X, m_Bounds.GetBottomRight ().Y }),
-                                                          m_QuadSize,
-                                                          this);
+                    m_BottomRightTree =
+                      new QuadTreeNode (Rect ({ (m_Bounds.GetTopLeft ().X + m_Bounds.GetBottomRight ().X) / 2,
+                                                (m_Bounds.GetTopLeft ().Y + m_Bounds.GetBottomRight ().Y) / 2 },
+                                              { m_Bounds.GetBottomRight ().X, m_Bounds.GetBottomRight ().Y }),
+                                        m_QuadSize,
+                                        this);
                 }
 
                 m_BottomRightTree->Insert (node);
@@ -341,7 +345,7 @@ namespace aga
                 m_BottomRightTree->UpdateStructures ();
             }
         }
-        else if (m_Data.size () == 0 && m_Parent)
+        else if (m_Data.empty () && m_Parent)
         {
             if (this == m_Parent->m_TopLeftTree)
             {
@@ -360,7 +364,8 @@ namespace aga
                 SAFE_DELETE (m_Parent->m_BottomRightTree);
             }
 
-            if (!m_Parent->m_TopLeftTree && !m_Parent->m_TopRightTree && !m_Parent->m_BottomLeftTree && !m_Parent->m_BottomRightTree)
+            if (!m_Parent->m_TopLeftTree && !m_Parent->m_TopRightTree && !m_Parent->m_BottomLeftTree &&
+                !m_Parent->m_BottomRightTree)
             {
                 m_Parent->m_IsDivided = false;
             }
@@ -388,8 +393,8 @@ namespace aga
     // Check if current quadtree contains the point
     bool QuadTreeNode::InBoundary (Point p)
     {
-        return (p.X >= m_Bounds.GetTopLeft ().X && p.X <= m_Bounds.GetBottomRight ().X && p.Y >= m_Bounds.GetTopLeft ().Y &&
-                p.Y <= m_Bounds.GetBottomRight ().Y);
+        return (p.X >= m_Bounds.GetTopLeft ().X && p.X <= m_Bounds.GetBottomRight ().X &&
+                p.Y >= m_Bounds.GetTopLeft ().Y && p.Y <= m_Bounds.GetBottomRight ().Y);
     }
 
     //--------------------------------------------------------------------------------------------------

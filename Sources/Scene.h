@@ -126,6 +126,7 @@ namespace aga
         void AddOnLeaveCallback (const std::string& triggerName, asIScriptFunction* func);
 
     private:
+        static void UpdateMaxTileID (Scene* scene);
         void DrawQuadTree (QuadTreeNode* node);
 
     private:
