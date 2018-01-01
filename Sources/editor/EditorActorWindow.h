@@ -56,6 +56,10 @@ namespace aga
         void OnCancel ();
 
     private:
+        void UpdateActorsTree ();
+        void OnActorSelect (Gwk::Controls::Base* control);
+
+    private:
         Editor* m_Editor;
 
         int m_SelectedType;

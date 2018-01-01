@@ -10,6 +10,7 @@
 namespace aga
 {
     extern const int TILES_COUNT;
+    extern const int TILE_SIZE;
 
     class MainLoop;
     class Editor;
@@ -24,6 +25,8 @@ namespace aga
     public:
         EditorTileMode (Editor* editor);
         virtual ~EditorTileMode ();
+
+        void ChangeAtlas (const std::string& newAtlasName);
 
     private:
         void InitializeUI ();

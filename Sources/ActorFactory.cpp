@@ -24,12 +24,19 @@ namespace aga
 
     Actor* ActorFactory::GetActor (SceneManager* sceneManager, const std::string& type)
     {
+        Actor* newActor = nullptr;
+
         if (type == NPCActor::GetTypeName ())
         {
-            return new NPCActor (sceneManager);
+            newActor = new NPCActor (sceneManager);
         }
 
-        return nullptr;
+        if (newActor)
+        {
+            newActor->Initialize ();
+        }
+
+        return newActor;
     }
 
     //--------------------------------------------------------------------------------------------------

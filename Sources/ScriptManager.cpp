@@ -292,6 +292,12 @@ namespace aga
                                                   asMETHOD (Player, SetCurrentAnimation),
                                                   asCALL_THISCALL);
         assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+          "Player", "void SetPreventInput (bool)", asMETHOD (Player, SetPreventInput), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+          "Player", "bool IsPreventInput ()", asMETHOD (Player, IsPreventInput), asCALL_THISCALL);
+        assert (r >= 0);
 
         //  Camera
         r = m_ScriptEngine->RegisterObjectType ("Camera", sizeof (Camera), asOBJ_VALUE | asOBJ_POD);

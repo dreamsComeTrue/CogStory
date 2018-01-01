@@ -52,19 +52,25 @@ namespace aga
 
     std::string& LeftTrimString (std::string& str)
     {
-        auto it2 = std::find_if (str.begin (), str.end (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
+        auto it2 = std::find_if (
+          str.begin (), str.end (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
         str.erase (str.begin (), it2);
         return str;
     }
 
     std::string& RightTrimString (std::string& str)
     {
-        auto it1 = std::find_if (str.rbegin (), str.rend (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
+        auto it1 = std::find_if (
+          str.rbegin (), str.rend (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
         str.erase (it1.base (), str.end ());
         return str;
     }
 
     std::string& TrimString (std::string& str) { return LeftTrimString (RightTrimString (str)); }
+
+    float RandZeroToOne () { return rand () / (RAND_MAX + 1.f); }
+
+    float RandInRange (float min, float max) { return min + (rand () / (RAND_MAX / (max - min))); }
 
     std::string GetDirectory (const std::string& fullPath)
     {

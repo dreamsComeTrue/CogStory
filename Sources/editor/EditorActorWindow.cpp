@@ -147,6 +147,7 @@ namespace aga
         m_ActorsTree->SetBounds (10, 10, 300, dock->Height () - 55);
         m_ActorsTree->ExpandAll ();
         m_ActorsTree->Dock (Gwk::Position::Fill);
+        m_ActorsTree->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
 
         dock->GetLeft ()->GetTabControl ()->AddPage ("Actors", m_ActorsTree);
         m_ActorsTree->SetMargin (Gwk::Margin ());
@@ -219,6 +220,8 @@ namespace aga
         acceptButton->onPress.Add (this, &EditorActorWindow::OnAccept);
 
         m_ScriptWindow = new EditorActorScriptWindow (m_Editor, canvas);
+
+        UpdateActorsTree ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -234,31 +237,31 @@ namespace aga
 
     void EditorActorWindow::OnSave ()
     {
-        if (m_NameTextBox->GetText () != "")
+        if (m_NameTextBox->GetText () != "" && m_ActorTypes->GetSelectedRowName () != "")
         {
-            //            Gwk::Controls::Base::List& childNodes = m_SpeechesTree->GetChildNodes ();
-            //            std::string oldName = "";
+            Gwk::Controls::Base::List& childNodes = m_ActorsTree->GetChildNodes ();
+            std::string oldName = m_NameTextBox->GetText ();
 
-            //            for (Gwk::Controls::Base* control : childNodes)
-            //            {
-            //                Gwk::Controls::TreeNode* node = (Gwk::Controls::TreeNode*)control;
+            for (Gwk::Controls::Base* control : childNodes)
+            {
+                Gwk::Controls::TreeNode* node = (Gwk::Controls::TreeNode*)control;
 
-            //                if (node->IsSelected ())
-            //                {
-            //                    oldName = node->GetText ();
-            //                    break;
-            //                }
-            //            }
+                if (node->IsSelected ())
+                {
+                    oldName = node->GetText ();
+                    break;
+                }
+            }
 
-            //            bool ret = m_Editor->m_EditorSpeechMode.AddOrUpdateSpeech (oldName);
+            bool ret = m_Editor->m_EditorActorMode.AddOrUpdateActor (oldName, m_ActorTypes->GetSelectedRowName ());
 
-            //            if (ret)
-            //            {
-            //                m_NameTextBox->SetText ("");
-            //                m_TextData->SetText ("");
-            //                m_LanguageCombo->SelectItemByName ("EN");
-            //                m_Editor->m_EditorSpeechMode.Clear ();
-            //            }
+            if (ret)
+            {
+                m_NameTextBox->SetText ("");
+                m_Editor->m_EditorActorMode.Clear ();
+
+                UpdateActorsTree ();
+            }
         }
     }
 
@@ -268,7 +271,46 @@ namespace aga
     {
         if (m_NameTextBox->GetText () != "")
         {
+            m_Editor->m_EditorActorMode.RemoveActor (m_NameTextBox->GetText ());
             m_NameTextBox->SetText ("");
+
+            UpdateActorsTree ();
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::UpdateActorsTree ()
+    {
+        m_ActorsTree->Clear ();
+
+        std::map<std::string, Actor*>& actors =
+          m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActors ();
+
+        for (std::map<std::string, Actor*>::iterator it = actors.begin (); it != actors.end (); ++it)
+        {
+            Gwk::Controls::TreeNode* node = m_ActorsTree->AddNode ((*it).first);
+            node->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
+        }
+
+        m_ActorsTree->ExpandAll ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::OnActorSelect (Gwk::Controls::Base* control)
+    {
+        Gwk::Controls::TreeNode* node = (Gwk::Controls::TreeNode*)control;
+
+        if (node != nullptr && node->IsSelected ())
+        {
+            std::map<std::string, Actor*>& actors =
+              m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActors ();
+            Actor* selectedActor = actors[node->GetText ()];
+
+            m_Editor->m_EditorActorMode.m_Actor = selectedActor;
+
+            m_NameTextBox->SetText (selectedActor->Name);
         }
     }
 
@@ -304,7 +346,8 @@ namespace aga
         for (Gwk::Controls::Base* control : childNodes)
         {
             Gwk::Controls::PropertyRow* node = (Gwk::Controls::PropertyRow*)control;
-            Gwk::Controls::Property::LabelButton* property = (Gwk::Controls::Property::LabelButton*)node->GetProperty ();
+            Gwk::Controls::Property::LabelButton* property =
+              (Gwk::Controls::Property::LabelButton*)node->GetProperty ();
 
             if (property->FuncButton == button)
             {

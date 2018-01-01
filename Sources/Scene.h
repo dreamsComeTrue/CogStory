@@ -14,6 +14,7 @@ namespace aga
 #define LANG_EN 0
 #define LANG_PL 1
 
+    class Actor;
     class SceneManager;
     class AtlasManager;
     class Triangulator;
@@ -90,6 +91,11 @@ namespace aga
         void Update (float deltaTime);
         void Render (float deltaTime);
 
+        void AddActor (const std::string& name, Actor* actor);
+        void RemoveActor (const std::string& name);
+        Actor* GetActor (const std::string& name);
+        std::map<std::string, Actor*>& GetActors ();
+
         void AddTile (Tile* tile);
         void RemoveTile (Tile* tile);
         std::vector<Tile*>& GetTiles ();
@@ -132,6 +138,7 @@ namespace aga
     private:
         std::string m_Name;
         Rect m_Size;
+        std::map<std::string, Actor*> m_Actors;
         std::map<std::string, FlagPoint> m_FlagPoints;
         std::map<std::string, TriggerArea> m_TriggerAreas;
         std::map<std::string, SpeechData> m_Speeches;

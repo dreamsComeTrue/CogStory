@@ -26,8 +26,8 @@
             "pos": "-243 -236"
         }
     ],
-    "max_size": "1082 419",
-    "min_size": "11.1387 -206.795",
+    "max_size": "894.582 323.434",
+    "min_size": "-318.012 -206.795",
     "name": "Home",
     "scripts": [
         {
@@ -117,23 +117,19 @@
     ],
     "tiles": [
         {
-            "id": "0",
-            "name": "main_room",
-            "phys": [
-                {
-                    "poly": "-17.1656 189.336 -256.148 190.082 -255.989 -192.058 254.741 -192.482 254.741 189.293 39.6122 190.86 39.9193 180.725 243.509 180.879 243.699 35.5396 147.691 34.906 147.542 24.4702 244.146 24.2466 242.864 -181.029 16.1011 -179.921 15.4551 23.7248 99.3021 23.5422 99.6863 34.4587 3.70858 35.2571 3.23999 -180.766 -244.179 -180.766 -244.511 180.402 -17.2119 180.226 "
-                }
-            ],
-            "pos": "570 37",
+            "id": "7",
+            "name": "parallax-forest-front-trees",
+            "phys": [],
+            "pos": "-318.012 50.7473",
             "rot": "0",
             "tileset": "0_0_home",
-            "z-order": "-3"
+            "z-order": "-1"
         },
         {
-            "id": "1",
-            "name": "parallax-forest-back-trees",
+            "id": "8",
+            "name": "parallax-forest-front-trees",
             "phys": [],
-            "pos": "179 241",
+            "pos": "350.695 53.1995",
             "rot": "0",
             "tileset": "0_0_home",
             "z-order": "-1"
@@ -178,13 +174,49 @@
             "z-order": "1"
         },
         {
-            "id": "5",
-            "name": "bed",
+            "id": "9",
+            "name": "parallax-forest-front-trees",
             "phys": [],
-            "pos": "177 242",
+            "pos": "622.582 53.235",
             "rot": "0",
             "tileset": "0_0_home",
-            "z-order": "4"
+            "z-order": "0"
+        },
+        {
+            "id": "11",
+            "name": "player_head",
+            "phys": [],
+            "pos": "-77.6213 74.4032",
+            "rot": "0",
+            "tileset": "characters_ui",
+            "z-order": "0"
+        },
+        {
+            "id": "12",
+            "name": "arrow_dark",
+            "phys": [],
+            "pos": "-116 210",
+            "rot": "0",
+            "tileset": "menu_ui",
+            "z-order": "0"
+        },
+        {
+            "id": "13",
+            "name": "arrow_light",
+            "phys": [],
+            "pos": "-122 270",
+            "rot": "0",
+            "tileset": "menu_ui",
+            "z-order": "0"
+        },
+        {
+            "id": "14",
+            "name": "arrow_dark",
+            "phys": [],
+            "pos": "-121 294",
+            "rot": "180",
+            "tileset": "menu_ui",
+            "z-order": "0"
         }
     ],
     "trigger_areas": [

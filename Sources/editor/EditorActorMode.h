@@ -9,22 +9,24 @@
 namespace aga
 {
     class Editor;
+    class Actor;
 
     class EditorActorMode
     {
         friend class Editor;
-        friend class EditorSpeechWindow;
+        friend class EditorActorWindow;
 
     public:
         EditorActorMode (Editor* editor);
         virtual ~EditorActorMode ();
 
-        bool AddOrUpdateActor (const std::string& oldName);
+        bool AddOrUpdateActor (const std::string& oldName, const std::string& actorType);
         void RemoveActor (const std::string& name);
         void Clear ();
 
     private:
         Editor* m_Editor;
+        Actor* m_Actor;
     };
 }
 

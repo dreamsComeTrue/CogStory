@@ -186,9 +186,14 @@ namespace aga
 
     bool Scene::Destroy ()
     {
+        for (std::map<std::string, Actor*>::iterator it = m_Actors.begin (); it != m_Actors.end (); ++it)
+        {
+            SAFE_DELETE (it->second);
+        }
+
         for (int i = 0; i < m_Tiles.size (); ++i)
         {
-            delete m_Tiles[i];
+            SAFE_DELETE (m_Tiles[i]);
         }
 
         return Lifecycle::Destroy ();
@@ -580,12 +585,22 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    typedef std::map<std::string, Actor*>::iterator ActorIterator;
+
+    //--------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
+
     void Scene::Update (float deltaTime)
     {
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
         {
             m_SceneManager->GetPlayer ().Update (deltaTime);
             UpdateScripts (deltaTime);
+
+            for (ActorIterator it = m_Actors.begin (); it != m_Actors.end (); ++it)
+            {
+                it->second->Update (deltaTime);
+            }
         }
     }
 
@@ -593,6 +608,8 @@ namespace aga
 
     void Scene::Render (float deltaTime)
     {
+        Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
+
         m_SceneManager->GetCamera ().Update (deltaTime);
 
         if (m_DrawPhysData)
@@ -623,6 +640,15 @@ namespace aga
                     tile->DrawPhysVertices ();
                 }
             }
+
+            for (ActorIterator it = m_Actors.begin (); it != m_Actors.end (); ++it)
+            {
+                it->second->Render (deltaTime);
+
+                Point pos = { it->second->Bounds.GetCenter ().X, it->second->Bounds.GetBottomRight ().Y };
+                font.DrawText (
+                  FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), pos.X, pos.Y, it->first, ALLEGRO_ALIGN_CENTER);
+            }
         }
         else
         {
@@ -646,6 +672,11 @@ namespace aga
                     tile->DrawPhysVertices ();
                 }
             }
+
+            for (ActorIterator it = m_Actors.begin (); it != m_Actors.end (); ++it)
+            {
+                it->second->Render (deltaTime);
+            }
         }
 
         if (!isPlayerDrawn)
@@ -658,14 +689,13 @@ namespace aga
             m_SceneManager->GetPlayer ().DrawPhysVertices ();
         }
 
-        m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
-          FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), -100, -50, m_Name, ALLEGRO_ALIGN_LEFT);
+        font.DrawText (FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), -100, -50, m_Name, ALLEGRO_ALIGN_LEFT);
 
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
         {
             m_SceneManager->GetCamera ().UseIdentityTransform ();
 
-            m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
+            font.DrawText (
               FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), 10, 10, ToString (tiles.size ()), ALLEGRO_ALIGN_LEFT);
         }
     }
@@ -685,6 +715,43 @@ namespace aga
 
         return tiles;
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::AddActor (const std::string& name, Actor* actor)
+    {
+        if (m_Actors.find (name) == m_Actors.end ())
+        {
+            m_Actors.insert (make_pair (name, actor));
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::RemoveActor (const std::string& name)
+    {
+        if (m_Actors.find (name) != m_Actors.end ())
+        {
+            SAFE_DELETE (m_Actors[name]);
+            m_Actors.erase (name);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Actor* Scene::GetActor (const std::string& name)
+    {
+        if (m_Actors.find (name) != m_Actors.end ())
+        {
+            return m_Actors[name];
+        }
+
+        return nullptr;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::map<std::string, Actor*>& Scene::GetActors () { return m_Actors; }
 
     //--------------------------------------------------------------------------------------------------
 

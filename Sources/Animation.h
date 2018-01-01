@@ -37,6 +37,8 @@ namespace aga
         void AddAnimationFrames (const std::string& name, const AnimationFrames& frames);
         AnimationFrames& GetAnimation (const std::string& name);
         AnimationFrames& GetCurrentAnimation ();
+        std::string GetCurrentAnimationName ();
+        std::map<std::string, AnimationFrames>& GetAnimations ();
         void SetCurrentAnimation (const std::string& name);
 
         void Update (float deltaTime);

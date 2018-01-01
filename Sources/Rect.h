@@ -29,7 +29,7 @@ namespace aga
         Point GetSize () { return Size; }
         void SetSize (Point p) { Size = p; }
 
-        Point GetCenter () { return Point{ Pos.X + Pos.Width * 0.5f, Pos.Y + Pos.Height * 0.5f }; }
+        Point GetCenter () { return Point{ Pos.X + Size.Width * 0.5f, Pos.Y + Size.Height * 0.5f }; }
 
         Point Pos;
         Point Size;

@@ -86,6 +86,11 @@ namespace aga
     Gwk::Controls::Button* actorButton;
 
     Gwk::Controls::Button* playButton;
+    Gwk::Controls::ComboBox* tilesetCombo;
+    Gwk::Controls::Button* leftPrevTileButton;
+    Gwk::Controls::Button* leftNextTileButton;
+    Gwk::Controls::Button* rightPrevTileButton;
+    Gwk::Controls::Button* rightNextTileButton;
 
     Gwk::Controls::Label* avgFPSLabel;
     Gwk::Controls::Label* fpsLabel;
@@ -224,6 +229,43 @@ namespace aga
         actorButton->SetText ("ACTOR");
         actorButton->SetPos (20, speechButton->Bottom () + 5);
         actorButton->onPress.Add (this, &Editor::OnActor);
+
+        playButton = new Gwk::Controls::Button (mainCanvas);
+        playButton->SetText ("PLAY");
+        playButton->SetPos (20, actorButton->Bottom () + 20);
+        playButton->onPress.Add (this, &Editor::OnPlay);
+
+        tilesetCombo = new Gwk::Controls::ComboBox (mainCanvas);
+        tilesetCombo->SetWidth (90);
+        tilesetCombo->SetKeyboardInputEnabled (false);
+        tilesetCombo->onSelection.Add (this, &Editor::OnTilesetSelected);
+
+        std::map<std::string, Atlas*>& atlases = m_MainLoop->GetSceneManager ().GetAtlasManager ()->GetAtlases ();
+
+        for (const auto& atlas : atlases)
+        {
+            tilesetCombo->AddItem (atlas.first, atlas.second->GetPath ());
+        }
+
+        leftPrevTileButton = new Gwk::Controls::Button (mainCanvas);
+        leftPrevTileButton->SetWidth (30);
+        leftPrevTileButton->SetText ("<<");
+        leftPrevTileButton->onPress.Add (this, &Editor::OnPlay);
+
+        leftNextTileButton = new Gwk::Controls::Button (mainCanvas);
+        leftNextTileButton->SetWidth (30);
+        leftNextTileButton->SetText (">>");
+        leftNextTileButton->onPress.Add (this, &Editor::OnPlay);
+
+        rightPrevTileButton = new Gwk::Controls::Button (mainCanvas);
+        rightPrevTileButton->SetWidth (30);
+        rightPrevTileButton->SetText ("<<");
+        rightPrevTileButton->onPress.Add (this, &Editor::OnPlay);
+
+        rightNextTileButton = new Gwk::Controls::Button (mainCanvas);
+        rightNextTileButton->SetWidth (30);
+        rightNextTileButton->SetText (">>");
+        rightNextTileButton->onPress.Add (this, &Editor::OnPlay);
 
         playButton = new Gwk::Controls::Button (mainCanvas);
         playButton->SetText ("PLAY");
@@ -387,6 +429,7 @@ namespace aga
 
     bool openTest = false;
     bool saveRequested = false;
+    bool g_IsToolBoxTileSelected = false;
 
     void Editor::ProcessEvent (ALLEGRO_EVENT* event, float)
     {
@@ -395,12 +438,12 @@ namespace aga
             return;
         }
 
-        bool tileSelected = false;
+        g_IsToolBoxTileSelected = false;
         if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
         {
             if (event->mouse.button == 1 && m_EditorTileMode.m_IsDrawTiles)
             {
-                tileSelected = m_EditorTileMode.ChooseTile (event->mouse.x, event->mouse.y);
+                g_IsToolBoxTileSelected = m_EditorTileMode.ChooseTile (event->mouse.x, event->mouse.y);
             }
         }
 
@@ -497,139 +540,15 @@ namespace aga
 
         if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
         {
-            m_IsMousePan = event->mouse.button == 3;
-
-            if (event->mouse.button == 1)
-            {
-                if (m_CursorMode == CursorMode::TileSelectMode && m_EditorFlagPointMode.m_FlagPoint == "")
-                {
-                    Rect r;
-                    m_EditorTileMode.m_SelectedTile =
-                      m_EditorTileMode.GetTileUnderCursor (event->mouse.x, event->mouse.y, std::move (r));
-
-                    if (m_EditorTileMode.m_SelectedTile)
-                    {
-                        tileModeButton->Show ();
-
-                        m_CursorMode = CursorMode::TileEditMode;
-                        m_EditorTileMode.m_Rotation = m_EditorTileMode.m_SelectedTile->Rotation;
-                    }
-                }
-                else if (m_CursorMode == CursorMode::TileEditMode && !tileSelected)
-                {
-                    Rect r;
-                    Tile* newSelectedTile =
-                      m_EditorTileMode.GetTileUnderCursor (event->mouse.x, event->mouse.y, std::move (r));
-
-                    if (newSelectedTile != m_EditorTileMode.m_SelectedTile || !newSelectedTile)
-                    {
-                        if (newSelectedTile)
-                        {
-                            m_EditorTileMode.m_SelectedTile = newSelectedTile;
-                            m_CursorMode = CursorMode::TileEditMode;
-                            m_EditorTileMode.m_Rotation = m_EditorTileMode.m_SelectedTile->Rotation;
-
-                            tileModeButton->Show ();
-                        }
-                        else
-                        {
-                            m_CursorMode = CursorMode::TileSelectMode;
-                            m_EditorTileMode.m_SelectedTile = nullptr;
-
-                            tileModeButton->Hide ();
-                        }
-                    }
-                }
-                else if (m_CursorMode == CursorMode::EditPhysBodyMode)
-                {
-                    m_EditorPhysMode.InsertPhysPointAtCursor (event->mouse.x, event->mouse.y);
-                }
-                else if (m_CursorMode == CursorMode::EditFlagPointsMode)
-                {
-                    m_EditorFlagPointMode.InsertFlagPointAtCursor (event->mouse.x, event->mouse.y);
-                }
-                else if (m_CursorMode == CursorMode::EditTriggerAreaMode)
-                {
-                    m_EditorTriggerAreaMode.InsertTriggerAreaAtCursor (event->mouse.x, event->mouse.y);
-                }
-
-                m_EditorFlagPointMode.m_FlagPoint =
-                  m_EditorFlagPointMode.GetFlagPointUnderCursor (event->mouse.x, event->mouse.y);
-
-                m_EditorTriggerAreaMode.m_TriggerPoint =
-                  m_EditorTriggerAreaMode.GetTriggerPointUnderCursor (event->mouse.x, event->mouse.y);
-                m_EditorTriggerAreaMode.m_TriggerArea =
-                  m_EditorTriggerAreaMode.GetTriggerAreaUnderCursor (event->mouse.x, event->mouse.y);
-
-                if (m_EditorTriggerAreaMode.m_TriggerPoint && m_EditorTriggerAreaMode.m_TriggerArea)
-                {
-                    m_CursorMode = CursorMode::EditTriggerAreaMode;
-                }
-            }
-
-            if (event->mouse.button == 2)
-            {
-                bool flagPointRemoved =
-                  m_EditorFlagPointMode.RemoveFlagPointUnderCursor (event->mouse.x, event->mouse.y);
-                bool triggerPointRemoved =
-                  m_EditorTriggerAreaMode.RemoveTriggerPointUnderCursor (event->mouse.x, event->mouse.y);
-                bool physPointRemoved = false;
-
-                m_EditorFlagPointMode.m_FlagPoint = "";
-
-                if (m_CursorMode == CursorMode::EditPhysBodyMode)
-                {
-                    physPointRemoved = m_EditorPhysMode.RemovePhysPointUnderCursor (event->mouse.x, event->mouse.y);
-                }
-
-                if (!flagPointRemoved && !triggerPointRemoved && !physPointRemoved)
-                {
-                    m_CursorMode = CursorMode::TileSelectMode;
-                }
-            }
+            ProcessMouseButtonDown (event->mouse);
         }
         else if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
         {
-            m_IsMousePan = false;
-
-            if (m_EditorPhysMode.m_PhysPoint && m_EditorTileMode.m_SelectedTile && event->mouse.button == 1)
-            {
-                m_EditorTileMode.m_SelectedTile->UpdatePhysPolygon ();
-
-                if (!m_EditorPhysMode.m_PhysPoint && m_EditorPhysMode.m_PhysPoly &&
-                    !(*m_EditorPhysMode.m_PhysPoly).empty ())
-                {
-                    m_EditorPhysMode.m_PhysPoint = &(*m_EditorPhysMode.m_PhysPoly)[0];
-                }
-            }
-
-            if (m_EditorTriggerAreaMode.m_TriggerArea && event->mouse.button == 1)
-            {
-                m_EditorTriggerAreaMode.m_TriggerArea->UpdatePolygons (
-                  &m_MainLoop->GetPhysicsManager ().GetTriangulator ());
-
-                if (!m_EditorTriggerAreaMode.m_TriggerPoint && m_EditorTriggerAreaMode.m_TriggerArea &&
-                    !m_EditorTriggerAreaMode.m_TriggerArea->Points.empty ())
-                {
-                    m_EditorTriggerAreaMode.m_TriggerPoint = &m_EditorTriggerAreaMode.m_TriggerArea->Points[0];
-                }
-            }
+            ProcessMouseButtonUp (event->mouse);
         }
         else if (event->type == ALLEGRO_EVENT_MOUSE_AXES)
         {
-            if (!m_EditorFlagPointMode.MoveSelectedFlagPoint () && !m_EditorTriggerAreaMode.MoveSelectedTriggerPoint ())
-            {
-                if (m_CursorMode == CursorMode::TileEditMode)
-                {
-                    m_EditorTileMode.MoveSelectedTile ();
-                }
-                else if (m_CursorMode == CursorMode::EditPhysBodyMode)
-                {
-                    m_EditorPhysMode.MoveSelectedPhysPoint ();
-                }
-            }
-
-            HandleCameraMovement (event->mouse);
+            ProcessMouseAxes (event->mouse);
         }
         else if (event->type == ALLEGRO_EVENT_DISPLAY_RESIZE)
         {
@@ -1117,5 +1036,164 @@ namespace aga
         gridLabel->SetPos (mainCanvas->Width () - 120.0f, snapLabel->Bottom () + 5);
         scriptsBox->SetBounds (mainCanvas->Width () - 150.0f, gridLabel->Bottom () + 10, 140, 100);
         scriptReloadButton->SetPos (mainCanvas->Width () - 130.0f, scriptsBox->Bottom () + 5);
+
+        float beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
+
+        tilesetCombo->SetPos (beginning - 140, mainCanvas->Bottom () - 35);
+        leftPrevTileButton->SetPos (beginning - 35, mainCanvas->Bottom () - TILE_SIZE + 5);
+        leftNextTileButton->SetPos (beginning - 35, leftPrevTileButton->Bottom () + 2);
+        rightPrevTileButton->SetPos (beginning + TILES_COUNT * TILE_SIZE + 5, mainCanvas->Bottom () - TILE_SIZE + 5);
+        rightNextTileButton->SetPos (beginning + TILES_COUNT * TILE_SIZE + 5, rightPrevTileButton->Bottom () + 2);
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::ProcessMouseButtonDown (ALLEGRO_MOUSE_EVENT& event)
+    {
+        m_IsMousePan = event.button == 3;
+
+        if (event.button == 1)
+        {
+            if (m_CursorMode == CursorMode::TileSelectMode && m_EditorFlagPointMode.m_FlagPoint == "")
+            {
+                Rect r;
+                m_EditorTileMode.m_SelectedTile = m_EditorTileMode.GetTileUnderCursor (event.x, event.y, std::move (r));
+
+                if (m_EditorTileMode.m_SelectedTile)
+                {
+                    tileModeButton->Show ();
+
+                    m_CursorMode = CursorMode::TileEditMode;
+                    m_EditorTileMode.m_Rotation = m_EditorTileMode.m_SelectedTile->Rotation;
+                }
+            }
+            else if (m_CursorMode == CursorMode::TileEditMode && !g_IsToolBoxTileSelected)
+            {
+                Rect r;
+                Tile* newSelectedTile = m_EditorTileMode.GetTileUnderCursor (event.x, event.y, std::move (r));
+
+                if (newSelectedTile != m_EditorTileMode.m_SelectedTile || !newSelectedTile)
+                {
+                    if (newSelectedTile)
+                    {
+                        m_EditorTileMode.m_SelectedTile = newSelectedTile;
+                        m_CursorMode = CursorMode::TileEditMode;
+                        m_EditorTileMode.m_Rotation = m_EditorTileMode.m_SelectedTile->Rotation;
+
+                        tileModeButton->Show ();
+                    }
+                    else
+                    {
+                        m_CursorMode = CursorMode::TileSelectMode;
+                        m_EditorTileMode.m_SelectedTile = nullptr;
+
+                        tileModeButton->Hide ();
+                    }
+                }
+            }
+            else if (m_CursorMode == CursorMode::EditPhysBodyMode)
+            {
+                m_EditorPhysMode.InsertPhysPointAtCursor (event.x, event.y);
+            }
+            else if (m_CursorMode == CursorMode::EditFlagPointsMode)
+            {
+                m_EditorFlagPointMode.InsertFlagPointAtCursor (event.x, event.y);
+            }
+            else if (m_CursorMode == CursorMode::EditTriggerAreaMode)
+            {
+                m_EditorTriggerAreaMode.InsertTriggerAreaAtCursor (event.x, event.y);
+            }
+
+            m_EditorFlagPointMode.m_FlagPoint = m_EditorFlagPointMode.GetFlagPointUnderCursor (event.x, event.y);
+
+            m_EditorTriggerAreaMode.m_TriggerPoint =
+              m_EditorTriggerAreaMode.GetTriggerPointUnderCursor (event.x, event.y);
+            m_EditorTriggerAreaMode.m_TriggerArea =
+              m_EditorTriggerAreaMode.GetTriggerAreaUnderCursor (event.x, event.y);
+
+            if (m_EditorTriggerAreaMode.m_TriggerPoint && m_EditorTriggerAreaMode.m_TriggerArea)
+            {
+                m_CursorMode = CursorMode::EditTriggerAreaMode;
+            }
+        }
+
+        if (event.button == 2)
+        {
+            bool flagPointRemoved = m_EditorFlagPointMode.RemoveFlagPointUnderCursor (event.x, event.y);
+            bool triggerPointRemoved = m_EditorTriggerAreaMode.RemoveTriggerPointUnderCursor (event.x, event.y);
+            bool physPointRemoved = false;
+
+            m_EditorFlagPointMode.m_FlagPoint = "";
+
+            if (m_CursorMode == CursorMode::EditPhysBodyMode)
+            {
+                physPointRemoved = m_EditorPhysMode.RemovePhysPointUnderCursor (event.x, event.y);
+            }
+
+            if (!flagPointRemoved && !triggerPointRemoved && !physPointRemoved)
+            {
+                m_CursorMode = CursorMode::TileSelectMode;
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::ProcessMouseButtonUp (ALLEGRO_MOUSE_EVENT& event)
+    {
+        m_IsMousePan = false;
+
+        if (m_EditorPhysMode.m_PhysPoint && m_EditorTileMode.m_SelectedTile && event.button == 1)
+        {
+            m_EditorTileMode.m_SelectedTile->UpdatePhysPolygon ();
+
+            if (!m_EditorPhysMode.m_PhysPoint && m_EditorPhysMode.m_PhysPoly &&
+                !(*m_EditorPhysMode.m_PhysPoly).empty ())
+            {
+                m_EditorPhysMode.m_PhysPoint = &(*m_EditorPhysMode.m_PhysPoly)[0];
+            }
+        }
+
+        if (m_EditorTriggerAreaMode.m_TriggerArea && event.button == 1)
+        {
+            m_EditorTriggerAreaMode.m_TriggerArea->UpdatePolygons (
+              &m_MainLoop->GetPhysicsManager ().GetTriangulator ());
+
+            if (!m_EditorTriggerAreaMode.m_TriggerPoint && m_EditorTriggerAreaMode.m_TriggerArea &&
+                !m_EditorTriggerAreaMode.m_TriggerArea->Points.empty ())
+            {
+                m_EditorTriggerAreaMode.m_TriggerPoint = &m_EditorTriggerAreaMode.m_TriggerArea->Points[0];
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::ProcessMouseAxes (ALLEGRO_MOUSE_EVENT& event)
+    {
+        if (!m_EditorFlagPointMode.MoveSelectedFlagPoint () && !m_EditorTriggerAreaMode.MoveSelectedTriggerPoint ())
+        {
+            if (m_CursorMode == CursorMode::TileEditMode)
+            {
+                m_EditorTileMode.MoveSelectedTile ();
+            }
+            else if (m_CursorMode == CursorMode::EditPhysBodyMode)
+            {
+                m_EditorPhysMode.MoveSelectedPhysPoint ();
+            }
+        }
+
+        HandleCameraMovement (event);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnTilesetSelected (Gwk::Controls::Base* control)
+    {
+        Gwk::Controls::Label* selItem = tilesetCombo->GetSelectedItem ();
+
+        m_EditorTileMode.ChangeAtlas (selItem->GetText ());
+    }
+
+    //--------------------------------------------------------------------------------------------------
 }

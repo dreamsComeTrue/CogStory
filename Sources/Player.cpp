@@ -40,7 +40,8 @@ namespace aga
 
         InitializeAnimations ();
 
-        sample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile ("FOOT_STEP", GetResourcePath (SOUND_FOOT_STEP));
+        sample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
+          "FOOT_STEP", GetResourcePath (SOUND_FOOT_STEP));
         sample->SetVolume (3.0f);
 
         return true;
@@ -150,10 +151,11 @@ namespace aga
 
             for (Polygon& polygon : area.Polygons)
             {
-                if (area.OnEnterCallback || area.ScriptOnEnterCallback || area.OnLeaveCallback || area.ScriptOnLeaveCallback)
+                if (area.OnEnterCallback || area.ScriptOnEnterCallback || area.OnLeaveCallback ||
+                    area.ScriptOnLeaveCallback)
                 {
-                    PolygonCollisionResult r =
-                      m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (GetPhysPolygon (0), polygon, { dx, dy });
+                    PolygonCollisionResult r = m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (
+                      GetPhysPolygon (0), polygon, { dx, dy });
 
                     if (r.WillIntersect || r.Intersect)
                     {
@@ -161,17 +163,21 @@ namespace aga
                         {
                             if (area.OnEnterCallback)
                             {
-                                area.OnEnterCallback (dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y);
+                                area.OnEnterCallback (dx + r.MinimumTranslationVector.X,
+                                                      dy + r.MinimumTranslationVector.Y);
                             }
 
                             if (area.ScriptOnEnterCallback)
                             {
                                 const char* moduleName = area.ScriptOnEnterCallback->GetModuleName ();
-                                Script* script = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (moduleName);
+                                Script* script =
+                                  m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (
+                                    moduleName);
 
                                 if (script)
                                 {
-                                    Point point = { dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y };
+                                    Point point = { dx + r.MinimumTranslationVector.X,
+                                                    dy + r.MinimumTranslationVector.Y };
                                     asIScriptContext* ctx = script->GetContext ();
                                     ctx->Prepare (area.ScriptOnEnterCallback);
                                     ctx->SetArgObject (0, &point);
@@ -195,7 +201,8 @@ namespace aga
                         if (area.ScriptOnLeaveCallback)
                         {
                             const char* moduleName = area.ScriptOnLeaveCallback->GetModuleName ();
-                            Script* script = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (moduleName);
+                            Script* script =
+                              m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (moduleName);
 
                             if (script)
                             {
@@ -296,10 +303,6 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Player::SetFollowCamera (bool follow) { m_FollowCamera = follow; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    std::string Player::GetTypeName () { return "Player"; }
 
     //--------------------------------------------------------------------------------------------------
 }

@@ -61,6 +61,11 @@ namespace aga
 
     void Actor::ChooseAnimation (float angleDeg)
     {
+        if (m_Animation.GetAnimations ().empty ())
+        {
+            return;
+        }
+
         if (angleDeg > 45 && angleDeg < 135)
         {
             SetCurrentAnimation (ANIM_MOVE_UP_NAME);
@@ -86,7 +91,11 @@ namespace aga
 
     bool Actor::Update (float deltaTime)
     {
-        m_Animation.Update (deltaTime);
+        if (!m_Animation.GetAnimations ().empty ())
+        {
+            m_Animation.Update (deltaTime);
+        }
+
         UpdateScripts (deltaTime);
 
         return true;
@@ -94,15 +103,39 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Actor::Render (float deltaTime)
+    void Actor::Render (float)
     {
-        AnimationFrames& frames = m_Animation.GetCurrentAnimation ();
-        Rect& frame = frames.GetFrame (m_Animation.GetCurrentFrame ());
-        float width = frame.GetSize ().Width;
-        float height = frame.GetSize ().Height;
+        if (m_Image && !m_Animation.GetAnimations ().empty ())
+        {
+            AnimationFrames& frames = m_Animation.GetCurrentAnimation ();
+            Rect& frame = frames.GetFrame (m_Animation.GetCurrentFrame ());
+            float width = frame.GetSize ().Width;
+            float height = frame.GetSize ().Height;
 
-        al_draw_scaled_bitmap (
-          m_Image, frame.GetPos ().X, frame.GetPos ().Y, width, height, Bounds.GetPos ().X, Bounds.GetPos ().Y, width, height, 0);
+            al_draw_scaled_bitmap (m_Image,
+                                   frame.GetPos ().X,
+                                   frame.GetPos ().Y,
+                                   width,
+                                   height,
+                                   Bounds.GetPos ().X,
+                                   Bounds.GetPos ().Y,
+                                   width,
+                                   height,
+                                   0);
+        }
+        else
+        {
+            al_draw_scaled_bitmap (m_Image,
+                                   0,
+                                   0,
+                                   al_get_bitmap_width (m_Image),
+                                   al_get_bitmap_height (m_Image),
+                                   Bounds.GetPos ().X,
+                                   Bounds.GetPos ().Y,
+                                   Bounds.GetSize ().Width,
+                                   Bounds.GetSize ().Height,
+                                   0);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

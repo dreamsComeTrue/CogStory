@@ -42,13 +42,13 @@ extern "C" {
 
 #include "addons/tweeny/tweeny.h"
 
-#define SAFE_DELETE(x)                                                                                                                     \
-    {                                                                                                                                      \
-        if (x != nullptr)                                                                                                                  \
-        {                                                                                                                                  \
-            delete x;                                                                                                                      \
-            x = nullptr;                                                                                                                   \
-        }                                                                                                                                  \
+#define SAFE_DELETE(x)                                                                                                 \
+    {                                                                                                                  \
+        if (x != nullptr)                                                                                              \
+        {                                                                                                              \
+            delete x;                                                                                                  \
+            x = nullptr;                                                                                               \
+        }                                                                                                              \
     }
 
 #define ARRAY_SIZE(_ARR) ((int)(sizeof (_ARR) / sizeof (*_ARR)))
@@ -95,6 +95,9 @@ namespace aga
 
         return strStream.str ();
     }
+
+    float RandZeroToOne ();
+    float RandInRange (float min, float max);
 
     std::string GetDirectory (const std::string& fullPath);
 

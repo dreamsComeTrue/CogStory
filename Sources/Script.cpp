@@ -36,9 +36,9 @@ namespace aga
                  "- Exception '%s' in '%s'\n%s",
                  context->GetExceptionString (),
                  context->GetExceptionFunction ()->GetDeclaration (),
-                 GetCallStack (context));
+                 GetCallStack (context).c_str ());
 
-        printf (buffer);
+        printf ("%s", buffer);
     }
 
     //---------------------------------------------------------------------------
@@ -155,7 +155,8 @@ namespace aga
             if (r == asEXECUTION_EXCEPTION)
             {
                 // An exception occurred, let the script writer know what happened so it can be corrected.
-                printf ("An exception '%s' occurred. Please correct the code and try again.\n", m_FuncContext->GetExceptionString ());
+                printf ("An exception '%s' occurred. Please correct the code and try again.\n",
+                        m_FuncContext->GetExceptionString ());
             }
 
             return false;

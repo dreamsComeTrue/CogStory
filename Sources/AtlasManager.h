@@ -21,6 +21,7 @@ namespace aga
 
         Atlas* LoadFromFile (const std::string& path);
         Atlas* GetAtlas (const std::string& name);
+        std::map<std::string, Atlas*>& GetAtlases ();
 
     private:
         std::map<std::string, Atlas*> m_Atlases;

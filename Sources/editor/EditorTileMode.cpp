@@ -31,6 +31,13 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void EditorTileMode::ChangeAtlas (const std::string& newAtlasName)
+    {
+        m_Atlas = m_Editor->m_MainLoop->GetSceneManager ().GetAtlasManager ()->GetAtlas (newAtlasName);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void EditorTileMode::RemoveSelectedTile ()
     {
         if (m_SelectedTile)

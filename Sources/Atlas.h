@@ -30,6 +30,7 @@ namespace aga
         std::vector<AtlasRegion>& GetRegions ();
 
         std::string GetName ();
+        std::string GetPath ();
 
     private:
         void LoadFromFile (const std::string& path);

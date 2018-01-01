@@ -30,6 +30,8 @@ void Start ()
 
 void BeforeEnterScene ()
 {
+    player.SetPreventInput (true);
+
     //SceneFadeInOut ();
 
 	AddOnEnterCallback ("TOP", TopOnEnter);
@@ -64,6 +66,7 @@ bool PlayerTween (int id, float progress, Point value)
     if (id == TWEEN_2 && progress > 0.7)
     {
         PauseTween (TWEEN_2);
+        player.SetPreventInput (false);
     }
 
 	Point delta = Point (value.X - lastPoint.X, value.Y - lastPoint.Y);

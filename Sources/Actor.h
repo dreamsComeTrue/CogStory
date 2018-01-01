@@ -46,8 +46,6 @@ namespace aga
 
         std::function<void(float dx, float dy)> MoveCallback;
 
-        static std::string GetTypeName ();
-
     protected:
         void ChooseAnimation (float angleDeg);
 

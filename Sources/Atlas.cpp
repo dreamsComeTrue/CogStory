@@ -70,7 +70,8 @@ namespace aga
         if (m_Regions.find (name) != m_Regions.end ())
         {
             Rect r = m_Regions[name].Bounds;
-            al_draw_bitmap_region (m_Image, r.GetPos ().X, r.GetPos ().Y, r.GetSize ().Width, r.GetSize ().Height, x, y, 0);
+            al_draw_bitmap_region (
+              m_Image, r.GetPos ().X, r.GetPos ().Y, r.GetSize ().Width, r.GetSize ().Height, x, y, 0);
         }
     }
 
@@ -113,6 +114,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     std::string Atlas::GetName () { return m_Name; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string Atlas::GetPath () { return m_Path; }
 
     //--------------------------------------------------------------------------------------------------
 }

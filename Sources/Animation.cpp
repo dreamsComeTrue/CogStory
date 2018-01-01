@@ -23,7 +23,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void AnimationFrames::AddFrame (unsigned index, const Rect& rect) { m_Frames.insert (m_Frames.begin () + index, rect); }
+    void AnimationFrames::AddFrame (unsigned index, const Rect& rect)
+    {
+        m_Frames.insert (m_Frames.begin () + index, rect);
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -69,6 +72,14 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     AnimationFrames& Animation::GetCurrentAnimation () { return m_Animations[m_CurrentAnimation]; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string Animation::GetCurrentAnimationName () { return m_CurrentAnimation; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::map<std::string, AnimationFrames>& Animation::GetAnimations () { return m_Animations; }
 
     //--------------------------------------------------------------------------------------------------
 

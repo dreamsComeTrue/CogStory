@@ -110,6 +110,8 @@ namespace aga
         void UpdateScriptsBox ();
         void OnReloadScript ();
 
+        void OnTilesetSelected (Gwk::Controls::Base* control);
+
         Point CalculateCursorPoint (int mouseX, int mouseY);
 
         bool IsMouseWithinPointRect (int mouseX, int mouseY, Point point, int outsets);
@@ -118,6 +120,10 @@ namespace aga
 
         void ResetSettings ();
         void ScreenResize ();
+
+        void ProcessMouseButtonDown (ALLEGRO_MOUSE_EVENT& event);
+        void ProcessMouseButtonUp (ALLEGRO_MOUSE_EVENT& event);
+        void ProcessMouseAxes (ALLEGRO_MOUSE_EVENT& event);
 
     private:
         MainLoop* m_MainLoop;
