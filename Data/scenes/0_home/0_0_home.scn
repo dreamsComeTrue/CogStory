@@ -1,4 +1,14 @@
 {
+    "actors": [
+        {
+            "id": "15",
+            "name": "NPC",
+            "pos": "0 0",
+            "rot": "0",
+            "type": "NPC",
+            "z-order": "0"
+        }
+    ],
     "flag_points": [
         {
             "connections": "B ",

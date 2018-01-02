@@ -1,6 +1,7 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Scene.h"
+#include "ActorFactory.h"
 #include "Atlas.h"
 #include "AtlasManager.h"
 #include "MainLoop.h"
@@ -370,6 +371,27 @@ namespace aga
                 scene->AddSpeech (speechData.Name, speechData);
             }
 
+            auto& actors = j["actors"];
+
+            for (auto& actorIt : actors)
+            {
+                Actor* newActor = ActorFactory::GetActor (sceneManager, actorIt["type"]);
+
+                if (newActor)
+                {
+                    scene->AddActor (actorIt["name"], newActor);
+
+                    std::string id = actorIt["id"];
+                    newActor->ID = atoi (id.c_str ());
+                    newActor->Name = actorIt["name"];
+                    newActor->Bounds.Pos = StringToPoint (actorIt["pos"]);
+                    std::string zOrder = actorIt["z-order"];
+                    newActor->ZOrder = atoi (zOrder.c_str ());
+                    std::string rot = actorIt["rot"];
+                    newActor->Rotation = atof (rot.c_str ());
+                }
+            }
+
             UpdateMaxTileID (scene);
 
             return scene;
@@ -550,6 +572,23 @@ namespace aga
                 speechObj["outcomes"].push_back (outcomeObj);
 
                 j["speeches"].push_back (speechObj);
+            }
+
+            j["actors"] = json::array ({});
+
+            for (auto& actorIt : scene->m_Actors)
+            {
+                json actorObj = json::object ({});
+                Actor* actor = actorIt.second;
+
+                actorObj["id"] = ToString (actor->ID);
+                actorObj["type"] = actor->GetTypeName ();
+                actorObj["name"] = actor->Name;
+                actorObj["pos"] = PointToString (actor->Bounds.GetPos ());
+                actorObj["z-order"] = ToString (actor->ZOrder);
+                actorObj["rot"] = ToString (actor->Rotation);
+
+                j["actors"].push_back (actorObj);
             }
 
             // write prettified JSON to another file

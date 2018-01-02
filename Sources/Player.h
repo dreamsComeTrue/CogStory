@@ -15,6 +15,9 @@ namespace aga
     class Player : public Actor
     {
     public:
+        static std::string TypeName;
+
+    public:
         Player (SceneManager* sceneManager);
         virtual ~Player ();
         bool Initialize () override;
@@ -32,6 +35,8 @@ namespace aga
         void SetPosition (float x, float y) override;
 
         void SetFollowCamera (bool follow);
+
+        virtual std::string GetTypeName () override;
 
     private:
         void InitializeAnimations ();

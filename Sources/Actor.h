@@ -46,6 +46,8 @@ namespace aga
 
         std::function<void(float dx, float dy)> MoveCallback;
 
+        virtual std::string GetTypeName () = 0;
+
     protected:
         void ChooseAnimation (float angleDeg);
 

@@ -14,7 +14,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void ActorFactory::RegisterActorTypes () { s_ActorTypes.push_back (NPCActor::GetTypeName ()); }
+    void ActorFactory::RegisterActorTypes () { s_ActorTypes.push_back (NPCActor::TypeName); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -26,7 +26,7 @@ namespace aga
     {
         Actor* newActor = nullptr;
 
-        if (type == NPCActor::GetTypeName ())
+        if (type == NPCActor::TypeName)
         {
             newActor = new NPCActor (sceneManager);
         }

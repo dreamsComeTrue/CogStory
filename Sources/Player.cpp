@@ -5,9 +5,15 @@
 #include "PhysicsManager.h"
 #include "Scene.h"
 #include "SceneManager.h"
+#include "Screen.h"
 
 namespace aga
 {
+    //--------------------------------------------------------------------------------------------------
+
+    std::string Player::TypeName = "Player";
+
+    //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
     Player::Player (SceneManager* sceneManager)
@@ -105,8 +111,6 @@ namespace aga
     bool Player::IsPreventInput () const { return m_PreventInput; }
 
     //--------------------------------------------------------------------------------------------------
-
-    float sampleCounter = 0;
 
     void Player::HandleInput (float deltaTime)
     {
@@ -251,8 +255,6 @@ namespace aga
                 Move (dx, dy);
             }
         }
-
-        sampleCounter += deltaTime;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -261,8 +263,12 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    float sampleCounter = 0;
+
     void Player::Move (float dx, float dy)
     {
+        sampleCounter += m_SceneManager->GetMainLoop ()->GetScreen ()->GetDeltaTime ();
+
         if (sampleCounter > 0.4f)
         {
             sample->Play ();
@@ -303,6 +309,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Player::SetFollowCamera (bool follow) { m_FollowCamera = follow; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string Player::GetTypeName () { return TypeName; }
 
     //--------------------------------------------------------------------------------------------------
 }

@@ -10,13 +10,16 @@ namespace aga
     class NPCActor : public Actor
     {
     public:
+        static std::string TypeName;
+
+    public:
         NPCActor (SceneManager* sceneManager);
 
         bool Initialize () override;
 
         virtual bool Update (float deltaTime);
 
-        static std::string GetTypeName ();
+        virtual std::string GetTypeName () override;
     };
 }
 
