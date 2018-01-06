@@ -15,6 +15,8 @@ namespace aga
         int ZOrder = 0;
         int RenderID = 0;
 
+        virtual std::string GetTypeName () = 0;
+
         static int GetNextID () { return ++GlobalID; }
 
         static bool CompareByZOrder (const Entity* a, const Entity* b) { return a->ZOrder < b->ZOrder; }

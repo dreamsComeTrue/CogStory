@@ -23,7 +23,6 @@ namespace aga
     public:
         Atlas ();
 
-        void DrawRegion (const std::string& name, int x, int y);
         void DrawRegion (const std::string& name, int x, int y, float scaleX, float scaleY, float rotation);
         ALLEGRO_BITMAP* GetImage ();
         AtlasRegion& GetRegion (const std::string& name);

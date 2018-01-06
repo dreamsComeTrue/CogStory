@@ -38,7 +38,7 @@ void BeforeEnterScene ()
 	AddOnLeaveCallback ("TOP", TopOnLeave);
 
     lastPoint = GetFlagPoint ("A").Pos;
-    player.SetPosition (lastPoint.X - playerSize.Width * 0.5, lastPoint.Y - playerSize.Height * 0.5);	
+    player.SetPosition (lastPoint.X, lastPoint.Y);	
 
   	Point flag1 = lastPoint;
 	Point flag2 = GetFlagPoint ("B").Pos;

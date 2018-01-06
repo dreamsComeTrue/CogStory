@@ -79,6 +79,10 @@ namespace aga
 
     bool AreSame (float a, float b);
 
+    //--------------------------------------------------------------------------------------------------
+
+    Point RotatePoint (float x, float y, const Point& origin, float angle);
+
     std::vector<std::string> SplitString (const std::string& s, char seperator);
 
     std::string& LeftTrimString (std::string& str);

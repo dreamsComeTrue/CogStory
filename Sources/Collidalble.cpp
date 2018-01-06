@@ -11,7 +11,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Collidable::Collidable (PhysicsManager* physicsManager)
-        : m_PhysicsManager (physicsManager)
+      : m_PhysicsManager (physicsManager)
     {
     }
 
@@ -30,7 +30,14 @@ namespace aga
     void Collidable::SetPhysOffset (const Point& offset)
     {
         m_Offset = offset;
+        UpdatePhysPolygon ();
+    }
 
+    //--------------------------------------------------------------------------------------------------
+
+    void Collidable::SetPhysOffset (float offsetX, float offsetY)
+    {
+        m_Offset.Set (offsetX, offsetY);
         UpdatePhysPolygon ();
     }
 

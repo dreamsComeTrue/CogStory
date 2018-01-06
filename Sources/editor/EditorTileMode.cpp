@@ -274,24 +274,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Point RotatePoint (float x, float y, const Point& origin, float angle)
-    {
-        float s = std::sin (DegressToRadians (angle));
-        float c = std::cos (DegressToRadians (angle));
-
-        // translate point back to origin:
-        x -= origin.X;
-        y -= origin.Y;
-
-        float nx = (x * c) - (y * s);
-        float ny = (x * s) + (y * c);
-
-        // translate point back:
-        return { nx + origin.X, ny + origin.Y };
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
     Rect EditorTileMode::GetRenderBounds (Tile* tile)
     {
         Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();

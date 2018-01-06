@@ -18,6 +18,7 @@ namespace aga
     class SceneManager;
     class AtlasManager;
     class Triangulator;
+    class SceneLoader;
 
     struct SpeechOutcome
     {
@@ -70,11 +71,15 @@ namespace aga
             return Tileset == rhs.Tileset && Name == rhs.Name && Bounds == rhs.Bounds && Rotation == rhs.Rotation;
         }
 
+        virtual std::string GetTypeName () { return "Tile"; }
+
         void Draw (AtlasManager* atlasManager);
     };
 
     class Scene : public Lifecycle, public Scriptable
     {
+        friend class SceneLoader;
+
     public:
         Scene (SceneManager* sceneManager);
 
@@ -85,16 +90,13 @@ namespace aga
         void BeforeEnter ();
         void AfterLeave ();
 
-        static Scene* LoadScene (SceneManager* sceneManager, const std::string& filePath);
-        static void SaveScene (Scene* scene, const std::string& filePath);
-
         void Update (float deltaTime);
         void Render (float deltaTime);
 
         void AddActor (const std::string& name, Actor* actor);
         void RemoveActor (const std::string& name);
         Actor* GetActor (const std::string& name);
-        std::map<std::string, Actor*>& GetActors ();
+        std::vector<Actor*>& GetActors ();
 
         void AddTile (Tile* tile);
         void RemoveTile (Tile* tile);
@@ -116,6 +118,8 @@ namespace aga
         void RemoveSpeech (const std::string& name);
 
         void SortTiles ();
+        void SortActors ();
+        void UpdateRenderIDs ();
 
         void Reset ();
 
@@ -138,11 +142,12 @@ namespace aga
     private:
         std::string m_Name;
         Rect m_Size;
-        std::map<std::string, Actor*> m_Actors;
         std::map<std::string, FlagPoint> m_FlagPoints;
         std::map<std::string, TriggerArea> m_TriggerAreas;
         std::map<std::string, SpeechData> m_Speeches;
+        std::vector<Actor*> m_Actors;
         std::vector<Tile*> m_Tiles;
+        std::vector<Entity*> m_AllEntities;
         SceneManager* m_SceneManager;
 
         bool m_DrawPhysData;

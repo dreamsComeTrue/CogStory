@@ -284,12 +284,11 @@ namespace aga
     {
         m_ActorsTree->Clear ();
 
-        std::map<std::string, Actor*>& actors =
-          m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActors ();
+        std::vector<Actor*>& actors = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActors ();
 
-        for (std::map<std::string, Actor*>::iterator it = actors.begin (); it != actors.end (); ++it)
+        for (Actor* actor : actors)
         {
-            Gwk::Controls::TreeNode* node = m_ActorsTree->AddNode ((*it).first);
+            Gwk::Controls::TreeNode* node = m_ActorsTree->AddNode (actor->Name);
             node->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
         }
 
@@ -304,13 +303,18 @@ namespace aga
 
         if (node != nullptr && node->IsSelected ())
         {
-            std::map<std::string, Actor*>& actors =
-              m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActors ();
-            Actor* selectedActor = actors[node->GetText ()];
+            std::vector<Actor*>& actors = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActors ();
 
-            m_Editor->m_EditorActorMode.m_Actor = selectedActor;
+            for (Actor* actor : actors)
+            {
+                if (actor->Name == node->GetText ())
+                {
+                    m_Editor->m_EditorActorMode.m_Actor = actor;
 
-            m_NameTextBox->SetText (selectedActor->Name);
+                    m_NameTextBox->SetText (actor->Name);
+                    break;
+                }
+            }
         }
     }
 

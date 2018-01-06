@@ -12,6 +12,8 @@ namespace aga
 
     NPCActor::NPCActor (SceneManager* sceneManager)
       : Actor (sceneManager)
+      , m_Direction (0)
+      , m_StepsCounter (0.0f)
     {
     }
 
@@ -29,14 +31,36 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    float randMove;
+
     bool NPCActor::Update (float deltaTime)
     {
-        if (RandZeroToOne () < 0.5f)
+        if (m_StepsCounter <= 0.0f)
         {
-            float randX = RandInRange (-1, 1);
-            float randY = RandInRange (-1, 1);
+            m_StepsCounter = RandInRange (0, 3);
+            m_Direction = RandInRange (0, 4);
+            randMove = RandInRange (0, 0.2f);
+        }
 
-            Move (randX, randY);
+        m_StepsCounter -= deltaTime;
+
+        switch (m_Direction)
+        {
+            case 1:
+                Move (0.0f, -randMove);
+                break;
+
+            case 2:
+                Move (randMove, 0.0f);
+                break;
+
+            case 3:
+                Move (0.0f, randMove);
+                break;
+
+            case 4:
+                Move (-randMove, 0.0f);
+                break;
         }
     }
 

@@ -24,9 +24,19 @@ namespace aga
         void RemoveActor (const std::string& name);
         void Clear ();
 
+        void ChangeRotation (bool clockwise);
+        void ChangeZOrder (bool clockwise);
+        bool MoveSelectedActor ();
+        Actor* GetActorUnderCursor (int mouseX, int mouseY, Rect&& outRect);
+        Rect GetRenderBounds (Actor* actor);
+
     private:
         Editor* m_Editor;
         Actor* m_Actor;
+        float m_Rotation;
+        Point m_TileSelectionOffset;
+        Actor* m_ActorUnderCursor;
+        Actor* m_SelectedActor;
     };
 }
 

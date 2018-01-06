@@ -105,37 +105,47 @@ namespace aga
 
     void Actor::Render (float)
     {
+        float sourceX = 0;
+        float sourceY = 0;
+        float sourceWidth;
+        float sourceHeight;
+        float targetX;
+        float targetY;
+
         if (m_Image && !m_Animation.GetAnimations ().empty ())
         {
             AnimationFrames& frames = m_Animation.GetCurrentAnimation ();
             Rect& frame = frames.GetFrame (m_Animation.GetCurrentFrame ());
-            float width = frame.GetSize ().Width;
-            float height = frame.GetSize ().Height;
 
-            al_draw_scaled_bitmap (m_Image,
-                                   frame.GetPos ().X,
-                                   frame.GetPos ().Y,
-                                   width,
-                                   height,
-                                   Bounds.GetPos ().X,
-                                   Bounds.GetPos ().Y,
-                                   width,
-                                   height,
-                                   0);
+            sourceX = frame.GetPos ().X;
+            sourceY = frame.GetPos ().Y;
+            sourceWidth = frame.GetSize ().Width;
+            sourceHeight = frame.GetSize ().Height;
+            targetX = Bounds.GetPos ().X;
+            targetY = Bounds.GetPos ().Y;
         }
         else
         {
-            al_draw_scaled_bitmap (m_Image,
-                                   0,
-                                   0,
-                                   al_get_bitmap_width (m_Image),
-                                   al_get_bitmap_height (m_Image),
-                                   Bounds.GetPos ().X,
-                                   Bounds.GetPos ().Y,
-                                   Bounds.GetSize ().Width,
-                                   Bounds.GetSize ().Height,
-                                   0);
+            sourceWidth = al_get_bitmap_width (m_Image);
+            sourceHeight = al_get_bitmap_height (m_Image);
+            targetX = Bounds.GetPos ().X;
+            targetY = Bounds.GetPos ().Y;
         }
+
+        al_draw_tinted_scaled_rotated_bitmap_region (m_Image,
+                                                     sourceX,
+                                                     sourceY,
+                                                     sourceWidth,
+                                                     sourceHeight,
+                                                     al_map_rgb (255, 255, 255),
+                                                     sourceWidth * 0.5,
+                                                     sourceHeight * 0.5,
+                                                     targetX,
+                                                     targetY,
+                                                     1,
+                                                     1,
+                                                     Rotation,
+                                                     0);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -171,7 +181,8 @@ namespace aga
             MoveCallback (Bounds.GetPos ().X - m_OldPosition.X, Bounds.GetPos ().Y - m_OldPosition.Y);
         }
 
-        SetPhysOffset ({ x, y });
+        SetPhysOffset (Bounds.GetPos ().X - Bounds.GetHalfSize ().Width,
+                       Bounds.GetPos ().Y - Bounds.GetHalfSize ().Height);
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -4,6 +4,7 @@
 #include "Common.h"
 #include "MainLoop.h"
 #include "Scene.h"
+#include "SceneLoader.h"
 #include "SceneManager.h"
 #include "Screen.h"
 #include "StateManager.h"
@@ -15,7 +16,7 @@ namespace aga
     std::string GAMEPLAY_STATE_NAME = "GAMEPLAY_STATE";
 
     GamePlayState::GamePlayState (MainLoop* mainLoop)
-        : State (mainLoop, GAMEPLAY_STATE_NAME)
+      : State (mainLoop, GAMEPLAY_STATE_NAME)
     {
     }
 
@@ -35,7 +36,7 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
-        m_CurrentScene = Scene::LoadScene (&m_MainLoop->GetSceneManager (), GetResourcePath (SCENE_0_0));
+        m_CurrentScene = SceneLoader::LoadScene (&m_MainLoop->GetSceneManager (), GetResourcePath (SCENE_0_0));
 
         m_MainLoop->GetSceneManager ().AddScene (SCENE_0_0, m_CurrentScene);
         m_MainLoop->GetSceneManager ().SetActiveScene (m_CurrentScene);

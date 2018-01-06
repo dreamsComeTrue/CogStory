@@ -10,25 +10,24 @@ namespace aga
     struct Point
     {
         Point ()
-            : X (0.0)
-            , Y (0.0)
+          : X (0.0)
+          , Y (0.0)
         {
         }
 
         Point (int x, int y)
-            : X (x)
-            , Y (y)
+          : X (x)
+          , Y (y)
         {
         }
 
         Point (float x, float y)
-            : X (x)
-            , Y (y)
+          : X (x)
+          , Y (y)
         {
         }
 
-        union 
-        {
+        union {
             struct
             {
                 float X, Y;
@@ -46,6 +45,12 @@ namespace aga
             float magnitude = Magnitude ();
             X = X / magnitude;
             Y = Y / magnitude;
+        }
+
+        void Set (float x, float y)
+        {
+            X = x;
+            Y = y;
         }
 
         float DotProduct (const Point& vector) { return X * vector.X + Y * vector.Y; }

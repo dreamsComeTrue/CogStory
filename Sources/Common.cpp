@@ -30,6 +30,24 @@ namespace aga
         return std::fabs (a - b) < epsilon;
     }
 
+    //--------------------------------------------------------------------------------------------------
+
+    Point RotatePoint (float x, float y, const Point& origin, float angle)
+    {
+        float s = std::sin (DegressToRadians (angle));
+        float c = std::cos (DegressToRadians (angle));
+
+        // translate point back to origin:
+        x -= origin.X;
+        y -= origin.Y;
+
+        float nx = (x * c) - (y * s);
+        float ny = (x * s) + (y * c);
+
+        // translate point back:
+        return { nx + origin.X, ny + origin.Y };
+    }
+
     std::vector<std::string> SplitString (const std::string& s, char seperator)
     {
         std::vector<std::string> output;
@@ -70,7 +88,7 @@ namespace aga
 
     float RandZeroToOne () { return rand () / (RAND_MAX + 1.f); }
 
-    float RandInRange (float min, float max) { return min + (rand () / (RAND_MAX / (max - min))); }
+    float RandInRange (float min, float max) { return min + (rand () / (RAND_MAX / (max + 1 - min))); }
 
     std::string GetDirectory (const std::string& fullPath)
     {

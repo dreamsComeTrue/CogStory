@@ -20,6 +20,10 @@ namespace aga
         virtual bool Update (float deltaTime);
 
         virtual std::string GetTypeName () override;
+
+    private:
+        int m_Direction; // 0-4 => stop, up, right, down, left
+        float m_StepsCounter;
     };
 }
 

@@ -65,18 +65,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Atlas::DrawRegion (const std::string& name, int x, int y)
-    {
-        if (m_Regions.find (name) != m_Regions.end ())
-        {
-            Rect r = m_Regions[name].Bounds;
-            al_draw_bitmap_region (
-              m_Image, r.GetPos ().X, r.GetPos ().Y, r.GetSize ().Width, r.GetSize ().Height, x, y, 0);
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
     void Atlas::DrawRegion (const std::string& name, int x, int y, float scaleX, float scaleY, float rotation)
     {
         if (m_Regions.find (name) != m_Regions.end ())

@@ -45,8 +45,6 @@ namespace aga
         Tile* GetTileUnderCursor (int mouseX, int mouseY, Rect&& outRect);
         Rect GetRenderBounds (Tile* tile);
 
-        void OnTileSelected ();
-
         void ResetSettings ();
 
     private:

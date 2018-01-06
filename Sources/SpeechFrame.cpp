@@ -392,7 +392,10 @@ namespace aga
                   ->GetAtlas (GetBaseName (GetResourcePath (PACK_MENU_UI)))
                   ->DrawRegion (regionName,
                                 m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width - xOffset - 10,
-                                m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Height - yOffset - 6);
+                                m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Height - yOffset - 6,
+                                1.0f,
+                                1.0f,
+                                0.0f);
             }
 
             int x, y, w, h;
