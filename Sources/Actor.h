@@ -42,6 +42,10 @@ namespace aga
         Point GetPosition ();
         Point GetSize ();
 
+        void CheckOverlap ();
+        void BeginOverlap (Entity* entity);
+        void EndOverlap (Entity* entity);
+
         void SetCurrentAnimation (const std::string& name);
 
         std::function<void(float dx, float dy)> MoveCallback;
@@ -55,6 +59,9 @@ namespace aga
 
         Point m_OldPosition;
         SceneManager* m_SceneManager;
+
+    private:
+        std::vector<Entity*> m_OverlapedEntities;
 
     public:
         Rect TemplateBounds;

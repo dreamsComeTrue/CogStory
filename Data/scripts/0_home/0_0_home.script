@@ -30,7 +30,7 @@ void Start ()
 
 void BeforeEnterScene ()
 {
-    player.SetPreventInput (true);
+  //  player.SetPreventInput (true);
 
     //SceneFadeInOut ();
 
@@ -43,7 +43,7 @@ void BeforeEnterScene ()
   	Point flag1 = lastPoint;
 	Point flag2 = GetFlagPoint ("B").Pos;
 	
-    AddTween (TWEEN_1, flag1, flag2, 800, PlayerTween, NextTween1);
+    //AddTween (TWEEN_1, flag1, flag2, 800, PlayerTween, NextTween1);
 }
 
 void AfterLeaveScene ()

@@ -254,7 +254,7 @@ namespace aga
 
         for (Tile* tile : tiles)
         {
-            Rect r = GetRenderBounds (tile);
+            Rect r = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (tile);
 
             if (InsideRect (mouseX, mouseY, r))
             {
@@ -270,38 +270,6 @@ namespace aga
         }
 
         return result;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    Rect EditorTileMode::GetRenderBounds (Tile* tile)
-    {
-        Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-        Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-
-        Rect b = tile->Bounds;
-        int halfWidth = b.GetSize ().Width * 0.5f;
-        int halfHeight = b.GetSize ().Height * 0.5f;
-
-        float x1 = (b.GetPos ().X - translate.X * (1 / scale.X) - halfWidth) * (scale.X);
-        float y1 = (b.GetPos ().Y - translate.Y * (1 / scale.Y) - halfHeight) * (scale.Y);
-        float x2 = (b.GetPos ().X - translate.X * (1 / scale.X) + halfWidth) * (scale.X);
-        float y2 = (b.GetPos ().Y - translate.Y * (1 / scale.Y) + halfHeight) * (scale.Y);
-
-        Point origin = { x1 + (x2 - x1) * 0.5f, y1 + (y2 - y1) * 0.5f };
-        Point pointA = RotatePoint (x1, y1, origin, tile->Rotation);
-        Point pointB = RotatePoint (x1, y2, origin, tile->Rotation);
-        Point pointC = RotatePoint (x2, y1, origin, tile->Rotation);
-        Point pointD = RotatePoint (x2, y2, origin, tile->Rotation);
-
-        float minX, minY, maxX, maxY;
-
-        minX = std::min (pointA.X, std::min (pointB.X, std::min (pointC.X, pointD.X)));
-        minY = std::min (pointA.Y, std::min (pointB.Y, std::min (pointC.Y, pointD.Y)));
-        maxX = std::max (pointA.X, std::max (pointB.X, std::max (pointC.X, pointD.X)));
-        maxY = std::max (pointA.Y, std::max (pointB.Y, std::max (pointC.Y, pointD.Y)));
-
-        return { { minX, minY }, { maxX, maxY } };
     }
 
     //--------------------------------------------------------------------------------------------------

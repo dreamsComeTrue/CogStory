@@ -224,7 +224,8 @@ namespace aga
             }
         }
 
-        for (Entity* ent : m_SceneManager->GetActiveScene ()->GetVisibleEntities ())
+        std::vector<Entity*> entites = m_SceneManager->GetActiveScene ()->GetVisibleEntities ();
+        for (Entity* ent : entites)
         {
             Tile* tile = (Tile*)ent;
 

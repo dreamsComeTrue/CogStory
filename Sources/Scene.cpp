@@ -69,6 +69,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    std::string Tile::TypeName = "Tile";
+
     void Tile::Draw (AtlasManager* atlasManager)
     {
         Atlas* atlas = atlasManager->GetAtlas (Tileset);
@@ -606,6 +608,38 @@ namespace aga
         {
             m_TriggerAreas[triggerName].ScriptOnLeaveCallback = func;
         }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Rect Scene::GetRenderBounds (Entity* entity)
+    {
+        Point translate = m_SceneManager->GetCamera ().GetTranslate ();
+        Point scale = m_SceneManager->GetCamera ().GetScale ();
+
+        Rect b = entity->Bounds;
+        int halfWidth = b.GetSize ().Width * 0.5f;
+        int halfHeight = b.GetSize ().Height * 0.5f;
+
+        float x1 = (b.GetPos ().X - translate.X * (1 / scale.X) - halfWidth) * (scale.X);
+        float y1 = (b.GetPos ().Y - translate.Y * (1 / scale.Y) - halfHeight) * (scale.Y);
+        float x2 = (b.GetPos ().X - translate.X * (1 / scale.X) + halfWidth) * (scale.X);
+        float y2 = (b.GetPos ().Y - translate.Y * (1 / scale.Y) + halfHeight) * (scale.Y);
+
+        Point origin = { x1 + (x2 - x1) * 0.5f, y1 + (y2 - y1) * 0.5f };
+        Point pointA = RotatePoint (x1, y1, origin, entity->Rotation);
+        Point pointB = RotatePoint (x1, y2, origin, entity->Rotation);
+        Point pointC = RotatePoint (x2, y1, origin, entity->Rotation);
+        Point pointD = RotatePoint (x2, y2, origin, entity->Rotation);
+
+        float minX, minY, maxX, maxY;
+
+        minX = std::min (pointA.X, std::min (pointB.X, std::min (pointC.X, pointD.X)));
+        minY = std::min (pointA.Y, std::min (pointB.Y, std::min (pointC.Y, pointD.Y)));
+        maxX = std::max (pointA.X, std::max (pointB.X, std::max (pointC.X, pointD.X)));
+        maxY = std::max (pointA.Y, std::max (pointB.Y, std::max (pointC.Y, pointD.Y)));
+
+        return { { minX, minY }, { maxX, maxY } };
     }
 
     //--------------------------------------------------------------------------------------------------

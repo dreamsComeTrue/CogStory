@@ -17,6 +17,12 @@ namespace aga
             SetBottomRight (bottomRight);
         }
 
+        Rect (float x, float y, float width, float height)
+        {
+            SetTopLeft ({ x, y });
+            SetSize ({ width, height });
+        }
+
         Point GetTopLeft () { return Pos; }
         void SetTopLeft (Point p) { Pos = p; }
 

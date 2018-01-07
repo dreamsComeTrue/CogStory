@@ -623,12 +623,12 @@ namespace aga
 
         if (m_EditorActorMode.m_SelectedActor)
         {
-            r = m_EditorActorMode.GetRenderBounds (m_EditorActorMode.m_SelectedActor);
+            r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_EditorActorMode.m_SelectedActor);
             objectFound = true;
         }
         else if (m_EditorTileMode.m_SelectedTile)
         {
-            r = m_EditorTileMode.GetRenderBounds (m_EditorTileMode.m_SelectedTile);
+            r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_EditorTileMode.m_SelectedTile);
             objectFound = true;
         }
 

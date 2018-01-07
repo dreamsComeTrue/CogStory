@@ -43,7 +43,6 @@ namespace aga
         void CopySelectedTile ();
 
         Tile* GetTileUnderCursor (int mouseX, int mouseY, Rect&& outRect);
-        Rect GetRenderBounds (Tile* tile);
 
         void ResetSettings ();
 

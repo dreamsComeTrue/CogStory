@@ -103,7 +103,7 @@ namespace aga
             m_KeyDelta += deltaTime * 1000;
         }
 
-        if (m_KeyDelta > m_MaxKeyDelta)
+        if (!IsTextFit () && m_KeyDelta > m_MaxKeyDelta)
         {
             ALLEGRO_KEYBOARD_STATE state;
             al_get_keyboard_state (&state);
@@ -187,37 +187,43 @@ namespace aga
             {
                 case ALLEGRO_KEY_UP:
                 {
-                    --m_DisplayLine;
-
-                    if (lineCounter > 0)
+                    if (!IsTextFit ())
                     {
-                        if (ScrollUpFunction)
-                        {
-                            ScrollUpFunction ();
-                        }
-                    }
+                        --m_DisplayLine;
 
-                    m_KeyEventHandled = true;
+                        if (lineCounter > 0)
+                        {
+                            if (ScrollUpFunction)
+                            {
+                                ScrollUpFunction ();
+                            }
+                        }
+
+                        m_KeyEventHandled = true;
+                    }
 
                     break;
                 }
 
                 case ALLEGRO_KEY_DOWN:
                 {
-                    ++m_DisplayLine;
-
-                    int maxLines = (m_DrawRect.GetSize ().Height - 2 * TEXT_INSETS) / m_LineHeight;
-                    int diff = m_CurrentLine + 1 - maxLines;
-
-                    if (lineCounter < diff)
+                    if (!IsTextFit ())
                     {
-                        if (ScrollDownFunction)
-                        {
-                            ScrollDownFunction ();
-                        }
-                    }
+                        ++m_DisplayLine;
 
-                    m_KeyEventHandled = true;
+                        int maxLines = (m_DrawRect.GetSize ().Height - 2 * TEXT_INSETS) / m_LineHeight;
+                        int diff = m_CurrentLine + 1 - maxLines;
+
+                        if (lineCounter < diff)
+                        {
+                            if (ScrollDownFunction)
+                            {
+                                ScrollDownFunction ();
+                            }
+                        }
+
+                        m_KeyEventHandled = true;
+                    }
 
                     break;
                 }
@@ -507,6 +513,7 @@ namespace aga
                     std::string str = workLine.substr (0, currentIndex);
                     ret.push_back (str);
                     workLine = workLine.substr (currentIndex + 1);
+                    currentIndex = 0;
                 }
                 else
                 {
@@ -544,8 +551,6 @@ namespace aga
             ret.push_back (txt);
         }
 
-        //  PreprocessText ("");
-
         return ret;
     }
 
@@ -582,6 +587,13 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     bool SpeechFrame::IsDrawTextCenter () const { return m_DrawTextCenter; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool SpeechFrame::IsTextFit ()
+    {
+        return m_TextLines.size () <= (m_DrawRect.GetSize ().Height - 2 * TEXT_INSETS) / m_LineHeight;
+    }
 
     //--------------------------------------------------------------------------------------------------
 

@@ -55,6 +55,7 @@ namespace aga
         std::function<void()> HandledFunction;
 
     private:
+        bool IsTextFit ();
         void PreprocessText (std::string& text);
         int GetLineCounter ();
         std::vector<std::string> BreakLine (const std::string& line, float maxWidth);

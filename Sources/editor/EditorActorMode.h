@@ -28,7 +28,6 @@ namespace aga
         void ChangeZOrder (bool clockwise);
         bool MoveSelectedActor ();
         Actor* GetActorUnderCursor (int mouseX, int mouseY, Rect&& outRect);
-        Rect GetRenderBounds (Actor* actor);
 
     private:
         Editor* m_Editor;

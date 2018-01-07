@@ -59,6 +59,8 @@ namespace aga
 
     struct Tile : public Entity, public Collidable
     {
+        static std::string TypeName;
+
         Tile (PhysicsManager* physicsManager)
           : Collidable (physicsManager)
         {
@@ -71,7 +73,7 @@ namespace aga
             return Tileset == rhs.Tileset && Name == rhs.Name && Bounds == rhs.Bounds && Rotation == rhs.Rotation;
         }
 
-        virtual std::string GetTypeName () { return "Tile"; }
+        virtual std::string GetTypeName () override { return TypeName; }
 
         void Draw (AtlasManager* atlasManager);
     };
@@ -128,6 +130,8 @@ namespace aga
         void SetDrawPhysData (bool enable);
         bool IsDrawPhysData ();
         QuadTreeNode& GetQuadTree ();
+
+        Rect GetRenderBounds (Entity* entity);
 
         void AddOnEnterCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
         void AddOnEnterCallback (const std::string& triggerName, asIScriptFunction* func);

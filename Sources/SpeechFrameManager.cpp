@@ -35,8 +35,8 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
-        m_SelectSample =
-          m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile ("SELECT_MENU", GetResourcePath (SOUND_MENU_SELECT));
+        m_SelectSample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
+          "SELECT_MENU", GetResourcePath (SOUND_MENU_SELECT));
 
         return true;
     }
@@ -67,7 +67,9 @@ namespace aga
 
                 if (frame->IsShouldBeHandled () && frame->IsHandled ())
                 {
-                    frame->Hide ();
+                    SAFE_DELETE (it->second);
+                    m_Frames.erase (it);
+
                     m_SceneManager->GetPlayer ().SetPreventInput (false);
                 }
             }

@@ -97,6 +97,7 @@ namespace aga
         }
 
         UpdateScripts (deltaTime);
+        CheckOverlap ();
 
         return true;
     }
@@ -196,6 +197,83 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Actor::SetCurrentAnimation (const std::string& name) { m_Animation.SetCurrentAnimation (name); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Actor::CheckOverlap ()
+    {
+        Rect myBounds = m_SceneManager->GetActiveScene ()->GetRenderBounds (this);
+
+        al_draw_rectangle (
+          myBounds.Pos.X, myBounds.Pos.Y, myBounds.GetBottomRight ().X, myBounds.GetBottomRight ().Y, COLOR_GREEN, 2);
+
+        std::vector<Entity*> entites = m_SceneManager->GetActiveScene ()->GetVisibleEntities ();
+        for (Entity* ent : entites)
+        {
+            if (ent != this)
+            {
+                Rect otherBounds = m_SceneManager->GetActiveScene ()->GetRenderBounds (ent);
+
+                al_draw_rectangle (otherBounds.Pos.X,
+                                   otherBounds.Pos.Y,
+                                   otherBounds.GetBottomRight ().X,
+                                   otherBounds.GetBottomRight ().Y,
+                                   COLOR_GREEN,
+                                   2);
+
+                if (Intersect (myBounds, otherBounds))
+                {
+                    bool found = false;
+
+                    for (Entity* saved : m_OverlapedEntities)
+                    {
+                        if (saved == ent)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                    {
+                        m_OverlapedEntities.push_back (ent);
+
+                        BeginOverlap (ent);
+                    }
+                }
+                else
+                {
+                    for (std::vector<Entity*>::iterator it = m_OverlapedEntities.begin ();
+                         it != m_OverlapedEntities.end ();
+                         ++it)
+                    {
+                        if (*it == ent)
+                        {
+                            EndOverlap (ent);
+
+                            m_OverlapedEntities.erase (it);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Actor::BeginOverlap (Entity* entity)
+    {
+        if (entity->GetTypeName () != Player::TypeName)
+        {
+            m_SceneManager->GetSpeechFrameManager ().AddSpeechFrame (
+              "d", "Dominik, chciales cos powiedziec?\nFinal\nFantasy\nIX\nFajna Gra!", Rect (500, 10, 200, 80), true);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Actor::EndOverlap (Entity* entity) {}
 
     //--------------------------------------------------------------------------------------------------
 }

@@ -35,6 +35,8 @@ namespace aga
 
     bool NPCActor::Update (float deltaTime)
     {
+        Actor::Update (deltaTime);
+
         if (m_StepsCounter <= 0.0f)
         {
             m_StepsCounter = RandInRange (0, 3);
@@ -44,24 +46,24 @@ namespace aga
 
         m_StepsCounter -= deltaTime;
 
-        switch (m_Direction)
-        {
-            case 1:
-                Move (0.0f, -randMove);
-                break;
+        //        switch (m_Direction)
+        //        {
+        //            case 1:
+        //                Move (0.0f, -randMove);
+        //                break;
 
-            case 2:
-                Move (randMove, 0.0f);
-                break;
+        //            case 2:
+        //                Move (randMove, 0.0f);
+        //                break;
 
-            case 3:
-                Move (0.0f, randMove);
-                break;
+        //            case 3:
+        //                Move (0.0f, randMove);
+        //                break;
 
-            case 4:
-                Move (-randMove, 0.0f);
-                break;
-        }
+        //            case 4:
+        //                Move (-randMove, 0.0f);
+        //                break;
+        //        }
     }
 
     //--------------------------------------------------------------------------------------------------
