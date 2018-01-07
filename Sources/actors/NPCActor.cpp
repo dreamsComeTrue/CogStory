@@ -1,5 +1,7 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 #include "NPCActor.h"
+#include "Player.h"
+#include "SceneManager.h"
 
 namespace aga
 {
@@ -25,6 +27,7 @@ namespace aga
 
         m_Image = al_load_bitmap (GetResourcePath (ResourceID::GFX_MENU_COG).c_str ());
         Bounds.SetSize ({ 64, 64 });
+        SetCheckOverlap (true);
 
         return true;
     }
@@ -69,6 +72,26 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     std::string NPCActor::GetTypeName () { return TypeName; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void NPCActor::BeginOverlap (Entity* entity)
+    {
+        if (entity->GetTypeName () == Player::TypeName)
+        {
+            m_SceneManager->GetSpeechFrameManager ().AddSpeechFrame (
+              "d",
+              "Hello [color=GREEN]PTR4617[/color]!!\nDo you have [color=LIGHTBLUE]blue[/color] key to open this door?",
+              Point (400, 20),
+              20,
+              3,
+              true);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void NPCActor::EndOverlap (Entity* entity) {}
 
     //--------------------------------------------------------------------------------------------------
 }

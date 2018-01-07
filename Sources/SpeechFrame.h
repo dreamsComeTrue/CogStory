@@ -7,6 +7,11 @@
 
 namespace aga
 {
+    const int SPEECH_FRAME_TEXT_INSETS = 10;
+    const int SPEECH_FRAME_LINE_OFFSET = 5;
+    const int SPEECH_FRAME_ADVANCE_LETTERS = 4;
+    const int SPEECH_FRAME_ADVANCE_SPACE = 8;
+
     class Atlas;
     class SpeechFrameManager;
 

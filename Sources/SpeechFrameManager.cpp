@@ -6,6 +6,7 @@
 #include "MainLoop.h"
 #include "Player.h"
 #include "SceneManager.h"
+#include "Screen.h"
 #include "SpeechFrame.h"
 
 namespace aga
@@ -134,6 +135,36 @@ namespace aga
         }
 
         return m_Frames[id];
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& id,
+                                                     const std::string& text,
+                                                     Point pos,
+                                                     int maxLineCharsCount,
+                                                     int linesCount,
+                                                     bool shouldBeHandled,
+                                                     const std::string& regionName)
+    {
+        Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
+        unsigned ascent = font.GetFontAscent (FONT_NAME_MAIN_MEDIUM);
+        unsigned descent = font.GetFontDescent (FONT_NAME_MAIN_MEDIUM);
+
+        Point dims =
+          m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().GetTextDimensions (FONT_NAME_MAIN_MEDIUM, "X");
+
+        Rect rect;
+        rect.SetPos (pos);
+
+        float width = maxLineCharsCount * dims.Width + 2 * SPEECH_FRAME_TEXT_INSETS +
+                      (maxLineCharsCount + 1) * SPEECH_FRAME_ADVANCE_LETTERS;
+        float height = linesCount * (ascent + descent + SPEECH_FRAME_LINE_OFFSET) + SPEECH_FRAME_LINE_OFFSET +
+                       SPEECH_FRAME_TEXT_INSETS;
+
+        rect.SetSize (width, height);
+
+        return AddSpeechFrame (id, text, rect, shouldBeHandled, regionName);
     }
 
     //--------------------------------------------------------------------------------------------------

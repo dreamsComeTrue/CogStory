@@ -15,10 +15,6 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    const int TEXT_INSETS = 10;
-
-    //--------------------------------------------------------------------------------------------------
-
     SpeechFrame::SpeechFrame (SpeechFrameManager* manager)
       : m_Manager (manager)
       , m_Visible (true)
@@ -127,7 +123,7 @@ namespace aga
             {
                 ++m_DisplayLine;
 
-                int maxLines = (m_DrawRect.GetSize ().Height - 2 * TEXT_INSETS) / m_LineHeight;
+                int maxLines = (m_DrawRect.GetSize ().Height - 2 * SPEECH_FRAME_TEXT_INSETS) / m_LineHeight;
                 int diff = m_CurrentLine + 1 - maxLines;
 
                 if (lineCounter < diff)
@@ -211,7 +207,7 @@ namespace aga
                     {
                         ++m_DisplayLine;
 
-                        int maxLines = (m_DrawRect.GetSize ().Height - 2 * TEXT_INSETS) / m_LineHeight;
+                        int maxLines = (m_DrawRect.GetSize ().Height - 2 * SPEECH_FRAME_TEXT_INSETS) / m_LineHeight;
                         int diff = m_CurrentLine + 1 - maxLines;
 
                         if (lineCounter < diff)
@@ -250,7 +246,7 @@ namespace aga
 
     int SpeechFrame::GetLineCounter ()
     {
-        int maxLines = (m_DrawRect.GetSize ().Height - 2 * TEXT_INSETS) / m_LineHeight;
+        int maxLines = (m_DrawRect.GetSize ().Height - 2 * SPEECH_FRAME_TEXT_INSETS) / m_LineHeight;
         int lineCounter = 0;
         int diff = m_CurrentLine + 1 - maxLines;
 
@@ -282,14 +278,12 @@ namespace aga
         m_Attributes.clear ();
         PreprocessText (m_Text);
 
-        m_LineHeight = m_Manager->GetSceneManager ()
-                         ->GetMainLoop ()
-                         ->GetScreen ()
-                         ->GetFont ()
-                         .GetTextDimensions (FONT_NAME_MAIN_MEDIUM, m_Text)
-                         .Height;
+        Font& font = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetFont ();
+        unsigned ascent = font.GetFontAscent (FONT_NAME_MAIN_MEDIUM);
+        unsigned descent = font.GetFontDescent (FONT_NAME_MAIN_MEDIUM);
 
-        m_TextLines = BreakLine (m_Text, m_DrawRect.GetSize ().Width - 2 * TEXT_INSETS);
+        m_LineHeight = ascent + descent;
+        m_TextLines = BreakLine (m_Text, m_DrawRect.GetSize ().Width - 2 * SPEECH_FRAME_TEXT_INSETS);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -329,8 +323,6 @@ namespace aga
             std::string text = m_Text.substr (0, m_CurrentIndex);
 
             int centerOffset = 0;
-            const int advanceBetweenLetters = 4;
-            const int advanceSpace = 8;
 
             if (m_DrawTextCenter)
             {
@@ -343,13 +335,12 @@ namespace aga
             }
             else
             {
-                xPoint = m_DrawRect.GetPos ().X + TEXT_INSETS;
-                yPoint = m_DrawRect.GetPos ().Y + TEXT_INSETS;
+                xPoint = m_DrawRect.GetPos ().X + SPEECH_FRAME_TEXT_INSETS;
+                yPoint = m_DrawRect.GetPos ().Y + SPEECH_FRAME_TEXT_INSETS;
                 align = ALLEGRO_ALIGN_LEFT;
             }
 
-            int maxLines = (m_DrawRect.GetSize ().Height - 2 * TEXT_INSETS) / m_LineHeight;
-            int margin = 5;
+            int maxLines = (m_DrawRect.GetSize ().Height - 2 * SPEECH_FRAME_TEXT_INSETS) / m_LineHeight;
             int lineCounter = 0;
             int diff = m_CurrentLine + 1 - maxLines;
 
@@ -397,8 +388,8 @@ namespace aga
                   ->GetAtlasManager ()
                   ->GetAtlas (GetBaseName (GetResourcePath (PACK_MENU_UI)))
                   ->DrawRegion (regionName,
-                                m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width - xOffset - 10,
-                                m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Height - yOffset - 6,
+                                m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width - xOffset,
+                                m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Height - yOffset,
                                 1.0f,
                                 1.0f,
                                 0.0f);
@@ -409,7 +400,7 @@ namespace aga
             al_set_clipping_rectangle (m_DrawRect.GetPos ().X,
                                        m_DrawRect.GetPos ().Y,
                                        m_DrawRect.GetSize ().Width,
-                                       m_DrawRect.GetSize ().Height);
+                                       m_DrawRect.GetSize ().Height - SPEECH_FRAME_LINE_OFFSET);
 
             for (int i = 0; lineCounter < m_CurrentLine + 1; ++lineCounter, ++i)
             {
@@ -431,7 +422,7 @@ namespace aga
                     t = t.substr (0, m_CurrentIndex);
                 }
 
-                int y = yPoint + i * (m_LineHeight + margin);
+                int y = yPoint + i * (m_LineHeight + SPEECH_FRAME_LINE_OFFSET);
 
                 float advance = 0;
 
@@ -466,7 +457,7 @@ namespace aga
 
                         if (charToDraw == " ")
                         {
-                            advance += advanceSpace;
+                            advance += SPEECH_FRAME_ADVANCE_SPACE;
                         }
                         else
                         {
@@ -476,7 +467,7 @@ namespace aga
                                          ->GetFont ()
                                          .GetTextDimensions (FONT_NAME_MAIN_MEDIUM, charToDraw)
                                          .Width;
-                            advance += advanceBetweenLetters;
+                            advance += SPEECH_FRAME_ADVANCE_LETTERS;
                         }
                     }
                 }
@@ -499,56 +490,48 @@ namespace aga
                         .GetTextDimensions (FONT_NAME_MAIN_MEDIUM, line)
                         .Width;
 
-        if (width >= maxWidth)
+        std::string workLine = line;
+        int currentIndex = 0;
+
+        while (currentIndex < workLine.size ())
         {
-            std::string workLine = line;
-            int currentIndex = 0;
+            std::string currentPart = workLine.substr (0, currentIndex + 1);
 
-            while (currentIndex < workLine.size ())
+            if (currentPart[currentPart.length () - 1] == '\n')
             {
-                std::string currentPart = workLine.substr (0, currentIndex + 1);
+                std::string str = workLine.substr (0, currentIndex);
+                ret.push_back (str);
+                workLine = workLine.substr (currentIndex + 1);
+                currentIndex = 0;
+            }
+            else
+            {
+                width = m_Manager->GetSceneManager ()
+                          ->GetMainLoop ()
+                          ->GetScreen ()
+                          ->GetFont ()
+                          .GetTextDimensions (FONT_NAME_MAIN_MEDIUM, currentPart)
+                          .Width;
 
-                if (currentPart[currentPart.length () - 1] == '\n')
+                if (width >= maxWidth)
                 {
+                    currentIndex = currentPart.rfind (' ');
+
                     std::string str = workLine.substr (0, currentIndex);
                     ret.push_back (str);
-                    workLine = workLine.substr (currentIndex + 1);
+                    workLine = workLine.substr (currentIndex);
                     currentIndex = 0;
                 }
                 else
                 {
-                    width = m_Manager->GetSceneManager ()
-                              ->GetMainLoop ()
-                              ->GetScreen ()
-                              ->GetFont ()
-                              .GetTextDimensions (FONT_NAME_MAIN_MEDIUM, currentPart)
-                              .Width;
-
-                    if (width >= maxWidth)
-                    {
-                        currentIndex = currentPart.rfind (' ');
-
-                        std::string str = workLine.substr (0, currentIndex);
-                        ret.push_back (str);
-                        workLine = workLine.substr (currentIndex);
-                        currentIndex = 0;
-                    }
-                    else
-                    {
-                        ++currentIndex;
-                    }
+                    ++currentIndex;
                 }
             }
-
-            if (workLine != "")
-            {
-                ret.push_back (workLine);
-            }
         }
-        else
+
+        if (workLine != "")
         {
-            std::string txt = std::string (line);
-            ret.push_back (txt);
+            ret.push_back (workLine);
         }
 
         return ret;
@@ -592,7 +575,7 @@ namespace aga
 
     bool SpeechFrame::IsTextFit ()
     {
-        return m_TextLines.size () <= (m_DrawRect.GetSize ().Height - 2 * TEXT_INSETS) / m_LineHeight;
+        return m_TextLines.size () <= (m_DrawRect.GetSize ().Height - 2 * SPEECH_FRAME_TEXT_INSETS) / m_LineHeight;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -616,12 +599,13 @@ namespace aga
                     SpeechTextAttribute& attr = attributes.top ();
                     attributes.pop ();
 
-                    attr.EndIndex = currIndex - newLinesCount;
+                    attr.EndIndex = currIndex - newLinesCount - 1;
                     m_Attributes.push_back (attr);
 
                     int close = text.find (']', currIndex);
 
                     text.erase (currIndex, close - currIndex + 1);
+                    --currIndex;
                 }
                 else
                 {

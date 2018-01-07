@@ -13,6 +13,7 @@ namespace aga
       , Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
       , m_SceneManager (sceneManager)
       , m_Image (nullptr)
+      , m_CheckOverlap (false)
     {
         ID = Entity::GetNextID ();
     }
@@ -97,7 +98,11 @@ namespace aga
         }
 
         UpdateScripts (deltaTime);
-        CheckOverlap ();
+
+        if (m_CheckOverlap)
+        {
+            CheckOverlap ();
+        }
 
         return true;
     }
@@ -200,26 +205,28 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Actor::SetCheckOverlap (bool check) { m_CheckOverlap = check; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Actor::IsCheckOverlap () { return m_CheckOverlap; }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Actor::CheckOverlap ()
     {
         Rect myBounds = m_SceneManager->GetActiveScene ()->GetRenderBounds (this);
 
-        al_draw_rectangle (
-          myBounds.Pos.X, myBounds.Pos.Y, myBounds.GetBottomRight ().X, myBounds.GetBottomRight ().Y, COLOR_GREEN, 2);
-
         std::vector<Entity*> entites = m_SceneManager->GetActiveScene ()->GetVisibleEntities ();
+
+        //  Special-case entity :)
+        entites.push_back (&m_SceneManager->GetPlayer ());
+
         for (Entity* ent : entites)
         {
             if (ent != this)
             {
                 Rect otherBounds = m_SceneManager->GetActiveScene ()->GetRenderBounds (ent);
-
-                al_draw_rectangle (otherBounds.Pos.X,
-                                   otherBounds.Pos.Y,
-                                   otherBounds.GetBottomRight ().X,
-                                   otherBounds.GetBottomRight ().Y,
-                                   COLOR_GREEN,
-                                   2);
 
                 if (Intersect (myBounds, otherBounds))
                 {
@@ -262,14 +269,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Actor::BeginOverlap (Entity* entity)
-    {
-        if (entity->GetTypeName () != Player::TypeName)
-        {
-            m_SceneManager->GetSpeechFrameManager ().AddSpeechFrame (
-              "d", "Dominik, chciales cos powiedziec?\nFinal\nFantasy\nIX\nFajna Gra!", Rect (500, 10, 200, 80), true);
-        }
-    }
+    void Actor::BeginOverlap (Entity* entity) {}
 
     //--------------------------------------------------------------------------------------------------
 

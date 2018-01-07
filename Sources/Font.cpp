@@ -72,7 +72,12 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Font::DrawText (const std::string& fontName, ALLEGRO_COLOR color, float x, float y, const std::string& text, int flags)
+    void Font::DrawText (const std::string& fontName,
+                         ALLEGRO_COLOR color,
+                         float x,
+                         float y,
+                         const std::string& text,
+                         int flags)
     {
         ALLEGRO_FONT* font = m_Fonts[fontName];
 
@@ -120,6 +125,15 @@ namespace aga
         ALLEGRO_FONT* font = m_Fonts[fontName];
 
         return al_get_font_ascent (font);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    unsigned Font::GetFontDescent (const std::string& fontName)
+    {
+        ALLEGRO_FONT* font = m_Fonts[fontName];
+
+        return al_get_font_descent (font);
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -60,6 +60,7 @@ namespace aga
             m_Camera.SetTranslate (screenSize.Width * 0.5 - playerPosition.X * scale.X - playerSize.Width * 0.5,
                                    screenSize.Height * 0.5 - playerPosition.Y * scale.Y - playerSize.Height * 0.5);
         };
+        m_Player.SetCheckOverlap (true);
 
         m_SpeechFrameManager.Initialize ();
 
@@ -126,7 +127,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneManager::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime) { m_SpeechFrameManager.ProcessEvent (event, deltaTime); }
+    void SceneManager::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
+    {
+        m_SpeechFrameManager.ProcessEvent (event, deltaTime);
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -278,8 +282,13 @@ namespace aga
             return false;
         };
 
-        tweeny::tween<float> tween =
-          tweeny::from (0.0f).to (1.0f).during (FADE_MAX_TIME).onStep (fadeInFunc).to (0.0f).during (FADE_MAX_TIME).onStep (fadeOutFunc);
+        tweeny::tween<float> tween = tweeny::from (0.0f)
+                                       .to (1.0f)
+                                       .during (FADE_MAX_TIME)
+                                       .onStep (fadeInFunc)
+                                       .to (0.0f)
+                                       .during (FADE_MAX_TIME)
+                                       .onStep (fadeOutFunc);
 
         m_TweenFade = &m_MainLoop->GetTweenManager ().AddTween (200, tween);
     }

@@ -31,9 +31,11 @@ namespace aga
 
         Point GetPos () { return Pos; }
         void SetPos (Point p) { Pos = p; }
+        void SetPos (float x, float y) { Pos.Set (x, y); }
 
         Point GetSize () { return Size; }
         void SetSize (Point p) { Size = p; }
+        void SetSize (float x, float y) { Size.Set (x, y); }
 
         Point GetCenter () { return Point{ Pos.X + Size.Width * 0.5f, Pos.Y + Size.Height * 0.5f }; }
         Point GetHalfSize () { return Point{ Size.Width * 0.5f, Size.Height * 0.5f }; }

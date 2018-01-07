@@ -42,15 +42,18 @@ namespace aga
         Point GetPosition ();
         Point GetSize ();
 
-        void CheckOverlap ();
-        void BeginOverlap (Entity* entity);
-        void EndOverlap (Entity* entity);
+        void SetCheckOverlap (bool check);
+        bool IsCheckOverlap ();
 
         void SetCurrentAnimation (const std::string& name);
 
         std::function<void(float dx, float dy)> MoveCallback;
 
     protected:
+        void CheckOverlap ();
+        virtual void BeginOverlap (Entity* entity);
+        virtual void EndOverlap (Entity* entity);
+
         void ChooseAnimation (float angleDeg);
 
     protected:
@@ -61,6 +64,7 @@ namespace aga
         SceneManager* m_SceneManager;
 
     private:
+        bool m_CheckOverlap;
         std::vector<Entity*> m_OverlapedEntities;
 
     public:

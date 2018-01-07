@@ -37,6 +37,7 @@ namespace aga
 
         Point GetTextDimensions (const std::string& fontName, const std::string& text);
         unsigned GetFontAscent (const std::string& fontName);
+        unsigned GetFontDescent (const std::string& fontName);
 
     private:
         std::map<std::string, ALLEGRO_FONT*> m_Fonts;
