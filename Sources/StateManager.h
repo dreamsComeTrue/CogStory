@@ -10,6 +10,7 @@ namespace aga
     class Screen;
     class State;
     class MainLoop;
+    struct TweenData;
 
     class StateManager : public Lifecycle
     {
@@ -30,11 +31,20 @@ namespace aga
 
         MainLoop* GetMainLoop ();
 
+        void StateFadeInOut (const std::string& enteringStateName);
+
     private:
         std::map<std::string, State*> m_States;
         State* m_ActiveState;
 
         MainLoop* m_MainLoop;
+
+        int m_BlendOp, m_BlendSrc, m_BlendDst;
+        TweenData* m_TweenFade;
+        bool m_Transitioning;
+        ALLEGRO_COLOR m_FadeColor;
+        std::function<void(void)> m_TransitionFunc;
+        bool m_TransitionFuncFired;
     };
 }
 

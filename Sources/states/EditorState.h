@@ -8,7 +8,7 @@
 
 namespace aga
 {
-    extern std::string EDITOR_STATE_NAME;
+    const std::string EDITOR_STATE_NAME = "EDITOR_STATE";
 
     class EditorState : public State
     {

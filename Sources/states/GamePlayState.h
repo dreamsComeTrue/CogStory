@@ -7,7 +7,7 @@
 
 namespace aga
 {
-    extern std::string GAMEPLAY_STATE_NAME;
+    const std::string GAMEPLAY_STATE_NAME = "GAMEPLAY_STATE";
 
     class MainLoop;
     class Scene;

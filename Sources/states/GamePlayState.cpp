@@ -13,8 +13,6 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    std::string GAMEPLAY_STATE_NAME = "GAMEPLAY_STATE";
-
     GamePlayState::GamePlayState (MainLoop* mainLoop)
       : State (mainLoop, GAMEPLAY_STATE_NAME)
     {

@@ -10,8 +10,12 @@ typedef struct nine_patch_bitmap_tag NINE_PATCH_BITMAP;
 
 namespace aga
 {
-    extern std::string MAIN_MENU_STATE_NAME;
+    const std::string MAIN_MENU_STATE_NAME = "MAIN_MENU_STATE";
+    const int MENU_ITEM_NEW_STORY = 0;
+    const int MENU_ITEM_CONTINUE = 1;
+    const int MENU_ITEM_EXIT = 2;
 
+    class AudioSample;
     class StateManager;
 
     class MainMenuState : public State
@@ -31,7 +35,13 @@ namespace aga
         void Render (float deltaTime);
 
     private:
-        NINE_PATCH_BITMAP* m_Background;
+        void HandleSelection ();
+
+    private:
+        AudioSample* m_SelectSample;
+        ALLEGRO_BITMAP* m_SelectImage;
+        float m_SelectionAngle;
+        int m_Selection;
     };
 }
 

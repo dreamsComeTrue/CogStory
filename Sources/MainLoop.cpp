@@ -57,7 +57,7 @@ namespace aga
 
         m_Screen->RenderFunction = [&]() { m_StateManager.Render (m_Screen->GetDeltaTime ()); };
         m_Screen->UpdateFunction = [&](float deltaTime) {
-            if (m_StateManager.GetActiveStateName () != "EDITOR_STATE")
+            if (m_StateManager.GetActiveStateName () != EDITOR_STATE_NAME)
             {
                 m_TweenManager.Update (deltaTime);
             }

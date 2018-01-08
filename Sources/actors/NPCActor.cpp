@@ -79,13 +79,14 @@ namespace aga
     {
         if (entity->GetTypeName () == Player::TypeName)
         {
-            m_SceneManager->GetSpeechFrameManager ().AddSpeechFrame (
-              "d",
-              "Hello [color=GREEN]PTR4617[/color]!!\nDo you have [color=LIGHTBLUE]blue[/color] key to open this door?",
-              Point (400, 20),
-              20,
-              3,
-              true);
+            m_SceneManager->GetSpeechFrameManager ().AddSpeechFrame ("d",
+                                                                     "Hello [color=GREEN]PTR4617[/color]!!\nDo you "
+                                                                     "have [color=LIGHTBLUE]blue[/color] key to open "
+                                                                     "this door?",
+                                                                     Point (400, 20),
+                                                                     20,
+                                                                     3,
+                                                                     true);
         }
     }
 

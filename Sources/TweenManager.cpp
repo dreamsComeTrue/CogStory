@@ -66,7 +66,7 @@ namespace aga
     }
 
     //--------------------------------------------------------------------------------------------------
-    
+
     void TweenManager::CleanupFinishedTweens ()
     {
         for (int i = 0; i < m_Tweens.size (); ++i)
@@ -89,9 +89,9 @@ namespace aga
                             ctx->SetArgDWord (0, (int)tween.ID);
                             ctx->Execute ();
                         }
-
-                        m_Tweens.erase (m_Tweens.begin () + i);
                     }
+
+                    m_Tweens.erase (m_Tweens.begin () + i);
                 }
             }
 
@@ -111,17 +111,16 @@ namespace aga
                             ctx->SetArgDWord (0, (int)tween.ID);
                             ctx->Execute ();
                         }
-
-                        m_Tweens.erase (m_Tweens.begin () + i);
                     }
+
+                    m_Tweens.erase (m_Tweens.begin () + i);
                 }
             }
         }
-        
     }
 
     //--------------------------------------------------------------------------------------------------
-    
+
     MainLoop* TweenManager::GetMainLoop () { return m_MainLoop; }
 
     //--------------------------------------------------------------------------------------------------
@@ -221,7 +220,12 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void TweenManager::AddTween (int id, Point from, Point to, int during, asIScriptFunction* asFunc, asIScriptFunction* finishFunc)
+    void TweenManager::AddTween (int id,
+                                 Point from,
+                                 Point to,
+                                 int during,
+                                 asIScriptFunction* asFunc,
+                                 asIScriptFunction* finishFunc)
     {
         bool found = false;
 
@@ -245,7 +249,7 @@ namespace aga
                       return true;
                   }
 
-                  asIScriptFunction* callback = tweenData->CallbackFunc; 
+                  asIScriptFunction* callback = tweenData->CallbackFunc;
                   Point p = { x, y };
 
                   const char* moduleName = callback->GetModuleName ();
@@ -273,7 +277,8 @@ namespace aga
                   return false;
               };
 
-            tweeny::tween<float, float> tween = tweeny::from (from.X, from.Y).to (to.X, to.Y).during (during).onStep (func);
+            tweeny::tween<float, float> tween =
+              tweeny::from (from.X, from.Y).to (to.X, to.Y).during (during).onStep (func);
 
             TweenData tweenData;
             tweenData.ID = id;
@@ -325,7 +330,7 @@ namespace aga
     }
 
     //--------------------------------------------------------------------------------------------------
-    
+
     void TweenManager::PauseTween (int id)
     {
         TweenData* tween = GetTween (id);

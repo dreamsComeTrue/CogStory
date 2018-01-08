@@ -13,10 +13,8 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    std::string EDITOR_STATE_NAME = "EDITOR_STATE";
-
     EditorState::EditorState (MainLoop* mainLoop)
-        : State (mainLoop, EDITOR_STATE_NAME)
+      : State (mainLoop, EDITOR_STATE_NAME)
     {
     }
 
