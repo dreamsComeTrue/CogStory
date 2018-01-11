@@ -25,33 +25,29 @@ namespace aga
     {
         for (int i = 0; i < m_Data.size (); ++i)
         {
-            SAFE_DELETE (m_Data[i]);
+            // SAFE_DELETE (m_Data[i]);
         }
 
         m_Data.clear ();
 
         if (m_TopLeftTree)
         {
-            m_TopLeftTree->~QuadTreeNode ();
-            // SAFE_DELETE (m_TopLeftTree);
+            SAFE_DELETE (m_TopLeftTree);
         }
 
         if (m_TopRightTree)
         {
-            m_TopRightTree->~QuadTreeNode ();
-            //  SAFE_DELETE (m_TopRightTree);
+            SAFE_DELETE (m_TopRightTree);
         }
 
         if (m_BottomLeftTree)
         {
-            m_BottomLeftTree->~QuadTreeNode ();
-            //   SAFE_DELETE (m_BottomLeftTree);
+            SAFE_DELETE (m_BottomLeftTree);
         }
 
         if (m_BottomRightTree)
         {
-            m_BottomRightTree->~QuadTreeNode ();
-            // SAFE_DELETE (m_BottomRightTree);
+            SAFE_DELETE (m_BottomRightTree);
         }
     }
 
@@ -71,27 +67,28 @@ namespace aga
             return;
         }
 
+        Point topLeft = m_Bounds.GetTopLeft ();
+        Point bottomRight = m_Bounds.GetBottomRight ();
+
         // We are at a quad of unit area
         // We cannot subdivide this quad further
-        if (std::abs (m_Bounds.GetTopLeft ().X - m_Bounds.GetBottomRight ().X) <= m_QuadSize &&
-            std::abs (m_Bounds.GetTopLeft ().Y - m_Bounds.GetBottomRight ().Y) <= m_QuadSize)
+        if (std::abs (topLeft.X - bottomRight.X) <= m_QuadSize && std::abs (topLeft.Y - bottomRight.Y) <= m_QuadSize)
         {
-            QuadTreeData* data = new QuadTreeData (node, this);
+            QuadTreeData data (node, this);
             m_Data.push_back (data);
 
             return;
         }
 
-        if ((m_Bounds.GetTopLeft ().X + m_Bounds.GetBottomRight ().X) / 2 >= node->Bounds.GetPos ().X)
+        if ((topLeft.X + bottomRight.X) / 2 >= node->Bounds.GetPos ().X)
         {
-            if ((m_Bounds.GetTopLeft ().Y + m_Bounds.GetBottomRight ().Y) / 2 >= node->Bounds.GetPos ().Y)
+            if ((topLeft.Y + bottomRight.Y) / 2 >= node->Bounds.GetPos ().Y)
             {
                 if (!m_TopLeftTree)
                 {
                     m_TopLeftTree =
-                      new QuadTreeNode (Rect ({ m_Bounds.GetTopLeft ().X, m_Bounds.GetTopLeft ().Y },
-                                              { (m_Bounds.GetTopLeft ().X + m_Bounds.GetBottomRight ().X) / 2,
-                                                (m_Bounds.GetTopLeft ().Y + m_Bounds.GetBottomRight ().Y) / 2 }),
+                      new QuadTreeNode (Rect ({ topLeft.X, topLeft.Y },
+                                              { (topLeft.X + bottomRight.X) / 2, (topLeft.Y + bottomRight.Y) / 2 }),
                                         m_QuadSize,
                                         this);
                 }
@@ -102,12 +99,10 @@ namespace aga
             {
                 if (!m_BottomLeftTree)
                 {
-                    m_BottomLeftTree = new QuadTreeNode (
-                      Rect ({ m_Bounds.GetTopLeft ().X, (m_Bounds.GetTopLeft ().Y + m_Bounds.GetBottomRight ().Y) / 2 },
-                            { (m_Bounds.GetTopLeft ().X + m_Bounds.GetBottomRight ().X) / 2,
-                              m_Bounds.GetBottomRight ().Y }),
-                      m_QuadSize,
-                      this);
+                    m_BottomLeftTree = new QuadTreeNode (Rect ({ topLeft.X, (topLeft.Y + bottomRight.Y) / 2 },
+                                                               { (topLeft.X + bottomRight.X) / 2, bottomRight.Y }),
+                                                         m_QuadSize,
+                                                         this);
                 }
 
                 m_BottomLeftTree->Insert (node);
@@ -115,16 +110,14 @@ namespace aga
         }
         else
         {
-            if ((m_Bounds.GetTopLeft ().Y + m_Bounds.GetBottomRight ().Y) / 2 >= node->Bounds.GetPos ().Y)
+            if ((topLeft.Y + bottomRight.Y) / 2 >= node->Bounds.GetPos ().Y)
             {
                 if (!m_TopRightTree)
                 {
-                    m_TopRightTree = new QuadTreeNode (
-                      Rect ({ (m_Bounds.GetTopLeft ().X + m_Bounds.GetBottomRight ().X) / 2, m_Bounds.GetTopLeft ().Y },
-                            { m_Bounds.GetBottomRight ().X,
-                              (m_Bounds.GetTopLeft ().Y + m_Bounds.GetBottomRight ().Y) / 2 }),
-                      m_QuadSize,
-                      this);
+                    m_TopRightTree = new QuadTreeNode (Rect ({ (topLeft.X + bottomRight.X) / 2, topLeft.Y },
+                                                             { bottomRight.X, (topLeft.Y + bottomRight.Y) / 2 }),
+                                                       m_QuadSize,
+                                                       this);
                 }
 
                 m_TopRightTree->Insert (node);
@@ -134,9 +127,8 @@ namespace aga
                 if (!m_BottomRightTree)
                 {
                     m_BottomRightTree =
-                      new QuadTreeNode (Rect ({ (m_Bounds.GetTopLeft ().X + m_Bounds.GetBottomRight ().X) / 2,
-                                                (m_Bounds.GetTopLeft ().Y + m_Bounds.GetBottomRight ().Y) / 2 },
-                                              { m_Bounds.GetBottomRight ().X, m_Bounds.GetBottomRight ().Y }),
+                      new QuadTreeNode (Rect ({ (topLeft.X + bottomRight.X) / 2, (topLeft.Y + bottomRight.Y) / 2 },
+                                              { bottomRight.X, bottomRight.Y }),
                                         m_QuadSize,
                                         this);
                 }
@@ -145,26 +137,27 @@ namespace aga
             }
         }
 
-        m_IsDivided = true;
+        if (m_TopLeftTree || m_BottomLeftTree || m_TopRightTree || m_BottomRightTree)
+        {
+            m_IsDivided = true;
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void QuadTreeNode::Remove (Entity* node)
     {
-        QuadTreeData* foundNode = Search (node);
+        QuadTreeData* foundData = Search (node);
 
-        if (foundNode)
+        if (foundData)
         {
-            std::vector<QuadTreeData*>& data = foundNode->Container->m_Data;
+            std::vector<QuadTreeData>& data = foundData->Container->m_Data;
 
-            for (int i = 0; i < data.size (); ++i)
+            for (std::vector<QuadTreeData>::iterator it = data.begin (); it != data.end (); ++it)
             {
-                if (data[i]->EntityData->ID == node->ID)
+                if (&(*it) == foundData)
                 {
-                    SAFE_DELETE (foundNode);
-                    data.erase (data.begin () + i);
-
+                    data.erase (it);
                     break;
                 }
             }
@@ -182,9 +175,20 @@ namespace aga
             return nullptr;
         }
 
-        if ((m_Bounds.GetTopLeft ().X + m_Bounds.GetBottomRight ().X) / 2 >= p.X)
+        for (QuadTreeData& data : m_Data)
         {
-            if ((m_Bounds.GetTopLeft ().Y + m_Bounds.GetBottomRight ().Y) / 2 >= p.Y)
+            if (InsideRect (p, data.EntityData->Bounds))
+            {
+                return &data;
+            }
+        }
+
+        Point topLeft = m_Bounds.GetTopLeft ();
+        Point bottomRight = m_Bounds.GetBottomRight ();
+
+        if ((topLeft.X + bottomRight.X) / 2 >= p.X)
+        {
+            if ((topLeft.Y + bottomRight.Y) / 2 >= p.Y)
             {
                 if (m_TopLeftTree)
                 {
@@ -201,7 +205,7 @@ namespace aga
         }
         else
         {
-            if ((m_Bounds.GetTopLeft ().Y + m_Bounds.GetBottomRight ().Y) / 2 >= p.Y)
+            if ((topLeft.Y + bottomRight.Y) / 2 >= p.Y)
             {
                 if (m_TopRightTree)
                 {
@@ -216,50 +220,43 @@ namespace aga
                 }
             }
         }
-
-        for (QuadTreeData* data : m_Data)
-        {
-            if (InsideRect (p, data->EntityData->Bounds))
-            {
-                return data;
-            }
-        }
-
-        return nullptr;
     }
 
     //--------------------------------------------------------------------------------------------------
 
     QuadTreeData* QuadTreeNode::Search (Entity* entity)
     {
-        for (QuadTreeData* data : m_Data)
+        for (QuadTreeData& data : m_Data)
         {
-            if (data->EntityData->ID == entity->ID)
+            if (data.EntityData->ID == entity->ID)
             {
-                return data;
+                return &data;
             }
         }
 
         QuadTreeData* result = nullptr;
 
-        if (m_TopLeftTree)
+        if (m_IsDivided)
         {
-            result = m_TopLeftTree->Search (entity);
-        }
+            if (m_TopLeftTree)
+            {
+                result = m_TopLeftTree->Search (entity);
+            }
 
-        if (!result && m_TopRightTree)
-        {
-            result = m_TopRightTree->Search (entity);
-        }
+            if (!result && m_TopRightTree)
+            {
+                result = m_TopRightTree->Search (entity);
+            }
 
-        if (!result && m_BottomLeftTree)
-        {
-            result = m_BottomLeftTree->Search (entity);
-        }
+            if (!result && m_BottomLeftTree)
+            {
+                result = m_BottomLeftTree->Search (entity);
+            }
 
-        if (!result && m_BottomRightTree)
-        {
-            result = m_BottomRightTree->Search (entity);
+            if (!result && m_BottomRightTree)
+            {
+                result = m_BottomRightTree->Search (entity);
+            }
         }
 
         return result;
@@ -271,48 +268,51 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    std::vector<QuadTreeData*>& QuadTreeNode::GetData () { return m_Data; }
+    std::vector<QuadTreeData>& QuadTreeNode::GetData () { return m_Data; }
 
     //--------------------------------------------------------------------------------------------------
 
-    std::vector<Entity*> QuadTreeNode::GetEntitiesWithinRect (Rect rect)
+    std::vector<Entity*> QuadTreeNode::GetEntitiesWithinRect (Rect targetRect)
     {
         std::vector<Entity*> result;
 
-        if (Intersect (m_Bounds, rect))
+        if (Intersect (targetRect, m_Bounds))
         {
-            for (int i = 0; i < m_Data.size (); ++i)
+            for (QuadTreeData& data : m_Data)
             {
-                Entity* ent = m_Data[i]->EntityData;
+                Entity* ent = data.EntityData;
 
-                if (Intersect (ent->Bounds, rect))
+                if (Intersect (targetRect, ent->Bounds))
                 {
                     result.push_back (ent);
                 }
             }
 
-            if (m_TopLeftTree)
+            if (m_IsDivided)
             {
-                std::vector<Entity*> childNodes = m_TopLeftTree->GetEntitiesWithinRect (rect);
-                result.insert (result.end (), childNodes.begin (), childNodes.end ());
-            }
+                if (m_TopLeftTree)
+                {
+                    std::vector<Entity*> childNodes = m_TopLeftTree->GetEntitiesWithinRect (targetRect);
+                    result.insert (result.end (), childNodes.begin (), childNodes.end ());
+                }
 
-            if (m_TopRightTree)
-            {
-                std::vector<Entity*> childNodes = m_TopRightTree->GetEntitiesWithinRect (rect);
-                result.insert (result.end (), childNodes.begin (), childNodes.end ());
-            }
+                if (m_TopRightTree)
+                {
+                    std::vector<Entity*> childNodes = m_TopRightTree->GetEntitiesWithinRect (targetRect);
+                    result.insert (result.end (), childNodes.begin (), childNodes.end ());
+                }
 
-            if (m_BottomLeftTree)
-            {
-                std::vector<Entity*> childNodes = m_BottomLeftTree->GetEntitiesWithinRect (rect);
-                result.insert (result.end (), childNodes.begin (), childNodes.end ());
-            }
+                if (m_BottomLeftTree)
+                {
+                    std::vector<Entity*> childNodes = m_BottomLeftTree->GetEntitiesWithinRect (targetRect);
+                    result.insert (result.end (), childNodes.begin (), childNodes.end ());
+                }
 
-            if (m_BottomRightTree)
-            {
-                std::vector<Entity*> childNodes = m_BottomRightTree->GetEntitiesWithinRect (rect);
-                result.insert (result.end (), childNodes.begin (), childNodes.end ());
+                if (m_BottomRightTree)
+                {
+                    std::vector<Entity*> childNodes = m_BottomRightTree->GetEntitiesWithinRect (targetRect);
+                    result.insert (result.end (), childNodes.begin (), childNodes.end ());
+                }
             }
         }
 
@@ -351,15 +351,15 @@ namespace aga
             {
                 SAFE_DELETE (m_Parent->m_TopLeftTree);
             }
-            if (this == m_Parent->m_TopRightTree)
+            else if (this == m_Parent->m_TopRightTree)
             {
                 SAFE_DELETE (m_Parent->m_TopRightTree);
             }
-            if (this == m_Parent->m_BottomLeftTree)
+            else if (this == m_Parent->m_BottomLeftTree)
             {
                 SAFE_DELETE (m_Parent->m_BottomLeftTree);
             }
-            if (this == m_Parent->m_BottomRightTree)
+            else if (this == m_Parent->m_BottomRightTree)
             {
                 SAFE_DELETE (m_Parent->m_BottomRightTree);
             }

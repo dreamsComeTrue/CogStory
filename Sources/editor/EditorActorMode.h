@@ -20,7 +20,7 @@ namespace aga
         EditorActorMode (Editor* editor);
         virtual ~EditorActorMode ();
 
-        bool AddOrUpdateActor (const std::string& oldName, const std::string& actorType);
+        bool AddOrUpdateActor (const std::string& name, const std::string& actorType);
         void RemoveActor (const std::string& name);
         void Clear ();
 

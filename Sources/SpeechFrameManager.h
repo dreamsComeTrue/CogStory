@@ -10,6 +10,7 @@ namespace aga
     class SpeechFrame;
     class SceneManager;
     class AudioSample;
+    class SpeechData;
 
     class SpeechFrameManager : public Lifecycle
     {
@@ -33,6 +34,20 @@ namespace aga
                                      const std::string& regionName = "");
         SpeechFrame* AddSpeechFrame (const std::string& id,
                                      const std::string& text,
+                                     Point pos,
+                                     int maxLineCharsCount,
+                                     int linesCount,
+                                     bool shouldBeHandled = true,
+                                     const std::string& regionName = "");
+
+        SpeechFrame* AddSpeechFrame (SpeechData* speechData,
+                                     Point pos,
+                                     int maxLineCharsCount,
+                                     int linesCount,
+                                     bool shouldBeHandled = true,
+                                     const std::string& regionName = "");
+
+        SpeechFrame* AddSpeechFrame (const std::string& speechID,
                                      Point pos,
                                      int maxLineCharsCount,
                                      int linesCount,

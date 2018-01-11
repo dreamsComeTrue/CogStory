@@ -57,6 +57,8 @@ namespace aga
 
         bool operator== (const Point& rhs) const { return X == rhs.X && Y == rhs.Y; }
 
+        bool operator!= (const Point& rhs) const { return X != rhs.X || Y != rhs.Y; }
+
         Point operator+ (const Point& rhs) { return Point (X + rhs.X, Y + rhs.Y); }
 
         Point operator- (const Point& rhs) { return Point (X - rhs.X, Y - rhs.Y); }

@@ -221,8 +221,9 @@ namespace aga
                     Rect bounds = actor->Bounds;
                     Point pos = { bounds.GetCenter ().X - bounds.GetHalfSize ().Width,
                                   bounds.GetBottomRight ().Y - bounds.GetHalfSize ().Height };
+                    std::string str = actor->Name + "[" + ToString (actor->ID) + "]";
                     font.DrawText (
-                      FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), pos.X, pos.Y, actor->Name, ALLEGRO_ALIGN_CENTER);
+                      FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), pos.X, pos.Y, str, ALLEGRO_ALIGN_CENTER);
                 }
             }
         }
@@ -283,18 +284,26 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    Point visibleLastCameraPos;
+    std::vector<Entity*> visibleEntities;
     std::vector<Entity*> Scene::GetVisibleEntities ()
     {
-        Point pos = m_SceneManager->GetCamera ().GetTranslate ();
-        Point size = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
-        float offsetMultiplier = 0.5f;
+        Point cameraPos = m_SceneManager->GetCamera ().GetTranslate ();
 
-        std::vector<Entity*> tiles =
-          m_QuadTree.GetEntitiesWithinRect (Rect (pos - size * offsetMultiplier, pos + size + size * offsetMultiplier));
+        if (cameraPos != visibleLastCameraPos)
+        {
+            Point size = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+            float offsetMultiplier = 0.3f;
 
-        std::sort (tiles.begin (), tiles.end (), Entity::CompareByZOrder);
+            visibleEntities = m_QuadTree.GetEntitiesWithinRect (
+              Rect (cameraPos - size * offsetMultiplier, cameraPos + size + size * offsetMultiplier));
 
-        return tiles;
+            std::sort (visibleEntities.begin (), visibleEntities.end (), Entity::CompareByZOrder);
+        }
+
+        visibleLastCameraPos = cameraPos;
+
+        return visibleEntities;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -307,6 +316,7 @@ namespace aga
         {
             m_Actors.push_back (actor);
             m_QuadTree.Insert (actor);
+            m_QuadTree.UpdateStructures ();
         }
     }
 
@@ -319,6 +329,7 @@ namespace aga
             if (m_Actors[i]->Name == name)
             {
                 m_QuadTree.Remove (m_Actors[i]);
+                m_QuadTree.UpdateStructures ();
                 SAFE_DELETE (m_Actors[i]);
                 m_Actors.erase (m_Actors.begin () + i);
                 break;
@@ -351,6 +362,7 @@ namespace aga
     {
         m_Tiles.push_back (tile);
         m_QuadTree.Insert (tile);
+        m_QuadTree.UpdateStructures ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -359,6 +371,7 @@ namespace aga
     {
         m_Tiles.erase (std::remove (m_Tiles.begin (), m_Tiles.end (), tile), m_Tiles.end ());
         m_QuadTree.Remove (tile);
+        m_QuadTree.UpdateStructures ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -548,6 +561,14 @@ namespace aga
                            bounds.GetBottomRight ().Y,
                            COLOR_WHITE,
                            1);
+
+        Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
+        font.DrawText (FONT_NAME_MAIN_SMALL,
+                       al_map_rgb (255, 255, 0),
+                       bounds.GetCenter ().X,
+                       bounds.GetCenter ().Y,
+                       ToString (node->GetData ().size ()),
+                       ALLEGRO_ALIGN_CENTER);
 
         if (node->GetTopLeftTree ())
         {

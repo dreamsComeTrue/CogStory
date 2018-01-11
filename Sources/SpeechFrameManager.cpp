@@ -5,6 +5,7 @@
 #include "AudioSample.h"
 #include "MainLoop.h"
 #include "Player.h"
+#include "Scene.h"
 #include "SceneManager.h"
 #include "Screen.h"
 #include "SpeechFrame.h"
@@ -165,6 +166,50 @@ namespace aga
         rect.SetSize (width, height);
 
         return AddSpeechFrame (id, text, rect, shouldBeHandled, regionName);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    SpeechFrame* SpeechFrameManager::AddSpeechFrame (SpeechData* speechData,
+                                                     Point pos,
+                                                     int maxLineCharsCount,
+                                                     int linesCount,
+                                                     bool shouldBeHandled,
+                                                     const std::string& regionName)
+    {
+        return AddSpeechFrame (speechData->Name,
+                               speechData->Text[CURRENT_LANG],
+                               pos,
+                               maxLineCharsCount,
+                               linesCount,
+                               shouldBeHandled,
+                               regionName);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& speechID,
+                                                     Point pos,
+                                                     int maxLineCharsCount,
+                                                     int linesCount,
+                                                     bool shouldBeHandled,
+                                                     const std::string& regionName)
+    {
+        SpeechData* speech = m_SceneManager->GetActiveScene ()->GetSpeech (speechID);
+        SpeechFrame* frame = nullptr;
+
+        if (speech)
+        {
+            frame = AddSpeechFrame (speech->Name,
+                                    speech->Text[CURRENT_LANG],
+                                    pos,
+                                    maxLineCharsCount,
+                                    linesCount,
+                                    shouldBeHandled,
+                                    regionName);
+        }
+
+        return frame;
     }
 
     //--------------------------------------------------------------------------------------------------

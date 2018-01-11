@@ -16,7 +16,7 @@ namespace aga
         static Scene* LoadScene (SceneManager* sceneManager, const std::string& filePath);
         static void SaveScene (Scene* scene, const std::string& filePath);
 
-        static void UpdateMaxTileID (Scene* scene);
+        static void UpdateMaxEntityID (Scene* scene);
     };
 }
 

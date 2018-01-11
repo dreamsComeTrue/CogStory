@@ -13,6 +13,7 @@ namespace aga
 {
 #define LANG_EN 0
 #define LANG_PL 1
+#define CURRENT_LANG LANG_EN
 
     class Actor;
     class SceneManager;

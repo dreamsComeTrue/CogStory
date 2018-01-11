@@ -27,7 +27,7 @@ namespace aga
     class QuadTreeNode
     {
     public:
-        QuadTreeNode (Rect bounds, float quadSize = 32, QuadTreeNode* parent = nullptr);
+        QuadTreeNode (Rect bounds, float quadSize = 128, QuadTreeNode* parent = nullptr);
         ~QuadTreeNode ();
 
         void Insert (Entity*);
@@ -42,7 +42,7 @@ namespace aga
         QuadTreeNode* GetBottomRightTree ();
 
         Rect GetBounds ();
-        std::vector<QuadTreeData*>& GetData ();
+        std::vector<QuadTreeData>& GetData ();
 
         void UpdateStructures ();
 
@@ -51,7 +51,7 @@ namespace aga
     private:
         Rect m_Bounds;
         bool m_IsDivided;
-        std::vector<QuadTreeData*> m_Data;
+        std::vector<QuadTreeData> m_Data;
         float m_QuadSize;
 
         QuadTreeNode* m_Parent;

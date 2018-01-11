@@ -24,19 +24,20 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool EditorActorMode::AddOrUpdateActor (const std::string& oldName, const std::string& actorType)
+    bool EditorActorMode::AddOrUpdateActor (const std::string& name, const std::string& actorType)
     {
-        Actor* actor = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActor (oldName);
+        Actor* actor = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActor (name);
 
         if (actor)
         {
-            m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->RemoveActor (oldName);
+            m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->RemoveActor (name);
         }
 
         Actor* newActor = ActorFactory::GetActor (&m_Editor->m_MainLoop->GetSceneManager (), actorType);
-        newActor->Name = oldName;
+        newActor->Name = name;
 
-        m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->AddActor (oldName, newActor);
+        m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->AddActor (name, newActor);
+        m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->SortActors ();
 
         m_Editor->m_EditorActorMode.Clear ();
 
@@ -48,6 +49,7 @@ namespace aga
     void EditorActorMode::RemoveActor (const std::string& name)
     {
         m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->RemoveActor (name);
+        m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->SortActors ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -77,6 +79,7 @@ namespace aga
 
             QuadTreeNode& quadTree = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetQuadTree ();
             quadTree.Remove (m_SelectedActor);
+            quadTree.UpdateStructures ();
             quadTree.Insert (m_SelectedActor);
             quadTree.UpdateStructures ();
         }

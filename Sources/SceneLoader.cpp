@@ -300,7 +300,7 @@ namespace aga
                 }
             }
 
-            UpdateMaxTileID (scene);
+            UpdateMaxEntityID (scene);
             scene->SortTiles ();
             scene->SortActors ();
 
@@ -511,20 +511,30 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneLoader::UpdateMaxTileID (Scene* scene)
+    void SceneLoader::UpdateMaxEntityID (Scene* scene)
     {
         std::vector<Tile*>& tiles = scene->GetTiles ();
-        int maxTileID = -1;
+        int maxEntID = -1;
 
         for (Tile* t : tiles)
         {
-            if (t->ID > maxTileID)
+            if (t->ID > maxEntID)
             {
-                maxTileID = t->ID + 1;
+                maxEntID = t->ID + 1;
             }
         }
 
-        Entity::GlobalID = maxTileID;
+        std::vector<Actor*>& actors = scene->GetActors ();
+
+        for (Actor* act : actors)
+        {
+            if (act->ID > maxEntID)
+            {
+                maxEntID = act->ID + 1;
+            }
+        }
+
+        Entity::GlobalID = maxEntID;
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -240,7 +240,7 @@ namespace aga
         if (m_NameTextBox->GetText () != "" && m_ActorTypes->GetSelectedRowName () != "")
         {
             Gwk::Controls::Base::List& childNodes = m_ActorsTree->GetChildNodes ();
-            std::string oldName = m_NameTextBox->GetText ();
+            std::string oldName;
 
             for (Gwk::Controls::Base* control : childNodes)
             {
@@ -251,6 +251,11 @@ namespace aga
                     oldName = node->GetText ();
                     break;
                 }
+            }
+
+            if (m_NameTextBox->GetText () != "")
+            {
+                oldName = m_NameTextBox->GetText ();
             }
 
             bool ret = m_Editor->m_EditorActorMode.AddOrUpdateActor (oldName, m_ActorTypes->GetSelectedRowName ());

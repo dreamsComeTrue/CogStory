@@ -93,6 +93,7 @@ namespace aga
 
             QuadTreeNode& quadTree = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetQuadTree ();
             quadTree.Remove (m_SelectedTile);
+            quadTree.UpdateStructures ();
             quadTree.Insert (m_SelectedTile);
             quadTree.UpdateStructures ();
         }
@@ -241,6 +242,7 @@ namespace aga
         tile->Rotation = m_Rotation;
 
         m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->AddTile (tile);
+        m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->SortTiles ();
 
         return tile;
     }

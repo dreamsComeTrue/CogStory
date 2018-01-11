@@ -393,34 +393,37 @@ namespace aga
 
     bool Editor::Update (float deltaTime)
     {
-        ALLEGRO_KEYBOARD_STATE state;
-        al_get_keyboard_state (&state);
-
-        int delta = 5;
-
-        if (al_key_down (&state, ALLEGRO_KEY_LSHIFT))
+        if (m_CursorMode == CursorMode::TileSelectMode || m_CursorMode == CursorMode::TileEditMode)
         {
-            delta *= 3;
-        }
+            ALLEGRO_KEYBOARD_STATE state;
+            al_get_keyboard_state (&state);
 
-        if (al_key_down (&state, ALLEGRO_KEY_DOWN))
-        {
-            m_MainLoop->GetSceneManager ().GetCamera ().Move (0, -delta);
-        }
+            int delta = 300 * deltaTime;
 
-        if (al_key_down (&state, ALLEGRO_KEY_UP))
-        {
-            m_MainLoop->GetSceneManager ().GetCamera ().Move (0, delta);
-        }
+            if (al_key_down (&state, ALLEGRO_KEY_LSHIFT))
+            {
+                delta *= 3;
+            }
 
-        if (al_key_down (&state, ALLEGRO_KEY_RIGHT))
-        {
-            m_MainLoop->GetSceneManager ().GetCamera ().Move (-delta, 0);
-        }
+            if (al_key_down (&state, ALLEGRO_KEY_DOWN))
+            {
+                m_MainLoop->GetSceneManager ().GetCamera ().Move (0, -delta);
+            }
 
-        if (al_key_down (&state, ALLEGRO_KEY_LEFT))
-        {
-            m_MainLoop->GetSceneManager ().GetCamera ().Move (delta, 0);
+            if (al_key_down (&state, ALLEGRO_KEY_UP))
+            {
+                m_MainLoop->GetSceneManager ().GetCamera ().Move (0, delta);
+            }
+
+            if (al_key_down (&state, ALLEGRO_KEY_RIGHT))
+            {
+                m_MainLoop->GetSceneManager ().GetCamera ().Move (-delta, 0);
+            }
+
+            if (al_key_down (&state, ALLEGRO_KEY_LEFT))
+            {
+                m_MainLoop->GetSceneManager ().GetCamera ().Move (delta, 0);
+            }
         }
 
         return true;
