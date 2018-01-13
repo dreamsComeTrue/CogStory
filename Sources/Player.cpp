@@ -48,7 +48,7 @@ namespace aga
 
         sample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
           "FOOT_STEP", GetResourcePath (SOUND_FOOT_STEP));
-        sample->SetVolume (3.0f);
+        sample->SetVolume (1.0f);
 
         return true;
     }

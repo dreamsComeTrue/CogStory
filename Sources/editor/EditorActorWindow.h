@@ -4,6 +4,7 @@
 #define __EDITOR_ACTOR_WINDOW_H__
 
 #include "Common.h"
+#include "Entity.h"
 
 #include <Gwork/Controls.h>
 
@@ -55,6 +56,8 @@ namespace aga
         void OnAccept ();
         void OnCancel ();
 
+        void SelectActor (const std::string& name);
+
     private:
         void UpdateActorsTree ();
         void OnActorSelect (Gwk::Controls::Base* control);
@@ -63,14 +66,15 @@ namespace aga
         Editor* m_Editor;
 
         int m_SelectedType;
+        float m_Rotation;
+        Point m_Position;
 
         Gwk::Controls::WindowControl* m_SceneWindow;
         Gwk::Controls::TreeControl* m_ActorsTree;
-        Gwk::Controls::TextBox* m_NameTextBox;
-        Gwk::Controls::ListBox* m_ActorTypes;
 
         Gwk::Controls::PropertyTree* m_ActorProperties;
         Gwk::Controls::Properties* m_GeneralSection;
+        Gwk::Controls::Properties* m_TransformSection;
         Gwk::Controls::Properties* m_ScriptSection;
 
         EditorActorScriptWindow* m_ScriptWindow;

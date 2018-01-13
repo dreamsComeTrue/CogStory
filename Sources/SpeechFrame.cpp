@@ -32,6 +32,8 @@ namespace aga
       , m_ScrollPossible (false)
       , m_ShouldBeHandled (true)
       , m_Handled (false)
+      , m_DelayCounter (0.0f)
+      , m_IsDelayed (false)
     {
         m_FrameBitmap = load_nine_patch_bitmap (GetResourcePath (ResourceID::GFX_TEXT_FRAME).c_str ());
         m_Atlas = m_Manager->GetSceneManager ()->GetAtlasManager ()->GetAtlas (
@@ -63,6 +65,8 @@ namespace aga
       , m_ShouldBeHandled (shouldBeHandled)
       , m_Handled (false)
       , m_RegionName (regionName)
+      , m_DelayCounter (0.0f)
+      , m_IsDelayed (false)
     {
         m_FrameBitmap = load_nine_patch_bitmap (GetResourcePath (ResourceID::GFX_TEXT_FRAME).c_str ());
 
@@ -148,12 +152,27 @@ namespace aga
 
         if (m_StillUpdating)
         {
+            if (m_IsDelayed)
+            {
+                m_DelayCounter -= deltaTime * 1000.0f;
+
+                if (m_DelayCounter <= 0.0f)
+                {
+                    m_IsDelayed = false;
+                    m_DelayCounter = 0.0f;
+                }
+            }
+
             m_CurrentDrawTime += deltaTime * 1000;
 
             if (m_CurrentDrawTime >= m_DrawSpeed)
             {
                 m_CurrentDrawTime = 0.0f;
-                ++m_CurrentIndex;
+
+                if (!m_IsDelayed)
+                {
+                    ++m_CurrentIndex;
+                }
 
                 if (m_CurrentIndex > m_TextLines[m_CurrentLine].size () - 1)
                 {
@@ -441,7 +460,17 @@ namespace aga
 
                         if (currentCharIndex >= attr.BeginIndex && currentCharIndex <= attr.EndIndex)
                         {
-                            color = attr.Color;
+                            if (attr.AttributesMask & ATTRIBUTE_COLOR)
+                            {
+                                color = attr.Color;
+                            }
+
+                            if (attr.AttributesMask & ATTRIBUTE_DELAY && !m_IsDelayed && attr.Delay > 0.0f)
+                            {
+                                m_IsDelayed = true;
+                                m_DelayCounter = attr.Delay;
+                            }
+
                             break;
                         }
                     }
@@ -553,6 +582,8 @@ namespace aga
         m_ScrollPossible = false;
         m_StillUpdating = true;
         m_Handled = false;
+        m_DelayCounter = 0.0f;
+        m_IsDelayed = false;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -638,6 +669,15 @@ namespace aga
                         {
                             attr.Color = COLOR_LIGHTBLUE;
                         }
+
+                        attr.AttributesMask |= ATTRIBUTE_COLOR;
+                    }
+                    else if (key == "WAIT")
+                    {
+                        attr.Delay = atof (value.c_str ());
+                        attr.BeginIndex -= 1;
+
+                        attr.AttributesMask |= ATTRIBUTE_DELAY;
                     }
 
                     attributes.push (attr);

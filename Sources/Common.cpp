@@ -2,11 +2,19 @@
 
 #include "Common.h"
 
+#include <chrono>
+
 namespace aga
 {
+    //--------------------------------------------------------------------------------------------------
+
     float RadiansToDegrees (float radians) { return radians * 180.0 / M_PI; }
 
+    //--------------------------------------------------------------------------------------------------
+
     float DegressToRadians (float degrees) { return degrees * M_PI / 180.0; }
+
+    //--------------------------------------------------------------------------------------------------
 
     float ToPositiveAngle (float degrees)
     {
@@ -48,6 +56,8 @@ namespace aga
         return { nx + origin.X, ny + origin.Y };
     }
 
+    //--------------------------------------------------------------------------------------------------
+
     std::vector<std::string> SplitString (const std::string& s, char seperator)
     {
         std::vector<std::string> output;
@@ -68,6 +78,8 @@ namespace aga
         return output;
     }
 
+    //--------------------------------------------------------------------------------------------------
+
     std::string& LeftTrimString (std::string& str)
     {
         auto it2 = std::find_if (
@@ -75,6 +87,8 @@ namespace aga
         str.erase (str.begin (), it2);
         return str;
     }
+
+    //--------------------------------------------------------------------------------------------------
 
     std::string& RightTrimString (std::string& str)
     {
@@ -84,11 +98,19 @@ namespace aga
         return str;
     }
 
+    //--------------------------------------------------------------------------------------------------
+
     std::string& TrimString (std::string& str) { return LeftTrimString (RightTrimString (str)); }
+
+    //--------------------------------------------------------------------------------------------------
 
     float RandZeroToOne () { return rand () / (RAND_MAX + 1.f); }
 
+    //--------------------------------------------------------------------------------------------------
+
     float RandInRange (float min, float max) { return min + (rand () / (RAND_MAX / (max + 1 - min))); }
+
+    //--------------------------------------------------------------------------------------------------
 
     std::string GetDirectory (const std::string& fullPath)
     {
@@ -98,6 +120,8 @@ namespace aga
 
         return str.substr (0, found);
     }
+
+    //--------------------------------------------------------------------------------------------------
 
     std::string GetBaseName (const std::string& fullPath)
     {
@@ -117,11 +141,15 @@ namespace aga
         return str;
     }
 
+    //--------------------------------------------------------------------------------------------------
+
     bool IsFileExists (const std::string& filePath)
     {
         std::ifstream f (filePath.c_str ());
         return f.good ();
     }
+
+    //--------------------------------------------------------------------------------------------------
 
     std::string GetCurrentDir ()
     {
@@ -137,4 +165,15 @@ namespace aga
 
         return ""; // raise a flag, throw an exception, ...
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    long GetCurrentTime ()
+    {
+        return std::chrono::duration_cast<std::chrono::milliseconds> (
+                 std::chrono::system_clock::now ().time_since_epoch ())
+          .count ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
 }

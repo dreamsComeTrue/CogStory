@@ -24,19 +24,31 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool EditorActorMode::AddOrUpdateActor (const std::string& name, const std::string& actorType)
+    bool EditorActorMode::AddOrUpdateActor (const std::string& name,
+                                            const std::string& actorType,
+                                            Point pos,
+                                            float rotation)
     {
         Actor* actor = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActor (name);
 
         if (actor)
         {
-            m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->RemoveActor (name);
+            actor->Name = name;
+            actor->Bounds.Pos = pos;
+            actor->TemplateBounds.Pos = pos;
+            actor->Rotation = rotation;
+        }
+        else
+        {
+            Actor* newActor = ActorFactory::GetActor (&m_Editor->m_MainLoop->GetSceneManager (), actorType);
+            newActor->Name = name;
+            newActor->Bounds.Pos = pos;
+            newActor->TemplateBounds.Pos = pos;
+            newActor->Rotation = rotation;
+
+            m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->AddActor (name, newActor);
         }
 
-        Actor* newActor = ActorFactory::GetActor (&m_Editor->m_MainLoop->GetSceneManager (), actorType);
-        newActor->Name = name;
-
-        m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->AddActor (name, newActor);
         m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->SortActors ();
 
         m_Editor->m_EditorActorMode.Clear ();

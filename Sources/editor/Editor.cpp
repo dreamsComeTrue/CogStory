@@ -28,6 +28,8 @@ namespace aga
     bool askNewScene = false;
     std::string menuFileName = "0_home/0_0_home.scn";
 
+    const float DOUBLE_CLICK_SPEED = 300;
+
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
@@ -45,6 +47,7 @@ namespace aga
       , m_BaseGridSize (16)
       , m_GridSize (16)
       , m_CursorMode (CursorMode::TileSelectMode)
+      , m_LastTimeClicked (0.0f)
     {
     }
 
@@ -563,7 +566,19 @@ namespace aga
         }
         else if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
         {
-            ProcessMouseButtonUp (event->mouse);
+
+            long currentTime = GetCurrentTime ();
+
+            if (currentTime - m_LastTimeClicked <= DOUBLE_CLICK_SPEED)
+            {
+                ProcessMouseButtonDoubleClick (event->mouse);
+            }
+            else
+            {
+                ProcessMouseButtonUp (event->mouse);
+            }
+
+            m_LastTimeClicked = currentTime;
         }
         else if (event->type == ALLEGRO_EVENT_MOUSE_AXES)
         {
@@ -961,7 +976,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnActor () { m_ActorWindow->Show (); }
+    void Editor::OnActor ()
+    {
+        m_ActorWindow->Show ();
+
+        if (m_EditorActorMode.m_SelectedActor)
+        {
+            m_ActorWindow->SelectActor (m_EditorActorMode.m_SelectedActor->Name);
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -1101,6 +1124,16 @@ namespace aga
         leftNextTileButton->SetPos (beginning - 35, leftPrevTileButton->Bottom () + 2);
         rightPrevTileButton->SetPos (beginning + TILES_COUNT * TILE_SIZE + 5, mainCanvas->Bottom () - TILE_SIZE + 5);
         rightNextTileButton->SetPos (beginning + TILES_COUNT * TILE_SIZE + 5, rightPrevTileButton->Bottom () + 2);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::ProcessMouseButtonDoubleClick (ALLEGRO_MOUSE_EVENT& event)
+    {
+        if (m_EditorActorMode.m_SelectedActor)
+        {
+            OnActor ();
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

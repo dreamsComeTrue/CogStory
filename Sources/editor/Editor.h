@@ -121,6 +121,7 @@ namespace aga
         void ResetSettings ();
         void ScreenResize ();
 
+        void ProcessMouseButtonDoubleClick (ALLEGRO_MOUSE_EVENT& event);
         void ProcessMouseButtonDown (ALLEGRO_MOUSE_EVENT& event);
         void ProcessMouseButtonUp (ALLEGRO_MOUSE_EVENT& event);
         void ProcessMouseAxes (ALLEGRO_MOUSE_EVENT& event);
@@ -142,6 +143,8 @@ namespace aga
 
         bool m_IsMousePan;
         bool m_IsMouseWheel;
+
+        long m_LastTimeClicked;
 
         EditorOpenSceneWindow* m_OpenSceneWindow;
         EditorSaveSceneWindow* m_SaveSceneWindow;

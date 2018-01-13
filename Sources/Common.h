@@ -110,6 +110,8 @@ namespace aga
     bool IsFileExists (const std::string& filePath);
 
     std::string GetCurrentDir ();
+
+    long GetCurrentTime ();
 }
 
 #endif //   __COMMON_H__

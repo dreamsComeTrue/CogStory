@@ -23,7 +23,7 @@ void Start ()
 	Point frameSize2 (350, 40);
 	Point framePos2 (screenSize.Width / 2 - frameSize2.Width / 2, 10);
 	Rect r (framePos2, Point (framePos2.X + frameSize2.Width, framePos2.Y + frameSize2.Height));
-    @topFrame = AddSpeechFrame ("SPEECH", "PTR4617", r, false);
+    @topFrame = AddSpeechFrame ("SPEECH", "PTR4617[WAIT=300]???[/WAIT]", r, false);
 	topFrame.Hide ();
 	topFrame.SetDrawTextCenter (true);
 }

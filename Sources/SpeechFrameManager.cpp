@@ -148,22 +148,11 @@ namespace aga
                                                      bool shouldBeHandled,
                                                      const std::string& regionName)
     {
-        Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
-        unsigned ascent = font.GetFontAscent (FONT_NAME_MAIN_MEDIUM);
-        unsigned descent = font.GetFontDescent (FONT_NAME_MAIN_MEDIUM);
-
-        Point dims =
-          m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().GetTextDimensions (FONT_NAME_MAIN_MEDIUM, "X");
+        Point size = GetTextRectSize (maxLineCharsCount, linesCount);
 
         Rect rect;
         rect.SetPos (pos);
-
-        float width = maxLineCharsCount * dims.Width + 2 * SPEECH_FRAME_TEXT_INSETS +
-                      (maxLineCharsCount + 1) * SPEECH_FRAME_ADVANCE_LETTERS;
-        float height = linesCount * (ascent + descent + SPEECH_FRAME_LINE_OFFSET) + SPEECH_FRAME_LINE_OFFSET +
-                       SPEECH_FRAME_TEXT_INSETS;
-
-        rect.SetSize (width, height);
+        rect.SetSize (size.Width, size.Height);
 
         return AddSpeechFrame (id, text, rect, shouldBeHandled, regionName);
     }
@@ -214,7 +203,95 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& speechID,
+                                                     SpeechFramePosition position,
+                                                     int maxLineCharsCount,
+                                                     int linesCount,
+                                                     bool shouldBeHandled,
+                                                     const std::string& regionName)
+    {
+        const int SCREEN_OFFSET = 10;
+        Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+        Point size = GetTextRectSize (maxLineCharsCount, linesCount);
+        Point pos;
+
+        switch (position)
+        {
+            case TopLeft:
+            {
+                pos.X = SCREEN_OFFSET;
+                pos.Y = SCREEN_OFFSET;
+                break;
+            }
+
+            case TopCenter:
+            {
+                pos.X = screenSize.Width * 0.5f - size.Width * 0.5f;
+                pos.Y = SCREEN_OFFSET;
+                break;
+            }
+
+            case TopRight:
+            {
+                pos.X = screenSize.Width - size.Width - SCREEN_OFFSET;
+                pos.Y = SCREEN_OFFSET;
+                break;
+            }
+
+            case BottomLeft:
+            {
+                pos.X = SCREEN_OFFSET;
+                pos.Y = screenSize.Height - size.Height - SCREEN_OFFSET;
+                break;
+            }
+
+            case BottomCenter:
+            {
+                pos.X = screenSize.Width * 0.5f - size.Width * 0.5f;
+                pos.Y = screenSize.Height - size.Height - SCREEN_OFFSET;
+                break;
+            }
+
+            case BottomRight:
+            {
+                pos.X = screenSize.Width - size.Width - SCREEN_OFFSET;
+                pos.Y = screenSize.Height - size.Height - SCREEN_OFFSET;
+                break;
+            }
+
+            case Center:
+            {
+                pos.X = screenSize.Width * 0.5f - size.Width * 0.5f;
+                pos.Y = screenSize.Height * 0.5f - size.Height * 0.5f;
+                break;
+            }
+        }
+
+        return AddSpeechFrame (speechID, pos, maxLineCharsCount, linesCount, shouldBeHandled, regionName);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     SceneManager* SpeechFrameManager::GetSceneManager () { return m_SceneManager; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Point SpeechFrameManager::GetTextRectSize (int maxLineCharsCount, int linesCount)
+    {
+        Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
+        unsigned ascent = font.GetFontAscent (FONT_NAME_MAIN_MEDIUM);
+        unsigned descent = font.GetFontDescent (FONT_NAME_MAIN_MEDIUM);
+
+        Point dims =
+          m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().GetTextDimensions (FONT_NAME_MAIN_MEDIUM, "X");
+
+        float width = maxLineCharsCount * dims.Width + 2 * SPEECH_FRAME_TEXT_INSETS +
+                      (maxLineCharsCount + 1) * SPEECH_FRAME_ADVANCE_LETTERS;
+        float height = linesCount * (ascent + descent + SPEECH_FRAME_LINE_OFFSET) + SPEECH_FRAME_LINE_OFFSET +
+                       SPEECH_FRAME_TEXT_INSETS;
+
+        return { width, height };
+    }
 
     //--------------------------------------------------------------------------------------------------
 }

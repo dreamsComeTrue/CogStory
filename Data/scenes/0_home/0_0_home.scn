@@ -1,20 +1,12 @@
 {
     "actors": [
         {
-            "id": "15",
-            "name": "NPC",
-            "pos": "-68 300",
+            "id": "19",
+            "name": "test_NPC",
+            "pos": "1 0",
             "rot": "0",
             "type": "NPC",
             "z-order": "1"
-        },
-        {
-            "id": "16",
-            "name": "NPC_2",
-            "pos": "107 207",
-            "rot": "0",
-            "type": "NPC",
-            "z-order": "0"
         }
     ],
     "flag_points": [

@@ -130,6 +130,13 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
+    Gwk::Controls::Property::Text* idProperty;
+    Gwk::Controls::Property::Base* nameProperty;
+    Gwk::Controls::Property::ComboBox* typeProperty;
+    Gwk::Controls::Property::Base* positionProperty;
+    Gwk::Controls::Property::Base* rotationProperty;
+    Gwk::Controls::Property::Base* zOrderProperty;
+
     EditorActorWindow::EditorActorWindow (Editor* editor, Gwk::Controls::Canvas* canvas)
       : m_Editor (editor)
     {
@@ -137,14 +144,14 @@ namespace aga
 
         m_SceneWindow = new Gwk::Controls::WindowControl (canvas);
         m_SceneWindow->SetTitle ("Actor Editor");
-        m_SceneWindow->SetSize (canvas->Width () - 150, canvas->Height () - 80);
+        m_SceneWindow->SetSize (680, canvas->Height () - 150);
         m_SceneWindow->CloseButtonPressed ();
 
         Gwk::Controls::DockBase* dock = new Gwk::Controls::DockBase (m_SceneWindow);
         dock->Dock (Gwk::Position::Fill);
 
         m_ActorsTree = new Gwk::Controls::TreeControl (dock);
-        m_ActorsTree->SetBounds (10, 10, 300, dock->Height () - 55);
+        m_ActorsTree->SetBounds (10, 10, 300, dock->Height ());
         m_ActorsTree->ExpandAll ();
         m_ActorsTree->Dock (Gwk::Position::Fill);
         m_ActorsTree->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
@@ -163,60 +170,69 @@ namespace aga
         nameLabel->SetText ("Name:");
         nameLabel->SizeToContents ();
 
-        int controlWidth = 610;
-
-        m_NameTextBox = new Gwk::Controls::TextBox (center);
-        m_NameTextBox->SetTextColor (Gwk::Colors::White);
-        m_NameTextBox->SetText ("");
-        m_NameTextBox->SetWidth (controlWidth);
-        m_NameTextBox->SetPos (xOffset, nameLabel->Bottom () + 5);
-
-        Gwk::Controls::Label* typeLabel = new Gwk::Controls::Label (center);
-        typeLabel->SetPos (xOffset, m_NameTextBox->Bottom () + 5);
-        typeLabel->SetText ("Type:");
-        typeLabel->SizeToContents ();
-
-        m_ActorTypes = new Gwk::Controls::ListBox (center);
-        m_ActorTypes->SetPos (xOffset, typeLabel->Bottom () + 5);
-        m_ActorTypes->SetSize (150, 400);
-
-        std::vector<std::string>& actorTypes = ActorFactory::GetActorTypes ();
-
-        for (const std::string& type : actorTypes)
-        {
-            m_ActorTypes->AddItem (type, type);
-        }
-
         m_ActorProperties = new Gwk::Controls::PropertyTree (center);
-        m_ActorProperties->SetBounds (m_ActorTypes->Right () + 10, m_ActorTypes->Y (), 340, m_ActorTypes->Height ());
+        m_ActorProperties->SetBounds (10, nameLabel->Y (), 340, 400);
         {
             m_GeneralSection = m_ActorProperties->Add ("General");
+            m_GeneralSection->Add ("ID");
             m_GeneralSection->Add ("Name");
-            m_GeneralSection->Add ("Parent");
+
+            Gwk::Controls::Property::ComboBox* typeComboBox = new Gwk::Controls::Property::ComboBox (m_GeneralSection);
+
+            std::vector<std::string>& actorTypes = ActorFactory::GetActorTypes ();
+
+            for (const std::string& type : actorTypes)
+            {
+                typeComboBox->GetComboBox ()->AddItem (type, type);
+            }
+
+            m_GeneralSection->Add ("Type", typeComboBox);
+
+            m_TransformSection = m_ActorProperties->Add ("Transform");
+
+            m_TransformSection->Add ("Position");
+            m_TransformSection->Add ("Rotation");
+            m_TransformSection->Add ("ZOrder");
 
             m_ScriptSection = m_ActorProperties->Add ("Scripts");
+
+            idProperty = static_cast<Gwk::Controls::Property::Text*> (
+              static_cast<Gwk::Controls::PropertyRow*> (m_GeneralSection->Find ("ID"))->GetProperty ());
+            idProperty->m_textBox->SetKeyboardInputEnabled (false);
+            idProperty->m_textBox->SetMouseInputEnabled (false);
+
+            nameProperty = static_cast<Gwk::Controls::Property::Base*> (
+              static_cast<Gwk::Controls::PropertyRow*> (m_GeneralSection->Find ("Name"))->GetProperty ());
+            typeProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
+              static_cast<Gwk::Controls::PropertyRow*> (m_GeneralSection->Find ("Type"))->GetProperty ());
+            positionProperty = static_cast<Gwk::Controls::Property::Base*> (
+              static_cast<Gwk::Controls::PropertyRow*> (m_TransformSection->Find ("Position"))->GetProperty ());
+            rotationProperty = static_cast<Gwk::Controls::Property::Base*> (
+              static_cast<Gwk::Controls::PropertyRow*> (m_TransformSection->Find ("Rotation"))->GetProperty ());
+            zOrderProperty = static_cast<Gwk::Controls::Property::Base*> (
+              static_cast<Gwk::Controls::PropertyRow*> (m_TransformSection->Find ("ZOrder"))->GetProperty ());
         }
 
         m_ActorProperties->ExpandAll ();
 
         Gwk::Controls::Button* saveButton = new Gwk::Controls::Button (center);
         saveButton->SetText ("SAVE");
-        saveButton->SetPos (m_SceneWindow->Width () - 330, typeLabel->Bottom () + 5);
+        saveButton->SetPos (m_ActorProperties->Right () + 10, m_ActorProperties->Y ());
         saveButton->onPress.Add (this, &EditorActorWindow::OnSave);
 
         Gwk::Controls::Button* removeButton = new Gwk::Controls::Button (center);
         removeButton->SetText ("REMOVE");
-        removeButton->SetPos (m_SceneWindow->Width () - 330, saveButton->Bottom () + 10);
+        removeButton->SetPos (m_ActorProperties->Right () + 10, saveButton->Bottom () + 10);
         removeButton->onPress.Add (this, &EditorActorWindow::OnRemove);
 
         Gwk::Controls::Button* addScriptButton = new Gwk::Controls::Button (center);
         addScriptButton->SetText ("ADD SCRIPT");
-        addScriptButton->SetPos (m_SceneWindow->Width () - 330, removeButton->Bottom () + 50);
+        addScriptButton->SetPos (m_ActorProperties->Right () + 10, removeButton->Bottom () + 50);
         addScriptButton->onPress.Add (this, &EditorActorWindow::OnAddScript);
 
         Gwk::Controls::Button* acceptButton = new Gwk::Controls::Button (center);
         acceptButton->SetText ("ACCEPT");
-        acceptButton->SetPos (m_SceneWindow->Width () - 330, m_SceneWindow->Height () - 65);
+        acceptButton->SetPos (m_ActorProperties->Right () + 10, m_SceneWindow->Height () - 65);
         acceptButton->onPress.Add (this, &EditorActorWindow::OnAccept);
 
         m_ScriptWindow = new EditorActorScriptWindow (m_Editor, canvas);
@@ -228,6 +244,14 @@ namespace aga
 
     void EditorActorWindow::Show ()
     {
+        UpdateActorsTree ();
+
+        idProperty->SetPropertyValue ("", false);
+        nameProperty->SetPropertyValue ("");
+        positionProperty->SetPropertyValue ("");
+        rotationProperty->SetPropertyValue ("");
+        zOrderProperty->SetPropertyValue ("");
+
         m_SceneWindow->SetPosition (Gwk::Position::Center);
         m_SceneWindow->SetHidden (false);
         m_SceneWindow->MakeModal (true);
@@ -237,10 +261,14 @@ namespace aga
 
     void EditorActorWindow::OnSave ()
     {
-        if (m_NameTextBox->GetText () != "" && m_ActorTypes->GetSelectedRowName () != "")
+        Gwk::String namePropertyTxt = nameProperty->GetPropertyValue ();
+        Gwk::String typePropertyTxt = typeProperty->GetPropertyValue ();
+
+        if (namePropertyTxt != "" && typePropertyTxt != "")
         {
             Gwk::Controls::Base::List& childNodes = m_ActorsTree->GetChildNodes ();
             std::string oldName;
+            std::string selectedNodeName;
 
             for (Gwk::Controls::Base* control : childNodes)
             {
@@ -249,23 +277,27 @@ namespace aga
                 if (node->IsSelected ())
                 {
                     oldName = node->GetText ();
+                    selectedNodeName = node->GetText ();
                     break;
                 }
             }
 
-            if (m_NameTextBox->GetText () != "")
+            if (namePropertyTxt != "")
             {
-                oldName = m_NameTextBox->GetText ();
+                oldName = namePropertyTxt;
             }
 
-            bool ret = m_Editor->m_EditorActorMode.AddOrUpdateActor (oldName, m_ActorTypes->GetSelectedRowName ());
+            sscanf (positionProperty->GetPropertyValue ().c_str (), "%f,%f", &m_Position.X, &m_Position.Y);
+            sscanf (rotationProperty->GetPropertyValue ().c_str (), "%f", &m_Rotation);
+
+            bool ret = m_Editor->m_EditorActorMode.AddOrUpdateActor (oldName, typePropertyTxt, m_Position, m_Rotation);
 
             if (ret)
             {
-                m_NameTextBox->SetText ("");
                 m_Editor->m_EditorActorMode.Clear ();
 
                 UpdateActorsTree ();
+                SelectActor (selectedNodeName);
             }
         }
     }
@@ -274,12 +306,29 @@ namespace aga
 
     void EditorActorWindow::OnRemove ()
     {
-        if (m_NameTextBox->GetText () != "")
+        if (nameProperty->GetPropertyValue () != "")
         {
-            m_Editor->m_EditorActorMode.RemoveActor (m_NameTextBox->GetText ());
-            m_NameTextBox->SetText ("");
+            m_Editor->m_EditorActorMode.RemoveActor (nameProperty->GetPropertyValue ());
+            nameProperty->SetPropertyValue ("");
 
             UpdateActorsTree ();
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::SelectActor (const std::string& name)
+    {
+        Gwk::Controls::Base::List children = m_ActorsTree->GetChildNodes ();
+        for (Gwk::Controls::Base* node : children)
+        {
+            Gwk::Controls::TreeNode* treeNode = static_cast<Gwk::Controls::TreeNode*> (node);
+
+            if (treeNode->GetText () == name)
+            {
+                treeNode->SetSelected (true);
+                break;
+            }
         }
     }
 
@@ -316,7 +365,14 @@ namespace aga
                 {
                     m_Editor->m_EditorActorMode.m_Actor = actor;
 
-                    m_NameTextBox->SetText (actor->Name);
+                    idProperty->SetPropertyValue (ToString (actor->ID), false);
+                    nameProperty->SetPropertyValue (actor->Name);
+                    typeProperty->SetPropertyValue (actor->GetTypeName (), false);
+                    positionProperty->SetPropertyValue (
+                      Gwk::Utility::Format ("%f,%f", actor->Bounds.Pos.X, actor->Bounds.Pos.Y), false);
+                    rotationProperty->SetPropertyValue (Gwk::Utility::Format ("%f", actor->Rotation), false);
+                    zOrderProperty->SetPropertyValue (ToString (actor->ZOrder));
+
                     break;
                 }
             }

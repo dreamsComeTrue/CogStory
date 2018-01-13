@@ -15,6 +15,9 @@ namespace aga
     class Atlas;
     class SpeechFrameManager;
 
+#define ATTRIBUTE_COLOR 1
+#define ATTRIBUTE_DELAY 2
+
     struct SpeechTextAttribute
     {
         int LineIndex;
@@ -22,6 +25,8 @@ namespace aga
         int EndIndex;
         ALLEGRO_COLOR Color;
         float Delay = 0.0f;
+
+        int AttributesMask = 0;
     };
 
     class SpeechFrame
@@ -100,6 +105,9 @@ namespace aga
         bool m_ScrollPossible;
         bool m_ShouldBeHandled;
         bool m_Handled;
+
+        float m_DelayCounter;
+        bool m_IsDelayed;
     };
 }
 

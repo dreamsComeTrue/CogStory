@@ -12,6 +12,17 @@ namespace aga
     class AudioSample;
     class SpeechData;
 
+    enum SpeechFramePosition
+    {
+        TopLeft,
+        TopCenter,
+        TopRight,
+        BottomLeft,
+        BottomCenter,
+        BottomRight,
+        Center
+    };
+
     class SpeechFrameManager : public Lifecycle
     {
     public:
@@ -54,7 +65,17 @@ namespace aga
                                      bool shouldBeHandled = true,
                                      const std::string& regionName = "");
 
+        SpeechFrame* AddSpeechFrame (const std::string& speechID,
+                                     SpeechFramePosition position,
+                                     int maxLineCharsCount,
+                                     int linesCount,
+                                     bool shouldBeHandled = true,
+                                     const std::string& regionName = "");
+
         SceneManager* GetSceneManager ();
+
+    private:
+        Point GetTextRectSize (int maxLineCharsCount, int linesCount);
 
     private:
         SceneManager* m_SceneManager;
