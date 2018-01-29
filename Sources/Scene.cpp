@@ -86,10 +86,10 @@ namespace aga
     const float boundSize = 10000;
 
     Scene::Scene (SceneManager* sceneManager)
-      : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
-      , m_SceneManager (sceneManager)
-      , m_DrawPhysData (true)
-      , m_QuadTree (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }))
+        : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
+        , m_SceneManager (sceneManager)
+        , m_DrawPhysData (true)
+        , m_QuadTree (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }))
     {
     }
 
@@ -222,8 +222,7 @@ namespace aga
                     Point pos = { bounds.GetCenter ().X - bounds.GetHalfSize ().Width,
                                   bounds.GetBottomRight ().Y - bounds.GetHalfSize ().Height };
                     std::string str = actor->Name + "[" + ToString (actor->ID) + "]";
-                    font.DrawText (
-                      FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), pos.X, pos.Y, str, ALLEGRO_ALIGN_CENTER);
+                    font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), pos.X, pos.Y, str, ALLEGRO_ALIGN_CENTER);
                 }
             }
         }
@@ -269,14 +268,13 @@ namespace aga
             m_SceneManager->GetPlayer ().DrawPhysVertices ();
         }
 
-        font.DrawText (FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), -100, -50, m_Name, ALLEGRO_ALIGN_LEFT);
+        font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), -100, -50, m_Name, ALLEGRO_ALIGN_LEFT);
 
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
         {
             m_SceneManager->GetCamera ().UseIdentityTransform ();
 
-            font.DrawText (
-              FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), 10, 10, ToString (entities.size ()), ALLEGRO_ALIGN_LEFT);
+            font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), 10, 10, ToString (entities.size ()), ALLEGRO_ALIGN_LEFT);
         }
 
         al_draw_filled_circle (0, 0, 5, COLOR_RED);
@@ -292,11 +290,11 @@ namespace aga
 
         if (cameraPos != visibleLastCameraPos)
         {
-            Point size = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+            Point size = m_SceneManager->GetCamera ().GetScale () * m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
             float offsetMultiplier = 0.3f;
 
             visibleEntities = m_QuadTree.GetEntitiesWithinRect (
-              Rect (cameraPos - size * offsetMultiplier, cameraPos + size + size * offsetMultiplier));
+                Rect (cameraPos - size * offsetMultiplier, cameraPos + size + size * offsetMultiplier));
 
             std::sort (visibleEntities.begin (), visibleEntities.end (), Entity::CompareByZOrder);
         }
@@ -563,7 +561,7 @@ namespace aga
                            1);
 
         Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
-        font.DrawText (FONT_NAME_MAIN_SMALL,
+        font.DrawText (FONT_NAME_SMALL,
                        al_map_rgb (255, 255, 0),
                        bounds.GetCenter ().X,
                        bounds.GetCenter ().Y,

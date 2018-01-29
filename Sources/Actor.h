@@ -12,6 +12,7 @@
 namespace aga
 {
     const std::string ANIM_IDLE_NAME = "ANIM_IDLE";
+    const std::string ANIM_MOVE_DOWN_NAME = "ANIM_MOVE_DOWN";
     const std::string ANIM_MOVE_UP_NAME = "ANIM_MOVE_UP";
     const std::string ANIM_MOVE_LEFT_NAME = "ANIM_MOVE_LEFT";
     const std::string ANIM_MOVE_RIGHT_NAME = "ANIM_MOVE_RIGHT";

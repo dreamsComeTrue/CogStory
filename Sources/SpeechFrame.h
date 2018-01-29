@@ -11,6 +11,7 @@ namespace aga
     const int SPEECH_FRAME_LINE_OFFSET = 5;
     const int SPEECH_FRAME_ADVANCE_LETTERS = 4;
     const int SPEECH_FRAME_ADVANCE_SPACE = 8;
+    const int SPEECH_FRAME_ADVANCE_CHOICE = 30;
 
     class Atlas;
     class SpeechFrameManager;
@@ -29,14 +30,17 @@ namespace aga
         int AttributesMask = 0;
     };
 
+    struct SpeechChoice
+    {
+        std::string Text;
+        std::function<void()> Func;
+    };
+
     class SpeechFrame
     {
     public:
         SpeechFrame (SpeechFrameManager* manager);
-        SpeechFrame (SpeechFrameManager* manager,
-                     const std::string& text,
-                     Rect rect,
-                     bool shouldBeHandled = true,
+        SpeechFrame (SpeechFrameManager* manager, const std::string& text, Rect rect, bool shouldBeHandled = true,
                      const std::string& regionName = "");
         virtual ~SpeechFrame ();
 
@@ -46,6 +50,8 @@ namespace aga
         void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
 
         void SetText (const std::string& text);
+
+        void AddChoice (const std::string& text, std::function<void()> func);
 
         void SetDrawRect (Rect rect);
         void Show ();
@@ -60,6 +66,10 @@ namespace aga
         bool IsShouldBeHandled ();
         bool IsHandled ();
 
+        static Point GetActorRegionOffset ();
+
+        std::function<void()> ChoiceUpFunction;
+        std::function<void()> ChoiceDownFunction;
         std::function<void()> ScrollUpFunction;
         std::function<void()> ScrollDownFunction;
         std::function<void()> HandledFunction;
@@ -74,7 +84,10 @@ namespace aga
         SpeechFrameManager* m_Manager;
         NINE_PATCH_BITMAP* m_FrameBitmap;
         Atlas* m_Atlas;
-        std::string m_RegionName;
+        std::string m_ActorRegionName;
+
+        std::vector<SpeechChoice> m_Choices;
+        int m_ActualChoiceIndex;
 
         std::string m_Text;
         std::vector<std::string> m_TextLines;

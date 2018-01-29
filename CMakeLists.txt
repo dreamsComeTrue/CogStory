@@ -4,16 +4,18 @@ cmake_minimum_required(VERSION 2.8)
 set(BIN_DIR Binaries)
 set(CMAKE_BUILD_TYPE "Debug")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
-set(ROOT_THIRD_PARTY_DIR "/home/squall/Dropbox/RobotTales/ThirdParty")
+set(ROOT_THIRD_PARTY_DIR "./ThirdParty")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/Cotire/CMake")
 include(cotire)
 
-LINK_DIRECTORIES(   ${ROOT_THIRD_PARTY_DIR}/anglescript_2.31.2/angelscript/lib/
+CMAKE_POLICY(SET CMP0015 NEW)
+LINK_DIRECTORIES(   ${ROOT_THIRD_PARTY_DIR}/anglescript/angelscript/lib/
                     ${ROOT_THIRD_PARTY_DIR}/GWork/lib/
+                    "./External/allegro/lib/"
+                    "./External/allegro_deps/lib/"
                  )
 file(GLOB_RECURSE SRC_LIST   "Sources/*")
-file(GLOB_RECURSE IMGUI_SRC_LIST   "ThirdParty/imgui/*.cpp")
 
 include_directories(Sources/
                     Sources/editor/
@@ -24,8 +26,9 @@ include_directories(Sources/
                     ThirdParty/
                     ThirdParty/GWork/source/gwork/include/
                     ThirdParty/GWork/source/platform/include/
-                    ThirdParty/anglescript_2.31.2/angelscript/include
-                    ThirdParty/anglescript_2.31.2/add_on
+                    ThirdParty/anglescript/angelscript/include
+                    ThirdParty/anglescript/add_on
+                    External/allegro/include
                     )
 
 add_executable(${PROJECT_NAME} ${SRC_LIST} ${IMGUI_SRC_LIST})

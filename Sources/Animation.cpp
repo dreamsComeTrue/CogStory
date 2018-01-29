@@ -7,8 +7,8 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     AnimationFrames::AnimationFrames (unsigned howManyFrames, Point cellSize)
-      : m_SpeedMS (1000)
-      , m_CellSize (cellSize)
+        : m_SpeedMS (1000)
+        , m_CellSize (cellSize)
     {
         m_Frames.reserve (howManyFrames);
     }
@@ -30,10 +30,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void AnimationFrames::AddFrame (unsigned index, int col, int row)
+    void AnimationFrames::AddFrame (unsigned index, int row, int col)
     {
-        Rect rect = Rect ({ row * m_CellSize.Width, col * m_CellSize.Height },
-                          { row * m_CellSize.Width + m_CellSize.Width, col * m_CellSize.Height + m_CellSize.Height });
+        Rect rect = Rect ({ col * m_CellSize.Width, row * m_CellSize.Height },
+                          { col * m_CellSize.Width + m_CellSize.Width, row * m_CellSize.Height + m_CellSize.Height });
         m_Frames.insert (m_Frames.begin () + index, rect);
     }
 
@@ -53,8 +53,8 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Animation::Animation ()
-      : m_CurrentAnimation ("")
-      , m_CurrentFrame (0)
+        : m_CurrentAnimation ("")
+        , m_CurrentFrame (0)
     {
     }
 

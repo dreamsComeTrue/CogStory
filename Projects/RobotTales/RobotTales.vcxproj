@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Sources\Actor.cpp" />
+    <ClCompile Include="..\..\Sources\ActorFactory.cpp" />
+    <ClCompile Include="..\..\Sources\actors\NPCActor.cpp" />
+    <ClCompile Include="..\..\Sources\addons\nine-patch\nine_patch.c" />
+    <ClCompile Include="..\..\Sources\addons\triangulator\Triangulator.cpp" />
+    <ClCompile Include="..\..\Sources\Animation.cpp" />
+    <ClCompile Include="..\..\Sources\Atlas.cpp" />
+    <ClCompile Include="..\..\Sources\AtlasManager.cpp" />
+    <ClCompile Include="..\..\Sources\AudioManager.cpp" />
+    <ClCompile Include="..\..\Sources\AudioSample.cpp" />
+    <ClCompile Include="..\..\Sources\Camera.cpp" />
+    <ClCompile Include="..\..\Sources\Collidalble.cpp" />
+    <ClCompile Include="..\..\Sources\Common.cpp" />
+    <ClCompile Include="..\..\Sources\editor\Editor.cpp" />
+    <ClCompile Include="..\..\Sources\editor\EditorActorMode.cpp" />
+    <ClCompile Include="..\..\Sources\editor\EditorActorWindow.cpp" />
+    <ClCompile Include="..\..\Sources\editor\EditorFlagPointMode.cpp" />
+    <ClCompile Include="..\..\Sources\editor\EditorFlagPointWindow.cpp" />
+    <ClCompile Include="..\..\Sources\editor\EditorOpenSceneWindow.cpp" />
+    <ClCompile Include="..\..\Sources\editor\EditorPhysMode.cpp" />
+    <ClCompile Include="..\..\Sources\editor\EditorSaveSceneWindow.cpp" />
+    <ClCompile Include="..\..\Sources\editor\EditorSpeechMode.cpp" />
+    <ClCompile Include="..\..\Sources\editor\EditorSpeechWindow.cpp" />
+    <ClCompile Include="..\..\Sources\editor\EditorTileMode.cpp" />
+    <ClCompile Include="..\..\Sources\editor\EditorTriggerAreaMode.cpp" />
+    <ClCompile Include="..\..\Sources\editor\EditorTriggerAreaWindow.cpp" />
+    <ClCompile Include="..\..\Sources\editor\EditorWindows.cpp" />
+    <ClCompile Include="..\..\Sources\Font.cpp" />
+    <ClCompile Include="..\..\Sources\GameMain.cpp" />
+    <ClCompile Include="..\..\Sources\MainLoop.cpp" />
+    <ClCompile Include="..\..\Sources\PhysicsManager.cpp" />
+    <ClCompile Include="..\..\Sources\Player.cpp" />
+    <ClCompile Include="..\..\Sources\QuadTree.cpp" />
+    <ClCompile Include="..\..\Sources\Resources.cpp" />
+    <ClCompile Include="..\..\Sources\Scene.cpp" />
+    <ClCompile Include="..\..\Sources\SceneLoader.cpp" />
+    <ClCompile Include="..\..\Sources\SceneManager.cpp" />
+    <ClCompile Include="..\..\Sources\Screen.cpp" />
+    <ClCompile Include="..\..\Sources\Script.cpp" />
+    <ClCompile Include="..\..\Sources\ScriptManager.cpp" />
+    <ClCompile Include="..\..\Sources\SpeechFrame.cpp" />
+    <ClCompile Include="..\..\Sources\SpeechFrameManager.cpp" />
+    <ClCompile Include="..\..\Sources\StateManager.cpp" />
+    <ClCompile Include="..\..\Sources\states\EditorState.cpp" />
+    <ClCompile Include="..\..\Sources\states\GamePlayState.cpp" />
+    <ClCompile Include="..\..\Sources\states\MainMenuState.cpp" />
+    <ClCompile Include="..\..\Sources\TweenManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Sources\Actor.h" />
+    <ClInclude Include="..\..\Sources\ActorFactory.h" />
+    <ClInclude Include="..\..\Sources\actors\NPCActor.h" />
+    <ClInclude Include="..\..\Sources\addons\json\json.hpp" />
+    <ClInclude Include="..\..\Sources\addons\nine-patch\nine_patch.h" />
+    <ClInclude Include="..\..\Sources\addons\triangulator\Triangulator.h" />
+    <ClInclude Include="..\..\Sources\addons\tweeny\dispatcher.h" />
+    <ClInclude Include="..\..\Sources\addons\tweeny\easing.h" />
+    <ClInclude Include="..\..\Sources\addons\tweeny\easingresolve.h" />
+    <ClInclude Include="..\..\Sources\addons\tweeny\int2type.h" />
+    <ClInclude Include="..\..\Sources\addons\tweeny\tween.h" />
+    <ClInclude Include="..\..\Sources\addons\tweeny\tweenpoint.h" />
+    <ClInclude Include="..\..\Sources\addons\tweeny\tweentraits.h" />
+    <ClInclude Include="..\..\Sources\addons\tweeny\tweeny.h" />
+    <ClInclude Include="..\..\Sources\Animation.h" />
+    <ClInclude Include="..\..\Sources\Atlas.h" />
+    <ClInclude Include="..\..\Sources\AtlasManager.h" />
+    <ClInclude Include="..\..\Sources\AudioManager.h" />
+    <ClInclude Include="..\..\Sources\AudioSample.h" />
+    <ClInclude Include="..\..\Sources\Camera.h" />
+    <ClInclude Include="..\..\Sources\Collidable.h" />
+    <ClInclude Include="..\..\Sources\Common.h" />
+    <ClInclude Include="..\..\Sources\editor\Editor.h" />
+    <ClInclude Include="..\..\Sources\editor\EditorActorMode.h" />
+    <ClInclude Include="..\..\Sources\editor\EditorActorWindow.h" />
+    <ClInclude Include="..\..\Sources\editor\EditorFlagPointMode.h" />
+    <ClInclude Include="..\..\Sources\editor\EditorFlagPointWindow.h" />
+    <ClInclude Include="..\..\Sources\editor\EditorOpenSceneWindow.h" />
+    <ClInclude Include="..\..\Sources\editor\EditorPhysMode.h" />
+    <ClInclude Include="..\..\Sources\editor\EditorSaveSceneWindow.h" />
+    <ClInclude Include="..\..\Sources\editor\EditorSpeechMode.h" />
+    <ClInclude Include="..\..\Sources\editor\EditorSpeechWindow.h" />
+    <ClInclude Include="..\..\Sources\editor\EditorTileMode.h" />
+    <ClInclude Include="..\..\Sources\editor\EditorTriggerAreaMode.h" />
+    <ClInclude Include="..\..\Sources\editor\EditorTriggerAreaWindow.h" />
+    <ClInclude Include="..\..\Sources\editor\EditorWindows.h" />
+    <ClInclude Include="..\..\Sources\Entity.h" />
+    <ClInclude Include="..\..\Sources\Font.h" />
+    <ClInclude Include="..\..\Sources\Lifecycle.h" />
+    <ClInclude Include="..\..\Sources\MainLoop.h" />
+    <ClInclude Include="..\..\Sources\PhysicsManager.h" />
+    <ClInclude Include="..\..\Sources\Player.h" />
+    <ClInclude Include="..\..\Sources\Point.h" />
+    <ClInclude Include="..\..\Sources\Polygon.h" />
+    <ClInclude Include="..\..\Sources\QuadTree.h" />
+    <ClInclude Include="..\..\Sources\Rect.h" />
+    <ClInclude Include="..\..\Sources\Resources.h" />
+    <ClInclude Include="..\..\Sources\Scene.h" />
+    <ClInclude Include="..\..\Sources\SceneLoader.h" />
+    <ClInclude Include="..\..\Sources\SceneManager.h" />
+    <ClInclude Include="..\..\Sources\Screen.h" />
+    <ClInclude Include="..\..\Sources\Script.h" />
+    <ClInclude Include="..\..\Sources\Scriptable.h" />
+    <ClInclude Include="..\..\Sources\ScriptManager.h" />
+    <ClInclude Include="..\..\Sources\SpeechFrame.h" />
+    <ClInclude Include="..\..\Sources\SpeechFrameManager.h" />
+    <ClInclude Include="..\..\Sources\State.h" />
+    <ClInclude Include="..\..\Sources\StateManager.h" />
+    <ClInclude Include="..\..\Sources\states\EditorState.h" />
+    <ClInclude Include="..\..\Sources\states\GamePlayState.h" />
+    <ClInclude Include="..\..\Sources\states\MainMenuState.h" />
+    <ClInclude Include="..\..\Sources\Transformable.h" />
+    <ClInclude Include="..\..\Sources\TweenManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Sources\addons\tweeny\tween.tcc" />
+    <None Include="..\..\Sources\addons\tweeny\tweenone.tcc" />
+    <None Include="..\..\Sources\addons\tweeny\tweenpoint.tcc" />
+    <None Include="..\..\Sources\addons\tweeny\tweeny.tcc" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{F27D9C04-ADE2-4DD7-8AA7-51310EE25C68}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>RobotTales</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>E:\RobotTales\Sources;$(IncludePath)</IncludePath>
+    <SourcePath>E:\RobotTales\Sources;$(SourcePath)</SourcePath>
+    <OutDir>..\..\Binaries</OutDir>
+    <IntDir>..\..\Binaries\$(Configuration)\</IntDir>
+    <Allegro_AddonImage>true</Allegro_AddonImage>
+    <Allegro_AddonTTF>true</Allegro_AddonTTF>
+    <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
+    <Allegro_AddonAudio>true</Allegro_AddonAudio>
+    <Allegro_AddonAcodec>true</Allegro_AddonAcodec>
+    <Allegro_AddonDialog>true</Allegro_AddonDialog>
+    <Allegro_AddonFont>true</Allegro_AddonFont>
+    <Allegro_AddonColor>true</Allegro_AddonColor>
+    <Allegro_LibraryType>StaticMonolithRelease</Allegro_LibraryType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\Binaries\</OutDir>
+    <IntDir>..\..\Binaries\Intermediate\</IntDir>
+    <Allegro_AddonImage>true</Allegro_AddonImage>
+    <Allegro_AddonTTF>true</Allegro_AddonTTF>
+    <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
+    <Allegro_AddonAudio>true</Allegro_AddonAudio>
+    <Allegro_AddonAcodec>true</Allegro_AddonAcodec>
+    <Allegro_AddonDialog>true</Allegro_AddonDialog>
+    <Allegro_AddonFont>true</Allegro_AddonFont>
+    <Allegro_LibraryType>StaticMonolithRelease</Allegro_LibraryType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\Binaries\</OutDir>
+    <IntDir>..\..\Binaries\$(Configuration)\$(ProjectName)\</IntDir>
+    <IncludePath>E:\RobotTales\Sources;$(IncludePath)</IncludePath>
+    <SourcePath>E:\RobotTales\Sources;$(SourcePath)</SourcePath>
+    <Allegro_AddonImage>true</Allegro_AddonImage>
+    <Allegro_AddonTTF>true</Allegro_AddonTTF>
+    <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
+    <Allegro_AddonAudio>true</Allegro_AddonAudio>
+    <Allegro_AddonAcodec>true</Allegro_AddonAcodec>
+    <Allegro_AddonDialog>true</Allegro_AddonDialog>
+    <Allegro_AddonFont>true</Allegro_AddonFont>
+    <Allegro_LibraryType>StaticMonolithRelease</Allegro_LibraryType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\Binaries\</OutDir>
+    <IntDir>..\..\Binaries\Intermediate\</IntDir>
+    <Allegro_AddonImage>true</Allegro_AddonImage>
+    <Allegro_AddonTTF>true</Allegro_AddonTTF>
+    <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
+    <Allegro_AddonAudio>true</Allegro_AddonAudio>
+    <Allegro_AddonAcodec>true</Allegro_AddonAcodec>
+    <Allegro_AddonDialog>true</Allegro_AddonDialog>
+    <Allegro_AddonFont>true</Allegro_AddonFont>
+    <Allegro_LibraryType>StaticMonolithRelease</Allegro_LibraryType>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>E:\RobotTales\ThirdParty\anglescript_2.31.2\add_on;E:\RobotTales\ThirdParty\anglescript_2.31.2\angelscript\include;E:\RobotTales\ThirdParty\GWork\source\gwork\include;E:\RobotTales\ThirdParty\GWork\source\platform\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeaderFile />
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>E:\RobotTales\Binaries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>angelscript.lib;GWork.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>E:\RobotTales\ThirdParty\GWork\source\platform\include;E:\RobotTales\Sources;E:\RobotTales\ThirdParty\GWork\source\gwork\include;E:\RobotTales\ThirdParty\anglescript\angelscript\include;E:\RobotTales\ThirdParty\anglescript\add_on;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>E:\RobotTales\Binaries\GWork;E:\RobotTales\Binaries\angelscript;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>angelscript.lib;GWork.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>E:\RobotTales\ThirdParty\anglescript_2.31.2\add_on;E:\RobotTales\ThirdParty\anglescript_2.31.2\angelscript\include;E:\RobotTales\ThirdParty\GWork\source\gwork\include;E:\RobotTales\ThirdParty\GWork\source\platform\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>true</MinimalRebuild>
+      <PrecompiledHeaderFile />
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>E:\RobotTales\Binaries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>angelscript.lib;GWork.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>E:\RobotTales\ThirdParty\GWork\source\platform\include;E:\RobotTales\Sources;E:\RobotTales\ThirdParty\GWork\source\gwork\include;E:\RobotTales\ThirdParty\anglescript\angelscript\include;E:\RobotTales\ThirdParty\anglescript\add_on;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>E:\RobotTales\Binaries\GWork;E:\RobotTales\Binaries\angelscript;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>angelscript.lib;GWork.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\AllegroDeps.1.7.0.0\build\native\AllegroDeps.targets" Condition="Exists('..\packages\AllegroDeps.1.7.0.0\build\native\AllegroDeps.targets')" />
+    <Import Project="..\packages\Allegro.5.2.3.1\build\native\Allegro.targets" Condition="Exists('..\packages\Allegro.5.2.3.1\build\native\Allegro.targets')" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\AllegroDeps.1.7.0.0\build\native\AllegroDeps.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AllegroDeps.1.7.0.0\build\native\AllegroDeps.targets'))" />
+    <Error Condition="!Exists('..\packages\Allegro.5.2.3.1\build\native\Allegro.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Allegro.5.2.3.1\build\native\Allegro.targets'))" />
+  </Target>
+</Project>

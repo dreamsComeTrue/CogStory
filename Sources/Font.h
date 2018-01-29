@@ -7,10 +7,6 @@
 
 namespace aga
 {
-    const std::string FONT_NAME_MAIN_SMALL = "FONT_MAIN_SMALL";
-    const std::string FONT_NAME_MAIN_MEDIUM = "FONT_MAIN_MEDIUM";
-    const std::string FONT_NAME_MAIN_NORMAL = "FONT_MAIN_NORMAL";
-
     class Font : public Lifecycle
     {
     public:
@@ -38,6 +34,9 @@ namespace aga
         Point GetTextDimensions (const std::string& fontName, const std::string& text);
         unsigned GetFontAscent (const std::string& fontName);
         unsigned GetFontDescent (const std::string& fontName);
+
+    private:
+        void GenerateFont (const std::string& name, const std::string& path, float size);
 
     private:
         std::map<std::string, ALLEGRO_FONT*> m_Fonts;

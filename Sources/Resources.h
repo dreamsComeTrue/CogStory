@@ -7,6 +7,15 @@
 
 namespace aga
 {
+    const std::string FONT_NAME_SMALL = "FONT_SMALL";
+    const std::string FONT_NAME_MEDIUM = "FONT_MEDIUM";
+    const std::string FONT_NAME_NORMAL = "FONT_NORMAL";
+    const std::string FONT_NAME_SPEECH_FRAME = "FONT_SPEECH_FRAME";
+
+    const std::string FONT_NAME_MENU_TITLE = "FONT_NAME_MENU_TITLE";
+    const std::string FONT_NAME_MENU_ITEM_NORMAL = "FONT_NAME_MENU_ITEM_NORMAL";
+    const std::string FONT_NAME_MENU_ITEM_SMALL = "FONT_NAME_MENU_ITEM_SMALL";
+
     enum ResourceID
     {
         //  Graphics
@@ -21,9 +30,13 @@ namespace aga
         PACK_0_0_HOME,
 
         //  Fonts
-        FONT_MAIN_SMALL,
-        FONT_MAIN_MEDIUM,
-        FONT_MAIN_NORMAL,
+        FONT_SMALL,
+        FONT_MEDIUM,
+        FONT_NORMAL,
+        FONT_MENU_TITLE,
+        FONT_MENU_ITEM_NORMAL,
+        FONT_MENU_ITEM_SMALL,
+        FONT_SPEECH_FRAME,
         FONT_EDITOR,
 
         //  Scenes

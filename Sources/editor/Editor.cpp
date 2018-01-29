@@ -34,20 +34,20 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Editor::Editor (MainLoop* mainLoop)
-      : m_EditorTileMode (this)
-      , m_EditorPhysMode (this)
-      , m_EditorFlagPointMode (this)
-      , m_EditorTriggerAreaMode (this)
-      , m_EditorSpeechMode (this)
-      , m_EditorActorMode (this)
-      , m_MainLoop (mainLoop)
-      , m_IsSnapToGrid (true)
-      , m_IsMousePan (false)
-      , m_IsMouseWheel (false)
-      , m_BaseGridSize (16)
-      , m_GridSize (16)
-      , m_CursorMode (CursorMode::TileSelectMode)
-      , m_LastTimeClicked (0.0f)
+        : m_EditorTileMode (this)
+        , m_EditorPhysMode (this)
+        , m_EditorFlagPointMode (this)
+        , m_EditorTriggerAreaMode (this)
+        , m_EditorSpeechMode (this)
+        , m_EditorActorMode (this)
+        , m_MainLoop (mainLoop)
+        , m_IsSnapToGrid (true)
+        , m_IsMousePan (false)
+        , m_IsMouseWheel (false)
+        , m_BaseGridSize (16)
+        , m_GridSize (16)
+        , m_CursorMode (CursorMode::TileSelectMode)
+        , m_LastTimeClicked (0.0f)
     {
     }
 
@@ -116,9 +116,11 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
+        al_init_native_dialog_addon ();
+
         Gwk::Platform::SetPlatformWindow (m_MainLoop->GetScreen ()->GetDisplay ());
 
-        Gwk::Platform::RelativeToExecutablePaths paths ("../Data/");
+        Gwk::Platform::RelativeToExecutablePaths paths ("../../Data/");
         Gwk::Renderer::AllegroResourceLoader loader (paths);
 
         guiRenderer = new Gwk::Renderer::Allegro (loader);
@@ -458,70 +460,70 @@ namespace aga
         {
             switch (event->keyboard.keycode)
             {
-                case ALLEGRO_KEY_R:
+            case ALLEGRO_KEY_R:
+            {
+                if (m_EditorActorMode.m_SelectedActor)
                 {
-                    if (m_EditorActorMode.m_SelectedActor)
-                    {
-                        m_EditorActorMode.ChangeRotation (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
-                    }
-                    else
-                    {
-                        m_EditorTileMode.ChangeRotation (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
-                    }
-                    break;
+                    m_EditorActorMode.ChangeRotation (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
+                }
+                else
+                {
+                    m_EditorTileMode.ChangeRotation (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
+                }
+                break;
+            }
+
+            case ALLEGRO_KEY_G:
+            {
+                ChangeGridSize (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
+                break;
+            }
+
+            case ALLEGRO_KEY_Z:
+            {
+                if (m_EditorActorMode.m_SelectedActor)
+                {
+                    m_EditorActorMode.ChangeZOrder (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
+                }
+                else
+                {
+                    m_EditorTileMode.ChangeZOrder (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
                 }
 
-                case ALLEGRO_KEY_G:
-                {
-                    ChangeGridSize (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
-                    break;
-                }
+                break;
+            }
 
-                case ALLEGRO_KEY_Z:
-                {
-                    if (m_EditorActorMode.m_SelectedActor)
-                    {
-                        m_EditorActorMode.ChangeZOrder (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
-                    }
-                    else
-                    {
-                        m_EditorTileMode.ChangeZOrder (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
-                    }
+            case ALLEGRO_KEY_X:
+            {
+                m_EditorTileMode.RemoveSelectedTile ();
+                break;
+            }
 
-                    break;
-                }
+            case ALLEGRO_KEY_C:
+            {
+                m_EditorTileMode.CopySelectedTile ();
+                break;
+            }
 
-                case ALLEGRO_KEY_X:
+            case ALLEGRO_KEY_S:
+            {
+                if (event->keyboard.modifiers == ALLEGRO_KEYMOD_CTRL)
                 {
-                    m_EditorTileMode.RemoveSelectedTile ();
-                    break;
+                    saveRequested = true;
                 }
+                else
+                {
+                    m_IsSnapToGrid = !m_IsSnapToGrid;
+                }
+                break;
+            }
 
-                case ALLEGRO_KEY_C:
-                {
-                    m_EditorTileMode.CopySelectedTile ();
-                    break;
-                }
-
-                case ALLEGRO_KEY_S:
-                {
-                    if (event->keyboard.modifiers == ALLEGRO_KEYMOD_CTRL)
-                    {
-                        saveRequested = true;
-                    }
-                    else
-                    {
-                        m_IsSnapToGrid = !m_IsSnapToGrid;
-                    }
-                    break;
-                }
-
-                case ALLEGRO_KEY_P:
-                {
-                    m_MainLoop->GetSceneManager ().GetActiveScene ()->SetDrawPhysData (
-                      !m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawPhysData ());
-                    break;
-                }
+            case ALLEGRO_KEY_P:
+            {
+                m_MainLoop->GetSceneManager ().GetActiveScene ()->SetDrawPhysData (
+                    !m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawPhysData ());
+                break;
+            }
             }
         }
 
@@ -529,34 +531,34 @@ namespace aga
         {
             switch (event->keyboard.keycode)
             {
-                case ALLEGRO_KEY_F1:
-                {
-                    MenuItemPlay ();
-                    break;
-                }
+            case ALLEGRO_KEY_F1:
+            {
+                MenuItemPlay ();
+                break;
+            }
 
-                case ALLEGRO_KEY_F5:
-                case ALLEGRO_KEY_SPACE:
-                {
-                    m_EditorTileMode.m_IsDrawTiles = !m_EditorTileMode.m_IsDrawTiles;
-                    break;
-                }
+            case ALLEGRO_KEY_F5:
+            case ALLEGRO_KEY_SPACE:
+            {
+                m_EditorTileMode.m_IsDrawTiles = !m_EditorTileMode.m_IsDrawTiles;
+                break;
+            }
 
-                case ALLEGRO_KEY_TAB:
+            case ALLEGRO_KEY_TAB:
+            {
+                if (m_EditorTileMode.m_SelectedTile)
                 {
-                    if (m_EditorTileMode.m_SelectedTile)
+                    if (m_CursorMode != CursorMode::EditPhysBodyMode)
                     {
-                        if (m_CursorMode != CursorMode::EditPhysBodyMode)
-                        {
-                            m_CursorMode = CursorMode::EditPhysBodyMode;
-                        }
-                        else
-                        {
-                            m_CursorMode = CursorMode::TileSelectMode;
-                        }
+                        m_CursorMode = CursorMode::EditPhysBodyMode;
                     }
-                    break;
+                    else
+                    {
+                        m_CursorMode = CursorMode::TileSelectMode;
+                    }
                 }
+                break;
+            }
             }
         }
 
@@ -652,16 +654,14 @@ namespace aga
 
         if (objectFound)
         {
-            al_draw_rectangle (
-              r.GetPos ().X, r.GetPos ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y, COLOR_RED, 2);
+            al_draw_rectangle (r.GetPos ().X, r.GetPos ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y, COLOR_RED, 2);
         }
 
         if (m_CursorMode == CursorMode::TileSelectMode)
         {
             objectFound = false;
 
-            m_EditorActorMode.m_ActorUnderCursor =
-              m_EditorActorMode.GetActorUnderCursor (state.x, state.y, std::move (r));
+            m_EditorActorMode.m_ActorUnderCursor = m_EditorActorMode.GetActorUnderCursor (state.x, state.y, std::move (r));
 
             if (m_EditorActorMode.m_ActorUnderCursor)
             {
@@ -669,8 +669,7 @@ namespace aga
             }
             else
             {
-                m_EditorTileMode.m_TileUnderCursor =
-                  m_EditorTileMode.GetTileUnderCursor (state.x, state.y, std::move (r));
+                m_EditorTileMode.m_TileUnderCursor = m_EditorTileMode.GetTileUnderCursor (state.x, state.y, std::move (r));
 
                 if (m_EditorTileMode.m_TileUnderCursor)
                 {
@@ -680,8 +679,7 @@ namespace aga
 
             if (objectFound)
             {
-                al_draw_rectangle (
-                  r.GetPos ().X, r.GetPos ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y, COLOR_YELLOW, 2);
+                al_draw_rectangle (r.GetPos ().X, r.GetPos ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y, COLOR_YELLOW, 2);
             }
         }
         else if (m_CursorMode == CursorMode::EditPhysBodyMode)
@@ -786,10 +784,9 @@ namespace aga
             finalX = std::floor ((finalX) / gridSizeScale) * gridSizeScale;
             finalY = std::floor ((finalY) / gridSizeScale) * gridSizeScale;
 
-            std::string txt = "[" + ToString (finalX) + ", " + ToString (finalY) + "]";
+            // std::string txt = "[" + ToString (finalX) + ", " + ToString (finalY) + "]";
 
-            m_MainLoop->GetSceneManager ().GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
-              FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), 120, 20, txt, ALLEGRO_ALIGN_LEFT);
+            //m_MainLoop->GetScreen ()->GetFont ().DrawText (FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), 120, 20, txt, ALLEGRO_ALIGN_LEFT);
         }
 
         finalX -= translate.X;
@@ -817,11 +814,17 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnOpenScene (Gwk::Controls::Base* control) { m_OpenSceneWindow->Show (); }
+    void Editor::OnOpenScene (Gwk::Controls::Base* control)
+    {
+        m_OpenSceneWindow->Show ();
+    }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnSaveScene (Gwk::Controls::Base* control) { m_SaveSceneWindow->Show (); }
+    void Editor::OnSaveScene (Gwk::Controls::Base* control)
+    {
+        m_SaveSceneWindow->Show ();
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -840,8 +843,7 @@ namespace aga
 
                 ResetSettings ();
 
-                sceneNameLabel->SetText (
-                  std::string ("SCENE: " + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ()));
+                sceneNameLabel->SetText (std::string ("SCENE: " + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ()));
                 sceneNameLabel->SizeToContents ();
             }
         }
@@ -868,15 +870,24 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnPlay () { MenuItemPlay (); }
+    void Editor::OnPlay ()
+    {
+        MenuItemPlay ();
+    }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::MenuItemPlay () { m_MainLoop->GetStateManager ().SetActiveState ("GAMEPLAY_STATE"); }
+    void Editor::MenuItemPlay ()
+    {
+        m_MainLoop->GetStateManager ().SetActiveState ("GAMEPLAY_STATE");
+    }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnExit () { m_MainLoop->Exit (); }
+    void Editor::OnExit ()
+    {
+        m_MainLoop->Exit ();
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -929,11 +940,17 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnFlagPoint () { m_FlagPointWindow->Show (); }
+    void Editor::OnFlagPoint ()
+    {
+        m_FlagPointWindow->Show ();
+    }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnTriggerArea () { m_TriggerAreaWindow->Show (); }
+    void Editor::OnTriggerArea ()
+    {
+        m_TriggerAreaWindow->Show ();
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -962,8 +979,7 @@ namespace aga
         m_EditorPhysMode.m_PhysPoly = nullptr;
         m_EditorPhysMode.m_PhysPoint = nullptr;
         m_EditorTileMode.m_SelectedTile->PhysPoints.push_back ({});
-        m_EditorPhysMode.m_PhysPoly =
-          &m_EditorTileMode.m_SelectedTile->PhysPoints[m_EditorTileMode.m_SelectedTile->PhysPoints.size () - 1];
+        m_EditorPhysMode.m_PhysPoly = &m_EditorTileMode.m_SelectedTile->PhysPoints[m_EditorTileMode.m_SelectedTile->PhysPoints.size () - 1];
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1018,8 +1034,7 @@ namespace aga
             }
             else
             {
-                std::experimental::optional<ScriptMetaData> metaScript =
-                  m_MainLoop->GetSceneManager ().GetActiveScene ()->GetScriptByName (name);
+                std::experimental::optional<ScriptMetaData> metaScript = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetScriptByName (name);
 
                 if (metaScript)
                 {
@@ -1065,15 +1080,14 @@ namespace aga
         yPosLabel->SizeToContents ();
 
         widthLabel->SetText (
-          std::string ("       W: " + ToString (m_EditorTileMode.m_SelectedAtlasRegion.Bounds.GetSize ().Width)));
+            std::string ("       W: " + ToString (m_EditorTileMode.m_SelectedAtlasRegion.Bounds.GetSize ().Width)));
         widthLabel->SizeToContents ();
 
         heightLabel->SetText (
-          std::string ("        H: " + ToString (m_EditorTileMode.m_SelectedAtlasRegion.Bounds.GetSize ().Height)));
+            std::string ("        H: " + ToString (m_EditorTileMode.m_SelectedAtlasRegion.Bounds.GetSize ().Height)));
         heightLabel->SizeToContents ();
 
-        angleLabel->SetText (
-          std::string ("        A: " + (selectedEntity ? ToString (selectedEntity->Rotation) : "-")));
+        angleLabel->SetText (std::string ("        A: " + (selectedEntity ? ToString (selectedEntity->Rotation) : "-")));
         angleLabel->SizeToContents ();
 
         zOrderLabel->SetText (std::string ("ZORD: " + (selectedEntity ? ToString (selectedEntity->ZOrder) : "-")));
@@ -1093,7 +1107,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::SetDrawUITiles (bool draw) { m_EditorTileMode.m_IsDrawTiles = draw; }
+    void Editor::SetDrawUITiles (bool draw)
+    {
+        m_EditorTileMode.m_IsDrawTiles = draw;
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -1147,8 +1164,7 @@ namespace aga
             if (m_CursorMode == CursorMode::TileSelectMode && m_EditorFlagPointMode.m_FlagPoint == "")
             {
                 Rect r;
-                m_EditorActorMode.m_SelectedActor =
-                  m_EditorActorMode.GetActorUnderCursor (event.x, event.y, std::move (r));
+                m_EditorActorMode.m_SelectedActor = m_EditorActorMode.GetActorUnderCursor (event.x, event.y, std::move (r));
 
                 if (m_EditorActorMode.m_SelectedActor)
                 {
@@ -1156,8 +1172,7 @@ namespace aga
                 }
                 else
                 {
-                    m_EditorTileMode.m_SelectedTile =
-                      m_EditorTileMode.GetTileUnderCursor (event.x, event.y, std::move (r));
+                    m_EditorTileMode.m_SelectedTile = m_EditorTileMode.GetTileUnderCursor (event.x, event.y, std::move (r));
 
                     if (m_EditorTileMode.m_SelectedTile)
                     {
@@ -1171,8 +1186,7 @@ namespace aga
             else if (m_CursorMode == CursorMode::TileEditMode && !g_IsToolBoxTileSelected)
             {
                 Rect r;
-                m_EditorActorMode.m_SelectedActor =
-                  m_EditorActorMode.GetActorUnderCursor (event.x, event.y, std::move (r));
+                m_EditorActorMode.m_SelectedActor = m_EditorActorMode.GetActorUnderCursor (event.x, event.y, std::move (r));
 
                 if (!m_EditorActorMode.m_SelectedActor)
                 {
@@ -1213,10 +1227,8 @@ namespace aga
 
             m_EditorFlagPointMode.m_FlagPoint = m_EditorFlagPointMode.GetFlagPointUnderCursor (event.x, event.y);
 
-            m_EditorTriggerAreaMode.m_TriggerPoint =
-              m_EditorTriggerAreaMode.GetTriggerPointUnderCursor (event.x, event.y);
-            m_EditorTriggerAreaMode.m_TriggerArea =
-              m_EditorTriggerAreaMode.GetTriggerAreaUnderCursor (event.x, event.y);
+            m_EditorTriggerAreaMode.m_TriggerPoint = m_EditorTriggerAreaMode.GetTriggerPointUnderCursor (event.x, event.y);
+            m_EditorTriggerAreaMode.m_TriggerArea = m_EditorTriggerAreaMode.GetTriggerAreaUnderCursor (event.x, event.y);
 
             if (m_EditorTriggerAreaMode.m_TriggerPoint && m_EditorTriggerAreaMode.m_TriggerArea)
             {
@@ -1254,8 +1266,7 @@ namespace aga
         {
             m_EditorTileMode.m_SelectedTile->UpdatePhysPolygon ();
 
-            if (!m_EditorPhysMode.m_PhysPoint && m_EditorPhysMode.m_PhysPoly &&
-                !(*m_EditorPhysMode.m_PhysPoly).empty ())
+            if (!m_EditorPhysMode.m_PhysPoint && m_EditorPhysMode.m_PhysPoly && !(*m_EditorPhysMode.m_PhysPoly).empty ())
             {
                 m_EditorPhysMode.m_PhysPoint = &(*m_EditorPhysMode.m_PhysPoly)[0];
             }
@@ -1263,11 +1274,9 @@ namespace aga
 
         if (m_EditorTriggerAreaMode.m_TriggerArea && event.button == 1)
         {
-            m_EditorTriggerAreaMode.m_TriggerArea->UpdatePolygons (
-              &m_MainLoop->GetPhysicsManager ().GetTriangulator ());
+            m_EditorTriggerAreaMode.m_TriggerArea->UpdatePolygons (&m_MainLoop->GetPhysicsManager ().GetTriangulator ());
 
-            if (!m_EditorTriggerAreaMode.m_TriggerPoint && m_EditorTriggerAreaMode.m_TriggerArea &&
-                !m_EditorTriggerAreaMode.m_TriggerArea->Points.empty ())
+            if (!m_EditorTriggerAreaMode.m_TriggerPoint && m_EditorTriggerAreaMode.m_TriggerArea && !m_EditorTriggerAreaMode.m_TriggerArea->Points.empty ())
             {
                 m_EditorTriggerAreaMode.m_TriggerPoint = &m_EditorTriggerAreaMode.m_TriggerArea->Points[0];
             }
@@ -1310,4 +1319,4 @@ namespace aga
     }
 
     //--------------------------------------------------------------------------------------------------
-}
+} // namespace aga

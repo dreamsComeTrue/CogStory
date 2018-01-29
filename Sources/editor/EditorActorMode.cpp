@@ -11,10 +11,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     EditorActorMode::EditorActorMode (Editor* editor)
-      : m_Editor (editor)
-      , m_SelectedActor (nullptr)
-      , m_ActorUnderCursor (nullptr)
-      , m_Rotation (0)
+        : m_Editor (editor)
+        , m_SelectedActor (nullptr)
+        , m_ActorUnderCursor (nullptr)
+        , m_Rotation (0)
     {
     }
 
@@ -79,15 +79,14 @@ namespace aga
         {
             Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
             Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-            Point point =
-              m_Editor->CalculateCursorPoint (state.x + m_TileSelectionOffset.X, state.y + m_TileSelectionOffset.Y);
+            Point point = m_Editor->CalculateCursorPoint (state.x + m_TileSelectionOffset.X, state.y + m_TileSelectionOffset.Y);
 
             m_SelectedActor->Bounds.SetPos (
-              { (translate.X + point.X) * 1 / scale.X, (translate.Y + point.Y) * 1 / scale.Y });
+                { (translate.X + point.X) * 1 / scale.X, (translate.Y + point.Y) * 1 / scale.Y });
             m_SelectedActor->TemplateBounds = m_SelectedActor->Bounds;
             m_SelectedActor->SetPhysOffset (
-              m_SelectedActor->Bounds.GetPos ().X - m_SelectedActor->Bounds.GetHalfSize ().Width,
-              m_SelectedActor->Bounds.GetPos ().Y - m_SelectedActor->Bounds.GetHalfSize ().Height);
+                m_SelectedActor->Bounds.GetPos ().X - m_SelectedActor->Bounds.GetHalfSize ().Width,
+                m_SelectedActor->Bounds.GetPos ().Y - m_SelectedActor->Bounds.GetHalfSize ().Height);
 
             QuadTreeNode& quadTree = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetQuadTree ();
             quadTree.Remove (m_SelectedActor);

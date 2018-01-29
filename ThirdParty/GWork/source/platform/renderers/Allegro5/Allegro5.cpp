@@ -14,6 +14,7 @@
 #include <allegro5/allegro_primitives.h>
 
 #include <map>
+#include <algorithm>
 
 namespace Gwk
 {
@@ -204,7 +205,12 @@ void Allegro::RenderText(Gwk::Font* font, Gwk::Point pos,
 {
     ALLEGRO_FONT *afont = (ALLEGRO_FONT*)font->data;
     Translate(pos.x, pos.y);
-    al_draw_text(afont, m_color, pos.x, pos.y, ALLEGRO_ALIGN_LEFT, text.c_str());
+
+    std::string resultTxt = text;
+
+    resultTxt.erase(std::remove(resultTxt.begin(), resultTxt.end(), '\n'), resultTxt.end());
+
+    al_draw_text(afont, m_color, pos.x, pos.y, ALLEGRO_ALIGN_LEFT, resultTxt.c_str());
 }
 
 Gwk::Point Allegro::MeasureText(Gwk::Font* font, const Gwk::String& text)

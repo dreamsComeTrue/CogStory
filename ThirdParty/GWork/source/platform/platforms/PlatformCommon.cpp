@@ -189,7 +189,7 @@ void Platform::AllocStatsDump(FILE *fh)
 
 // These are declared in Config.h, which should be included everywhere.
 
-void* operator new(std::size_t size) throw(std::bad_alloc)
+void* operator new(std::size_t size)
 {
     // we are required to return non-null
     void *mem = std::malloc(size == 0 ? 1 : size);

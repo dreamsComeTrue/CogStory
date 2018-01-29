@@ -17,9 +17,9 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Player::Player (SceneManager* sceneManager)
-      : Actor (sceneManager)
-      , m_FollowCamera (true)
-      , m_PreventInput (false)
+        : Actor (sceneManager)
+        , m_FollowCamera (true)
+        , m_PreventInput (false)
     {
     }
 
@@ -47,7 +47,7 @@ namespace aga
         InitializeAnimations ();
 
         sample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
-          "FOOT_STEP", GetResourcePath (SOUND_FOOT_STEP));
+            "FOOT_STEP", GetResourcePath (SOUND_FOOT_STEP));
         sample->SetVolume (1.0f);
 
         return true;
@@ -68,6 +68,8 @@ namespace aga
     void Player::InitializeAnimations ()
     {
         Point cellSize (64, 64);
+        float animSpeed = 100;
+
         AnimationFrames idleFrames (3, cellSize);
         idleFrames.AddFrame (0, 0, 0);
         idleFrames.AddFrame (1, 0, 1);
@@ -75,19 +77,44 @@ namespace aga
         idleFrames.SetPlaySpeed (500);
         m_Animation.AddAnimationFrames (ANIM_IDLE_NAME, idleFrames);
 
-        AnimationFrames moveLeftFrames (1, cellSize);
-        moveLeftFrames.AddFrame (0, 1, 0);
-        moveLeftFrames.SetPlaySpeed (500);
+        AnimationFrames moveDownFrames (6, cellSize);
+        moveDownFrames.AddFrame (0, 1, 0);
+        moveDownFrames.AddFrame (1, 1, 1);
+        moveDownFrames.AddFrame (2, 1, 2);
+        moveDownFrames.AddFrame (3, 1, 3);
+        moveDownFrames.AddFrame (4, 1, 4);
+        moveDownFrames.AddFrame (5, 1, 5);
+        moveDownFrames.SetPlaySpeed (animSpeed);
+        m_Animation.AddAnimationFrames (ANIM_MOVE_DOWN_NAME, moveDownFrames);
+
+        AnimationFrames moveLeftFrames (6, cellSize);
+        moveLeftFrames.AddFrame (0, 2, 0);
+        moveLeftFrames.AddFrame (1, 2, 1);
+        moveLeftFrames.AddFrame (2, 2, 2);
+        moveLeftFrames.AddFrame (3, 2, 3);
+        moveLeftFrames.AddFrame (4, 2, 4);
+        moveLeftFrames.AddFrame (5, 2, 5);
+        moveLeftFrames.SetPlaySpeed (animSpeed + 30);
         m_Animation.AddAnimationFrames (ANIM_MOVE_LEFT_NAME, moveLeftFrames);
 
-        AnimationFrames moveRightFrames (1, cellSize);
-        moveRightFrames.AddFrame (0, 2, 0);
-        moveRightFrames.SetPlaySpeed (500);
+        AnimationFrames moveRightFrames (6, cellSize);
+        moveRightFrames.AddFrame (0, 3, 0);
+        moveRightFrames.AddFrame (1, 3, 1);
+        moveRightFrames.AddFrame (2, 3, 2);
+        moveRightFrames.AddFrame (3, 3, 3);
+        moveRightFrames.AddFrame (4, 3, 4);
+        moveRightFrames.AddFrame (5, 3, 5);
+        moveRightFrames.SetPlaySpeed (animSpeed + 30);
         m_Animation.AddAnimationFrames (ANIM_MOVE_RIGHT_NAME, moveRightFrames);
 
-        AnimationFrames moveUpFrames (1, cellSize);
-        moveUpFrames.AddFrame (0, 3, 0);
-        moveUpFrames.SetPlaySpeed (500);
+        AnimationFrames moveUpFrames (6, cellSize);
+        moveUpFrames.AddFrame (0, 4, 0);
+        moveUpFrames.AddFrame (1, 4, 1);
+        moveUpFrames.AddFrame (2, 4, 2);
+        moveUpFrames.AddFrame (3, 4, 3);
+        moveUpFrames.AddFrame (4, 4, 4);
+        moveUpFrames.AddFrame (5, 4, 5);
+        moveUpFrames.SetPlaySpeed (animSpeed);
         m_Animation.AddAnimationFrames (ANIM_MOVE_UP_NAME, moveUpFrames);
 
         SetCurrentAnimation (ANIM_IDLE_NAME);
@@ -124,25 +151,37 @@ namespace aga
         al_get_keyboard_state (&state);
         float dx = 0, dy = 0;
 
+        //  Prevent diagonal moveing from left/right move animation resetting
+        bool isMoveRight = al_key_down (&state, ALLEGRO_KEY_RIGHT) || al_key_down (&state, ALLEGRO_KEY_D);
+        bool isMoveLeft = al_key_down (&state, ALLEGRO_KEY_LEFT) || al_key_down (&state, ALLEGRO_KEY_A);
+
         if (al_key_down (&state, ALLEGRO_KEY_DOWN) || al_key_down (&state, ALLEGRO_KEY_S))
         {
             dy = MOVE_SPEED * deltaTime;
-            SetCurrentAnimation (ANIM_IDLE_NAME);
+
+            if (!isMoveRight && !isMoveLeft)
+            {
+                SetCurrentAnimation (ANIM_MOVE_DOWN_NAME);
+            }
         }
 
         if (al_key_down (&state, ALLEGRO_KEY_UP) || al_key_down (&state, ALLEGRO_KEY_W))
         {
             dy = -MOVE_SPEED * deltaTime;
-            SetCurrentAnimation (ANIM_MOVE_UP_NAME);
+
+            if (!isMoveRight && !isMoveLeft)
+            {
+                SetCurrentAnimation (ANIM_MOVE_UP_NAME);
+            }
         }
 
-        if (al_key_down (&state, ALLEGRO_KEY_RIGHT) || al_key_down (&state, ALLEGRO_KEY_D))
+        if (isMoveRight)
         {
             dx = MOVE_SPEED * deltaTime;
             SetCurrentAnimation (ANIM_MOVE_RIGHT_NAME);
         }
 
-        if (al_key_down (&state, ALLEGRO_KEY_LEFT) || al_key_down (&state, ALLEGRO_KEY_A))
+        if (isMoveLeft)
         {
             dx = -MOVE_SPEED * deltaTime;
             SetCurrentAnimation (ANIM_MOVE_LEFT_NAME);
@@ -156,11 +195,11 @@ namespace aga
 
             for (Polygon& polygon : area.Polygons)
             {
-                if (area.OnEnterCallback || area.ScriptOnEnterCallback || area.OnLeaveCallback ||
-                    area.ScriptOnLeaveCallback)
+                if (area.OnEnterCallback || area.ScriptOnEnterCallback || area.OnLeaveCallback
+                    || area.ScriptOnLeaveCallback)
                 {
                     PolygonCollisionResult r = m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (
-                      GetPhysPolygon (0), polygon, { dx, dy });
+                        GetPhysPolygon (0), polygon, { dx, dy });
 
                     if (r.WillIntersect || r.Intersect)
                     {
@@ -175,14 +214,14 @@ namespace aga
                             if (area.ScriptOnEnterCallback)
                             {
                                 const char* moduleName = area.ScriptOnEnterCallback->GetModuleName ();
-                                Script* script =
-                                  m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (
-                                    moduleName);
+                                Script* script
+                                    = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (
+                                        moduleName);
 
                                 if (script)
                                 {
-                                    Point point = { dx + r.MinimumTranslationVector.X,
-                                                    dy + r.MinimumTranslationVector.Y };
+                                    Point point
+                                        = { dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y };
                                     asIScriptContext* ctx = script->GetContext ();
                                     ctx->Prepare (area.ScriptOnEnterCallback);
                                     ctx->SetArgObject (0, &point);
@@ -206,8 +245,8 @@ namespace aga
                         if (area.ScriptOnLeaveCallback)
                         {
                             const char* moduleName = area.ScriptOnLeaveCallback->GetModuleName ();
-                            Script* script =
-                              m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (moduleName);
+                            Script* script = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (
+                                moduleName);
 
                             if (script)
                             {
@@ -234,7 +273,7 @@ namespace aga
                 for (int i = 0; i < tile->GetPhysPolygonsCount (); ++i)
                 {
                     PolygonCollisionResult r = m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (
-                      GetPhysPolygon (0), tile->GetPhysPolygon (i), { dx, dy });
+                        GetPhysPolygon (0), tile->GetPhysPolygon (i), { dx, dy });
 
                     if (r.WillIntersect)
                     {
@@ -269,6 +308,11 @@ namespace aga
 
     void Player::Move (float dx, float dy)
     {
+        float playerSpeed = 0.8f;
+
+        dx *= playerSpeed;
+        dy *= playerSpeed;
+
         sampleCounter += m_SceneManager->GetMainLoop ()->GetScreen ()->GetDeltaTime ();
 
         if (sampleCounter > 0.4f)

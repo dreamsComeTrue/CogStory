@@ -2,6 +2,9 @@
 
 #include "EditorWindows.h"
 #include "Editor.h"
+#include "Font.h"
+#include "MainLoop.h"
+#include "Screen.h"
 
 namespace aga
 {
@@ -20,10 +23,10 @@ namespace aga
         m_Label->SetBounds (20, 10, m_SceneWindow->Width () - 40, m_SceneWindow->Height () - 40);
         m_Label->SetText (m_Text);
 
-        Gwk::Controls::Button* okButton = new Gwk::Controls::Button (m_SceneWindow);
-        okButton->SetText ("OK");
-        okButton->SetPos (m_SceneWindow->Width () / 2 - 50, m_SceneWindow->Height () - 60);
-        okButton->onPress.Add (this, &EditorInfoWindow::OnAccept);
+        m_OKButton = new Gwk::Controls::Button (m_SceneWindow);
+        m_OKButton->SetText ("OK");
+        m_OKButton->SetPos (m_SceneWindow->Width () / 2 - 50, m_SceneWindow->Height () - 60);
+        m_OKButton->onPress.Add (this, &EditorInfoWindow::OnAccept);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -31,6 +34,11 @@ namespace aga
     void EditorInfoWindow::Show (const std::string& text)
     {
         m_Text = text;
+
+        Point size = m_Editor->m_MainLoop->GetScreen ()->GetFont ().GetTextDimensions (FONT_NAME_SMALL, text);
+
+        m_SceneWindow->SetWidth (size.Width + 20);
+        m_OKButton->SetPos (m_SceneWindow->Width () / 2 - 50, m_SceneWindow->Height () - 60);
 
         m_Label->SetText (m_Text);
         m_Label->SetWrap (true);

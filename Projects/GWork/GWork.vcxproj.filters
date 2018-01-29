@@ -1,0 +1,602 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="core">
+      <UniqueIdentifier>{94c8f2e3-3b72-426f-bf69-4660515ae016}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="core\Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="core\Source Files\Controls">
+      <UniqueIdentifier>{522e62aa-9dce-487e-808c-a443f683fd65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\Source Files\Controls\Dialog">
+      <UniqueIdentifier>{60359e9e-0785-4073-96a9-1ea522c91459}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\Header Files\Controls">
+      <UniqueIdentifier>{1776a4da-f8bd-4ad5-845e-cbc7cff23590}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\Header Files\Skins">
+      <UniqueIdentifier>{0e844ed6-b4d5-41a2-ac19-752b62865a78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\Header Files\Controls\Dialogs">
+      <UniqueIdentifier>{841e8415-a35e-416b-b0f7-a481d253fa33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\Header Files\Controls\Layout">
+      <UniqueIdentifier>{4406cccb-335b-4a37-a281-b7c952346dfb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\Header Files\Controls\Property">
+      <UniqueIdentifier>{3fccbc3c-fd3c-42be-b337-fa68a1e52fc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platform">
+      <UniqueIdentifier>{be3b3a95-736d-4291-9eba-529b5d8aafc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platform\Source Files">
+      <UniqueIdentifier>{7e098869-ba96-4765-88c2-0c52f4bc887d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platform\Header Files">
+      <UniqueIdentifier>{3ba62222-9c60-4737-b2bc-4d5515c42174}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platform\Source Files\Renderers">
+      <UniqueIdentifier>{7bb5772f-9a70-4124-b0ad-13e30debad2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platform\Header Files\External">
+      <UniqueIdentifier>{4622159c-9bee-4a71-a591-b8bffd60bbcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platform\Header Files\INput">
+      <UniqueIdentifier>{8db186ef-7588-4ba7-9549-eba3b71c7543}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platform\Header Files\Renderers">
+      <UniqueIdentifier>{0d229c4c-f7ab-4e47-950b-2314bd47c2c8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Anim.cpp">
+      <Filter>core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\BaseRender.cpp">
+      <Filter>core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\ControlList.cpp">
+      <Filter>core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\DragAndDrop.cpp">
+      <Filter>core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Events.cpp">
+      <Filter>core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Gwork.cpp">
+      <Filter>core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Hook.cpp">
+      <Filter>core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\InputHandler.cpp">
+      <Filter>core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Skin.cpp">
+      <Filter>core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\ToolTip.cpp">
+      <Filter>core\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\Base.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\Button.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\Canvas.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\CheckBox.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\CollapsibleCategory.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\ColorControls.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\ColorPicker.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\ComboBox.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\CrossSplitter.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\DockBase.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\DockedTabControl.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\Dragger.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\GroupBox.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\HorizontalScrollBar.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\HorizontalSlider.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\HSVColorPicker.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\ImagePanel.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\Label.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\LabelClickable.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\ListBox.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\Menu.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\MenuItem.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\MenuStrip.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\NumericUpDown.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\PageControl.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\ProgressBar.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\Properties.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\PropertyTree.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\RadioButton.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\RadioButtonController.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\Rectangle.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\ResizableControl.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\Resizer.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\RichLabel.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\ScrollBar.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\ScrollBarBar.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\ScrollBarButton.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\ScrollControl.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\Slider.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\SplitterBar.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\TabButton.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\TabControl.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\TabStrip.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\Text.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\TextBox.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\TextBoxNumeric.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\TreeControl.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\TreeNode.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\VerticalScrollBar.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\VerticalSlider.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\WindowCanvas.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\WindowControl.cpp">
+      <Filter>core\Source Files\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\Dialog\FileOpen.cpp">
+      <Filter>core\Source Files\Controls\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\Dialog\FileSave.cpp">
+      <Filter>core\Source Files\Controls\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\Dialog\FolderOpen.cpp">
+      <Filter>core\Source Files\Controls\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\gwork\source\Controls\Dialog\Query.cpp">
+      <Filter>core\Source Files\Controls\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\platform\platforms\Allegro5Platform.cpp">
+      <Filter>platform\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\platform\platforms\NullPlatform.cpp">
+      <Filter>platform\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\platform\platforms\PlatformCommon.cpp">
+      <Filter>platform\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\platform\platforms\Utility.cpp">
+      <Filter>platform\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\GWork\source\platform\renderers\Allegro5\Allegro5.cpp">
+      <Filter>platform\Source Files\Renderers</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Align.h">
+      <Filter>core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Anim.h">
+      <Filter>core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\ControlList.h">
+      <Filter>core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls.h">
+      <Filter>core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\DragAndDrop.h">
+      <Filter>core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Events.h">
+      <Filter>core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Gwork.h">
+      <Filter>core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Hook.h">
+      <Filter>core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\InputHandler.h">
+      <Filter>core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Skin.h">
+      <Filter>core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\ToolTip.h">
+      <Filter>core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\UiTypes.h">
+      <Filter>core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\UserData.h">
+      <Filter>core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Base.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Button.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Canvas.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\CheckBox.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\CollapsibleCategory.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\CollapsibleList.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\ColorControls.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\ColorPicker.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\ComboBox.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\CrossSplitter.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\DockBase.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\DockedTabControl.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Dragger.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\FieldLabel.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\FilePicker.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\FolderPicker.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\GroupBox.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Highlight.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\HorizontalScrollBar.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\HorizontalSlider.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\HSVColorPicker.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\ImagePanel.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Label.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\LabelClickable.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\ListBox.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Menu.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\MenuItem.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\MenuStrip.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Modal.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\NumericUpDown.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\PageControl.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\ProgressBar.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Properties.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\PropertyTree.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\RadioButton.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\RadioButtonController.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Rectangle.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\ResizableControl.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Resizer.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\RichLabel.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\ScrollBar.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\ScrollBarBar.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\ScrollBarButton.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\ScrollControl.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Slider.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\SplitterBar.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Splitters.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\StatusBar.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\TabButton.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\TabControl.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\TabStrip.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\TabTitleBar.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Text.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\TextBox.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\ToolBar.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\TreeControl.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\TreeNode.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\VerticalScrollBar.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\VerticalSlider.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\WindowButtons.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\WindowCanvas.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\WindowControl.h">
+      <Filter>core\Header Files\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Property\BaseProperty.h">
+      <Filter>core\Header Files\Controls\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Property\Checkbox.h">
+      <Filter>core\Header Files\Controls\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Property\ColorSelector.h">
+      <Filter>core\Header Files\Controls\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Property\ComboBox.h">
+      <Filter>core\Header Files\Controls\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Property\File.h">
+      <Filter>core\Header Files\Controls\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Property\Folder.h">
+      <Filter>core\Header Files\Controls\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Property\Text.h">
+      <Filter>core\Header Files\Controls\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Layout\Position.h">
+      <Filter>core\Header Files\Controls\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Layout\Table.h">
+      <Filter>core\Header Files\Controls\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Layout\Tile.h">
+      <Filter>core\Header Files\Controls\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Dialogs\FileOpen.h">
+      <Filter>core\Header Files\Controls\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Dialogs\FileSave.h">
+      <Filter>core\Header Files\Controls\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Dialogs\FolderOpen.h">
+      <Filter>core\Header Files\Controls\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\gwork\include\Gwork\Controls\Dialogs\Query.h">
+      <Filter>core\Header Files\Controls\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\platforms\DebugBreak.h">
+      <Filter>platform\Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\include\Gwork\BaseRender.h">
+      <Filter>platform\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\include\Gwork\Config.h">
+      <Filter>platform\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\include\Gwork\InputEventListener.h">
+      <Filter>platform\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\include\Gwork\Platform.h">
+      <Filter>platform\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\include\Gwork\PlatformCommon.h">
+      <Filter>platform\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\include\Gwork\PlatformTypes.h">
+      <Filter>platform\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\include\Gwork\Utility.h">
+      <Filter>platform\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\include\Gwork\WindowProvider.h">
+      <Filter>platform\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\include\Gwork\Renderers\Allegro5.h">
+      <Filter>platform\Header Files\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\include\Gwork\External\stb_image.h">
+      <Filter>platform\Header Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\include\Gwork\External\stb_image_write.h">
+      <Filter>platform\Header Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\include\Gwork\External\stb_truetype.h">
+      <Filter>platform\Header Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\include\Gwork\Input\Allegro5.h">
+      <Filter>platform\Header Files\INput</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\include\Gwork\Input\Null.h">
+      <Filter>platform\Header Files\INput</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\include\Gwork\Input\OpenGL.h">
+      <Filter>platform\Header Files\INput</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\include\Gwork\Input\SDL2.h">
+      <Filter>platform\Header Files\INput</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\include\Gwork\Input\SFML2.h">
+      <Filter>platform\Header Files\INput</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GWork\source\platform\include\Gwork\Input\Windows.h">
+      <Filter>platform\Header Files\INput</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>

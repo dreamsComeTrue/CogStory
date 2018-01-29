@@ -10,7 +10,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     EditorSpeechMode::EditorSpeechMode (Editor* editor)
-      : m_Editor (editor)
+        : m_Editor (editor)
     {
     }
 
@@ -33,7 +33,6 @@ namespace aga
             }
 
             m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->AddSpeech (m_Speech.Name, m_Speech);
-
             m_Editor->m_EditorSpeechMode.Clear ();
 
             return true;
@@ -54,6 +53,7 @@ namespace aga
     void EditorSpeechMode::Clear ()
     {
         m_Speech.Name = "";
+        m_Speech.ActorRegionName = "";
         m_Speech.Text.clear ();
         m_Speech.Outcomes.clear ();
     }

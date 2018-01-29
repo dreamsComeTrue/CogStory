@@ -9,11 +9,11 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Actor::Actor (SceneManager* sceneManager)
-      : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
-      , Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
-      , m_SceneManager (sceneManager)
-      , m_Image (nullptr)
-      , m_CheckOverlap (false)
+        : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
+        , Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
+        , m_SceneManager (sceneManager)
+        , m_Image (nullptr)
+        , m_CheckOverlap (false)
     {
         ID = Entity::GetNextID ();
     }
@@ -74,7 +74,7 @@ namespace aga
 
         if (angleDeg > 225 && angleDeg < 315)
         {
-            SetCurrentAnimation (ANIM_IDLE_NAME);
+            SetCurrentAnimation (ANIM_MOVE_DOWN_NAME);
         }
 
         if (angleDeg >= 135 && angleDeg <= 225)
@@ -138,20 +138,9 @@ namespace aga
             targetY = Bounds.GetPos ().Y;
         }
 
-        al_draw_tinted_scaled_rotated_bitmap_region (m_Image,
-                                                     sourceX,
-                                                     sourceY,
-                                                     sourceWidth,
-                                                     sourceHeight,
-                                                     al_map_rgb (255, 255, 255),
-                                                     sourceWidth * 0.5,
-                                                     sourceHeight * 0.5,
-                                                     targetX,
-                                                     targetY,
-                                                     1,
-                                                     1,
-                                                     Rotation,
-                                                     0);
+        al_draw_tinted_scaled_rotated_bitmap_region (m_Image, sourceX, sourceY, sourceWidth, sourceHeight,
+                                                     al_map_rgb (255, 255, 255), sourceWidth * 0.5, sourceHeight * 0.5,
+                                                     targetX, targetY, 1, 1, Rotation, 0);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -219,6 +208,13 @@ namespace aga
 
         std::vector<Entity*> entites = m_SceneManager->GetActiveScene ()->GetVisibleEntities ();
 
+        //        al_draw_rectangle (myBounds.GetTopLeft ().X,
+        //                           myBounds.GetTopLeft ().Y,
+        //                           myBounds.GetBottomRight ().X,
+        //                           myBounds.GetBottomRight ().Y,
+        //                           COLOR_YELLOW,
+        //                           2);
+
         //  Special-case entity :)
         entites.push_back (&m_SceneManager->GetPlayer ());
 
@@ -251,8 +247,7 @@ namespace aga
                 else
                 {
                     for (std::vector<Entity*>::iterator it = m_OverlapedEntities.begin ();
-                         it != m_OverlapedEntities.end ();
-                         ++it)
+                         it != m_OverlapedEntities.end (); ++it)
                     {
                         if (*it == ent)
                         {

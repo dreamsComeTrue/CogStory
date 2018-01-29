@@ -108,7 +108,8 @@ namespace aga
         int desktopWidth = aminfo.x2 - aminfo.x1 + 1;
         int desktopHeight = aminfo.y2 - aminfo.y1 + 1;
 
-        al_set_window_position (m_Display, desktopWidth / 2 - m_RealSize.Width / 2, desktopHeight / 2 - m_RealSize.Height / 2);
+        al_set_window_position (
+          m_Display, desktopWidth / 2 - m_RealSize.Width / 2, desktopHeight / 2 - m_RealSize.Height / 2);
 
         al_start_timer (m_DisplayTimer);
 
@@ -178,8 +179,8 @@ namespace aga
             }
         }
         else if ((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) || (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) ||
-                 (ev.type == ALLEGRO_EVENT_MOUSE_AXES) || (ev.type == ALLEGRO_EVENT_KEY_DOWN) || (ev.type == ALLEGRO_EVENT_KEY_UP) ||
-                 (ev.type == ALLEGRO_EVENT_KEY_CHAR))
+                 (ev.type == ALLEGRO_EVENT_MOUSE_AXES) || (ev.type == ALLEGRO_EVENT_KEY_DOWN) ||
+                 (ev.type == ALLEGRO_EVENT_KEY_UP) || (ev.type == ALLEGRO_EVENT_KEY_CHAR))
         {
             if (ProcessEventFunction != nullptr)
             {
@@ -213,7 +214,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Screen::SetBackgroundColor (float r, float g, float b, float a) { m_BackgroundColor = al_map_rgba (r, g, b, a); }
+    void Screen::SetBackgroundColor (float r, float g, float b, float a)
+    {
+        m_BackgroundColor = al_map_rgba (r, g, b, a);
+    }
 
     //--------------------------------------------------------------------------------------------------
 

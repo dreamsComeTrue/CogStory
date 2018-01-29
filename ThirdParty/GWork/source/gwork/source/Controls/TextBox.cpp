@@ -59,9 +59,14 @@ GWK_CONTROL_CONSTRUCTOR(TextBox)
 bool TextBox::OnChar(Gwk::UnicodeChar c)
 {
     if (c == '\t')
-        return false;
+    {
+        InsertText("    ");
+    }
+    else
+    {
+        InsertText(String{c});
+    }
 
-    InsertText(String{c});
     return true;
 }
 

@@ -10,10 +10,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     EditorPhysMode::EditorPhysMode (Editor* editor)
-      : m_Editor (editor)
-      , m_PhysPoint (nullptr)
-      , m_PhysPointIndex (-1)
-      , m_PhysPoly (nullptr)
+        : m_Editor (editor)
+        , m_PhysPoint (nullptr)
+        , m_PhysPointIndex (-1)
+        , m_PhysPoly (nullptr)
     {
     }
 
@@ -109,7 +109,7 @@ namespace aga
                     if (m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawPhysData () && false)
                     {
                         m_Editor->m_MainLoop->GetScreen ()->GetFont ().DrawText (
-                          FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), xPoint, yPoint, ToString (i), ALLEGRO_ALIGN_CENTER);
+                            FONT_NAME_SMALL, al_map_rgb (0, 255, 0), xPoint, yPoint, ToString (i), ALLEGRO_ALIGN_CENTER);
                     }
 
                     ++i;
@@ -241,7 +241,7 @@ namespace aga
                         if (points.empty ())
                         {
                             m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints.erase (
-                              m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints.begin () + j);
+                                m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints.begin () + j);
                             m_PhysPoly = nullptr;
                         }
 

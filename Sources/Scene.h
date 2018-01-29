@@ -32,7 +32,8 @@ namespace aga
     struct SpeechData
     {
         std::string Name = "";
-        std::map<int, std::string> Text;                    //  LangID, data
+        std::string ActorRegionName = "";
+        std::map<int, std::string> Text; //  LangID, data
         std::map<int, std::vector<SpeechOutcome>> Outcomes; //  LangID, outcomes
     };
 
@@ -63,7 +64,7 @@ namespace aga
         static std::string TypeName;
 
         Tile (PhysicsManager* physicsManager)
-          : Collidable (physicsManager)
+            : Collidable (physicsManager)
         {
         }
 

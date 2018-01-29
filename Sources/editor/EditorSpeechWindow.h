@@ -27,6 +27,7 @@ namespace aga
         void OnSpeechSelect (Gwk::Controls::Base*);
         void OnNameEdit ();
         void OnLangSelected ();
+        void OnRegionNameSelected ();
         void OnTextChanged ();
 
         void UpdateOutcomes ();
@@ -48,6 +49,7 @@ namespace aga
         Gwk::Controls::TreeControl* m_SpeechesTree;
         Gwk::Controls::TextBox* m_NameTextBox;
         Gwk::Controls::ComboBox* m_LanguageCombo;
+        Gwk::Controls::ComboBox* m_RegionCombo;
         Gwk::Controls::TextBoxMultiline* m_TextData;
         Gwk::Controls::ScrollControl* m_OutcomesContainer;
     };

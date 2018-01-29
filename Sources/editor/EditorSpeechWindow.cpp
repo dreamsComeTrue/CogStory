@@ -73,22 +73,33 @@ namespace aga
         m_TextData->SetSize (controlWidth, 90);
         m_TextData->onTextChanged.Add (this, &EditorSpeechWindow::OnTextChanged);
 
+        Gwk::Controls::Label* regionLabel = new Gwk::Controls::Label (center);
+        regionLabel->SetPos (xOffset, m_TextData->Bottom () + 5);
+        regionLabel->SetText ("Region:");
+        regionLabel->SizeToContents ();
+
+        m_RegionCombo = new Gwk::Controls::ComboBox (center);
+        m_RegionCombo->SetPos (xOffset, regionLabel->Bottom () + 5);
+        m_RegionCombo->SetWidth (controlWidth);
+        m_RegionCombo->AddItem ("player_head", "player_head");
+        m_RegionCombo->onSelection.Add (this, &EditorSpeechWindow::OnRegionNameSelected);
+
         Gwk::Controls::Button* addSpeechButton = new Gwk::Controls::Button (center);
         addSpeechButton->SetText ("SAVE");
         addSpeechButton->SetWidth (155);
-        addSpeechButton->SetPos (xOffset, m_TextData->Bottom () + 10);
+        addSpeechButton->SetPos (xOffset, m_RegionCombo->Bottom () + 10);
         addSpeechButton->onPress.Add (this, &EditorSpeechWindow::OnSave);
 
         Gwk::Controls::Button* removeSpeechButton = new Gwk::Controls::Button (center);
         removeSpeechButton->SetText ("REMOVE");
         removeSpeechButton->SetWidth (155);
-        removeSpeechButton->SetPos (addSpeechButton->Right () + 5, m_TextData->Bottom () + 10);
+        removeSpeechButton->SetPos (addSpeechButton->Right () + 5, m_RegionCombo->Bottom () + 10);
         removeSpeechButton->onPress.Add (this, &EditorSpeechWindow::OnRemove);
 
         Gwk::Controls::Button* outcomeButton = new Gwk::Controls::Button (center);
         outcomeButton->SetText ("OUTCOME");
         outcomeButton->SetWidth (160);
-        outcomeButton->SetPos (removeSpeechButton->Right () + 5, m_TextData->Bottom () + 10);
+        outcomeButton->SetPos (removeSpeechButton->Right () + 5, m_RegionCombo->Bottom () + 10);
         outcomeButton->onPress.Add (this, &EditorSpeechWindow::OnOutcome);
 
         m_OutcomesContainer = new Gwk::Controls::ScrollControl (center);
@@ -113,6 +124,8 @@ namespace aga
 
     void EditorSpeechWindow::OnSave ()
     {
+        m_Editor->m_EditorSpeechMode.m_Speech.ActorRegionName = m_RegionCombo->GetSelectedItem ()->GetText ();
+
         if (m_NameTextBox->GetText () != "")
         {
             Gwk::Controls::Base::List& childNodes = m_SpeechesTree->GetChildNodes ();
@@ -193,6 +206,7 @@ namespace aga
             m_Editor->m_EditorSpeechMode.m_Speech = speeches[node->GetText ()];
 
             m_NameTextBox->SetText (m_Editor->m_EditorSpeechMode.m_Speech.Name);
+            m_RegionCombo->SelectItemByName (m_Editor->m_EditorSpeechMode.m_Speech.ActorRegionName);
             m_TextData->SetText (m_Editor->m_EditorSpeechMode.m_Speech.Text[m_LangIndex]);
 
             UpdateOutcomes ();
@@ -219,6 +233,13 @@ namespace aga
         }
 
         m_TextData->SetText (m_Editor->m_EditorSpeechMode.m_Speech.Text[m_LangIndex]);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorSpeechWindow::OnRegionNameSelected ()
+    {
+        m_Editor->m_EditorSpeechMode.m_Speech.ActorRegionName = m_RegionCombo->GetSelectedItem ()->GetText ();
     }
 
     //--------------------------------------------------------------------------------------------------

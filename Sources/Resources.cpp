@@ -30,9 +30,13 @@ namespace aga
         { PACK_0_0_HOME, GFX_0_HOME, "0_0_home.pack" },
 
         //  Fonts
-        { FONT_MAIN_SMALL, FONTS, "coders_crux.ttf" },
-        { FONT_MAIN_MEDIUM, FONTS, "coders_crux.ttf" },
-        { FONT_MAIN_NORMAL, FONTS, "coders_crux.ttf" },
+        { FONT_SMALL, FONTS, "coders_crux.ttf" },
+        { FONT_MEDIUM, FONTS, "coders_crux.ttf" },
+        { FONT_NORMAL, FONTS, "coders_crux.ttf" },
+        { FONT_MENU_TITLE, FONTS, "coders_crux.ttf" },
+        { FONT_MENU_ITEM_NORMAL, FONTS, "coders_crux.ttf" },
+        { FONT_MENU_ITEM_SMALL, FONTS, "coders_crux.ttf" },
+        { FONT_SPEECH_FRAME, FONTS, "coders_crux.ttf" },
         { FONT_EDITOR, FONTS, "OpenSans.ttf" },
 
         //  Scenes
@@ -48,7 +52,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    const std::string GetDataPath () { return GetCurrentDir () + "/../Data/"; }
+    const std::string GetDataPath () { return GetCurrentDir () + "/../../Data/"; }
 
     //--------------------------------------------------------------------------------------------------
 

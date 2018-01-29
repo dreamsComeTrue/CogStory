@@ -10,20 +10,20 @@ namespace aga
     struct Point
     {
         Point ()
-          : X (0.0)
-          , Y (0.0)
+            : X (0.0)
+            , Y (0.0)
         {
         }
 
         Point (int x, int y)
-          : X (x)
-          , Y (y)
+            : X (x)
+            , Y (y)
         {
         }
 
         Point (float x, float y)
-          : X (x)
-          , Y (y)
+            : X (x)
+            , Y (y)
         {
         }
 
@@ -60,6 +60,8 @@ namespace aga
         bool operator!= (const Point& rhs) const { return X != rhs.X || Y != rhs.Y; }
 
         Point operator+ (const Point& rhs) { return Point (X + rhs.X, Y + rhs.Y); }
+
+        Point operator* (const Point& rhs) { return Point (X * rhs.X, Y * rhs.Y); }
 
         Point operator- (const Point& rhs) { return Point (X - rhs.X, Y - rhs.Y); }
 

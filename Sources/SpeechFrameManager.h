@@ -38,39 +38,19 @@ namespace aga
         void Render (float deltaTime);
         void Clear ();
 
-        SpeechFrame* AddSpeechFrame (const std::string& id,
-                                     const std::string& text,
-                                     Rect rect,
-                                     bool shouldBeHandled = true,
-                                     const std::string& regionName = "");
-        SpeechFrame* AddSpeechFrame (const std::string& id,
-                                     const std::string& text,
-                                     Point pos,
-                                     int maxLineCharsCount,
-                                     int linesCount,
-                                     bool shouldBeHandled = true,
-                                     const std::string& regionName = "");
+        SpeechFrame* AddSpeechFrame (const std::string& id, const std::string& text, Rect rect,
+                                     bool shouldBeHandled = true, const std::string& regionName = "");
+        SpeechFrame* AddSpeechFrame (const std::string& id, const std::string& text, Point pos, int maxLineCharsCount,
+                                     int linesCount, bool shouldBeHandled = true, const std::string& regionName = "");
 
-        SpeechFrame* AddSpeechFrame (SpeechData* speechData,
-                                     Point pos,
-                                     int maxLineCharsCount,
-                                     int linesCount,
-                                     bool shouldBeHandled = true,
-                                     const std::string& regionName = "");
+        SpeechFrame* AddSpeechFrame (SpeechData* speechData, Point pos, int maxLineCharsCount, int linesCount,
+                                     bool shouldBeHandled = true, const std::string& regionName = "");
 
-        SpeechFrame* AddSpeechFrame (const std::string& speechID,
-                                     Point pos,
-                                     int maxLineCharsCount,
-                                     int linesCount,
-                                     bool shouldBeHandled = true,
-                                     const std::string& regionName = "");
+        SpeechFrame* AddSpeechFrame (const std::string& speechID, Point pos, int maxLineCharsCount, int linesCount,
+                                     bool shouldBeHandled = true);
 
-        SpeechFrame* AddSpeechFrame (const std::string& speechID,
-                                     SpeechFramePosition position,
-                                     int maxLineCharsCount,
-                                     int linesCount,
-                                     bool shouldBeHandled = true,
-                                     const std::string& regionName = "");
+        SpeechFrame* AddSpeechFrame (const std::string& speechID, SpeechFramePosition position, int maxLineCharsCount,
+                                     int linesCount, bool shouldBeHandled = true);
 
         SceneManager* GetSceneManager ();
 

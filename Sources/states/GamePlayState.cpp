@@ -14,7 +14,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     GamePlayState::GamePlayState (MainLoop* mainLoop)
-      : State (mainLoop, GAMEPLAY_STATE_NAME)
+        : State (mainLoop, GAMEPLAY_STATE_NAME)
     {
     }
 
@@ -54,8 +54,11 @@ namespace aga
         m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (50, 60, 100));
         m_MainLoop->GetSceneManager ().GetActiveScene ()->BeforeEnter ();
 
+        m_MainLoop->GetSceneManager ().GetSpeechFrameManager ().Clear ();
+
         const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-        m_MainLoop->GetSceneManager ().GetCamera ().Scale (1.4, 1.4, winSize.Width * 0.5, winSize.Height * 0.5);
+        float scale = 2.0f;
+        m_MainLoop->GetSceneManager ().GetCamera ().Scale (scale, scale, winSize.Width * 0.5, winSize.Height * 0.5);
 
         //  Reset camera to player
         m_MainLoop->GetSceneManager ().GetPlayer ().Move (0, 0.00001);

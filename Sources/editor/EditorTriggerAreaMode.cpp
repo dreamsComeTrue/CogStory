@@ -141,9 +141,9 @@ namespace aga
                     al_draw_filled_circle (xPoint, yPoint, 4, color);
                 }
 
-                m_Editor->m_MainLoop->GetScreen ()->GetFont ().DrawText (FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0),
-                    min.X + (max.X - min.X) * 0.5, min.Y + (max.Y - min.Y) * 0.5, ToString (it->second.Name),
-                    ALLEGRO_ALIGN_CENTER);
+                m_Editor->m_MainLoop->GetScreen ()->GetFont ().DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0),
+                                                                         min.X + (max.X - min.X) * 0.5, min.Y + (max.Y - min.Y) * 0.5, ToString (it->second.Name),
+                                                                         ALLEGRO_ALIGN_CENTER);
             }
         }
     }

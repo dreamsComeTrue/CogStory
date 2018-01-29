@@ -24,6 +24,7 @@ namespace aga
     class EditorTriggerAreaWindow;
     class EditorSpeechWindow;
     class EditorActorWindow;
+    class EditorActorScriptWindow;
     class EditorInfoWindow;
     class EditorQuestionWindow;
 
@@ -49,6 +50,8 @@ namespace aga
         friend class EditorTriggerAreaWindow;
         friend class EditorSpeechWindow;
         friend class EditorActorWindow;
+        friend class EditorActorScriptWindow;
+        friend class EditorInfoWindow;
 
         friend class EditorTileMode;
         friend class EditorPhysMode;

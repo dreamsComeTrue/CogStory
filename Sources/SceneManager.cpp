@@ -17,15 +17,15 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     SceneManager::SceneManager (MainLoop* mainLoop)
-      : m_MainLoop (mainLoop)
-      , m_Camera (mainLoop->GetScreen ())
-      , m_Player (this)
-      , m_SpeechFrameManager (this)
-      , m_AtlasManager (nullptr)
-      , m_ActiveScene (nullptr)
-      , m_Transitioning (true)
-      , m_FadeColor (COLOR_BLACK)
-      , m_TweenFade (nullptr)
+        : m_MainLoop (mainLoop)
+        , m_Camera (mainLoop->GetScreen ())
+        , m_Player (this)
+        , m_SpeechFrameManager (this)
+        , m_AtlasManager (nullptr)
+        , m_ActiveScene (nullptr)
+        , m_Transitioning (true)
+        , m_FadeColor (COLOR_BLACK)
+        , m_TweenFade (nullptr)
     {
     }
 
@@ -283,12 +283,12 @@ namespace aga
         };
 
         tweeny::tween<float> tween = tweeny::from (0.0f)
-                                       .to (1.0f)
-                                       .during (FADE_MAX_TIME)
-                                       .onStep (fadeInFunc)
-                                       .to (0.0f)
-                                       .during (FADE_MAX_TIME)
-                                       .onStep (fadeOutFunc);
+                                         .to (1.0f)
+                                         .during (FADE_MAX_TIME)
+                                         .onStep (fadeInFunc)
+                                         .to (0.0f)
+                                         .during (FADE_MAX_TIME)
+                                         .onStep (fadeOutFunc);
 
         m_TweenFade = &m_MainLoop->GetTweenManager ().AddTween (200, tween);
     }

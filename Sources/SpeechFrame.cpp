@@ -16,64 +16,42 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     SpeechFrame::SpeechFrame (SpeechFrameManager* manager)
-      : m_Manager (manager)
-      , m_Visible (true)
-      , m_DrawTextCenter (false)
-      , m_DrawSpeed (10)
-      , m_ArrowDrawSpeed (300)
-      , m_DrawLightArrow (true)
-      , m_CurrentDrawTime (0)
-      , m_CurrentIndex (0)
-      , m_CurrentLine (0)
-      , m_DisplayLine (0)
-      , m_StillUpdating (true)
-      , m_MaxKeyDelta (200)
-      , m_KeyEventHandled (false)
-      , m_ScrollPossible (false)
-      , m_ShouldBeHandled (true)
-      , m_Handled (false)
-      , m_DelayCounter (0.0f)
-      , m_IsDelayed (false)
+        : SpeechFrame (manager, "", Rect (), true, "")
     {
-        m_FrameBitmap = load_nine_patch_bitmap (GetResourcePath (ResourceID::GFX_TEXT_FRAME).c_str ());
-        m_Atlas = m_Manager->GetSceneManager ()->GetAtlasManager ()->GetAtlas (
-          GetBaseName (GetResourcePath (PACK_CHARACTERS_UI)));
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    SpeechFrame::SpeechFrame (SpeechFrameManager* manager,
-                              const std::string& text,
-                              Rect rect,
-                              bool shouldBeHandled,
+    SpeechFrame::SpeechFrame (SpeechFrameManager* manager, const std::string& text, Rect rect, bool shouldBeHandled,
                               const std::string& regionName)
-      : m_Manager (manager)
-      , m_DrawRect (rect)
-      , m_Visible (true)
-      , m_DrawTextCenter (false)
-      , m_DrawSpeed (11)
-      , m_ArrowDrawSpeed (300)
-      , m_DrawLightArrow (true)
-      , m_CurrentDrawTime (0)
-      , m_CurrentIndex (0)
-      , m_CurrentLine (0)
-      , m_DisplayLine (0)
-      , m_StillUpdating (true)
-      , m_MaxKeyDelta (200)
-      , m_KeyEventHandled (false)
-      , m_ScrollPossible (false)
-      , m_ShouldBeHandled (shouldBeHandled)
-      , m_Handled (false)
-      , m_RegionName (regionName)
-      , m_DelayCounter (0.0f)
-      , m_IsDelayed (false)
+        : m_Manager (manager)
+        , m_DrawRect (rect)
+        , m_Visible (true)
+        , m_DrawTextCenter (false)
+        , m_DrawSpeed (10)
+        , m_ArrowDrawSpeed (300)
+        , m_DrawLightArrow (true)
+        , m_CurrentDrawTime (0)
+        , m_CurrentIndex (0)
+        , m_CurrentLine (0)
+        , m_DisplayLine (0)
+        , m_StillUpdating (true)
+        , m_MaxKeyDelta (200)
+        , m_KeyEventHandled (false)
+        , m_ScrollPossible (false)
+        , m_ShouldBeHandled (shouldBeHandled)
+        , m_Handled (false)
+        , m_ActorRegionName (regionName)
+        , m_DelayCounter (0.0f)
+        , m_IsDelayed (false)
+        , m_ActualChoiceIndex (0)
     {
         m_FrameBitmap = load_nine_patch_bitmap (GetResourcePath (ResourceID::GFX_TEXT_FRAME).c_str ());
 
-        if (m_RegionName != "")
+        if (m_ActorRegionName != "")
         {
             m_Atlas = m_Manager->GetSceneManager ()->GetAtlasManager ()->GetAtlas (
-              GetBaseName (GetResourcePath (PACK_CHARACTERS_UI)));
+                GetBaseName (GetResourcePath (PACK_CHARACTERS_UI)));
         }
 
         SetText (text);
@@ -108,33 +86,75 @@ namespace aga
             ALLEGRO_KEYBOARD_STATE state;
             al_get_keyboard_state (&state);
 
+            int maxLines = (m_DrawRect.GetSize ().Height - 2 * SPEECH_FRAME_TEXT_INSETS) / m_LineHeight;
             int lineCounter = GetLineCounter ();
 
             if (al_key_down (&state, ALLEGRO_KEY_UP) || al_key_down (&state, ALLEGRO_KEY_W))
             {
-                --m_DisplayLine;
-
-                if (lineCounter > 0)
+                //  We can only scroll, when there are no choices
+                if (!m_Choices.empty () || m_Choices.size () >= maxLines)
                 {
-                    if (ScrollUpFunction)
+                    if (!m_StillUpdating)
                     {
-                        ScrollUpFunction ();
+                        --m_ActualChoiceIndex;
+
+                        if (m_ActualChoiceIndex < 0)
+                        {
+                            m_ActualChoiceIndex = m_Choices.size () - 1;
+                        }
+
+                        if (ChoiceUpFunction)
+                        {
+                            ChoiceUpFunction ();
+                        }
+                    }
+                }
+                else
+                {
+                    --m_DisplayLine;
+
+                    if (lineCounter > 0)
+                    {
+                        if (ScrollUpFunction)
+                        {
+                            ScrollUpFunction ();
+                        }
                     }
                 }
             }
 
             if (al_key_down (&state, ALLEGRO_KEY_DOWN) || al_key_down (&state, ALLEGRO_KEY_S))
             {
-                ++m_DisplayLine;
-
-                int maxLines = (m_DrawRect.GetSize ().Height - 2 * SPEECH_FRAME_TEXT_INSETS) / m_LineHeight;
-                int diff = m_CurrentLine + 1 - maxLines;
-
-                if (lineCounter < diff)
+                //  We can only scroll, when there are no choices
+                if (!m_Choices.empty () || m_Choices.size () >= maxLines)
                 {
-                    if (ScrollDownFunction)
+                    if (!m_StillUpdating)
                     {
-                        ScrollDownFunction ();
+                        ++m_ActualChoiceIndex;
+
+                        if (m_ActualChoiceIndex > m_Choices.size () - 1)
+                        {
+                            m_ActualChoiceIndex = 0;
+                        }
+
+                        if (ChoiceDownFunction)
+                        {
+                            ChoiceDownFunction ();
+                        }
+                    }
+                }
+                else
+                {
+                    ++m_DisplayLine;
+
+                    int diff = m_CurrentLine + 1 - maxLines;
+
+                    if (lineCounter < diff)
+                    {
+                        if (ScrollDownFunction)
+                        {
+                            ScrollDownFunction ();
+                        }
                     }
                 }
             }
@@ -197,10 +217,33 @@ namespace aga
         if (event->type == ALLEGRO_EVENT_KEY_DOWN)
         {
             int lineCounter = GetLineCounter ();
+            int maxLines = (m_DrawRect.GetSize ().Height - 2 * SPEECH_FRAME_TEXT_INSETS) / m_LineHeight;
 
             switch (event->keyboard.keycode)
             {
-                case ALLEGRO_KEY_UP:
+            case ALLEGRO_KEY_UP:
+            {
+                //  We can only scroll, when there are no choices
+                if (!m_Choices.empty () || m_Choices.size () >= maxLines)
+                {
+                    if (!m_StillUpdating)
+                    {
+                        --m_ActualChoiceIndex;
+
+                        if (m_ActualChoiceIndex < 0)
+                        {
+                            m_ActualChoiceIndex = m_Choices.size () - 1;
+                        }
+
+                        if (ChoiceUpFunction)
+                        {
+                            ChoiceUpFunction ();
+                        }
+
+                        m_KeyEventHandled = true;
+                    }
+                }
+                else
                 {
                     if (!IsTextFit ())
                     {
@@ -216,17 +259,39 @@ namespace aga
 
                         m_KeyEventHandled = true;
                     }
-
-                    break;
                 }
 
-                case ALLEGRO_KEY_DOWN:
+                break;
+            }
+
+            case ALLEGRO_KEY_DOWN:
+            {
+                //  We can only scroll, when there are no choices
+                if (!m_Choices.empty () || m_Choices.size () >= maxLines)
+                {
+                    if (!m_StillUpdating)
+                    {
+                        ++m_ActualChoiceIndex;
+
+                        if (m_ActualChoiceIndex > m_Choices.size () - 1)
+                        {
+                            m_ActualChoiceIndex = 0;
+                        }
+
+                        if (ChoiceDownFunction)
+                        {
+                            ChoiceDownFunction ();
+                        }
+
+                        m_KeyEventHandled = true;
+                    }
+                }
+                else
                 {
                     if (!IsTextFit ())
                     {
                         ++m_DisplayLine;
 
-                        int maxLines = (m_DrawRect.GetSize ().Height - 2 * SPEECH_FRAME_TEXT_INSETS) / m_LineHeight;
                         int diff = m_CurrentLine + 1 - maxLines;
 
                         if (lineCounter < diff)
@@ -239,24 +304,35 @@ namespace aga
 
                         m_KeyEventHandled = true;
                     }
-
-                    break;
                 }
 
-                case ALLEGRO_KEY_ENTER:
-                {
-                    if (m_ShouldBeHandled)
-                    {
-                        m_Handled = true;
+                break;
+            }
 
-                        if (HandledFunction)
+            case ALLEGRO_KEY_ENTER:
+            {
+                if (m_ShouldBeHandled)
+                {
+                    if (!m_Choices.empty ())
+                    {
+                        std::function<void()>& handler = m_Choices[m_ActualChoiceIndex].Func;
+
+                        if (handler)
                         {
-                            HandledFunction ();
+                            handler ();
                         }
                     }
 
-                    break;
+                    m_Handled = true;
+
+                    if (HandledFunction)
+                    {
+                        HandledFunction ();
+                    }
                 }
+
+                break;
+            }
             }
         }
     }
@@ -298,8 +374,8 @@ namespace aga
         PreprocessText (m_Text);
 
         Font& font = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetFont ();
-        unsigned ascent = font.GetFontAscent (FONT_NAME_MAIN_MEDIUM);
-        unsigned descent = font.GetFontDescent (FONT_NAME_MAIN_MEDIUM);
+        unsigned ascent = font.GetFontAscent (FONT_NAME_SPEECH_FRAME);
+        unsigned descent = font.GetFontDescent (FONT_NAME_SPEECH_FRAME);
 
         m_LineHeight = ascent + descent;
         m_TextLines = BreakLine (m_Text, m_DrawRect.GetSize ().Width - 2 * SPEECH_FRAME_TEXT_INSETS);
@@ -307,81 +383,193 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void SpeechFrame::AddChoice (const std::string& text, std::function<void()> func)
+    {
+        SpeechChoice choice;
+        choice.Text = text;
+        choice.Func = func;
+
+        m_Choices.push_back (choice);
+
+        SetText (m_Text + "\n" + text);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void SpeechFrame::Render (float deltaTime)
     {
-        if (m_Visible)
+        if (!m_Visible)
         {
-            if (m_Atlas && m_RegionName != "")
+            return;
+        }
+
+        if (m_Atlas && m_ActorRegionName != "")
+        {
+            Point characterOffset = GetActorRegionOffset ();
+            int edgeLength = m_DrawRect.GetSize ().Height - 2 * characterOffset.Y;
+            AtlasRegion region = m_Atlas->GetRegion (m_ActorRegionName);
+
+            float ratio = std::min ((float)edgeLength / region.Bounds.Size.Width,
+                                    (float)edgeLength / region.Bounds.Size.Height);
+
+            m_Atlas->DrawRegion (m_ActorRegionName,
+                                 m_DrawRect.GetPos ().X - ratio * region.Bounds.Size.Width * 0.5f - characterOffset.X,
+                                 m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Y * 0.5f, ratio, ratio, 0);
+        }
+
+        draw_nine_patch_bitmap (m_FrameBitmap, m_DrawRect.GetPos ().X, m_DrawRect.GetPos ().Y,
+                                m_DrawRect.GetSize ().Width, m_DrawRect.GetSize ().Height);
+
+        int xPoint;
+        int yPoint;
+        int align;
+        Font& font = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetFont ();
+        std::string text = m_Text.substr (0, m_CurrentIndex);
+
+        int centerOffset = 0;
+
+        if (m_DrawTextCenter)
+        {
+            Point textDimensions = font.GetTextDimensions (FONT_NAME_SPEECH_FRAME, text);
+
+            xPoint = m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width * 0.5;
+            yPoint = m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Height * 0.5 - textDimensions.Height * 0.5;
+            align = ALLEGRO_ALIGN_CENTER;
+            centerOffset = -textDimensions.Width * 0.5f;
+        }
+        else
+        {
+            xPoint = m_DrawRect.GetPos ().X + SPEECH_FRAME_TEXT_INSETS;
+            yPoint = m_DrawRect.GetPos ().Y + SPEECH_FRAME_TEXT_INSETS;
+            align = ALLEGRO_ALIGN_LEFT;
+        }
+
+        int maxLines = (m_DrawRect.GetSize ().Height - 2 * SPEECH_FRAME_TEXT_INSETS) / m_LineHeight;
+        int lineCounter = 0;
+        int diff = m_CurrentLine + 1 - maxLines;
+
+        if (m_CurrentLine + 1 >= maxLines)
+        {
+            lineCounter = diff;
+        }
+
+        lineCounter += m_DisplayLine;
+
+        if (lineCounter < 0)
+        {
+            lineCounter = 0;
+            m_DisplayLine = -diff;
+        }
+
+        if (diff >= 0 && lineCounter > diff)
+        {
+            lineCounter = diff;
+            m_DisplayLine = 0;
+        }
+
+        int x, y, w, h;
+        al_get_clipping_rectangle (&x, &y, &w, &h);
+        al_set_clipping_rectangle (m_DrawRect.GetPos ().X, m_DrawRect.GetPos ().Y, m_DrawRect.GetSize ().Width,
+                                   m_DrawRect.GetSize ().Height - SPEECH_FRAME_LINE_OFFSET);
+
+        int choiceStartY = -1;
+
+        for (int i = 0; lineCounter < m_CurrentLine + 1; ++lineCounter, ++i)
+        {
+            int currentCharIndex = 0;
+            for (int j = 0; j < lineCounter; ++j)
             {
-                Point characterOffset = Point (20, 10);
-                int edgeLength = m_DrawRect.GetSize ().Height - 2 * characterOffset.Y;
-                AtlasRegion region = m_Atlas->GetRegion (m_RegionName);
-
-                float ratio = std::min ((float)edgeLength / region.Bounds.Size.Width,
-                                        (float)edgeLength / region.Bounds.Size.Height);
-
-                m_Atlas->DrawRegion (m_RegionName,
-                                     m_DrawRect.GetPos ().X - ratio * region.Bounds.Size.Width * 0.5f -
-                                       characterOffset.X,
-                                     m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Y * 0.5f,
-                                     ratio,
-                                     ratio,
-                                     0);
+                currentCharIndex += m_TextLines[j].size ();
             }
 
-            draw_nine_patch_bitmap (m_FrameBitmap,
-                                    m_DrawRect.GetPos ().X,
-                                    m_DrawRect.GetPos ().Y,
-                                    m_DrawRect.GetSize ().Width,
-                                    m_DrawRect.GetSize ().Height);
+            if (lineCounter > m_TextLines.size () - 1)
+            {
+                break;
+            }
 
-            int xPoint;
-            int yPoint;
-            int align;
-            Font& font = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetFont ();
-            std::string text = m_Text.substr (0, m_CurrentIndex);
+            std::string t = m_TextLines[lineCounter];
 
-            int centerOffset = 0;
+            if (lineCounter >= m_CurrentLine)
+            {
+                t = t.substr (0, m_CurrentIndex);
+            }
+
+            int y = yPoint + i * (m_LineHeight + SPEECH_FRAME_LINE_OFFSET);
+
+            float advance = 0;
 
             if (m_DrawTextCenter)
             {
-                Point textDimensions = font.GetTextDimensions (FONT_NAME_MAIN_MEDIUM, text);
-
-                xPoint = m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width * 0.5;
-                yPoint = m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Height * 0.5 - textDimensions.Height * 0.5;
-                align = ALLEGRO_ALIGN_CENTER;
-                centerOffset = -textDimensions.Width * 0.5f;
+                advance = centerOffset;
             }
-            else
+
+            if (lineCounter >= m_TextLines.size () - m_Choices.size ())
             {
-                xPoint = m_DrawRect.GetPos ().X + SPEECH_FRAME_TEXT_INSETS;
-                yPoint = m_DrawRect.GetPos ().Y + SPEECH_FRAME_TEXT_INSETS;
-                align = ALLEGRO_ALIGN_LEFT;
+                advance = SPEECH_FRAME_ADVANCE_CHOICE;
+
+                if (choiceStartY < 0)
+                {
+                    choiceStartY = i;
+                }
             }
 
-            int maxLines = (m_DrawRect.GetSize ().Height - 2 * SPEECH_FRAME_TEXT_INSETS) / m_LineHeight;
-            int lineCounter = 0;
-            int diff = m_CurrentLine + 1 - maxLines;
-
-            if (m_CurrentLine + 1 >= maxLines)
+            for (int j = 0; j < t.length (); ++j)
             {
-                lineCounter = diff;
+                ALLEGRO_COLOR color = { 0.9f, 0.9f, 0.9f, 1.0f };
+
+                for (int k = 0; k < m_Attributes.size (); ++k)
+                {
+                    SpeechTextAttribute& attr = m_Attributes[k];
+
+                    if (currentCharIndex >= attr.BeginIndex && currentCharIndex <= attr.EndIndex)
+                    {
+                        if (attr.AttributesMask & ATTRIBUTE_COLOR)
+                        {
+                            color = attr.Color;
+                        }
+
+                        if (attr.AttributesMask & ATTRIBUTE_DELAY && !m_IsDelayed && attr.Delay > 0.0f)
+                        {
+                            m_IsDelayed = true;
+                            m_DelayCounter = attr.Delay;
+                        }
+
+                        break;
+                    }
+                }
+
+                ++currentCharIndex;
+
+                std::string begin = t.substr (0, j);
+                if (!(isspace (t[j]) && TrimString (begin) == ""))
+                {
+                    std::string charToDraw = std::string (1, t[j]);
+
+                    font.DrawText (FONT_NAME_SPEECH_FRAME, color, xPoint + advance, y, charToDraw, align);
+
+                    if (charToDraw == " ")
+                    {
+                        advance += SPEECH_FRAME_ADVANCE_SPACE;
+                    }
+                    else
+                    {
+                        advance += m_Manager->GetSceneManager ()
+                                       ->GetMainLoop ()
+                                       ->GetScreen ()
+                                       ->GetFont ()
+                                       .GetTextDimensions (FONT_NAME_SPEECH_FRAME, charToDraw)
+                                       .Width;
+                        advance += SPEECH_FRAME_ADVANCE_LETTERS;
+                    }
+                }
             }
+        }
 
-            lineCounter += m_DisplayLine;
+        al_set_clipping_rectangle (x, y, w, h);
 
-            if (lineCounter < 0)
-            {
-                lineCounter = 0;
-                m_DisplayLine = -diff;
-            }
-
-            if (diff >= 0 && lineCounter > diff)
-            {
-                lineCounter = diff;
-                m_DisplayLine = 0;
-            }
-
+        //  We can only scroll, when there are no choices
+        if (m_Choices.empty () || m_Choices.size () > maxLines)
+        {
             int xOffset = 20;
             int yOffset = 2;
             std::string regionName = m_DrawLightArrow ? "arrow_light" : "arrow_dark";
@@ -390,119 +578,35 @@ namespace aga
             if (lineCounter > 0)
             {
                 m_Manager->GetSceneManager ()
-                  ->GetAtlasManager ()
-                  ->GetAtlas (GetBaseName (GetResourcePath (PACK_MENU_UI)))
-                  ->DrawRegion (regionName,
-                                m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width - xOffset,
-                                m_DrawRect.GetPos ().Y + yOffset,
-                                1.0f,
-                                1.0f,
-                                DegressToRadians (180.0f));
+                    ->GetAtlasManager ()
+                    ->GetAtlas (GetBaseName (GetResourcePath (PACK_MENU_UI)))
+                    ->DrawRegion (regionName, m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width - xOffset,
+                                  m_DrawRect.GetPos ().Y + yOffset, 1.0f, 1.0f, DegressToRadians (180.0f));
             }
 
             //  Down arrow
             if (lineCounter < diff)
             {
                 m_Manager->GetSceneManager ()
-                  ->GetAtlasManager ()
-                  ->GetAtlas (GetBaseName (GetResourcePath (PACK_MENU_UI)))
-                  ->DrawRegion (regionName,
-                                m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width - xOffset,
-                                m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Height - yOffset,
-                                1.0f,
-                                1.0f,
-                                0.0f);
+                    ->GetAtlasManager ()
+                    ->GetAtlas (GetBaseName (GetResourcePath (PACK_MENU_UI)))
+                    ->DrawRegion (regionName, m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width - xOffset,
+                                  m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Height - yOffset, 1.0f, 1.0f, 0.0f);
             }
-
-            int x, y, w, h;
-            al_get_clipping_rectangle (&x, &y, &w, &h);
-            al_set_clipping_rectangle (m_DrawRect.GetPos ().X,
-                                       m_DrawRect.GetPos ().Y,
-                                       m_DrawRect.GetSize ().Width,
-                                       m_DrawRect.GetSize ().Height - SPEECH_FRAME_LINE_OFFSET);
-
-            for (int i = 0; lineCounter < m_CurrentLine + 1; ++lineCounter, ++i)
+        }
+        else
+        {
+            if (!m_StillUpdating)
             {
-                int currentCharIndex = 0;
-                for (int j = 0; j < lineCounter; ++j)
-                {
-                    currentCharIndex += m_TextLines[j].size ();
-                }
+                float xPos = m_DrawRect.GetPos ().X + SPEECH_FRAME_ADVANCE_CHOICE - SPEECH_FRAME_TEXT_INSETS * 0.5f;
+                float yPos = yPoint + (m_ActualChoiceIndex + choiceStartY) * (m_LineHeight + SPEECH_FRAME_LINE_OFFSET)
+                    + m_LineHeight * 0.5f;
 
-                if (lineCounter > m_TextLines.size () - 1)
-                {
-                    break;
-                }
-
-                std::string t = m_TextLines[lineCounter];
-
-                if (lineCounter >= m_CurrentLine)
-                {
-                    t = t.substr (0, m_CurrentIndex);
-                }
-
-                int y = yPoint + i * (m_LineHeight + SPEECH_FRAME_LINE_OFFSET);
-
-                float advance = 0;
-
-                if (m_DrawTextCenter)
-                {
-                    advance = centerOffset;
-                }
-
-                for (int j = 0; j < t.length (); ++j)
-                {
-                    ALLEGRO_COLOR color = { 0.9f, 0.9f, 0.9f, 1.0f };
-
-                    for (int k = 0; k < m_Attributes.size (); ++k)
-                    {
-                        SpeechTextAttribute& attr = m_Attributes[k];
-
-                        if (currentCharIndex >= attr.BeginIndex && currentCharIndex <= attr.EndIndex)
-                        {
-                            if (attr.AttributesMask & ATTRIBUTE_COLOR)
-                            {
-                                color = attr.Color;
-                            }
-
-                            if (attr.AttributesMask & ATTRIBUTE_DELAY && !m_IsDelayed && attr.Delay > 0.0f)
-                            {
-                                m_IsDelayed = true;
-                                m_DelayCounter = attr.Delay;
-                            }
-
-                            break;
-                        }
-                    }
-
-                    ++currentCharIndex;
-
-                    std::string begin = t.substr (0, j);
-                    if (!(isspace (t[j]) && TrimString (begin) == ""))
-                    {
-                        std::string charToDraw = std::string (1, t[j]);
-
-                        font.DrawText (FONT_NAME_MAIN_MEDIUM, color, xPoint + advance, y, charToDraw, align);
-
-                        if (charToDraw == " ")
-                        {
-                            advance += SPEECH_FRAME_ADVANCE_SPACE;
-                        }
-                        else
-                        {
-                            advance += m_Manager->GetSceneManager ()
-                                         ->GetMainLoop ()
-                                         ->GetScreen ()
-                                         ->GetFont ()
-                                         .GetTextDimensions (FONT_NAME_MAIN_MEDIUM, charToDraw)
-                                         .Width;
-                            advance += SPEECH_FRAME_ADVANCE_LETTERS;
-                        }
-                    }
-                }
+                m_Manager->GetSceneManager ()
+                    ->GetAtlasManager ()
+                    ->GetAtlas (GetBaseName (GetResourcePath (PACK_MENU_UI)))
+                    ->DrawRegion ("arrow_light", xPos, yPos, 1.0f, 1.0f, DegressToRadians (-90.0f));
             }
-
-            al_set_clipping_rectangle (x, y, w, h);
         }
     }
 
@@ -513,11 +617,11 @@ namespace aga
         std::vector<std::string> ret;
 
         float width = m_Manager->GetSceneManager ()
-                        ->GetMainLoop ()
-                        ->GetScreen ()
-                        ->GetFont ()
-                        .GetTextDimensions (FONT_NAME_MAIN_MEDIUM, line)
-                        .Width;
+                          ->GetMainLoop ()
+                          ->GetScreen ()
+                          ->GetFont ()
+                          .GetTextDimensions (FONT_NAME_SPEECH_FRAME, line)
+                          .Width;
 
         std::string workLine = line;
         int currentIndex = 0;
@@ -536,11 +640,11 @@ namespace aga
             else
             {
                 width = m_Manager->GetSceneManager ()
-                          ->GetMainLoop ()
-                          ->GetScreen ()
-                          ->GetFont ()
-                          .GetTextDimensions (FONT_NAME_MAIN_MEDIUM, currentPart)
-                          .Width;
+                            ->GetMainLoop ()
+                            ->GetScreen ()
+                            ->GetFont ()
+                            .GetTextDimensions (FONT_NAME_SPEECH_FRAME, currentPart)
+                            .Width;
 
                 if (width >= maxWidth)
                 {
@@ -584,6 +688,7 @@ namespace aga
         m_Handled = false;
         m_DelayCounter = 0.0f;
         m_IsDelayed = false;
+        m_ActualChoiceIndex = 0;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -697,6 +802,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     bool SpeechFrame::IsHandled () { return m_Handled; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Point SpeechFrame::GetActorRegionOffset () { return Point (20, 10); }
 
     //--------------------------------------------------------------------------------------------------
 }

@@ -3,7 +3,9 @@
 #include "EditorActorWindow.h"
 #include "ActorFactory.h"
 #include "Editor.h"
+#include "EditorWindows.h"
 #include "MainLoop.h"
+#include "Screen.h"
 
 namespace aga
 {
@@ -46,7 +48,7 @@ namespace aga
         Gwk::Controls::Button* browseButton = new Gwk::Controls::Button (m_SceneWindow);
         browseButton->SetText ("BROWSE");
         browseButton->SetPos (pathTextBox->Right () + 5, pathLabel->Y ());
-        browseButton->onPress.Add (this, &EditorActorScriptWindow::OnAccept);
+        browseButton->onPress.Add (this, &EditorActorScriptWindow::OnBrowse);
 
         Gwk::Controls::Button* yesButton = new Gwk::Controls::Button (m_SceneWindow);
         yesButton->SetText ("ACCEPT");
@@ -69,6 +71,16 @@ namespace aga
         m_SceneWindow->SetPosition (Gwk::Position::Center);
         m_SceneWindow->SetHidden (false);
         m_SceneWindow->MakeModal (true);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorScriptWindow::OnBrowse ()
+    {
+        ALLEGRO_FILECHOOSER* fileOpenDialog = al_create_native_file_dialog (GetCurrentDir ().c_str (), "Open script file", "*.*", 0);
+        al_show_native_file_dialog (m_Editor->m_MainLoop->GetScreen ()->GetDisplay (), fileOpenDialog);
+
+        al_destroy_native_file_dialog (fileOpenDialog);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -131,14 +143,14 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Gwk::Controls::Property::Text* idProperty;
-    Gwk::Controls::Property::Base* nameProperty;
+    Gwk::Controls::Property::Text* nameProperty;
     Gwk::Controls::Property::ComboBox* typeProperty;
-    Gwk::Controls::Property::Base* positionProperty;
-    Gwk::Controls::Property::Base* rotationProperty;
-    Gwk::Controls::Property::Base* zOrderProperty;
+    Gwk::Controls::Property::Text* positionProperty;
+    Gwk::Controls::Property::Text* rotationProperty;
+    Gwk::Controls::Property::Text* zOrderProperty;
 
     EditorActorWindow::EditorActorWindow (Editor* editor, Gwk::Controls::Canvas* canvas)
-      : m_Editor (editor)
+        : m_Editor (editor)
     {
         m_SelectedType = 0;
 
@@ -197,20 +209,20 @@ namespace aga
             m_ScriptSection = m_ActorProperties->Add ("Scripts");
 
             idProperty = static_cast<Gwk::Controls::Property::Text*> (
-              static_cast<Gwk::Controls::PropertyRow*> (m_GeneralSection->Find ("ID"))->GetProperty ());
+                static_cast<Gwk::Controls::PropertyRow*> (m_GeneralSection->Find ("ID"))->GetProperty ());
             idProperty->m_textBox->SetKeyboardInputEnabled (false);
             idProperty->m_textBox->SetMouseInputEnabled (false);
 
-            nameProperty = static_cast<Gwk::Controls::Property::Base*> (
-              static_cast<Gwk::Controls::PropertyRow*> (m_GeneralSection->Find ("Name"))->GetProperty ());
+            nameProperty = static_cast<Gwk::Controls::Property::Text*> (
+                static_cast<Gwk::Controls::PropertyRow*> (m_GeneralSection->Find ("Name"))->GetProperty ());
             typeProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
-              static_cast<Gwk::Controls::PropertyRow*> (m_GeneralSection->Find ("Type"))->GetProperty ());
-            positionProperty = static_cast<Gwk::Controls::Property::Base*> (
-              static_cast<Gwk::Controls::PropertyRow*> (m_TransformSection->Find ("Position"))->GetProperty ());
-            rotationProperty = static_cast<Gwk::Controls::Property::Base*> (
-              static_cast<Gwk::Controls::PropertyRow*> (m_TransformSection->Find ("Rotation"))->GetProperty ());
-            zOrderProperty = static_cast<Gwk::Controls::Property::Base*> (
-              static_cast<Gwk::Controls::PropertyRow*> (m_TransformSection->Find ("ZOrder"))->GetProperty ());
+                static_cast<Gwk::Controls::PropertyRow*> (m_GeneralSection->Find ("Type"))->GetProperty ());
+            positionProperty = static_cast<Gwk::Controls::Property::Text*> (
+                static_cast<Gwk::Controls::PropertyRow*> (m_TransformSection->Find ("Position"))->GetProperty ());
+            rotationProperty = static_cast<Gwk::Controls::Property::Text*> (
+                static_cast<Gwk::Controls::PropertyRow*> (m_TransformSection->Find ("Rotation"))->GetProperty ());
+            zOrderProperty = static_cast<Gwk::Controls::Property::Text*> (
+                static_cast<Gwk::Controls::PropertyRow*> (m_TransformSection->Find ("ZOrder"))->GetProperty ());
         }
 
         m_ActorProperties->ExpandAll ();
@@ -247,10 +259,10 @@ namespace aga
         UpdateActorsTree ();
 
         idProperty->SetPropertyValue ("", false);
-        nameProperty->SetPropertyValue ("");
-        positionProperty->SetPropertyValue ("");
-        rotationProperty->SetPropertyValue ("");
-        zOrderProperty->SetPropertyValue ("");
+        nameProperty->SetPropertyValue ("", false);
+        positionProperty->SetPropertyValue ("", false);
+        rotationProperty->SetPropertyValue ("", false);
+        zOrderProperty->SetPropertyValue ("", false);
 
         m_SceneWindow->SetPosition (Gwk::Position::Center);
         m_SceneWindow->SetHidden (false);
@@ -309,7 +321,7 @@ namespace aga
         if (nameProperty->GetPropertyValue () != "")
         {
             m_Editor->m_EditorActorMode.RemoveActor (nameProperty->GetPropertyValue ());
-            nameProperty->SetPropertyValue ("");
+            nameProperty->SetPropertyValue ("", false);
 
             UpdateActorsTree ();
         }
@@ -366,12 +378,12 @@ namespace aga
                     m_Editor->m_EditorActorMode.m_Actor = actor;
 
                     idProperty->SetPropertyValue (ToString (actor->ID), false);
-                    nameProperty->SetPropertyValue (actor->Name);
+                    nameProperty->SetPropertyValue (actor->Name, false);
                     typeProperty->SetPropertyValue (actor->GetTypeName (), false);
                     positionProperty->SetPropertyValue (
-                      Gwk::Utility::Format ("%f,%f", actor->Bounds.Pos.X, actor->Bounds.Pos.Y), false);
+                        Gwk::Utility::Format ("%f,%f", actor->Bounds.Pos.X, actor->Bounds.Pos.Y), false);
                     rotationProperty->SetPropertyValue (Gwk::Utility::Format ("%f", actor->Rotation), false);
-                    zOrderProperty->SetPropertyValue (ToString (actor->ZOrder));
+                    zOrderProperty->SetPropertyValue (ToString (actor->ZOrder), false);
 
                     break;
                 }
@@ -386,8 +398,7 @@ namespace aga
         std::function<bool(void)> AcceptFunc = [&] {
             if (m_ScriptWindow->Name != "" && m_ScriptWindow->Path != "")
             {
-                Gwk::Controls::Property::LabelButton* node =
-                  new Gwk::Controls::Property::LabelButton (m_ScriptSection, m_ScriptWindow->Path, "X");
+                Gwk::Controls::Property::LabelButton* node = new Gwk::Controls::Property::LabelButton (m_ScriptSection, m_ScriptWindow->Path, "X");
                 node->FuncButton->onPress.Add (this, &EditorActorWindow::OnRemoveScript);
 
                 m_ScriptSection->Add (m_ScriptWindow->Name, node);
@@ -398,7 +409,14 @@ namespace aga
             return false;
         };
 
-        m_ScriptWindow->Show (AcceptFunc, nullptr);
+        if (nameProperty != nullptr && nameProperty->GetPropertyValue () != "")
+        {
+            m_ScriptWindow->Show (AcceptFunc, nullptr);
+        }
+        else
+        {
+            m_Editor->m_InfoWindow->Show ("Select Actor first!");
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -411,8 +429,7 @@ namespace aga
         for (Gwk::Controls::Base* control : childNodes)
         {
             Gwk::Controls::PropertyRow* node = (Gwk::Controls::PropertyRow*)control;
-            Gwk::Controls::Property::LabelButton* property =
-              (Gwk::Controls::Property::LabelButton*)node->GetProperty ();
+            Gwk::Controls::Property::LabelButton* property = (Gwk::Controls::Property::LabelButton*)node->GetProperty ();
 
             if (property->FuncButton == button)
             {

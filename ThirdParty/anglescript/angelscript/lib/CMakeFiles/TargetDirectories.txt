@@ -1,0 +1,3 @@
+/home/squall/RobotGame/anglescript_2.31.2/angelscript/lib/CMakeFiles/rebuild_cache.dir
+/home/squall/RobotGame/anglescript_2.31.2/angelscript/lib/CMakeFiles/angelscript.dir
+/home/squall/RobotGame/anglescript_2.31.2/angelscript/lib/CMakeFiles/edit_cache.dir

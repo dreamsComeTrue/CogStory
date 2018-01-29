@@ -21,6 +21,7 @@ namespace aga
         bool GetResult ();
 
     private:
+        void OnBrowse ();
         void OnAccept ();
         void OnCancel ();
 

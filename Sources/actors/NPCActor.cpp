@@ -1,7 +1,10 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
+
 #include "NPCActor.h"
+#include "MainLoop.h"
 #include "Player.h"
 #include "SceneManager.h"
+#include "SpeechFrame.h"
 
 namespace aga
 {
@@ -13,9 +16,9 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     NPCActor::NPCActor (SceneManager* sceneManager)
-      : Actor (sceneManager)
-      , m_Direction (0)
-      , m_StepsCounter (0.0f)
+        : Actor (sceneManager)
+        , m_Direction (0)
+        , m_StepsCounter (0.0f)
     {
     }
 
@@ -79,8 +82,8 @@ namespace aga
     {
         if (entity->GetTypeName () == Player::TypeName)
         {
-            m_SceneManager->GetSpeechFrameManager ().AddSpeechFrame (
-              "GREET_1", SpeechFramePosition::TopCenter, 20, 3, true);
+            SpeechFrame* frame = m_SceneManager->GetSpeechFrameManager ().AddSpeechFrame (
+                "GREET_1", SpeechFramePosition::BottomLeft, 30, 3, true);
         }
     }
 

@@ -133,7 +133,7 @@ namespace aga
                 std::string path = j_tile["path"];
 
                 Script* script = sceneManager->GetMainLoop ()->GetScriptManager ().LoadScriptFromFile (
-                  GetDataPath () + "scripts/" + path, name);
+                    GetDataPath () + "scripts/" + path, name);
 
                 if (script)
                 {
@@ -152,8 +152,10 @@ namespace aga
                 tile->Tileset = j_tile["tileset"];
                 tile->Name = j_tile["name"];
                 tile->Bounds.SetPos (StringToPoint (j_tile["pos"]));
-                tile->Bounds.SetSize (
-                  sceneManager->GetAtlasManager ()->GetAtlas (tile->Tileset)->GetRegion (tile->Name).Bounds.GetSize ());
+                tile->Bounds.SetSize (sceneManager->GetAtlasManager ()
+                                          ->GetAtlas (tile->Tileset)
+                                          ->GetRegion (tile->Name)
+                                          .Bounds.GetSize ());
                 std::string zOrder = j_tile["z-order"];
                 tile->ZOrder = atoi (zOrder.c_str ());
                 std::string rot = j_tile["rot"];
@@ -186,8 +188,7 @@ namespace aga
             }
 
             for (std::map<std::string, FlagPoint>::iterator it = scene->m_FlagPoints.begin ();
-                 it != scene->m_FlagPoints.end ();
-                 ++it)
+                 it != scene->m_FlagPoints.end (); ++it)
             {
                 for (auto& flag_point : flag_points)
                 {
@@ -200,8 +201,7 @@ namespace aga
                         if (!connections.empty ())
                         {
                             for (std::map<std::string, FlagPoint>::iterator it2 = scene->m_FlagPoints.begin ();
-                                 it2 != scene->m_FlagPoints.end ();
-                                 ++it2)
+                                 it2 != scene->m_FlagPoints.end (); ++it2)
                             {
                                 for (int i = 0; i < connections.size (); ++i)
                                 {
@@ -235,6 +235,7 @@ namespace aga
             {
                 SpeechData speechData;
                 speechData.Name = speech["name"];
+                speechData.ActorRegionName = speech["region_name"];
 
                 auto& texts = speech["texts"];
 
@@ -388,8 +389,7 @@ namespace aga
             j["flag_points"] = json::array ({});
 
             for (std::map<std::string, FlagPoint>::iterator it = scene->m_FlagPoints.begin ();
-                 it != scene->m_FlagPoints.end ();
-                 ++it)
+                 it != scene->m_FlagPoints.end (); ++it)
             {
                 json flagObj = json::object ({});
 
@@ -410,8 +410,7 @@ namespace aga
             j["trigger_areas"] = json::array ({});
 
             for (std::map<std::string, TriggerArea>::iterator it = scene->m_TriggerAreas.begin ();
-                 it != scene->m_TriggerAreas.end ();
-                 ++it)
+                 it != scene->m_TriggerAreas.end (); ++it)
             {
                 json triggerObj = json::object ({});
 
@@ -424,12 +423,12 @@ namespace aga
             j["speeches"] = json::array ({});
 
             for (std::map<std::string, SpeechData>::iterator it = scene->m_Speeches.begin ();
-                 it != scene->m_Speeches.end ();
-                 ++it)
+                 it != scene->m_Speeches.end (); ++it)
             {
                 json speechObj = json::object ({});
 
                 speechObj["name"] = it->first;
+                speechObj["region_name"] = it->second.ActorRegionName;
                 speechObj["texts"] = json::array ({});
 
                 json textObj = json::object ({});

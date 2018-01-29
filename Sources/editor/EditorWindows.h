@@ -23,6 +23,7 @@ namespace aga
         Editor* m_Editor;
         Gwk::Controls::WindowControl* m_SceneWindow;
         Gwk::Controls::Label* m_Label;
+        Gwk::Controls::Button* m_OKButton;
         std::string m_Text;
     };
 
