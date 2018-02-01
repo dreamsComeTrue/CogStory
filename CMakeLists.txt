@@ -9,8 +9,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/Cotire/CMake")
 include(cotire)
 
-CMAKE_POLICY(SET CMP0015 NEW)
-LINK_DIRECTORIES(   ${ROOT_THIRD_PARTY_DIR}/anglescript/angelscript/lib/
+cmake_policy(SET CMP0015 NEW)
+link_directories(   ${ROOT_THIRD_PARTY_DIR}/anglescript/angelscript/lib/
                     ${ROOT_THIRD_PARTY_DIR}/GWork/lib/
                     "./External/allegro/lib/"
                     "./External/allegro_deps/lib/"
@@ -37,17 +37,22 @@ target_link_libraries(${PROJECT_NAME}
     libGworkAllegro5.a
     libangelscript.a
 
-    allegro
-    allegro_image
-    allegro_font
-    allegro_ttf
-    allegro_primitives
-    allegro_dialog
-    allegro_audio
-    allegro_acodec
+    allegro-debug
+    allegro_image-debug
+    allegro_font-debug
+    allegro_ttf-debug
+    allegro_primitives-debug
+    allegro_dialog-debug
+    allegro_audio-debug
+    allegro_acodec-debug
     freetype
     pthread
     )
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+                      RUNTIME_OUTPUT_DIRECTORY_DEBUG ../
+                      RUNTIME_OUTPUT_DIRECTORY_RELEASE ../
+                      )
 
 #set_target_properties(${PROJECT_NAME} PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
 cotire(${PROJECT_NAME})

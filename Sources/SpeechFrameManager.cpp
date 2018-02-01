@@ -73,6 +73,11 @@ namespace aga
                     m_Frames.erase (it);
 
                     m_SceneManager->GetPlayer ().SetPreventInput (false);
+
+                    if (m_Frames.empty ())
+                    {
+                        break;
+                    }
                 }
             }
         }

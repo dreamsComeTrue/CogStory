@@ -13,17 +13,17 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     MainLoop::MainLoop (Screen* screen)
-      : m_AudioManager (this)
-      , m_SceneManager (this)
-      , m_StateManager (this)
-      , m_ScriptManager (this)
-      , m_PhysicsManager (this)
-      , m_TweenManager (this)
-      , m_EditorState (nullptr)
-      , m_GamePlayState (nullptr)
-      , m_MainMenuState (nullptr)
-      , m_Screen (screen)
-      , m_IsRunning (true)
+        : m_AudioManager (this)
+        , m_SceneManager (this)
+        , m_StateManager (this)
+        , m_ScriptManager (this)
+        , m_PhysicsManager (this)
+        , m_TweenManager (this)
+        , m_EditorState (nullptr)
+        , m_GamePlayState (nullptr)
+        , m_MainMenuState (nullptr)
+        , m_Screen (screen)
+        , m_IsRunning (true)
     {
     }
 
@@ -49,6 +49,8 @@ namespace aga
         m_StateManager.Initialize ();
         m_TweenManager.Initialize ();
         m_ScriptManager.Initialize ();
+
+        m_AudioManager.SetMasterVolume (0.5);
 
         m_Screen->ProcessEventFunction = [&](ALLEGRO_EVENT* event) {
             m_SceneManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
