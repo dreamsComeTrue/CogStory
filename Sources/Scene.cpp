@@ -274,7 +274,8 @@ namespace aga
         {
             m_SceneManager->GetCamera ().UseIdentityTransform ();
 
-            font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), 10, 10, ToString (entities.size ()), ALLEGRO_ALIGN_LEFT);
+            font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), 10, 10, ToString (entities.size ()),
+                           ALLEGRO_ALIGN_LEFT);
         }
 
         al_draw_filled_circle (0, 0, 5, COLOR_RED);
@@ -290,7 +291,8 @@ namespace aga
 
         if (cameraPos != visibleLastCameraPos)
         {
-            Point size = m_SceneManager->GetCamera ().GetScale () * m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+            Point size = m_SceneManager->GetCamera ().GetScale ()
+                * m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
             float offsetMultiplier = 0.3f;
 
             visibleEntities = m_QuadTree.GetEntitiesWithinRect (
@@ -478,11 +480,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Scene::AddSpeech (const std::string& name, SpeechData data)
+    bool Scene::AddSpeech (SpeechData data)
     {
-        if (m_Speeches.find (name) == m_Speeches.end ())
+        if (m_Speeches.find (data.Name) == m_Speeches.end ())
         {
-            m_Speeches.insert (std::make_pair (name, data));
+            m_Speeches.insert (std::make_pair (data.Name, data));
 
             return true;
         }
@@ -553,20 +555,12 @@ namespace aga
     void Scene::DrawQuadTree (QuadTreeNode* node)
     {
         Rect bounds = node->GetBounds ();
-        al_draw_rectangle (bounds.GetTopLeft ().X,
-                           bounds.GetTopLeft ().Y,
-                           bounds.GetBottomRight ().X,
-                           bounds.GetBottomRight ().Y,
-                           COLOR_WHITE,
-                           1);
+        al_draw_rectangle (bounds.GetTopLeft ().X, bounds.GetTopLeft ().Y, bounds.GetBottomRight ().X,
+                           bounds.GetBottomRight ().Y, COLOR_WHITE, 1);
 
         Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
-        font.DrawText (FONT_NAME_SMALL,
-                       al_map_rgb (255, 255, 0),
-                       bounds.GetCenter ().X,
-                       bounds.GetCenter ().Y,
-                       ToString (node->GetData ().size ()),
-                       ALLEGRO_ALIGN_CENTER);
+        font.DrawText (FONT_NAME_SMALL, al_map_rgb (255, 255, 0), bounds.GetCenter ().X, bounds.GetCenter ().Y,
+                       ToString (node->GetData ().size ()), ALLEGRO_ALIGN_CENTER);
 
         if (node->GetTopLeftTree ())
         {

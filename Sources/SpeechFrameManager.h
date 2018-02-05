@@ -14,6 +14,7 @@ namespace aga
 
     enum SpeechFramePosition
     {
+        Absoulte,
         TopLeft,
         TopCenter,
         TopRight,
@@ -22,6 +23,8 @@ namespace aga
         BottomRight,
         Center
     };
+
+    extern std::map<SpeechFramePosition, std::string> g_SpeechFramePosition;
 
     class SpeechFrameManager : public Lifecycle
     {
@@ -43,23 +46,23 @@ namespace aga
         SpeechFrame* AddSpeechFrame (const std::string& id, const std::string& text, Point pos, int maxLineCharsCount,
                                      int linesCount, bool shouldBeHandled = true, const std::string& regionName = "");
 
-        SpeechFrame* AddSpeechFrame (SpeechData* speechData, Point pos, int maxLineCharsCount, int linesCount,
-                                     bool shouldBeHandled = true, const std::string& regionName = "");
+        SpeechFrame* AddSpeechFrame (SpeechData* speechData, bool shouldBeHandled = true);
 
-        SpeechFrame* AddSpeechFrame (const std::string& speechID, Point pos, int maxLineCharsCount, int linesCount,
-                                     bool shouldBeHandled = true);
+        SpeechFrame* AddSpeechFrame (const std::string& speechID, Point pos, bool shouldBeHandled = true);
+        SpeechFrame* AddSpeechFrame (const std::string& speechID, bool shouldBeHandled = true);
 
-        SpeechFrame* AddSpeechFrame (const std::string& speechID, SpeechFramePosition position, int maxLineCharsCount,
-                                     int linesCount, bool shouldBeHandled = true);
+        void RemoveSpeechFrame (const std::string& speechID);
 
         SceneManager* GetSceneManager ();
 
     private:
+        Point GetFramePos (SpeechFramePosition position, Point absolutePos, int maxCharsInLine, int maxLines,
+                           bool showActor);
         Point GetTextRectSize (int maxLineCharsCount, int linesCount);
 
     private:
         SceneManager* m_SceneManager;
-        std::map<std::string, SpeechFrame*> m_Frames;
+        std::map<std::string, SpeechFrame*> m_Speeches;
         AudioSample* m_SelectSample;
     };
 }

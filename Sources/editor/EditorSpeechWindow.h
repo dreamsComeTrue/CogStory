@@ -6,6 +6,7 @@
 #include "Common.h"
 
 #include <Gwork/Controls.h>
+#include <Gwork/Controls/NumericUpDown.h>
 
 namespace aga
 {
@@ -13,6 +14,8 @@ namespace aga
 
     class EditorSpeechWindow : public Gwk::Event::Handler
     {
+        friend class Editor;
+
     public:
         EditorSpeechWindow (Editor* editor, Gwk::Controls::Canvas* canvas);
 
@@ -29,6 +32,13 @@ namespace aga
         void OnLangSelected ();
         void OnRegionNameSelected ();
         void OnTextChanged ();
+
+        void OnMaxCharsChanged ();
+        void OnMaxLinesChanged ();
+
+        void OnPositionTypeChanged ();
+        void OnPositionXChanged ();
+        void OnPositionYChanged ();
 
         void UpdateOutcomes ();
         void UpdateSpeechesTree ();
@@ -50,6 +60,11 @@ namespace aga
         Gwk::Controls::TextBox* m_NameTextBox;
         Gwk::Controls::ComboBox* m_LanguageCombo;
         Gwk::Controls::ComboBox* m_RegionCombo;
+        Gwk::Controls::NumericUpDown* m_MaxCharsInLineNumeric;
+        Gwk::Controls::NumericUpDown* m_MaxLinesNumeric;
+        Gwk::Controls::ComboBox* m_RelPositionCombo;
+        Gwk::Controls::NumericUpDown* m_AbsPositionXNumeric;
+        Gwk::Controls::NumericUpDown* m_AbsPositionYNumeric;
         Gwk::Controls::TextBoxMultiline* m_TextData;
         Gwk::Controls::ScrollControl* m_OutcomesContainer;
     };

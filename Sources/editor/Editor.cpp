@@ -397,7 +397,8 @@ namespace aga
 
     bool Editor::Update (float deltaTime)
     {
-        if (m_CursorMode == CursorMode::TileSelectMode || m_CursorMode == CursorMode::TileEditMode)
+        if ((m_CursorMode == CursorMode::TileSelectMode || m_CursorMode == CursorMode::TileEditMode)
+            && !m_SpeechWindow->m_SceneWindow->Visible ())
         {
             ALLEGRO_KEYBOARD_STATE state;
             al_get_keyboard_state (&state);

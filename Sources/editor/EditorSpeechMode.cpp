@@ -32,7 +32,7 @@ namespace aga
                 m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->RemoveSpeech (nameToFind);
             }
 
-            m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->AddSpeech (m_Speech.Name, m_Speech);
+            m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->AddSpeech (m_Speech);
             m_Editor->m_EditorSpeechMode.Clear ();
 
             return true;
@@ -54,6 +54,10 @@ namespace aga
     {
         m_Speech.Name = "";
         m_Speech.ActorRegionName = "";
+        m_Speech.MaxCharsInLine = 0;
+        m_Speech.MaxLines = 0;
+        m_Speech.RelativeFramePosition = BottomCenter;
+        m_Speech.AbsoluteFramePosition = { 0, 0 };
         m_Speech.Text.clear ();
         m_Speech.Outcomes.clear ();
     }

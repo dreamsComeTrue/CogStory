@@ -12,6 +12,12 @@
 
 namespace aga
 {
+    std::map<SpeechFramePosition, std::string> g_SpeechFramePosition
+        = { std::make_pair (Absoulte, "Absolute"),       std::make_pair (TopLeft, "TopLeft"),
+            std::make_pair (TopCenter, "TopCenter"),     std::make_pair (TopRight, "TopRight"),
+            std::make_pair (BottomLeft, "BottomLeft"),   std::make_pair (BottomCenter, "BottomCenter"),
+            std::make_pair (BottomRight, "BottomRight"), std::make_pair (Center, "Center") };
+
     typedef std::map<std::string, SpeechFrame*>::iterator SpeechFrameIterator;
 
     //--------------------------------------------------------------------------------------------------
@@ -47,7 +53,7 @@ namespace aga
 
     bool SpeechFrameManager::Destroy ()
     {
-        for (SpeechFrameIterator it = m_Frames.begin (); it != m_Frames.end (); ++it)
+        for (SpeechFrameIterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
         {
             SAFE_DELETE (it->second);
         }
@@ -59,7 +65,7 @@ namespace aga
 
     void SpeechFrameManager::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
     {
-        for (SpeechFrameIterator it = m_Frames.begin (); it != m_Frames.end (); ++it)
+        for (SpeechFrameIterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
         {
             SpeechFrame* frame = it->second;
 
@@ -70,11 +76,11 @@ namespace aga
                 if (frame->IsShouldBeHandled () && frame->IsHandled ())
                 {
                     SAFE_DELETE (it->second);
-                    m_Frames.erase (it);
+                    m_Speeches.erase (it);
 
                     m_SceneManager->GetPlayer ().SetPreventInput (false);
 
-                    if (m_Frames.empty ())
+                    if (m_Speeches.empty ())
                     {
                         break;
                     }
@@ -87,7 +93,7 @@ namespace aga
 
     bool SpeechFrameManager::Update (float deltaTime)
     {
-        for (SpeechFrameIterator it = m_Frames.begin (); it != m_Frames.end (); ++it)
+        for (SpeechFrameIterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
         {
             SpeechFrame* frame = it->second;
 
@@ -107,7 +113,7 @@ namespace aga
 
     void SpeechFrameManager::Render (float deltaTime)
     {
-        for (SpeechFrameIterator it = m_Frames.begin (); it != m_Frames.end (); ++it)
+        for (SpeechFrameIterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
         {
             SpeechFrame* frame = it->second;
 
@@ -122,7 +128,7 @@ namespace aga
 
     void SpeechFrameManager::Clear ()
     {
-        m_Frames.clear ();
+        m_Speeches.clear ();
 
         if (m_SceneManager->GetPlayer ().IsPreventInput ())
         {
@@ -135,10 +141,10 @@ namespace aga
     SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& id, const std::string& text, Rect rect,
                                                      bool shouldBeHandled, const std::string& regionName)
     {
-        if (m_Frames.find (id) == m_Frames.end ())
+        if (m_Speeches.find (id) == m_Speeches.end ())
         {
             SpeechFrame* frame = new SpeechFrame (this, text, rect, shouldBeHandled, regionName);
-            m_Frames.insert (std::make_pair (id, frame));
+            m_Speeches.insert (std::make_pair (id, frame));
 
             frame->ScrollDownFunction = [&]() { m_SelectSample->Play (); };
             frame->ScrollUpFunction = [&]() { m_SelectSample->Play (); };
@@ -147,7 +153,7 @@ namespace aga
             frame->HandledFunction = [&]() { m_SelectSample->Play (); };
         }
 
-        return m_Frames[id];
+        return m_Speeches[id];
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -167,28 +173,28 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    SpeechFrame* SpeechFrameManager::AddSpeechFrame (SpeechData* speechData, Point pos, int maxLineCharsCount,
-                                                     int linesCount, bool shouldBeHandled,
-                                                     const std::string& regionName)
+    SpeechFrame* SpeechFrameManager::AddSpeechFrame (SpeechData* speechData, bool shouldBeHandled)
     {
-        return AddSpeechFrame (speechData->Name, speechData->Text[CURRENT_LANG], pos, maxLineCharsCount, linesCount,
-                               shouldBeHandled, regionName);
+        Point pos = GetFramePos (speechData->RelativeFramePosition, speechData->AbsoluteFramePosition,
+                                 speechData->MaxCharsInLine, speechData->MaxLines, speechData->ActorRegionName != "");
+
+        return AddSpeechFrame (speechData->Name, speechData->Text[CURRENT_LANG], pos, speechData->MaxCharsInLine,
+                               speechData->MaxLines, shouldBeHandled, speechData->ActorRegionName);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& speechID, Point pos, int maxLineCharsCount,
-                                                     int linesCount, bool shouldBeHandled)
+    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& speechID, Point pos, bool shouldBeHandled)
     {
-        SpeechData* speech = m_SceneManager->GetActiveScene ()->GetSpeech (speechID);
+        SpeechData* instance = m_SceneManager->GetActiveScene ()->GetSpeech (speechID);
         SpeechFrame* frame = nullptr;
 
-        if (speech)
+        if (instance)
         {
-            frame = AddSpeechFrame (speech->Name, speech->Text[CURRENT_LANG], pos, maxLineCharsCount, linesCount,
-                                    shouldBeHandled, speech->ActorRegionName);
+            frame = AddSpeechFrame (instance->Name, instance->Text[CURRENT_LANG], pos, instance->MaxCharsInLine,
+                                    instance->MaxLines, shouldBeHandled, instance->ActorRegionName);
 
-            std::vector<SpeechOutcome>& outcomes = speech->Outcomes[CURRENT_LANG];
+            std::vector<SpeechOutcome>& outcomes = instance->Outcomes[CURRENT_LANG];
 
             for (SpeechOutcome& outcome : outcomes)
             {
@@ -201,16 +207,58 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& speechID, SpeechFramePosition position,
-                                                     int maxLineCharsCount, int linesCount, bool shouldBeHandled)
+    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& speechID, bool shouldBeHandled)
+    {
+        SpeechData* instance = m_SceneManager->GetActiveScene ()->GetSpeech (speechID);
+
+        if (instance)
+        {
+            Point pos = GetFramePos (instance->RelativeFramePosition, instance->AbsoluteFramePosition,
+                                     instance->MaxCharsInLine, instance->MaxLines, instance->ActorRegionName != "");
+
+            return AddSpeechFrame (speechID, pos, shouldBeHandled);
+        }
+
+        return nullptr;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SpeechFrameManager::RemoveSpeechFrame (const std::string& speechID)
+    {
+        for (SpeechFrameIterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
+        {
+            if (it->first == speechID)
+            {
+                m_Speeches.erase (it);
+                SAFE_DELETE (it->second);
+
+                break;
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    SceneManager* SpeechFrameManager::GetSceneManager () { return m_SceneManager; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Point SpeechFrameManager::GetFramePos (SpeechFramePosition position, Point absolutePos, int maxCharsInLine,
+                                           int maxLines, bool showActor)
     {
         const int SCREEN_OFFSET = 10;
         Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
-        Point size = GetTextRectSize (maxLineCharsCount, linesCount);
+        Point size = GetTextRectSize (maxCharsInLine, maxLines);
         Point pos;
 
-        Point characterOffset = SpeechFrame::GetActorRegionOffset ();
-        int edgeLength = size.Height - 2 * characterOffset.Y;
+        int edgeLength = 0;
+
+        if (showActor)
+        {
+            Point characterOffset = SpeechFrame::GetActorRegionOffset ();
+            edgeLength = std::min (size.Height - 2 * characterOffset.Y, SPEECH_FRAME_MAX_CHAR_EDGE_LENGTH);
+        }
 
         switch (position)
         {
@@ -262,14 +310,16 @@ namespace aga
             pos.Y = screenSize.Height * 0.5f - size.Height * 0.5f;
             break;
         }
+
+        case Absoulte:
+        {
+            pos = absolutePos;
+            break;
+        }
         }
 
-        return AddSpeechFrame (speechID, pos, maxLineCharsCount, linesCount, shouldBeHandled);
+        return pos;
     }
-
-    //--------------------------------------------------------------------------------------------------
-
-    SceneManager* SpeechFrameManager::GetSceneManager () { return m_SceneManager; }
 
     //--------------------------------------------------------------------------------------------------
 

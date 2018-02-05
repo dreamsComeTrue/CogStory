@@ -4,6 +4,7 @@
 #define __RESOURCES_H__
 
 #include <string>
+#include <vector>
 
 namespace aga
 {
@@ -56,6 +57,8 @@ namespace aga
         std::string Dir;
         std::string Name;
     };
+
+    extern std::vector<std::string> g_SpeechFrames;
 
     const std::string GetDataPath ();
     const std::string GetResourcePath (ResourceID id);

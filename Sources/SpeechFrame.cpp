@@ -406,7 +406,8 @@ namespace aga
         if (m_Atlas && m_ActorRegionName != "")
         {
             Point characterOffset = GetActorRegionOffset ();
-            int edgeLength = m_DrawRect.GetSize ().Height - 2 * characterOffset.Y;
+            int edgeLength
+                = std::min (m_DrawRect.GetSize ().Height - 2 * characterOffset.Y, SPEECH_FRAME_MAX_CHAR_EDGE_LENGTH);
             AtlasRegion region = m_Atlas->GetRegion (m_ActorRegionName);
 
             float ratio = std::min ((float)edgeLength / region.Bounds.Size.Width,

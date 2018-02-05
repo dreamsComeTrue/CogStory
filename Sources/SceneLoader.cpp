@@ -236,6 +236,10 @@ namespace aga
                 SpeechData speechData;
                 speechData.Name = speech["name"];
                 speechData.ActorRegionName = speech["region_name"];
+                speechData.MaxCharsInLine = speech["max_chars"];
+                speechData.MaxLines = speech["max_lines"];
+                speechData.AbsoluteFramePosition = StringToPoint (speech["abs_pos"]);
+                speechData.RelativeFramePosition = speech["rel_pos"];
 
                 auto& texts = speech["texts"];
 
@@ -276,7 +280,7 @@ namespace aga
                     }
                 }
 
-                scene->AddSpeech (speechData.Name, speechData);
+                scene->AddSpeech (speechData);
             }
 
             auto& actors = j["actors"];
@@ -429,6 +433,11 @@ namespace aga
 
                 speechObj["name"] = it->first;
                 speechObj["region_name"] = it->second.ActorRegionName;
+                speechObj["max_chars"] = it->second.MaxCharsInLine;
+                speechObj["max_lines"] = it->second.MaxLines;
+                speechObj["abs_pos"] = PointToString (it->second.AbsoluteFramePosition);
+                speechObj["rel_pos"] = static_cast<int> (it->second.RelativeFramePosition);
+
                 speechObj["texts"] = json::array ({});
 
                 json textObj = json::object ({});

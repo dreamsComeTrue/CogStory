@@ -70,7 +70,7 @@ namespace aga
         m_TextData = new Gwk::Controls::TextBoxMultiline (center);
         m_TextData->SetTextColor (Gwk::Colors::White);
         m_TextData->SetPos (xOffset, textLabel->Bottom () + 5);
-        m_TextData->SetSize (controlWidth, 90);
+        m_TextData->SetSize (controlWidth, 70);
         m_TextData->onTextChanged.Add (this, &EditorSpeechWindow::OnTextChanged);
 
         Gwk::Controls::Label* regionLabel = new Gwk::Controls::Label (center);
@@ -79,27 +79,102 @@ namespace aga
         regionLabel->SizeToContents ();
 
         m_RegionCombo = new Gwk::Controls::ComboBox (center);
-        m_RegionCombo->SetPos (xOffset, regionLabel->Bottom () + 5);
-        m_RegionCombo->SetWidth (controlWidth);
-        m_RegionCombo->AddItem ("player_head", "player_head");
+        m_RegionCombo->SetPos (regionLabel->Right () + 5, m_TextData->Bottom () + 5);
+        m_RegionCombo->SetWidth (200);
+        m_RegionCombo->AddItem ("", "");
+
+        for (const std::string& s : g_SpeechFrames)
+        {
+            m_RegionCombo->AddItem (s, s);
+        }
+
         m_RegionCombo->onSelection.Add (this, &EditorSpeechWindow::OnRegionNameSelected);
+
+        Gwk::Controls::Label* maxCharsInLineLabel = new Gwk::Controls::Label (center);
+        maxCharsInLineLabel->SetPos (m_RegionCombo->Right () + 10, m_TextData->Bottom () + 5);
+        maxCharsInLineLabel->SetText ("Max chars/line:");
+        maxCharsInLineLabel->SizeToContents ();
+
+        m_MaxCharsInLineNumeric = new Gwk::Controls::NumericUpDown (center);
+        m_MaxCharsInLineNumeric->SetTextColor (Gwk::Colors::White);
+        m_MaxCharsInLineNumeric->SetMax (1000);
+        m_MaxCharsInLineNumeric->SetIntValue (0);
+        m_MaxCharsInLineNumeric->SetWidth (50);
+        m_MaxCharsInLineNumeric->SetPos (maxCharsInLineLabel->Right () + 5, m_TextData->Bottom () + 5);
+        m_MaxCharsInLineNumeric->onTextChanged.Add (this, &EditorSpeechWindow::OnMaxCharsChanged);
+
+        Gwk::Controls::Label* maxLinesLabel = new Gwk::Controls::Label (center);
+        maxLinesLabel->SetPos (m_MaxCharsInLineNumeric->Right () + 10, m_TextData->Bottom () + 5);
+        maxLinesLabel->SetText ("Max lines:");
+        maxLinesLabel->SizeToContents ();
+
+        m_MaxLinesNumeric = new Gwk::Controls::NumericUpDown (center);
+        m_MaxLinesNumeric->SetTextColor (Gwk::Colors::White);
+        m_MaxLinesNumeric->SetIntValue (0);
+        m_MaxLinesNumeric->SetWidth (50);
+        m_MaxLinesNumeric->SetPos (maxLinesLabel->Right () + 5, m_TextData->Bottom () + 5);
+        m_MaxLinesNumeric->onTextChanged.Add (this, &EditorSpeechWindow::OnMaxLinesChanged);
+
+        Gwk::Controls::Label* relPosLabel = new Gwk::Controls::Label (center);
+        relPosLabel->SetPos (xOffset, m_MaxLinesNumeric->Bottom () + 5);
+        relPosLabel->SetText ("Position:");
+        relPosLabel->SizeToContents ();
+
+        m_RelPositionCombo = new Gwk::Controls::ComboBox (center);
+        m_RelPositionCombo->SetPos (relPosLabel->Right () + 5, m_MaxLinesNumeric->Bottom () + 5);
+        m_RelPositionCombo->SetWidth (195);
+
+        for (const auto& s : g_SpeechFramePosition)
+        {
+            m_RelPositionCombo->AddItem (s.second, s.second);
+        }
+
+        m_RelPositionCombo->onSelection.Add (this, &EditorSpeechWindow::OnPositionTypeChanged);
+
+        Gwk::Controls::Label* xPosLabel = new Gwk::Controls::Label (center);
+        xPosLabel->SetPos (m_RelPositionCombo->Right () + 10, m_MaxLinesNumeric->Bottom () + 5);
+        xPosLabel->SetText ("X:");
+        xPosLabel->SizeToContents ();
+
+        m_AbsPositionXNumeric = new Gwk::Controls::NumericUpDown (center);
+        m_AbsPositionXNumeric->SetTextColor (Gwk::Colors::White);
+        m_AbsPositionXNumeric->SetIntValue (0);
+        m_AbsPositionXNumeric->SetMin (-10000);
+        m_AbsPositionXNumeric->SetMax (10000);
+        m_AbsPositionXNumeric->SetWidth (50);
+        m_AbsPositionXNumeric->SetPos (xPosLabel->Right () + 5, m_MaxLinesNumeric->Bottom () + 5);
+        m_AbsPositionXNumeric->onTextChanged.Add (this, &EditorSpeechWindow::OnPositionXChanged);
+
+        Gwk::Controls::Label* yPosLabel = new Gwk::Controls::Label (center);
+        yPosLabel->SetPos (m_AbsPositionXNumeric->Right () + 10, m_MaxLinesNumeric->Bottom () + 5);
+        yPosLabel->SetText ("Y:");
+        yPosLabel->SizeToContents ();
+
+        m_AbsPositionYNumeric = new Gwk::Controls::NumericUpDown (center);
+        m_AbsPositionYNumeric->SetTextColor (Gwk::Colors::White);
+        m_AbsPositionYNumeric->SetIntValue (0);
+        m_AbsPositionYNumeric->SetMin (-10000);
+        m_AbsPositionYNumeric->SetMax (10000);
+        m_AbsPositionYNumeric->SetWidth (50);
+        m_AbsPositionYNumeric->SetPos (yPosLabel->Right () + 5, m_MaxLinesNumeric->Bottom () + 5);
+        m_AbsPositionYNumeric->onTextChanged.Add (this, &EditorSpeechWindow::OnPositionYChanged);
 
         Gwk::Controls::Button* addSpeechButton = new Gwk::Controls::Button (center);
         addSpeechButton->SetText ("SAVE");
         addSpeechButton->SetWidth (155);
-        addSpeechButton->SetPos (xOffset, m_RegionCombo->Bottom () + 10);
+        addSpeechButton->SetPos (xOffset, m_AbsPositionYNumeric->Bottom () + 10);
         addSpeechButton->onPress.Add (this, &EditorSpeechWindow::OnSave);
 
         Gwk::Controls::Button* removeSpeechButton = new Gwk::Controls::Button (center);
         removeSpeechButton->SetText ("REMOVE");
         removeSpeechButton->SetWidth (155);
-        removeSpeechButton->SetPos (addSpeechButton->Right () + 5, m_RegionCombo->Bottom () + 10);
+        removeSpeechButton->SetPos (addSpeechButton->Right () + 5, m_AbsPositionYNumeric->Bottom () + 10);
         removeSpeechButton->onPress.Add (this, &EditorSpeechWindow::OnRemove);
 
         Gwk::Controls::Button* outcomeButton = new Gwk::Controls::Button (center);
         outcomeButton->SetText ("OUTCOME");
         outcomeButton->SetWidth (160);
-        outcomeButton->SetPos (removeSpeechButton->Right () + 5, m_RegionCombo->Bottom () + 10);
+        outcomeButton->SetPos (removeSpeechButton->Right () + 5, m_AbsPositionYNumeric->Bottom () + 10);
         outcomeButton->onPress.Add (this, &EditorSpeechWindow::OnOutcome);
 
         m_OutcomesContainer = new Gwk::Controls::ScrollControl (center);
@@ -124,7 +199,18 @@ namespace aga
 
     void EditorSpeechWindow::OnSave ()
     {
+        for (const auto& pos : g_SpeechFramePosition)
+        {
+            if (pos.second == m_RelPositionCombo->GetSelectedItem ()->GetText ())
+            {
+                m_Editor->m_EditorSpeechMode.m_Speech.RelativeFramePosition = pos.first;
+                break;
+            }
+        }
+
         m_Editor->m_EditorSpeechMode.m_Speech.ActorRegionName = m_RegionCombo->GetSelectedItem ()->GetText ();
+        m_Editor->m_EditorSpeechMode.m_Speech.AbsoluteFramePosition.X = m_AbsPositionXNumeric->GetIntValue ();
+        m_Editor->m_EditorSpeechMode.m_Speech.AbsoluteFramePosition.Y = m_AbsPositionYNumeric->GetIntValue ();
 
         if (m_NameTextBox->GetText () != "")
         {
@@ -149,6 +235,11 @@ namespace aga
                 m_NameTextBox->SetText ("");
                 m_TextData->SetText ("");
                 m_LanguageCombo->SelectItemByName ("EN");
+                m_MaxCharsInLineNumeric->SetIntValue (0);
+                m_MaxLinesNumeric->SetIntValue (0);
+                m_RelPositionCombo->SetValue (g_SpeechFramePosition[BottomCenter]);
+                m_AbsPositionXNumeric->SetIntValue (0);
+                m_AbsPositionYNumeric->SetIntValue (0);
                 m_Editor->m_EditorSpeechMode.Clear ();
 
                 UpdateSpeechesTree ();
@@ -169,6 +260,11 @@ namespace aga
             m_NameTextBox->SetText ("");
             m_TextData->SetText ("");
             m_LanguageCombo->SelectItemByName ("EN");
+            m_MaxCharsInLineNumeric->SetIntValue (0);
+            m_MaxLinesNumeric->SetIntValue (0);
+            m_RelPositionCombo->SetValue (g_SpeechFramePosition[BottomCenter]);
+            m_AbsPositionXNumeric->SetIntValue (0);
+            m_AbsPositionYNumeric->SetIntValue (0);
             m_Editor->m_EditorSpeechMode.Clear ();
 
             UpdateOutcomes ();
@@ -203,11 +299,17 @@ namespace aga
         {
             std::map<std::string, SpeechData>& speeches
                 = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
-            m_Editor->m_EditorSpeechMode.m_Speech = speeches[node->GetText ()];
+            SpeechData& speech = speeches[node->GetText ()];
+            m_Editor->m_EditorSpeechMode.m_Speech = speech;
 
-            m_NameTextBox->SetText (m_Editor->m_EditorSpeechMode.m_Speech.Name);
-            m_RegionCombo->SelectItemByName (m_Editor->m_EditorSpeechMode.m_Speech.ActorRegionName);
-            m_TextData->SetText (m_Editor->m_EditorSpeechMode.m_Speech.Text[m_LangIndex]);
+            m_NameTextBox->SetText (speech.Name);
+            m_RegionCombo->SelectItemByName (speech.ActorRegionName);
+            m_TextData->SetText (speech.Text[m_LangIndex]);
+            m_MaxCharsInLineNumeric->SetIntValue (speech.MaxCharsInLine);
+            m_MaxLinesNumeric->SetIntValue (speech.MaxLines);
+            m_RelPositionCombo->SelectItemByName (g_SpeechFramePosition[speech.RelativeFramePosition]);
+            m_AbsPositionXNumeric->SetIntValue (speech.AbsoluteFramePosition.X);
+            m_AbsPositionYNumeric->SetIntValue (speech.AbsoluteFramePosition.Y);
 
             UpdateOutcomes ();
         }
@@ -247,6 +349,48 @@ namespace aga
     void EditorSpeechWindow::OnTextChanged ()
     {
         m_Editor->m_EditorSpeechMode.m_Speech.Text[m_LangIndex] = m_TextData->GetText ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorSpeechWindow::OnMaxCharsChanged ()
+    {
+        m_Editor->m_EditorSpeechMode.m_Speech.MaxCharsInLine = m_MaxCharsInLineNumeric->GetIntValue ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorSpeechWindow::OnMaxLinesChanged ()
+    {
+        m_Editor->m_EditorSpeechMode.m_Speech.MaxLines = m_MaxLinesNumeric->GetIntValue ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorSpeechWindow::OnPositionTypeChanged ()
+    {
+        for (const auto& pos : g_SpeechFramePosition)
+        {
+            if (pos.second == m_RelPositionCombo->GetSelectedItem ()->GetText ())
+            {
+                m_Editor->m_EditorSpeechMode.m_Speech.RelativeFramePosition = pos.first;
+                break;
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorSpeechWindow::OnPositionXChanged ()
+    {
+        m_Editor->m_EditorSpeechMode.m_Speech.AbsoluteFramePosition.X = m_AbsPositionXNumeric->GetIntValue ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorSpeechWindow::OnPositionYChanged ()
+    {
+        m_Editor->m_EditorSpeechMode.m_Speech.AbsoluteFramePosition.Y = m_AbsPositionYNumeric->GetIntValue ();
     }
 
     //--------------------------------------------------------------------------------------------------

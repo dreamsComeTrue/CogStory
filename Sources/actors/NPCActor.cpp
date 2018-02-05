@@ -82,8 +82,7 @@ namespace aga
     {
         if (entity->GetTypeName () == Player::TypeName)
         {
-            SpeechFrame* frame = m_SceneManager->GetSpeechFrameManager ().AddSpeechFrame (
-                "GREET_1", SpeechFramePosition::BottomLeft, 30, 3, true);
+            m_SceneManager->GetSpeechFrameManager ().AddSpeechFrame ("GREET_1", true);
         }
     }
 

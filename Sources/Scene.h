@@ -8,6 +8,7 @@
 #include "Entity.h"
 #include "QuadTree.h"
 #include "Scriptable.h"
+#include "SpeechFrameManager.h"
 
 namespace aga
 {
@@ -32,9 +33,14 @@ namespace aga
     struct SpeechData
     {
         std::string Name = "";
-        std::string ActorRegionName = "";
         std::map<int, std::string> Text; //  LangID, data
         std::map<int, std::vector<SpeechOutcome>> Outcomes; //  LangID, outcomes
+
+        std::string ActorRegionName;
+        int MaxCharsInLine = 0;
+        int MaxLines = 0;
+        Point AbsoluteFramePosition = { 0, 0 };
+        SpeechFramePosition RelativeFramePosition = SpeechFramePosition::Center;
     };
 
     struct FlagPoint
@@ -116,7 +122,7 @@ namespace aga
         TriggerArea& GetTriggerArea (const std::string& name);
         void RemoveTriggerArea (const std::string& name);
 
-        bool AddSpeech (const std::string& name, SpeechData data);
+        bool AddSpeech (SpeechData data);
         std::map<std::string, SpeechData>& GetSpeeches ();
         SpeechData* GetSpeech (const std::string& name);
         void RemoveSpeech (const std::string& name);
