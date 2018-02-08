@@ -4,6 +4,7 @@
 #define __PLAYER_H__
 
 #include "Actor.h"
+#include "ParticleEmitter.h"
 
 #define PLAYER_Z_ORDER 10
 
@@ -21,6 +22,7 @@ namespace aga
         Player (SceneManager* sceneManager);
         virtual ~Player ();
         bool Initialize () override;
+        bool Destroy () override;
 
         void BeforeEnter () override;
 
@@ -30,6 +32,7 @@ namespace aga
         void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
 
         bool Update (float deltaTime) override;
+        void Render (float deltaTime) override;
 
         void Move (float dx, float dy) override;
         void SetPosition (float x, float y) override;
@@ -40,10 +43,13 @@ namespace aga
 
     private:
         void InitializeAnimations ();
+        void UpdateParticleEmitters ();
 
     private:
         bool m_FollowCamera;
         bool m_PreventInput;
+        ParticleEmitter m_HeadParticleEmitter;
+        ParticleEmitter m_WalkParticleEmitter;
     };
 }
 

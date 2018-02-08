@@ -78,10 +78,14 @@ namespace aga
     float ToPositiveAngle (float degrees);
 
     bool AreSame (float a, float b);
+    bool AreSame (Point a, Point b);
 
     //--------------------------------------------------------------------------------------------------
 
     Point RotatePoint (float x, float y, const Point& origin, float angle);
+
+    float Lerp (float a, float b, float percentage);
+    ALLEGRO_COLOR Lerp (ALLEGRO_COLOR a, ALLEGRO_COLOR b, float percentage);
 
     std::vector<std::string> SplitString (const std::string& s, char seperator);
 
@@ -91,8 +95,7 @@ namespace aga
 
     std::string& TrimString (std::string& str);
 
-    template<typename T>
-    std::string ToString (T t)
+    template <typename T> std::string ToString (T t)
     {
         std::stringstream strStream;
         strStream << t;

@@ -29,13 +29,13 @@ namespace aga
         Actor (SceneManager* sceneManager);
         virtual ~Actor ();
         virtual bool Initialize ();
-        bool Destroy ();
+        virtual bool Destroy ();
 
         virtual void BeforeEnter ();
         virtual void AfterLeave ();
 
         virtual bool Update (float deltaTime);
-        void Render (float deltaTime);
+        virtual void Render (float deltaTime);
 
         virtual void Move (float dx, float dy);
         virtual void SetPosition (float x, float y);

@@ -18,6 +18,8 @@ namespace aga
 
     Player::Player (SceneManager* sceneManager)
         : Actor (sceneManager)
+        , m_WalkParticleEmitter (2, 0.7f, GetResourcePath (GFX_DUST_PARTICLES))
+        , m_HeadParticleEmitter (3, 2.0f, GetResourcePath (GFX_DUST_PARTICLES))
         , m_FollowCamera (true)
         , m_PreventInput (false)
     {
@@ -41,6 +43,22 @@ namespace aga
     {
         Actor::Initialize ();
 
+        UpdateParticleEmitters ();
+
+        m_WalkParticleEmitter.SetColorTransition (COLOR_WHITE, al_map_rgba (255, 255, 255, 0));
+        float velVar = 0.4f;
+        m_WalkParticleEmitter.SetVelocityVariance (Point (-velVar, -velVar), Point (velVar, velVar));
+        float partLife = 0.4f;
+        m_WalkParticleEmitter.SetParticleLifeVariance (partLife, partLife);
+        m_WalkParticleEmitter.Initialize ();
+
+        m_HeadParticleEmitter.SetColorTransition (COLOR_WHITE, al_map_rgba (255, 255, 255, 0));
+        float xSpread = 0.12f;
+        m_HeadParticleEmitter.SetVelocityVariance (Point (-xSpread, 0.4f), Point (xSpread, 0.4f));
+        partLife = 1.0f;
+        m_HeadParticleEmitter.SetParticleLifeVariance (partLife, partLife);
+        m_HeadParticleEmitter.Initialize ();
+
         m_Image = al_load_bitmap (GetResourcePath (ResourceID::GFX_PLAYER).c_str ());
         Bounds.SetSize ({ 64, 64 });
 
@@ -51,6 +69,16 @@ namespace aga
         sample->SetVolume (1.0f);
 
         return true;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Player::Destroy ()
+    {
+        m_WalkParticleEmitter.Destroy ();
+        m_HeadParticleEmitter.Destroy ();
+
+        return Actor::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -118,6 +146,14 @@ namespace aga
         m_Animation.AddAnimationFrames (ANIM_MOVE_UP_NAME, moveUpFrames);
 
         SetCurrentAnimation (ANIM_IDLE_NAME);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::UpdateParticleEmitters ()
+    {
+        m_WalkParticleEmitter.SetPosition (Bounds.Pos.X, Bounds.Pos.Y + Bounds.GetHalfSize ().Height);
+        m_HeadParticleEmitter.SetPosition (Bounds.Pos.X + 5, Bounds.Pos.Y - Bounds.GetHalfSize ().Height - 5);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -284,7 +320,7 @@ namespace aga
             }
         }
 
-        if (!(AreSame (dx, 0) && AreSame (dy, 0)))
+        if (!((AreSame (dx, 0) && AreSame (dy, 0))))
         {
             if (al_key_down (&state, ALLEGRO_KEY_LSHIFT))
             {
@@ -300,7 +336,30 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Player::Update (float deltaTime) { Actor::Update (deltaTime); }
+    bool Player::Update (float deltaTime)
+    {
+        Actor::Update (deltaTime);
+
+        //  We can only emit where new position is different than last one
+        m_WalkParticleEmitter.SetCanEmit (!AreSame (m_OldPosition, Bounds.Pos));
+        m_WalkParticleEmitter.Update (deltaTime);
+
+        m_HeadParticleEmitter.Update (deltaTime);
+
+        m_OldPosition = Bounds.GetPos ();
+
+        return true;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::Render (float deltaTime)
+    {
+        m_WalkParticleEmitter.Render (deltaTime);
+        m_HeadParticleEmitter.Render (deltaTime);
+
+        return Actor::Render (deltaTime);
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -321,7 +380,6 @@ namespace aga
             sampleCounter = 0;
         }
 
-        m_OldPosition = Bounds.GetPos ();
         Bounds.SetPos (Bounds.GetPos () + Point (dx, dy));
 
         if (!(std::abs (dx) < 0.1 && std::abs (dy) < 0.1f))
@@ -335,13 +393,14 @@ namespace aga
         }
 
         AddPhysOffset ({ dx, dy });
+
+        UpdateParticleEmitters ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void Player::SetPosition (float x, float y)
     {
-        m_OldPosition = Bounds.GetPos ();
         Bounds.SetPos ({ x, y });
 
         if (MoveCallback != nullptr && m_FollowCamera)
@@ -351,6 +410,8 @@ namespace aga
 
         SetPhysOffset (Bounds.GetPos ().X - Bounds.GetHalfSize ().Width,
                        Bounds.GetPos ().Y - Bounds.GetHalfSize ().Height);
+
+        UpdateParticleEmitters ();
     }
 
     //--------------------------------------------------------------------------------------------------

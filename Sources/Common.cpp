@@ -40,6 +40,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    bool AreSame (Point a, Point b) { return AreSame (a.X, b.X) && AreSame (a.Y, b.Y); }
+
+    //--------------------------------------------------------------------------------------------------
+
     Point RotatePoint (float x, float y, const Point& origin, float angle)
     {
         float s = std::sin (DegressToRadians (angle));
@@ -54,6 +58,24 @@ namespace aga
 
         // translate point back:
         return { nx + origin.X, ny + origin.Y };
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    float Lerp (float a, float b, float percentage) { return a + percentage * (b - a); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    ALLEGRO_COLOR Lerp (ALLEGRO_COLOR a, ALLEGRO_COLOR b, float percentage)
+    {
+        ALLEGRO_COLOR result;
+
+        result.a = Lerp (a.a, b.a, percentage);
+        result.r = Lerp (a.r, b.r, percentage);
+        result.g = Lerp (a.g, b.g, percentage);
+        result.b = Lerp (a.b, b.b, percentage);
+
+        return result;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -82,8 +104,8 @@ namespace aga
 
     std::string& LeftTrimString (std::string& str)
     {
-        auto it2 = std::find_if (
-          str.begin (), str.end (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
+        auto it2 = std::find_if (str.begin (), str.end (),
+                                 [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
         str.erase (str.begin (), it2);
         return str;
     }
@@ -92,8 +114,8 @@ namespace aga
 
     std::string& RightTrimString (std::string& str)
     {
-        auto it1 = std::find_if (
-          str.rbegin (), str.rend (), [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
+        auto it1 = std::find_if (str.rbegin (), str.rend (),
+                                 [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
         str.erase (it1.base (), str.end ());
         return str;
     }
@@ -108,7 +130,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    float RandInRange (float min, float max) { return min + (rand () / (RAND_MAX / (max + 1 - min))); }
+    float RandInRange (float min, float max) { return ((float(rand ()) / float(RAND_MAX)) * (max - min)) + min; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -171,8 +193,8 @@ namespace aga
     long GetCurrentTime ()
     {
         return std::chrono::duration_cast<std::chrono::milliseconds> (
-                 std::chrono::system_clock::now ().time_since_epoch ())
-          .count ();
+                   std::chrono::system_clock::now ().time_since_epoch ())
+            .count ();
     }
 
     //--------------------------------------------------------------------------------------------------

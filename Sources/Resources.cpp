@@ -24,6 +24,7 @@ namespace aga
         { GFX_MENU_COG, GFX_UI, "cog.png" },
         { GFX_TEXT_FRAME, GFX_UI, "text_frame.9.png" },
         { GFX_PLAYER, GFX_CHARACTERS, "player.png" },
+        { GFX_DUST_PARTICLES, GFX, "dust_particles.png" },
 
         { PACK_MENU_UI, GFX_UI, "menu_ui.pack" },
         { PACK_CHARACTERS_UI, GFX_CHARACTERS, "characters_ui.pack" },

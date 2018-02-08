@@ -68,6 +68,12 @@ namespace aga
         Point operator- () { return { -X, -Y }; }
 
         Point operator* (float b) { return { X * b, Y * b }; }
+
+        void operator+= (const Point& p)
+        {
+            X += p.X;
+            Y += p.Y;
+        }
     };
 }
 

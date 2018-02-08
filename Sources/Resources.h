@@ -24,6 +24,7 @@ namespace aga
         GFX_MENU_COG,
         GFX_TEXT_FRAME,
         GFX_PLAYER,
+        GFX_DUST_PARTICLES,
 
         //  PACKS
         PACK_MENU_UI,
