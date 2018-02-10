@@ -14,7 +14,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     EditorState::EditorState (MainLoop* mainLoop)
-      : State (mainLoop, EDITOR_STATE_NAME)
+        : State (mainLoop, EDITOR_STATE_NAME)
     {
     }
 
@@ -32,19 +32,21 @@ namespace aga
 
     bool EditorState::Initialize ()
     {
+        Lifecycle::Initialize ();
+
         m_Editor = new Editor (m_MainLoop);
         m_Editor->Initialize ();
 
-        Lifecycle::Initialize ();
+        return true;
     }
 
     //--------------------------------------------------------------------------------------------------
 
     bool EditorState::Destroy ()
     {
-        m_Editor->Destroy ();
+        SAFE_DELETE (m_Editor);
 
-        Lifecycle::Destroy ();
+        return Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------

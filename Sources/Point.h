@@ -16,8 +16,8 @@ namespace aga
         }
 
         Point (int x, int y)
-            : X (x)
-            , Y (y)
+            : X ((float)x)
+            , Y ((float)y)
         {
         }
 

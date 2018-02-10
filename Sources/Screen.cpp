@@ -40,9 +40,16 @@ namespace aga
             return false;
         }
 
-        al_install_mouse ();
-        al_install_keyboard ();
+        if (!al_install_mouse ())
+        {
+            return false;
+        }
 
+        if (!al_install_keyboard ())
+        {
+            return false;
+        }
+        
         al_set_new_display_flags (ALLEGRO_RESIZABLE);
         m_Display = al_create_display (m_Width, m_Height);
 
@@ -75,9 +82,20 @@ namespace aga
             return false;
         }
 
-        al_init_font_addon ();
-        al_init_ttf_addon ();
-        al_init_primitives_addon ();
+        if (!al_init_font_addon ())
+        {
+            return false;
+        }
+        
+        if (!al_init_ttf_addon ())
+        {
+            return false;
+        }
+        
+        if (!al_init_primitives_addon ())
+        {
+            return false;
+        }
 
         m_DisplayTimer = al_create_timer (1.0 / TARGET_FPS);
 
@@ -124,11 +142,11 @@ namespace aga
 
     bool Screen::Destroy ()
     {
-        al_uninstall_keyboard ();
-        al_uninstall_mouse ();
+        m_Font.Destroy ();
 
         if (m_DisplayTimer != nullptr)
         {
+            al_stop_timer (m_DisplayTimer);
             al_destroy_timer (m_DisplayTimer);
             m_DisplayTimer = nullptr;
         }
@@ -145,9 +163,13 @@ namespace aga
             m_Display = nullptr;
         }
 
-        m_Font.Destroy ();
+        al_shutdown_primitives_addon ();
+        al_shutdown_font_addon ();
 
-        Lifecycle::Destroy ();
+        al_uninstall_keyboard ();
+        al_uninstall_mouse ();
+
+        return Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------

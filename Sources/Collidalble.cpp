@@ -58,7 +58,7 @@ namespace aga
                 out.push_back (yPoint);
             }
 
-            al_draw_polygon (out.data (), PhysPoints[i].size (), 0, COLOR_GREEN, 2, 0);
+            al_draw_polygon (out.data (), (int)PhysPoints[i].size (), 0, COLOR_GREEN, 2, 0);
         }
     }
 
@@ -68,7 +68,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    int Collidable::GetPhysPolygonsCount () const { return m_PhysPolygons.size (); }
+    size_t Collidable::GetPhysPolygonsCount () const { return m_PhysPolygons.size (); }
 
     //--------------------------------------------------------------------------------------------------
 

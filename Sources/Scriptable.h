@@ -85,22 +85,39 @@ namespace aga
             }
         }
 
+#ifdef _MSC_VER
+        std::optional<ScriptMetaData> GetScriptByName (const std::string& name)
+#else
         std::experimental::optional<ScriptMetaData> GetScriptByName (const std::string& name)
+#endif
         {
             for (std::vector<ScriptMetaData>::iterator it = m_Scripts.begin (); it != m_Scripts.end (); ++it)
             {
                 if (it->Name == name)
                 {
+#ifdef _MSC_VER
+                    return std::make_optional (*it);
+#else
                     return std::experimental::make_optional (*it);
+#endif
+
                 }
             }
 
+#ifdef _MSC_VER
+            return std::optional<ScriptMetaData> ();
+#else
             return std::experimental::optional<ScriptMetaData> ();
+#endif
         }
 
         void ReloadScript (const std::string& name)
         {
+#ifdef _MSC_VER
+            std::optional<ScriptMetaData> metaScript = GetScriptByName (name);
+#else
             std::experimental::optional<ScriptMetaData> metaScript = GetScriptByName (name);
+#endif
 
             if (metaScript)
             {
@@ -118,7 +135,7 @@ namespace aga
         std::vector<ScriptMetaData>& GetScripts () { return m_Scripts; }
 
     protected:
-        ScriptManager* m_ScriptManager;
+        ScriptManager * m_ScriptManager;
         std::vector<ScriptMetaData> m_Scripts;
     };
 }

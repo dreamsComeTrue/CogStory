@@ -87,7 +87,7 @@ namespace aga
             al_get_keyboard_state (&state);
 
             int maxLines = (m_DrawRect.GetSize ().Height - 2 * SPEECH_FRAME_TEXT_INSETS) / m_LineHeight;
-            int lineCounter = GetLineCounter ();
+            size_t lineCounter = GetLineCounter ();
 
             if (al_key_down (&state, ALLEGRO_KEY_UP) || al_key_down (&state, ALLEGRO_KEY_W))
             {
@@ -147,7 +147,7 @@ namespace aga
                 {
                     ++m_DisplayLine;
 
-                    int diff = m_CurrentLine + 1 - maxLines;
+                    size_t diff = m_CurrentLine + 1 - maxLines;
 
                     if (lineCounter < diff)
                     {
@@ -208,6 +208,8 @@ namespace aga
                 }
             }
         }
+
+        return true;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -216,7 +218,7 @@ namespace aga
     {
         if (event->type == ALLEGRO_EVENT_KEY_DOWN)
         {
-            int lineCounter = GetLineCounter ();
+            size_t lineCounter = GetLineCounter ();
             int maxLines = (m_DrawRect.GetSize ().Height - 2 * SPEECH_FRAME_TEXT_INSETS) / m_LineHeight;
 
             switch (event->keyboard.keycode)
@@ -292,7 +294,7 @@ namespace aga
                     {
                         ++m_DisplayLine;
 
-                        int diff = m_CurrentLine + 1 - maxLines;
+                        size_t diff = m_CurrentLine + 1 - maxLines;
 
                         if (lineCounter < diff)
                         {
@@ -339,11 +341,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    int SpeechFrame::GetLineCounter ()
+    size_t SpeechFrame::GetLineCounter ()
     {
         int maxLines = (m_DrawRect.GetSize ().Height - 2 * SPEECH_FRAME_TEXT_INSETS) / m_LineHeight;
-        int lineCounter = 0;
-        int diff = m_CurrentLine + 1 - maxLines;
+        size_t lineCounter = 0;
+        size_t diff = m_CurrentLine + 1 - maxLines;
 
         if (m_CurrentLine + 1 >= maxLines)
         {
@@ -446,8 +448,8 @@ namespace aga
         }
 
         int maxLines = (m_DrawRect.GetSize ().Height - 2 * SPEECH_FRAME_TEXT_INSETS) / m_LineHeight;
-        int lineCounter = 0;
-        int diff = m_CurrentLine + 1 - maxLines;
+        size_t lineCounter = 0;
+        int diff = (int)m_CurrentLine + 1 - maxLines;
 
         if (m_CurrentLine + 1 >= maxLines)
         {
@@ -477,7 +479,7 @@ namespace aga
 
         for (int i = 0; lineCounter < m_CurrentLine + 1; ++lineCounter, ++i)
         {
-            int currentCharIndex = 0;
+            size_t currentCharIndex = 0;
             for (int j = 0; j < lineCounter; ++j)
             {
                 currentCharIndex += m_TextLines[j].size ();
@@ -625,7 +627,7 @@ namespace aga
                           .Width;
 
         std::string workLine = line;
-        int currentIndex = 0;
+        size_t currentIndex = 0;
 
         while (currentIndex < workLine.size ())
         {
@@ -739,18 +741,18 @@ namespace aga
                     attr.EndIndex = currIndex - newLinesCount - 1;
                     m_Attributes.push_back (attr);
 
-                    int close = text.find (']', currIndex);
+                    size_t close = text.find (']', currIndex);
 
                     text.erase (currIndex, close - currIndex + 1);
                     --currIndex;
                 }
                 else
                 {
-                    int keyIndex = text.find ('=', currIndex + 1);
+                    size_t keyIndex = text.find ('=', currIndex + 1);
                     std::string key = text.substr (currIndex + 1, keyIndex - 1 - currIndex);
                     std::transform (key.begin (), key.end (), key.begin (), ::toupper);
 
-                    int close = text.find (']', currIndex);
+                    size_t close = text.find (']', currIndex);
                     std::string value = text.substr (keyIndex + 1, close - 1 - keyIndex);
                     std::transform (value.begin (), value.end (), value.begin (), ::toupper);
 

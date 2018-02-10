@@ -16,6 +16,7 @@ namespace aga
     {
     public:
         EditorActorScriptWindow (Editor* editor, Gwk::Controls::Canvas* canvas);
+        virtual ~EditorActorScriptWindow ();
 
         void Show (std::function<bool(void)> OnAcceptFunc, std::function<bool(void)> OnCancelFunc);
         bool GetResult ();
@@ -45,21 +46,23 @@ namespace aga
     {
     public:
         EditorActorWindow (Editor* editor, Gwk::Controls::Canvas* canvas);
+        virtual ~EditorActorWindow ();
 
         void Show ();
+        void SelectActor (const std::string& name);
 
+    private:
         void OnSave ();
         void OnRemove ();
 
         void OnAddScript ();
         void OnRemoveScript (Gwk::Controls::Base* control);
 
+        void OnCollision ();
+
         void OnAccept ();
         void OnCancel ();
 
-        void SelectActor (const std::string& name);
-
-    private:
         void UpdateActorsTree ();
         void OnActorSelect (Gwk::Controls::Base* control);
 

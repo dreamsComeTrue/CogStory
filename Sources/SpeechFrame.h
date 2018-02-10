@@ -78,7 +78,7 @@ namespace aga
     private:
         bool IsTextFit ();
         void PreprocessText (std::string& text);
-        int GetLineCounter ();
+        size_t GetLineCounter ();
         std::vector<std::string> BreakLine (const std::string& line, float maxWidth);
 
     private:
@@ -88,7 +88,7 @@ namespace aga
         std::string m_ActorRegionName;
 
         std::vector<SpeechChoice> m_Choices;
-        int m_ActualChoiceIndex;
+        size_t m_ActualChoiceIndex;
 
         std::string m_Text;
         std::vector<std::string> m_TextLines;
@@ -103,14 +103,14 @@ namespace aga
         float m_CurrentDrawTime;
 
         float m_LineHeight;
-        int m_CurrentIndex;
-        int m_CurrentLine;
+        size_t m_CurrentIndex;
+        size_t m_CurrentLine;
 
         float m_CurrentFlashTime;
         float m_ArrowDrawSpeed;
         bool m_DrawLightArrow;
 
-        int m_DisplayLine;
+        size_t m_DisplayLine;
 
         float m_KeyDelta;
         float m_MaxKeyDelta;

@@ -63,6 +63,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    EditorActorScriptWindow ::~EditorActorScriptWindow () { SAFE_DELETE (m_SceneWindow); }
+
+    //--------------------------------------------------------------------------------------------------
+
     void EditorActorScriptWindow::Show (std::function<bool(void)> OnAcceptFunc, std::function<bool(void)> OnCancelFunc)
     {
         m_OnAcceptFunc = OnAcceptFunc;
@@ -77,7 +81,8 @@ namespace aga
 
     void EditorActorScriptWindow::OnBrowse ()
     {
-        ALLEGRO_FILECHOOSER* fileOpenDialog = al_create_native_file_dialog (GetCurrentDir ().c_str (), "Open script file", "*.*", 0);
+        ALLEGRO_FILECHOOSER* fileOpenDialog
+            = al_create_native_file_dialog (GetCurrentDir ().c_str (), "Open script file", "*.*", 0);
         al_show_native_file_dialog (m_Editor->m_MainLoop->GetScreen ()->GetDisplay (), fileOpenDialog);
 
         al_destroy_native_file_dialog (fileOpenDialog);
@@ -234,13 +239,18 @@ namespace aga
 
         Gwk::Controls::Button* removeButton = new Gwk::Controls::Button (center);
         removeButton->SetText ("REMOVE");
-        removeButton->SetPos (m_ActorProperties->Right () + 10, saveButton->Bottom () + 10);
+        removeButton->SetPos (m_ActorProperties->Right () + 10, saveButton->Bottom () + 5);
         removeButton->onPress.Add (this, &EditorActorWindow::OnRemove);
 
         Gwk::Controls::Button* addScriptButton = new Gwk::Controls::Button (center);
         addScriptButton->SetText ("ADD SCRIPT");
         addScriptButton->SetPos (m_ActorProperties->Right () + 10, removeButton->Bottom () + 50);
         addScriptButton->onPress.Add (this, &EditorActorWindow::OnAddScript);
+
+        Gwk::Controls::Button* collisitionButton = new Gwk::Controls::Button (center);
+        collisitionButton->SetText ("COLLISION");
+        collisitionButton->SetPos (m_ActorProperties->Right () + 10, addScriptButton->Bottom () + 5);
+        collisitionButton->onPress.Add (this, &EditorActorWindow::OnCollision);
 
         Gwk::Controls::Button* acceptButton = new Gwk::Controls::Button (center);
         acceptButton->SetText ("ACCEPT");
@@ -250,6 +260,14 @@ namespace aga
         m_ScriptWindow = new EditorActorScriptWindow (m_Editor, canvas);
 
         UpdateActorsTree ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    EditorActorWindow::~EditorActorWindow ()
+    {
+        SAFE_DELETE (m_SceneWindow);
+        SAFE_DELETE (m_ScriptWindow);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -398,7 +416,8 @@ namespace aga
         std::function<bool(void)> AcceptFunc = [&] {
             if (m_ScriptWindow->Name != "" && m_ScriptWindow->Path != "")
             {
-                Gwk::Controls::Property::LabelButton* node = new Gwk::Controls::Property::LabelButton (m_ScriptSection, m_ScriptWindow->Path, "X");
+                Gwk::Controls::Property::LabelButton* node
+                    = new Gwk::Controls::Property::LabelButton (m_ScriptSection, m_ScriptWindow->Path, "X");
                 node->FuncButton->onPress.Add (this, &EditorActorWindow::OnRemoveScript);
 
                 m_ScriptSection->Add (m_ScriptWindow->Name, node);
@@ -429,7 +448,8 @@ namespace aga
         for (Gwk::Controls::Base* control : childNodes)
         {
             Gwk::Controls::PropertyRow* node = (Gwk::Controls::PropertyRow*)control;
-            Gwk::Controls::Property::LabelButton* property = (Gwk::Controls::Property::LabelButton*)node->GetProperty ();
+            Gwk::Controls::Property::LabelButton* property
+                = (Gwk::Controls::Property::LabelButton*)node->GetProperty ();
 
             if (property->FuncButton == button)
             {
@@ -438,6 +458,10 @@ namespace aga
             }
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::OnCollision () {}
 
     //--------------------------------------------------------------------------------------------------
 

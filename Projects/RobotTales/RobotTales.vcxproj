@@ -49,6 +49,7 @@
     <ClCompile Include="..\..\Sources\Font.cpp" />
     <ClCompile Include="..\..\Sources\GameMain.cpp" />
     <ClCompile Include="..\..\Sources\MainLoop.cpp" />
+    <ClCompile Include="..\..\Sources\ParticleEmitter.cpp" />
     <ClCompile Include="..\..\Sources\PhysicsManager.cpp" />
     <ClCompile Include="..\..\Sources\Player.cpp" />
     <ClCompile Include="..\..\Sources\QuadTree.cpp" />
@@ -108,6 +109,7 @@
     <ClInclude Include="..\..\Sources\Font.h" />
     <ClInclude Include="..\..\Sources\Lifecycle.h" />
     <ClInclude Include="..\..\Sources\MainLoop.h" />
+    <ClInclude Include="..\..\Sources\ParticleEmitter.h" />
     <ClInclude Include="..\..\Sources\PhysicsManager.h" />
     <ClInclude Include="..\..\Sources\Player.h" />
     <ClInclude Include="..\..\Sources\Point.h" />
@@ -209,8 +211,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\Binaries\</OutDir>
-    <IntDir>..\..\Binaries\Intermediate\</IntDir>
+    <OutDir>..\..\Binaries\Win64\</OutDir>
+    <IntDir>..\..\Binaries\Win64\Intermediate\$(Configuration)\</IntDir>
     <Allegro_AddonImage>true</Allegro_AddonImage>
     <Allegro_AddonTTF>true</Allegro_AddonTTF>
     <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
@@ -219,6 +221,7 @@
     <Allegro_AddonDialog>true</Allegro_AddonDialog>
     <Allegro_AddonFont>true</Allegro_AddonFont>
     <Allegro_LibraryType>StaticMonolithRelease</Allegro_LibraryType>
+    <TargetName>$(ProjectName)_$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -237,8 +240,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\Binaries\</OutDir>
-    <IntDir>..\..\Binaries\Intermediate\</IntDir>
+    <OutDir>..\..\Binaries\Win64\</OutDir>
+    <IntDir>..\..\Binaries\Win64\Intermediate\$(Configuration)\</IntDir>
     <Allegro_AddonImage>true</Allegro_AddonImage>
     <Allegro_AddonTTF>true</Allegro_AddonTTF>
     <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
@@ -247,6 +250,7 @@
     <Allegro_AddonDialog>true</Allegro_AddonDialog>
     <Allegro_AddonFont>true</Allegro_AddonFont>
     <Allegro_LibraryType>StaticMonolithRelease</Allegro_LibraryType>
+    <TargetName>$(ProjectName)_$(Configuration)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -275,13 +279,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>E:\RobotTales\ThirdParty\GWork\source\platform\include;E:\RobotTales\Sources;E:\RobotTales\ThirdParty\GWork\source\gwork\include;E:\RobotTales\ThirdParty\anglescript\angelscript\include;E:\RobotTales\ThirdParty\anglescript\add_on;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Sources;$(SolutionDir)..\ThirdParty\GWork\source\platform\include;$(SolutionDir)..\ThirdParty\GWork\source\gwork\include;$(SolutionDir)..\ThirdParty\anglescript\angelscript\include;$(SolutionDir)..\ThirdParty\anglescript\add_on;C:\Program Files (x86)\Visual Leak Detector\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\RobotTales\Binaries\GWork;E:\RobotTales\Binaries\angelscript;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Binaries\GWork\$(Configuration)\;$(SolutionDir)..\Binaries\angelscript\$(Configuration)\;C:\Program Files (x86)\Visual Leak Detector\lib\Win64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>angelscript.lib;GWork.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -320,7 +324,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;_SILENCE_CXX17_OLD_ALLOCATOR_MEMBERS_DEPRECATION_WARNING;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>E:\RobotTales\ThirdParty\GWork\source\platform\include;E:\RobotTales\Sources;E:\RobotTales\ThirdParty\GWork\source\gwork\include;E:\RobotTales\ThirdParty\anglescript\angelscript\include;E:\RobotTales\ThirdParty\anglescript\add_on;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Sources;$(SolutionDir)..\ThirdParty\GWork\source\platform\include;$(SolutionDir)..\ThirdParty\GWork\source\gwork\include;$(SolutionDir)..\ThirdParty\anglescript\angelscript\include;$(SolutionDir)..\ThirdParty\anglescript\add_on;C:\Program Files (x86)\Visual Leak Detector\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -328,7 +332,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\RobotTales\Binaries\GWork;E:\RobotTales\Binaries\angelscript;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Binaries\GWork\$(Configuration)\;$(SolutionDir)..\Binaries\angelscript\$(Configuration)\;C:\Program Files (x86)\Visual Leak Detector\lib\Win64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>angelscript.lib;GWork.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

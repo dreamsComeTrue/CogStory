@@ -40,7 +40,7 @@ namespace aga
 
         if (m_CanEmit)
         {
-            for (int i = 0; i < m_MaxParticles; ++i)
+            for (unsigned i = 0; i < m_MaxParticles; ++i)
             {
                 EmitParticle ();
             }
@@ -88,6 +88,8 @@ namespace aga
         {
             EmitParticle ();
         }
+
+        return true;
     }
 
     //--------------------------------------------------------------------------------------------------

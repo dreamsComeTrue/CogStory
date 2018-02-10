@@ -28,6 +28,8 @@ namespace aga
         LoadFromFile (GetResourcePath (PACK_0_0_HOME));
         LoadFromFile (GetResourcePath (PACK_MENU_UI));
         LoadFromFile (GetResourcePath (PACK_CHARACTERS_UI));
+
+        return true;
     }
 
     //--------------------------------------------------------------------------------------------------

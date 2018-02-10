@@ -19,7 +19,7 @@ namespace aga
         void AddFrame (unsigned index, int row, int col);
 
         Rect& GetFrame (unsigned index);
-        unsigned GetFramesCount () const;
+        size_t GetFramesCount () const;
 
         void SetCellSize (Point p);
 

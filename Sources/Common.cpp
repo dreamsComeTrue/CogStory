@@ -105,7 +105,7 @@ namespace aga
     std::string& LeftTrimString (std::string& str)
     {
         auto it2 = std::find_if (str.begin (), str.end (),
-                                 [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
+            [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
         str.erase (str.begin (), it2);
         return str;
     }
@@ -115,7 +115,7 @@ namespace aga
     std::string& RightTrimString (std::string& str)
     {
         auto it1 = std::find_if (str.rbegin (), str.rend (),
-                                 [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
+            [](char ch) { return !std::isspace<char> (ch, std::locale::classic ()); });
         str.erase (it1.base (), str.end ());
         return str;
     }
@@ -130,7 +130,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    float RandInRange (float min, float max) { return ((float(rand ()) / float(RAND_MAX)) * (max - min)) + min; }
+    float RandInRange (float min, float max) { return ((float (rand ()) / float (RAND_MAX)) * (max - min)) + min; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -138,7 +138,7 @@ namespace aga
     {
         std::string str = fullPath;
         std::replace (str.begin (), str.end (), '\\', '/');
-        unsigned found = str.find_last_of ("/");
+        size_t found = str.find_last_of ("/");
 
         return str.substr (0, found);
     }
@@ -149,7 +149,7 @@ namespace aga
     {
         std::string str = fullPath;
         std::replace (str.begin (), str.end (), '\\', '/');
-        unsigned found = str.find_last_of ("/");
+        size_t found = str.find_last_of ("/");
 
         // Remove extension if present.
         str = str.substr (found + 1);
@@ -176,7 +176,12 @@ namespace aga
     std::string GetCurrentDir ()
     {
         char buf[FILENAME_MAX];
+
+#ifdef _MSC_VER
+        char* succ = _getcwd (buf, FILENAME_MAX);
+#else
         char* succ = getcwd (buf, FILENAME_MAX);
+#endif
 
         if (succ)
         {
@@ -193,7 +198,7 @@ namespace aga
     long GetCurrentTime ()
     {
         return std::chrono::duration_cast<std::chrono::milliseconds> (
-                   std::chrono::system_clock::now ().time_since_epoch ())
+            std::chrono::system_clock::now ().time_since_epoch ())
             .count ();
     }
 

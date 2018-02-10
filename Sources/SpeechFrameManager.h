@@ -10,7 +10,7 @@ namespace aga
     class SpeechFrame;
     class SceneManager;
     class AudioSample;
-    class SpeechData;
+    struct SpeechData;
 
     enum SpeechFramePosition
     {

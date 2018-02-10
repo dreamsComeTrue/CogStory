@@ -80,7 +80,7 @@ namespace aga
         int j1, j2;
         Point v1, v2;
         int k = 0, h = 0;
-        std::vector<Point>*vec1, *vec2;
+        std::vector<Point> vec1, vec2;
         Point *pV, hitV (0, 0);
         bool isConvex;
         std::vector<std::vector<Point>> figsVec;
@@ -126,6 +126,8 @@ namespace aga
                             if (pV)
                             {
                                 Point v = *pV;
+                                delete pV;
+
                                 dx = p2.X - v.X;
                                 dy = p2.Y - v.Y;
                                 t = dx * dx + dy * dy;
@@ -146,8 +148,8 @@ namespace aga
                         // TODO: Throw Error !!!
                     }
 
-                    vec1 = new std::vector<Point> ();
-                    vec2 = new std::vector<Point> ();
+                    vec1.clear ();
+                    vec2.clear ();
 
                     j1 = h;
                     j2 = k;
@@ -156,11 +158,11 @@ namespace aga
 
                     if (!PointsMatch (hitV.X, hitV.Y, v2.X, v2.Y))
                     {
-                        vec1->push_back (hitV);
+                        vec1.push_back (hitV);
                     }
                     if (!PointsMatch (hitV.X, hitV.Y, v1.X, v1.Y))
                     {
-                        vec2->push_back (hitV);
+                        vec2.push_back (hitV);
                     }
 
                     h = -1;
@@ -169,7 +171,7 @@ namespace aga
                     {
                         if (k != j2)
                         {
-                            vec1->push_back (vec[k]);
+                            vec1.push_back (vec[k]);
                         }
                         else
                         {
@@ -179,7 +181,7 @@ namespace aga
                             }
                             if (!IsOnSegment (v2.X, v2.Y, vec[h].X, vec[h].Y, p1.X, p1.Y))
                             {
-                                vec1->push_back (vec[k]);
+                                vec1.push_back (vec[k]);
                             }
                             break;
                         }
@@ -195,7 +197,7 @@ namespace aga
                         }
                     }
 
-                    std::reverse (vec1->begin (), vec1->end ());
+                    std::reverse (vec1.begin (), vec1.end ());
 
                     h = -1;
                     k = i2;
@@ -203,7 +205,7 @@ namespace aga
                     {
                         if (k != j1)
                         {
-                            vec2->push_back (vec[k]);
+                            vec2.push_back (vec[k]);
                         }
                         else
                         {
@@ -213,7 +215,7 @@ namespace aga
                             }
                             if (((k == j1) && !IsOnSegment (v1.X, v1.Y, vec[h].X, vec[h].Y, p2.X, p2.Y)))
                             {
-                                vec2->push_back (vec[k]);
+                                vec2.push_back (vec[k]);
                             }
                             break;
                         }
@@ -229,8 +231,8 @@ namespace aga
                         }
                     }
 
-                    queue.push (*vec1);
-                    queue.push (*vec2);
+                    queue.push (vec1);
+                    queue.push (vec2);
                     queue.pop ();
 
                     break;

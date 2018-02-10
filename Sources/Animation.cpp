@@ -43,7 +43,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    unsigned AnimationFrames::GetFramesCount () const { return m_Frames.size (); }
+    size_t AnimationFrames::GetFramesCount () const { return m_Frames.size (); }
 
     //--------------------------------------------------------------------------------------------------
 

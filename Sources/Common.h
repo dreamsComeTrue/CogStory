@@ -32,7 +32,12 @@ extern "C" {
 
 #include <cmath>
 #include <cstdarg>
+
+#ifdef _MSC_VER
+#include <optional>
+#else
 #include <experimental/optional>
+#endif
 #include <fstream>
 #include <functional>
 #include <map>

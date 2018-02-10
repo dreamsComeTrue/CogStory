@@ -43,8 +43,8 @@ namespace aga
         result.Intersect = true;
         result.WillIntersect = true;
 
-        int edgeCountA = polygonA.Edges.size ();
-        int edgeCountB = polygonB.Edges.size ();
+        size_t edgeCountA = polygonA.Edges.size ();
+        size_t edgeCountB = polygonB.Edges.size ();
         float minIntervalDistance = std::numeric_limits<float>::max ();
         Point translationAxis;
         Point edge;

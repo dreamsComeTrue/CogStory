@@ -10,7 +10,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     TweenManager::TweenManager (MainLoop* mainLoop)
-      : m_MainLoop (mainLoop)
+        : m_MainLoop (mainLoop)
     {
     }
 
@@ -26,11 +26,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool TweenManager::Initialize () { Lifecycle::Initialize (); }
+    bool TweenManager::Initialize () { return Lifecycle::Initialize (); }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool TweenManager::Destroy () { Lifecycle::Destroy (); }
+    bool TweenManager::Destroy () { return Lifecycle::Destroy (); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -176,7 +176,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    TweenData& TweenManager::AddTween (int id, float from, float to, int during, std::function<bool(float)> func)
+    TweenData& TweenManager::AddTween (int id, float from, float to, int during, std::function<bool (float)> func)
     {
         TweenData* foundTween = GetTween (id);
 
@@ -221,11 +221,11 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void TweenManager::AddTween (int id,
-                                 Point from,
-                                 Point to,
-                                 int during,
-                                 asIScriptFunction* asFunc,
-                                 asIScriptFunction* finishFunc)
+        Point from,
+        Point to,
+        int during,
+        asIScriptFunction* asFunc,
+        asIScriptFunction* finishFunc)
     {
         bool found = false;
 
@@ -240,45 +240,45 @@ namespace aga
 
         if (!found)
         {
-            std::function<bool(tweeny::tween<float, float> & t, float, float)> func =
-              [&](tweeny::tween<float, float>& t, float x, float y) {
-                  TweenData* tweenData = FindTweenData (t);
+            std::function<bool (tweeny::tween<float, float> & t, float, float)> func =
+                [&](tweeny::tween<float, float>& t, float x, float y) {
+                TweenData* tweenData = FindTweenData (t);
 
-                  if (!tweenData || !tweenData->CallbackFunc)
-                  {
-                      return true;
-                  }
+                if (!tweenData || !tweenData->CallbackFunc)
+                {
+                    return true;
+                }
 
-                  asIScriptFunction* callback = tweenData->CallbackFunc;
-                  Point p = { x, y };
+                asIScriptFunction* callback = tweenData->CallbackFunc;
+                Point p = { x, y };
 
-                  const char* moduleName = callback->GetModuleName ();
-                  Script* script = m_MainLoop->GetScriptManager ().GetScriptByModuleName (moduleName);
+                const char* moduleName = callback->GetModuleName ();
+                Script* script = m_MainLoop->GetScriptManager ().GetScriptByModuleName (moduleName);
 
-                  if (script)
-                  {
-                      asIScriptContext* ctx = script->GetContext ();
-                      ctx->Prepare (callback);
-                      ctx->SetArgDWord (0, tweenData->ID);
-                      ctx->SetArgFloat (1, t.progress ());
-                      ctx->SetArgObject (2, &p);
+                if (script)
+                {
+                    asIScriptContext* ctx = script->GetContext ();
+                    ctx->Prepare (callback);
+                    ctx->SetArgDWord (0, tweenData->ID);
+                    ctx->SetArgFloat (1, t.progress ());
+                    ctx->SetArgObject (2, &p);
 
-                      int r = ctx->Execute ();
+                    int r = ctx->Execute ();
 
-                      asDWORD ret = 0;
-                      if (r == asEXECUTION_FINISHED)
-                      {
-                          ret = ctx->GetReturnDWord ();
-                      }
+                    asDWORD ret = 0;
+                    if (r == asEXECUTION_FINISHED)
+                    {
+                        ret = ctx->GetReturnDWord ();
+                    }
 
-                      return (bool)ret;
-                  }
+                    return (bool)ret;
+                }
 
-                  return false;
-              };
+                return false;
+            };
 
             tweeny::tween<float, float> tween =
-              tweeny::from (from.X, from.Y).to (to.X, to.Y).during (during).onStep (func);
+                tweeny::from (from.X, from.Y).to (to.X, to.Y).during (during).onStep (func);
 
             TweenData tweenData;
             tweenData.ID = id;

@@ -37,14 +37,14 @@ target_link_libraries(${PROJECT_NAME}
     libGworkAllegro5.a
     libangelscript.a
 
-    allegro-debug
-    allegro_image-debug
-    allegro_font-debug
-    allegro_ttf-debug
-    allegro_primitives-debug
-    allegro_dialog-debug
-    allegro_audio-debug
-    allegro_acodec-debug
+    allegro
+    allegro_image
+    allegro_font
+    allegro_ttf
+    allegro_primitives
+    allegro_dialog
+    allegro_audio
+    allegro_acodec
     freetype
     pthread
     )

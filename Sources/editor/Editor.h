@@ -13,6 +13,10 @@
 #include "Scene.h"
 
 #include <Gwork/Controls.h>
+#include <Gwork/Input/Allegro5.h>
+#include <Gwork/Platform.h>
+#include <Gwork/Renderers/Allegro5.h>
+#include <Gwork/Skins/TexturedBase.h>
 
 namespace aga
 {
@@ -104,7 +108,7 @@ namespace aga
         void OnFlagPoint ();
         void OnTriggerArea ();
 
-        void OnTileMode ();
+        void OnSelectMode ();
         void OnNewPoly ();
 
         void OnSpeech ();
@@ -157,6 +161,13 @@ namespace aga
         EditorActorWindow* m_ActorWindow;
         EditorInfoWindow* m_InfoWindow;
         EditorQuestionWindow* m_QuestionWindow;
+
+        Gwk::Renderer::AllegroResourceLoader* m_ResourceLoader;
+        Gwk::Renderer::Allegro* m_GUIRenderer;
+        Gwk::Controls::Canvas* m_MainCanvas;
+        Gwk::Skin::TexturedBase* m_GuiSkin;
+
+        Gwk::Input::Allegro m_GUIInput;
     };
 }
 

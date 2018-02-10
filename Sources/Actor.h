@@ -48,6 +48,8 @@ namespace aga
 
         void SetCurrentAnimation (const std::string& name);
 
+        ALLEGRO_BITMAP* GetImage ();
+
         std::function<void(float dx, float dy)> MoveCallback;
 
     protected:

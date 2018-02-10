@@ -56,9 +56,10 @@ namespace aga
 
     bool Font::Destroy ()
     {
-        for (std::map<std::string, ALLEGRO_FONT*>::iterator it = m_Fonts.begin (); it != m_Fonts.end (); ++it)
+        for (std::map<std::string, ALLEGRO_FONT*>::iterator it = m_Fonts.begin (); it != m_Fonts.end ();)
         {
             al_destroy_font (it->second);
+            m_Fonts.erase (it++);
         }
 
         return Lifecycle::Destroy ();

@@ -270,8 +270,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\Binaries\GWork\</OutDir>
-    <IntDir>..\..\Binaries\GWork\</IntDir>
+    <OutDir>..\..\Binaries\GWork\$(Configuration)\</OutDir>
+    <IntDir>..\..\Binaries\GWork\$(Configuration)\</IntDir>
     <Allegro_AddonImage>true</Allegro_AddonImage>
     <Allegro_AddonTTF>true</Allegro_AddonTTF>
     <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
@@ -293,8 +293,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\Binaries\GWork\</OutDir>
-    <IntDir>..\..\Binaries\GWork\</IntDir>
+    <OutDir>..\..\Binaries\GWork\$(Configuration)\</OutDir>
+    <IntDir>..\..\Binaries\GWork\$(Configuration)\</IntDir>
     <Allegro_AddonImage>true</Allegro_AddonImage>
     <Allegro_AddonTTF>true</Allegro_AddonTTF>
     <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
@@ -324,7 +324,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>E:\RobotTales\ThirdParty\GWork\source\platform\include;E:\RobotTales\ThirdParty\GWork\source\gwork\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\ThirdParty\GWork\source\platform\include;$(SolutionDir)..\ThirdParty\GWork\source\gwork\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -359,7 +359,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>E:\RobotTales\ThirdParty\GWork\source\platform\include;E:\RobotTales\ThirdParty\GWork\source\gwork\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\ThirdParty\GWork\source\platform\include;$(SolutionDir)..\ThirdParty\GWork\source\gwork\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

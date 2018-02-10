@@ -13,11 +13,6 @@
 #include "SceneLoader.h"
 #include "Screen.h"
 
-#include <Gwork/Input/Allegro5.h>
-#include <Gwork/Platform.h>
-#include <Gwork/Renderers/Allegro5.h>
-#include <Gwork/Skins/TexturedBase.h>
-
 using json = nlohmann::json;
 
 namespace aga
@@ -62,12 +57,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Gwk::Renderer::Allegro* guiRenderer;
-    Gwk::Controls::Canvas* mainCanvas;
-    Gwk::Skin::TexturedBase* guiSkin;
-
-    Gwk::Input::Allegro guiInput;
-
     Gwk::Controls::Label* sceneNameLabel;
     Gwk::Controls::Button* newSceneButton;
     Gwk::Controls::Button* openSceneButton;
@@ -82,7 +71,7 @@ namespace aga
     Gwk::Controls::Button* flagPointButton;
     Gwk::Controls::Button* triggerAreaButton;
 
-    Gwk::Controls::Button* tileModeButton;
+    Gwk::Controls::Button* selectModeButton;
     Gwk::Controls::Button* newPolyButton;
 
     Gwk::Controls::Button* speechButton;
@@ -120,130 +109,128 @@ namespace aga
         Gwk::Platform::SetPlatformWindow (m_MainLoop->GetScreen ()->GetDisplay ());
 
         Gwk::Platform::RelativeToExecutablePaths paths ("../../Data/");
-        Gwk::Renderer::AllegroResourceLoader loader (paths);
+        m_ResourceLoader = new Gwk::Renderer::AllegroResourceLoader (paths);
 
-        guiRenderer = new Gwk::Renderer::Allegro (loader);
+        m_GUIRenderer = new Gwk::Renderer::Allegro (*m_ResourceLoader);
 
-        guiSkin = new Gwk::Skin::TexturedBase (guiRenderer);
-        guiSkin->SetRender (guiRenderer);
-        guiSkin->Init ("UISkin.png");
+        m_GuiSkin = new Gwk::Skin::TexturedBase (m_GUIRenderer);
+        m_GuiSkin->Init ("UISkin.png");
 
         // The fonts work differently in Allegro - it can't use
         // system fonts. So force the skin to use a local one.
-        guiSkin->SetDefaultFont ("fonts/OpenSans.ttf", 12);
+        m_GuiSkin->SetDefaultFont ("fonts/OpenSans.ttf", 12);
 
         // Create a Canvas (it's root, on which all other Gwork panels are created)
         const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
 
-        mainCanvas = new Gwk::Controls::Canvas (guiSkin);
-        mainCanvas->SetSize (screenSize.Width, screenSize.Height);
-        mainCanvas->SetDrawBackground (false);
+        m_MainCanvas = new Gwk::Controls::Canvas (m_GuiSkin);
+        m_MainCanvas->SetSize (screenSize.Width, screenSize.Height);
+        m_MainCanvas->SetDrawBackground (false);
 
-        guiInput.Initialize (mainCanvas);
+        m_GUIInput.Initialize (m_MainCanvas);
 
         //  Add GUI Controls
-        sceneNameLabel = new Gwk::Controls::Label (mainCanvas);
+        sceneNameLabel = new Gwk::Controls::Label (m_MainCanvas);
         sceneNameLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
         sceneNameLabel->SetPos (20, 10);
         sceneNameLabel->SetText ("SCENE: " + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ());
         sceneNameLabel->SizeToContents ();
 
-        newSceneButton = new Gwk::Controls::Button (mainCanvas);
+        newSceneButton = new Gwk::Controls::Button (m_MainCanvas);
         newSceneButton->SetText ("NEW SCENE");
         newSceneButton->SetPos (20, 30);
         newSceneButton->onPress.Add (this, &Editor::OnNewScene);
 
-        openSceneButton = new Gwk::Controls::Button (mainCanvas);
+        openSceneButton = new Gwk::Controls::Button (m_MainCanvas);
         openSceneButton->SetText ("OPEN SCENE");
         openSceneButton->SetPos (20, newSceneButton->Bottom () + 5);
         openSceneButton->onPress.Add (this, &Editor::OnOpenScene);
 
-        saveSceneButton = new Gwk::Controls::Button (mainCanvas);
+        saveSceneButton = new Gwk::Controls::Button (m_MainCanvas);
         saveSceneButton->SetText ("SAVE SCENE");
         saveSceneButton->SetPos (20, openSceneButton->Bottom () + 5);
         saveSceneButton->onPress.Add (this, &Editor::OnSaveScene);
 
         //  Diaglos & windows
         {
-            m_OpenSceneWindow = new EditorOpenSceneWindow (this, mainCanvas, "0_home/0_0_home.scn");
-            m_SaveSceneWindow = new EditorSaveSceneWindow (this, mainCanvas, "0_home/0_0_home.scn");
-            m_FlagPointWindow = new EditorFlagPointWindow (this, mainCanvas);
-            m_TriggerAreaWindow = new EditorTriggerAreaWindow (this, mainCanvas);
-            m_SpeechWindow = new EditorSpeechWindow (this, mainCanvas);
-            m_ActorWindow = new EditorActorWindow (this, mainCanvas);
-            m_InfoWindow = new EditorInfoWindow (this, mainCanvas);
-            m_QuestionWindow = new EditorQuestionWindow (this, mainCanvas);
+            m_OpenSceneWindow = new EditorOpenSceneWindow (this, m_MainCanvas, "0_home/0_0_home.scn");
+            m_SaveSceneWindow = new EditorSaveSceneWindow (this, m_MainCanvas, "0_home/0_0_home.scn");
+            m_FlagPointWindow = new EditorFlagPointWindow (this, m_MainCanvas);
+            m_TriggerAreaWindow = new EditorTriggerAreaWindow (this, m_MainCanvas);
+            m_SpeechWindow = new EditorSpeechWindow (this, m_MainCanvas);
+            m_ActorWindow = new EditorActorWindow (this, m_MainCanvas);
+            m_InfoWindow = new EditorInfoWindow (this, m_MainCanvas);
+            m_QuestionWindow = new EditorQuestionWindow (this, m_MainCanvas);
         }
 
-        resetMoveButton = new Gwk::Controls::Button (mainCanvas);
+        resetMoveButton = new Gwk::Controls::Button (m_MainCanvas);
         resetMoveButton->SetText ("RESET MOVE");
         resetMoveButton->SetPos (20, saveSceneButton->Bottom () + 40);
         resetMoveButton->onPress.Add (this, &Editor::OnResetTranslate);
 
-        resetScaleButton = new Gwk::Controls::Button (mainCanvas);
+        resetScaleButton = new Gwk::Controls::Button (m_MainCanvas);
         resetScaleButton->SetText ("RESET SCALE");
         resetScaleButton->SetPos (20, resetMoveButton->Bottom () + 5);
         resetScaleButton->onPress.Add (this, &Editor::OnResetScale);
 
-        showGridButton = new Gwk::Controls::Button (mainCanvas);
+        showGridButton = new Gwk::Controls::Button (m_MainCanvas);
         showGridButton->SetText ("SHOW GRID");
         showGridButton->SetPos (20, resetScaleButton->Bottom () + 5);
         showGridButton->onPress.Add (this, &Editor::OnShowGrid);
 
-        increaseGridButton = new Gwk::Controls::Button (mainCanvas);
+        increaseGridButton = new Gwk::Controls::Button (m_MainCanvas);
         increaseGridButton->SetText ("+++");
         increaseGridButton->SetWidth (45);
         increaseGridButton->SetPos (20, showGridButton->Bottom () + 5);
         increaseGridButton->onPress.Add (this, &Editor::OnGridIncrease);
 
-        decreaseGridButton = new Gwk::Controls::Button (mainCanvas);
+        decreaseGridButton = new Gwk::Controls::Button (m_MainCanvas);
         decreaseGridButton->SetText ("---");
         decreaseGridButton->SetWidth (45);
         decreaseGridButton->SetPos (increaseGridButton->GetPos ().x + increaseGridButton->GetSize ().x + 10,
                                     showGridButton->Bottom () + 5);
         decreaseGridButton->onPress.Add (this, &Editor::OnGridDecrease);
 
-        flagPointButton = new Gwk::Controls::Button (mainCanvas);
+        flagPointButton = new Gwk::Controls::Button (m_MainCanvas);
         flagPointButton->SetText ("FLAG POINT");
         flagPointButton->SetPos (20, decreaseGridButton->Bottom () + 40);
         flagPointButton->onPress.Add (this, &Editor::OnFlagPoint);
 
-        triggerAreaButton = new Gwk::Controls::Button (mainCanvas);
+        triggerAreaButton = new Gwk::Controls::Button (m_MainCanvas);
         triggerAreaButton->SetText ("TRIGGER AREA");
         triggerAreaButton->SetPos (20, flagPointButton->Bottom () + 5);
         triggerAreaButton->onPress.Add (this, &Editor::OnTriggerArea);
 
-        tileModeButton = new Gwk::Controls::Button (mainCanvas);
-        tileModeButton->SetText (m_CursorMode != CursorMode::EditPhysBodyMode ? "TILE MODE" : "PHYS MODE");
-        tileModeButton->SetPos (20, triggerAreaButton->Bottom () + 10);
-        tileModeButton->onPress.Add (this, &Editor::OnTileMode);
-        tileModeButton->Hide ();
+        selectModeButton = new Gwk::Controls::Button (m_MainCanvas);
+        selectModeButton->SetText (m_CursorMode != CursorMode::EditPhysBodyMode ? "SELECT MODE" : "PHYS MODE");
+        selectModeButton->SetPos (20, triggerAreaButton->Bottom () + 40);
+        selectModeButton->onPress.Add (this, &Editor::OnSelectMode);
+        selectModeButton->Hide ();
 
-        newPolyButton = new Gwk::Controls::Button (mainCanvas);
+        newPolyButton = new Gwk::Controls::Button (m_MainCanvas);
         newPolyButton->SetText ("NEW POLY");
-        newPolyButton->SetPos (20, tileModeButton->Bottom () + 5);
+        newPolyButton->SetPos (20, selectModeButton->Bottom () + 5);
         newPolyButton->onPress.Add (this, &Editor::OnNewPoly);
         newPolyButton->Hide ();
 
-        speechButton = new Gwk::Controls::Button (mainCanvas);
+        speechButton = new Gwk::Controls::Button (m_MainCanvas);
         speechButton->SetText ("SPEECH");
-        speechButton->SetPos (20, newPolyButton->Bottom () + 10);
+        speechButton->SetPos (20, newPolyButton->Bottom () + 40);
         speechButton->onPress.Add (this, &Editor::OnSpeech);
 
-        actorButton = new Gwk::Controls::Button (mainCanvas);
+        actorButton = new Gwk::Controls::Button (m_MainCanvas);
         actorButton->SetText ("ACTOR");
         actorButton->SetPos (20, speechButton->Bottom () + 5);
         actorButton->onPress.Add (this, &Editor::OnActor);
 
-        playButton = new Gwk::Controls::Button (mainCanvas);
+        playButton = new Gwk::Controls::Button (m_MainCanvas);
         playButton->SetText ("PLAY");
         playButton->SetPos (20, actorButton->Bottom () + 20);
         playButton->onPress.Add (this, &Editor::OnPlay);
 
-        tilesetCombo = new Gwk::Controls::ComboBox (mainCanvas);
+        tilesetCombo = new Gwk::Controls::ComboBox (m_MainCanvas);
         tilesetCombo->SetWidth (90);
         tilesetCombo->SetKeyboardInputEnabled (false);
-        tilesetCombo->onSelection.Add (this, &Editor::OnTilesetSelected);
 
         std::map<std::string, Atlas*>& atlases = m_MainLoop->GetSceneManager ().GetAtlasManager ()->GetAtlases ();
 
@@ -252,74 +239,76 @@ namespace aga
             tilesetCombo->AddItem (atlas.first, atlas.second->GetPath ());
         }
 
-        leftPrevTileButton = new Gwk::Controls::Button (mainCanvas);
+        tilesetCombo->onSelection.Add (this, &Editor::OnTilesetSelected);
+
+        leftPrevTileButton = new Gwk::Controls::Button (m_MainCanvas);
         leftPrevTileButton->SetWidth (30);
         leftPrevTileButton->SetText ("<<");
         leftPrevTileButton->onPress.Add (this, &Editor::OnPlay);
 
-        leftNextTileButton = new Gwk::Controls::Button (mainCanvas);
+        leftNextTileButton = new Gwk::Controls::Button (m_MainCanvas);
         leftNextTileButton->SetWidth (30);
         leftNextTileButton->SetText (">>");
         leftNextTileButton->onPress.Add (this, &Editor::OnPlay);
 
-        rightPrevTileButton = new Gwk::Controls::Button (mainCanvas);
+        rightPrevTileButton = new Gwk::Controls::Button (m_MainCanvas);
         rightPrevTileButton->SetWidth (30);
         rightPrevTileButton->SetText ("<<");
         rightPrevTileButton->onPress.Add (this, &Editor::OnPlay);
 
-        rightNextTileButton = new Gwk::Controls::Button (mainCanvas);
+        rightNextTileButton = new Gwk::Controls::Button (m_MainCanvas);
         rightNextTileButton->SetWidth (30);
         rightNextTileButton->SetText (">>");
         rightNextTileButton->onPress.Add (this, &Editor::OnPlay);
 
-        playButton = new Gwk::Controls::Button (mainCanvas);
+        playButton = new Gwk::Controls::Button (m_MainCanvas);
         playButton->SetText ("PLAY");
         playButton->SetPos (20, actorButton->Bottom () + 20);
         playButton->onPress.Add (this, &Editor::OnPlay);
 
-        avgFPSLabel = new Gwk::Controls::Label (mainCanvas);
+        avgFPSLabel = new Gwk::Controls::Label (m_MainCanvas);
         avgFPSLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
 
-        fpsLabel = new Gwk::Controls::Label (mainCanvas);
+        fpsLabel = new Gwk::Controls::Label (m_MainCanvas);
         fpsLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
 
-        idLabel = new Gwk::Controls::Label (mainCanvas);
+        idLabel = new Gwk::Controls::Label (m_MainCanvas);
         idLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
 
-        xPosLabel = new Gwk::Controls::Label (mainCanvas);
+        xPosLabel = new Gwk::Controls::Label (m_MainCanvas);
         xPosLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
 
-        yPosLabel = new Gwk::Controls::Label (mainCanvas);
+        yPosLabel = new Gwk::Controls::Label (m_MainCanvas);
         yPosLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
 
-        widthLabel = new Gwk::Controls::Label (mainCanvas);
+        widthLabel = new Gwk::Controls::Label (m_MainCanvas);
         widthLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
 
-        heightLabel = new Gwk::Controls::Label (mainCanvas);
+        heightLabel = new Gwk::Controls::Label (m_MainCanvas);
         heightLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
 
-        angleLabel = new Gwk::Controls::Label (mainCanvas);
+        angleLabel = new Gwk::Controls::Label (m_MainCanvas);
         angleLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
 
-        zOrderLabel = new Gwk::Controls::Label (mainCanvas);
+        zOrderLabel = new Gwk::Controls::Label (m_MainCanvas);
         zOrderLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
 
-        scaleLabel = new Gwk::Controls::Label (mainCanvas);
+        scaleLabel = new Gwk::Controls::Label (m_MainCanvas);
         scaleLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
 
-        snapLabel = new Gwk::Controls::Label (mainCanvas);
+        snapLabel = new Gwk::Controls::Label (m_MainCanvas);
         snapLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
 
-        gridLabel = new Gwk::Controls::Label (mainCanvas);
+        gridLabel = new Gwk::Controls::Label (m_MainCanvas);
         gridLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
 
-        scriptsBox = new Gwk::Controls::ListBox (mainCanvas);
+        scriptsBox = new Gwk::Controls::ListBox (m_MainCanvas);
         scriptsBox->SetKeyboardInputEnabled (true);
         //        ctrl->onRowSelected.Add(this, &ThisClass::RowSelected);
 
         UpdateScriptsBox ();
 
-        scriptReloadButton = new Gwk::Controls::Button (mainCanvas);
+        scriptReloadButton = new Gwk::Controls::Button (m_MainCanvas);
         scriptReloadButton->SetText ("RELOAD");
         scriptReloadButton->onPress.Add (this, &Editor::OnReloadScript);
 
@@ -347,9 +336,10 @@ namespace aga
         SAFE_DELETE (m_InfoWindow);
         SAFE_DELETE (m_QuestionWindow);
 
-        delete mainCanvas;
-        // delete guiSkin;
-        delete guiRenderer;
+        SAFE_DELETE (m_ResourceLoader);
+        SAFE_DELETE (m_MainCanvas);
+        //     SAFE_DELETE (m_GuiSkin);
+        SAFE_DELETE (m_GUIRenderer);
 
         return Lifecycle::Destroy ();
     }
@@ -442,7 +432,7 @@ namespace aga
 
     void Editor::ProcessEvent (ALLEGRO_EVENT* event, float)
     {
-        if (m_EditorTileMode.m_IsDrawTiles && guiInput.ProcessMessage (*event))
+        if (m_EditorTileMode.m_IsDrawTiles && m_GUIInput.ProcessMessage (*event))
         {
             return;
         }
@@ -939,7 +929,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnTileMode ()
+    void Editor::OnSelectMode ()
     {
         if (m_CursorMode != CursorMode::EditPhysBodyMode)
         {
@@ -954,7 +944,7 @@ namespace aga
             newPolyButton->Hide ();
         }
 
-        tileModeButton->SetText (m_CursorMode != CursorMode::EditPhysBodyMode ? "TILE MODE" : "PHYS MODE");
+        selectModeButton->SetText (m_CursorMode != CursorMode::EditPhysBodyMode ? "SELECT MODE" : "PHYS MODE");
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1020,8 +1010,13 @@ namespace aga
             }
             else
             {
+#ifdef _MSC_VER
+                std::optional<ScriptMetaData> metaScript
+                    = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetScriptByName (name);
+#else
                 std::experimental::optional<ScriptMetaData> metaScript
                     = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetScriptByName (name);
+#endif
 
                 if (metaScript)
                 {
@@ -1090,7 +1085,7 @@ namespace aga
         gridLabel->SetText (std::string (" GRID: " + ToString (m_BaseGridSize)));
         gridLabel->SizeToContents ();
 
-        mainCanvas->RenderCanvas ();
+        m_MainCanvas->RenderCanvas ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1102,29 +1097,29 @@ namespace aga
     void Editor::ScreenResize ()
     {
         const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-        mainCanvas->SetSize (screenSize.Width, screenSize.Height);
+        m_MainCanvas->SetSize (screenSize.Width, screenSize.Height);
 
-        avgFPSLabel->SetPos (mainCanvas->Width () - 120.0f, 10);
-        fpsLabel->SetPos (mainCanvas->Width () - 120.0f, avgFPSLabel->Bottom () + 5);
-        idLabel->SetPos (mainCanvas->Width () - 120.0f, fpsLabel->Bottom () + 10);
-        xPosLabel->SetPos (mainCanvas->Width () - 120.0f, idLabel->Bottom () + 5);
-        yPosLabel->SetPos (mainCanvas->Width () - 120.0f, xPosLabel->Bottom () + 5);
-        widthLabel->SetPos (mainCanvas->Width () - 120.0f, yPosLabel->Bottom () + 5);
-        heightLabel->SetPos (mainCanvas->Width () - 120.0f, widthLabel->Bottom () + 5);
-        angleLabel->SetPos (mainCanvas->Width () - 120.0f, heightLabel->Bottom () + 5);
-        zOrderLabel->SetPos (mainCanvas->Width () - 120.0f, angleLabel->Bottom () + 5);
-        scaleLabel->SetPos (mainCanvas->Width () - 120.0f, zOrderLabel->Bottom () + 5);
-        snapLabel->SetPos (mainCanvas->Width () - 120.0f, scaleLabel->Bottom () + 5);
-        gridLabel->SetPos (mainCanvas->Width () - 120.0f, snapLabel->Bottom () + 5);
-        scriptsBox->SetBounds (mainCanvas->Width () - 150.0f, gridLabel->Bottom () + 10, 140, 100);
-        scriptReloadButton->SetPos (mainCanvas->Width () - 130.0f, scriptsBox->Bottom () + 5);
+        avgFPSLabel->SetPos (m_MainCanvas->Width () - 120.0f, 10);
+        fpsLabel->SetPos (m_MainCanvas->Width () - 120.0f, avgFPSLabel->Bottom () + 5);
+        idLabel->SetPos (m_MainCanvas->Width () - 120.0f, fpsLabel->Bottom () + 10);
+        xPosLabel->SetPos (m_MainCanvas->Width () - 120.0f, idLabel->Bottom () + 5);
+        yPosLabel->SetPos (m_MainCanvas->Width () - 120.0f, xPosLabel->Bottom () + 5);
+        widthLabel->SetPos (m_MainCanvas->Width () - 120.0f, yPosLabel->Bottom () + 5);
+        heightLabel->SetPos (m_MainCanvas->Width () - 120.0f, widthLabel->Bottom () + 5);
+        angleLabel->SetPos (m_MainCanvas->Width () - 120.0f, heightLabel->Bottom () + 5);
+        zOrderLabel->SetPos (m_MainCanvas->Width () - 120.0f, angleLabel->Bottom () + 5);
+        scaleLabel->SetPos (m_MainCanvas->Width () - 120.0f, zOrderLabel->Bottom () + 5);
+        snapLabel->SetPos (m_MainCanvas->Width () - 120.0f, scaleLabel->Bottom () + 5);
+        gridLabel->SetPos (m_MainCanvas->Width () - 120.0f, snapLabel->Bottom () + 5);
+        scriptsBox->SetBounds (m_MainCanvas->Width () - 150.0f, gridLabel->Bottom () + 10, 140, 100);
+        scriptReloadButton->SetPos (m_MainCanvas->Width () - 130.0f, scriptsBox->Bottom () + 5);
 
         float beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
 
-        tilesetCombo->SetPos (beginning - 140, mainCanvas->Bottom () - 35);
-        leftPrevTileButton->SetPos (beginning - 35, mainCanvas->Bottom () - TILE_SIZE + 5);
+        tilesetCombo->SetPos (beginning - 140, m_MainCanvas->Bottom () - 35);
+        leftPrevTileButton->SetPos (beginning - 35, m_MainCanvas->Bottom () - TILE_SIZE + 5);
         leftNextTileButton->SetPos (beginning - 35, leftPrevTileButton->Bottom () + 2);
-        rightPrevTileButton->SetPos (beginning + TILES_COUNT * TILE_SIZE + 5, mainCanvas->Bottom () - TILE_SIZE + 5);
+        rightPrevTileButton->SetPos (beginning + TILES_COUNT * TILE_SIZE + 5, m_MainCanvas->Bottom () - TILE_SIZE + 5);
         rightNextTileButton->SetPos (beginning + TILES_COUNT * TILE_SIZE + 5, rightPrevTileButton->Bottom () + 2);
     }
 
@@ -1163,7 +1158,7 @@ namespace aga
 
                     if (m_EditorTileMode.m_SelectedTile)
                     {
-                        tileModeButton->Show ();
+                        selectModeButton->Show ();
 
                         m_CursorMode = CursorMode::TileEditMode;
                         m_EditorTileMode.m_Rotation = m_EditorTileMode.m_SelectedTile->Rotation;
@@ -1188,14 +1183,14 @@ namespace aga
                             m_CursorMode = CursorMode::TileEditMode;
                             m_EditorTileMode.m_Rotation = m_EditorTileMode.m_SelectedTile->Rotation;
 
-                            tileModeButton->Show ();
+                            selectModeButton->Show ();
                         }
                         else
                         {
                             m_CursorMode = CursorMode::TileSelectMode;
                             m_EditorTileMode.m_SelectedTile = nullptr;
 
-                            tileModeButton->Hide ();
+                            selectModeButton->Hide ();
                         }
                     }
                 }

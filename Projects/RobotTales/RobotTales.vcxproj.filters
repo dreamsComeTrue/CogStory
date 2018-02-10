@@ -206,6 +206,9 @@
     <ClCompile Include="..\..\Sources\SceneLoader.cpp">
       <Filter>core\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Sources\ParticleEmitter.cpp">
+      <Filter>core\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Sources\Actor.h">
@@ -395,6 +398,9 @@
       <Filter>core\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Sources\SceneLoader.h">
+      <Filter>core\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\ParticleEmitter.h">
       <Filter>core\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
