@@ -125,22 +125,6 @@ namespace aga
 
             scene->m_QuadTree = QuadTreeNode (scene->m_Size);
 
-            auto& scripts = j["scripts"];
-
-            for (auto& j_tile : scripts)
-            {
-                std::string name = j_tile["name"];
-                std::string path = j_tile["path"];
-
-                Script* script = sceneManager->GetMainLoop ()->GetScriptManager ().LoadScriptFromFile (
-                    GetDataPath () + "scripts/" + path, name);
-
-                if (script)
-                {
-                    scene->AttachScript (script, path);
-                }
-            }
-
             auto& tiles = j["tiles"];
 
             for (auto& j_tile : tiles)
@@ -308,6 +292,22 @@ namespace aga
             UpdateMaxEntityID (scene);
             scene->SortTiles ();
             scene->SortActors ();
+
+            auto& scripts = j["scripts"];
+
+            for (auto& j_tile : scripts)
+            {
+                std::string name = j_tile["name"];
+                std::string path = j_tile["path"];
+
+                Script* script = sceneManager->GetMainLoop ()->GetScriptManager ().LoadScriptFromFile (
+                    GetDataPath () + "scripts/" + path, name);
+
+                if (script)
+                {
+                    scene->AttachScript (script, path);
+                }
+            }
 
             return scene;
         }

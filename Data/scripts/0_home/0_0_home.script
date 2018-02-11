@@ -12,33 +12,34 @@ Point screenSize = GetWindowSize ();
 
 void Start ()
 {
-    Point frameSize1 (350, 100);
-	Point framePos1 (screenSize.Width / 2 - frameSize1.Width / 2, screenSize.Height - frameSize1.Height - 10);
-	Rect rect (framePos1, Point (framePos1.X + frameSize1.Width, framePos1.Y + frameSize1.Height));    
-    string txt = "[color=RED]Hello[/color] !!!\n I've found [color=YELLOW]think[/color] take.\n[color=GREEN]But the most[/color] part of [color=LIGHTBLUE]this, is to[/color] be [color=RED]happy[/color] !!!\n   \n Oh, wait...";
-	
-	@mainFrame = AddSpeechFrame ("MAIN_SPEECH", txt, rect, true, "player_head");
-	mainFrame.Hide ();
+}
 
-	Point frameSize2 (350, 40);
+void BeforeEnterScene ()
+{
+ //   Point frameSize1 (350, 100);
+//	Point framePos1 (screenSize.Width / 2 - frameSize1.Width / 2, screenSize.Height - frameSize1.Height - 10);
+//	Rect rect (framePos1, Point (framePos1.X + frameSize1.Width, framePos1.Y + frameSize1.Height));    
+    // string txt = "[color=RED]Hello[/color] !!!\n I've found [color=YELLOW]think[/color] take.\n[color=GREEN]But the most[/color] part of [color=LIGHTBLUE]this, is to[/color] be [color=RED]happy[/color] !!!\n   \n Oh, wait...";
+	
+	// @mainFrame = AddSpeechFrame ("MAIN_SPEECH", txt, rect, true, "player_head");
+	// mainFrame.Hide ();
+
+	Point frameSize2 (350, 60);
 	Point framePos2 (screenSize.Width / 2 - frameSize2.Width / 2, 10);
 	Rect r (framePos2, Point (framePos2.X + frameSize2.Width, framePos2.Y + frameSize2.Height));
     @topFrame = AddSpeechFrame ("SPEECH", "PTR4617[WAIT=300]???[/WAIT]", r, false);
 	topFrame.Hide ();
 	topFrame.SetDrawTextCenter (true);
-}
 
-void BeforeEnterScene ()
-{
-  //  player.SetPreventInput (true);
+	lastPoint = GetFlagPoint ("A").Pos;
+    player.SetPosition (lastPoint.X, lastPoint.Y);	
+	
+	 //  player.SetPreventInput (true);
 
     //SceneFadeInOut ();
 
 	AddOnEnterCallback ("TOP", TopOnEnter);
 	AddOnLeaveCallback ("TOP", TopOnLeave);
-
-    lastPoint = GetFlagPoint ("A").Pos;
-    player.SetPosition (lastPoint.X, lastPoint.Y);	
 
   	Point flag1 = lastPoint;
 	Point flag2 = GetFlagPoint ("B").Pos;

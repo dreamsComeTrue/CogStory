@@ -39,7 +39,7 @@ namespace aga
 
         virtual void Move (float dx, float dy);
         virtual void SetPosition (float x, float y);
-        void SetPosition (const Point& pos);
+        virtual void SetPosition (Point pos);
         Point GetPosition ();
         Point GetSize ();
 

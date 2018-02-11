@@ -39,6 +39,9 @@ namespace aga
         m_MainLoop->GetSceneManager ().AddScene (SCENE_0_0, m_CurrentScene);
         m_MainLoop->GetSceneManager ().SetActiveScene (m_CurrentScene);
 
+        m_MainLoop->GetSceneManager ().GetPlayer ().TemplateBounds.Pos
+            = m_MainLoop->GetSceneManager ().GetPlayer ().GetPosition ();
+
         return true;
     }
 
@@ -52,9 +55,8 @@ namespace aga
     {
         m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (60, 60, 70));
         m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (50, 60, 100));
-        m_MainLoop->GetSceneManager ().GetActiveScene ()->BeforeEnter ();
-
         m_MainLoop->GetSceneManager ().GetSpeechFrameManager ().Clear ();
+        m_MainLoop->GetSceneManager ().GetActiveScene ()->BeforeEnter ();
 
         const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
         float scale = 2.0f;
@@ -65,6 +67,9 @@ namespace aga
 
 #ifndef EDITOR_ENABLED
         m_MainLoop->GetSceneManager ().GetActiveScene ()->SetDrawPhysData (false);
+#else
+        Point playerPos = m_MainLoop->GetSceneManager ().GetPlayer ().TemplateBounds.Pos;
+        m_MainLoop->GetSceneManager ().GetPlayer ().SetPosition (playerPos);
 #endif
     }
 

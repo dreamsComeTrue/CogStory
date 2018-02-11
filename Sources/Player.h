@@ -36,6 +36,7 @@ namespace aga
 
         void Move (float dx, float dy) override;
         void SetPosition (float x, float y) override;
+        void SetPosition (Point pos) override;
 
         void SetFollowCamera (bool follow);
 

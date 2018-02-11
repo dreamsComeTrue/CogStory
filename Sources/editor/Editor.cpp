@@ -514,6 +514,23 @@ namespace aga
                     !m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawPhysData ());
                 break;
             }
+
+            case ALLEGRO_KEY_SLASH:
+            {
+                ALLEGRO_MOUSE_STATE state;
+                al_get_mouse_state (&state);
+
+                Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
+                Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
+                Point point = CalculateCursorPoint (state.x, state.y);
+
+                m_MainLoop->GetSceneManager ().GetPlayer ().SetPosition ((translate.X + point.X) * 1 / scale.X,
+                                                                         (translate.Y + point.Y) * 1 / scale.Y);
+                m_MainLoop->GetSceneManager ().GetPlayer ().TemplateBounds.Pos
+                    = m_MainLoop->GetSceneManager ().GetPlayer ().GetPosition ();
+
+                break;
+            }
             }
         }
 

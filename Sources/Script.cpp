@@ -32,11 +32,8 @@ namespace aga
     void ExceptionCallback (asIScriptContext* context)
     {
         char buffer[1024] = {};
-        sprintf (buffer,
-                 "- Exception '%s' in '%s'\n%s",
-                 context->GetExceptionString (),
-                 context->GetExceptionFunction ()->GetDeclaration (),
-                 GetCallStack (context).c_str ());
+        sprintf (buffer, "- Exception '%s' in '%s'\n%s", context->GetExceptionString (),
+                 context->GetExceptionFunction ()->GetDeclaration (), GetCallStack (context).c_str ());
 
         printf ("%s", buffer);
     }
@@ -45,11 +42,11 @@ namespace aga
     //---------------------------------------------------------------------------
 
     Script::Script (asIScriptModule* module, ScriptManager* manager, const std::string& name)
-      : m_Module (module)
-      , m_Manager (manager)
-      , m_FuncContext (nullptr)
-      , m_UpdateFunction (nullptr)
-      , m_Name (name)
+        : m_Module (module)
+        , m_Manager (manager)
+        , m_FuncContext (nullptr)
+        , m_UpdateFunction (nullptr)
+        , m_Name (name)
     {
     }
 
@@ -71,8 +68,6 @@ namespace aga
 
         m_FuncContext = m_Module->GetEngine ()->RequestContext ();
         m_FuncContext->SetExceptionCallback (asFUNCTION (ExceptionCallback), this, asCALL_THISCALL);
-
-        Run ("void Start ()");
 
         return true;
     }

@@ -9,8 +9,9 @@ namespace aga
     //---------------------------------------------------------------------------
 
     AudioManager::AudioManager (MainLoop* mainLoop)
-      : m_MainLoop (mainLoop)
-      , m_MasterVolume (1.0f)
+        : m_MainLoop (mainLoop)
+        , m_MasterVolume (1.0f)
+        , m_Enabled (true)
     {
     }
 
@@ -71,6 +72,14 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     float AudioManager::GetMasterVolume () const { return m_MasterVolume; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void AudioManager::SetEnabled (bool enabled) { m_Enabled = enabled; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool AudioManager::IsEnabled () { return m_Enabled; }
 
     //--------------------------------------------------------------------------------------------------
 }

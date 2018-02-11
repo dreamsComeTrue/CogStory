@@ -8,11 +8,11 @@ namespace aga
     //---------------------------------------------------------------------------
 
     AudioSample::AudioSample (AudioManager* manager, const std::string& name, const std::string& path)
-      : m_AudioManager (manager)
-      , m_Name (name)
-      , m_FilePath (path)
-      , m_Sample (nullptr)
-      , m_Gain (1.0f)
+        : m_AudioManager (manager)
+        , m_Name (name)
+        , m_FilePath (path)
+        , m_Sample (nullptr)
+        , m_Gain (1.0f)
     {
     }
 
@@ -53,7 +53,7 @@ namespace aga
 
     void AudioSample::Play ()
     {
-        if (m_Sample)
+        if (m_Sample && m_AudioManager->IsEnabled ())
         {
             float volume = m_Gain;
             float masterVolume = m_AudioManager->GetMasterVolume ();

@@ -58,7 +58,7 @@ namespace aga
             Point playerPosition = m_Player.GetPosition ();
 
             m_Camera.SetTranslate (screenSize.Width * 0.5 - playerPosition.X * scale.X - playerSize.Width * 0.5,
-                screenSize.Height * 0.5 - playerPosition.Y * scale.Y - playerSize.Height * 0.5);
+                                   screenSize.Height * 0.5 - playerPosition.Y * scale.Y - playerSize.Height * 0.5);
         };
         m_Player.SetCheckOverlap (true);
 
@@ -283,8 +283,9 @@ namespace aga
             return false;
         };
 
-        tweeny::tween<float> tween = tweeny::from (
-            0.0f).to (1.0f).during (FADE_MAX_TIME)
+        tweeny::tween<float> tween = tweeny::from (0.0f)
+                                         .to (1.0f)
+                                         .during (FADE_MAX_TIME)
                                          .onStep (fadeInFunc)
                                          .to (0.0f)
                                          .during (FADE_MAX_TIME)

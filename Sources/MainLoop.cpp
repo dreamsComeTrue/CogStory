@@ -50,7 +50,7 @@ namespace aga
         m_TweenManager.Initialize ();
         m_ScriptManager.Initialize ();
 
-        m_AudioManager.SetMasterVolume (0.5);
+        m_AudioManager.SetMasterVolume (0.1);
 
         m_Screen->ProcessEventFunction = [&](ALLEGRO_EVENT* event) {
             m_SceneManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
@@ -70,7 +70,7 @@ namespace aga
 
         InitializeStates ();
 #ifdef EDITOR_ENABLED
-        m_StateManager.SetActiveState (m_EditorState);
+        m_StateManager.SetActiveState (m_GamePlayState);
 #else
         m_StateManager.SetActiveState (m_GamePlayState);
 #endif
