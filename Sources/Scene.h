@@ -84,6 +84,7 @@ namespace aga
         virtual std::string GetTypeName () override { return TypeName; }
 
         void Draw (AtlasManager* atlasManager);
+        void DrawBounds ();
     };
 
     class Scene : public Lifecycle, public Scriptable
@@ -139,6 +140,9 @@ namespace aga
         bool IsDrawPhysData ();
         QuadTreeNode& GetQuadTree ();
 
+        void SetDrawBoundingBox (bool enable);
+        bool IsDrawBoundingBox ();
+
         Rect GetRenderBounds (Entity* entity);
 
         void AddOnEnterCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
@@ -163,6 +167,7 @@ namespace aga
         SceneManager* m_SceneManager;
 
         bool m_DrawPhysData;
+        bool m_DrawBoundingBox;
         QuadTreeNode m_QuadTree;
     };
 }

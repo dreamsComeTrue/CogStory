@@ -24,9 +24,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool EditorActorMode::AddOrUpdateActor (const std::string& name,
-                                            const std::string& actorType,
-                                            Point pos,
+    bool EditorActorMode::AddOrUpdateActor (const std::string& name, const std::string& actorType, Point pos,
                                             float rotation)
     {
         Actor* actor = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActor (name);

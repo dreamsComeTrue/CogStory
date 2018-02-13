@@ -83,12 +83,23 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Tile::DrawBounds ()
+    {
+        al_draw_rectangle (Bounds.GetTopLeft ().X - Bounds.GetHalfSize ().Width,
+                           Bounds.GetTopLeft ().Y - Bounds.GetHalfSize ().Height,
+                           Bounds.GetBottomRight ().X - Bounds.GetHalfSize ().Width,
+                           Bounds.GetBottomRight ().Y - Bounds.GetHalfSize ().Height, COLOR_YELLOW, 2);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     const float boundSize = 10000;
 
     Scene::Scene (SceneManager* sceneManager)
         : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
         , m_SceneManager (sceneManager)
         , m_DrawPhysData (true)
+        , m_DrawBoundingBox (true)
         , m_QuadTree (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }))
     {
     }
@@ -183,7 +194,7 @@ namespace aga
 
         m_SceneManager->GetCamera ().Update (deltaTime);
 
-        if (m_DrawPhysData)
+        if (m_DrawBoundingBox)
         {
             DrawQuadTree (&m_QuadTree);
         }
@@ -207,9 +218,14 @@ namespace aga
 
                     tile->Draw (m_SceneManager->GetAtlasManager ());
 
+                    if (m_DrawBoundingBox)
+                    {
+                        tile->DrawBounds ();
+                    }
+
                     if (m_DrawPhysData)
                     {
-                        tile->DrawPhysVertices ();
+                        tile->DrawPhysBody ();
                     }
                 }
                 else
@@ -217,6 +233,16 @@ namespace aga
                     Actor* actor = (Actor*)m_AllEntities[i];
 
                     actor->Render (deltaTime);
+
+                    if (m_DrawBoundingBox)
+                    {
+                        actor->DrawBounds ();
+                    }
+
+                    if (m_DrawPhysData)
+                    {
+                        actor->DrawPhysBody ();
+                    }
 
                     Rect bounds = actor->Bounds;
                     Point pos = { bounds.GetCenter ().X - bounds.GetHalfSize ().Width,
@@ -245,15 +271,30 @@ namespace aga
                     tile->RenderID = i;
                     tile->Draw (m_SceneManager->GetAtlasManager ());
 
+                    if (m_DrawBoundingBox)
+                    {
+                        tile->DrawBounds ();
+                    }
+
                     if (m_DrawPhysData)
                     {
-                        tile->DrawPhysVertices ();
+                        tile->DrawPhysBody ();
                     }
                 }
                 else
                 {
                     Actor* actor = (Actor*)entities[i];
                     actor->Render (deltaTime);
+
+                    if (m_DrawBoundingBox)
+                    {
+                        actor->DrawBounds ();
+                    }
+
+                    if (m_DrawPhysData)
+                    {
+                        actor->DrawPhysBody ();
+                    }
                 }
             }
         }
@@ -263,9 +304,14 @@ namespace aga
             m_SceneManager->GetPlayer ().Render (deltaTime);
         }
 
+        if (m_DrawBoundingBox)
+        {
+            m_SceneManager->GetPlayer ().DrawBounds ();
+        }
+
         if (m_DrawPhysData)
         {
-            m_SceneManager->GetPlayer ().DrawPhysVertices ();
+            m_SceneManager->GetPlayer ().DrawPhysBody ();
         }
 
         font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), -100, -50, m_Name, ALLEGRO_ALIGN_LEFT);
@@ -545,6 +591,14 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     bool Scene::IsDrawPhysData () { return m_DrawPhysData; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::SetDrawBoundingBox (bool enable) { m_DrawBoundingBox = enable; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Scene::IsDrawBoundingBox () { return m_DrawBoundingBox; }
 
     //--------------------------------------------------------------------------------------------------
 

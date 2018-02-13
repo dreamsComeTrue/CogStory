@@ -57,8 +57,8 @@ namespace aga
             Point playerSize = m_Player.GetSize ();
             Point playerPosition = m_Player.GetPosition ();
 
-            m_Camera.SetTranslate (screenSize.Width * 0.5 - playerPosition.X * scale.X - playerSize.Width * 0.5,
-                                   screenSize.Height * 0.5 - playerPosition.Y * scale.Y - playerSize.Height * 0.5);
+            m_Camera.SetTranslate (screenSize.Width * 0.5 - playerPosition.X * scale.X, //- playerSize.Width * 0.5,
+                                   screenSize.Height * 0.5 - playerPosition.Y * scale.Y); // - playerSize.Height * 0.5);
         };
         m_Player.SetCheckOverlap (true);
 

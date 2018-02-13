@@ -109,6 +109,7 @@ namespace aga
         void OnTriggerArea ();
 
         void OnSelectMode ();
+        void OnRemoveBody ();
         void OnNewPoly ();
 
         void OnSpeech ();
@@ -116,6 +117,8 @@ namespace aga
 
         void UpdateScriptsBox ();
         void OnReloadScript ();
+
+        void MarkPlayerPosition ();
 
         void OnTilesetSelected (Gwk::Controls::Base* control);
 

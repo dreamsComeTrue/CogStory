@@ -73,6 +73,8 @@ namespace aga
 
     Gwk::Controls::Button* selectModeButton;
     Gwk::Controls::Button* newPolyButton;
+    Gwk::Controls::Button* saveBodyButton;
+    Gwk::Controls::Button* removeBodyButton;
 
     Gwk::Controls::Button* speechButton;
     Gwk::Controls::Button* actorButton;
@@ -202,20 +204,32 @@ namespace aga
         triggerAreaButton->onPress.Add (this, &Editor::OnTriggerArea);
 
         selectModeButton = new Gwk::Controls::Button (m_MainCanvas);
-        selectModeButton->SetText (m_CursorMode != CursorMode::EditPhysBodyMode ? "SELECT MODE" : "PHYS MODE");
+        selectModeButton->SetText (m_CursorMode != CursorMode::EditPhysBodyMode ? "PHYS MODE" : "EXIT PHYS");
         selectModeButton->SetPos (20, triggerAreaButton->Bottom () + 40);
         selectModeButton->onPress.Add (this, &Editor::OnSelectMode);
         selectModeButton->Hide ();
 
+        saveBodyButton = new Gwk::Controls::Button (m_MainCanvas);
+        saveBodyButton->SetText ("SAVE BODY");
+        saveBodyButton->SetPos (20, selectModeButton->Bottom () + 5);
+        saveBodyButton->onPress.Add (this, &Editor::OnSelectMode);
+        saveBodyButton->Hide ();
+
+        removeBodyButton = new Gwk::Controls::Button (m_MainCanvas);
+        removeBodyButton->SetText ("REMOVE BODY");
+        removeBodyButton->SetPos (20, saveBodyButton->Bottom () + 5);
+        removeBodyButton->onPress.Add (this, &Editor::OnRemoveBody);
+        removeBodyButton->Hide ();
+
         newPolyButton = new Gwk::Controls::Button (m_MainCanvas);
         newPolyButton->SetText ("NEW POLY");
-        newPolyButton->SetPos (20, selectModeButton->Bottom () + 5);
+        newPolyButton->SetPos (20, removeBodyButton->Bottom () + 5);
         newPolyButton->onPress.Add (this, &Editor::OnNewPoly);
         newPolyButton->Hide ();
 
         speechButton = new Gwk::Controls::Button (m_MainCanvas);
         speechButton->SetText ("SPEECH");
-        speechButton->SetPos (20, newPolyButton->Bottom () + 40);
+        speechButton->SetPos (20, selectModeButton->Bottom () + 40);
         speechButton->onPress.Add (this, &Editor::OnSpeech);
 
         actorButton = new Gwk::Controls::Button (m_MainCanvas);
@@ -357,6 +371,7 @@ namespace aga
 
             m_IsSnapToGrid = j["show_grid"];
             m_MainLoop->GetSceneManager ().GetActiveScene ()->SetDrawPhysData (j["show_physics"]);
+            m_MainLoop->GetSceneManager ().GetActiveScene ()->SetDrawBoundingBox (j["show_bounds"]);
         }
         catch (const std::exception&)
         {
@@ -373,6 +388,7 @@ namespace aga
 
             j["show_grid"] = m_IsSnapToGrid;
             j["show_physics"] = m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawPhysData ();
+            j["show_bounds"] = m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawBoundingBox ();
 
             // write prettified JSON to another file
             std::ofstream out ((GetDataPath () + configFileName).c_str ());
@@ -432,7 +448,7 @@ namespace aga
 
     void Editor::ProcessEvent (ALLEGRO_EVENT* event, float)
     {
-        if (m_EditorTileMode.m_IsDrawTiles && m_GUIInput.ProcessMessage (*event))
+        if (m_GUIInput.ProcessMessage (*event))
         {
             return;
         }
@@ -515,19 +531,16 @@ namespace aga
                 break;
             }
 
+            case ALLEGRO_KEY_B:
+            {
+                m_MainLoop->GetSceneManager ().GetActiveScene ()->SetDrawBoundingBox (
+                    !m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawBoundingBox ());
+                break;
+            }
+
             case ALLEGRO_KEY_SLASH:
             {
-                ALLEGRO_MOUSE_STATE state;
-                al_get_mouse_state (&state);
-
-                Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-                Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-                Point point = CalculateCursorPoint (state.x, state.y);
-
-                m_MainLoop->GetSceneManager ().GetPlayer ().SetPosition ((translate.X + point.X) * 1 / scale.X,
-                                                                         (translate.Y + point.Y) * 1 / scale.Y);
-                m_MainLoop->GetSceneManager ().GetPlayer ().TemplateBounds.Pos
-                    = m_MainLoop->GetSceneManager ().GetPlayer ().GetPosition ();
+                MarkPlayerPosition ();
 
                 break;
             }
@@ -553,16 +566,9 @@ namespace aga
 
             case ALLEGRO_KEY_TAB:
             {
-                if (m_EditorTileMode.m_SelectedTile)
+                if (m_EditorActorMode.m_SelectedActor || m_EditorTileMode.m_SelectedTile)
                 {
-                    if (m_CursorMode != CursorMode::EditPhysBodyMode)
-                    {
-                        m_CursorMode = CursorMode::EditPhysBodyMode;
-                    }
-                    else
-                    {
-                        m_CursorMode = CursorMode::TileSelectMode;
-                    }
+                    OnSelectMode ();
                 }
                 break;
             }
@@ -575,7 +581,6 @@ namespace aga
         }
         else if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
         {
-
             long currentTime = GetCurrentTime ();
 
             if (currentTime - m_LastTimeClicked <= DOUBLE_CLICK_SPEED)
@@ -638,73 +643,96 @@ namespace aga
             DrawGrid ();
         }
 
-        m_MainLoop->GetSceneManager ().Render (deltaTime);
-
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
 
-        Rect r;
-        bool objectFound = false;
-
-        m_MainLoop->GetSceneManager ().GetCamera ().UseIdentityTransform ();
-
-        if (m_EditorActorMode.m_SelectedActor)
+        if (m_CursorMode == CursorMode::EditPhysBodyMode)
         {
-            r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_EditorActorMode.m_SelectedActor);
-            objectFound = true;
-        }
-        else if (m_EditorTileMode.m_SelectedTile)
-        {
-            r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_EditorTileMode.m_SelectedTile);
-            objectFound = true;
-        }
+            Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
+            camera.Update (deltaTime);
 
-        if (objectFound)
-        {
-            al_draw_rectangle (r.GetPos ().X, r.GetPos ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y, COLOR_RED,
-                               2);
-        }
-
-        if (m_CursorMode == CursorMode::TileSelectMode)
-        {
-            objectFound = false;
-
-            m_EditorActorMode.m_ActorUnderCursor
-                = m_EditorActorMode.GetActorUnderCursor (state.x, state.y, std::move (r));
-
-            if (m_EditorActorMode.m_ActorUnderCursor)
+            if (m_EditorTileMode.m_SelectedTile)
             {
+                Tile* tile = m_EditorTileMode.m_SelectedTile;
+                tile->Draw (m_MainLoop->GetSceneManager ().GetAtlasManager ());
+                tile->DrawBounds ();
+                tile->DrawPhysBody ();
+            }
+            else if (m_EditorActorMode.m_SelectedActor)
+            {
+                m_EditorActorMode.m_SelectedActor->Render (deltaTime);
+                m_EditorActorMode.m_SelectedActor->DrawBounds ();
+                m_EditorActorMode.m_SelectedActor->DrawPhysBody ();
+            }
+
+            camera.UseIdentityTransform ();
+            m_EditorPhysMode.DrawPhysBody (state.x, state.y);
+            RenderUI ();
+        }
+        else
+        {
+            m_MainLoop->GetSceneManager ().Render (deltaTime);
+
+            Rect r;
+            bool objectFound = false;
+
+            m_MainLoop->GetSceneManager ().GetCamera ().UseIdentityTransform ();
+
+            if (m_EditorActorMode.m_SelectedActor)
+            {
+                r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (
+                    m_EditorActorMode.m_SelectedActor);
                 objectFound = true;
             }
-            else
+            else if (m_EditorTileMode.m_SelectedTile)
             {
-                m_EditorTileMode.m_TileUnderCursor
-                    = m_EditorTileMode.GetTileUnderCursor (state.x, state.y, std::move (r));
-
-                if (m_EditorTileMode.m_TileUnderCursor)
-                {
-                    objectFound = true;
-                }
+                r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_EditorTileMode.m_SelectedTile);
+                objectFound = true;
             }
 
             if (objectFound)
             {
                 al_draw_rectangle (r.GetPos ().X, r.GetPos ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y,
-                                   COLOR_YELLOW, 2);
+                                   COLOR_RED, 2);
             }
-        }
-        else if (m_CursorMode == CursorMode::EditPhysBodyMode)
-        {
-            m_EditorPhysMode.DrawPhysBody (state.x, state.y);
-        }
 
-        m_EditorFlagPointMode.DrawFlagPoints (state.x, state.y);
-        m_EditorTriggerAreaMode.DrawTriggerAreas (state.x, state.y);
+            if (m_CursorMode == CursorMode::TileSelectMode)
+            {
+                objectFound = false;
 
-        if (m_EditorTileMode.m_IsDrawTiles)
-        {
-            m_EditorTileMode.DrawTiles ();
-            RenderUI ();
+                m_EditorActorMode.m_ActorUnderCursor
+                    = m_EditorActorMode.GetActorUnderCursor (state.x, state.y, std::move (r));
+
+                if (m_EditorActorMode.m_ActorUnderCursor)
+                {
+                    objectFound = true;
+                }
+                else
+                {
+                    m_EditorTileMode.m_TileUnderCursor
+                        = m_EditorTileMode.GetTileUnderCursor (state.x, state.y, std::move (r));
+
+                    if (m_EditorTileMode.m_TileUnderCursor)
+                    {
+                        objectFound = true;
+                    }
+                }
+
+                if (objectFound)
+                {
+                    al_draw_rectangle (r.GetPos ().X, r.GetPos ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y,
+                                       COLOR_YELLOW, 2);
+                }
+            }
+
+            m_EditorFlagPointMode.DrawFlagPoints (state.x, state.y);
+            m_EditorTriggerAreaMode.DrawTriggerAreas (state.x, state.y);
+
+            if (m_EditorTileMode.m_IsDrawTiles)
+            {
+                m_EditorTileMode.DrawTiles ();
+                RenderUI ();
+            }
         }
     }
 
@@ -950,18 +978,59 @@ namespace aga
     {
         if (m_CursorMode != CursorMode::EditPhysBodyMode)
         {
-            m_CursorMode = CursorMode::EditPhysBodyMode;
+            Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
+            Point scale = camera.GetScale ();
+            Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+            Rect bounds;
 
-            newPolyButton->Show ();
+            if (m_EditorActorMode.m_SelectedActor)
+            {
+                bounds = m_EditorActorMode.m_SelectedActor->Bounds;
+            }
+            else if (m_EditorTileMode.m_SelectedTile)
+            {
+                bounds = m_EditorTileMode.m_SelectedTile->Bounds;
+            }
+
+            camera.SetTranslate (screenSize.Width * 0.5 - bounds.Pos.X * scale.X,
+                                 screenSize.Height * 0.5 - bounds.Pos.Y * scale.Y);
+
+            m_CursorMode = CursorMode::EditPhysBodyMode;
         }
         else
         {
             m_CursorMode = CursorMode::TileSelectMode;
-
-            newPolyButton->Hide ();
         }
 
-        selectModeButton->SetText (m_CursorMode != CursorMode::EditPhysBodyMode ? "SELECT MODE" : "PHYS MODE");
+        SetDrawUITiles (m_CursorMode == CursorMode::TileSelectMode);
+        flagPointButton->SetHidden (m_CursorMode == CursorMode::EditPhysBodyMode);
+        triggerAreaButton->SetHidden (m_CursorMode == CursorMode::EditPhysBodyMode);
+        speechButton->SetHidden (m_CursorMode == CursorMode::EditPhysBodyMode);
+        actorButton->SetHidden (m_CursorMode == CursorMode::EditPhysBodyMode);
+        scriptsBox->SetHidden (m_CursorMode == CursorMode::EditPhysBodyMode);
+        scriptReloadButton->SetHidden (m_CursorMode == CursorMode::EditPhysBodyMode);
+        newPolyButton->SetHidden (m_CursorMode != CursorMode::EditPhysBodyMode);
+        saveBodyButton->SetHidden (m_CursorMode != CursorMode::EditPhysBodyMode);
+        removeBodyButton->SetHidden (m_CursorMode != CursorMode::EditPhysBodyMode);
+
+        selectModeButton->SetText (m_CursorMode != CursorMode::EditPhysBodyMode ? "PHYS MODE" : "EXIT PHYS");
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnRemoveBody ()
+    {
+        if (m_EditorTileMode.m_SelectedTile)
+        {
+            m_EditorTileMode.m_SelectedTile->PhysPoints.clear ();
+
+            if (m_EditorPhysMode.m_PhysPoly)
+            {
+                m_EditorPhysMode.m_PhysPoly->clear ();
+            }
+
+            m_EditorPhysMode.m_PhysPoint = nullptr;
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -970,9 +1039,19 @@ namespace aga
     {
         m_EditorPhysMode.m_PhysPoly = nullptr;
         m_EditorPhysMode.m_PhysPoint = nullptr;
-        m_EditorTileMode.m_SelectedTile->PhysPoints.push_back ({});
-        m_EditorPhysMode.m_PhysPoly
-            = &m_EditorTileMode.m_SelectedTile->PhysPoints[m_EditorTileMode.m_SelectedTile->PhysPoints.size () - 1];
+
+        if (m_EditorActorMode.m_SelectedActor)
+        {
+            m_EditorActorMode.m_SelectedActor->PhysPoints.push_back ({});
+            m_EditorPhysMode.m_PhysPoly = &m_EditorActorMode.m_SelectedActor
+                                               ->PhysPoints[m_EditorActorMode.m_SelectedActor->PhysPoints.size () - 1];
+        }
+        else if (m_EditorTileMode.m_SelectedTile)
+        {
+            m_EditorTileMode.m_SelectedTile->PhysPoints.push_back ({});
+            m_EditorPhysMode.m_PhysPoly
+                = &m_EditorTileMode.m_SelectedTile->PhysPoints[m_EditorTileMode.m_SelectedTile->PhysPoints.size () - 1];
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1047,6 +1126,23 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Editor::MarkPlayerPosition ()
+    {
+        ALLEGRO_MOUSE_STATE state;
+        al_get_mouse_state (&state);
+
+        Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
+        Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
+        Point point = CalculateCursorPoint (state.x, state.y);
+
+        m_MainLoop->GetSceneManager ().GetPlayer ().SetPosition ((translate.X + point.X) * 1 / scale.X,
+                                                                 (translate.Y + point.Y) * 1 / scale.Y);
+        m_MainLoop->GetSceneManager ().GetPlayer ().TemplateBounds.Pos
+            = m_MainLoop->GetSceneManager ().GetPlayer ().GetPosition ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Editor::RenderUI ()
     {
         Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
@@ -1107,7 +1203,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::SetDrawUITiles (bool draw) { m_EditorTileMode.m_IsDrawTiles = draw; }
+    void Editor::SetDrawUITiles (bool draw)
+    {
+        m_EditorTileMode.m_IsDrawTiles = draw;
+        tilesetCombo->SetHidden (!m_EditorTileMode.m_IsDrawTiles);
+        leftPrevTileButton->SetHidden (!m_EditorTileMode.m_IsDrawTiles);
+        leftNextTileButton->SetHidden (!m_EditorTileMode.m_IsDrawTiles);
+        rightPrevTileButton->SetHidden (!m_EditorTileMode.m_IsDrawTiles);
+        rightNextTileButton->SetHidden (!m_EditorTileMode.m_IsDrawTiles);
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -1144,7 +1248,7 @@ namespace aga
 
     void Editor::ProcessMouseButtonDoubleClick (ALLEGRO_MOUSE_EVENT& event)
     {
-        if (m_EditorActorMode.m_SelectedActor)
+        if (m_CursorMode != EditPhysBodyMode && m_EditorActorMode.m_SelectedActor)
         {
             OnActor ();
         }
@@ -1166,49 +1270,65 @@ namespace aga
 
                 if (m_EditorActorMode.m_SelectedActor)
                 {
+                    selectModeButton->Show ();
+
                     m_CursorMode = CursorMode::TileEditMode;
+                    m_EditorTileMode.m_Rotation = m_EditorActorMode.m_SelectedActor->Rotation;
                 }
-                else
+
+                m_EditorTileMode.m_SelectedTile = m_EditorTileMode.GetTileUnderCursor (event.x, event.y, std::move (r));
+
+                if (m_EditorTileMode.m_SelectedTile)
                 {
-                    m_EditorTileMode.m_SelectedTile
-                        = m_EditorTileMode.GetTileUnderCursor (event.x, event.y, std::move (r));
+                    selectModeButton->Show ();
 
-                    if (m_EditorTileMode.m_SelectedTile)
-                    {
-                        selectModeButton->Show ();
-
-                        m_CursorMode = CursorMode::TileEditMode;
-                        m_EditorTileMode.m_Rotation = m_EditorTileMode.m_SelectedTile->Rotation;
-                    }
+                    m_CursorMode = CursorMode::TileEditMode;
+                    m_EditorTileMode.m_Rotation = m_EditorTileMode.m_SelectedTile->Rotation;
                 }
             }
             else if (m_CursorMode == CursorMode::TileEditMode && !g_IsToolBoxTileSelected)
             {
                 Rect r;
-                m_EditorActorMode.m_SelectedActor
-                    = m_EditorActorMode.GetActorUnderCursor (event.x, event.y, std::move (r));
 
-                if (!m_EditorActorMode.m_SelectedActor)
+                Actor* newSelectedActor = m_EditorActorMode.GetActorUnderCursor (event.x, event.y, std::move (r));
+
+                if (newSelectedActor != m_EditorActorMode.m_SelectedActor || !newSelectedActor)
                 {
-                    Tile* newSelectedTile = m_EditorTileMode.GetTileUnderCursor (event.x, event.y, std::move (r));
-
-                    if (newSelectedTile != m_EditorTileMode.m_SelectedTile || !newSelectedTile)
+                    if (newSelectedActor)
                     {
-                        if (newSelectedTile)
-                        {
-                            m_EditorTileMode.m_SelectedTile = newSelectedTile;
-                            m_CursorMode = CursorMode::TileEditMode;
-                            m_EditorTileMode.m_Rotation = m_EditorTileMode.m_SelectedTile->Rotation;
+                        m_EditorActorMode.m_SelectedActor = newSelectedActor;
+                        m_CursorMode = CursorMode::TileEditMode;
+                        m_EditorTileMode.m_Rotation = m_EditorActorMode.m_SelectedActor->Rotation;
 
-                            selectModeButton->Show ();
-                        }
-                        else
-                        {
-                            m_CursorMode = CursorMode::TileSelectMode;
-                            m_EditorTileMode.m_SelectedTile = nullptr;
+                        selectModeButton->Show ();
+                    }
+                    else
+                    {
+                        m_CursorMode = CursorMode::TileSelectMode;
+                        m_EditorActorMode.m_SelectedActor = nullptr;
 
-                            selectModeButton->Hide ();
-                        }
+                        selectModeButton->Hide ();
+                    }
+                }
+
+                Tile* newSelectedTile = m_EditorTileMode.GetTileUnderCursor (event.x, event.y, std::move (r));
+
+                if (newSelectedTile != m_EditorTileMode.m_SelectedTile || !newSelectedTile)
+                {
+                    if (newSelectedTile)
+                    {
+                        m_EditorTileMode.m_SelectedTile = newSelectedTile;
+                        m_CursorMode = CursorMode::TileEditMode;
+                        m_EditorTileMode.m_Rotation = m_EditorTileMode.m_SelectedTile->Rotation;
+
+                        selectModeButton->Show ();
+                    }
+                    else
+                    {
+                        m_CursorMode = CursorMode::TileSelectMode;
+                        m_EditorTileMode.m_SelectedTile = nullptr;
+
+                        selectModeButton->Hide ();
                     }
                 }
             }
@@ -1250,8 +1370,7 @@ namespace aga
             {
                 physPointRemoved = m_EditorPhysMode.RemovePhysPointUnderCursor (event.x, event.y);
             }
-
-            if (!flagPointRemoved && !triggerPointRemoved && !physPointRemoved)
+            else if (!flagPointRemoved && !triggerPointRemoved)
             {
                 m_CursorMode = CursorMode::TileSelectMode;
             }

@@ -11,7 +11,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Collidable::Collidable (PhysicsManager* physicsManager)
-      : m_PhysicsManager (physicsManager)
+        : m_PhysicsManager (physicsManager)
     {
     }
 
@@ -43,7 +43,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Collidable::DrawPhysVertices ()
+    void Collidable::DrawPhysBody ()
     {
         for (int i = 0; i < PhysPoints.size (); ++i)
         {

@@ -17,7 +17,7 @@ namespace aga
         void AddPhysOffset (const Point& offset);
         void SetPhysOffset (const Point& offset);
         void SetPhysOffset (float offsetX, float offsetY);
-        void DrawPhysVertices ();
+        void DrawPhysBody ();
         Polygon& GetPhysPolygon (int index);
         size_t GetPhysPolygonsCount () const;
         void UpdatePhysPolygon ();

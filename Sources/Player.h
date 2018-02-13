@@ -45,6 +45,7 @@ namespace aga
     private:
         void InitializeAnimations ();
         void UpdateParticleEmitters ();
+        void ProcessTriggerAreas (float dx, float dy);
 
     private:
         bool m_FollowCamera;

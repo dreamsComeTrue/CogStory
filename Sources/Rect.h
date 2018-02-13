@@ -37,6 +37,9 @@ namespace aga
         void SetSize (Point p) { Size = p; }
         void SetSize (float x, float y) { Size.Set (x, y); }
 
+        void Offset (Point p) { Offset (p.X, p.Y); }
+        void Offset (float x, float y) { SetPos (Pos.X + x, Pos.Y + y); }
+
         Point GetCenter () { return Point{ Pos.X + Size.Width * 0.5f, Pos.Y + Size.Height * 0.5f }; }
         Point GetHalfSize () { return Point{ Size.Width * 0.5f, Size.Height * 0.5f }; }
 
@@ -48,14 +51,14 @@ namespace aga
 
     static bool Intersect (Rect rectA, Rect rectB)
     {
-        return rectA.GetTopLeft ().X < rectB.GetBottomRight ().X && rectB.GetTopLeft ().X < rectA.GetBottomRight ().X &&
-               rectA.GetTopLeft ().Y < rectB.GetBottomRight ().Y && rectB.GetTopLeft ().Y < rectA.GetBottomRight ().Y;
+        return rectA.GetTopLeft ().X < rectB.GetBottomRight ().X && rectB.GetTopLeft ().X < rectA.GetBottomRight ().X
+            && rectA.GetTopLeft ().Y < rectB.GetBottomRight ().Y && rectB.GetTopLeft ().Y < rectA.GetBottomRight ().Y;
     }
 
     static bool InsideRect (float x, float y, Rect& rect)
     {
-        return (x >= rect.GetTopLeft ().X && y >= rect.GetTopLeft ().Y && x <= rect.GetBottomRight ().X &&
-                y <= rect.GetBottomRight ().Y);
+        return (x >= rect.GetTopLeft ().X && y >= rect.GetTopLeft ().Y && x <= rect.GetBottomRight ().X
+                && y <= rect.GetBottomRight ().Y);
     }
 
     static bool InsideRect (const Point& point, Rect& rect) { return InsideRect (point.X, point.Y, rect); }

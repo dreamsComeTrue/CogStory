@@ -109,7 +109,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Actor::Render (float)
+    void Actor::Render (float deltaTime)
     {
         float sourceX = 0;
         float sourceY = 0;
@@ -141,6 +141,19 @@ namespace aga
         al_draw_tinted_scaled_rotated_bitmap_region (m_Image, sourceX, sourceY, sourceWidth, sourceHeight,
                                                      al_map_rgb (255, 255, 255), sourceWidth * 0.5, sourceHeight * 0.5,
                                                      targetX, targetY, 1, 1, Rotation, 0);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Actor::DrawBounds ()
+    {
+        if (m_SceneManager->GetActiveScene ()->IsDrawBoundingBox ())
+        {
+            al_draw_rectangle (Bounds.GetTopLeft ().X - Bounds.GetHalfSize ().Width,
+                               Bounds.GetTopLeft ().Y - Bounds.GetHalfSize ().Height,
+                               Bounds.GetBottomRight ().X - Bounds.GetHalfSize ().Width,
+                               Bounds.GetBottomRight ().Y - Bounds.GetHalfSize ().Height, COLOR_YELLOW, 2);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -211,13 +224,6 @@ namespace aga
         Rect myBounds = m_SceneManager->GetActiveScene ()->GetRenderBounds (this);
 
         std::vector<Entity*> entites = m_SceneManager->GetActiveScene ()->GetVisibleEntities ();
-
-        //        al_draw_rectangle (myBounds.GetTopLeft ().X,
-        //                           myBounds.GetTopLeft ().Y,
-        //                           myBounds.GetBottomRight ().X,
-        //                           myBounds.GetBottomRight ().Y,
-        //                           COLOR_YELLOW,
-        //                           2);
 
         //  Special-case entity :)
         entites.push_back (&m_SceneManager->GetPlayer ());

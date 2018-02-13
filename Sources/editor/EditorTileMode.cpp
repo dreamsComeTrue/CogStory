@@ -17,11 +17,11 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     EditorTileMode::EditorTileMode (Editor* editor)
-      : m_Editor (editor)
-      , m_IsDrawTiles (true)
-      , m_Rotation (0)
-      , m_SelectedTile (nullptr)
-      , m_TileUnderCursor (nullptr)
+        : m_Editor (editor)
+        , m_IsDrawTiles (true)
+        , m_Rotation (0)
+        , m_SelectedTile (nullptr)
+        , m_TileUnderCursor (nullptr)
     {
     }
 
@@ -161,22 +161,15 @@ namespace aga
         {
             advance = beginning + i * TILE_SIZE;
 
-            al_draw_rectangle (
-              advance, windowSize.Height - TILE_SIZE, advance + TILE_SIZE, windowSize.Height, COLOR_GREEN, 1);
+            al_draw_rectangle (advance, windowSize.Height - TILE_SIZE, advance + TILE_SIZE, windowSize.Height,
+                               COLOR_GREEN, 1);
 
             if (i < regions.size () - 1)
             {
                 Rect region = regions[i].Bounds;
-                al_draw_scaled_bitmap (m_Atlas->GetImage (),
-                                       region.GetPos ().X,
-                                       region.GetPos ().Y,
-                                       region.GetSize ().Width,
-                                       region.GetSize ().Height,
-                                       advance + 1,
-                                       windowSize.Height - TILE_SIZE + 1,
-                                       TILE_SIZE - 2,
-                                       TILE_SIZE - 2,
-                                       0);
+                al_draw_scaled_bitmap (m_Atlas->GetImage (), region.GetPos ().X, region.GetPos ().Y,
+                                       region.GetSize ().Width, region.GetSize ().Height, advance + 1,
+                                       windowSize.Height - TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2, 0);
             }
         }
     }
@@ -228,8 +221,8 @@ namespace aga
         Tile* tile = new Tile (&m_Editor->m_MainLoop->GetPhysicsManager ());
         AtlasRegion region = m_Atlas->GetRegion (m_SelectedAtlasRegion.Name);
         Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-        Point point =
-          m_Editor->CalculateCursorPoint (mouseX + m_TileSelectionOffset.X, mouseY + m_TileSelectionOffset.Y);
+        Point point
+            = m_Editor->CalculateCursorPoint (mouseX + m_TileSelectionOffset.X, mouseY + m_TileSelectionOffset.Y);
         Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
 
         tile->ID = Entity::GetNextID ();
@@ -279,7 +272,7 @@ namespace aga
     void EditorTileMode::InitializeUI ()
     {
         m_Atlas = m_Editor->m_MainLoop->GetSceneManager ().GetAtlasManager ()->GetAtlas (
-          GetBaseName (GetResourcePath (PACK_0_0_HOME)));
+            GetBaseName (GetResourcePath (PACK_0_0_HOME)));
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -25,6 +25,17 @@ namespace aga
 
     bool EditorPhysMode::MoveSelectedPhysPoint ()
     {
+        Point origin;
+
+        if (m_Editor->m_EditorActorMode.m_SelectedActor)
+        {
+            origin = m_Editor->m_EditorActorMode.m_SelectedActor->Bounds.GetPos ();
+        }
+        else if (m_Editor->m_EditorTileMode.m_SelectedTile)
+        {
+            origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.GetPos ();
+        }
+
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
 
@@ -33,7 +44,6 @@ namespace aga
             Point p = m_Editor->CalculateCursorPoint (state.x, state.y);
             Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
             Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-            Point origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.GetPos ();
 
             m_PhysPoint->X = (translate.X + p.X) * 1 / scale.X - origin.X;
             m_PhysPoint->Y = (translate.Y + p.Y) * 1 / scale.Y - origin.Y;
@@ -48,73 +58,84 @@ namespace aga
 
     void EditorPhysMode::DrawPhysBody (float mouseX, float mouseY)
     {
-        if (!m_Editor->m_EditorTileMode.m_SelectedTile)
-        {
-            return;
-        }
-
         Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
         Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-        Point origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.GetPos ();
         Point* selectedPoint = GetPhysPointUnderCursor (mouseX, mouseY);
+        Point origin;
+        std::vector<std::vector<Point>>* physPoints = nullptr;
 
-        for (std::vector<Point>& points : m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints)
+        if (m_Editor->m_EditorActorMode.m_SelectedActor)
         {
-            if (!points.empty ())
+            origin = m_Editor->m_EditorActorMode.m_SelectedActor->Bounds.GetPos ();
+            physPoints = &m_Editor->m_EditorActorMode.m_SelectedActor->PhysPoints;
+        }
+        else if (m_Editor->m_EditorTileMode.m_SelectedTile)
+        {
+            origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.GetPos ();
+            physPoints = &m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints;
+        }
+
+        if (physPoints)
+        {
+            for (std::vector<Point>& points : *physPoints)
             {
-                int i = 0;
-                int selectedIndex = std::numeric_limits<int>::min ();
-
-                for (int j = 0; j < points.size (); ++j)
+                if (!points.empty ())
                 {
-                    if (m_PhysPoint && points[j] == *m_PhysPoint)
-                    {
-                        selectedIndex = j;
-                        break;
-                    }
-                }
+                    int i = 0;
+                    int selectedIndex = std::numeric_limits<int>::min ();
 
-                for (const Point& p : points)
-                {
-                    float xPoint = (origin.X + p.X) * scale.X - translate.X;
-                    float yPoint = (origin.Y + p.Y) * scale.Y - translate.Y;
-
-                    ALLEGRO_COLOR color;
-
-                    if (i == 0)
+                    for (int j = 0; j < points.size (); ++j)
                     {
-                        color = COLOR_GREEN;
-                    }
-                    else
-                    {
-                        color = COLOR_YELLOW;
+                        if (m_PhysPoint && points[j] == *m_PhysPoint)
+                        {
+                            selectedIndex = j;
+                            break;
+                        }
                     }
 
-                    if (i == selectedIndex)
+                    for (const Point& p : points)
                     {
-                        //  Mark selected corner
-                        color = COLOR_BLUE;
-                    }
-                    else if ((i == 0 && selectedIndex == points.size () - 1) || (i == selectedIndex + 1))
-                    {
-                        //  Mark also next corner
-                        color = COLOR_LIGHTBLUE;
-                    }
+                        float xPoint = (origin.X + p.X) * scale.X - translate.X;
+                        float yPoint = (origin.Y + p.Y) * scale.Y - translate.Y;
 
-                    if (selectedPoint != nullptr && p == *selectedPoint)
-                    {
-                        color = COLOR_RED;
+                        ALLEGRO_COLOR color;
+
+                        if (i == 0)
+                        {
+                            color = COLOR_GREEN;
+                        }
+                        else
+                        {
+                            color = COLOR_YELLOW;
+                        }
+
+                        if (i == selectedIndex)
+                        {
+                            //  Mark selected corner
+                            color = COLOR_BLUE;
+                        }
+                        else if ((i == 0 && selectedIndex == points.size () - 1) || (i == selectedIndex + 1))
+                        {
+                            //  Mark also next corner
+                            color = COLOR_LIGHTBLUE;
+                        }
+
+                        if (selectedPoint != nullptr && p == *selectedPoint)
+                        {
+                            color = COLOR_RED;
+                        }
+
+                        if (m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawPhysData () && false)
+                        {
+                            m_Editor->m_MainLoop->GetScreen ()->GetFont ().DrawText (
+                                FONT_NAME_SMALL, al_map_rgb (0, 255, 0), xPoint, yPoint, ToString (i),
+                                ALLEGRO_ALIGN_CENTER);
+                        }
+
+                        ++i;
+
+                        al_draw_filled_circle (xPoint, yPoint, 4, color);
                     }
-
-                    if (m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawPhysData () && false)
-                    {
-                        m_Editor->m_MainLoop->GetScreen ()->GetFont ().DrawText (
-                            FONT_NAME_SMALL, al_map_rgb (0, 255, 0), xPoint, yPoint, ToString (i), ALLEGRO_ALIGN_CENTER);
-                    }
-
-                    ++i;
-
-                    al_draw_filled_circle (xPoint, yPoint, 4, color);
                 }
             }
         }
@@ -124,64 +145,77 @@ namespace aga
 
     void EditorPhysMode::InsertPhysPointAtCursor (int mouseX, int mouseY)
     {
-        if (!m_Editor->m_EditorTileMode.m_SelectedTile)
-        {
-            return;
-        }
-
         Point p = m_Editor->CalculateCursorPoint (mouseX, mouseY);
         Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
         Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-        Point origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.GetPos ();
+        Point origin;
+        std::vector<std::vector<Point>>* physPoints;
 
-        Point pointToInsert = { (translate.X + p.X) * 1 / scale.X - origin.X, (translate.Y + p.Y) * 1 / scale.Y - origin.Y };
-
-        bool inserted = false;
-
-        //  After we select one of physics point, we can insert next one accordingly
-        Point* againSelected = GetPhysPointUnderCursor (mouseX, mouseY);
-
-        if (m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints.empty ())
+        if (m_Editor->m_EditorActorMode.m_SelectedActor)
         {
-            m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints.push_back ({});
+            origin = m_Editor->m_EditorActorMode.m_SelectedActor->Bounds.GetPos ();
+            physPoints = &m_Editor->m_EditorActorMode.m_SelectedActor->PhysPoints;
+        }
+        else if (m_Editor->m_EditorTileMode.m_SelectedTile)
+        {
+            origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.GetPos ();
+            physPoints = &m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints;
         }
 
-        if (!m_PhysPoly)
+        if (physPoints)
         {
-            m_PhysPoly = &m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints[0];
-        }
+            Point pointToInsert
+                = { (translate.X + p.X) * 1 / scale.X - origin.X, (translate.Y + p.Y) * 1 / scale.Y - origin.Y };
 
-        if (m_PhysPoint && !againSelected)
-        {
-            for (int i = 0; i < m_PhysPoly->size (); ++i)
+            bool inserted = false;
+
+            //  After we select one of physics point, we can insert next one accordingly
+            Point* againSelected = GetPhysPointUnderCursor (mouseX, mouseY);
+
+            if (physPoints->empty ())
             {
-                if (m_PhysPoint && (*m_PhysPoly)[i] == *m_PhysPoint)
+                physPoints->push_back ({});
+            }
+
+            if (!m_PhysPoly)
+            {
+                m_PhysPoly = &(*physPoints)[0];
+            }
+
+            if (m_PhysPoint && !againSelected)
+            {
+                for (int i = 0; i < m_PhysPoly->size (); ++i)
                 {
-                    m_PhysPoly->insert (m_PhysPoly->begin () + i + 1, pointToInsert);
-                    m_PhysPoint = nullptr;
-                    inserted = true;
-                    break;
+                    if (m_PhysPoint && (*m_PhysPoly)[i] == *m_PhysPoint)
+                    {
+                        m_PhysPoly->insert (m_PhysPoly->begin () + i + 1, pointToInsert);
+                        m_PhysPoint = nullptr;
+                        inserted = true;
+                        break;
+                    }
                 }
             }
-        }
 
-        m_PhysPointIndex = -1;
-        m_PhysPoint = GetPhysPointUnderCursor (mouseX, mouseY);
+            m_PhysPointIndex = -1;
+            m_PhysPoint = GetPhysPointUnderCursor (mouseX, mouseY);
 
-        if (!inserted && !m_PhysPoint)
-        {
-            m_PhysPoly->push_back (pointToInsert);
-            m_PhysPoint = &(*m_PhysPoly)[m_PhysPoly->size () - 1];
-            inserted = true;
-        }
-
-        if (inserted)
-        {
-            m_Editor->m_EditorTileMode.m_SelectedTile->SetPhysOffset (origin);
-
-            if (m_PhysPointIndex > -1)
+            if (!inserted && !m_PhysPoint)
             {
-                //    m_PhysPoint = &(*m_PhysPoly)[m_PhysPointIndex];
+                m_PhysPoly->push_back (pointToInsert);
+                m_PhysPoint = &(*m_PhysPoly)[m_PhysPoly->size () - 1];
+                inserted = true;
+            }
+
+            if (inserted)
+            {
+                if (m_Editor->m_EditorActorMode.m_SelectedActor)
+                {
+                    m_Editor->m_EditorActorMode.m_SelectedActor->SetPhysOffset (origin);
+                }
+                else if (m_Editor->m_EditorTileMode.m_SelectedTile)
+                {
+                    m_Editor->m_EditorTileMode.m_SelectedTile->SetPhysOffset (origin);
+                }
             }
         }
     }
@@ -190,29 +224,39 @@ namespace aga
 
     Point* EditorPhysMode::GetPhysPointUnderCursor (int mouseX, int mouseY)
     {
-        if (!m_Editor->m_EditorTileMode.m_SelectedTile)
+        Point origin;
+        std::vector<std::vector<Point>>* physPoints;
+
+        if (m_Editor->m_EditorActorMode.m_SelectedActor)
         {
-            return nullptr;
+            origin = m_Editor->m_EditorActorMode.m_SelectedActor->Bounds.GetPos ();
+            physPoints = &m_Editor->m_EditorActorMode.m_SelectedActor->PhysPoints;
+        }
+        else if (m_Editor->m_EditorTileMode.m_SelectedTile)
+        {
+            origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.GetPos ();
+            physPoints = &m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints;
         }
 
-        Point origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.GetPos ();
-
-        int outsets = 4;
-        for (std::vector<Point>& points : m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints)
+        if (physPoints && !physPoints->empty ())
         {
-            int index = 0;
-            for (Point& point : points)
+            int outsets = 4;
+            for (std::vector<Point>& points : *physPoints)
             {
-                Point p = { point.X + origin.X, point.Y + origin.Y };
-
-                if (m_Editor->IsMouseWithinPointRect (mouseX, mouseY, p, outsets))
+                int index = 0;
+                for (Point& point : points)
                 {
-                    m_PhysPoly = &points;
-                    m_PhysPointIndex = index;
-                    return &point;
-                }
+                    Point p = { point.X + origin.X, point.Y + origin.Y };
 
-                index++;
+                    if (m_Editor->IsMouseWithinPointRect (mouseX, mouseY, p, outsets))
+                    {
+                        m_PhysPoly = &points;
+                        m_PhysPointIndex = index;
+                        return &point;
+                    }
+
+                    index++;
+                }
             }
         }
 
@@ -224,12 +268,22 @@ namespace aga
     bool EditorPhysMode::RemovePhysPointUnderCursor (int mouseX, int mouseY)
     {
         Point* point = GetPhysPointUnderCursor (mouseX, mouseY);
+        std::vector<std::vector<Point>>* physPoints;
 
-        if (m_Editor->m_EditorTileMode.m_SelectedTile && point)
+        if (m_Editor->m_EditorActorMode.m_SelectedActor)
         {
-            for (int j = 0; j < m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints.size (); ++j)
+            physPoints = &m_Editor->m_EditorActorMode.m_SelectedActor->PhysPoints;
+        }
+        else if (m_Editor->m_EditorTileMode.m_SelectedTile)
+        {
+            physPoints = &m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints;
+        }
+
+        if (physPoints && point)
+        {
+            for (int j = 0; j < physPoints->size (); ++j)
             {
-                std::vector<Point>& points = m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints[j];
+                std::vector<Point>& points = (*physPoints)[j];
 
                 for (int i = 0; i < points.size (); ++i)
                 {
@@ -240,12 +294,18 @@ namespace aga
                         //  If no points left, remove polygon itself
                         if (points.empty ())
                         {
-                            m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints.erase (
-                                m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints.begin () + j);
+                            physPoints->erase (physPoints->begin () + j);
                             m_PhysPoly = nullptr;
                         }
 
-                        m_Editor->m_EditorTileMode.m_SelectedTile->UpdatePhysPolygon ();
+                        if (m_Editor->m_EditorActorMode.m_SelectedActor)
+                        {
+                            m_Editor->m_EditorActorMode.m_SelectedActor->UpdatePhysPolygon ();
+                        }
+                        else if (m_Editor->m_EditorTileMode.m_SelectedTile)
+                        {
+                            m_Editor->m_EditorTileMode.m_SelectedTile->UpdatePhysPolygon ();
+                        }
 
                         if (m_PhysPointIndex == i)
                         {

@@ -19,7 +19,7 @@ namespace aga
     Player::Player (SceneManager* sceneManager)
         : Actor (sceneManager)
         , m_WalkParticleEmitter (2, 0.7f, GetResourcePath (GFX_DUST_PARTICLES))
-        , m_HeadParticleEmitter (3, 2.0f, GetResourcePath (GFX_DUST_PARTICLES))
+        , m_HeadParticleEmitter (3, 2.0f, GetResourcePath (GFX_SMOG_PARTICLES))
         , m_FollowCamera (true)
         , m_PreventInput (false)
     {
@@ -223,93 +223,30 @@ namespace aga
             SetCurrentAnimation (ANIM_MOVE_LEFT_NAME);
         }
 
-        std::map<std::string, TriggerArea>& triggerAreas = m_SceneManager->GetActiveScene ()->GetTriggerAreas ();
-
-        for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)
-        {
-            TriggerArea& area = it->second;
-
-            for (Polygon& polygon : area.Polygons)
-            {
-                if (area.OnEnterCallback || area.ScriptOnEnterCallback || area.OnLeaveCallback
-                    || area.ScriptOnLeaveCallback)
-                {
-                    PolygonCollisionResult r = m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (
-                        GetPhysPolygon (0), polygon, { dx, dy });
-
-                    if (r.WillIntersect || r.Intersect)
-                    {
-                        if (!area.WasEntered)
-                        {
-                            if (area.OnEnterCallback)
-                            {
-                                area.OnEnterCallback (dx + r.MinimumTranslationVector.X,
-                                                      dy + r.MinimumTranslationVector.Y);
-                            }
-
-                            if (area.ScriptOnEnterCallback)
-                            {
-                                const char* moduleName = area.ScriptOnEnterCallback->GetModuleName ();
-                                Script* script
-                                    = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (
-                                        moduleName);
-
-                                if (script)
-                                {
-                                    Point point
-                                        = { dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y };
-                                    asIScriptContext* ctx = script->GetContext ();
-                                    ctx->Prepare (area.ScriptOnEnterCallback);
-                                    ctx->SetArgObject (0, &point);
-
-                                    ctx->Execute ();
-                                }
-                            }
-                        }
-
-                        area.WasEntered = true;
-                    }
-                    else if (area.WasEntered)
-                    {
-                        area.WasEntered = false;
-
-                        if (area.OnLeaveCallback)
-                        {
-                            area.OnLeaveCallback (dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y);
-                        }
-
-                        if (area.ScriptOnLeaveCallback)
-                        {
-                            const char* moduleName = area.ScriptOnLeaveCallback->GetModuleName ();
-                            Script* script = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (
-                                moduleName);
-
-                            if (script)
-                            {
-                                Point point = { dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y };
-                                asIScriptContext* ctx = script->GetContext ();
-                                ctx->Prepare (area.ScriptOnLeaveCallback);
-                                ctx->SetArgObject (0, &point);
-
-                                ctx->Execute ();
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        ProcessTriggerAreas (dx, dy);
 
         std::vector<Entity*> entites = m_SceneManager->GetActiveScene ()->GetVisibleEntities ();
         for (Entity* ent : entites)
         {
-            Tile* tile = (Tile*)ent;
+            Collidable* collidable;
 
-            if (!tile->PhysPoints.empty ())
+            if (ent->GetTypeName () == "Tile")
             {
-                for (int i = 0; i < tile->GetPhysPolygonsCount (); ++i)
+                Tile* tile = (Tile*)ent;
+                collidable = tile;
+            }
+            else
+            {
+                Actor* actor = (Actor*)ent;
+                collidable = actor;
+            }
+
+            if (!collidable->PhysPoints.empty ())
+            {
+                for (int i = 0; i < collidable->GetPhysPolygonsCount (); ++i)
                 {
                     PolygonCollisionResult r = m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (
-                        GetPhysPolygon (0), tile->GetPhysPolygon (i), { dx, dy });
+                        GetPhysPolygon (0), collidable->GetPhysPolygon (i), { dx, dy });
 
                     if (r.WillIntersect)
                     {
@@ -425,6 +362,87 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     std::string Player::GetTypeName () { return TypeName; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::ProcessTriggerAreas (float dx, float dy)
+    {
+        std::map<std::string, TriggerArea>& triggerAreas = m_SceneManager->GetActiveScene ()->GetTriggerAreas ();
+
+        for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)
+        {
+            TriggerArea& area = it->second;
+
+            for (Polygon& polygon : area.Polygons)
+            {
+                if (area.OnEnterCallback || area.ScriptOnEnterCallback || area.OnLeaveCallback
+                    || area.ScriptOnLeaveCallback)
+                {
+                    PolygonCollisionResult r = m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (
+                        GetPhysPolygon (0), polygon, { dx, dy });
+
+                    if (r.WillIntersect || r.Intersect)
+                    {
+                        if (!area.WasEntered)
+                        {
+                            if (area.OnEnterCallback)
+                            {
+                                area.OnEnterCallback (dx + r.MinimumTranslationVector.X,
+                                                      dy + r.MinimumTranslationVector.Y);
+                            }
+
+                            if (area.ScriptOnEnterCallback)
+                            {
+                                const char* moduleName = area.ScriptOnEnterCallback->GetModuleName ();
+                                Script* script
+                                    = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (
+                                        moduleName);
+
+                                if (script)
+                                {
+                                    Point point
+                                        = { dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y };
+                                    asIScriptContext* ctx = script->GetContext ();
+                                    ctx->Prepare (area.ScriptOnEnterCallback);
+                                    ctx->SetArgObject (0, &point);
+
+                                    ctx->Execute ();
+                                }
+                            }
+                        }
+
+                        area.WasEntered = true;
+                    }
+                    else if (area.WasEntered)
+                    {
+                        area.WasEntered = false;
+
+                        if (area.OnLeaveCallback)
+                        {
+                            area.OnLeaveCallback (dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y);
+                        }
+
+                        if (area.ScriptOnLeaveCallback)
+                        {
+                            const char* moduleName = area.ScriptOnLeaveCallback->GetModuleName ();
+                            Script* script = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (
+                                moduleName);
+
+                            if (script)
+                            {
+                                Point point = { dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y };
+                                asIScriptContext* ctx = script->GetContext ();
+                                ctx->Prepare (area.ScriptOnLeaveCallback);
+                                ctx->SetArgObject (0, &point);
+
+                                ctx->Execute ();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 }

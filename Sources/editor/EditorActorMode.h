@@ -9,12 +9,14 @@
 namespace aga
 {
     class Editor;
+    class EditorPhysMode;
     class Actor;
 
     class EditorActorMode
     {
         friend class Editor;
         friend class EditorActorWindow;
+        friend class EditorPhysMode;
 
     public:
         EditorActorMode (Editor* editor);

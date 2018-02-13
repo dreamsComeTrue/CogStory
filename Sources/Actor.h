@@ -47,6 +47,7 @@ namespace aga
         bool IsCheckOverlap ();
 
         void SetCurrentAnimation (const std::string& name);
+        void DrawBounds ();
 
         ALLEGRO_BITMAP* GetImage ();
 

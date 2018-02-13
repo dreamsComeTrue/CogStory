@@ -70,7 +70,7 @@ namespace aga
 
         InitializeStates ();
 #ifdef EDITOR_ENABLED
-        m_StateManager.SetActiveState (m_GamePlayState);
+        m_StateManager.SetActiveState (m_EditorState);
 #else
         m_StateManager.SetActiveState (m_GamePlayState);
 #endif
