@@ -47,6 +47,8 @@ namespace aga
         void UpdateParticleEmitters ();
         void ProcessTriggerAreas (float dx, float dy);
 
+        void CollisionEvent (Collidable* other) override;
+
     private:
         bool m_FollowCamera;
         bool m_PreventInput;

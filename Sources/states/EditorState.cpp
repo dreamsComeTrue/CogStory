@@ -57,6 +57,11 @@ namespace aga
         m_Editor->OnResetScale ();
         m_Editor->OnResetTranslate ();
         m_Editor->SetDrawUITiles (true);
+
+        if (m_Editor->GetCursorMode () == EditPhysBodyMode)
+        {
+            m_Editor->SwitchCursorMode ();
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

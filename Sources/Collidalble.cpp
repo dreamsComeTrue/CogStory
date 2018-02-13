@@ -117,4 +117,62 @@ namespace aga
     }
 
     //--------------------------------------------------------------------------------------------------
+
+    bool Collidable::IsCollidingWith (Collidable* other, Point velocity, Point&& offset)
+    {
+        if (!PhysPoints.empty () && !other->PhysPoints.empty ())
+        {
+            for (int i = 0; i < GetPhysPolygonsCount (); ++i)
+            {
+                Polygon& myPolygon = GetPhysPolygon (i);
+
+                for (int j = 0; j < other->GetPhysPolygonsCount (); ++j)
+                {
+                    PolygonCollisionResult r = m_PhysicsManager->PolygonCollision (myPolygon, other->GetPhysPolygon (j),
+                                                                                   { velocity.X, velocity.Y });
+
+                    bool found = false;
+
+                    for (Collidable* saved : m_Collisions)
+                    {
+                        if (saved == other)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (r.WillIntersect)
+                    {
+                        offset = r.MinimumTranslationVector;
+
+                        if (!found)
+                        {
+                            m_Collisions.push_back (other);
+
+                            CollisionEvent (other);
+                        }
+
+                        return true;
+                    }
+                    else
+                    {
+                        for (std::vector<Collidable*>::iterator it = m_Collisions.begin (); it != m_Collisions.end ();
+                             ++it)
+                        {
+                            if (*it == other)
+                            {
+                                m_Collisions.erase (it);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    //--------------------------------------------------------------------------------------------------
 }

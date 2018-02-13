@@ -22,6 +22,11 @@ namespace aga
         size_t GetPhysPolygonsCount () const;
         void UpdatePhysPolygon ();
 
+        bool IsCollidingWith (Collidable* other, Point velocity, Point&& offset);
+
+    protected:
+        virtual void CollisionEvent (Collidable* other) {}
+
     private:
         void BuildEdges ();
 
@@ -29,6 +34,8 @@ namespace aga
         std::vector<std::vector<Point>> PhysPoints;
 
     private:
+        std::vector<Collidable*> m_Collisions;
+
         PhysicsManager* m_PhysicsManager;
         std::vector<Polygon> m_PhysPolygons;
         Point m_Offset;

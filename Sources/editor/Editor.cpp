@@ -206,13 +206,13 @@ namespace aga
         selectModeButton = new Gwk::Controls::Button (m_MainCanvas);
         selectModeButton->SetText (m_CursorMode != CursorMode::EditPhysBodyMode ? "PHYS MODE" : "EXIT PHYS");
         selectModeButton->SetPos (20, triggerAreaButton->Bottom () + 40);
-        selectModeButton->onPress.Add (this, &Editor::OnSelectMode);
+        selectModeButton->onPress.Add (this, &Editor::SwitchCursorMode);
         selectModeButton->Hide ();
 
         saveBodyButton = new Gwk::Controls::Button (m_MainCanvas);
         saveBodyButton->SetText ("SAVE BODY");
         saveBodyButton->SetPos (20, selectModeButton->Bottom () + 5);
-        saveBodyButton->onPress.Add (this, &Editor::OnSelectMode);
+        saveBodyButton->onPress.Add (this, &Editor::SwitchCursorMode);
         saveBodyButton->Hide ();
 
         removeBodyButton = new Gwk::Controls::Button (m_MainCanvas);
@@ -568,7 +568,7 @@ namespace aga
             {
                 if (m_EditorActorMode.m_SelectedActor || m_EditorTileMode.m_SelectedTile)
                 {
-                    OnSelectMode ();
+                    SwitchCursorMode ();
                 }
                 break;
             }
@@ -974,7 +974,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnSelectMode ()
+    void Editor::SwitchCursorMode ()
     {
         if (m_CursorMode != CursorMode::EditPhysBodyMode)
         {
@@ -1215,6 +1215,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    CursorMode Editor::GetCursorMode () { return m_CursorMode; }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Editor::ScreenResize ()
     {
         const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
@@ -1264,6 +1268,8 @@ namespace aga
         {
             if (m_CursorMode == CursorMode::TileSelectMode && m_EditorFlagPointMode.m_FlagPoint == "")
             {
+                m_EditorTileMode.m_SelectedTile = nullptr;
+
                 Rect r;
                 m_EditorActorMode.m_SelectedActor
                     = m_EditorActorMode.GetActorUnderCursor (event.x, event.y, std::move (r));
@@ -1276,18 +1282,26 @@ namespace aga
                     m_EditorTileMode.m_Rotation = m_EditorActorMode.m_SelectedActor->Rotation;
                 }
 
-                m_EditorTileMode.m_SelectedTile = m_EditorTileMode.GetTileUnderCursor (event.x, event.y, std::move (r));
+                Tile* newSelectedTile = m_EditorTileMode.GetTileUnderCursor (event.x, event.y, std::move (r));
 
-                if (m_EditorTileMode.m_SelectedTile)
+                if (!(m_EditorActorMode.m_SelectedActor)
+                    || (newSelectedTile && newSelectedTile->RenderID > m_EditorActorMode.m_SelectedActor->RenderID))
                 {
-                    selectModeButton->Show ();
+                    m_EditorTileMode.m_SelectedTile = newSelectedTile;
 
-                    m_CursorMode = CursorMode::TileEditMode;
-                    m_EditorTileMode.m_Rotation = m_EditorTileMode.m_SelectedTile->Rotation;
+                    if (m_EditorTileMode.m_SelectedTile)
+                    {
+                        selectModeButton->Show ();
+
+                        m_CursorMode = CursorMode::TileEditMode;
+                        m_EditorTileMode.m_Rotation = m_EditorTileMode.m_SelectedTile->Rotation;
+                    }
                 }
             }
             else if (m_CursorMode == CursorMode::TileEditMode && !g_IsToolBoxTileSelected)
             {
+                m_EditorTileMode.m_SelectedTile = nullptr;
+
                 Rect r;
 
                 Actor* newSelectedActor = m_EditorActorMode.GetActorUnderCursor (event.x, event.y, std::move (r));
@@ -1313,22 +1327,26 @@ namespace aga
 
                 Tile* newSelectedTile = m_EditorTileMode.GetTileUnderCursor (event.x, event.y, std::move (r));
 
-                if (newSelectedTile != m_EditorTileMode.m_SelectedTile || !newSelectedTile)
+                if (!(m_EditorActorMode.m_SelectedActor)
+                    || (newSelectedTile && newSelectedTile->RenderID > newSelectedActor->RenderID))
                 {
-                    if (newSelectedTile)
+                    if (newSelectedTile != m_EditorTileMode.m_SelectedTile || !newSelectedTile)
                     {
-                        m_EditorTileMode.m_SelectedTile = newSelectedTile;
-                        m_CursorMode = CursorMode::TileEditMode;
-                        m_EditorTileMode.m_Rotation = m_EditorTileMode.m_SelectedTile->Rotation;
+                        if (newSelectedTile)
+                        {
+                            m_EditorTileMode.m_SelectedTile = newSelectedTile;
+                            m_CursorMode = CursorMode::TileEditMode;
+                            m_EditorTileMode.m_Rotation = m_EditorTileMode.m_SelectedTile->Rotation;
 
-                        selectModeButton->Show ();
-                    }
-                    else
-                    {
-                        m_CursorMode = CursorMode::TileSelectMode;
-                        m_EditorTileMode.m_SelectedTile = nullptr;
+                            selectModeButton->Show ();
+                        }
+                        else
+                        {
+                            m_CursorMode = CursorMode::TileSelectMode;
+                            m_EditorTileMode.m_SelectedTile = nullptr;
 
-                        selectModeButton->Hide ();
+                            selectModeButton->Hide ();
+                        }
                     }
                 }
             }

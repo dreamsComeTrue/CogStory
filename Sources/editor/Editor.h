@@ -79,6 +79,9 @@ namespace aga
 
         void SetDrawUITiles (bool draw);
 
+        CursorMode GetCursorMode ();
+        void SwitchCursorMode ();
+
     private:
         void LoadConfig ();
         void SaveConfig ();
@@ -108,7 +111,6 @@ namespace aga
         void OnFlagPoint ();
         void OnTriggerArea ();
 
-        void OnSelectMode ();
         void OnRemoveBody ();
         void OnNewPoly ();
 

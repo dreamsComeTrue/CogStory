@@ -55,8 +55,8 @@ namespace aga
 
     protected:
         void CheckOverlap ();
-        virtual void BeginOverlap (Entity* entity);
-        virtual void EndOverlap (Entity* entity);
+        virtual void BeginOverlap (Entity* entity) {}
+        virtual void EndOverlap (Entity* entity) {}
 
         void ChooseAnimation (float angleDeg);
 

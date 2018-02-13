@@ -18,8 +18,6 @@ namespace aga
         bool Initialize () override;
 
         virtual bool Update (float deltaTime);
-        virtual void BeginOverlap (Entity* entity) override;
-        virtual void EndOverlap (Entity* entity) override;
 
         virtual std::string GetTypeName () override;
 

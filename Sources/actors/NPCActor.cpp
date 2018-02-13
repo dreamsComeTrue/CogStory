@@ -79,18 +79,4 @@ namespace aga
     std::string NPCActor::GetTypeName () { return TypeName; }
 
     //--------------------------------------------------------------------------------------------------
-
-    void NPCActor::BeginOverlap (Entity* entity)
-    {
-        if (entity->GetTypeName () == Player::TypeName)
-        {
-            m_SceneManager->GetSpeechFrameManager ().AddSpeechFrame ("GREET_1", true);
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void NPCActor::EndOverlap (Entity* entity) {}
-
-    //--------------------------------------------------------------------------------------------------
 }

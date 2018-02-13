@@ -6,6 +6,7 @@
 #include "Scene.h"
 #include "SceneManager.h"
 #include "Screen.h"
+#include "actors/NPCActor.h"
 
 namespace aga
 {
@@ -241,19 +242,12 @@ namespace aga
                 collidable = actor;
             }
 
-            if (!collidable->PhysPoints.empty ())
-            {
-                for (int i = 0; i < collidable->GetPhysPolygonsCount (); ++i)
-                {
-                    PolygonCollisionResult r = m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (
-                        GetPhysPolygon (0), collidable->GetPhysPolygon (i), { dx, dy });
+            Point collisionDelta;
 
-                    if (r.WillIntersect)
-                    {
-                        dx = dx + r.MinimumTranslationVector.X;
-                        dy = dy + r.MinimumTranslationVector.Y;
-                    }
-                }
+            if (IsCollidingWith (collidable, Point (dx, dy), std::move (collisionDelta)))
+            {
+                dx = dx + collisionDelta.X;
+                dy = dy + collisionDelta.Y;
             }
         }
 
@@ -441,6 +435,18 @@ namespace aga
                     }
                 }
             }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::CollisionEvent (Collidable* other)
+    {
+        Entity* entity = dynamic_cast<Entity*> (other);
+
+        if (entity->GetTypeName () == NPCActor::TypeName)
+        {
+            m_SceneManager->GetSpeechFrameManager ().AddSpeechFrame ("GREET_1", true);
         }
     }
 
