@@ -21,6 +21,7 @@ namespace aga
     class AtlasManager;
     class Triangulator;
     class SceneLoader;
+    class TileActor;
 
     struct SpeechOutcome
     {
@@ -65,28 +66,6 @@ namespace aga
         bool WasEntered = false;
     };
 
-    struct Tile : public Entity, public Collidable
-    {
-        static std::string TypeName;
-
-        Tile (PhysicsManager* physicsManager)
-            : Collidable (physicsManager)
-        {
-        }
-
-        std::string Tileset;
-
-        bool operator== (const Tile& rhs) const
-        {
-            return Tileset == rhs.Tileset && Name == rhs.Name && Bounds == rhs.Bounds && Rotation == rhs.Rotation;
-        }
-
-        virtual std::string GetTypeName () override { return TypeName; }
-
-        void Draw (AtlasManager* atlasManager);
-        void DrawBounds ();
-    };
-
     class Scene : public Lifecycle, public Scriptable
     {
         friend class SceneLoader;
@@ -109,9 +88,9 @@ namespace aga
         Actor* GetActor (const std::string& name);
         std::vector<Actor*>& GetActors ();
 
-        void AddTile (Tile* tile);
-        void RemoveTile (Tile* tile);
-        std::vector<Tile*>& GetTiles ();
+        void AddTile (TileActor* tile);
+        void RemoveTile (TileActor* tile);
+        std::vector<TileActor*> GetTiles ();
         std::vector<Entity*> GetVisibleEntities ();
 
         void AddFlagPoint (const std::string& name, Point point);
@@ -128,7 +107,6 @@ namespace aga
         SpeechData* GetSpeech (const std::string& name);
         void RemoveSpeech (const std::string& name);
 
-        void SortTiles ();
         void SortActors ();
         void UpdateRenderIDs ();
 
@@ -162,7 +140,6 @@ namespace aga
         std::map<std::string, TriggerArea> m_TriggerAreas;
         std::map<std::string, SpeechData> m_Speeches;
         std::vector<Actor*> m_Actors;
-        std::vector<Tile*> m_Tiles;
         std::vector<Entity*> m_AllEntities;
         SceneManager* m_SceneManager;
 

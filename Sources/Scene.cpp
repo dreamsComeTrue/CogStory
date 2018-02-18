@@ -6,6 +6,7 @@
 #include "MainLoop.h"
 #include "SceneManager.h"
 #include "Screen.h"
+#include "actors/TileActor.h"
 
 #include "addons/triangulator/Triangulator.h"
 
@@ -69,30 +70,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    std::string Tile::TypeName = "Tile";
-
-    void Tile::Draw (AtlasManager* atlasManager)
-    {
-        Atlas* atlas = atlasManager->GetAtlas (Tileset);
-
-        if (atlas)
-        {
-            atlas->DrawRegion (Name, Bounds.GetPos ().X, Bounds.GetPos ().Y, 1, 1, DegressToRadians (Rotation));
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Tile::DrawBounds ()
-    {
-        al_draw_rectangle (Bounds.GetTopLeft ().X - Bounds.GetHalfSize ().Width,
-                           Bounds.GetTopLeft ().Y - Bounds.GetHalfSize ().Height,
-                           Bounds.GetBottomRight ().X - Bounds.GetHalfSize ().Width,
-                           Bounds.GetBottomRight ().Y - Bounds.GetHalfSize ().Height, COLOR_YELLOW, 2);
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
     const float boundSize = 10000;
 
     Scene::Scene (SceneManager* sceneManager)
@@ -125,11 +102,6 @@ namespace aga
         for (int i = 0; i < m_Actors.size (); ++i)
         {
             SAFE_DELETE (m_Actors[i]);
-        }
-
-        for (int i = 0; i < m_Tiles.size (); ++i)
-        {
-            SAFE_DELETE (m_Tiles[i]);
         }
 
         return Lifecycle::Destroy ();
@@ -206,50 +178,31 @@ namespace aga
         {
             for (int i = 0; i < m_AllEntities.size (); ++i)
             {
-                if (m_AllEntities[i]->GetTypeName () == "Tile")
+                Actor* actor = (Actor*)m_AllEntities[i];
+
+                if (!isPlayerDrawn && actor->ZOrder >= PLAYER_Z_ORDER)
                 {
-                    Tile* tile = (Tile*)m_AllEntities[i];
-
-                    if (!isPlayerDrawn && tile->ZOrder >= PLAYER_Z_ORDER)
-                    {
-                        m_SceneManager->GetPlayer ().Render (deltaTime);
-                        isPlayerDrawn = true;
-                    }
-
-                    tile->Draw (m_SceneManager->GetAtlasManager ());
-
-                    if (m_DrawBoundingBox)
-                    {
-                        tile->DrawBounds ();
-                    }
-
-                    if (m_DrawPhysData)
-                    {
-                        tile->DrawPhysBody ();
-                    }
+                    m_SceneManager->GetPlayer ().Render (deltaTime);
+                    isPlayerDrawn = true;
                 }
-                else
+
+                actor->Render (deltaTime);
+
+                if (m_DrawBoundingBox)
                 {
-                    Actor* actor = (Actor*)m_AllEntities[i];
-
-                    actor->Render (deltaTime);
-
-                    if (m_DrawBoundingBox)
-                    {
-                        actor->DrawBounds ();
-                    }
-
-                    if (m_DrawPhysData)
-                    {
-                        actor->DrawPhysBody ();
-                    }
-
-                    Rect bounds = actor->Bounds;
-                    Point pos = { bounds.GetCenter ().X - bounds.GetHalfSize ().Width,
-                                  bounds.GetBottomRight ().Y - bounds.GetHalfSize ().Height };
-                    std::string str = actor->Name + "[" + ToString (actor->ID) + "]";
-                    font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), pos.X, pos.Y, str, ALLEGRO_ALIGN_CENTER);
+                    actor->DrawBounds ();
                 }
+
+                if (m_DrawPhysData)
+                {
+                    actor->DrawPhysBody ();
+                }
+
+                Rect bounds = actor->Bounds;
+                Point pos = { bounds.GetCenter ().X - bounds.GetHalfSize ().Width,
+                              bounds.GetBottomRight ().Y - bounds.GetHalfSize ().Height };
+                std::string str = actor->Name + "[" + ToString (actor->ID) + "]";
+                font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), pos.X, pos.Y, str, ALLEGRO_ALIGN_CENTER);
             }
         }
         else
@@ -258,43 +211,25 @@ namespace aga
 
             for (int i = 0; i < entities.size (); ++i)
             {
-                if (entities[i]->GetTypeName () == "Tile")
+                Actor* actor = (Actor*)entities[i];
+
+                if (!isPlayerDrawn && actor->ZOrder >= PLAYER_Z_ORDER)
                 {
-                    Tile* tile = (Tile*)entities[i];
-
-                    if (!isPlayerDrawn && tile->ZOrder >= PLAYER_Z_ORDER)
-                    {
-                        m_SceneManager->GetPlayer ().Render (deltaTime);
-                        isPlayerDrawn = true;
-                    }
-
-                    tile->RenderID = i;
-                    tile->Draw (m_SceneManager->GetAtlasManager ());
-
-                    if (m_DrawBoundingBox)
-                    {
-                        tile->DrawBounds ();
-                    }
-
-                    if (m_DrawPhysData)
-                    {
-                        tile->DrawPhysBody ();
-                    }
+                    m_SceneManager->GetPlayer ().Render (deltaTime);
+                    isPlayerDrawn = true;
                 }
-                else
+
+                actor->RenderID = i;
+                actor->Render (deltaTime);
+
+                if (m_DrawBoundingBox)
                 {
-                    Actor* actor = (Actor*)entities[i];
-                    actor->Render (deltaTime);
+                    actor->DrawBounds ();
+                }
 
-                    if (m_DrawBoundingBox)
-                    {
-                        actor->DrawBounds ();
-                    }
-
-                    if (m_DrawPhysData)
-                    {
-                        actor->DrawPhysBody ();
-                    }
+                if (m_DrawPhysData)
+                {
+                    actor->DrawPhysBody ();
                 }
             }
         }
@@ -404,28 +339,20 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::AddTile (Tile* tile)
+    void Scene::AddTile (TileActor* tile)
     {
-        m_Tiles.push_back (tile);
+        m_Actors.push_back (tile);
         m_QuadTree.Insert (tile);
         m_QuadTree.UpdateStructures ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::RemoveTile (Tile* tile)
+    void Scene::RemoveTile (TileActor* tile)
     {
-        m_Tiles.erase (std::remove (m_Tiles.begin (), m_Tiles.end (), tile), m_Tiles.end ());
+        m_Actors.erase (std::remove (m_Actors.begin (), m_Actors.end (), tile), m_Actors.end ());
         m_QuadTree.Remove (tile);
         m_QuadTree.UpdateStructures ();
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Scene::SortTiles ()
-    {
-        std::sort (m_Tiles.begin (), m_Tiles.end (), Entity::CompareByZOrder);
-        UpdateRenderIDs ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -442,11 +369,6 @@ namespace aga
     {
         m_AllEntities.clear ();
 
-        for (Tile* tile : m_Tiles)
-        {
-            m_AllEntities.push_back (tile);
-        }
-
         for (Actor* actor : m_Actors)
         {
             m_AllEntities.push_back (actor);
@@ -462,7 +384,20 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    std::vector<Tile*>& Scene::GetTiles () { return m_Tiles; }
+    std::vector<TileActor*> Scene::GetTiles ()
+    {
+        std::vector<TileActor*> tiles;
+
+        for (Actor* actor : m_Actors)
+        {
+            if (actor->GetTypeName () == TileActor::TypeName)
+            {
+                tiles.push_back (dynamic_cast<TileActor*> (actor));
+            }
+        }
+
+        return tiles;
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -573,7 +508,6 @@ namespace aga
         m_SceneManager->GetSpeechFrameManager ().Clear ();
         m_SceneManager->GetMainLoop ()->GetTweenManager ().Clear ();
 
-        m_Tiles.clear ();
         m_FlagPoints.clear ();
         m_TriggerAreas.clear ();
 

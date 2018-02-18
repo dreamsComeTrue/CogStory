@@ -4,6 +4,7 @@
 #include "Editor.h"
 #include "MainLoop.h"
 #include "Screen.h"
+#include "actors/TileActor.h"
 
 namespace aga
 {
@@ -30,10 +31,6 @@ namespace aga
         if (m_Editor->m_EditorActorMode.m_SelectedActor)
         {
             origin = m_Editor->m_EditorActorMode.m_SelectedActor->Bounds.GetPos ();
-        }
-        else if (m_Editor->m_EditorTileMode.m_SelectedTile)
-        {
-            origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.GetPos ();
         }
 
         ALLEGRO_MOUSE_STATE state;
@@ -68,11 +65,6 @@ namespace aga
         {
             origin = m_Editor->m_EditorActorMode.m_SelectedActor->Bounds.GetPos ();
             physPoints = &m_Editor->m_EditorActorMode.m_SelectedActor->PhysPoints;
-        }
-        else if (m_Editor->m_EditorTileMode.m_SelectedTile)
-        {
-            origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.GetPos ();
-            physPoints = &m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints;
         }
 
         if (physPoints)
@@ -156,11 +148,6 @@ namespace aga
             origin = m_Editor->m_EditorActorMode.m_SelectedActor->Bounds.GetPos ();
             physPoints = &m_Editor->m_EditorActorMode.m_SelectedActor->PhysPoints;
         }
-        else if (m_Editor->m_EditorTileMode.m_SelectedTile)
-        {
-            origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.GetPos ();
-            physPoints = &m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints;
-        }
 
         if (physPoints)
         {
@@ -212,10 +199,6 @@ namespace aga
                 {
                     m_Editor->m_EditorActorMode.m_SelectedActor->SetPhysOffset (origin);
                 }
-                else if (m_Editor->m_EditorTileMode.m_SelectedTile)
-                {
-                    m_Editor->m_EditorTileMode.m_SelectedTile->SetPhysOffset (origin);
-                }
             }
         }
     }
@@ -231,11 +214,6 @@ namespace aga
         {
             origin = m_Editor->m_EditorActorMode.m_SelectedActor->Bounds.GetPos ();
             physPoints = &m_Editor->m_EditorActorMode.m_SelectedActor->PhysPoints;
-        }
-        else if (m_Editor->m_EditorTileMode.m_SelectedTile)
-        {
-            origin = m_Editor->m_EditorTileMode.m_SelectedTile->Bounds.GetPos ();
-            physPoints = &m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints;
         }
 
         if (physPoints && !physPoints->empty ())
@@ -274,10 +252,6 @@ namespace aga
         {
             physPoints = &m_Editor->m_EditorActorMode.m_SelectedActor->PhysPoints;
         }
-        else if (m_Editor->m_EditorTileMode.m_SelectedTile)
-        {
-            physPoints = &m_Editor->m_EditorTileMode.m_SelectedTile->PhysPoints;
-        }
 
         if (physPoints && point)
         {
@@ -301,10 +275,6 @@ namespace aga
                         if (m_Editor->m_EditorActorMode.m_SelectedActor)
                         {
                             m_Editor->m_EditorActorMode.m_SelectedActor->UpdatePhysPolygon ();
-                        }
-                        else if (m_Editor->m_EditorTileMode.m_SelectedTile)
-                        {
-                            m_Editor->m_EditorTileMode.m_SelectedTile->UpdatePhysPolygon ();
                         }
 
                         if (m_PhysPointIndex == i)

@@ -6,6 +6,7 @@
 #include "AtlasManager.h"
 #include "MainLoop.h"
 #include "SceneManager.h"
+#include "actors/TileActor.h"
 
 using json = nlohmann::json;
 
@@ -129,7 +130,7 @@ namespace aga
 
             for (auto& j_tile : tiles)
             {
-                Tile* tile = new Tile (&sceneManager->GetMainLoop ()->GetPhysicsManager ());
+                TileActor* tile = new TileActor (sceneManager);
 
                 std::string id = j_tile["id"];
                 tile->ID = atoi (id.c_str ());
@@ -140,6 +141,7 @@ namespace aga
                                           ->GetAtlas (tile->Tileset)
                                           ->GetRegion (tile->Name)
                                           .Bounds.GetSize ());
+                tile->TemplateBounds = tile->Bounds;
                 std::string zOrder = j_tile["z-order"];
                 tile->ZOrder = atoi (zOrder.c_str ());
                 std::string rot = j_tile["rot"];
@@ -158,6 +160,7 @@ namespace aga
                     tile->SetPhysOffset (tile->Bounds.GetPos ());
                 }
 
+                tile->SetCollisionEnabled (false);
                 scene->AddTile (tile);
             }
 
@@ -290,7 +293,6 @@ namespace aga
             }
 
             UpdateMaxEntityID (scene);
-            scene->SortTiles ();
             scene->SortActors ();
 
             auto& scripts = j["scripts"];
@@ -345,7 +347,7 @@ namespace aga
 
             j["tiles"] = json::array ({});
 
-            for (Tile* tile : scene->m_Tiles)
+            for (TileActor* tile : scene->GetTiles ())
             {
                 if (tile->Bounds.GetTopLeft ().X < minRect.X)
                 {
@@ -521,16 +523,7 @@ namespace aga
 
     void SceneLoader::UpdateMaxEntityID (Scene* scene)
     {
-        std::vector<Tile*>& tiles = scene->GetTiles ();
         int maxEntID = -1;
-
-        for (Tile* t : tiles)
-        {
-            if (t->ID > maxEntID)
-            {
-                maxEntID = t->ID + 1;
-            }
-        }
 
         std::vector<Actor*>& actors = scene->GetActors ();
 

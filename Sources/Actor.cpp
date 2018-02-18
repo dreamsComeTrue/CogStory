@@ -11,9 +11,8 @@ namespace aga
     Actor::Actor (SceneManager* sceneManager)
         : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
         , Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
-        , m_SceneManager (sceneManager)
+        , Entity (sceneManager)
         , m_Image (nullptr)
-        , m_CheckOverlap (false)
     {
         ID = Entity::GetNextID ();
     }
@@ -211,60 +210,78 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Actor::SetCheckOverlap (bool check) { m_CheckOverlap = check; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool Actor::IsCheckOverlap () { return m_CheckOverlap; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Actor::CheckOverlap ()
+    void Actor::ProcessTriggerAreas (float dx, float dy)
     {
-        Rect myBounds = m_SceneManager->GetActiveScene ()->GetRenderBounds (this);
+        std::map<std::string, TriggerArea>& triggerAreas = m_SceneManager->GetActiveScene ()->GetTriggerAreas ();
 
-        std::vector<Entity*> entites = m_SceneManager->GetActiveScene ()->GetVisibleEntities ();
-
-        //  Special-case entity :)
-        entites.push_back (&m_SceneManager->GetPlayer ());
-
-        for (Entity* ent : entites)
+        for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)
         {
-            if (ent != this)
+            TriggerArea& area = it->second;
+
+            for (Polygon& polygon : area.Polygons)
             {
-                Rect otherBounds = m_SceneManager->GetActiveScene ()->GetRenderBounds (ent);
-
-                if (Intersect (myBounds, otherBounds))
+                if (area.OnEnterCallback || area.ScriptOnEnterCallback || area.OnLeaveCallback
+                    || area.ScriptOnLeaveCallback)
                 {
-                    bool found = false;
+                    PolygonCollisionResult r = m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (
+                        GetPhysPolygon (0), polygon, { dx, dy });
 
-                    for (Entity* saved : m_OverlapedEntities)
+                    if (r.WillIntersect || r.Intersect)
                     {
-                        if (saved == ent)
+                        if (!area.WasEntered)
                         {
-                            found = true;
-                            break;
+                            if (area.OnEnterCallback)
+                            {
+                                area.OnEnterCallback (dx + r.MinimumTranslationVector.X,
+                                                      dy + r.MinimumTranslationVector.Y);
+                            }
+
+                            if (area.ScriptOnEnterCallback)
+                            {
+                                const char* moduleName = area.ScriptOnEnterCallback->GetModuleName ();
+                                Script* script
+                                    = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (
+                                        moduleName);
+
+                                if (script)
+                                {
+                                    Point point
+                                        = { dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y };
+                                    asIScriptContext* ctx = script->GetContext ();
+                                    ctx->Prepare (area.ScriptOnEnterCallback);
+                                    ctx->SetArgObject (0, &point);
+
+                                    ctx->Execute ();
+                                }
+                            }
                         }
-                    }
 
-                    if (!found)
-                    {
-                        m_OverlapedEntities.push_back (ent);
-
-                        BeginOverlap (ent);
+                        area.WasEntered = true;
                     }
-                }
-                else
-                {
-                    for (std::vector<Entity*>::iterator it = m_OverlapedEntities.begin ();
-                         it != m_OverlapedEntities.end (); ++it)
+                    else if (area.WasEntered)
                     {
-                        if (*it == ent)
+                        area.WasEntered = false;
+
+                        if (area.OnLeaveCallback)
                         {
-                            EndOverlap (ent);
+                            area.OnLeaveCallback (dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y);
+                        }
 
-                            m_OverlapedEntities.erase (it);
-                            break;
+                        if (area.ScriptOnLeaveCallback)
+                        {
+                            const char* moduleName = area.ScriptOnLeaveCallback->GetModuleName ();
+                            Script* script = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptByModuleName (
+                                moduleName);
+
+                            if (script)
+                            {
+                                Point point = { dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y };
+                                asIScriptContext* ctx = script->GetContext ();
+                                ctx->Prepare (area.ScriptOnLeaveCallback);
+                                ctx->SetArgObject (0, &point);
+
+                                ctx->Execute ();
+                            }
                         }
                     }
                 }

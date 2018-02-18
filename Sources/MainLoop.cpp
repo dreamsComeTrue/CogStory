@@ -50,7 +50,7 @@ namespace aga
         m_TweenManager.Initialize ();
         m_ScriptManager.Initialize ();
 
-        m_AudioManager.SetMasterVolume (0.1);
+        m_AudioManager.SetMasterVolume (1.0f);
 
         m_Screen->ProcessEventFunction = [&](ALLEGRO_EVENT* event) {
             m_SceneManager.ProcessEvent (event, m_Screen->GetDeltaTime ());

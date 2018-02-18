@@ -1,6 +1,7 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 #include "ActorFactory.h"
 #include "actors/NPCActor.h"
+#include "actors/TileActor.h"
 
 namespace aga
 {
@@ -14,7 +15,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void ActorFactory::RegisterActorTypes () { s_ActorTypes.push_back (NPCActor::TypeName); }
+    void ActorFactory::RegisterActorTypes ()
+    {
+        s_ActorTypes.push_back (NPCActor::TypeName);
+        s_ActorTypes.push_back (TileActor::TypeName);
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -29,6 +34,10 @@ namespace aga
         if (type == NPCActor::TypeName)
         {
             newActor = new NPCActor (sceneManager);
+        }
+        else if (type == TileActor::TypeName)
+        {
+            newActor = new TileActor (sceneManager);
         }
 
         if (newActor)

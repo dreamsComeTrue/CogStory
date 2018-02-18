@@ -12,6 +12,7 @@ namespace aga
 
     Collidable::Collidable (PhysicsManager* physicsManager)
         : m_PhysicsManager (physicsManager)
+        , m_CollisionEnabled (true)
     {
     }
 
@@ -108,6 +109,14 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Collidable::SetCollisionEnabled (bool enabled) { m_CollisionEnabled = enabled; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Collidable::IsCollisionEnabled () const { return m_CollisionEnabled; }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Collidable::BuildEdges ()
     {
         for (int i = 0; i < m_PhysPolygons.size (); ++i)
@@ -120,7 +129,7 @@ namespace aga
 
     bool Collidable::IsCollidingWith (Collidable* other, Point velocity, Point&& offset)
     {
-        if (!PhysPoints.empty () && !other->PhysPoints.empty ())
+        if (m_CollisionEnabled && !PhysPoints.empty () && !other->PhysPoints.empty ())
         {
             for (int i = 0; i < GetPhysPolygonsCount (); ++i)
             {

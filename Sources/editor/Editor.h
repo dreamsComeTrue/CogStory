@@ -8,7 +8,6 @@
 #include "EditorFlagPointMode.h"
 #include "EditorPhysMode.h"
 #include "EditorSpeechMode.h"
-#include "EditorTileMode.h"
 #include "EditorTriggerAreaMode.h"
 #include "Scene.h"
 
@@ -57,7 +56,6 @@ namespace aga
         friend class EditorActorScriptWindow;
         friend class EditorInfoWindow;
 
-        friend class EditorTileMode;
         friend class EditorPhysMode;
         friend class EditorFlagPointMode;
         friend class EditorTriggerAreaMode;
@@ -140,7 +138,6 @@ namespace aga
 
     private:
         MainLoop* m_MainLoop;
-        EditorTileMode m_EditorTileMode;
         EditorPhysMode m_EditorPhysMode;
         EditorFlagPointMode m_EditorFlagPointMode;
         EditorTriggerAreaMode m_EditorTriggerAreaMode;

@@ -8,13 +8,13 @@
 namespace aga
 {
     class Editor;
-    class EditorTileMode;
+    class EditorActorMode;
     class MainLoop;
 
     class EditorPhysMode
     {
         friend class Editor;
-        friend class EditorTileMode;
+        friend class EditorActorMode;
 
     public:
         EditorPhysMode (Editor* editor);

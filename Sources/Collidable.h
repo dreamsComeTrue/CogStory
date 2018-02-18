@@ -22,6 +22,9 @@ namespace aga
         size_t GetPhysPolygonsCount () const;
         void UpdatePhysPolygon ();
 
+        void SetCollisionEnabled (bool enabled);
+        bool IsCollisionEnabled () const;
+
         bool IsCollidingWith (Collidable* other, Point velocity, Point&& offset);
 
     protected:
@@ -39,6 +42,7 @@ namespace aga
         PhysicsManager* m_PhysicsManager;
         std::vector<Polygon> m_PhysPolygons;
         Point m_Offset;
+        bool m_CollisionEnabled;
     };
 }
 
