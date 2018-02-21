@@ -29,7 +29,7 @@ namespace aga
     class EditorActorWindow;
     class EditorActorScriptWindow;
     class EditorInfoWindow;
-    class EditorQuestionWindow;
+    class EditorInputWindow;
 
     class MainLoop;
     struct Tile;
@@ -162,7 +162,7 @@ namespace aga
         EditorSpeechWindow* m_SpeechWindow;
         EditorActorWindow* m_ActorWindow;
         EditorInfoWindow* m_InfoWindow;
-        EditorQuestionWindow* m_QuestionWindow;
+        EditorInputWindow* m_InputWindow;
 
         Gwk::Renderer::AllegroResourceLoader* m_ResourceLoader;
         Gwk::Renderer::Allegro* m_GUIRenderer;

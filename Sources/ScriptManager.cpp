@@ -183,6 +183,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    ALLEGRO_COLOR COLOR_BLACK_REF = COLOR_BLACK;
+
     void ScriptManager::RegisterAPI ()
     {
         //  Point
@@ -209,6 +211,22 @@ namespace aga
 
         r = m_ScriptEngine->RegisterGlobalFunction ("void Log (Point &in)", asFUNCTIONPR (Log, (Point&), void),
                                                     asCALL_CDECL);
+        assert (r >= 0);
+
+        //  Color
+        r = m_ScriptEngine->RegisterObjectType ("Color", sizeof (ALLEGRO_COLOR),
+                                                asOBJ_VALUE | asOBJ_POD | asOBJ_APP_FLOAT);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectProperty ("Color", "float r", asOFFSET (ALLEGRO_COLOR, r));
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectProperty ("Color", "float g", asOFFSET (ALLEGRO_COLOR, g));
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectProperty ("Color", "float b", asOFFSET (ALLEGRO_COLOR, b));
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectProperty ("Color", "float a", asOFFSET (ALLEGRO_COLOR, a));
+        assert (r >= 0);
+
+        r = m_ScriptEngine->RegisterGlobalProperty ("Color COLOR_BLACK", &COLOR_BLACK_REF);
         assert (r >= 0);
 
         // Rect
@@ -378,13 +396,13 @@ namespace aga
         r = m_ScriptEngine->RegisterGlobalFunction ("float GetFPS ()", asMETHOD (Screen, GetFPS),
                                                     asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("void SceneFadeInOut ()", asMETHOD (SceneManager, SceneFadeInOut),
-                                                    asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
-        assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction (
-            "void SetBackgroundColor (float, float, float, float)",
-            asMETHODPR (Screen, SetBackgroundColor, (float, float, float, float), void), asCALL_THISCALL_ASGLOBAL,
-            m_MainLoop->GetScreen ());
+            "void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, Color color = COLOR_BLACK)",
+            asMETHOD (SceneManager, SceneFadeInOut), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction ("void SetBackgroundColor (Color)",
+                                                    asMETHODPR (Screen, SetBackgroundColor, (ALLEGRO_COLOR), void),
+                                                    asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
         assert (r >= 0);
 
         //  Tweening

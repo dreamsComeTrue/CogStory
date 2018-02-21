@@ -20,10 +20,12 @@ namespace aga
         void OnOpen (Gwk::Controls::Base*);
         void OnCancel ();
         void OnEdit (Gwk::Controls::Base* control);
+        void OnBrowse ();
 
     private:
         Editor* m_Editor;
         Gwk::Controls::WindowControl* m_SceneWindow;
+        Gwk::Controls::TextBox* m_PathTextBox;
         std::string m_FileName;
     };
 }

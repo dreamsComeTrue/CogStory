@@ -12,7 +12,9 @@
 
 namespace aga
 {
-    const int FADE_MAX_TIME = 500;
+    //--------------------------------------------------------------------------------------------------
+
+    const int SCENE_FADE_ID = 99999;
 
     //--------------------------------------------------------------------------------------------------
 
@@ -26,6 +28,8 @@ namespace aga
         , m_Transitioning (true)
         , m_FadeColor (COLOR_BLACK)
         , m_TweenFade (nullptr)
+        , m_DrawPhysData (true)
+        , m_DrawBoundingBox (true)
     {
     }
 
@@ -99,12 +103,24 @@ namespace aga
 
     void SceneManager::RemoveScene (Scene* scene)
     {
-        for (std::map<ResourceID, Scene*>::iterator it = m_Scenes.begin (); it != m_Scenes.end (); it++)
+        for (std::map<ResourceID, Scene*>::iterator it = m_Scenes.begin (); it != m_Scenes.end ();)
         {
             if (it->second == scene)
             {
+                if (it->second == m_ActiveScene)
+                {
+                    m_ActiveScene->AfterLeave ();
+                    m_ActiveScene = nullptr;
+                }
+
+                SAFE_DELETE (it->second);
                 m_Scenes.erase (it);
+
                 break;
+            }
+            else
+            {
+                it++;
             }
         }
     }
@@ -256,8 +272,9 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneManager::SceneFadeInOut ()
+    void SceneManager::SceneFadeInOut (float fadeInMs, float fadeOutMs, ALLEGRO_COLOR color)
     {
+        m_FadeColor = color;
         m_FadeColor.a = 0.0f;
         m_Transitioning = true;
 
@@ -285,14 +302,34 @@ namespace aga
 
         tweeny::tween<float> tween = tweeny::from (0.0f)
                                          .to (1.0f)
-                                         .during (FADE_MAX_TIME)
+                                         .during (fadeInMs)
                                          .onStep (fadeInFunc)
                                          .to (0.0f)
-                                         .during (FADE_MAX_TIME)
+                                         .during (fadeOutMs)
                                          .onStep (fadeOutFunc);
 
-        m_TweenFade = &m_MainLoop->GetTweenManager ().AddTween (200, tween);
+        m_TweenFade = &m_MainLoop->GetTweenManager ().AddTween (SCENE_FADE_ID, tween);
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool SceneManager::IsTransitioning () const { return m_Transitioning; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::SetDrawPhysData (bool enable) { m_DrawPhysData = enable; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool SceneManager::IsDrawPhysData () { return m_DrawPhysData; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::SetDrawBoundingBox (bool enable) { m_DrawBoundingBox = enable; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool SceneManager::IsDrawBoundingBox () { return m_DrawBoundingBox; }
 
     //--------------------------------------------------------------------------------------------------
 }

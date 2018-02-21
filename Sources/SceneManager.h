@@ -49,7 +49,14 @@ namespace aga
         SpeechFrameManager& GetSpeechFrameManager ();
 
         void Reset ();
-        void SceneFadeInOut ();
+        void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, ALLEGRO_COLOR color = COLOR_BLACK);
+        bool IsTransitioning () const;
+
+        void SetDrawPhysData (bool enable);
+        bool IsDrawPhysData ();
+
+        void SetDrawBoundingBox (bool enable);
+        bool IsDrawBoundingBox ();
 
     private:
         SpeechFrameManager m_SpeechFrameManager;
@@ -64,6 +71,9 @@ namespace aga
         TweenData* m_TweenFade;
         bool m_Transitioning;
         ALLEGRO_COLOR m_FadeColor;
+
+        bool m_DrawPhysData;
+        bool m_DrawBoundingBox;
     };
 }
 

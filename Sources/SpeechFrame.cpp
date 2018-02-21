@@ -578,7 +578,7 @@ namespace aga
             std::string regionName = m_DrawLightArrow ? "arrow_light" : "arrow_dark";
 
             //  Up arrow
-            if (lineCounter > 0)
+            if (lineCounter > 0 && lineCounter != maxLines)
             {
                 m_Manager->GetSceneManager ()
                     ->GetAtlasManager ()

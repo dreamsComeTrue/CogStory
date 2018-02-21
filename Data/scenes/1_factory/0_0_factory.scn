@@ -1,0 +1,305 @@
+{
+    "actors": [
+        {
+            "id": "7",
+            "name": "parallax-forest-front-trees",
+            "pos": "-402 -86",
+            "rot": "0",
+            "type": "Tile",
+            "z-order": "-1"
+        },
+        {
+            "id": "8",
+            "name": "parallax-forest-front-trees",
+            "pos": "385 -80",
+            "rot": "0",
+            "type": "Tile",
+            "z-order": "-1"
+        },
+        {
+            "id": "2",
+            "name": "main_room",
+            "pos": "-6 -65",
+            "rot": "0",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "id": "9",
+            "name": "parallax-forest-front-trees",
+            "pos": "654 -78",
+            "rot": "0",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "id": "12",
+            "name": "arrow_dark",
+            "pos": "-116 210",
+            "rot": "0",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "id": "13",
+            "name": "arrow_light",
+            "pos": "-84 267",
+            "rot": "0",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "id": "14",
+            "name": "arrow_dark",
+            "pos": "-87 318",
+            "rot": "180",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "id": "21",
+            "name": "test_NPC2",
+            "pos": "113 236",
+            "rot": "0",
+            "type": "NPC",
+            "z-order": "0"
+        },
+        {
+            "id": "3",
+            "name": "bed",
+            "pos": "60 -192",
+            "rot": "0",
+            "type": "Tile",
+            "z-order": "1"
+        },
+        {
+            "id": "19",
+            "name": "test_NPC",
+            "pos": "1 0",
+            "rot": "0",
+            "type": "NPC",
+            "z-order": "1"
+        },
+        {
+            "id": "11",
+            "name": "player_head",
+            "pos": "55 -196",
+            "rot": "0",
+            "type": "Tile",
+            "z-order": "4"
+        }
+    ],
+    "flag_points": [
+        {
+            "connections": "B ",
+            "name": "A",
+            "pos": "9.96 204.08"
+        },
+        {
+            "connections": "A C ",
+            "name": "B",
+            "pos": "10 83"
+        },
+        {
+            "connections": "B D ",
+            "name": "C",
+            "pos": "126.768 82.855"
+        },
+        {
+            "connections": "C ",
+            "name": "D",
+            "pos": "126 -79"
+        },
+        {
+            "connections": "",
+            "name": "XX",
+            "pos": "-243 -236"
+        }
+    ],
+    "max_size": "926 331",
+    "min_size": "-402 -196",
+    "name": "Home",
+    "scripts": [
+        {
+            "name": "home",
+            "path": "0_home/0_0_home.script"
+        }
+    ],
+    "speeches": [
+        {
+            "abs_pos": "0 0",
+            "max_chars": 20,
+            "max_lines": 3,
+            "name": "GREET_1",
+            "outcomes": [
+                {
+                    "langID": "EN",
+                    "texts": [
+                        {
+                            "action": "",
+                            "data": "a",
+                            "name": "1"
+                        }
+                    ]
+                },
+                {
+                    "langID": "PL",
+                    "texts": []
+                }
+            ],
+            "region_name": "player_head",
+            "rel_pos": 5,
+            "texts": [
+                {
+                    "data": "Hey, what 's up???\nAre you ready, please answr me?",
+                    "langID": "EN"
+                },
+                {
+                    "data": "",
+                    "langID": "PL"
+                }
+            ]
+        },
+        {
+            "abs_pos": "0 0",
+            "max_chars": 0,
+            "max_lines": 0,
+            "name": "Hello2",
+            "outcomes": [
+                {
+                    "langID": "EN",
+                    "texts": [
+                        {
+                            "action": "Hello2",
+                            "data": "a",
+                            "name": "1"
+                        },
+                        {
+                            "action": "GREET_1",
+                            "data": "b",
+                            "name": "2"
+                        },
+                        {
+                            "action": "Hello2",
+                            "data": "c",
+                            "name": "3"
+                        }
+                    ]
+                },
+                {
+                    "langID": "PL",
+                    "texts": []
+                }
+            ],
+            "region_name": "",
+            "rel_pos": 7,
+            "texts": [
+                {
+                    "data": "asdasdasd",
+                    "langID": "EN"
+                },
+                {
+                    "data": "",
+                    "langID": "PL"
+                }
+            ]
+        }
+    ],
+    "tiles": [
+        {
+            "id": "7",
+            "name": "parallax-forest-front-trees",
+            "phys": [],
+            "pos": "-402 -86",
+            "rot": "0",
+            "tileset": "0_0_home",
+            "z-order": "-1"
+        },
+        {
+            "id": "8",
+            "name": "parallax-forest-front-trees",
+            "phys": [],
+            "pos": "385 -80",
+            "rot": "0",
+            "tileset": "0_0_home",
+            "z-order": "-1"
+        },
+        {
+            "id": "2",
+            "name": "main_room",
+            "phys": [
+                {
+                    "poly": "-17.1656 189.336 -256.148 190.082 -255.989 -192.058 254.741 -192.482 254.741 189.293 39.6122 190.86 39.9193 180.725 243.509 180.879 243.699 35.5396 147.691 34.906 147.542 24.4702 244.146 24.2466 242.864 -181.029 16.1011 -179.921 15.4551 23.7248 99.3021 23.5422 99.6863 34.4587 3.70858 35.2571 3.23999 -180.766 -244.179 -180.766 -244.511 180.402 -17.2119 180.226 "
+                }
+            ],
+            "pos": "-6 -65",
+            "rot": "0",
+            "tileset": "0_0_home",
+            "z-order": "0"
+        },
+        {
+            "id": "9",
+            "name": "parallax-forest-front-trees",
+            "phys": [],
+            "pos": "654 -78",
+            "rot": "0",
+            "tileset": "0_0_home",
+            "z-order": "0"
+        },
+        {
+            "id": "12",
+            "name": "arrow_dark",
+            "phys": [],
+            "pos": "-116 210",
+            "rot": "0",
+            "tileset": "menu_ui",
+            "z-order": "0"
+        },
+        {
+            "id": "13",
+            "name": "arrow_light",
+            "phys": [],
+            "pos": "-84 267",
+            "rot": "0",
+            "tileset": "menu_ui",
+            "z-order": "0"
+        },
+        {
+            "id": "14",
+            "name": "arrow_dark",
+            "phys": [],
+            "pos": "-87 318",
+            "rot": "180",
+            "tileset": "menu_ui",
+            "z-order": "0"
+        },
+        {
+            "id": "3",
+            "name": "bed",
+            "phys": [
+                {
+                    "poly": "-17.6458 -28.0695 -18.9565 29.6022 17.4159 28.6191 18.7267 -27.7418 "
+                }
+            ],
+            "pos": "60 -192",
+            "rot": "0",
+            "tileset": "0_0_home",
+            "z-order": "1"
+        },
+        {
+            "id": "11",
+            "name": "player_head",
+            "phys": [],
+            "pos": "55 -196",
+            "rot": "0",
+            "tileset": "characters_ui",
+            "z-order": "4"
+        }
+    ],
+    "trigger_areas": [
+        {
+            "name": "TOP",
+            "poly": "115 11 113 -27 171 -29 170 12 "
+        }
+    ]
+}

@@ -88,9 +88,11 @@ namespace aga
 
     void GamePlayState::Update (float deltaTime)
     {
-        if (!m_MainLoop->GetSceneManager ().GetPlayer ().IsPreventInput ())
+        SceneManager& sceneManager = m_MainLoop->GetSceneManager ();
+
+        if (!sceneManager.IsTransitioning () && !sceneManager.GetPlayer ().IsPreventInput ())
         {
-            m_MainLoop->GetSceneManager ().GetPlayer ().HandleInput (deltaTime);
+            sceneManager.GetPlayer ().HandleInput (deltaTime);
         }
     }
 

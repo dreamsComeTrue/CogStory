@@ -2,13 +2,15 @@
 
 #include "EditorSaveSceneWindow.h"
 #include "Editor.h"
+#include "MainLoop.h"
+#include "Screen.h"
 
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    EditorSaveSceneWindow::EditorSaveSceneWindow (
-        Editor* editor, Gwk::Controls::Canvas* canvas, const std::string& fileName)
+    EditorSaveSceneWindow::EditorSaveSceneWindow (Editor* editor, Gwk::Controls::Canvas* canvas,
+                                                  const std::string& fileName)
         : m_Editor (editor)
         , m_FileName (fileName)
     {
@@ -24,17 +26,17 @@ namespace aga
         pathLabel->SetText ("File path:");
         pathLabel->SizeToContents ();
 
-        Gwk::Controls::TextBox* pathTextBox = new Gwk::Controls::TextBox (m_SceneWindow);
-        pathTextBox->SetText (m_FileName);
-        pathTextBox->SetTextColor (Gwk::Colors::White);
-        pathTextBox->SetWidth (300);
-        pathTextBox->SetPos (20, 30);
-        pathTextBox->onTextChanged.Add (this, &EditorSaveSceneWindow::OnEdit);
+        m_PathTextBox = new Gwk::Controls::TextBox (m_SceneWindow);
+        m_PathTextBox->SetText (m_FileName);
+        m_PathTextBox->SetTextColor (Gwk::Colors::White);
+        m_PathTextBox->SetWidth (300);
+        m_PathTextBox->SetPos (20, 30);
+        m_PathTextBox->onTextChanged.Add (this, &EditorSaveSceneWindow::OnEdit);
 
         Gwk::Controls::Button* browseButton = new Gwk::Controls::Button (m_SceneWindow);
         browseButton->SetText ("BROWSE");
         browseButton->SetPos (330, 30);
-        browseButton->onPress.Add (this, &EditorSaveSceneWindow::OnSave);
+        browseButton->onPress.Add (this, &EditorSaveSceneWindow::OnBrowse);
 
         Gwk::Controls::Button* okButton = new Gwk::Controls::Button (m_SceneWindow);
         okButton->SetText ("SAVE");
@@ -58,6 +60,39 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void EditorSaveSceneWindow::OnBrowse ()
+    {
+        std::string path = GetDataPath () + "scenes/";
+
+        ALLEGRO_FILECHOOSER* fileSaveDialog
+            = al_create_native_file_dialog (path.c_str (), "Save scene file", "*.scn", ALLEGRO_FILECHOOSER_SAVE);
+
+        if (al_show_native_file_dialog (m_Editor->m_MainLoop->GetScreen ()->GetDisplay (), fileSaveDialog))
+        {
+            m_FileName = al_get_native_file_dialog_path (fileSaveDialog, 0);
+            std::replace (m_FileName.begin (), m_FileName.end (), '\\', '/');
+
+            if (!EndsWith (m_FileName, ".scn"))
+            {
+                m_FileName += ".scn";
+            }
+
+            std::string dataPath = "Data/scenes/";
+            size_t index = m_FileName.find (dataPath);
+
+            if (index != std::string::npos)
+            {
+                m_FileName = m_FileName.substr (index + dataPath.length ());
+            }
+
+            m_PathTextBox->SetText (m_FileName);
+        }
+
+        al_destroy_native_file_dialog (fileSaveDialog);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void EditorSaveSceneWindow::OnSave (Gwk::Controls::Base*)
     {
         m_Editor->SaveScene (m_FileName);
@@ -70,11 +105,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorSaveSceneWindow::OnEdit (Gwk::Controls::Base* control)
-    {
-        Gwk::Controls::TextBox* textbox = (Gwk::Controls::TextBox*)(control);
-        m_FileName = textbox->GetText ();
-    }
+    void EditorSaveSceneWindow::OnEdit (Gwk::Controls::Base* control) { m_FileName = m_PathTextBox->GetText (); }
 
     //--------------------------------------------------------------------------------------------------
 }

@@ -135,44 +135,50 @@ namespace aga
             {
                 Polygon& myPolygon = GetPhysPolygon (i);
 
-                for (int j = 0; j < other->GetPhysPolygonsCount (); ++j)
+                if (!myPolygon.Points.empty ())
                 {
-                    PolygonCollisionResult r = m_PhysicsManager->PolygonCollision (myPolygon, other->GetPhysPolygon (j),
-                                                                                   { velocity.X, velocity.Y });
-
-                    bool found = false;
-
-                    for (Collidable* saved : m_Collisions)
+                    for (int j = 0; j < other->GetPhysPolygonsCount (); ++j)
                     {
-                        if (saved == other)
+                        if (!other->GetPhysPolygon (j).Points.empty ())
                         {
-                            found = true;
-                            break;
-                        }
-                    }
+                            PolygonCollisionResult r = m_PhysicsManager->PolygonCollision (
+                                myPolygon, other->GetPhysPolygon (j), { velocity.X, velocity.Y });
 
-                    if (r.WillIntersect)
-                    {
-                        offset = r.MinimumTranslationVector;
+                            bool found = false;
 
-                        if (!found)
-                        {
-                            m_Collisions.push_back (other);
-
-                            CollisionEvent (other);
-                        }
-
-                        return true;
-                    }
-                    else
-                    {
-                        for (std::vector<Collidable*>::iterator it = m_Collisions.begin (); it != m_Collisions.end ();
-                             ++it)
-                        {
-                            if (*it == other)
+                            for (Collidable* saved : m_Collisions)
                             {
-                                m_Collisions.erase (it);
-                                break;
+                                if (saved == other)
+                                {
+                                    found = true;
+                                    break;
+                                }
+                            }
+
+                            if (r.WillIntersect)
+                            {
+                                offset = r.MinimumTranslationVector;
+
+                                if (!found)
+                                {
+                                    m_Collisions.push_back (other);
+
+                                    CollisionEvent (other);
+                                }
+
+                                return true;
+                            }
+                            else
+                            {
+                                for (std::vector<Collidable*>::iterator it = m_Collisions.begin ();
+                                     it != m_Collisions.end (); ++it)
+                                {
+                                    if (*it == other)
+                                    {
+                                        m_Collisions.erase (it);
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }

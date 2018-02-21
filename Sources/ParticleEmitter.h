@@ -28,6 +28,8 @@ namespace aga
         bool Update (float deltaTime);
         void Render (float deltaTime);
 
+        void Reset ();
+
         void SetCanEmit (bool canEmit);
         bool IsCanEmit ();
         void SetPosition (Point position);

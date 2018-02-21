@@ -117,7 +117,7 @@ namespace aga
                             color = COLOR_RED;
                         }
 
-                        if (m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawPhysData () && false)
+                        if (m_Editor->m_MainLoop->GetSceneManager ().IsDrawPhysData () && false)
                         {
                             m_Editor->m_MainLoop->GetScreen ()->GetFont ().DrawText (
                                 FONT_NAME_SMALL, al_map_rgb (0, 255, 0), xPoint, yPoint, ToString (i),

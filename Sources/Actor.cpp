@@ -146,7 +146,7 @@ namespace aga
 
     void Actor::DrawBounds ()
     {
-        if (m_SceneManager->GetActiveScene ()->IsDrawBoundingBox ())
+        if (m_SceneManager->IsDrawBoundingBox ())
         {
             al_draw_rectangle (Bounds.GetTopLeft ().X - Bounds.GetHalfSize ().Width,
                                Bounds.GetTopLeft ().Y - Bounds.GetHalfSize ().Height,

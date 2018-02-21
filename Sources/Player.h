@@ -42,6 +42,8 @@ namespace aga
 
         virtual std::string GetTypeName () override;
 
+        void ResetParticleEmitters ();
+
     private:
         void InitializeAnimations ();
         void UpdateParticleEmitters ();

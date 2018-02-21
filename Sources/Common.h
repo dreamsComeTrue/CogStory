@@ -108,6 +108,10 @@ namespace aga
         return strStream.str ();
     }
 
+    bool EndsWith (const std::string& str, const std::string& suffix);
+
+    bool StartsWith (const std::string& str, const std::string& prefix);
+
     float RandZeroToOne ();
     float RandInRange (float min, float max);
 

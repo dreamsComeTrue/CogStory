@@ -41,6 +41,8 @@ void BeforeEnterScene ()
 	AddOnEnterCallback ("TOP", TopOnEnter);
 	AddOnLeaveCallback ("TOP", TopOnLeave);
 
+	AddOnEnterCallback ("CITY_EXIT", OnCityExitEnter);
+
   	Point flag1 = lastPoint;
 	Point flag2 = GetFlagPoint ("B").Pos;
 	
@@ -60,6 +62,12 @@ void TopOnEnter (Point p)
 void TopOnLeave (Point p)
 {
 	topFrame.Hide ();	
+}
+
+void OnCityExitEnter (Point p)
+{
+	Color color = COLOR_BLACK;
+	SceneFadeInOut (400, 400, color);
 }
 
 bool PlayerTween (int id, float progress, Point value)

@@ -75,8 +75,6 @@ namespace aga
     Scene::Scene (SceneManager* sceneManager)
         : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
         , m_SceneManager (sceneManager)
-        , m_DrawPhysData (true)
-        , m_DrawBoundingBox (true)
         , m_QuadTree (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }))
     {
     }
@@ -166,7 +164,7 @@ namespace aga
 
         m_SceneManager->GetCamera ().Update (deltaTime);
 
-        if (m_DrawBoundingBox)
+        if (m_SceneManager->IsDrawBoundingBox ())
         {
             DrawQuadTree (&m_QuadTree);
         }
@@ -176,9 +174,9 @@ namespace aga
 
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () == "EDITOR_STATE")
         {
-            for (int i = 0; i < m_AllEntities.size (); ++i)
+            for (int i = 0; i < m_Actors.size (); ++i)
             {
-                Actor* actor = (Actor*)m_AllEntities[i];
+                Actor* actor = m_Actors[i];
 
                 if (!isPlayerDrawn && actor->ZOrder >= PLAYER_Z_ORDER)
                 {
@@ -188,12 +186,12 @@ namespace aga
 
                 actor->Render (deltaTime);
 
-                if (m_DrawBoundingBox)
+                if (m_SceneManager->IsDrawBoundingBox ())
                 {
                     actor->DrawBounds ();
                 }
 
-                if (m_DrawPhysData)
+                if (m_SceneManager->IsDrawPhysData ())
                 {
                     actor->DrawPhysBody ();
                 }
@@ -222,12 +220,12 @@ namespace aga
                 actor->RenderID = i;
                 actor->Render (deltaTime);
 
-                if (m_DrawBoundingBox)
+                if (m_SceneManager->IsDrawBoundingBox ())
                 {
                     actor->DrawBounds ();
                 }
 
-                if (m_DrawPhysData)
+                if (m_SceneManager->IsDrawPhysData ())
                 {
                     actor->DrawPhysBody ();
                 }
@@ -239,17 +237,15 @@ namespace aga
             m_SceneManager->GetPlayer ().Render (deltaTime);
         }
 
-        if (m_DrawBoundingBox)
+        if (m_SceneManager->IsDrawBoundingBox ())
         {
             m_SceneManager->GetPlayer ().DrawBounds ();
         }
 
-        if (m_DrawPhysData)
+        if (m_SceneManager->IsDrawPhysData ())
         {
             m_SceneManager->GetPlayer ().DrawPhysBody ();
         }
-
-        font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), -100, -50, m_Name, ALLEGRO_ALIGN_LEFT);
 
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
         {
@@ -367,18 +363,11 @@ namespace aga
 
     void Scene::UpdateRenderIDs ()
     {
-        m_AllEntities.clear ();
+        std::sort (m_Actors.begin (), m_Actors.end (), Entity::CompareByZOrder);
 
-        for (Actor* actor : m_Actors)
+        for (int i = 0; i < m_Actors.size (); ++i)
         {
-            m_AllEntities.push_back (actor);
-        }
-
-        std::sort (m_AllEntities.begin (), m_AllEntities.end (), Entity::CompareByZOrder);
-
-        for (int i = 0; i < m_AllEntities.size (); ++i)
-        {
-            m_AllEntities[i]->RenderID = i;
+            m_Actors[i]->RenderID = i;
         }
     }
 
@@ -505,6 +494,13 @@ namespace aga
     {
         RemoveAllScripts ();
 
+        for (int i = 0; i < m_Actors.size (); ++i)
+        {
+            SAFE_DELETE (m_Actors[i]);
+        }
+
+        m_Actors.clear ();
+
         m_SceneManager->GetSpeechFrameManager ().Clear ();
         m_SceneManager->GetMainLoop ()->GetTweenManager ().Clear ();
 
@@ -512,27 +508,17 @@ namespace aga
         m_TriggerAreas.clear ();
 
         m_QuadTree = QuadTreeNode (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }));
+
+        Entity::GlobalID = 0;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    std::string Scene::GetName () { return m_Name; }
+    void Scene::SetName (const std::string& name) { m_Name = name; }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::SetDrawPhysData (bool enable) { m_DrawPhysData = enable; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool Scene::IsDrawPhysData () { return m_DrawPhysData; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Scene::SetDrawBoundingBox (bool enable) { m_DrawBoundingBox = enable; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool Scene::IsDrawBoundingBox () { return m_DrawBoundingBox; }
+    std::string Scene::GetName () const { return m_Name; }
 
     //--------------------------------------------------------------------------------------------------
 

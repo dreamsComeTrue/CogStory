@@ -13,6 +13,8 @@ namespace aga
 
     class EditorTriggerAreaWindow : public Gwk::Event::Handler
     {
+        friend class Editor;
+
     public:
         EditorTriggerAreaWindow (Editor* editor, Gwk::Controls::Canvas* canvas);
 

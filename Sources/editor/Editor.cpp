@@ -162,7 +162,7 @@ namespace aga
             m_SpeechWindow = new EditorSpeechWindow (this, m_MainCanvas);
             m_ActorWindow = new EditorActorWindow (this, m_MainCanvas);
             m_InfoWindow = new EditorInfoWindow (this, m_MainCanvas);
-            m_QuestionWindow = new EditorQuestionWindow (this, m_MainCanvas);
+            m_InputWindow = new EditorInputWindow (this, m_MainCanvas);
         }
 
         resetMoveButton = new Gwk::Controls::Button (m_MainCanvas);
@@ -348,7 +348,7 @@ namespace aga
         SAFE_DELETE (m_SpeechWindow);
         SAFE_DELETE (m_ActorWindow);
         SAFE_DELETE (m_InfoWindow);
-        SAFE_DELETE (m_QuestionWindow);
+        SAFE_DELETE (m_InputWindow);
 
         SAFE_DELETE (m_ResourceLoader);
         SAFE_DELETE (m_MainCanvas);
@@ -370,8 +370,8 @@ namespace aga
             file.close ();
 
             m_IsSnapToGrid = j["show_grid"];
-            m_MainLoop->GetSceneManager ().GetActiveScene ()->SetDrawPhysData (j["show_physics"]);
-            m_MainLoop->GetSceneManager ().GetActiveScene ()->SetDrawBoundingBox (j["show_bounds"]);
+            m_MainLoop->GetSceneManager ().SetDrawPhysData (j["show_physics"]);
+            m_MainLoop->GetSceneManager ().SetDrawBoundingBox (j["show_bounds"]);
         }
         catch (const std::exception&)
         {
@@ -387,8 +387,8 @@ namespace aga
             json j;
 
             j["show_grid"] = m_IsSnapToGrid;
-            j["show_physics"] = m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawPhysData ();
-            j["show_bounds"] = m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawBoundingBox ();
+            j["show_physics"] = m_MainLoop->GetSceneManager ().IsDrawPhysData ();
+            j["show_bounds"] = m_MainLoop->GetSceneManager ().IsDrawBoundingBox ();
 
             // write prettified JSON to another file
             std::ofstream out ((GetDataPath () + configFileName).c_str ());
@@ -404,7 +404,8 @@ namespace aga
     bool Editor::Update (float deltaTime)
     {
         if ((m_CursorMode == CursorMode::TileSelectMode || m_CursorMode == CursorMode::TileEditMode)
-            && !m_SpeechWindow->m_SceneWindow->Visible ())
+            && !m_SpeechWindow->m_SceneWindow->Visible () && !m_TriggerAreaWindow->m_SceneWindow->Visible ()
+            && !m_FlagPointWindow->m_SceneWindow->Visible ())
         {
             ALLEGRO_KEYBOARD_STATE state;
             al_get_keyboard_state (&state);
@@ -518,15 +519,14 @@ namespace aga
 
             case ALLEGRO_KEY_P:
             {
-                m_MainLoop->GetSceneManager ().GetActiveScene ()->SetDrawPhysData (
-                    !m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawPhysData ());
+                m_MainLoop->GetSceneManager ().SetDrawPhysData (!m_MainLoop->GetSceneManager ().IsDrawPhysData ());
                 break;
             }
 
             case ALLEGRO_KEY_B:
             {
-                m_MainLoop->GetSceneManager ().GetActiveScene ()->SetDrawBoundingBox (
-                    !m_MainLoop->GetSceneManager ().GetActiveScene ()->IsDrawBoundingBox ());
+                m_MainLoop->GetSceneManager ().SetDrawBoundingBox (
+                    !m_MainLoop->GetSceneManager ().IsDrawBoundingBox ());
                 break;
             }
 
@@ -811,15 +811,17 @@ namespace aga
     {
         std::function<void(void)> YesFunc = [&] {
             m_MainLoop->GetSceneManager ().GetActiveScene ()->Reset ();
+            m_MainLoop->GetSceneManager ().GetActiveScene ()->SetName (m_InputWindow->GetText ());
 
             ResetSettings ();
             UpdateScriptsBox ();
 
-            sceneNameLabel->SetText (std::string ("SCENE: -"));
+            sceneNameLabel->SetText (std::string ("SCENE: ")
+                                     + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ());
             sceneNameLabel->SizeToContents ();
         };
 
-        m_QuestionWindow->Show ("Are you sure clearing current scene?", YesFunc, nullptr);
+        m_InputWindow->Show ("Are you sure clearing current scene?", "", YesFunc, nullptr);
     }
 
     //--------------------------------------------------------------------------------------------------

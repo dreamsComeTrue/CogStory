@@ -112,14 +112,10 @@ namespace aga
 
         void Reset ();
 
-        std::string GetName ();
+        void SetName (const std::string& name);
+        std::string GetName () const;
 
-        void SetDrawPhysData (bool enable);
-        bool IsDrawPhysData ();
         QuadTreeNode& GetQuadTree ();
-
-        void SetDrawBoundingBox (bool enable);
-        bool IsDrawBoundingBox ();
 
         Rect GetRenderBounds (Entity* entity);
 
@@ -140,11 +136,8 @@ namespace aga
         std::map<std::string, TriggerArea> m_TriggerAreas;
         std::map<std::string, SpeechData> m_Speeches;
         std::vector<Actor*> m_Actors;
-        std::vector<Entity*> m_AllEntities;
         SceneManager* m_SceneManager;
 
-        bool m_DrawPhysData;
-        bool m_DrawBoundingBox;
         QuadTreeNode m_QuadTree;
     };
 }
