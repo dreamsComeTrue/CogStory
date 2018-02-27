@@ -32,11 +32,12 @@ namespace aga
         {
             if (m_FlagPoint != "")
             {
-                std::map<std::string, FlagPoint>& flagPoints = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
+                std::map<std::string, FlagPoint>& flagPoints
+                    = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
 
                 Point p = m_Editor->CalculateCursorPoint (state.x, state.y);
-                Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-                Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
+                Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
+                Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
 
                 flagPoints[m_FlagPoint].Pos.X = (translate.X + p.X) * 1 / scale.X;
                 flagPoints[m_FlagPoint].Pos.Y = (translate.Y + p.Y) * 1 / scale.Y;
@@ -52,13 +53,14 @@ namespace aga
 
     void EditorFlagPointMode::DrawFlagPoints (float mouseX, float mouseY)
     {
-        std::map<std::string, FlagPoint>& flagPoints = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
+        std::map<std::string, FlagPoint>& flagPoints
+            = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
         int outsets = 4;
 
         if (m_DrawConnection && m_FlagPoint != "")
         {
-            Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-            Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
+            Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
+            Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
 
             float xPoint = flagPoints[m_FlagPoint].Pos.X * scale.X - translate.X;
             float yPoint = flagPoints[m_FlagPoint].Pos.Y * scale.Y - translate.Y;
@@ -68,19 +70,20 @@ namespace aga
 
         for (std::map<std::string, FlagPoint>::iterator it = flagPoints.begin (); it != flagPoints.end (); ++it)
         {
-            Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-            Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
+            Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
+            Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
             FlagPoint& fp = it->second;
 
             float xPoint = fp.Pos.X * scale.X - translate.X;
             float yPoint = fp.Pos.Y * scale.Y - translate.Y;
 
-            m_Editor->m_MainLoop->GetScreen ()->GetFont ().DrawText (
+            m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
                 FONT_NAME_SMALL, al_map_rgb (0, 255, 0), xPoint, yPoint - 15, it->first, ALLEGRO_ALIGN_CENTER);
 
             Point p = { fp.Pos.X, fp.Pos.Y };
 
-            for (std::vector<FlagPoint*>::iterator it2 = it->second.Connections.begin (); it2 != it->second.Connections.end (); ++it2)
+            for (std::vector<FlagPoint*>::iterator it2 = it->second.Connections.begin ();
+                 it2 != it->second.Connections.end (); ++it2)
             {
                 float x2Point = (*it2)->Pos.X * scale.X - translate.X;
                 float y2Point = (*it2)->Pos.Y * scale.Y - translate.Y;
@@ -109,12 +112,13 @@ namespace aga
             if (GetFlagPointUnderCursor (mouseX, mouseY) == "")
             {
                 Point p = m_Editor->CalculateCursorPoint (mouseX, mouseY);
-                Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-                Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
+                Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
+                Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
 
                 Point pointToInsert = { (translate.X + p.X) * 1 / scale.X, (translate.Y + p.Y) * 1 / scale.Y };
 
-                m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->AddFlagPoint (m_FlagPointName, pointToInsert);
+                m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddFlagPoint (m_FlagPointName,
+                                                                                              pointToInsert);
                 m_FlagPoint = m_FlagPointName;
             }
 
@@ -134,7 +138,7 @@ namespace aga
 
         if (flagPoint != "")
         {
-            m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetFlagPoints ().erase (flagPoint);
+            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoints ().erase (flagPoint);
             return true;
         }
 
@@ -145,7 +149,8 @@ namespace aga
 
     std::string EditorFlagPointMode::GetFlagPointUnderCursor (int mouseX, int mouseY)
     {
-        std::map<std::string, FlagPoint>& flagPoints = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
+        std::map<std::string, FlagPoint>& flagPoints
+            = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
         int outsets = 4;
 
         for (std::map<std::string, FlagPoint>::iterator it = flagPoints.begin (); it != flagPoints.end (); ++it)

@@ -13,8 +13,6 @@ namespace aga
 
     class EditorFlagPointWindow : public Gwk::Event::Handler
     {
-        friend class Editor;
-
     public:
         EditorFlagPointWindow (Editor* editor, Gwk::Controls::Canvas* canvas);
 
@@ -22,6 +20,8 @@ namespace aga
         void OnAccept (Gwk::Controls::Base*);
         void OnCancel ();
         void OnEdit (Gwk::Controls::Base* control);
+
+        Gwk::Controls::WindowControl* GetSceneWindow () { return m_SceneWindow; }
 
     private:
         Editor* m_Editor;

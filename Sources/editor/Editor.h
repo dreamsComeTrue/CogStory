@@ -47,21 +47,6 @@ namespace aga
 
     class Editor : public Lifecycle, public Gwk::Event::Handler
     {
-        friend class EditorOpenSceneWindow;
-        friend class EditorSaveSceneWindow;
-        friend class EditorFlagPointWindow;
-        friend class EditorTriggerAreaWindow;
-        friend class EditorSpeechWindow;
-        friend class EditorActorWindow;
-        friend class EditorActorScriptWindow;
-        friend class EditorInfoWindow;
-
-        friend class EditorPhysMode;
-        friend class EditorFlagPointMode;
-        friend class EditorTriggerAreaMode;
-        friend class EditorSpeechMode;
-        friend class EditorActorMode;
-
     public:
         Editor (MainLoop* mainLoop);
         virtual ~Editor ();
@@ -72,13 +57,30 @@ namespace aga
         void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
         void Render (float deltaTime);
 
+        void LoadScene (const std::string& filePath);
+        void SaveScene (const std::string& filePath);
+
         void OnResetTranslate ();
         void OnResetScale ();
 
         void SetDrawUITiles (bool draw);
 
-        CursorMode GetCursorMode ();
+        CursorMode GetCursorMode () const { return m_CursorMode; }
+        void SetCursorMode (CursorMode mode) { m_CursorMode = mode; }
         void SwitchCursorMode ();
+
+        Point CalculateCursorPoint (int mouseX, int mouseY);
+        bool IsMouseWithinPointRect (int mouseX, int mouseY, Point point, int outsets);
+
+        MainLoop* GetMainLoop () { return m_MainLoop; }
+
+        EditorPhysMode& GetEditorPhysMode () { return m_EditorPhysMode; }
+        EditorActorMode& GetEditorActorMode () { return m_EditorActorMode; }
+        EditorFlagPointMode& GetEditorFlagPointMode () { return m_EditorFlagPointMode; }
+        EditorSpeechMode& GetEditorSpeechMode () { return m_EditorSpeechMode; }
+        EditorTriggerAreaMode& GetEditorTriggerAreaMode () { return m_EditorTriggerAreaMode; }
+
+        EditorInfoWindow* GetEditorInfoWindow () { return m_InfoWindow; }
 
     private:
         void LoadConfig ();
@@ -89,13 +91,11 @@ namespace aga
         void ChangeGridSize (bool clockwise);
 
         void HandleCameraMovement (const ALLEGRO_MOUSE_EVENT& event);
+        void HandleCameraPan (float deltaTime);
 
         void OnNewScene (Gwk::Controls::Base* control);
         void OnOpenScene (Gwk::Controls::Base* control);
         void OnSaveScene (Gwk::Controls::Base* control);
-
-        void LoadScene (const std::string& filePath);
-        void SaveScene (const std::string& filePath);
 
         void OnPlay ();
         void MenuItemPlay ();
@@ -121,10 +121,6 @@ namespace aga
         void MarkPlayerPosition ();
 
         void OnTilesetSelected (Gwk::Controls::Base* control);
-
-        Point CalculateCursorPoint (int mouseX, int mouseY);
-
-        bool IsMouseWithinPointRect (int mouseX, int mouseY, Point point, int outsets);
 
         void RenderUI ();
 

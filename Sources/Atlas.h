@@ -18,10 +18,9 @@ namespace aga
 
     class Atlas
     {
-        friend class AtlasManager;
-
     public:
-        Atlas ();
+        Atlas (const std::string& path);
+        ~Atlas ();
 
         void DrawRegion (const std::string& name, int x, int y, float scaleX, float scaleY, float rotation);
         ALLEGRO_BITMAP* GetImage ();

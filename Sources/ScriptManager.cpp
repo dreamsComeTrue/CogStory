@@ -380,6 +380,17 @@ namespace aga
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);
 
+        // Scene Manager
+        r = m_ScriptEngine->RegisterGlobalFunction (
+            "void SetActiveScene (const string &in, bool fadeAnim = true)",
+            asMETHODPR (SceneManager, SetActiveScene, (const std::string&, bool), void), asCALL_THISCALL_ASGLOBAL,
+            &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction (
+            "void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, Color color = COLOR_BLACK)",
+            asMETHOD (SceneManager, SceneFadeInOut), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+
         //  Global
         r = m_ScriptEngine->RegisterGlobalFunction ("void Log(const string &in)",
                                                     asFUNCTIONPR (Log, (const std::string&), void), asCALL_CDECL);
@@ -395,10 +406,6 @@ namespace aga
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction ("float GetFPS ()", asMETHOD (Screen, GetFPS),
                                                     asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction (
-            "void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, Color color = COLOR_BLACK)",
-            asMETHOD (SceneManager, SceneFadeInOut), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction ("void SetBackgroundColor (Color)",
                                                     asMETHODPR (Screen, SetBackgroundColor, (ALLEGRO_COLOR), void),

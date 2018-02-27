@@ -12,20 +12,23 @@ namespace aga
 
     class EditorFlagPointMode
     {
-        friend class Editor;
-        friend class EditorFlagPointWindow;
-        friend class EditorTileMode;
-
     public:
         EditorFlagPointMode (Editor* editor);
         virtual ~EditorFlagPointMode ();
 
-    private:
         void DrawFlagPoints (float mouseX, float mouseY);
         bool MoveSelectedFlagPoint ();
         std::string GetFlagPointUnderCursor (int mouseX, int mouseY);
         void InsertFlagPointAtCursor (int mouseX, int mouseY);
         bool RemoveFlagPointUnderCursor (int mouseX, int mouseY);
+
+        std::string GetFlagPoint () { return m_FlagPoint; }
+        void SetFlagPoint (const std::string& pointName) { m_FlagPoint = pointName; }
+
+        std::string GetFlagPointName () { return m_FlagPointName; }
+        void SetFlagPointName (const std::string& name) { m_FlagPointName = name; }
+
+        void SetAskFlagPoint (bool ask) { m_AskFlagPoint = ask; }
 
     private:
         Editor* m_Editor;

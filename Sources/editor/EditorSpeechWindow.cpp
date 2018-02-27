@@ -199,18 +199,20 @@ namespace aga
 
     void EditorSpeechWindow::OnSave ()
     {
+        SpeechData& speechData = m_Editor->GetEditorSpeechMode ().GetSpeechData ();
+
         for (const auto& pos : g_SpeechFramePosition)
         {
             if (pos.second == m_RelPositionCombo->GetSelectedItem ()->GetText ())
             {
-                m_Editor->m_EditorSpeechMode.m_Speech.RelativeFramePosition = pos.first;
+                speechData.RelativeFramePosition = pos.first;
                 break;
             }
         }
 
-        m_Editor->m_EditorSpeechMode.m_Speech.ActorRegionName = m_RegionCombo->GetSelectedItem ()->GetText ();
-        m_Editor->m_EditorSpeechMode.m_Speech.AbsoluteFramePosition.X = m_AbsPositionXNumeric->GetIntValue ();
-        m_Editor->m_EditorSpeechMode.m_Speech.AbsoluteFramePosition.Y = m_AbsPositionYNumeric->GetIntValue ();
+        speechData.ActorRegionName = m_RegionCombo->GetSelectedItem ()->GetText ();
+        speechData.AbsoluteFramePosition.X = m_AbsPositionXNumeric->GetIntValue ();
+        speechData.AbsoluteFramePosition.Y = m_AbsPositionYNumeric->GetIntValue ();
 
         if (m_NameTextBox->GetText () != "")
         {
@@ -228,7 +230,7 @@ namespace aga
                 }
             }
 
-            bool ret = m_Editor->m_EditorSpeechMode.AddOrUpdateSpeech (oldName);
+            bool ret = m_Editor->GetEditorSpeechMode ().AddOrUpdateSpeech (oldName);
 
             if (ret)
             {
@@ -240,7 +242,7 @@ namespace aga
                 m_RelPositionCombo->SetValue (g_SpeechFramePosition[BottomCenter]);
                 m_AbsPositionXNumeric->SetIntValue (0);
                 m_AbsPositionYNumeric->SetIntValue (0);
-                m_Editor->m_EditorSpeechMode.Clear ();
+                m_Editor->GetEditorSpeechMode ().Clear ();
 
                 UpdateSpeechesTree ();
                 UpdateOutcomes ();
@@ -254,7 +256,7 @@ namespace aga
     {
         if (m_NameTextBox->GetText () != "")
         {
-            m_Editor->m_EditorSpeechMode.RemoveSpeech (m_NameTextBox->GetText ());
+            m_Editor->GetEditorSpeechMode ().RemoveSpeech (m_NameTextBox->GetText ());
             UpdateSpeechesTree ();
 
             m_NameTextBox->SetText ("");
@@ -265,7 +267,7 @@ namespace aga
             m_RelPositionCombo->SetValue (g_SpeechFramePosition[BottomCenter]);
             m_AbsPositionXNumeric->SetIntValue (0);
             m_AbsPositionYNumeric->SetIntValue (0);
-            m_Editor->m_EditorSpeechMode.Clear ();
+            m_Editor->GetEditorSpeechMode ().Clear ();
 
             UpdateOutcomes ();
         }
@@ -276,7 +278,7 @@ namespace aga
     void EditorSpeechWindow::OnOutcome ()
     {
         SpeechOutcome outcome;
-        m_Editor->m_EditorSpeechMode.m_Speech.Outcomes[m_LangIndex].push_back (outcome);
+        m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex].push_back (outcome);
 
         UpdateOutcomes ();
     }
@@ -298,9 +300,9 @@ namespace aga
         if (node != nullptr && node->IsSelected ())
         {
             std::map<std::string, SpeechData>& speeches
-                = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
+                = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
             SpeechData& speech = speeches[node->GetText ()];
-            m_Editor->m_EditorSpeechMode.m_Speech = speech;
+            m_Editor->GetEditorSpeechMode ().SetSpeechData (speech);
 
             m_NameTextBox->SetText (speech.Name);
             m_RegionCombo->SelectItemByName (speech.ActorRegionName);
@@ -317,7 +319,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorSpeechWindow::OnNameEdit () { m_Editor->m_EditorSpeechMode.m_Speech.Name = m_NameTextBox->GetText (); }
+    void EditorSpeechWindow::OnNameEdit ()
+    {
+        m_Editor->GetEditorSpeechMode ().GetSpeechData ().Name = m_NameTextBox->GetText ();
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -334,35 +339,36 @@ namespace aga
             m_LangIndex = 1;
         }
 
-        m_TextData->SetText (m_Editor->m_EditorSpeechMode.m_Speech.Text[m_LangIndex]);
+        m_TextData->SetText (m_Editor->GetEditorSpeechMode ().GetSpeechData ().Text[m_LangIndex]);
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void EditorSpeechWindow::OnRegionNameSelected ()
     {
-        m_Editor->m_EditorSpeechMode.m_Speech.ActorRegionName = m_RegionCombo->GetSelectedItem ()->GetText ();
+        m_Editor->GetEditorSpeechMode ().GetSpeechData ().ActorRegionName
+            = m_RegionCombo->GetSelectedItem ()->GetText ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void EditorSpeechWindow::OnTextChanged ()
     {
-        m_Editor->m_EditorSpeechMode.m_Speech.Text[m_LangIndex] = m_TextData->GetText ();
+        m_Editor->GetEditorSpeechMode ().GetSpeechData ().Text[m_LangIndex] = m_TextData->GetText ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void EditorSpeechWindow::OnMaxCharsChanged ()
     {
-        m_Editor->m_EditorSpeechMode.m_Speech.MaxCharsInLine = m_MaxCharsInLineNumeric->GetIntValue ();
+        m_Editor->GetEditorSpeechMode ().GetSpeechData ().MaxCharsInLine = m_MaxCharsInLineNumeric->GetIntValue ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void EditorSpeechWindow::OnMaxLinesChanged ()
     {
-        m_Editor->m_EditorSpeechMode.m_Speech.MaxLines = m_MaxLinesNumeric->GetIntValue ();
+        m_Editor->GetEditorSpeechMode ().GetSpeechData ().MaxLines = m_MaxLinesNumeric->GetIntValue ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -373,7 +379,7 @@ namespace aga
         {
             if (pos.second == m_RelPositionCombo->GetSelectedItem ()->GetText ())
             {
-                m_Editor->m_EditorSpeechMode.m_Speech.RelativeFramePosition = pos.first;
+                m_Editor->GetEditorSpeechMode ().GetSpeechData ().RelativeFramePosition = pos.first;
                 break;
             }
         }
@@ -383,14 +389,16 @@ namespace aga
 
     void EditorSpeechWindow::OnPositionXChanged ()
     {
-        m_Editor->m_EditorSpeechMode.m_Speech.AbsoluteFramePosition.X = m_AbsPositionXNumeric->GetIntValue ();
+        m_Editor->GetEditorSpeechMode ().GetSpeechData ().AbsoluteFramePosition.X
+            = m_AbsPositionXNumeric->GetIntValue ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void EditorSpeechWindow::OnPositionYChanged ()
     {
-        m_Editor->m_EditorSpeechMode.m_Speech.AbsoluteFramePosition.Y = m_AbsPositionYNumeric->GetIntValue ();
+        m_Editor->GetEditorSpeechMode ().GetSpeechData ().AbsoluteFramePosition.Y
+            = m_AbsPositionYNumeric->GetIntValue ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -399,10 +407,10 @@ namespace aga
     {
         m_OutcomesContainer->RemoveAllChildren ();
 
-        std::vector<SpeechOutcome>& outcomes = m_Editor->m_EditorSpeechMode.m_Speech.Outcomes[m_LangIndex];
+        std::vector<SpeechOutcome>& outcomes = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
 
         std::map<std::string, SpeechData>& speeches
-            = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
+            = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
 
         int currentY = 0;
         for (int i = 0; i < outcomes.size (); ++i)
@@ -466,7 +474,7 @@ namespace aga
         m_SpeechesTree->Clear ();
 
         std::map<std::string, SpeechData>& speeches
-            = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
+            = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
 
         for (std::map<std::string, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
         {
@@ -481,7 +489,7 @@ namespace aga
 
     void EditorSpeechWindow::OnOutcomeIDTextChanged (Gwk::Controls::Base* control)
     {
-        std::vector<SpeechOutcome>& outcomes = m_Editor->m_EditorSpeechMode.m_Speech.Outcomes[m_LangIndex];
+        std::vector<SpeechOutcome>& outcomes = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
 
         int childIndex = 0;
         for (int i = 0; i < outcomes.size (); ++i)
@@ -502,7 +510,7 @@ namespace aga
 
     void EditorSpeechWindow::OnOutcomeDataTextChanged (Gwk::Controls::Base* control)
     {
-        std::vector<SpeechOutcome>& outcomes = m_Editor->m_EditorSpeechMode.m_Speech.Outcomes[m_LangIndex];
+        std::vector<SpeechOutcome>& outcomes = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
 
         int childIndex = 1;
         for (int i = 0; i < outcomes.size (); ++i)
@@ -523,7 +531,7 @@ namespace aga
 
     void EditorSpeechWindow::OnOutcomeActionChanged (Gwk::Controls::Base* control)
     {
-        std::vector<SpeechOutcome>& outcomes = m_Editor->m_EditorSpeechMode.m_Speech.Outcomes[m_LangIndex];
+        std::vector<SpeechOutcome>& outcomes = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
 
         int childIndex = 2;
         for (int i = 0; i < outcomes.size (); ++i)
@@ -548,7 +556,7 @@ namespace aga
 
     void EditorSpeechWindow::OnUpOutcome (Gwk::Controls::Base* control)
     {
-        std::vector<SpeechOutcome>& outcomes = m_Editor->m_EditorSpeechMode.m_Speech.Outcomes[m_LangIndex];
+        std::vector<SpeechOutcome>& outcomes = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
 
         int childIndex = 3;
         for (int i = 0; i < outcomes.size (); ++i)
@@ -579,7 +587,7 @@ namespace aga
 
     void EditorSpeechWindow::OnDownOutcome (Gwk::Controls::Base* control)
     {
-        std::vector<SpeechOutcome>& outcomes = m_Editor->m_EditorSpeechMode.m_Speech.Outcomes[m_LangIndex];
+        std::vector<SpeechOutcome>& outcomes = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
 
         int childIndex = 4;
         for (int i = 0; i < outcomes.size (); ++i)
@@ -610,7 +618,7 @@ namespace aga
 
     void EditorSpeechWindow::OnRemoveOutcome (Gwk::Controls::Base* control)
     {
-        std::vector<SpeechOutcome>& outcomes = m_Editor->m_EditorSpeechMode.m_Speech.Outcomes[m_LangIndex];
+        std::vector<SpeechOutcome>& outcomes = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
 
         int childIndex = 5;
         for (int i = 0; i < outcomes.size (); ++i)

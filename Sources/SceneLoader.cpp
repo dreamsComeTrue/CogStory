@@ -288,6 +288,19 @@ namespace aga
                     std::string rot = actorIt["rot"];
                     newActor->Rotation = atof (rot.c_str ());
 
+                    //  Physics
+                    if (!actorIt["phys"].is_null ())
+                    {
+                        auto& physTiles = actorIt["phys"];
+
+                        for (auto& physTile : physTiles)
+                        {
+                            newActor->PhysPoints.push_back (StringToVectorPoints (physTile["poly"]));
+                        }
+
+                        newActor->SetPhysOffset (newActor->Bounds.GetPos ());
+                    }
+
                     scene->AddActor (actorIt["name"], newActor);
                 }
             }
@@ -506,6 +519,17 @@ namespace aga
                 actorObj["pos"] = PointToString (actor->Bounds.GetPos ());
                 actorObj["z-order"] = ToString (actor->ZOrder);
                 actorObj["rot"] = ToString (actor->Rotation);
+
+                actorObj["phys"] = json::array ({});
+
+                for (int i = 0; i < actor->PhysPoints.size (); ++i)
+                {
+                    json physObj = json::object ({});
+
+                    physObj["poly"] = VectorPointsToString (actor->PhysPoints[i]);
+
+                    actorObj["phys"].push_back (physObj);
+                }
 
                 j["actors"].push_back (actorObj);
             }

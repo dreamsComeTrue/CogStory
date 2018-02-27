@@ -31,8 +31,8 @@ namespace aga
         if (m_TriggerPoint && state.buttons == 1)
         {
             Point p = m_Editor->CalculateCursorPoint (state.x, state.y);
-            Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-            Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
+            Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
+            Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
 
             m_TriggerPoint->X = (translate.X + p.X) * 1 / scale.X;
             m_TriggerPoint->Y = (translate.Y + p.Y) * 1 / scale.Y;
@@ -47,11 +47,11 @@ namespace aga
 
     void EditorTriggerAreaMode::DrawTriggerAreas (float mouseX, float mouseY)
     {
-        Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-        Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
+        SceneManager& sceneManager = m_Editor->GetMainLoop ()->GetSceneManager ();
+        Point translate = sceneManager.GetCamera ().GetTranslate ();
+        Point scale = sceneManager.GetCamera ().GetScale ();
         Point* selectedPoint = GetTriggerPointUnderCursor (mouseX, mouseY);
-        std::map<std::string, TriggerArea>& triggerAreas
-            = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetTriggerAreas ();
+        std::map<std::string, TriggerArea>& triggerAreas = sceneManager.GetActiveScene ()->GetTriggerAreas ();
 
         for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)
         {
@@ -141,9 +141,9 @@ namespace aga
                     al_draw_filled_circle (xPoint, yPoint, 4, color);
                 }
 
-                m_Editor->m_MainLoop->GetScreen ()->GetFont ().DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0),
-                                                                         min.X + (max.X - min.X) * 0.5, min.Y + (max.Y - min.Y) * 0.5, ToString (it->second.Name),
-                                                                         ALLEGRO_ALIGN_CENTER);
+                m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
+                    FONT_NAME_SMALL, al_map_rgb (0, 255, 0), min.X + (max.X - min.X) * 0.5,
+                    min.Y + (max.Y - min.Y) * 0.5, ToString (it->second.Name), ALLEGRO_ALIGN_CENTER);
             }
         }
     }
@@ -154,7 +154,7 @@ namespace aga
     {
         int outsets = 4;
         std::map<std::string, TriggerArea>& triggerAreas
-            = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetTriggerAreas ();
+            = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetTriggerAreas ();
 
         for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)
         {
@@ -177,7 +177,7 @@ namespace aga
         int outsets = 4;
 
         std::map<std::string, TriggerArea>& triggerAreas
-            = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetTriggerAreas ();
+            = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetTriggerAreas ();
 
         for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)
         {
@@ -197,7 +197,9 @@ namespace aga
 
     void EditorTriggerAreaMode::InsertTriggerAreaAtCursor (int mouseX, int mouseY)
     {
-        if (m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetTriggerAreas ().empty ())
+        SceneManager& sceneManager = m_Editor->GetMainLoop ()->GetSceneManager ();
+
+        if (sceneManager.GetActiveScene ()->GetTriggerAreas ().empty ())
         {
             NewTriggerArea ();
         }
@@ -205,12 +207,12 @@ namespace aga
         if (!m_TriggerArea)
         {
             m_TriggerArea
-                = &m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetTriggerArea (m_TriggerAreaName);
+                = &m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetTriggerArea (m_TriggerAreaName);
         }
 
         Point p = m_Editor->CalculateCursorPoint (mouseX, mouseY);
-        Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-        Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
+        Point translate = sceneManager.GetCamera ().GetTranslate ();
+        Point scale = sceneManager.GetCamera ().GetScale ();
 
         Point pointToInsert = { (translate.X + p.X) * 1 / scale.X, (translate.Y + p.Y) * 1 / scale.Y };
 
@@ -259,7 +261,7 @@ namespace aga
 
                     if (triggerArea->Points.empty ())
                     {
-                        m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->RemoveTriggerArea (
+                        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveTriggerArea (
                             triggerArea->Name);
                     }
                     else
@@ -273,7 +275,8 @@ namespace aga
                             m_TriggerPoint = &triggerArea->Points[0];
                         }
 
-                        triggerArea->UpdatePolygons (&m_Editor->m_MainLoop->GetPhysicsManager ().GetTriangulator ());
+                        triggerArea->UpdatePolygons (
+                            &m_Editor->GetMainLoop ()->GetPhysicsManager ().GetTriangulator ());
                     }
 
                     return true;
@@ -291,8 +294,10 @@ namespace aga
 
     void EditorTriggerAreaMode::NewTriggerArea ()
     {
-        m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->AddTriggerArea (m_TriggerAreaName, {});
-        m_TriggerArea = &m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetTriggerArea (m_TriggerAreaName);
+        Scene* scene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
+
+        scene->AddTriggerArea (m_TriggerAreaName, {});
+        m_TriggerArea = &scene->GetTriggerArea (m_TriggerAreaName);
         m_TriggerPoint = nullptr;
     }
 

@@ -21,7 +21,7 @@ namespace aga
         pathLabel->SizeToContents ();
 
         Gwk::Controls::TextBox* pathTextBox = new Gwk::Controls::TextBox (m_SceneWindow);
-        pathTextBox->SetText (m_Editor->m_EditorFlagPointMode.m_FlagPointName);
+        pathTextBox->SetText (m_Editor->GetEditorFlagPointMode ().GetFlagPointName ());
         pathTextBox->SetTextColor (Gwk::Colors::White);
         pathTextBox->SetWidth (350);
         pathTextBox->SetPos (20, 30);
@@ -42,7 +42,7 @@ namespace aga
 
     void EditorFlagPointWindow::Show ()
     {
-        m_Editor->m_EditorFlagPointMode.m_AskFlagPoint = false;
+        m_Editor->GetEditorFlagPointMode ().SetAskFlagPoint (false);
 
         m_SceneWindow->SetPosition (Gwk::Position::Center);
         m_SceneWindow->SetHidden (false);
@@ -53,7 +53,7 @@ namespace aga
 
     void EditorFlagPointWindow::OnAccept (Gwk::Controls::Base*)
     {
-        m_Editor->m_CursorMode = CursorMode::EditFlagPointsMode;
+        m_Editor->SetCursorMode (CursorMode::EditFlagPointsMode);
         m_SceneWindow->CloseButtonPressed ();
     }
 
@@ -61,8 +61,8 @@ namespace aga
 
     void EditorFlagPointWindow::OnCancel ()
     {
-        m_Editor->m_CursorMode = CursorMode::TileSelectMode;
-        m_Editor->m_EditorFlagPointMode.m_FlagPointName = "";
+        m_Editor->SetCursorMode (CursorMode::TileSelectMode);
+        m_Editor->GetEditorFlagPointMode ().SetFlagPointName ("");
         m_SceneWindow->CloseButtonPressed ();
     }
 
@@ -71,7 +71,7 @@ namespace aga
     void EditorFlagPointWindow::OnEdit (Gwk::Controls::Base* control)
     {
         Gwk::Controls::TextBox* textbox = (Gwk::Controls::TextBox*)(control);
-        m_Editor->m_EditorFlagPointMode.m_FlagPointName = textbox->GetText ();
+        m_Editor->GetEditorFlagPointMode ().SetFlagPointName (textbox->GetText ());
     }
 
     //--------------------------------------------------------------------------------------------------

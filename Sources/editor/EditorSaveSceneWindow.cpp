@@ -67,7 +67,7 @@ namespace aga
         ALLEGRO_FILECHOOSER* fileSaveDialog
             = al_create_native_file_dialog (path.c_str (), "Save scene file", "*.scn", ALLEGRO_FILECHOOSER_SAVE);
 
-        if (al_show_native_file_dialog (m_Editor->m_MainLoop->GetScreen ()->GetDisplay (), fileSaveDialog))
+        if (al_show_native_file_dialog (m_Editor->GetMainLoop ()->GetScreen ()->GetDisplay (), fileSaveDialog))
         {
             m_FileName = al_get_native_file_dialog_path (fileSaveDialog, 0);
             std::replace (m_FileName.begin (), m_FileName.end (), '\\', '/');

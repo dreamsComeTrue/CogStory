@@ -35,7 +35,7 @@ namespace aga
     {
         m_Text = text;
 
-        Point size = m_Editor->m_MainLoop->GetScreen ()->GetFont ().GetTextDimensions (FONT_NAME_SMALL, text);
+        Point size = m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().GetTextDimensions (FONT_NAME_SMALL, text);
 
         m_SceneWindow->SetWidth (size.Width + 20);
         m_OKButton->SetPos (m_SceneWindow->Width () / 2 - 50, m_SceneWindow->Height () - 60);

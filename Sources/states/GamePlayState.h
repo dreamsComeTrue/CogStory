@@ -10,7 +10,6 @@ namespace aga
     const std::string GAMEPLAY_STATE_NAME = "GAMEPLAY_STATE";
 
     class MainLoop;
-    class Scene;
 
     class GamePlayState : public State
     {
@@ -27,9 +26,6 @@ namespace aga
         void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
         void Update (float deltaTime);
         void Render (float deltaTime);
-
-    private:
-        Scene* m_CurrentScene;
     };
 }
 

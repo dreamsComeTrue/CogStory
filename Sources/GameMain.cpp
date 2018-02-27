@@ -16,15 +16,15 @@ const int SCREEN_HEIGHT = 600;
 int main (int argc, char** argv)
 {
     Screen mainScreen (SCREEN_WIDTH, SCREEN_HEIGHT);
-    MainLoop mainLoop (&mainScreen);
 
-    if (!mainScreen.Initialize ())
+    if (mainScreen.Initialize ())
     {
-        printf ("Failed to initialize!\n");
-    }
+        MainLoop mainLoop (&mainScreen);
 
-    mainLoop.Initialize ();
-    mainLoop.Start ();
+        mainLoop.Initialize ();
+        mainLoop.Start ();
+        mainLoop.Destroy ();
+    }
 
     return 0;
 }

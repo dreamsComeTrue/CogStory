@@ -9,18 +9,14 @@
 namespace aga
 {
     class Editor;
-    struct TriggerAreaWindow;
+    class TriggerAreaWindow;
 
     class EditorTriggerAreaMode
     {
-        friend class Editor;
-        friend class EditorTriggerAreaWindow;
-
     public:
         EditorTriggerAreaMode (Editor* editor);
         virtual ~EditorTriggerAreaMode ();
 
-    private:
         bool MoveSelectedTriggerPoint ();
         void DrawTriggerAreas (float mouseX, float mouseY);
 
@@ -28,8 +24,16 @@ namespace aga
         TriggerArea* GetTriggerAreaUnderCursor (int mouseX, int mouseY);
         void InsertTriggerAreaAtCursor (int mouseX, int mouseY);
         bool RemoveTriggerPointUnderCursor (int mouseX, int mouseY);
-
         void NewTriggerArea ();
+
+        Point* GetTriggerPoint () { return m_TriggerPoint; }
+        void SetTriggerPoint (Point* point) { m_TriggerPoint = point; }
+
+        TriggerArea* GetTriggerArea () { return m_TriggerArea; }
+        void SetTriggerArea (TriggerArea* area) { m_TriggerArea = area; }
+
+        std::string GetTriggerAreaName () { return m_TriggerAreaName; }
+        void SetTriggerAreaName (const std::string& name) { m_TriggerAreaName = name; }
 
     private:
         Editor* m_Editor;

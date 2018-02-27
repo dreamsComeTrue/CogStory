@@ -6,6 +6,7 @@
 #include "Common.h"
 #include "MainLoop.h"
 #include "Scene.h"
+#include "SceneLoader.h"
 #include "Screen.h"
 
 #include <algorithm>
@@ -80,7 +81,7 @@ namespace aga
         m_Player.Destroy ();
         m_SpeechFrameManager.Destroy ();
 
-        for (std::map<ResourceID, Scene*>::iterator it = m_Scenes.begin (); it != m_Scenes.end ();)
+        for (std::map<std::string, Scene*>::iterator it = m_Scenes.begin (); it != m_Scenes.end ();)
         {
             SAFE_DELETE (it->second);
             m_Scenes.erase (it++);
@@ -91,11 +92,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneManager::AddScene (ResourceID id, Scene* scene)
+    void SceneManager::AddScene (Scene* scene)
     {
-        if (m_Scenes.find (id) == m_Scenes.end ())
+        if (m_Scenes.find (scene->GetName ()) == m_Scenes.end ())
         {
-            m_Scenes.insert (std::make_pair (id, scene));
+            m_Scenes.insert (std::make_pair (scene->GetName (), scene));
         }
     }
 
@@ -103,7 +104,7 @@ namespace aga
 
     void SceneManager::RemoveScene (Scene* scene)
     {
-        for (std::map<ResourceID, Scene*>::iterator it = m_Scenes.begin (); it != m_Scenes.end ();)
+        for (std::map<std::string, Scene*>::iterator it = m_Scenes.begin (); it != m_Scenes.end ();)
         {
             if (it->second == scene)
             {
@@ -136,6 +137,22 @@ namespace aga
 
         m_ActiveScene = scene;
         m_ActiveScene->BeforeEnter ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::SetActiveScene (const std::string& scenePath, bool fadeAnimation)
+    {
+        Scene* scene = SceneLoader::LoadScene (this, GetDataPath () + scenePath);
+
+        m_MainLoop->GetSceneManager ().AddScene (scene);
+
+        if (fadeAnimation)
+        {
+            SceneFadeInOut ();
+        }
+
+        m_MainLoop->GetSceneManager ().SetActiveScene (scene);
     }
 
     //--------------------------------------------------------------------------------------------------

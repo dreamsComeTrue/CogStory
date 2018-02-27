@@ -51,6 +51,8 @@ namespace aga
         void Show ();
         void SelectActor (const std::string& name);
 
+        Gwk::Controls::WindowControl* GetSceneWindow () { return m_SceneWindow; }
+
     private:
         void OnSave ();
         void OnRemove ();

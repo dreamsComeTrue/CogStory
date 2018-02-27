@@ -28,9 +28,9 @@ namespace aga
     {
         Point origin;
 
-        if (m_Editor->m_EditorActorMode.m_SelectedActor)
+        if (m_Editor->GetEditorActorMode ().GetSelectedActor ())
         {
-            origin = m_Editor->m_EditorActorMode.m_SelectedActor->Bounds.GetPos ();
+            origin = m_Editor->GetEditorActorMode ().GetSelectedActor ()->Bounds.GetPos ();
         }
 
         ALLEGRO_MOUSE_STATE state;
@@ -39,8 +39,8 @@ namespace aga
         if (m_PhysPoint && state.buttons == 1)
         {
             Point p = m_Editor->CalculateCursorPoint (state.x, state.y);
-            Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-            Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
+            Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
+            Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
 
             m_PhysPoint->X = (translate.X + p.X) * 1 / scale.X - origin.X;
             m_PhysPoint->Y = (translate.Y + p.Y) * 1 / scale.Y - origin.Y;
@@ -55,16 +55,16 @@ namespace aga
 
     void EditorPhysMode::DrawPhysBody (float mouseX, float mouseY)
     {
-        Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-        Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
+        Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
+        Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
         Point* selectedPoint = GetPhysPointUnderCursor (mouseX, mouseY);
         Point origin;
         std::vector<std::vector<Point>>* physPoints = nullptr;
 
-        if (m_Editor->m_EditorActorMode.m_SelectedActor)
+        if (m_Editor->GetEditorActorMode ().GetSelectedActor ())
         {
-            origin = m_Editor->m_EditorActorMode.m_SelectedActor->Bounds.GetPos ();
-            physPoints = &m_Editor->m_EditorActorMode.m_SelectedActor->PhysPoints;
+            origin = m_Editor->GetEditorActorMode ().GetSelectedActor ()->Bounds.GetPos ();
+            physPoints = &m_Editor->GetEditorActorMode ().GetSelectedActor ()->PhysPoints;
         }
 
         if (physPoints)
@@ -117,9 +117,9 @@ namespace aga
                             color = COLOR_RED;
                         }
 
-                        if (m_Editor->m_MainLoop->GetSceneManager ().IsDrawPhysData () && false)
+                        if (m_Editor->GetMainLoop ()->GetSceneManager ().IsDrawPhysData () && false)
                         {
-                            m_Editor->m_MainLoop->GetScreen ()->GetFont ().DrawText (
+                            m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
                                 FONT_NAME_SMALL, al_map_rgb (0, 255, 0), xPoint, yPoint, ToString (i),
                                 ALLEGRO_ALIGN_CENTER);
                         }
@@ -138,15 +138,15 @@ namespace aga
     void EditorPhysMode::InsertPhysPointAtCursor (int mouseX, int mouseY)
     {
         Point p = m_Editor->CalculateCursorPoint (mouseX, mouseY);
-        Point translate = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-        Point scale = m_Editor->m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
+        Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
+        Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
         Point origin;
         std::vector<std::vector<Point>>* physPoints;
 
-        if (m_Editor->m_EditorActorMode.m_SelectedActor)
+        if (m_Editor->GetEditorActorMode ().GetSelectedActor ())
         {
-            origin = m_Editor->m_EditorActorMode.m_SelectedActor->Bounds.GetPos ();
-            physPoints = &m_Editor->m_EditorActorMode.m_SelectedActor->PhysPoints;
+            origin = m_Editor->GetEditorActorMode ().GetSelectedActor ()->Bounds.GetPos ();
+            physPoints = &m_Editor->GetEditorActorMode ().GetSelectedActor ()->PhysPoints;
         }
 
         if (physPoints)
@@ -195,9 +195,9 @@ namespace aga
 
             if (inserted)
             {
-                if (m_Editor->m_EditorActorMode.m_SelectedActor)
+                if (m_Editor->GetEditorActorMode ().GetSelectedActor ())
                 {
-                    m_Editor->m_EditorActorMode.m_SelectedActor->SetPhysOffset (origin);
+                    m_Editor->GetEditorActorMode ().GetSelectedActor ()->SetPhysOffset (origin);
                 }
             }
         }
@@ -210,10 +210,10 @@ namespace aga
         Point origin;
         std::vector<std::vector<Point>>* physPoints;
 
-        if (m_Editor->m_EditorActorMode.m_SelectedActor)
+        if (m_Editor->GetEditorActorMode ().GetSelectedActor ())
         {
-            origin = m_Editor->m_EditorActorMode.m_SelectedActor->Bounds.GetPos ();
-            physPoints = &m_Editor->m_EditorActorMode.m_SelectedActor->PhysPoints;
+            origin = m_Editor->GetEditorActorMode ().GetSelectedActor ()->Bounds.GetPos ();
+            physPoints = &m_Editor->GetEditorActorMode ().GetSelectedActor ()->PhysPoints;
         }
 
         if (physPoints && !physPoints->empty ())
@@ -248,9 +248,9 @@ namespace aga
         Point* point = GetPhysPointUnderCursor (mouseX, mouseY);
         std::vector<std::vector<Point>>* physPoints;
 
-        if (m_Editor->m_EditorActorMode.m_SelectedActor)
+        if (m_Editor->GetEditorActorMode ().GetSelectedActor ())
         {
-            physPoints = &m_Editor->m_EditorActorMode.m_SelectedActor->PhysPoints;
+            physPoints = &m_Editor->GetEditorActorMode ().GetSelectedActor ()->PhysPoints;
         }
 
         if (physPoints && point)
@@ -272,9 +272,9 @@ namespace aga
                             m_PhysPoly = nullptr;
                         }
 
-                        if (m_Editor->m_EditorActorMode.m_SelectedActor)
+                        if (m_Editor->GetEditorActorMode ().GetSelectedActor ())
                         {
-                            m_Editor->m_EditorActorMode.m_SelectedActor->UpdatePhysPolygon ();
+                            m_Editor->GetEditorActorMode ().GetSelectedActor ()->UpdatePhysPolygon ();
                         }
 
                         if (m_PhysPointIndex == i)

@@ -24,10 +24,12 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
-        void AddScene (ResourceID id, Scene* scene);
+        void AddScene (Scene* scene);
         void RemoveScene (Scene* scene);
         void SetActiveScene (Scene* scene);
         Scene* GetActiveScene ();
+
+        void SetActiveScene (const std::string& scenePath, bool fadeAnimation = true);
 
         void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
         bool Update (float deltaTime);
@@ -65,7 +67,7 @@ namespace aga
 
         AtlasManager* m_AtlasManager;
         MainLoop* m_MainLoop;
-        std::map<ResourceID, Scene*> m_Scenes;
+        std::map<std::string, Scene*> m_Scenes;
         Scene* m_ActiveScene;
 
         TweenData* m_TweenFade;

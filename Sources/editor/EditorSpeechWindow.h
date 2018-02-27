@@ -14,8 +14,6 @@ namespace aga
 
     class EditorSpeechWindow : public Gwk::Event::Handler
     {
-        friend class Editor;
-
     public:
         EditorSpeechWindow (Editor* editor, Gwk::Controls::Canvas* canvas);
 
@@ -49,6 +47,8 @@ namespace aga
         void OnUpOutcome (Gwk::Controls::Base* control);
         void OnDownOutcome (Gwk::Controls::Base* control);
         void OnRemoveOutcome (Gwk::Controls::Base* control);
+
+        Gwk::Controls::WindowControl* GetSceneWindow () { return m_SceneWindow; }
 
     private:
         Editor* m_Editor;

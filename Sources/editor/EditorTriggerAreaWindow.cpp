@@ -21,7 +21,7 @@ namespace aga
         pathLabel->SizeToContents ();
 
         Gwk::Controls::TextBox* pathTextBox = new Gwk::Controls::TextBox (m_SceneWindow);
-        pathTextBox->SetText (m_Editor->m_EditorTriggerAreaMode.m_TriggerAreaName);
+        pathTextBox->SetText (m_Editor->GetEditorTriggerAreaMode ().GetTriggerAreaName ());
         pathTextBox->SetTextColor (Gwk::Colors::White);
         pathTextBox->SetWidth (350);
         pathTextBox->SetPos (20, 30);
@@ -42,7 +42,7 @@ namespace aga
 
     void EditorTriggerAreaWindow::Show ()
     {
-        m_Editor->m_EditorTriggerAreaMode.m_TriggerAreaName = "";
+        m_Editor->GetEditorTriggerAreaMode ().SetTriggerAreaName ("");
 
         m_SceneWindow->SetPosition (Gwk::Position::Center);
         m_SceneWindow->SetHidden (false);
@@ -53,8 +53,8 @@ namespace aga
 
     void EditorTriggerAreaWindow::OnAccept (Gwk::Controls::Base*)
     {
-        m_Editor->m_CursorMode = CursorMode::EditTriggerAreaMode;
-        m_Editor->m_EditorTriggerAreaMode.NewTriggerArea ();
+        m_Editor->SetCursorMode (CursorMode::EditTriggerAreaMode);
+        m_Editor->GetEditorTriggerAreaMode ().NewTriggerArea ();
         m_SceneWindow->CloseButtonPressed ();
     }
 
@@ -62,8 +62,8 @@ namespace aga
 
     void EditorTriggerAreaWindow::OnCancel ()
     {
-        m_Editor->m_CursorMode = CursorMode::TileSelectMode;
-        m_Editor->m_EditorTriggerAreaMode.m_TriggerAreaName = "";
+        m_Editor->SetCursorMode (CursorMode::TileSelectMode);
+        m_Editor->GetEditorTriggerAreaMode ().SetTriggerAreaName ("");
         m_SceneWindow->CloseButtonPressed ();
     }
 
@@ -72,7 +72,7 @@ namespace aga
     void EditorTriggerAreaWindow::OnEdit (Gwk::Controls::Base* control)
     {
         Gwk::Controls::TextBox* textbox = (Gwk::Controls::TextBox*)(control);
-        m_Editor->m_EditorTriggerAreaMode.m_TriggerAreaName = textbox->GetText ();
+        m_Editor->GetEditorTriggerAreaMode ().SetTriggerAreaName (textbox->GetText ());
     }
 
     //--------------------------------------------------------------------------------------------------

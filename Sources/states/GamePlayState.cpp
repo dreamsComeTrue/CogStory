@@ -4,7 +4,6 @@
 #include "Common.h"
 #include "MainLoop.h"
 #include "Scene.h"
-#include "SceneLoader.h"
 #include "SceneManager.h"
 #include "Screen.h"
 #include "StateManager.h"
@@ -34,10 +33,7 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
-        m_CurrentScene = SceneLoader::LoadScene (&m_MainLoop->GetSceneManager (), GetResourcePath (SCENE_0_0));
-
-        m_MainLoop->GetSceneManager ().AddScene (SCENE_0_0, m_CurrentScene);
-        m_MainLoop->GetSceneManager ().SetActiveScene (m_CurrentScene);
+        m_MainLoop->GetSceneManager ().SetActiveScene ("scenes/0_home/0_0_home.scn", false);
 
         m_MainLoop->GetSceneManager ().GetPlayer ().TemplateBounds.Pos
             = m_MainLoop->GetSceneManager ().GetPlayer ().GetPosition ();

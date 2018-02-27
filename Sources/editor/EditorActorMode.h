@@ -19,10 +19,6 @@ namespace aga
 
     class EditorActorMode
     {
-        friend class Editor;
-        friend class EditorActorWindow;
-        friend class EditorPhysMode;
-
     public:
         EditorActorMode (Editor* editor);
         virtual ~EditorActorMode ();
@@ -46,8 +42,23 @@ namespace aga
 
         void ResetSettings ();
 
-    private:
         void InitializeUI ();
+
+        AtlasRegion& GetSelectedAtlasRegion () { return m_SelectedAtlasRegion; }
+
+        Actor* GetSelectedActor () { return m_SelectedActor; }
+        void SetSelectedActor (Actor* actor) { m_SelectedActor = actor; }
+
+        Actor* GetActorUnderCursor () { return m_ActorUnderCursor; }
+
+        bool IsDrawTiles () const { return m_IsDrawTiles; }
+        void SetDrawTiles (bool draw) { m_IsDrawTiles = draw; }
+
+        float GetRotation () const { return m_Rotation; }
+        void SetRotation (float rotation) { m_Rotation = rotation; }
+
+        Actor* GetActor () { return m_Actor; }
+        void SetActor (Actor* actor) { m_Actor = actor; }
 
     private:
         Atlas* m_Atlas;

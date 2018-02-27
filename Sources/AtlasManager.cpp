@@ -53,8 +53,7 @@ namespace aga
 
         if (!atlas)
         {
-            atlas = new Atlas ();
-            atlas->LoadFromFile (path);
+            atlas = new Atlas (path);
 
             m_Atlases.insert (std::make_pair (fileName, atlas));
         }

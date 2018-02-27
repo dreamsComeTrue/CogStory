@@ -13,14 +13,10 @@ namespace aga
 
     class EditorPhysMode
     {
-        friend class Editor;
-        friend class EditorActorMode;
-
     public:
         EditorPhysMode (Editor* editor);
         virtual ~EditorPhysMode ();
 
-    private:
         void DrawPhysBody (float mouseX, float mouseY);
 
         bool MoveSelectedPhysPoint ();
@@ -30,6 +26,12 @@ namespace aga
         bool RemovePhysPointUnderCursor (int mouseX, int mouseY);
 
         void ResetSettings ();
+
+        Point* GetPhysPoint () { return m_PhysPoint; }
+        void SetPhysPoint (Point* point) { m_PhysPoint = point; }
+
+        std::vector<Point>* GetPhysPoly () { return m_PhysPoly; }
+        void SetPhysPoly (std::vector<Point>* poly) { m_PhysPoly = poly; }
 
     private:
         Editor* m_Editor;

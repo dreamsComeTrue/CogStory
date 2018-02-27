@@ -83,7 +83,7 @@ namespace aga
     {
         ALLEGRO_FILECHOOSER* fileOpenDialog
             = al_create_native_file_dialog (GetCurrentDir ().c_str (), "Open script file", "*.*", 0);
-        al_show_native_file_dialog (m_Editor->m_MainLoop->GetScreen ()->GetDisplay (), fileOpenDialog);
+        al_show_native_file_dialog (m_Editor->GetMainLoop ()->GetScreen ()->GetDisplay (), fileOpenDialog);
 
         al_destroy_native_file_dialog (fileOpenDialog);
     }
@@ -320,11 +320,12 @@ namespace aga
             sscanf (positionProperty->GetPropertyValue ().c_str (), "%f,%f", &m_Position.X, &m_Position.Y);
             sscanf (rotationProperty->GetPropertyValue ().c_str (), "%f", &m_Rotation);
 
-            bool ret = m_Editor->m_EditorActorMode.AddOrUpdateActor (oldName, typePropertyTxt, m_Position, m_Rotation);
+            bool ret
+                = m_Editor->GetEditorActorMode ().AddOrUpdateActor (oldName, typePropertyTxt, m_Position, m_Rotation);
 
             if (ret)
             {
-                m_Editor->m_EditorActorMode.Clear ();
+                m_Editor->GetEditorActorMode ().Clear ();
 
                 UpdateActorsTree ();
                 SelectActor (selectedNodeName);
@@ -338,7 +339,7 @@ namespace aga
     {
         if (nameProperty->GetPropertyValue () != "")
         {
-            m_Editor->m_EditorActorMode.RemoveActor (nameProperty->GetPropertyValue ());
+            m_Editor->GetEditorActorMode ().RemoveActor (nameProperty->GetPropertyValue ());
             nameProperty->SetPropertyValue ("", false);
 
             UpdateActorsTree ();
@@ -368,7 +369,7 @@ namespace aga
     {
         m_ActorsTree->Clear ();
 
-        std::vector<Actor*>& actors = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActors ();
+        std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
 
         for (Actor* actor : actors)
         {
@@ -387,13 +388,13 @@ namespace aga
 
         if (node != nullptr && node->IsSelected ())
         {
-            std::vector<Actor*>& actors = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActors ();
+            std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
 
             for (Actor* actor : actors)
             {
                 if (actor->Name == node->GetText ())
                 {
-                    m_Editor->m_EditorActorMode.m_Actor = actor;
+                    m_Editor->GetEditorActorMode ().SetActor (actor);
 
                     idProperty->SetPropertyValue (ToString (actor->ID), false);
                     nameProperty->SetPropertyValue (actor->Name, false);
@@ -434,7 +435,7 @@ namespace aga
         }
         else
         {
-            m_Editor->m_InfoWindow->Show ("Select Actor first!");
+            m_Editor->GetEditorInfoWindow ()->Show ("Select Actor first!");
         }
     }
 

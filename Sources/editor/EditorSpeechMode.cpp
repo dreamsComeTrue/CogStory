@@ -25,15 +25,16 @@ namespace aga
         if (strlen (m_Speech.Name.c_str ()) > 0)
         {
             std::string nameToFind = oldName != "" ? oldName : m_Speech.Name;
-            SpeechData* speech = m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->GetSpeech (nameToFind);
+            SceneManager& sceneManager = m_Editor->GetMainLoop ()->GetSceneManager ();
+            SpeechData* speech = sceneManager.GetActiveScene ()->GetSpeech (nameToFind);
 
             if (speech)
             {
-                m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->RemoveSpeech (nameToFind);
+                sceneManager.GetActiveScene ()->RemoveSpeech (nameToFind);
             }
 
-            m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->AddSpeech (m_Speech);
-            m_Editor->m_EditorSpeechMode.Clear ();
+            sceneManager.GetActiveScene ()->AddSpeech (m_Speech);
+            m_Editor->GetEditorSpeechMode ().Clear ();
 
             return true;
         }
@@ -45,7 +46,7 @@ namespace aga
 
     void EditorSpeechMode::RemoveSpeech (const std::string& name)
     {
-        m_Editor->m_MainLoop->GetSceneManager ().GetActiveScene ()->RemoveSpeech (name);
+        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveSpeech (name);
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -9,13 +9,10 @@
 namespace aga
 {
     class Editor;
-    struct SpeechWindow;
+    class SpeechWindow;
 
     class EditorSpeechMode
     {
-        friend class Editor;
-        friend class EditorSpeechWindow;
-
     public:
         EditorSpeechMode (Editor* editor);
         virtual ~EditorSpeechMode ();
@@ -23,6 +20,9 @@ namespace aga
         bool AddOrUpdateSpeech (const std::string& oldName);
         void RemoveSpeech (const std::string& name);
         void Clear ();
+
+        SpeechData& GetSpeechData () { return m_Speech; }
+        void SetSpeechData (SpeechData& data) { m_Speech = data; }
 
     private:
         Editor* m_Editor;
