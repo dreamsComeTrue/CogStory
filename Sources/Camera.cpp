@@ -76,4 +76,14 @@ namespace aga
     Point Camera::GetScale () { return { m_Transform.m[0][0], m_Transform.m[1][1] }; }
 
     //--------------------------------------------------------------------------------------------------
+
+    Point Camera::GetCenter ()
+    {
+        Point trans = GetTranslate ();
+        const Point winSize = m_Screen->GetWindowSize ();
+
+        return { trans.X + winSize.Width * 0.5f, trans.Y + winSize.Height * 0.5f };
+    }
+
+    //--------------------------------------------------------------------------------------------------
 }

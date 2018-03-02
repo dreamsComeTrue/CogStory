@@ -38,8 +38,8 @@ namespace aga
         , m_IsSnapToGrid (true)
         , m_IsMousePan (false)
         , m_IsMouseWheel (false)
-        , m_BaseGridSize (16)
-        , m_GridSize (16)
+        , m_BaseGridSize (16.0f)
+        , m_GridSize (16.0f)
         , m_CursorMode (CursorMode::TileSelectMode)
         , m_LastTimeClicked (0.0f)
     {
@@ -628,8 +628,8 @@ namespace aga
 
     void Editor::ChangeGridSize (bool clockwise)
     {
-        m_BaseGridSize *= clockwise ? 0.5 : 2;
-        m_BaseGridSize = std::max (1, std::min (m_BaseGridSize, 1024));
+        m_BaseGridSize *= clockwise ? 0.5f : 2.0f;
+        m_BaseGridSize = std::max (1.0f, std::min (m_BaseGridSize, 1024.0f));
         m_GridSize = std::max (1.0f, m_BaseGridSize * m_MainLoop->GetSceneManager ().GetCamera ().GetScale ().X);
     }
 
@@ -719,45 +719,35 @@ namespace aga
     {
         const ALLEGRO_COLOR LIGHT_GRAY{ 0.5f, 0.5f, 0.5f, 1.0f };
 
-        Point t = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-        Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-
-        int horBeginX = t.X / 2 * (1 / scale.X);
-
-        if (t.X > 0)
-        {
-            horBeginX *= -1;
-        }
-
-        int horBeginY = t.Y / 1 * (1 / scale.Y);
-
-        if (t.Y > 0)
-        {
-            horBeginY *= -1;
-        }
-
         const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+        Point t = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
+        Point cameraCenter = m_MainLoop->GetSceneManager ().GetCamera ().GetCenter ();
+        cameraCenter.X = cameraCenter.X / m_GridSize;
+        cameraCenter.Y = cameraCenter.Y / m_GridSize;
 
-        int horEndX = 300 + std::fabs (horBeginX);
-        int horEndY = screenSize.Height + std::fabs (horBeginY);
+        int halfSegmentsX = screenSize.Width * 0.5f / m_GridSize;
+        int halfSegmentsY = screenSize.Height * 0.5f / m_GridSize;
+
+        float horBeginX = cameraCenter.X - halfSegmentsX;
+        float horEndX = cameraCenter.X + halfSegmentsX;
+
+        float horBeginY = cameraCenter.Y - halfSegmentsY;
+        float horEndY = cameraCenter.Y + halfSegmentsY;
 
         for (int i = horBeginX; i < horEndX; ++i)
         {
             float xOffset = i * m_GridSize - t.X;
 
             //  |
-            al_draw_line (xOffset, horBeginY, xOffset, horEndY, LIGHT_GRAY, 1);
+            al_draw_line (xOffset, 0, xOffset, screenSize.Height, LIGHT_GRAY, 1);
         }
-
-        horEndX = screenSize.Width + std::fabs (horBeginX);
-        horEndY = 300 + std::fabs (horBeginY);
 
         for (int i = horBeginY; i < horEndY; ++i)
         {
             float yOffset = i * m_GridSize - t.Y;
 
             //  --
-            al_draw_line (horBeginX, yOffset, horEndX, yOffset, LIGHT_GRAY, 1);
+            al_draw_line (0, yOffset, screenSize.Width, yOffset, LIGHT_GRAY, 1);
         }
     }
 
@@ -806,10 +796,7 @@ namespace aga
             // txt, ALLEGRO_ALIGN_LEFT);
         }
 
-        finalX -= translate.X;
-        finalY -= translate.Y;
-
-        return { finalX, finalY };
+        return { finalX / scale.X, finalY / scale.Y };
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -913,7 +900,7 @@ namespace aga
 
         Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
 
-        m_MainLoop->GetSceneManager ().GetCamera ().Scale (1 / scale.X, 1 / scale.Y, state.x, state.y);
+        m_MainLoop->GetSceneManager ().GetCamera ().Scale (1.0f / scale.X, 1.0f / scale.Y, state.x, state.y);
         m_GridSize = std::max (1.0f, m_BaseGridSize * m_MainLoop->GetSceneManager ().GetCamera ().GetScale ().X);
     }
 
@@ -929,9 +916,9 @@ namespace aga
 
     void Editor::OnGridIncrease ()
     {
-        m_BaseGridSize /= 2;
+        m_BaseGridSize /= 2.0f;
 
-        m_BaseGridSize = std::max (1, std::min (m_BaseGridSize, 1024));
+        m_BaseGridSize = std::max (1.0f, std::min (m_BaseGridSize, 1024.0f));
         m_GridSize = std::max (1.0f, m_BaseGridSize * m_MainLoop->GetSceneManager ().GetCamera ().GetScale ().X);
     }
 
@@ -939,9 +926,9 @@ namespace aga
 
     void Editor::OnGridDecrease ()
     {
-        m_BaseGridSize *= 2;
+        m_BaseGridSize *= 2.0f;
 
-        m_BaseGridSize = std::max (1, std::min (m_BaseGridSize, 1024));
+        m_BaseGridSize = std::max (1.0f, std::min (m_BaseGridSize, 1024.0f));
         m_GridSize = std::max (1.0f, m_BaseGridSize * m_MainLoop->GetSceneManager ().GetCamera ().GetScale ().X);
     }
 
@@ -1103,12 +1090,9 @@ namespace aga
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
 
-        Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-        Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
         Point point = CalculateCursorPoint (state.x, state.y);
 
-        m_MainLoop->GetSceneManager ().GetPlayer ().SetPosition ((translate.X + point.X) * 1 / scale.X,
-                                                                 (translate.Y + point.Y) * 1 / scale.Y);
+        m_MainLoop->GetSceneManager ().GetPlayer ().SetPosition (point);
         m_MainLoop->GetSceneManager ().GetPlayer ().TemplateBounds.Pos
             = m_MainLoop->GetSceneManager ().GetPlayer ().GetPosition ();
     }

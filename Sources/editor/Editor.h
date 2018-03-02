@@ -143,8 +143,8 @@ namespace aga
         CursorMode m_CursorMode;
 
         bool m_IsSnapToGrid;
-        int m_BaseGridSize;
-        int m_GridSize;
+        float m_BaseGridSize;
+        float m_GridSize;
 
         bool m_IsMousePan;
         bool m_IsMouseWheel;
