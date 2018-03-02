@@ -51,6 +51,7 @@ namespace aga
         Lifecycle::Initialize ();
 
         ActorFactory::RegisterActorTypes ();
+        ActorFactory::RegisterAnimations ();
 
         m_AtlasManager = new AtlasManager ();
         m_AtlasManager->Initialize ();

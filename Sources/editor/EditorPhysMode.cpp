@@ -39,11 +39,9 @@ namespace aga
         if (m_PhysPoint && state.buttons == 1)
         {
             Point p = m_Editor->CalculateCursorPoint (state.x, state.y);
-            Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
-            Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
 
-            m_PhysPoint->X = (translate.X + p.X) * 1 / scale.X - origin.X;
-            m_PhysPoint->Y = (translate.Y + p.Y) * 1 / scale.Y - origin.Y;
+            m_PhysPoint->X = p.X - origin.X;
+            m_PhysPoint->Y = p.Y - origin.Y;
 
             return true;
         }
@@ -138,8 +136,6 @@ namespace aga
     void EditorPhysMode::InsertPhysPointAtCursor (int mouseX, int mouseY)
     {
         Point p = m_Editor->CalculateCursorPoint (mouseX, mouseY);
-        Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
-        Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
         Point origin;
         std::vector<std::vector<Point>>* physPoints;
 
@@ -151,8 +147,7 @@ namespace aga
 
         if (physPoints)
         {
-            Point pointToInsert
-                = { (translate.X + p.X) * 1 / scale.X - origin.X, (translate.Y + p.Y) * 1 / scale.Y - origin.Y };
+            Point pointToInsert = { p.X - origin.X, p.Y - origin.Y };
 
             bool inserted = false;
 

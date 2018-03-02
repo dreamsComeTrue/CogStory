@@ -3,7 +3,7 @@
 #ifndef __ACTOR_H__
 #define __ACTOR_H__
 
-#include "Animation.h"
+#include "Animable.h"
 #include "Collidable.h"
 #include "Common.h"
 #include "Entity.h"
@@ -23,7 +23,7 @@ namespace aga
     class SceneManager;
     class Scene;
 
-    class Actor : public Entity, public Lifecycle, public Scriptable, public Collidable
+    class Actor : public Entity, public Lifecycle, public Animable, public Scriptable, public Collidable
     {
     public:
         Actor (SceneManager* sceneManager);
@@ -43,10 +43,7 @@ namespace aga
         Point GetPosition ();
         Point GetSize ();
 
-        void SetCurrentAnimation (const std::string& name);
         void DrawBounds ();
-
-        ALLEGRO_BITMAP* GetImage ();
 
         std::function<void(float dx, float dy)> MoveCallback;
 
@@ -56,9 +53,6 @@ namespace aga
         void ChooseAnimation (float angleDeg);
 
     protected:
-        ALLEGRO_BITMAP* m_Image;
-        Animation m_Animation;
-
         Point m_OldPosition;
 
     public:

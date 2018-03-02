@@ -80,7 +80,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Atlas::DrawRegion (const std::string& name, int x, int y, float scaleX, float scaleY, float rotation)
+    void Atlas::DrawRegion (const std::string& name, float x, float y, float scaleX, float scaleY, float rotation)
     {
         if (m_Regions.find (name) != m_Regions.end ())
         {

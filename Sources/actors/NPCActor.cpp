@@ -27,8 +27,8 @@ namespace aga
     bool NPCActor::Initialize ()
     {
         Actor::Initialize ();
+        Animable::Initialize (GetResourcePath (ResourceID::GFX_MENU_COG).c_str ());
 
-        m_Image = al_load_bitmap (GetResourcePath (ResourceID::GFX_MENU_COG).c_str ());
         Bounds.SetSize ({ 64, 64 });
         SetCheckOverlap (true);
 

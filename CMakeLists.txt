@@ -35,7 +35,7 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${IMGUI_SRC_LIST})
 target_link_libraries(${PROJECT_NAME}
     libGwork.a
     libGworkAllegro5.a
-    libangelscript.a
+    libangelscript.dll.a
 
     allegro
     allegro_image

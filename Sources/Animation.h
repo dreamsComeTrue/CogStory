@@ -34,7 +34,7 @@ namespace aga
     public:
         Animation ();
 
-        void AddAnimationFrames (const std::string& name, const AnimationFrames& frames);
+        void AddFrames (const std::string& name, const AnimationFrames& frames);
         AnimationFrames& GetAnimation (const std::string& name);
         AnimationFrames& GetCurrentAnimation ();
         std::string GetCurrentAnimationName ();

@@ -22,11 +22,12 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     StateManager::StateManager (MainLoop* mainLoop)
-      : m_ActiveState (nullptr)
-      , m_MainLoop (mainLoop)
-      , m_Transitioning (false)
-      , m_FadeColor (COLOR_BLACK)
-      , m_TweenFade (nullptr)
+        : m_ActiveState (nullptr)
+        , m_PreviousState (nullptr)
+        , m_MainLoop (mainLoop)
+        , m_Transitioning (false)
+        , m_FadeColor (COLOR_BLACK)
+        , m_TweenFade (nullptr)
     {
     }
 
@@ -52,6 +53,8 @@ namespace aga
 
     void StateManager::SetActiveState (State* state)
     {
+        m_PreviousState = m_ActiveState;
+
         if (m_ActiveState != nullptr)
         {
             m_ActiveState->AfterLeave ();
@@ -132,33 +135,33 @@ namespace aga
             {
                 switch (event->keyboard.keycode)
                 {
-                    case ALLEGRO_KEY_F1:
+                case ALLEGRO_KEY_F1:
+                {
+                    if (GetActiveStateName () == GAMEPLAY_STATE_NAME)
                     {
-                        if (GetActiveStateName () == GAMEPLAY_STATE_NAME)
-                        {
-                            SetActiveState (EDITOR_STATE_NAME);
-                        }
-                        else if (GetActiveStateName () == EDITOR_STATE_NAME)
-                        {
-                            SetActiveState (GAMEPLAY_STATE_NAME);
-                        }
-
-                        break;
+                        SetActiveState (EDITOR_STATE_NAME);
+                    }
+                    else if (GetActiveStateName () == EDITOR_STATE_NAME)
+                    {
+                        SetActiveState (GAMEPLAY_STATE_NAME);
                     }
 
-                    case ALLEGRO_KEY_ESCAPE:
-                    {
-                        if (GetActiveStateName () == GAMEPLAY_STATE_NAME)
-                        {
-                            StateFadeInOut (MAIN_MENU_STATE_NAME);
-                        }
-                        else if (GetActiveStateName () == MAIN_MENU_STATE_NAME)
-                        {
-                            StateFadeInOut (GAMEPLAY_STATE_NAME);
-                        }
+                    break;
+                }
 
-                        break;
+                case ALLEGRO_KEY_ESCAPE:
+                {
+                    if (GetActiveStateName () == GAMEPLAY_STATE_NAME)
+                    {
+                        StateFadeInOut (MAIN_MENU_STATE_NAME);
                     }
+                    else if (GetActiveStateName () == MAIN_MENU_STATE_NAME)
+                    {
+                        StateFadeInOut (GAMEPLAY_STATE_NAME);
+                    }
+
+                    break;
+                }
                 }
             }
         }
@@ -236,12 +239,12 @@ namespace aga
         };
 
         tweeny::tween<float> tween = tweeny::from (0.0f)
-                                       .to (1.0f)
-                                       .during (FADE_MAX_TIME)
-                                       .onStep (fadeFunc)
-                                       .to (0.0f)
-                                       .during (FADE_MAX_TIME)
-                                       .onStep (fadeFunc);
+                                         .to (1.0f)
+                                         .during (FADE_MAX_TIME)
+                                         .onStep (fadeFunc)
+                                         .to (0.0f)
+                                         .during (FADE_MAX_TIME)
+                                         .onStep (fadeFunc);
 
         m_TweenFade = &m_MainLoop->GetTweenManager ().AddTween (9999, tween);
 

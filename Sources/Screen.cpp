@@ -11,12 +11,13 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Screen::Screen (unsigned width, unsigned height)
-      : m_Width (width)
-      , m_Height (height)
-      , m_RealSize ((int)width, (int)height)
-      , m_Redraw (false)
-      , m_BackgroundColor (al_map_rgb (0, 0, 0))
+    Screen::Screen (unsigned width, unsigned height, bool centerOnScreen)
+        : m_Width (width)
+        , m_Height (height)
+        , m_RealSize ((int)width, (int)height)
+        , m_CenterOnScreen (centerOnScreen)
+        , m_Redraw (false)
+        , m_BackgroundColor (al_map_rgb (0, 0, 0))
     {
     }
 
@@ -34,6 +35,8 @@ namespace aga
 
     bool Screen::Initialize ()
     {
+        Lifecycle::Initialize ();
+
         if (!al_init ())
         {
             fprintf (stderr, "Failed to initialize allegro!\n");
@@ -49,7 +52,23 @@ namespace aga
         {
             return false;
         }
-        
+
+        float winX = 2; //    px - frame border;
+        float winY = 32; //    px - frame border;
+
+        if (m_CenterOnScreen)
+        {
+            ALLEGRO_MONITOR_INFO aminfo;
+            al_get_monitor_info (0, &aminfo);
+            int desktopWidth = aminfo.x2 - aminfo.x1 + 1;
+            int desktopHeight = aminfo.y2 - aminfo.y1 + 1;
+
+            winX = desktopWidth / 2 - m_RealSize.Width / 2;
+            winY = desktopHeight / 2 - m_RealSize.Height / 2;
+        }
+
+        al_set_new_window_position (winX, winY);
+
         al_set_new_display_flags (ALLEGRO_RESIZABLE);
         m_Display = al_create_display (m_Width, m_Height);
 
@@ -86,12 +105,12 @@ namespace aga
         {
             return false;
         }
-        
+
         if (!al_init_ttf_addon ())
         {
             return false;
         }
-        
+
         if (!al_init_primitives_addon ())
         {
             return false;
@@ -121,19 +140,9 @@ namespace aga
 
         al_set_window_title (m_Display, GAME_TITLE);
 
-        ALLEGRO_MONITOR_INFO aminfo;
-        al_get_monitor_info (0, &aminfo);
-        int desktopWidth = aminfo.x2 - aminfo.x1 + 1;
-        int desktopHeight = aminfo.y2 - aminfo.y1 + 1;
-
-        al_set_window_position (
-          m_Display, desktopWidth / 2 - m_RealSize.Width / 2, desktopHeight / 2 - m_RealSize.Height / 2);
-
         al_start_timer (m_DisplayTimer);
 
         m_Font.Initialize ();
-
-        Lifecycle::Initialize ();
 
         return true;
     }
@@ -200,9 +209,9 @@ namespace aga
                 ProcessEventFunction (&ev);
             }
         }
-        else if ((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) || (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) ||
-                 (ev.type == ALLEGRO_EVENT_MOUSE_AXES) || (ev.type == ALLEGRO_EVENT_KEY_DOWN) ||
-                 (ev.type == ALLEGRO_EVENT_KEY_UP) || (ev.type == ALLEGRO_EVENT_KEY_CHAR))
+        else if ((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) || (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
+                 || (ev.type == ALLEGRO_EVENT_MOUSE_AXES) || (ev.type == ALLEGRO_EVENT_KEY_DOWN)
+                 || (ev.type == ALLEGRO_EVENT_KEY_UP) || (ev.type == ALLEGRO_EVENT_KEY_CHAR))
         {
             if (ProcessEventFunction != nullptr)
             {

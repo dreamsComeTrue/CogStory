@@ -9,10 +9,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Actor::Actor (SceneManager* sceneManager)
-        : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
+        : Animable ()
+        , Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
         , Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
         , Entity (sceneManager)
-        , m_Image (nullptr)
     {
         ID = Entity::GetNextID ();
     }
@@ -46,22 +46,13 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Actor::Destroy ()
-    {
-        if (m_Image != nullptr)
-        {
-            al_destroy_bitmap (m_Image);
-            m_Image = nullptr;
-        }
-
-        return Lifecycle::Destroy ();
-    }
+    bool Actor::Destroy () { return Lifecycle::Destroy (); }
 
     //--------------------------------------------------------------------------------------------------
 
     void Actor::ChooseAnimation (float angleDeg)
     {
-        if (m_Animation.GetAnimations ().empty ())
+        if (GetAnimations ().empty ())
         {
             return;
         }
@@ -91,10 +82,7 @@ namespace aga
 
     bool Actor::Update (float deltaTime)
     {
-        if (!m_Animation.GetAnimations ().empty ())
-        {
-            m_Animation.Update (deltaTime);
-        }
+        Animable::Update (deltaTime);
 
         UpdateScripts (deltaTime);
 
@@ -108,39 +96,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Actor::Render (float deltaTime)
-    {
-        float sourceX = 0;
-        float sourceY = 0;
-        float sourceWidth;
-        float sourceHeight;
-        float targetX;
-        float targetY;
-
-        if (m_Image && !m_Animation.GetAnimations ().empty ())
-        {
-            AnimationFrames& frames = m_Animation.GetCurrentAnimation ();
-            Rect& frame = frames.GetFrame (m_Animation.GetCurrentFrame ());
-
-            sourceX = frame.GetPos ().X;
-            sourceY = frame.GetPos ().Y;
-            sourceWidth = frame.GetSize ().Width;
-            sourceHeight = frame.GetSize ().Height;
-            targetX = Bounds.GetPos ().X;
-            targetY = Bounds.GetPos ().Y;
-        }
-        else
-        {
-            sourceWidth = al_get_bitmap_width (m_Image);
-            sourceHeight = al_get_bitmap_height (m_Image);
-            targetX = Bounds.GetPos ().X;
-            targetY = Bounds.GetPos ().Y;
-        }
-
-        al_draw_tinted_scaled_rotated_bitmap_region (m_Image, sourceX, sourceY, sourceWidth, sourceHeight,
-                                                     al_map_rgb (255, 255, 255), sourceWidth * 0.5, sourceHeight * 0.5,
-                                                     targetX, targetY, 1, 1, Rotation, 0);
-    }
+    void Actor::Render (float deltaTime) { Animable::Render (this); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -199,14 +155,6 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Point Actor::GetSize () { return Bounds.GetSize (); }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Actor::SetCurrentAnimation (const std::string& name) { m_Animation.SetCurrentAnimation (name); }
-
-    //--------------------------------------------------------------------------------------------------
-
-    ALLEGRO_BITMAP* Actor::GetImage () { return m_Image; }
 
     //--------------------------------------------------------------------------------------------------
 

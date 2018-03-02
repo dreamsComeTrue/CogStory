@@ -63,6 +63,7 @@ set(ANGELSCRIPT_HEADERS
     ../../../add_on/scriptfile/scriptfile.h
     ../../../add_on/scriptfile/scriptfilesystem.h
     ../../../add_on/scriptdictionary/scriptdictionary.h
+    ../../../add_on/scriptarray/scriptarray.h
     ../../../add_on/scriptbuilder/scriptbuilder.h
     ../../../add_on/scriptany/scriptany.h
     ../../../add_on/contextmgr/contextmgr.h
@@ -110,6 +111,7 @@ set(ANGELSCRIPT_SOURCE
     ../../../add_on/scriptfile/scriptfile.cpp
     ../../../add_on/scriptfile/scriptfilesystem.cpp
     ../../../add_on/scriptdictionary/scriptdictionary.cpp
+    ../../../add_on/scriptarray/scriptarray.cpp
     ../../../add_on/scriptbuilder/scriptbuilder.cpp
     ../../../add_on/scriptany/scriptany.cpp
     ../../../add_on/contextmgr/contextmgr.cpp

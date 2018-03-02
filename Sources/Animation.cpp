@@ -60,7 +60,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Animation::AddAnimationFrames (const std::string& name, const AnimationFrames& frames)
+    void Animation::AddFrames (const std::string& name, const AnimationFrames& frames)
     {
         m_Animations.insert (std::make_pair (name, frames));
     }

@@ -3,6 +3,7 @@
 #include "GamePlayState.h"
 #include "Common.h"
 #include "MainLoop.h"
+#include "MainMenuState.h"
 #include "Scene.h"
 #include "SceneManager.h"
 #include "Screen.h"
@@ -49,6 +50,12 @@ namespace aga
 
     void GamePlayState::BeforeEnter ()
     {
+        if (m_MainLoop->GetStateManager ().GetPreviousState () != nullptr
+            && m_MainLoop->GetStateManager ().GetPreviousState ()->GetName () == MAIN_MENU_STATE_NAME)
+        {
+            return;
+        }
+
         m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (60, 60, 70));
         m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (50, 60, 100));
         m_MainLoop->GetSceneManager ().GetSpeechFrameManager ().Clear ();

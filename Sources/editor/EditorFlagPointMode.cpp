@@ -34,13 +34,10 @@ namespace aga
             {
                 std::map<std::string, FlagPoint>& flagPoints
                     = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
-
                 Point p = m_Editor->CalculateCursorPoint (state.x, state.y);
-                Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
-                Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
 
-                flagPoints[m_FlagPoint].Pos.X = (translate.X + p.X) * 1 / scale.X;
-                flagPoints[m_FlagPoint].Pos.Y = (translate.Y + p.Y) * 1 / scale.Y;
+                flagPoints[m_FlagPoint].Pos.X = p.X;
+                flagPoints[m_FlagPoint].Pos.Y = p.Y;
 
                 return true;
             }
@@ -112,13 +109,8 @@ namespace aga
             if (GetFlagPointUnderCursor (mouseX, mouseY) == "")
             {
                 Point p = m_Editor->CalculateCursorPoint (mouseX, mouseY);
-                Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
-                Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
 
-                Point pointToInsert = { (translate.X + p.X) * 1 / scale.X, (translate.Y + p.Y) * 1 / scale.Y };
-
-                m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddFlagPoint (m_FlagPointName,
-                                                                                              pointToInsert);
+                m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddFlagPoint (m_FlagPointName, p);
                 m_FlagPoint = m_FlagPointName;
             }
 

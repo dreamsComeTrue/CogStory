@@ -11,7 +11,7 @@ namespace aga
     class Screen : public Lifecycle
     {
     public:
-        Screen (unsigned width, unsigned height);
+        Screen (unsigned width, unsigned height, bool centerOnScreen = true);
         virtual ~Screen ();
         bool Initialize ();
         bool Destroy ();
@@ -39,6 +39,7 @@ namespace aga
     private:
         Point m_RealSize;
         unsigned m_Width, m_Height;
+        bool m_CenterOnScreen;
         bool m_Redraw;
         float m_DeltaTime;
 

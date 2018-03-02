@@ -39,7 +39,7 @@
 
 BEGIN_AS_NAMESPACE
 
-class CScriptBuilder;
+class AS_API CScriptBuilder;
 
 // This callback will be called for each #include directive encountered by the
 // builder. The callback should call the AddSectionFromFile or AddSectionFromMemory
@@ -49,7 +49,7 @@ typedef int (*INCLUDECALLBACK_t)(const char *include, const char *from, CScriptB
 
 // Helper class for loading and pre-processing script files to
 // support include directives and metadata declarations
-class CScriptBuilder
+class AS_API CScriptBuilder
 {
 public:
 	CScriptBuilder();

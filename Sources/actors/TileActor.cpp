@@ -31,7 +31,8 @@ namespace aga
 
         if (atlas)
         {
-            atlas->DrawRegion (Name, Bounds.GetPos ().X, Bounds.GetPos ().Y, 1, 1, DegressToRadians (Rotation));
+            Point pos = Bounds.GetPos ();
+            atlas->DrawRegion (Name, pos.X, pos.Y, 1.0f, 1.0f, DegressToRadians (Rotation));
         }
     }
 

@@ -83,13 +83,10 @@ namespace aga
 
         if (state.buttons == 1 && m_SelectedActor)
         {
-            Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
-            Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
             Point point
                 = m_Editor->CalculateCursorPoint (state.x + m_TileSelectionOffset.X, state.y + m_TileSelectionOffset.Y);
 
-            m_SelectedActor->Bounds.SetPos (
-                { (translate.X + point.X) * 1 / scale.X, (translate.Y + point.Y) * 1 / scale.Y });
+            m_SelectedActor->Bounds.SetPos (point);
             m_SelectedActor->TemplateBounds = m_SelectedActor->Bounds;
 
             if (m_SelectedActor->GetTypeName () == TileActor::TypeName)
@@ -271,18 +268,15 @@ namespace aga
     {
         TileActor* tile = new TileActor (&m_Editor->GetMainLoop ()->GetSceneManager ());
         AtlasRegion region = m_Atlas->GetRegion (m_SelectedAtlasRegion.Name);
-        Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
         Point point
             = m_Editor->CalculateCursorPoint (mouseX + m_TileSelectionOffset.X, mouseY + m_TileSelectionOffset.Y);
-        Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
 
         tile->ID = Entity::GetNextID ();
         tile->Tileset = m_Atlas->GetName ();
         tile->Name = m_SelectedAtlasRegion.Name;
 
-        int x = (translate.X + point.X) * 1 / scale.X;
-        int y = (translate.Y + point.Y) * 1 / scale.Y;
-        tile->Bounds = { { x, y }, { x + region.Bounds.GetSize ().Width, y + region.Bounds.GetSize ().Height } };
+        tile->Bounds = { { point.X, point.Y },
+                         { point.X + region.Bounds.GetSize ().Width, point.Y + region.Bounds.GetSize ().Height } };
         tile->Rotation = m_Rotation;
 
         m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddTile (tile);

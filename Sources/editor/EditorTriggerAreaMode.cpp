@@ -30,12 +30,9 @@ namespace aga
 
         if (m_TriggerPoint && state.buttons == 1)
         {
-            Point p = m_Editor->CalculateCursorPoint (state.x, state.y);
-            Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
-            Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
-
-            m_TriggerPoint->X = (translate.X + p.X) * 1 / scale.X;
-            m_TriggerPoint->Y = (translate.Y + p.Y) * 1 / scale.Y;
+            Point point = m_Editor->CalculateCursorPoint (state.x, state.y);
+            m_TriggerPoint->X = point.X;
+            m_TriggerPoint->Y = point.Y;
 
             return true;
         }
@@ -210,12 +207,7 @@ namespace aga
                 = &m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetTriggerArea (m_TriggerAreaName);
         }
 
-        Point p = m_Editor->CalculateCursorPoint (mouseX, mouseY);
-        Point translate = sceneManager.GetCamera ().GetTranslate ();
-        Point scale = sceneManager.GetCamera ().GetScale ();
-
-        Point pointToInsert = { (translate.X + p.X) * 1 / scale.X, (translate.Y + p.Y) * 1 / scale.Y };
-
+        Point pointToInsert = m_Editor->CalculateCursorPoint (mouseX, mouseY);
         bool inserted = false;
 
         //  After we select one of trigger point, we can insert next one accordingly
