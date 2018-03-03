@@ -80,15 +80,23 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Atlas::DrawRegion (const std::string& name, float x, float y, float scaleX, float scaleY, float rotation)
+    void Atlas::DrawRegion (const std::string& name, float x, float y, float scaleX, float scaleY, float rotation,
+                            bool offsetByCenter)
     {
         if (m_Regions.find (name) != m_Regions.end ())
         {
             Rect r = m_Regions[name].Bounds;
+
+            if (offsetByCenter)
+            {
+                x += r.GetHalfSize ().Width;
+                y += r.GetHalfSize ().Height;
+            }
+
             al_draw_tinted_scaled_rotated_bitmap_region (m_Image, r.GetPos ().X, r.GetPos ().Y, r.GetSize ().Width,
                                                          r.GetSize ().Height, al_map_rgb (255, 255, 255),
-                                                         r.GetSize ().Width * 0.5, r.GetSize ().Height * 0.5, x, y,
-                                                         scaleX, scaleY, rotation, 0);
+                                                         r.GetHalfSize ().Width, r.GetHalfSize ().Height, x, y, scaleX,
+                                                         scaleY, rotation, 0);
         }
     }
 

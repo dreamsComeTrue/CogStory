@@ -79,9 +79,10 @@ namespace aga
 
             Point pos = transformable->Bounds.GetPos ();
 
-            al_draw_tinted_scaled_rotated_bitmap_region (
-                m_Image, sourceX, sourceY, sourceWidth, sourceHeight, al_map_rgb (255, 255, 255), sourceWidth * 0.5,
-                sourceHeight * 0.5, pos.X, pos.Y, 1, 1, transformable->Rotation, 0);
+            al_draw_tinted_scaled_rotated_bitmap_region (m_Image, sourceX, sourceY, sourceWidth, sourceHeight,
+                                                         al_map_rgb (255, 255, 255), sourceWidth * 0.5,
+                                                         sourceHeight * 0.5, pos.X + sourceWidth * 0.5f,
+                                                         pos.Y + sourceHeight * 0.5f, 1, 1, transformable->Rotation, 0);
         }
     }
 

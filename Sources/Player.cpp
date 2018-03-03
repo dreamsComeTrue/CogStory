@@ -280,8 +280,7 @@ namespace aga
             MoveCallback (Bounds.GetPos ().X - m_OldPosition.X, Bounds.GetPos ().Y - m_OldPosition.Y);
         }
 
-        SetPhysOffset (Bounds.GetPos ().X - Bounds.GetHalfSize ().Width,
-                       Bounds.GetPos ().Y - Bounds.GetHalfSize ().Height);
+        SetPhysOffset (Bounds.GetPos ().X, Bounds.GetPos ().Y);
 
         UpdateParticleEmitters ();
     }

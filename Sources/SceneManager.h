@@ -60,6 +60,9 @@ namespace aga
         void SetDrawBoundingBox (bool enable);
         bool IsDrawBoundingBox ();
 
+        void SetDrawActorsNames (bool enable);
+        bool IsDrawActorsNames ();
+
     private:
         SpeechFrameManager m_SpeechFrameManager;
         Player m_Player;
@@ -76,6 +79,7 @@ namespace aga
 
         bool m_DrawPhysData;
         bool m_DrawBoundingBox;
+        bool m_DrawActorsNames;
     };
 }
 

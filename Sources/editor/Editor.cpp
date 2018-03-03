@@ -37,7 +37,6 @@ namespace aga
         , m_MainLoop (mainLoop)
         , m_IsSnapToGrid (true)
         , m_IsMousePan (false)
-        , m_IsMouseWheel (false)
         , m_BaseGridSize (16.0f)
         , m_GridSize (16.0f)
         , m_CursorMode (CursorMode::TileSelectMode)
@@ -372,6 +371,7 @@ namespace aga
             m_IsSnapToGrid = j["show_grid"];
             m_MainLoop->GetSceneManager ().SetDrawPhysData (j["show_physics"]);
             m_MainLoop->GetSceneManager ().SetDrawBoundingBox (j["show_bounds"]);
+            m_MainLoop->GetSceneManager ().SetDrawActorsNames (j["show_names"]);
         }
         catch (const std::exception&)
         {
@@ -389,6 +389,7 @@ namespace aga
             j["show_grid"] = m_IsSnapToGrid;
             j["show_physics"] = m_MainLoop->GetSceneManager ().IsDrawPhysData ();
             j["show_bounds"] = m_MainLoop->GetSceneManager ().IsDrawBoundingBox ();
+            j["show_names"] = m_MainLoop->GetSceneManager ().IsDrawActorsNames ();
 
             // write prettified JSON to another file
             std::ofstream out ((GetDataPath () + configFileName).c_str ());
@@ -403,14 +404,21 @@ namespace aga
 
     bool Editor::Update (float deltaTime)
     {
-        if ((m_CursorMode == CursorMode::TileSelectMode || m_CursorMode == CursorMode::TileEditMode)
-            && !m_SpeechWindow->GetSceneWindow ()->Visible () && !m_TriggerAreaWindow->GetSceneWindow ()->Visible ()
-            && !m_FlagPointWindow->GetSceneWindow ()->Visible () && !m_ActorWindow->GetSceneWindow ()->Visible ())
+        if (IsEditorCanvasNotCovered ())
         {
             HandleCameraPan (deltaTime);
         }
 
         return true;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Editor::IsEditorCanvasNotCovered ()
+    {
+        return ((m_CursorMode == CursorMode::TileSelectMode || m_CursorMode == CursorMode::TileEditMode)
+                && !m_SpeechWindow->GetSceneWindow ()->Visible () && !m_TriggerAreaWindow->GetSceneWindow ()->Visible ()
+                && !m_FlagPointWindow->GetSceneWindow ()->Visible () && !m_ActorWindow->GetSceneWindow ()->Visible ());
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -530,6 +538,13 @@ namespace aga
                 break;
             }
 
+            case ALLEGRO_KEY_N:
+            {
+                m_MainLoop->GetSceneManager ().SetDrawActorsNames (
+                    !m_MainLoop->GetSceneManager ().IsDrawActorsNames ());
+                break;
+            }
+
             case ALLEGRO_KEY_B:
             {
                 m_MainLoop->GetSceneManager ().SetDrawBoundingBox (
@@ -642,68 +657,47 @@ namespace aga
             DrawGrid ();
         }
 
-        ALLEGRO_MOUSE_STATE state;
-        al_get_mouse_state (&state);
-
         if (m_CursorMode == CursorMode::EditPhysBodyMode)
         {
-            Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
-            camera.Update (deltaTime);
-
-            if (m_EditorActorMode.GetSelectedActor ())
-            {
-                m_EditorActorMode.GetSelectedActor ()->Render (deltaTime);
-                m_EditorActorMode.GetSelectedActor ()->DrawBounds ();
-                m_EditorActorMode.GetSelectedActor ()->DrawPhysBody ();
-            }
-
-            camera.UseIdentityTransform ();
-            m_EditorPhysMode.DrawPhysBody (state.x, state.y);
-            RenderUI ();
+            RenderPhysBodyMode (deltaTime);
         }
         else
         {
             m_MainLoop->GetSceneManager ().Render (deltaTime);
-
-            Rect r;
-            bool objectFound = false;
-
             m_MainLoop->GetSceneManager ().GetCamera ().UseIdentityTransform ();
 
-            if (m_EditorActorMode.GetSelectedActor ())
+            if (IsEditorCanvasNotCovered ())
             {
-                r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (
-                    m_EditorActorMode.GetSelectedActor ());
-                objectFound = true;
-            }
-
-            if (objectFound)
-            {
-                al_draw_rectangle (r.GetPos ().X, r.GetPos ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y,
-                                   COLOR_RED, 2);
-            }
-
-            if (m_CursorMode == CursorMode::TileSelectMode)
-            {
-                objectFound = false;
-
-                m_EditorActorMode.SetSelectedActor (
-                    m_EditorActorMode.GetActorUnderCursor (state.x, state.y, std::move (r)));
-
-                if (m_EditorActorMode.GetActorUnderCursor ())
+                if (m_EditorActorMode.GetSelectedActor ())
                 {
-                    objectFound = true;
-                }
+                    Rect r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (
+                        m_EditorActorMode.GetSelectedActor ());
 
-                if (objectFound)
-                {
+                    r.Offset (r.GetHalfSize ());
                     al_draw_rectangle (r.GetPos ().X, r.GetPos ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y,
-                                       COLOR_YELLOW, 2);
+                                       COLOR_RED, 2);
+                }
+
+                if (m_CursorMode == CursorMode::TileSelectMode)
+                {
+                    ALLEGRO_MOUSE_STATE state;
+                    al_get_mouse_state (&state);
+
+                    Rect r;
+                    m_EditorActorMode.SetSelectedActor (
+                        m_EditorActorMode.GetActorUnderCursor (state.x, state.y, std::move (r)));
+
+                    if (m_EditorActorMode.GetActorUnderCursor ())
+                    {
+                        r.Offset (r.GetHalfSize ());
+                        al_draw_rectangle (r.GetPos ().X, r.GetPos ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y,
+                                           COLOR_YELLOW, 2);
+                    }
                 }
             }
 
-            m_EditorFlagPointMode.DrawFlagPoints (state.x, state.y);
-            m_EditorTriggerAreaMode.DrawTriggerAreas (state.x, state.y);
+            m_EditorFlagPointMode.DrawFlagPoints ();
+            m_EditorTriggerAreaMode.DrawTriggerAreas ();
 
             if (m_EditorActorMode.IsDrawTiles ())
             {
@@ -715,9 +709,31 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Editor::RenderPhysBodyMode (float deltaTime)
+    {
+        Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
+        camera.Update (deltaTime);
+
+        if (m_EditorActorMode.GetSelectedActor ())
+        {
+            m_EditorActorMode.GetSelectedActor ()->Render (deltaTime);
+            m_EditorActorMode.GetSelectedActor ()->DrawBounds ();
+            m_EditorActorMode.GetSelectedActor ()->DrawPhysBody ();
+        }
+
+        ALLEGRO_MOUSE_STATE state;
+        al_get_mouse_state (&state);
+
+        camera.UseIdentityTransform ();
+        m_EditorPhysMode.DrawPhysBody (state.x, state.y);
+        RenderUI ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Editor::DrawGrid ()
     {
-        const ALLEGRO_COLOR LIGHT_GRAY{ 0.5f, 0.5f, 0.5f, 1.0f };
+        const ALLEGRO_COLOR LIGHT_GRAY{ 0.4f, 0.4f, 0.4f, 1.0f };
 
         const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
         Point t = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
@@ -1365,7 +1381,10 @@ namespace aga
             }
         }
 
-        HandleCameraMovement (event);
+        if (IsEditorCanvasNotCovered ())
+        {
+            HandleCameraMovement (event);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -89,6 +89,7 @@ namespace aga
         void DrawGrid ();
 
         void ChangeGridSize (bool clockwise);
+        bool IsEditorCanvasNotCovered ();
 
         void HandleCameraMovement (const ALLEGRO_MOUSE_EVENT& event);
         void HandleCameraPan (float deltaTime);
@@ -123,6 +124,7 @@ namespace aga
         void OnTilesetSelected (Gwk::Controls::Base* control);
 
         void RenderUI ();
+        void RenderPhysBodyMode (float deltaTime);
 
         void ResetSettings ();
         void ScreenResize ();
@@ -147,7 +149,6 @@ namespace aga
         float m_GridSize;
 
         bool m_IsMousePan;
-        bool m_IsMouseWheel;
 
         long m_LastTimeClicked;
 

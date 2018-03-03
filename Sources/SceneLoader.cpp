@@ -157,7 +157,7 @@ namespace aga
                         tile->PhysPoints.push_back (StringToVectorPoints (physTile["poly"]));
                     }
 
-                    tile->SetPhysOffset (tile->Bounds.GetPos ());
+                    tile->SetPhysOffset (tile->Bounds.GetPos () + tile->Bounds.GetHalfSize ());
                 }
 
                 tile->SetCollisionEnabled (false);
@@ -298,7 +298,7 @@ namespace aga
                             newActor->PhysPoints.push_back (StringToVectorPoints (physTile["poly"]));
                         }
 
-                        newActor->SetPhysOffset (newActor->Bounds.GetPos ());
+                        newActor->SetPhysOffset (newActor->Bounds.GetPos () + newActor->Bounds.GetHalfSize ());
                     }
 
                     scene->AddActor (actorIt["name"], newActor);

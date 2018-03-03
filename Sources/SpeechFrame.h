@@ -76,9 +76,26 @@ namespace aga
         std::function<void()> HandledFunction;
 
     private:
-        bool IsTextFit ();
+        void DrawActorSprite ();
+        void DrawTextLine (const std::string& line, int currentCharIndex, Point drawPoint, int advance);
+        void DrawChoiceArrow (float yOffset);
+        void DrawScrollArrows (int currentDrawingLine);
+
+        Point GetNextDrawPoint (int lineIndex);
+        float GetTextAdvance (int lineCounter);
+        int GetTextAlign ();
+        int GetMaxLinesCanFit ();
+
+        void MoveChoiceUp ();
+        void MoveChoiceDown ();
+        void HandleKeyUp ();
+        void HandleKeyDown ();
+
+        void UpdateScrollArrowsFlash (float deltaTime);
+        void UpdateTextPosition (float deltaTime);
+        bool IsTextFitWithoutScroll ();
         void PreprocessText (std::string& text);
-        size_t GetLineCounter ();
+        int GetCurrentDrawingLine ();
         std::vector<std::string> BreakLine (const std::string& line, float maxWidth);
 
     private:
@@ -88,7 +105,7 @@ namespace aga
         std::string m_ActorRegionName;
 
         std::vector<SpeechChoice> m_Choices;
-        size_t m_ActualChoiceIndex;
+        int m_ActualChoiceIndex;
 
         std::string m_Text;
         std::vector<std::string> m_TextLines;
@@ -110,7 +127,7 @@ namespace aga
         float m_ArrowDrawSpeed;
         bool m_DrawLightArrow;
 
-        size_t m_DisplayLine;
+        int m_ChosenLineDelta;
 
         float m_KeyDelta;
         float m_MaxKeyDelta;

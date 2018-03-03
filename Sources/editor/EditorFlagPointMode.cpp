@@ -48,8 +48,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorFlagPointMode::DrawFlagPoints (float mouseX, float mouseY)
+    void EditorFlagPointMode::DrawFlagPoints ()
     {
+        ALLEGRO_MOUSE_STATE state;
+        al_get_mouse_state (&state);
+
         std::map<std::string, FlagPoint>& flagPoints
             = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
         int outsets = 4;
@@ -62,7 +65,7 @@ namespace aga
             float xPoint = flagPoints[m_FlagPoint].Pos.X * scale.X - translate.X;
             float yPoint = flagPoints[m_FlagPoint].Pos.Y * scale.Y - translate.Y;
 
-            al_draw_line (xPoint, yPoint, mouseX, mouseY, COLOR_ORANGE, 2);
+            al_draw_line (xPoint, yPoint, state.x, state.y, COLOR_ORANGE, 2);
         }
 
         for (std::map<std::string, FlagPoint>::iterator it = flagPoints.begin (); it != flagPoints.end (); ++it)
@@ -88,7 +91,7 @@ namespace aga
                 al_draw_line (xPoint, yPoint, x2Point, y2Point, COLOR_ORANGE, 2);
             }
 
-            if (m_Editor->IsMouseWithinPointRect (mouseX, mouseY, p, outsets))
+            if (m_Editor->IsMouseWithinPointRect (state.x, state.y, p, outsets))
             {
                 al_draw_filled_circle (xPoint, yPoint, 4, COLOR_BLUE);
             }

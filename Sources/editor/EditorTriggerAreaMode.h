@@ -18,7 +18,7 @@ namespace aga
         virtual ~EditorTriggerAreaMode ();
 
         bool MoveSelectedTriggerPoint ();
-        void DrawTriggerAreas (float mouseX, float mouseY);
+        void DrawTriggerAreas ();
 
         Point* GetTriggerPointUnderCursor (int mouseX, int mouseY);
         TriggerArea* GetTriggerAreaUnderCursor (int mouseX, int mouseY);

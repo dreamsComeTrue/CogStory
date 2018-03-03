@@ -1,5 +1,6 @@
 {
     "show_bounds": false,
     "show_grid": true,
+    "show_names": false,
     "show_physics": false
 }

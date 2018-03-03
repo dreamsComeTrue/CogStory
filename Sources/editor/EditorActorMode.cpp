@@ -89,16 +89,7 @@ namespace aga
             m_SelectedActor->Bounds.SetPos (point);
             m_SelectedActor->TemplateBounds = m_SelectedActor->Bounds;
 
-            if (m_SelectedActor->GetTypeName () == TileActor::TypeName)
-            {
-                m_SelectedActor->SetPhysOffset (m_SelectedActor->Bounds.GetPos ());
-            }
-            else
-            {
-                m_SelectedActor->SetPhysOffset (
-                    m_SelectedActor->Bounds.GetPos ().X - m_SelectedActor->Bounds.GetHalfSize ().Width,
-                    m_SelectedActor->Bounds.GetPos ().Y - m_SelectedActor->Bounds.GetHalfSize ().Height);
-            }
+            m_SelectedActor->SetPhysOffset (m_SelectedActor->Bounds.GetPos () + m_SelectedActor->Bounds.GetHalfSize ());
 
             QuadTreeNode& quadTree = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetQuadTree ();
             quadTree.Remove (m_SelectedActor);
@@ -120,6 +111,7 @@ namespace aga
         for (Actor* actorIt : actors)
         {
             Rect r = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetRenderBounds (actorIt);
+            r.Offset (r.GetHalfSize ());
 
             if (InsideRect (mouseX, mouseY, r))
             {
@@ -128,8 +120,7 @@ namespace aga
                     outRect = r;
                     result = actorIt;
 
-                    m_TileSelectionOffset = { r.GetTopLeft ().X - mouseX + r.GetSize ().Width * 0.5f,
-                                              r.GetTopLeft ().Y - mouseY + r.GetSize ().Height * 0.5f };
+                    m_TileSelectionOffset = { r.GetTopLeft ().X - mouseX, r.GetTopLeft ().Y - mouseY };
                 }
             }
         }

@@ -42,12 +42,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorTriggerAreaMode::DrawTriggerAreas (float mouseX, float mouseY)
+    void EditorTriggerAreaMode::DrawTriggerAreas ()
     {
+        ALLEGRO_MOUSE_STATE state;
+        al_get_mouse_state (&state);
+
         SceneManager& sceneManager = m_Editor->GetMainLoop ()->GetSceneManager ();
         Point translate = sceneManager.GetCamera ().GetTranslate ();
         Point scale = sceneManager.GetCamera ().GetScale ();
-        Point* selectedPoint = GetTriggerPointUnderCursor (mouseX, mouseY);
+        Point* selectedPoint = GetTriggerPointUnderCursor (state.x, state.y);
         std::map<std::string, TriggerArea>& triggerAreas = sceneManager.GetActiveScene ()->GetTriggerAreas ();
 
         for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)

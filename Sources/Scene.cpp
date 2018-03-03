@@ -196,11 +196,14 @@ namespace aga
                     actor->DrawPhysBody ();
                 }
 
-                Rect bounds = actor->Bounds;
-                Point pos = { bounds.GetCenter ().X - bounds.GetHalfSize ().Width,
-                              bounds.GetBottomRight ().Y - bounds.GetHalfSize ().Height };
-                std::string str = actor->Name + "[" + ToString (actor->ID) + "]";
-                font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), pos.X, pos.Y, str, ALLEGRO_ALIGN_CENTER);
+                if (m_SceneManager->IsDrawActorsNames ())
+                {
+                    Rect bounds = actor->Bounds;
+                    Point pos = { bounds.GetCenter ().X - bounds.GetHalfSize ().Width,
+                                  bounds.GetBottomRight ().Y - bounds.GetHalfSize ().Height };
+                    std::string str = actor->Name + "[" + ToString (actor->ID) + "]";
+                    font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), pos.X, pos.Y, str, ALLEGRO_ALIGN_CENTER);
+                }
             }
         }
         else
@@ -270,7 +273,7 @@ namespace aga
         {
             Point size = m_SceneManager->GetCamera ().GetScale ()
                 * m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
-            float offsetMultiplier = 0.3f;
+            float offsetMultiplier = 0.5f;
 
             visibleEntities = m_QuadTree.GetEntitiesWithinRect (
                 Rect (cameraPos - size * offsetMultiplier, cameraPos + size + size * offsetMultiplier));

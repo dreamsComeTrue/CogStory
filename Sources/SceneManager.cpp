@@ -31,6 +31,7 @@ namespace aga
         , m_TweenFade (nullptr)
         , m_DrawPhysData (true)
         , m_DrawBoundingBox (true)
+        , m_DrawActorsNames (true)
     {
     }
 
@@ -63,8 +64,8 @@ namespace aga
             Point playerSize = m_Player.GetSize ();
             Point playerPosition = m_Player.GetPosition ();
 
-            m_Camera.SetTranslate (screenSize.Width * 0.5 - playerPosition.X * scale.X, //- playerSize.Width * 0.5,
-                                   screenSize.Height * 0.5 - playerPosition.Y * scale.Y); // - playerSize.Height * 0.5);
+            m_Camera.SetTranslate (screenSize.Width * 0.5 - playerPosition.X * scale.X - playerSize.Width,
+                                   screenSize.Height * 0.5 - playerPosition.Y * scale.Y - playerSize.Height);
         };
         m_Player.SetCheckOverlap (true);
 
@@ -348,6 +349,14 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     bool SceneManager::IsDrawBoundingBox () { return m_DrawBoundingBox; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::SetDrawActorsNames (bool enable) { m_DrawActorsNames = enable; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool SceneManager::IsDrawActorsNames () { return m_DrawActorsNames; }
 
     //--------------------------------------------------------------------------------------------------
 }
