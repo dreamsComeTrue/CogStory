@@ -106,8 +106,9 @@ namespace aga
 
     void Player::UpdateParticleEmitters ()
     {
-        m_WalkParticleEmitter.SetPosition (Bounds.Pos.X, Bounds.Pos.Y + Bounds.GetHalfSize ().Height);
-        m_HeadParticleEmitter.SetPosition (Bounds.Pos.X + 5, Bounds.Pos.Y - Bounds.GetHalfSize ().Height - 5);
+        m_WalkParticleEmitter.SetPosition (Bounds.Pos.X + Bounds.GetHalfSize ().Width,
+                                           Bounds.Pos.Y + Bounds.GetSize ().Height);
+        m_HeadParticleEmitter.SetPosition (Bounds.Pos.X + Bounds.GetHalfSize ().Width + 5, Bounds.Pos.Y - 5);
     }
 
     //--------------------------------------------------------------------------------------------------

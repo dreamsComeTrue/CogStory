@@ -111,7 +111,6 @@ namespace aga
         for (Actor* actorIt : actors)
         {
             Rect r = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetRenderBounds (actorIt);
-            r.Offset (r.GetHalfSize ());
 
             if (InsideRect (mouseX, mouseY, r))
             {

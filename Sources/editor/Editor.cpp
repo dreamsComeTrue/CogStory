@@ -671,11 +671,10 @@ namespace aga
                 if (m_EditorActorMode.GetSelectedActor ())
                 {
                     Rect r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (
-                        m_EditorActorMode.GetSelectedActor ());
+                        m_EditorActorMode.GetSelectedActor (), true);
 
-                    r.Offset (r.GetHalfSize ());
-                    al_draw_rectangle (r.GetPos ().X, r.GetPos ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y,
-                                       COLOR_RED, 2);
+                    al_draw_rectangle (r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X,
+                                       r.GetBottomRight ().Y, COLOR_RED, 2);
                 }
 
                 if (m_CursorMode == CursorMode::TileSelectMode)
@@ -689,9 +688,8 @@ namespace aga
 
                     if (m_EditorActorMode.GetActorUnderCursor ())
                     {
-                        r.Offset (r.GetHalfSize ());
-                        al_draw_rectangle (r.GetPos ().X, r.GetPos ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y,
-                                           COLOR_YELLOW, 2);
+                        al_draw_rectangle (r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X,
+                                           r.GetBottomRight ().Y, COLOR_YELLOW, 2);
                     }
                 }
             }

@@ -602,7 +602,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Rect Scene::GetRenderBounds (Entity* entity)
+    Rect Scene::GetRenderBounds (Entity* entity, bool drawOOBBox)
     {
         Point translate = m_SceneManager->GetCamera ().GetTranslate ();
         Point scale = m_SceneManager->GetCamera ().GetScale ();
@@ -611,16 +611,23 @@ namespace aga
         int halfWidth = b.GetHalfSize ().Width;
         int halfHeight = b.GetHalfSize ().Height;
 
-        float x1 = (b.GetPos ().X - translate.X * (1.0f / scale.X) - halfWidth) * (scale.X);
-        float y1 = (b.GetPos ().Y - translate.Y * (1.0f / scale.Y) - halfHeight) * (scale.Y);
-        float x2 = (b.GetPos ().X - translate.X * (1.0f / scale.X) + halfWidth) * (scale.X);
-        float y2 = (b.GetPos ().Y - translate.Y * (1.0f / scale.Y) + halfHeight) * (scale.Y);
+        float x1 = (b.GetPos ().X - translate.X * (1.0f / scale.X)) * (scale.X);
+        float y1 = (b.GetPos ().Y - translate.Y * (1.0f / scale.Y)) * (scale.Y);
+        float x2 = (b.GetPos ().X - translate.X * (1.0f / scale.X) + 2 * halfWidth) * (scale.X);
+        float y2 = (b.GetPos ().Y - translate.Y * (1.0f / scale.Y) + 2 * halfHeight) * (scale.Y);
 
         Point origin = { x1 + (x2 - x1) * 0.5f, y1 + (y2 - y1) * 0.5f };
         Point pointA = RotatePoint (x1, y1, origin, entity->Rotation);
         Point pointB = RotatePoint (x1, y2, origin, entity->Rotation);
         Point pointC = RotatePoint (x2, y1, origin, entity->Rotation);
         Point pointD = RotatePoint (x2, y2, origin, entity->Rotation);
+
+        if (drawOOBBox)
+        {
+            float vertices[] = { pointA.X, pointA.Y, pointB.X, pointB.Y, pointD.X, pointD.Y, pointC.X, pointC.Y };
+            ALLEGRO_COLOR color = { 0.5f, 0.0f, 0.0f, 1.0f };
+            al_draw_polygon (vertices, 4, ALLEGRO_LINE_JOIN_BEVEL, color, 2, 0);
+        }
 
         float minX = std::min (pointA.X, std::min (pointB.X, std::min (pointC.X, pointD.X)));
         float minY = std::min (pointA.Y, std::min (pointB.Y, std::min (pointC.Y, pointD.Y)));
