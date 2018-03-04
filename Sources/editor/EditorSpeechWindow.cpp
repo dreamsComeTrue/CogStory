@@ -180,10 +180,15 @@ namespace aga
         m_OutcomesContainer = new Gwk::Controls::ScrollControl (center);
         m_OutcomesContainer->SetBounds (xOffset, outcomeButton->Bottom () + 10, 610, 190);
 
-        Gwk::Controls::Button* okButton = new Gwk::Controls::Button (center);
-        okButton->SetText ("ACCEPT");
-        okButton->SetPos (m_SceneWindow->Width () - 330, m_SceneWindow->Height () - 65);
-        okButton->onPress.Add (this, &EditorSpeechWindow::OnAccept);
+        Gwk::Controls::Button* acceptButton = new Gwk::Controls::Button (center);
+        acceptButton->SetText ("ACCEPT");
+        acceptButton->SetPos (m_SceneWindow->Width () - 330, m_SceneWindow->Height () - 85);
+        acceptButton->onPress.Add (this, &EditorSpeechWindow::OnAccept);
+
+        Gwk::Controls::Button* cancelButton = new Gwk::Controls::Button (center);
+        cancelButton->SetText ("CANCEL");
+        cancelButton->SetPos (m_SceneWindow->Width () - 330, acceptButton->Bottom () + 5);
+        cancelButton->onPress.Add (this, &EditorSpeechWindow::OnCancel);
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -254,8 +254,13 @@ namespace aga
 
         Gwk::Controls::Button* acceptButton = new Gwk::Controls::Button (center);
         acceptButton->SetText ("ACCEPT");
-        acceptButton->SetPos (m_ActorProperties->Right () + 10, m_SceneWindow->Height () - 65);
+        acceptButton->SetPos (m_ActorProperties->Right () + 10, m_SceneWindow->Height () - 85);
         acceptButton->onPress.Add (this, &EditorActorWindow::OnAccept);
+
+        Gwk::Controls::Button* cacncelButton = new Gwk::Controls::Button (center);
+        cacncelButton->SetText ("CANCEL");
+        cacncelButton->SetPos (m_ActorProperties->Right () + 10, acceptButton->Bottom () + 5);
+        cacncelButton->onPress.Add (this, &EditorActorWindow::OnCancel);
 
         m_ScriptWindow = new EditorActorScriptWindow (m_Editor, canvas);
 

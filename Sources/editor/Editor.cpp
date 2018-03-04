@@ -458,12 +458,35 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Editor::TryToCloseWindows ()
+    {
+        if (m_ActorWindow->GetSceneWindow ()->Visible ())
+        {
+            m_ActorWindow->GetSceneWindow ()->CloseButtonPressed ();
+        }
+
+        if (m_SpeechWindow->GetSceneWindow ()->Visible ())
+        {
+            m_SpeechWindow->GetSceneWindow ()->CloseButtonPressed ();
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     bool openTest = false;
     bool saveRequested = false;
     bool g_IsToolBoxTileSelected = false;
 
     void Editor::ProcessEvent (ALLEGRO_EVENT* event, float)
     {
+        if (event->type == ALLEGRO_EVENT_KEY_CHAR)
+        {
+            if (event->keyboard.keycode == ALLEGRO_KEY_ESCAPE)
+            {
+                TryToCloseWindows ();
+            }
+        }
+
         if (m_GUIInput.ProcessMessage (*event))
         {
             return;

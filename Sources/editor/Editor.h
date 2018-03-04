@@ -134,6 +134,8 @@ namespace aga
         void ProcessMouseButtonUp (ALLEGRO_MOUSE_EVENT& event);
         void ProcessMouseAxes (ALLEGRO_MOUSE_EVENT& event);
 
+        void TryToCloseWindows ();
+
     private:
         MainLoop* m_MainLoop;
         EditorPhysMode m_EditorPhysMode;
