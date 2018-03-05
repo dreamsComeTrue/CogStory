@@ -278,6 +278,18 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    Actor* SceneManager::GetCurrentlyProcessedActor ()
+    {
+        if (m_ActiveScene)
+        {
+            return m_ActiveScene->GetCurrentlyProcessedActor ();
+        }
+
+        return nullptr;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     SpeechFrameManager& SceneManager::GetSpeechFrameManager () { return m_SpeechFrameManager; }
 
     //--------------------------------------------------------------------------------------------------

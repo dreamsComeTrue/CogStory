@@ -125,6 +125,8 @@ namespace aga
         void AddOnLeaveCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
         void AddOnLeaveCallback (const std::string& triggerName, asIScriptFunction* func);
 
+        Actor* GetCurrentlyProcessedActor ();
+
     private:
         static void UpdateMaxTileID (Scene* scene);
         void DrawQuadTree (QuadTreeNode* node);
@@ -137,6 +139,8 @@ namespace aga
         std::map<std::string, SpeechData> m_Speeches;
         std::vector<Actor*> m_Actors;
         SceneManager* m_SceneManager;
+
+        Actor* m_CurrentActor;
 
         QuadTreeNode m_QuadTree;
     };

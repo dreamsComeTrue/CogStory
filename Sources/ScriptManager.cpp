@@ -175,7 +175,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    static void Log (Point& point) { printf ("Point [X = %f, Y = %f]\n", point.X, point.Y); }
+    static void Log (Point point) { printf ("Point [X = %f, Y = %f]\n", point.X, point.Y); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -209,7 +209,7 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectProperty ("Point", "float Height", asOFFSET (Point, Height));
         assert (r >= 0);
 
-        r = m_ScriptEngine->RegisterGlobalFunction ("void Log (Point &in)", asFUNCTIONPR (Log, (Point&), void),
+        r = m_ScriptEngine->RegisterGlobalFunction ("void Log (Point)", asFUNCTIONPR (Log, (Point), void),
                                                     asCALL_CDECL);
         assert (r >= 0);
 
@@ -389,6 +389,17 @@ namespace aga
         r = m_ScriptEngine->RegisterGlobalFunction (
             "void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, Color color = COLOR_BLACK)",
             asMETHOD (SceneManager, SceneFadeInOut), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+
+        //  Actor
+        r = m_ScriptEngine->RegisterObjectType ("Actor", 0, asOBJ_REF | asOBJ_NOCOUNT);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Actor", "void Move (float, float)", asMETHOD (Actor, Move),
+                                                  asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction ("Actor@ GetCurrentActor ()",
+                                                    asMETHOD (SceneManager, GetCurrentlyProcessedActor),
+                                                    asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
 
         //  Global

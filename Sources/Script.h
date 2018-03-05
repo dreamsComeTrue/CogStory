@@ -35,7 +35,6 @@ namespace aga
         asIScriptModule* m_Module;
 
         asIScriptContext* m_FuncContext;
-        asIScriptFunction* m_UpdateFunction;
     };
 }
 

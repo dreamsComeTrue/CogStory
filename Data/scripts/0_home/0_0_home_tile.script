@@ -1,0 +1,22 @@
+void Start ()
+{
+
+}
+
+void BeforeEnterScene ()
+{
+	//Log ("A1");
+}
+
+void AfterLeaveScene ()
+{
+//Log ("A2");
+}
+
+void Update (float deltaTime)
+{
+	Log ("A");
+	Actor@ actor = GetCurrentActor ();
+	actor.Move (0.1f, 0);
+//	Log ("B");
+}

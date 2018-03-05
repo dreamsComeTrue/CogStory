@@ -76,6 +76,7 @@ namespace aga
         : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
         , m_SceneManager (sceneManager)
         , m_QuadTree (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }))
+        , m_CurrentActor (nullptr)
     {
     }
 
@@ -120,6 +121,14 @@ namespace aga
         }
 
         RunAllScripts ("void BeforeEnterScene ()");
+
+        for (Actor* actor : m_Actors)
+        {
+            m_CurrentActor = actor;
+            actor->RunAllScripts ("void BeforeEnterScene ()");
+        }
+
+        m_CurrentActor = nullptr;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -133,8 +142,12 @@ namespace aga
 
         for (Actor* actor : m_Actors)
         {
+            m_CurrentActor = actor;
+            actor->RunAllScripts ("void AfterLeaveScene ()");
             actor->Bounds = actor->TemplateBounds;
         }
+
+        m_CurrentActor = nullptr;
 
         RunAllScripts ("void AfterLeaveScene ()");
     }
@@ -151,8 +164,11 @@ namespace aga
 
             for (Actor* actor : m_Actors)
             {
+                m_CurrentActor = actor;
                 actor->Update (deltaTime);
             }
+
+            m_CurrentActor = nullptr;
         }
     }
 
@@ -576,6 +592,11 @@ namespace aga
     {
         if (m_TriggerAreas.find (triggerName) != m_TriggerAreas.end ())
         {
+            if (m_TriggerAreas[triggerName].ScriptOnEnterCallback)
+            {
+                m_TriggerAreas[triggerName].ScriptOnEnterCallback->Release ();
+            }
+
             m_TriggerAreas[triggerName].ScriptOnEnterCallback = func;
         }
     }
@@ -596,6 +617,11 @@ namespace aga
     {
         if (m_TriggerAreas.find (triggerName) != m_TriggerAreas.end ())
         {
+            if (m_TriggerAreas[triggerName].ScriptOnLeaveCallback)
+            {
+                m_TriggerAreas[triggerName].ScriptOnLeaveCallback->Release ();
+            }
+
             m_TriggerAreas[triggerName].ScriptOnLeaveCallback = func;
         }
     }
@@ -636,6 +662,10 @@ namespace aga
 
         return { { minX, minY }, { maxX, maxY } };
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Actor* Scene::GetCurrentlyProcessedActor () { return m_CurrentActor; }
 
     //--------------------------------------------------------------------------------------------------
 }

@@ -48,6 +48,8 @@ namespace aga
 
         FlagPoint* GetFlagPoint (const std::string& name);
 
+        Actor* GetCurrentlyProcessedActor ();
+
         SpeechFrameManager& GetSpeechFrameManager ();
 
         void Reset ();
