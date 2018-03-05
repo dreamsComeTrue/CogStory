@@ -45,7 +45,6 @@ namespace aga
         : m_Module (module)
         , m_Manager (manager)
         , m_FuncContext (nullptr)
-        , m_UpdateFunction (nullptr)
         , m_Name (name)
     {
     }
@@ -89,28 +88,46 @@ namespace aga
 
     bool Script::Update (float deltaTime)
     {
-        GetContext ("void Update (float deltaTime)");
-        m_FuncContext->SetArgFloat (0, deltaTime);
+        asIScriptContext* fun = GetContext ("void Update (float deltaTime)");
 
-        return InternalRun ();
+        if (fun)
+        {
+            m_FuncContext->SetArgFloat (0, deltaTime);
+
+            return InternalRun ();
+        }
+
+        return false;
     }
 
     //--------------------------------------------------------------------------------------------------
 
     bool Script::Run (const std::string& functionName)
     {
-        GetContext (functionName);
-        return InternalRun ();
+        asIScriptContext* fun = GetContext (functionName);
+
+        if (fun)
+        {
+            return InternalRun ();
+        }
+
+        return false;
     }
 
     //--------------------------------------------------------------------------------------------------
 
     bool Script::Run (const std::string& functionName, float arg0)
     {
-        GetContext (functionName);
-        m_FuncContext->SetArgFloat (0, arg0);
+        asIScriptContext* fun = GetContext (functionName);
 
-        return InternalRun ();
+        if (fun)
+        {
+            m_FuncContext->SetArgFloat (0, arg0);
+
+            return InternalRun ();
+        }
+
+        return false;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -156,6 +173,8 @@ namespace aga
 
             return false;
         }
+
+        m_FuncContext->Unprepare ();
 
         return true;
     }

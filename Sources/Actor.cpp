@@ -3,6 +3,7 @@
 #include "MainLoop.h"
 #include "Scene.h"
 #include "SceneManager.h"
+#include "Script.h"
 
 namespace aga
 {

@@ -12,6 +12,7 @@ Point screenSize = GetWindowSize ();
 
 void Start ()
 {
+
 }
 
 void BeforeEnterScene ()
@@ -112,4 +113,5 @@ void FinishFunc (int id)
 
 void Update (float deltaTime)
 {
+	//Log ("A");
 }

@@ -12,6 +12,7 @@
 #include "MainLoop.h"
 #include "SceneLoader.h"
 #include "Screen.h"
+#include "Script.h"
 #include "actors/TileActor.h"
 
 using json = nlohmann::json;

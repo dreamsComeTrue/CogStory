@@ -85,11 +85,11 @@ namespace aga
         DestroyStates ();
 
         m_PhysicsManager.Destroy ();
-        m_ScriptManager.Destroy ();
         m_TweenManager.Destroy ();
         m_StateManager.Destroy ();
         m_SceneManager.Destroy ();
         m_AudioManager.Destroy ();
+        m_ScriptManager.Destroy ();
 
         return Lifecycle::Destroy ();
     }

@@ -36,6 +36,9 @@ namespace aga
     private:
         Editor* m_Editor;
         Gwk::Controls::WindowControl* m_SceneWindow;
+        Gwk::Controls::TextBox* m_PathTextBox;
+
+        std::string m_FileName;
         bool m_Result;
 
         std::function<bool(void)> m_OnAcceptFunc;
@@ -68,12 +71,16 @@ namespace aga
         void UpdateActorsTree ();
         void OnActorSelect (Gwk::Controls::Base* control);
 
+        void AddScriptEntry (const std::string& name, const std::string& path);
+
     private:
         Editor* m_Editor;
 
         int m_SelectedType;
         float m_Rotation;
         Point m_Position;
+
+        class Actor* m_SelectedActor;
 
         Gwk::Controls::WindowControl* m_SceneWindow;
         Gwk::Controls::TreeControl* m_ActorsTree;

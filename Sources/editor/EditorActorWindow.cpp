@@ -38,16 +38,16 @@ namespace aga
         pathLabel->SetText ("Path:");
         pathLabel->SizeToContents ();
 
-        Gwk::Controls::TextBox* pathTextBox = new Gwk::Controls::TextBox (m_SceneWindow);
-        pathTextBox->SetText (Path);
-        pathTextBox->SetTextColor (Gwk::Colors::White);
-        pathTextBox->SetWidth (300);
-        pathTextBox->SetPos (pathLabel->Right () + 19, pathLabel->Y ());
-        pathTextBox->onTextChanged.Add (this, &EditorActorScriptWindow::OnPathEdit);
+        m_PathTextBox = new Gwk::Controls::TextBox (m_SceneWindow);
+        m_PathTextBox->SetText (Path);
+        m_PathTextBox->SetTextColor (Gwk::Colors::White);
+        m_PathTextBox->SetWidth (300);
+        m_PathTextBox->SetPos (pathLabel->Right () + 19, pathLabel->Y ());
+        m_PathTextBox->onTextChanged.Add (this, &EditorActorScriptWindow::OnPathEdit);
 
         Gwk::Controls::Button* browseButton = new Gwk::Controls::Button (m_SceneWindow);
         browseButton->SetText ("BROWSE");
-        browseButton->SetPos (pathTextBox->Right () + 5, pathLabel->Y ());
+        browseButton->SetPos (m_PathTextBox->Right () + 5, pathLabel->Y ());
         browseButton->onPress.Add (this, &EditorActorScriptWindow::OnBrowse);
 
         Gwk::Controls::Button* yesButton = new Gwk::Controls::Button (m_SceneWindow);
@@ -81,9 +81,31 @@ namespace aga
 
     void EditorActorScriptWindow::OnBrowse ()
     {
+        std::string path = GetDataPath () + "scripts/";
+
         ALLEGRO_FILECHOOSER* fileOpenDialog
-            = al_create_native_file_dialog (GetCurrentDir ().c_str (), "Open script file", "*.*", 0);
-        al_show_native_file_dialog (m_Editor->GetMainLoop ()->GetScreen ()->GetDisplay (), fileOpenDialog);
+            = al_create_native_file_dialog (path.c_str (), "Open script file", "*.script", 0);
+
+        if (al_show_native_file_dialog (m_Editor->GetMainLoop ()->GetScreen ()->GetDisplay (), fileOpenDialog))
+        {
+            m_FileName = al_get_native_file_dialog_path (fileOpenDialog, 0);
+            std::replace (m_FileName.begin (), m_FileName.end (), '\\', '/');
+
+            if (!EndsWith (m_FileName, ".script"))
+            {
+                m_FileName += ".script";
+            }
+
+            std::string dataPath = "Data/scripts/";
+            size_t index = m_FileName.find (dataPath);
+
+            if (index != std::string::npos)
+            {
+                m_FileName = m_FileName.substr (index + dataPath.length ());
+            }
+
+            m_PathTextBox->SetText (m_FileName);
+        }
 
         al_destroy_native_file_dialog (fileOpenDialog);
     }
@@ -383,6 +405,8 @@ namespace aga
         }
 
         m_ActorsTree->ExpandAll ();
+
+        m_SelectedActor = nullptr;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -399,6 +423,8 @@ namespace aga
             {
                 if (actor->Name == node->GetText ())
                 {
+                    m_SelectedActor = actor;
+
                     m_Editor->GetEditorActorMode ().SetActor (actor);
 
                     idProperty->SetPropertyValue (ToString (actor->ID), false);
@@ -409,9 +435,32 @@ namespace aga
                     rotationProperty->SetPropertyValue (Gwk::Utility::Format ("%f", actor->Rotation), false);
                     zOrderProperty->SetPropertyValue (ToString (actor->ZOrder), false);
 
+                    m_ScriptSection->Clear ();
+
+                    for (ScriptMetaData& scriptData : actor->GetScripts ())
+                    {
+                        AddScriptEntry (scriptData.Name, scriptData.Path);
+                    }
+
                     break;
                 }
             }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::AddScriptEntry (const std::string& name, const std::string& path)
+    {
+        Gwk::Controls::Property::LabelButton* node
+            = new Gwk::Controls::Property::LabelButton (m_ScriptSection, path, "X");
+        node->FuncButton->onPress.Add (this, &EditorActorWindow::OnRemoveScript);
+
+        m_ScriptSection->Add (name, node);
+
+        if (m_SelectedActor)
+        {
+            m_SelectedActor->AttachScript (name, path);
         }
     }
 
@@ -422,11 +471,7 @@ namespace aga
         std::function<bool(void)> AcceptFunc = [&] {
             if (m_ScriptWindow->Name != "" && m_ScriptWindow->Path != "")
             {
-                Gwk::Controls::Property::LabelButton* node
-                    = new Gwk::Controls::Property::LabelButton (m_ScriptSection, m_ScriptWindow->Path, "X");
-                node->FuncButton->onPress.Add (this, &EditorActorWindow::OnRemoveScript);
-
-                m_ScriptSection->Add (m_ScriptWindow->Name, node);
+                AddScriptEntry (m_ScriptWindow->Name, m_ScriptWindow->Path);
 
                 return true;
             }
@@ -459,7 +504,13 @@ namespace aga
 
             if (property->FuncButton == button)
             {
+                if (m_SelectedActor)
+                {
+                    m_SelectedActor->RemoveScript (property->GetPropertyValue ());
+                }
+
                 m_ScriptSection->GetChildren ().remove (control);
+
                 break;
             }
         }
