@@ -126,43 +126,80 @@ namespace aga
 
             scene->m_QuadTree = QuadTreeNode (scene->m_Size);
 
-            auto& tiles = j["tiles"];
+            auto& actors = j["actors"];
 
-            for (auto& j_tile : tiles)
+            for (auto& actorIt : actors)
             {
-                TileActor* tile = new TileActor (sceneManager);
+                Actor* newActor = ActorFactory::GetActor (sceneManager, actorIt["type"]);
 
-                std::string id = j_tile["id"];
-                tile->ID = atoi (id.c_str ());
-                tile->Tileset = j_tile["tileset"];
-                tile->Name = j_tile["name"];
-                tile->Bounds.SetPos (StringToPoint (j_tile["pos"]));
-                tile->Bounds.SetSize (sceneManager->GetAtlasManager ()
-                                          ->GetAtlas (tile->Tileset)
-                                          ->GetRegion (tile->Name)
-                                          .Bounds.GetSize ());
-                tile->TemplateBounds = tile->Bounds;
-                std::string zOrder = j_tile["z-order"];
-                tile->ZOrder = atoi (zOrder.c_str ());
-                std::string rot = j_tile["rot"];
-                tile->Rotation = atof (rot.c_str ());
-
-                //  Physics
-                if (!j_tile["phys"].is_null ())
+                if (newActor)
                 {
-                    auto& physTiles = j_tile["phys"];
+                    std::string id = actorIt["id"];
+                    newActor->ID = atoi (id.c_str ());
+                    newActor->Name = actorIt["name"];
+                    newActor->Bounds.Pos = StringToPoint (actorIt["pos"]);
+                    newActor->TemplateBounds = newActor->Bounds;
+                    std::string zOrder = actorIt["z-order"];
+                    newActor->ZOrder = atoi (zOrder.c_str ());
+                    std::string rot = actorIt["rot"];
+                    newActor->Rotation = atof (rot.c_str ());
 
-                    for (auto& physTile : physTiles)
+                    if (newActor->GetTypeName () == TileActor::TypeName)
                     {
-                        tile->PhysPoints.push_back (StringToVectorPoints (physTile["poly"]));
+                        dynamic_cast<TileActor*> (newActor)->Tileset = actorIt["tileset"];
+                        dynamic_cast<TileActor*> (newActor)->Bounds.SetSize (sceneManager->GetAtlasManager ()
+                                                                                 ->GetAtlas (actorIt["tileset"])
+                                                                                 ->GetRegion (actorIt["name"])
+                                                                                 .Bounds.GetSize ());
                     }
 
-                    tile->SetPhysOffset (tile->Bounds.GetPos () + tile->Bounds.GetHalfSize ());
-                }
+                    //  Physics
+                    if (!actorIt["phys"].is_null ())
+                    {
+                        auto& physTiles = actorIt["phys"];
 
-                tile->SetCollisionEnabled (false);
-                scene->AddTile (tile);
+                        for (auto& physTile : physTiles)
+                        {
+                            newActor->PhysPoints.push_back (StringToVectorPoints (physTile["poly"]));
+                        }
+
+                        newActor->SetPhysOffset (newActor->Bounds.GetPos () + newActor->Bounds.GetHalfSize ());
+                    }
+
+                    auto& scripts = actorIt["scripts"];
+
+                    for (auto& scriptIt : scripts)
+                    {
+                        std::string name = scriptIt["name"];
+                        std::string path = scriptIt["path"];
+
+                        Script* script = sceneManager->GetMainLoop ()->GetScriptManager ().LoadScriptFromFile (
+                            GetDataPath () + "scripts/" + path, name + "_" + id);
+
+                        if (script)
+                        {
+                            newActor->AttachScript (script, path);
+                        }
+                    }
+
+                    newActor->SetCollisionEnabled (false);
+
+                    if (newActor->GetTypeName () == TileActor::TypeName)
+                    {
+                        std::string name = actorIt["name"];
+                        name += "_";
+                        name += actorIt["id"];
+                        scene->AddActor (name, newActor);
+                    }
+                    else
+                    {
+                        scene->AddActor (actorIt["name"], newActor);
+                    }
+                }
             }
+
+            UpdateMaxEntityID (scene);
+            scene->SortActors ();
 
             auto& flag_points = j["flag_points"];
 
@@ -270,44 +307,6 @@ namespace aga
                 scene->AddSpeech (speechData);
             }
 
-            auto& actors = j["actors"];
-
-            for (auto& actorIt : actors)
-            {
-                Actor* newActor = ActorFactory::GetActor (sceneManager, actorIt["type"]);
-
-                if (newActor)
-                {
-                    std::string id = actorIt["id"];
-                    newActor->ID = atoi (id.c_str ());
-                    newActor->Name = actorIt["name"];
-                    newActor->Bounds.Pos = StringToPoint (actorIt["pos"]);
-                    newActor->TemplateBounds = newActor->Bounds;
-                    std::string zOrder = actorIt["z-order"];
-                    newActor->ZOrder = atoi (zOrder.c_str ());
-                    std::string rot = actorIt["rot"];
-                    newActor->Rotation = atof (rot.c_str ());
-
-                    //  Physics
-                    if (!actorIt["phys"].is_null ())
-                    {
-                        auto& physTiles = actorIt["phys"];
-
-                        for (auto& physTile : physTiles)
-                        {
-                            newActor->PhysPoints.push_back (StringToVectorPoints (physTile["poly"]));
-                        }
-
-                        newActor->SetPhysOffset (newActor->Bounds.GetPos () + newActor->Bounds.GetHalfSize ());
-                    }
-
-                    scene->AddActor (actorIt["name"], newActor);
-                }
-            }
-
-            UpdateMaxEntityID (scene);
-            scene->SortActors ();
-
             auto& scripts = j["scripts"];
 
             for (auto& j_tile : scripts)
@@ -347,59 +346,75 @@ namespace aga
 
             j["scripts"] = json::array ({});
 
-            for (std::vector<ScriptMetaData>::iterator it = scene->m_Scripts.begin (); it != scene->m_Scripts.end ();
-                 ++it)
+            for (ScriptMetaData& script : scene->m_Scripts)
             {
                 json scriptObj = json::object ({});
 
-                scriptObj["name"] = it->Name;
-                scriptObj["path"] = it->Path;
+                scriptObj["name"] = script.Name;
+                scriptObj["path"] = script.Path;
 
                 j["scripts"].push_back (scriptObj);
             }
 
-            j["tiles"] = json::array ({});
+            j["actors"] = json::array ({});
 
-            for (TileActor* tile : scene->GetTiles ())
+            for (Actor* actor : scene->m_Actors)
             {
-                if (tile->Bounds.GetTopLeft ().X < minRect.X)
+                if (actor->Bounds.GetTopLeft ().X < minRect.X)
                 {
-                    minRect.X = tile->Bounds.GetTopLeft ().X;
+                    minRect.X = actor->Bounds.GetTopLeft ().X;
                 }
-                if (tile->Bounds.GetTopLeft ().Y < minRect.Y)
+                if (actor->Bounds.GetTopLeft ().Y < minRect.Y)
                 {
-                    minRect.Y = tile->Bounds.GetTopLeft ().Y;
+                    minRect.Y = actor->Bounds.GetTopLeft ().Y;
                 }
-                if (tile->Bounds.GetBottomRight ().X > maxRect.X)
+                if (actor->Bounds.GetBottomRight ().X > maxRect.X)
                 {
-                    maxRect.X = tile->Bounds.GetBottomRight ().X;
+                    maxRect.X = actor->Bounds.GetBottomRight ().X;
                 }
-                if (tile->Bounds.GetBottomRight ().Y > maxRect.Y)
+                if (actor->Bounds.GetBottomRight ().Y > maxRect.Y)
                 {
-                    maxRect.Y = tile->Bounds.GetBottomRight ().Y;
+                    maxRect.Y = actor->Bounds.GetBottomRight ().Y;
                 }
 
-                json tileObj = json::object ({});
+                json actorObj = json::object ({});
 
-                tileObj["id"] = ToString (tile->ID);
-                tileObj["tileset"] = tile->Tileset;
-                tileObj["name"] = tile->Name;
-                tileObj["pos"] = PointToString (tile->Bounds.GetPos ());
-                tileObj["z-order"] = ToString (tile->ZOrder);
-                tileObj["rot"] = ToString (tile->Rotation);
+                actorObj["id"] = ToString (actor->ID);
+                actorObj["type"] = actor->GetTypeName ();
+                actorObj["name"] = actor->Name;
+                actorObj["pos"] = PointToString (actor->Bounds.GetPos ());
+                actorObj["z-order"] = ToString (actor->ZOrder);
+                actorObj["rot"] = ToString (actor->Rotation);
 
-                tileObj["phys"] = json::array ({});
+                if (actor->GetTypeName () == TileActor::TypeName)
+                {
+                    actorObj["tileset"] = dynamic_cast<TileActor*> (actor)->Tileset;
+                }
 
-                for (int i = 0; i < tile->PhysPoints.size (); ++i)
+                actorObj["phys"] = json::array ({});
+
+                for (int i = 0; i < actor->PhysPoints.size (); ++i)
                 {
                     json physObj = json::object ({});
 
-                    physObj["poly"] = VectorPointsToString (tile->PhysPoints[i]);
+                    physObj["poly"] = VectorPointsToString (actor->PhysPoints[i]);
 
-                    tileObj["phys"].push_back (physObj);
+                    actorObj["phys"].push_back (physObj);
                 }
 
-                j["tiles"].push_back (tileObj);
+                actorObj["scripts"] = json::array ({});
+
+                for (ScriptMetaData& script : actor->GetScripts ())
+                {
+                    json scriptObj = json::object ({});
+
+                    scriptObj["name"] = script.Name;
+                    scriptObj["path"] = script.Path;
+
+                    actorObj["scripts"].push_back (scriptObj);
+                }
+
+                j["actors"].push_back (actorObj);
             }
 
             j["min_size"] = PointToString (minRect);
@@ -505,33 +520,6 @@ namespace aga
                 speechObj["outcomes"].push_back (outcomeObj);
 
                 j["speeches"].push_back (speechObj);
-            }
-
-            j["actors"] = json::array ({});
-
-            for (Actor* actor : scene->m_Actors)
-            {
-                json actorObj = json::object ({});
-
-                actorObj["id"] = ToString (actor->ID);
-                actorObj["type"] = actor->GetTypeName ();
-                actorObj["name"] = actor->Name;
-                actorObj["pos"] = PointToString (actor->Bounds.GetPos ());
-                actorObj["z-order"] = ToString (actor->ZOrder);
-                actorObj["rot"] = ToString (actor->Rotation);
-
-                actorObj["phys"] = json::array ({});
-
-                for (int i = 0; i < actor->PhysPoints.size (); ++i)
-                {
-                    json physObj = json::object ({});
-
-                    physObj["poly"] = VectorPointsToString (actor->PhysPoints[i]);
-
-                    actorObj["phys"].push_back (physObj);
-                }
-
-                j["actors"].push_back (actorObj);
             }
 
             // write prettified JSON to another file

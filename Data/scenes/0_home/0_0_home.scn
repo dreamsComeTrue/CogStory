@@ -8,21 +8,10 @@
                     "poly": ""
                 }
             ],
-            "pos": "-514 -154",
+            "pos": "-543.799 -33.781",
             "rot": "0",
-            "type": "Tile",
-            "z-order": "-1"
-        },
-        {
-            "id": "8",
-            "name": "parallax-forest-front-trees",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "248 -152",
-            "rot": "0",
+            "scripts": [],
+            "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "-1"
         },
@@ -34,21 +23,15 @@
                     "poly": "-17.1656 189.336 -256.148 190.082 -255.989 -192.058 254.741 -192.482 254.741 189.293 39.6122 190.86 39.9193 180.725 243.509 180.879 243.699 35.5396 147.691 34.906 147.542 24.4702 244.146 24.2466 242.864 -181.029 16.1011 -179.921 15.4551 23.7248 99.3021 23.5422 99.6863 34.4587 3.70858 35.2571 3.23999 -180.766 -244.179 -180.766 -244.511 180.402 -17.2119 180.226 "
                 }
             ],
-            "pos": "-260 -256",
+            "pos": "-272 -256",
             "rot": "0",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "id": "9",
-            "name": "parallax-forest-front-trees",
-            "phys": [
+            "scripts": [
                 {
-                    "poly": ""
+                    "name": "TEST1_2_2",
+                    "path": "0_home/0_0_home_tile.script"
                 }
             ],
-            "pos": "520 -152",
-            "rot": "0",
+            "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "0"
         },
@@ -62,6 +45,8 @@
             ],
             "pos": "-128 192",
             "rot": "270",
+            "scripts": [],
+            "tileset": "menu_ui",
             "type": "Tile",
             "z-order": "0"
         },
@@ -75,15 +60,23 @@
             ],
             "pos": "-160 192",
             "rot": "270",
+            "scripts": [],
+            "tileset": "menu_ui",
             "type": "Tile",
             "z-order": "0"
         },
         {
-            "id": "14",
-            "name": "arrow_dark",
-            "phys": [],
-            "pos": "-87 318",
+            "id": "24",
+            "name": "player_head",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "-160 224",
             "rot": "180",
+            "scripts": [],
+            "tileset": "characters_ui",
             "type": "Tile",
             "z-order": "0"
         },
@@ -97,19 +90,36 @@
             ],
             "pos": "136 216",
             "rot": "0",
+            "scripts": [],
             "type": "NPC",
             "z-order": "0"
         },
         {
-            "id": "24",
-            "name": "player_head",
+            "id": "27",
+            "name": "parallax-forest-front-trees",
+            "phys": [  
+                {
+                    "poly": ""
+                }],
+            "pos": "240.937 -35.7356",
+            "rot": "0",
+            "scripts": [],
+            "tileset": "0_0_home",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "id": "29",
+            "name": "parallax-forest-front-trees",
             "phys": [
                 {
                     "poly": ""
                 }
             ],
-            "pos": "-160 224",
-            "rot": "180",
+            "pos": "514.938 -32.1617",
+            "rot": "0",
+            "scripts": [],
+            "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "0"
         },
@@ -123,6 +133,8 @@
             ],
             "pos": "40 -224",
             "rot": "0",
+            "scripts": [],
+            "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "1"
         },
@@ -136,21 +148,24 @@
             ],
             "pos": "0 0",
             "rot": "0",
+            "scripts": [],
             "type": "NPC",
             "z-order": "1"
         },
         {
-            "id": "11",
+            "id": "31",
             "name": "player_head",
             "phys": [
                 {
                     "poly": ""
                 }
             ],
-            "pos": "49.6159 -209.565",
-            "rot": "270",
+            "pos": "48.7897 -207.642",
+            "rot": "-90",
+            "scripts": [],
+            "tileset": "characters_ui",
             "type": "Tile",
-            "z-order": "4"
+            "z-order": "3"
         }
     ],
     "flag_points": [
@@ -180,8 +195,8 @@
             "pos": "-243 -236"
         }
     ],
-    "max_size": "792 331",
-    "min_size": "-514 -256",
+    "max_size": "786.938 280",
+    "min_size": "-543.799 -256",
     "name": "Home",
     "scripts": [
         {
@@ -272,134 +287,6 @@
                     "langID": "PL"
                 }
             ]
-        }
-    ],
-    "tiles": [
-        {
-            "id": "7",
-            "name": "parallax-forest-front-trees",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-514 -154",
-            "rot": "0",
-            "tileset": "0_0_home",
-            "z-order": "-1"
-        },
-        {
-            "id": "8",
-            "name": "parallax-forest-front-trees",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "248 -152",
-            "rot": "0",
-            "tileset": "0_0_home",
-            "z-order": "-1"
-        },
-        {
-            "id": "2",
-            "name": "main_room",
-            "phys": [
-                {
-                    "poly": "-17.1656 189.336 -256.148 190.082 -255.989 -192.058 254.741 -192.482 254.741 189.293 39.6122 190.86 39.9193 180.725 243.509 180.879 243.699 35.5396 147.691 34.906 147.542 24.4702 244.146 24.2466 242.864 -181.029 16.1011 -179.921 15.4551 23.7248 99.3021 23.5422 99.6863 34.4587 3.70858 35.2571 3.23999 -180.766 -244.179 -180.766 -244.511 180.402 -17.2119 180.226 "
-                }
-            ],
-            "pos": "-260 -256",
-            "rot": "0",
-            "tileset": "0_0_home",
-            "z-order": "0"
-        },
-        {
-            "id": "9",
-            "name": "parallax-forest-front-trees",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "520 -152",
-            "rot": "0",
-            "tileset": "0_0_home",
-            "z-order": "0"
-        },
-        {
-            "id": "12",
-            "name": "arrow_dark",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-128 192",
-            "rot": "270",
-            "tileset": "menu_ui",
-            "z-order": "0"
-        },
-        {
-            "id": "13",
-            "name": "arrow_light",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-160 192",
-            "rot": "270",
-            "tileset": "menu_ui",
-            "z-order": "0"
-        },
-        {
-            "id": "14",
-            "name": "arrow_dark",
-            "phys": [],
-            "pos": "-87 318",
-            "rot": "180",
-            "tileset": "menu_ui",
-            "z-order": "0"
-        },
-        {
-            "id": "24",
-            "name": "player_head",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-160 224",
-            "rot": "180",
-            "tileset": "characters_ui",
-            "z-order": "0"
-        },
-        {
-            "id": "3",
-            "name": "bed",
-            "phys": [
-                {
-                    "poly": "-17.6458 -28.0695 -18.9565 29.6022 17.4159 28.6191 18.7267 -27.7418 "
-                }
-            ],
-            "pos": "40 -224",
-            "rot": "0",
-            "tileset": "0_0_home",
-            "z-order": "1"
-        },
-        {
-            "id": "11",
-            "name": "player_head",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "49.6159 -209.565",
-            "rot": "270",
-            "tileset": "characters_ui",
-            "z-order": "4"
         }
     ],
     "trigger_areas": [
