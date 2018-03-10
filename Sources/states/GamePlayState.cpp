@@ -56,8 +56,6 @@ namespace aga
             return;
         }
 
-        m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (60, 60, 70));
-        m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (50, 60, 100));
         m_MainLoop->GetSceneManager ().GetSpeechFrameManager ().Clear ();
         m_MainLoop->GetSceneManager ().GetActiveScene ()->BeforeEnter ();
 

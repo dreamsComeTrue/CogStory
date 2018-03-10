@@ -79,6 +79,40 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    auto IntsToString = [](std::vector<int> data) -> std::string {
+        std::string result;
+
+        for (int i = 0; i < data.size (); ++i)
+        {
+            result += ToString (data[i]);
+
+            if (i < data.size () - 1)
+            {
+                result += " ";
+            }
+        }
+
+        return result;
+    };
+
+    //--------------------------------------------------------------------------------------------------
+
+    auto StringToInts = [](std::string in) -> std::vector<int> {
+        size_t count = 0;
+        const char* delimiter = " ";
+        std::vector<int> ints;
+        char* str = const_cast<char*> (in.c_str ());
+
+        for (char* pch = strtok (str, delimiter); pch != NULL; pch = strtok (NULL, delimiter))
+        {
+            ints.push_back (atoi (pch));
+        }
+
+        return ints;
+    };
+
+    //--------------------------------------------------------------------------------------------------
+
     auto VectorPointsToString = [](std::vector<Point>& points) -> std::string {
         std::string out;
 
@@ -115,12 +149,17 @@ namespace aga
         try
         {
             Scene* scene = new Scene (sceneManager);
-            std::ifstream file (filePath.c_str ());
+            std::ifstream file ((GetDataPath () + "scenes/" + filePath).c_str ());
             json j;
             file >> j;
             file.close ();
 
             scene->m_Name = j["name"];
+            scene->m_Path = filePath;
+
+            std::vector<int> ints = StringToInts (j["color"]);
+            scene->m_BackgroundColor = al_map_rgba (ints[0], ints[1], ints[2], ints[3]);
+
             scene->m_Size = Rect (StringToPoint (j["min_size"]), StringToPoint (j["max_size"]));
             scene->m_Size = Rect (Point (-1000, -1000), Point (1000, 1000));
 
@@ -138,7 +177,8 @@ namespace aga
                     newActor->ID = atoi (id.c_str ());
                     newActor->Name = actorIt["name"];
                     newActor->Bounds.Pos = StringToPoint (actorIt["pos"]);
-                    newActor->TemplateBounds = newActor->Bounds;
+                    newActor->Bounds.Size = StringToPoint (actorIt["size"]);
+
                     std::string zOrder = actorIt["z-order"];
                     newActor->ZOrder = atoi (zOrder.c_str ());
                     std::string rot = actorIt["rot"];
@@ -147,10 +187,6 @@ namespace aga
                     if (newActor->GetTypeName () == TileActor::TypeName)
                     {
                         dynamic_cast<TileActor*> (newActor)->Tileset = actorIt["tileset"];
-                        dynamic_cast<TileActor*> (newActor)->Bounds.SetSize (sceneManager->GetAtlasManager ()
-                                                                                 ->GetAtlas (actorIt["tileset"])
-                                                                                 ->GetRegion (actorIt["name"])
-                                                                                 .Bounds.GetSize ());
                     }
 
                     //  Physics
@@ -183,13 +219,15 @@ namespace aga
                     }
 
                     newActor->SetCollisionEnabled (false);
+                    newActor->Initialize ();
+                    newActor->TemplateBounds = newActor->Bounds;
 
                     if (newActor->GetTypeName () == TileActor::TypeName)
                     {
                         std::string name = actorIt["name"];
                         name += "_";
                         name += actorIt["id"];
-                        scene->AddActor (name, newActor);
+                        scene->AddTile (dynamic_cast<TileActor*> (newActor));
                     }
                     else
                     {
@@ -344,6 +382,10 @@ namespace aga
 
             j["name"] = scene->m_Name;
 
+            ALLEGRO_COLOR color = scene->m_BackgroundColor;
+            j["color"] = IntsToString (
+                { (int)(color.r * 255.f), (int)(color.g * 255.f), (int)(color.b * 255.f), (int)(color.a * 255.f) });
+
             j["scripts"] = json::array ({});
 
             for (ScriptMetaData& script : scene->m_Scripts)
@@ -383,6 +425,7 @@ namespace aga
                 actorObj["type"] = actor->GetTypeName ();
                 actorObj["name"] = actor->Name;
                 actorObj["pos"] = PointToString (actor->Bounds.GetPos ());
+                actorObj["size"] = PointToString (actor->Bounds.GetSize ());
                 actorObj["z-order"] = ToString (actor->ZOrder);
                 actorObj["rot"] = ToString (actor->Rotation);
 

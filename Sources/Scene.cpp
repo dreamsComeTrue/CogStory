@@ -77,6 +77,7 @@ namespace aga
         , m_SceneManager (sceneManager)
         , m_QuadTree (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }))
         , m_CurrentActor (nullptr)
+        , m_BackgroundColor (al_map_rgb (60, 60, 70))
     {
     }
 
@@ -110,6 +111,8 @@ namespace aga
 
     void Scene::BeforeEnter ()
     {
+        m_VisibleEntities.clear ();
+
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
         {
             m_SceneManager->GetPlayer ().BeforeEnter ();
@@ -127,6 +130,8 @@ namespace aga
             m_CurrentActor = actor;
             actor->RunAllScripts ("void BeforeEnterScene ()");
         }
+
+        SetBackgroundColor (m_BackgroundColor);
 
         m_CurrentActor = nullptr;
     }
@@ -150,6 +155,8 @@ namespace aga
         m_CurrentActor = nullptr;
 
         RunAllScripts ("void AfterLeaveScene ()");
+
+        m_VisibleEntities.clear ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -176,8 +183,6 @@ namespace aga
 
     void Scene::Render (float deltaTime)
     {
-        Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
-
         m_SceneManager->GetCamera ().Update (deltaTime);
 
         if (m_SceneManager->IsDrawBoundingBox ())
@@ -190,10 +195,8 @@ namespace aga
 
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () == "EDITOR_STATE")
         {
-            for (int i = 0; i < m_Actors.size (); ++i)
+            for (Actor* actor : m_Actors)
             {
-                Actor* actor = m_Actors[i];
-
                 if (!isPlayerDrawn && actor->ZOrder >= PLAYER_Z_ORDER)
                 {
                     m_SceneManager->GetPlayer ().Render (deltaTime);
@@ -214,11 +217,7 @@ namespace aga
 
                 if (m_SceneManager->IsDrawActorsNames ())
                 {
-                    Rect bounds = actor->Bounds;
-                    Point pos = { bounds.GetCenter ().X - bounds.GetHalfSize ().Width,
-                                  bounds.GetBottomRight ().Y - bounds.GetHalfSize ().Height };
-                    std::string str = actor->Name + "[" + ToString (actor->ID) + "]";
-                    font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), pos.X, pos.Y, str, ALLEGRO_ALIGN_CENTER);
+                    actor->DrawName ();
                 }
             }
         }
@@ -270,6 +269,7 @@ namespace aga
         {
             m_SceneManager->GetCamera ().UseIdentityTransform ();
 
+            Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
             font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), 10, 10, ToString (entities.size ()),
                            ALLEGRO_ALIGN_LEFT);
         }
@@ -279,27 +279,25 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Point visibleLastCameraPos;
-    std::vector<Entity*> visibleEntities;
     std::vector<Entity*> Scene::GetVisibleEntities ()
     {
         Point cameraPos = m_SceneManager->GetCamera ().GetTranslate ();
 
-        if (cameraPos != visibleLastCameraPos)
+        if (cameraPos != m_VisibleLastCameraPos)
         {
             Point size = m_SceneManager->GetCamera ().GetScale ()
                 * m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
             float offsetMultiplier = 0.5f;
 
-            visibleEntities = m_QuadTree.GetEntitiesWithinRect (
+            m_VisibleEntities = m_QuadTree.GetEntitiesWithinRect (
                 Rect (cameraPos - size * offsetMultiplier, cameraPos + size + size * offsetMultiplier));
 
-            std::sort (visibleEntities.begin (), visibleEntities.end (), Entity::CompareByZOrder);
+            std::sort (m_VisibleEntities.begin (), m_VisibleEntities.end (), Entity::CompareByZOrder);
         }
 
-        visibleLastCameraPos = cameraPos;
+        m_VisibleLastCameraPos = cameraPos;
 
-        return visibleEntities;
+        return m_VisibleEntities;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -538,6 +536,22 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     std::string Scene::GetName () const { return m_Name; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::SetBackgroundColor (ALLEGRO_COLOR color) { SetBackgroundColor (color.r, color.g, color.b, color.a); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::SetBackgroundColor (float r, float g, float b, float a)
+    {
+        m_BackgroundColor = al_map_rgba_f (r, g, b, a);
+        m_SceneManager->GetMainLoop ()->GetScreen ()->SetBackgroundColor (m_BackgroundColor);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    ALLEGRO_COLOR Scene::GetBackgroundColor () const { return m_BackgroundColor; }
 
     //--------------------------------------------------------------------------------------------------
 

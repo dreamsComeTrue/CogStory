@@ -74,6 +74,12 @@ namespace aga
             X += p.X;
             Y += p.Y;
         }
+
+        void operator-= (const Point& p)
+        {
+            X -= p.X;
+            Y -= p.Y;
+        }
     };
 }
 

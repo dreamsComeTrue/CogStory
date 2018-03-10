@@ -28,6 +28,7 @@ namespace aga
         void RemoveScene (Scene* scene);
         void SetActiveScene (Scene* scene);
         Scene* GetActiveScene ();
+        Scene* GetScene (const std::string& path);
 
         void SetActiveScene (const std::string& scenePath, bool fadeAnimation = true);
 
@@ -74,6 +75,7 @@ namespace aga
         MainLoop* m_MainLoop;
         std::map<std::string, Scene*> m_Scenes;
         Scene* m_ActiveScene;
+        Scene* m_NextScene;
 
         TweenData* m_TweenFade;
         bool m_Transitioning;

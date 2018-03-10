@@ -115,6 +115,12 @@ namespace aga
         void SetName (const std::string& name);
         std::string GetName () const;
 
+        std::string GetPath () const { return m_Path; }
+
+        void SetBackgroundColor (ALLEGRO_COLOR color);
+        void SetBackgroundColor (float r, float g, float b, float a);
+        ALLEGRO_COLOR GetBackgroundColor () const;
+
         QuadTreeNode& GetQuadTree ();
 
         Rect GetRenderBounds (Entity* entity, bool drawOOBBox = false);
@@ -133,7 +139,10 @@ namespace aga
 
     private:
         std::string m_Name;
+        std::string m_Path;
         Rect m_Size;
+        ALLEGRO_COLOR m_BackgroundColor;
+
         std::map<std::string, FlagPoint> m_FlagPoints;
         std::map<std::string, TriggerArea> m_TriggerAreas;
         std::map<std::string, SpeechData> m_Speeches;
@@ -143,6 +152,8 @@ namespace aga
         Actor* m_CurrentActor;
 
         QuadTreeNode m_QuadTree;
+        Point m_VisibleLastCameraPos;
+        std::vector<Entity*> m_VisibleEntities;
     };
 }
 

@@ -32,6 +32,7 @@ namespace aga
         , m_DrawPhysData (true)
         , m_DrawBoundingBox (true)
         , m_DrawActorsNames (true)
+        , m_NextScene (nullptr)
     {
     }
 
@@ -96,9 +97,9 @@ namespace aga
 
     void SceneManager::AddScene (Scene* scene)
     {
-        if (m_Scenes.find (scene->GetName ()) == m_Scenes.end ())
+        if (m_Scenes.find (scene->GetPath ()) == m_Scenes.end ())
         {
-            m_Scenes.insert (std::make_pair (scene->GetName (), scene));
+            m_Scenes.insert (std::make_pair (scene->GetPath (), scene));
         }
     }
 
@@ -132,34 +133,59 @@ namespace aga
 
     void SceneManager::SetActiveScene (Scene* scene)
     {
-        if (m_ActiveScene != nullptr)
+        if (scene)
         {
-            m_ActiveScene->AfterLeave ();
-        }
+            if (m_ActiveScene != nullptr)
+            {
+                m_ActiveScene->AfterLeave ();
+            }
 
-        m_ActiveScene = scene;
-        m_ActiveScene->BeforeEnter ();
+            m_ActiveScene = scene;
+            m_ActiveScene->BeforeEnter ();
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void SceneManager::SetActiveScene (const std::string& scenePath, bool fadeAnimation)
     {
-        Scene* scene = SceneLoader::LoadScene (this, GetDataPath () + scenePath);
+        Scene* scene = m_MainLoop->GetSceneManager ().GetScene (scenePath);
 
-        m_MainLoop->GetSceneManager ().AddScene (scene);
+        if (!scene)
+        {
+            scene = SceneLoader::LoadScene (this, scenePath);
+            m_MainLoop->GetSceneManager ().AddScene (scene);
+        }
 
         if (fadeAnimation)
         {
+            m_NextScene = scene;
             SceneFadeInOut ();
         }
-
-        m_MainLoop->GetSceneManager ().SetActiveScene (scene);
+        else
+        {
+            SetActiveScene (scene);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
 
     Scene* SceneManager::GetActiveScene () { return m_ActiveScene; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Scene* SceneManager::GetScene (const std::string& path)
+    {
+        for (std::map<std::string, Scene*>::iterator it = m_Scenes.begin (); it != m_Scenes.end (); ++it)
+        {
+            if ((*it->second).GetPath () == path)
+            {
+                return it->second;
+            }
+        }
+
+        return nullptr;
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -172,7 +198,7 @@ namespace aga
 
     bool SceneManager::Update (float deltaTime)
     {
-        if (!m_Transitioning && m_ActiveScene != nullptr)
+        if (m_ActiveScene)
         {
             m_ActiveScene->Update (deltaTime);
 
@@ -189,7 +215,7 @@ namespace aga
 
     void SceneManager::Render (float deltaTime)
     {
-        if (m_ActiveScene != nullptr)
+        if (m_ActiveScene)
         {
             m_ActiveScene->Render (deltaTime);
 
@@ -323,9 +349,19 @@ namespace aga
         };
 
         auto fadeInFunc = [&](float v) {
+
             if (m_TweenFade->TweenF.progress () < 1.0f)
             {
                 m_FadeColor.a = v;
+            }
+
+            if (m_TweenFade->TweenF.progress () > 0.5f)
+            {
+                if (m_NextScene)
+                {
+                    SetActiveScene (m_NextScene);
+                    m_NextScene = nullptr;
+                }
             }
 
             return false;
