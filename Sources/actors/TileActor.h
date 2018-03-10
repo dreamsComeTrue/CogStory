@@ -15,8 +15,12 @@ namespace aga
     public:
         TileActor (SceneManager* sceneManager);
 
+        virtual bool Initialize () override;
+
         virtual bool Update (float deltaTime) override;
         virtual void Render (float deltaTime) override;
+
+        virtual void DrawName () override;
 
         virtual std::string GetTypeName () override;
 

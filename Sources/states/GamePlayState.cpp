@@ -34,7 +34,7 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
-        m_MainLoop->GetSceneManager ().SetActiveScene ("scenes/0_home/0_0_home.scn", false);
+        m_MainLoop->GetSceneManager ().SetActiveScene ("0_home/0_0_home.scn", false);
 
         m_MainLoop->GetSceneManager ().GetPlayer ().TemplateBounds.Pos
             = m_MainLoop->GetSceneManager ().GetPlayer ().GetPosition ();

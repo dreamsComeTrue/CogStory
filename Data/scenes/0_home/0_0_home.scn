@@ -11,6 +11,7 @@
             "pos": "-543.799 -33.781",
             "rot": "0",
             "scripts": [],
+            "size": "272 160",
             "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "-1"
@@ -27,10 +28,11 @@
             "rot": "0",
             "scripts": [
                 {
-                    "name": "TEST1_2_2",
+                    "name": "TEST1",
                     "path": "0_home/0_0_home_tile.script"
                 }
             ],
+            "size": "512 382",
             "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "0"
@@ -46,6 +48,7 @@
             "pos": "-128 192",
             "rot": "270",
             "scripts": [],
+            "size": "20 13",
             "tileset": "menu_ui",
             "type": "Tile",
             "z-order": "0"
@@ -61,6 +64,7 @@
             "pos": "-160 192",
             "rot": "270",
             "scripts": [],
+            "size": "20 13",
             "tileset": "menu_ui",
             "type": "Tile",
             "z-order": "0"
@@ -76,6 +80,7 @@
             "pos": "-160 224",
             "rot": "180",
             "scripts": [],
+            "size": "20 30",
             "tileset": "characters_ui",
             "type": "Tile",
             "z-order": "0"
@@ -88,22 +93,25 @@
                     "poly": "-0.435008 -22.9005 -18.7851 0.430272 1.66214 20.0911 21.3229 -2.71546 "
                 }
             ],
-            "pos": "136 216",
+            "pos": "133 290",
             "rot": "0",
             "scripts": [],
+            "size": "64 64",
             "type": "NPC",
             "z-order": "0"
         },
         {
             "id": "27",
             "name": "parallax-forest-front-trees",
-            "phys": [  
+            "phys": [
                 {
                     "poly": ""
-                }],
+                }
+            ],
             "pos": "240.937 -35.7356",
             "rot": "0",
             "scripts": [],
+            "size": "272 160",
             "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "0"
@@ -119,6 +127,7 @@
             "pos": "514.938 -32.1617",
             "rot": "0",
             "scripts": [],
+            "size": "272 160",
             "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "0"
@@ -134,6 +143,7 @@
             "pos": "40 -224",
             "rot": "0",
             "scripts": [],
+            "size": "64 64",
             "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "1"
@@ -149,6 +159,7 @@
             "pos": "0 0",
             "rot": "0",
             "scripts": [],
+            "size": "64 64",
             "type": "NPC",
             "z-order": "1"
         },
@@ -163,11 +174,13 @@
             "pos": "48.7897 -207.642",
             "rot": "-90",
             "scripts": [],
+            "size": "20 30",
             "tileset": "characters_ui",
             "type": "Tile",
             "z-order": "3"
         }
     ],
+    "color": "50 60 100 255",
     "flag_points": [
         {
             "connections": "B ",
@@ -195,7 +208,7 @@
             "pos": "-243 -236"
         }
     ],
-    "max_size": "786.938 280",
+    "max_size": "786.938 354",
     "min_size": "-543.799 -256",
     "name": "Home",
     "scripts": [

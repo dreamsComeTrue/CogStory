@@ -69,7 +69,7 @@ void OnCityExitEnter (Point p)
 {
 //	Color color = COLOR_BLACK;
 //	SceneFadeInOut (400, 400, color);
-	SetActiveScene ("scenes/2_city/2_0_city.scn");
+	SetActiveScene ("2_city/2_0_city.scn");
 }
 
 bool PlayerTween (int id, float progress, Point value)

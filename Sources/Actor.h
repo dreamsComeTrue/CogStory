@@ -43,7 +43,8 @@ namespace aga
         Point GetPosition ();
         Point GetSize ();
 
-        void DrawBounds ();
+        virtual void DrawBounds ();
+        virtual void DrawName ();
 
         std::function<void(float dx, float dy)> MoveCallback;
 

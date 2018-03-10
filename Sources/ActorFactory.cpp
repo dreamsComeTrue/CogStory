@@ -103,11 +103,6 @@ namespace aga
             newActor = new TileActor (sceneManager);
         }
 
-        if (newActor)
-        {
-            newActor->Initialize ();
-        }
-
         return newActor;
     }
 

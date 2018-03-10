@@ -15,7 +15,7 @@ namespace aga
     public:
         NPCActor (SceneManager* sceneManager);
 
-        bool Initialize () override;
+        virtual bool Initialize () override;
 
         virtual bool Update (float deltaTime);
 

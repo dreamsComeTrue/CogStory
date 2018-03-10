@@ -3,7 +3,10 @@
 #include "TileActor.h"
 #include "Atlas.h"
 #include "AtlasManager.h"
+#include "Font.h"
+#include "MainLoop.h"
 #include "SceneManager.h"
+#include "Screen.h"
 
 namespace aga
 {
@@ -21,6 +24,17 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    bool TileActor::Initialize ()
+    {
+        Actor::Initialize ();
+
+        Bounds.Size = m_SceneManager->GetAtlasManager ()->GetAtlas (Tileset)->GetRegion (Name).Bounds.GetSize ();
+
+        return true;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     bool TileActor::Update (float deltaTime) { return Actor::Update (deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
@@ -33,6 +47,24 @@ namespace aga
         {
             Point pos = Bounds.GetPos ();
             atlas->DrawRegion (Name, pos.X, pos.Y, 1.0f, 1.0f, DegressToRadians (Rotation));
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void TileActor::DrawName ()
+    {
+        Atlas* atlas = m_SceneManager->GetAtlasManager ()->GetAtlas (Tileset);
+
+        if (atlas)
+        {
+            Rect regionBounds = atlas->GetRegion (Name).Bounds;
+
+            Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
+            Point pos = { Bounds.GetPos ().X + regionBounds.GetHalfSize ().Width,
+                          Bounds.GetPos ().Y + regionBounds.GetSize ().Height };
+            std::string str = Name + "[" + ToString (ID) + "]";
+            font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), pos.X, pos.Y, str, ALLEGRO_ALIGN_CENTER);
         }
     }
 

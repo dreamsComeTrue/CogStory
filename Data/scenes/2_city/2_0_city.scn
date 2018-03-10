@@ -3,32 +3,45 @@
         {
             "id": "2",
             "name": "bed",
+            "phys": [],
             "pos": "-111 -145",
             "rot": "0",
+            "scripts": [],
+            "size": "64 64",
+            "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "0"
         },
         {
             "id": "4",
             "name": "bed",
+            "phys": [],
             "pos": "31 -140",
             "rot": "0",
+            "scripts": [],
+            "size": "64 64",
+            "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "0"
         },
         {
             "id": "6",
             "name": "bed",
+            "phys": [],
             "pos": "-111 -26",
             "rot": "0",
+            "scripts": [],
+            "size": "64 64",
+            "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "0"
         }
     ],
+    "color": "35 15 15 255",
     "flag_points": [],
     "max_size": "95 38",
     "min_size": "-111 -145",
-    "name": "Home",
+    "name": "City",
     "scripts": [],
     "speeches": [
         {
@@ -108,39 +121,6 @@
                     "langID": "PL"
                 }
             ]
-        }
-    ],
-    "tiles": [
-        {
-            "id": "2",
-            "name": "bed",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-111 -145",
-            "rot": "0",
-            "tileset": "0_0_home",
-            "z-order": "0"
-        },
-        {
-            "id": "4",
-            "name": "bed",
-            "phys": [],
-            "pos": "31 -140",
-            "rot": "0",
-            "tileset": "0_0_home",
-            "z-order": "0"
-        },
-        {
-            "id": "6",
-            "name": "bed",
-            "phys": [],
-            "pos": "-111 -26",
-            "rot": "0",
-            "tileset": "0_0_home",
-            "z-order": "0"
         }
     ],
     "trigger_areas": []
