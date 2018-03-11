@@ -28,6 +28,7 @@
 #include <Gwork/Controls/Property/File.h>
 #include <Gwork/Controls/Property/Folder.h>
 #include <Gwork/Controls/Property/LabelButton.h>
+#include <Gwork/Controls/Property/LabelTwoButton.h>
 #include <Gwork/Controls/Property/Text.h>
 #include <Gwork/Controls/PropertyTree.h>
 #include <Gwork/Controls/Splitters.h>

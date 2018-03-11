@@ -12,39 +12,6 @@ namespace aga
 {
     class Editor;
 
-    class EditorActorScriptWindow : public Gwk::Event::Handler
-    {
-    public:
-        EditorActorScriptWindow (Editor* editor, Gwk::Controls::Canvas* canvas);
-        virtual ~EditorActorScriptWindow ();
-
-        void Show (std::function<bool(void)> OnAcceptFunc, std::function<bool(void)> OnCancelFunc);
-        bool GetResult ();
-
-    private:
-        void OnBrowse ();
-        void OnAccept ();
-        void OnCancel ();
-
-        void OnNameEdit (Gwk::Controls::Base* control);
-        void OnPathEdit (Gwk::Controls::Base* control);
-
-    public:
-        std::string Name;
-        std::string Path;
-
-    private:
-        Editor* m_Editor;
-        Gwk::Controls::WindowControl* m_SceneWindow;
-        Gwk::Controls::TextBox* m_PathTextBox;
-
-        std::string m_FileName;
-        bool m_Result;
-
-        std::function<bool(void)> m_OnAcceptFunc;
-        std::function<bool(void)> m_OnCancelFunc;
-    };
-
     class EditorActorWindow : public Gwk::Event::Handler
     {
     public:
@@ -62,8 +29,6 @@ namespace aga
 
         void OnAddScript ();
         void OnRemoveScript (Gwk::Controls::Base* control);
-
-        void OnCollision ();
 
         void OnAccept ();
         void OnCancel ();
@@ -89,8 +54,6 @@ namespace aga
         Gwk::Controls::Properties* m_GeneralSection;
         Gwk::Controls::Properties* m_TransformSection;
         Gwk::Controls::Properties* m_ScriptSection;
-
-        EditorActorScriptWindow* m_ScriptWindow;
     };
 }
 

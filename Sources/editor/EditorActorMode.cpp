@@ -52,6 +52,8 @@ namespace aga
             newActor->TemplateBounds.Pos = pos;
             newActor->Rotation = rotation;
 
+            newActor->Initialize ();
+
             m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddActor (name, newActor);
         }
 

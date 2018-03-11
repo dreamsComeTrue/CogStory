@@ -53,7 +53,6 @@ namespace aga
 
     void EditorState::BeforeEnter ()
     {
-        m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (50, 60, 100));
         m_Editor->OnResetScale ();
         m_Editor->OnResetTranslate ();
         m_Editor->SetDrawUITiles (true);

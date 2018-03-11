@@ -19,9 +19,9 @@ namespace aga
     {
         bool found = false;
 
-        for (std::vector<ScriptMetaData>::iterator it = m_Scripts.begin (); it != m_Scripts.end (); ++it)
+        for (ScriptMetaData& script : m_Scripts)
         {
-            if (it->Name == name)
+            if (script.Name == name)
             {
                 found = true;
                 break;

@@ -30,6 +30,8 @@ namespace aga
     class EditorActorScriptWindow;
     class EditorInfoWindow;
     class EditorInputWindow;
+    class EditorSceneWindow;
+    class EditorScriptWindow;
 
     class MainLoop;
     struct Tile;
@@ -80,7 +82,10 @@ namespace aga
         EditorSpeechMode& GetEditorSpeechMode () { return m_EditorSpeechMode; }
         EditorTriggerAreaMode& GetEditorTriggerAreaMode () { return m_EditorTriggerAreaMode; }
 
+        EditorScriptWindow* GetScriptWindow () { return m_ScriptWindow; }
         EditorInfoWindow* GetEditorInfoWindow () { return m_InfoWindow; }
+
+        void UpdateSceneNameLabel (const std::string& name);
 
     private:
         void LoadConfig ();
@@ -99,14 +104,13 @@ namespace aga
         void OnSaveScene (Gwk::Controls::Base* control);
 
         void OnPlay ();
-        void MenuItemPlay ();
-
         void OnExit ();
 
         void OnShowGrid ();
         void OnGridIncrease ();
         void OnGridDecrease ();
 
+        void OnSceneEdit ();
         void OnFlagPoint ();
         void OnTriggerArea ();
 
@@ -115,9 +119,6 @@ namespace aga
 
         void OnSpeech ();
         void OnActor ();
-
-        void UpdateScriptsBox ();
-        void OnReloadScript ();
 
         void MarkPlayerPosition ();
 
@@ -154,6 +155,7 @@ namespace aga
 
         long m_LastTimeClicked;
 
+        EditorSceneWindow* m_EditorSceneWindow;
         EditorOpenSceneWindow* m_OpenSceneWindow;
         EditorSaveSceneWindow* m_SaveSceneWindow;
         EditorFlagPointWindow* m_FlagPointWindow;
@@ -162,6 +164,7 @@ namespace aga
         EditorActorWindow* m_ActorWindow;
         EditorInfoWindow* m_InfoWindow;
         EditorInputWindow* m_InputWindow;
+        EditorScriptWindow* m_ScriptWindow;
 
         Gwk::Renderer::AllegroResourceLoader* m_ResourceLoader;
         Gwk::Renderer::Allegro* m_GUIRenderer;

@@ -50,6 +50,7 @@ namespace aga
         void SetSelectedActor (Actor* actor) { m_SelectedActor = actor; }
 
         Actor* GetActorUnderCursor () { return m_ActorUnderCursor; }
+        void SetActorUnderCursor (Actor* actor) { m_ActorUnderCursor = actor; }
 
         bool IsDrawTiles () const { return m_IsDrawTiles; }
         void SetDrawTiles (bool draw) { m_IsDrawTiles = draw; }
