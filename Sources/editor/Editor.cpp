@@ -833,20 +833,10 @@ namespace aga
 
         if (m_IsSnapToGrid)
         {
-            float gridSizeScale = m_GridSize; // * 1 / scale.X;
-
-            if (scale.X < 1.0f)
-            {
-                // gridSizeScale *= 1.0f - scale.X;
-            }
+            float gridSizeScale = m_GridSize;
 
             finalX = std::floor ((finalX) / gridSizeScale) * gridSizeScale;
             finalY = std::floor ((finalY) / gridSizeScale) * gridSizeScale;
-
-            // std::string txt = "[" + ToString (finalX) + ", " + ToString (finalY) + "]";
-
-            // m_MainLoop->GetScreen ()->GetFont ().DrawText (FONT_NAME_MAIN_SMALL, al_map_rgb (0, 255, 0), 120, 20,
-            // txt, ALLEGRO_ALIGN_LEFT);
         }
 
         return { finalX / scale.X, finalY / scale.Y };
@@ -871,11 +861,17 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnOpenScene (Gwk::Controls::Base* control) { m_OpenSceneWindow->Show (); }
+    void Editor::OnOpenScene (Gwk::Controls::Base* control)
+    {
+        m_OpenSceneWindow->Show (m_SaveSceneWindow->GetFileName ());
+    }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnSaveScene (Gwk::Controls::Base* control) { m_SaveSceneWindow->Show (); }
+    void Editor::OnSaveScene (Gwk::Controls::Base* control)
+    {
+        m_SaveSceneWindow->Show (m_OpenSceneWindow->GetFileName ());
+    }
 
     //--------------------------------------------------------------------------------------------------
 

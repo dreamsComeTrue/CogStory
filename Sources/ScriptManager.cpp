@@ -380,6 +380,27 @@ namespace aga
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);
 
+        //  Actor
+        r = m_ScriptEngine->RegisterObjectType ("Actor", 0, asOBJ_REF | asOBJ_NOCOUNT);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Actor", "void Move (float, float)", asMETHOD (Actor, Move),
+                                                  asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Actor", "void SetPosition (float, float)",
+                                                  asMETHODPR (Actor, SetPosition, (float, float), void),
+                                                  asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Actor", "void SetPosition (Point)",
+                                                  asMETHODPR (Actor, SetPosition, (Point), void), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Actor", "Point GetPosition ()", asMETHOD (Actor, GetPosition),
+                                                  asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction ("Actor@ GetCurrentActor ()",
+                                                    asMETHOD (SceneManager, GetCurrentlyProcessedActor),
+                                                    asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+
         // Scene Manager
         r = m_ScriptEngine->RegisterGlobalFunction (
             "void SetActiveScene (const string &in, bool fadeAnim = true)",
@@ -390,16 +411,9 @@ namespace aga
             "void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, Color color = COLOR_BLACK)",
             asMETHOD (SceneManager, SceneFadeInOut), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
-
-        //  Actor
-        r = m_ScriptEngine->RegisterObjectType ("Actor", 0, asOBJ_REF | asOBJ_NOCOUNT);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("Actor", "void Move (float, float)", asMETHOD (Actor, Move),
-                                                  asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("Actor@ GetCurrentActor ()",
-                                                    asMETHOD (SceneManager, GetCurrentlyProcessedActor),
-                                                    asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        r = m_ScriptEngine->RegisterGlobalFunction ("Actor@ GetActor (const string &in)",
+                                                    asMETHOD (SceneManager, GetActor), asCALL_THISCALL_ASGLOBAL,
+                                                    &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
 
         //  Global

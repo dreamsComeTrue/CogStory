@@ -51,8 +51,13 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorSaveSceneWindow::Show ()
+    void EditorSaveSceneWindow::Show (const std::string& path)
     {
+        if (path != "")
+        {
+            m_PathTextBox->SetText (path);
+        }
+
         m_SceneWindow->SetPosition (Gwk::Position::Center);
         m_SceneWindow->SetHidden (false);
         m_SceneWindow->MakeModal (true);

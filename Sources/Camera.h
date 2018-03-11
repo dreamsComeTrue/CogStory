@@ -8,6 +8,7 @@
 namespace aga
 {
     class Screen;
+    class Actor;
 
     class Camera
     {
@@ -28,9 +29,13 @@ namespace aga
 
         Point GetCenter ();
 
+        void SetFollowActor (Actor* actor);
+
     private:
         ALLEGRO_TRANSFORM m_Transform;
         Screen* m_Screen;
+
+        Actor* m_CameraFollowActor;
     };
 }
 

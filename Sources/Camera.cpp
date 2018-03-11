@@ -1,6 +1,7 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Camera.h"
+#include "Actor.h"
 #include "Screen.h"
 
 namespace aga
@@ -11,6 +12,7 @@ namespace aga
 
     Camera::Camera (Screen* screen)
         : m_Screen (screen)
+        , m_CameraFollowActor (nullptr)
     {
         const Point& size = screen->GetWindowSize ();
         SetTranslate (size.Width * 0.5, size.Height * 0.5);
@@ -83,6 +85,28 @@ namespace aga
         const Point winSize = m_Screen->GetWindowSize ();
 
         return { trans.X + winSize.Width * 0.5f, trans.Y + winSize.Height * 0.5f };
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Camera::SetFollowActor (Actor* actor)
+    {
+        if (m_CameraFollowActor)
+        {
+            m_CameraFollowActor->MoveCallback = nullptr;
+        }
+
+        m_CameraFollowActor = actor;
+
+        m_CameraFollowActor->MoveCallback = [&](float dx, float dy) {
+            Point scale = GetScale ();
+            Point screenSize = m_Screen->GetWindowSize ();
+            Point actorSize = m_CameraFollowActor->GetSize ();
+            Point actorPos = m_CameraFollowActor->GetPosition ();
+
+            SetTranslate (screenSize.Width * 0.5 - actorPos.X * scale.X - actorSize.Width,
+                          screenSize.Height * 0.5 - actorPos.Y * scale.Y - actorSize.Height);
+        };
     }
 
     //--------------------------------------------------------------------------------------------------
