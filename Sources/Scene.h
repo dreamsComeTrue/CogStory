@@ -133,6 +133,9 @@ namespace aga
 
         Actor* GetCurrentlyProcessedActor ();
 
+        void SetPlayerStartLocation (Point location) { m_PlayerStartLocation = location; }
+        Point GetPlayerStartLocation () { return m_PlayerStartLocation; }
+
     private:
         static void UpdateMaxTileID (Scene* scene);
         void DrawQuadTree (QuadTreeNode* node);
@@ -154,6 +157,8 @@ namespace aga
         QuadTreeNode m_QuadTree;
         Point m_VisibleLastCameraPos;
         std::vector<Entity*> m_VisibleEntities;
+
+        Point m_PlayerStartLocation;
     };
 }
 

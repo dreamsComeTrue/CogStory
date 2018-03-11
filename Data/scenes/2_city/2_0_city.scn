@@ -37,11 +37,12 @@
             "z-order": "0"
         }
     ],
-    "color": "35 15 15 255",
+    "color": "35 58 15 255",
     "flag_points": [],
     "max_size": "95 38",
     "min_size": "-111 -145",
     "name": "City",
+    "player_start": "-34 -38",
     "scripts": [],
     "speeches": [
         {

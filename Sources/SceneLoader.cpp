@@ -156,6 +156,7 @@ namespace aga
 
             scene->m_Name = j["name"];
             scene->m_Path = filePath;
+            scene->m_PlayerStartLocation = StringToPoint (j["player_start"]);
 
             std::vector<int> ints = StringToInts (j["color"]);
             scene->m_BackgroundColor = al_map_rgba (ints[0], ints[1], ints[2], ints[3]);
@@ -385,6 +386,8 @@ namespace aga
             ALLEGRO_COLOR color = scene->m_BackgroundColor;
             j["color"] = IntsToString (
                 { (int)(color.r * 255.f), (int)(color.g * 255.f), (int)(color.b * 255.f), (int)(color.a * 255.f) });
+
+            j["player_start"] = PointToString (scene->GetPlayerStartLocation ());
 
             j["scripts"] = json::array ({});
 

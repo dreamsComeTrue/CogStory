@@ -28,7 +28,7 @@
             "rot": "0",
             "scripts": [
                 {
-                    "name": "TEST1",
+                    "name": "TEST1_2",
                     "path": "0_home/0_0_home_tile.script"
                 }
             ],
@@ -211,6 +211,7 @@
     "max_size": "786.938 354",
     "min_size": "-543.799 -256",
     "name": "Home",
+    "player_start": "-70 216",
     "scripts": [
         {
             "name": "home",

@@ -115,6 +115,7 @@ namespace aga
 
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
         {
+            m_SceneManager->GetPlayer ().SetPosition (m_PlayerStartLocation);
             m_SceneManager->GetPlayer ().BeforeEnter ();
         }
 
