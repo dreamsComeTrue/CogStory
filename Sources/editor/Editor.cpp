@@ -871,11 +871,17 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnOpenScene (Gwk::Controls::Base* control) { m_OpenSceneWindow->Show (); }
+    void Editor::OnOpenScene (Gwk::Controls::Base* control)
+    {
+        m_OpenSceneWindow->Show (m_SaveSceneWindow->GetFileName ());
+    }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnSaveScene (Gwk::Controls::Base* control) { m_SaveSceneWindow->Show (); }
+    void Editor::OnSaveScene (Gwk::Controls::Base* control)
+    {
+        m_SaveSceneWindow->Show (m_OpenSceneWindow->GetFileName ());
+    }
 
     //--------------------------------------------------------------------------------------------------
 

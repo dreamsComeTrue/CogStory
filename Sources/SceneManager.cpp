@@ -33,6 +33,7 @@ namespace aga
         , m_DrawBoundingBox (true)
         , m_DrawActorsNames (true)
         , m_NextScene (nullptr)
+        , m_CameraFollowActor (nullptr)
     {
     }
 
@@ -59,20 +60,35 @@ namespace aga
         m_AtlasManager->Initialize ();
 
         m_Player.Initialize ();
-        m_Player.MoveCallback = [&](float dx, float dy) {
-            Point scale = m_Camera.GetScale ();
-            Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-            Point playerSize = m_Player.GetSize ();
-            Point playerPosition = m_Player.GetPosition ();
-
-            m_Camera.SetTranslate (screenSize.Width * 0.5 - playerPosition.X * scale.X - playerSize.Width,
-                                   screenSize.Height * 0.5 - playerPosition.Y * scale.Y - playerSize.Height);
-        };
         m_Player.SetCheckOverlap (true);
+
+        SetCameraFollowActor (&m_Player);
 
         m_SpeechFrameManager.Initialize ();
 
         return true;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::SetCameraFollowActor (Actor* actor)
+    {
+        if (m_CameraFollowActor)
+        {
+            m_CameraFollowActor->MoveCallback = nullptr;
+        }
+
+        m_CameraFollowActor = actor;
+
+        m_CameraFollowActor->MoveCallback = [&](float dx, float dy) {
+            Point scale = m_Camera.GetScale ();
+            Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+            Point actorSize = m_CameraFollowActor->GetSize ();
+            Point actorPos = m_CameraFollowActor->GetPosition ();
+
+            m_Camera.SetTranslate (screenSize.Width * 0.5 - actorPos.X * scale.X - actorSize.Width,
+                                   screenSize.Height * 0.5 - actorPos.Y * scale.Y - actorSize.Height);
+        };
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -288,6 +304,18 @@ namespace aga
         {
             m_ActiveScene->AddOnLeaveCallback (triggerName, func);
         }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Actor* SceneManager::GetActor (const std::string& name)
+    {
+        if (m_ActiveScene)
+        {
+            return m_ActiveScene->GetActor (name);
+        }
+
+        return nullptr;
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -47,11 +47,14 @@ namespace aga
         void AddOnLeaveCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
         void AddOnLeaveCallback (const std::string& triggerName, asIScriptFunction* func);
 
+        Actor* GetActor (const std::string& name);
         FlagPoint* GetFlagPoint (const std::string& name);
 
         Actor* GetCurrentlyProcessedActor ();
 
         SpeechFrameManager& GetSpeechFrameManager ();
+
+        void SetCameraFollowActor (Actor* actor);
 
         void Reset ();
         void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, ALLEGRO_COLOR color = COLOR_BLACK);
@@ -84,6 +87,8 @@ namespace aga
         bool m_DrawPhysData;
         bool m_DrawBoundingBox;
         bool m_DrawActorsNames;
+
+        Actor* m_CameraFollowActor;
     };
 }
 

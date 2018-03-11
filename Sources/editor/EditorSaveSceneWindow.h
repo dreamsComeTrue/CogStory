@@ -16,11 +16,13 @@ namespace aga
     public:
         EditorSaveSceneWindow (Editor* editor, Gwk::Controls::Canvas* canvas, const std::string& fileName);
 
-        void Show ();
+        void Show (const std::string& path = "");
         void OnBrowse ();
         void OnSave (Gwk::Controls::Base*);
         void OnCancel ();
         void OnEdit (Gwk::Controls::Base* control);
+
+        std::string GetFileName () const { return m_FileName; }
 
     private:
         Editor* m_Editor;
