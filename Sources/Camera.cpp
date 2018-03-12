@@ -2,21 +2,25 @@
 
 #include "Camera.h"
 #include "Actor.h"
+#include "MainLoop.h"
+#include "SceneManager.h"
 #include "Screen.h"
 
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
+    const int CAMERA_TWEEN_ID = 99998;
+
+    //--------------------------------------------------------------------------------------------------
+
     ALLEGRO_TRANSFORM IdentityTransform;
 
-    Camera::Camera (Screen* screen)
-        : m_Screen (screen)
+    Camera::Camera (SceneManager* sceneManager)
+        : m_SceneManager (sceneManager)
         , m_CameraFollowActor (nullptr)
+        , m_TweenToPoint (nullptr)
     {
-        const Point& size = screen->GetWindowSize ();
-        SetTranslate (size.Width * 0.5, size.Height * 0.5);
-
         al_identity_transform (&IdentityTransform);
     }
 
@@ -79,10 +83,19 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Camera::SetCenter (float x, float y)
+    {
+        const Point winSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+
+        SetTranslate (x + winSize.Width * 0.5f, y + winSize.Height * 0.5f);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     Point Camera::GetCenter ()
     {
         Point trans = GetTranslate ();
-        const Point winSize = m_Screen->GetWindowSize ();
+        const Point winSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
 
         return { trans.X + winSize.Width * 0.5f, trans.Y + winSize.Height * 0.5f };
     }
@@ -98,15 +111,44 @@ namespace aga
 
         m_CameraFollowActor = actor;
 
-        m_CameraFollowActor->MoveCallback = [&](float dx, float dy) {
-            Point scale = GetScale ();
-            Point screenSize = m_Screen->GetWindowSize ();
-            Point actorSize = m_CameraFollowActor->GetSize ();
-            Point actorPos = m_CameraFollowActor->GetPosition ();
+        if (m_CameraFollowActor)
+        {
+            m_CameraFollowActor->MoveCallback = [&](float dx, float dy) {
+                Point scale = GetScale ();
+                Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+                Point actorSize = m_CameraFollowActor->GetSize ();
+                Point actorPos = m_CameraFollowActor->GetPosition ();
 
-            SetTranslate (screenSize.Width * 0.5 - actorPos.X * scale.X - actorSize.Width,
-                          screenSize.Height * 0.5 - actorPos.Y * scale.Y - actorSize.Height);
+                SetTranslate (screenSize.Width * 0.5 - actorPos.X * scale.X - actorSize.Width,
+                              screenSize.Height * 0.5 - actorPos.Y * scale.Y - actorSize.Height);
+            };
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Camera::TweenToPoint (Point point, float timeMs)
+    {
+        if (m_CameraFollowActor)
+        {
+            m_CameraFollowActor->MoveCallback = nullptr;
+            m_CameraFollowActor = nullptr;
+        }
+
+        auto tweenFunc = [&](float x, float y) {
+            SetTranslate (x, y);
+
+            printf ("%f, %f\n", x, y);
+
+            return false;
         };
+
+        Point startPoint = GetTranslate ();
+        startPoint.X = -startPoint.X;
+        startPoint.Y = -startPoint.Y;
+
+        m_TweenToPoint = &m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (CAMERA_TWEEN_ID, startPoint,
+                                                                                       point, timeMs, tweenFunc);
     }
 
     //--------------------------------------------------------------------------------------------------

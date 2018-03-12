@@ -57,11 +57,14 @@ namespace aga
         }
 
         m_MainLoop->GetSceneManager ().GetSpeechFrameManager ().Clear ();
-        m_MainLoop->GetSceneManager ().GetActiveScene ()->BeforeEnter ();
+        m_MainLoop->GetSceneManager ().GetCamera ().ClearTransformations ();
 
+        //  Initial scale in gameplay twice big as normal
         const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
         float scale = 2.0f;
         m_MainLoop->GetSceneManager ().GetCamera ().Scale (scale, scale, winSize.Width * 0.5, winSize.Height * 0.5);
+
+        m_MainLoop->GetSceneManager ().GetActiveScene ()->BeforeEnter ();
 
         //  Reset camera to player
         m_MainLoop->GetSceneManager ().GetPlayer ().Move (0, 0.00001);

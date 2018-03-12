@@ -221,6 +221,29 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    TweenData& TweenManager::AddTween (int id, Point from, Point to, int during, std::function<bool(float, float)> func)
+    {
+        TweenData* foundTween = GetTween (id);
+
+        if (foundTween)
+        {
+            return *foundTween;
+        }
+
+        tweeny::tween<float, float> tween = tweeny::from (from.X, from.Y).to (to.X, to.Y).during (during).onStep (func);
+
+        TweenData tweenData;
+        tweenData.ID = id;
+        tweenData.TweenFF = tween;
+        tweenData.TweenMask |= TWEEN_FF;
+
+        m_Tweens.push_back (tweenData);
+
+        return m_Tweens.back ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void TweenManager::AddTween (int id, Point from, Point to, int during, asIScriptFunction* asFunc,
                                  asIScriptFunction* finishFunc)
     {

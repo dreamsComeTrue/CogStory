@@ -46,6 +46,11 @@ void BeforeEnterScene ()
 
   	Point flag1 = lastPoint;
 	Point flag2 = GetFlagPoint ("B").Pos;
+
+	camera.SetFollowActor (null);
+	camera.SetCenter (0, 0);
+	
+	camera.TweenToPoint (Point (0, screenSize.Height * 0.5f), 2000);
 	
     //AddTween (TWEEN_1, flag1, flag2, 800, PlayerTween, NextTween1);
 }

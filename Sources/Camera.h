@@ -7,13 +7,14 @@
 
 namespace aga
 {
-    class Screen;
+    class SceneManager;
     class Actor;
+    struct TweenData;
 
     class Camera
     {
     public:
-        Camera (Screen* screen);
+        Camera (SceneManager* sceneManager);
         virtual ~Camera ();
 
         void Update (float deltaTime);
@@ -27,15 +28,18 @@ namespace aga
         void Scale (float dx, float dy, float mousePosX = -1, float mousePosY = -1);
         Point GetScale ();
 
+        void SetCenter (float x, float y);
         Point GetCenter ();
 
         void SetFollowActor (Actor* actor);
+        void TweenToPoint (Point point, float timeMs = 500);
 
     private:
         ALLEGRO_TRANSFORM m_Transform;
-        Screen* m_Screen;
+        SceneManager* m_SceneManager;
 
         Actor* m_CameraFollowActor;
+        TweenData* m_TweenToPoint;
     };
 }
 

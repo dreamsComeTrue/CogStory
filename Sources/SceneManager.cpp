@@ -21,7 +21,7 @@ namespace aga
 
     SceneManager::SceneManager (MainLoop* mainLoop)
         : m_MainLoop (mainLoop)
-        , m_Camera (mainLoop->GetScreen ())
+        , m_Camera (this)
         , m_Player (this)
         , m_SpeechFrameManager (this)
         , m_AtlasManager (nullptr)

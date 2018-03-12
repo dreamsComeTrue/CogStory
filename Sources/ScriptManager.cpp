@@ -308,18 +308,6 @@ namespace aga
                                                   asCALL_THISCALL);
         assert (r >= 0);
 
-        //  Camera
-        r = m_ScriptEngine->RegisterObjectType ("Camera", sizeof (Camera), asOBJ_VALUE | asOBJ_POD);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalProperty ("Camera camera", &m_MainLoop->GetSceneManager ().GetCamera ());
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("Camera", "void SetTranslate (float dx, float dy)",
-                                                  asMETHOD (Camera, SetTranslate), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("Camera", "Point GetScale ()", asMETHOD (Camera, GetScale),
-                                                  asCALL_THISCALL);
-        assert (r >= 0);
-
         //  Screen
         r = m_ScriptEngine->RegisterObjectType ("Screen", sizeof (Screen), asOBJ_VALUE | asOBJ_POD);
         assert (r >= 0);
@@ -414,6 +402,27 @@ namespace aga
         r = m_ScriptEngine->RegisterGlobalFunction ("Actor@ GetActor (const string &in)",
                                                     asMETHOD (SceneManager, GetActor), asCALL_THISCALL_ASGLOBAL,
                                                     &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+
+        //  Camera
+        r = m_ScriptEngine->RegisterObjectType ("Camera", sizeof (Camera), asOBJ_VALUE | asOBJ_POD);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalProperty ("Camera camera", &m_MainLoop->GetSceneManager ().GetCamera ());
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Camera", "void SetTranslate (float dx, float dy)",
+                                                  asMETHOD (Camera, SetTranslate), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Camera", "Point GetScale ()", asMETHOD (Camera, GetScale),
+                                                  asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Camera", "void SetCenter (float, float)",
+                                                  asMETHOD (Camera, SetCenter), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Camera", "void SetFollowActor (Actor@)",
+                                                  asMETHOD (Camera, SetFollowActor), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Camera", "void TweenToPoint (Point, float)",
+                                                  asMETHOD (Camera, TweenToPoint), asCALL_THISCALL);
         assert (r >= 0);
 
         //  Global

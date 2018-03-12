@@ -34,11 +34,14 @@ namespace aga
 
         TweenData& AddTween (int id, float from, float to, int during, std::function<bool(float)>);
         TweenData& AddTween (int id, tweeny::tween<float>& func);
+        TweenData& AddTween (int id, Point from, Point to, int during, std::function<bool(float, float)> func);
+
         bool Update (float deltaTime);
         MainLoop* GetMainLoop ();
 
         // void AddTween (int id, float from, float to, int during, asIScriptFunction* func);
-        void AddTween (int id, Point from, Point to, int during, asIScriptFunction* func, asIScriptFunction* finishFunc);
+        void AddTween (int id, Point from, Point to, int during, asIScriptFunction* func,
+                       asIScriptFunction* finishFunc);
         TweenData* GetTween (int id);
 
         void PauseTween (int id);
