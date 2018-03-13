@@ -254,6 +254,32 @@ namespace aga
                                                   asCALL_THISCALL);
         assert (r >= 0);
 
+        //  Tweening
+        //        r = m_ScriptEngine->RegisterFuncdef ("bool TweenFuncFloat (float, float)");
+        //        assert (r >= 0);
+        //        r = m_ScriptEngine->RegisterGlobalFunction ("void AddTween (int, float, float, int, TweenFuncFloat
+        //        @tf)",
+        //            asMETHODPR (TweenManager, AddTween, (int, float, float, int, asIScriptFunction*), void),
+        //            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
+        //        assert (r >= 0);
+
+        r = m_ScriptEngine->RegisterFuncdef ("bool TweenFuncPoint (int id, float progress, Point value)");
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterFuncdef ("void TweenFuncPointFinish (int)");
+        assert (r >= 0);
+
+        r = m_ScriptEngine->RegisterGlobalFunction (
+            "void AddTween (int, Point, Point, int, TweenFuncPoint @tf, TweenFuncPointFinish @te)",
+            asMETHODPR (TweenManager, AddTween, (int, Point, Point, int, asIScriptFunction*, asIScriptFunction*), void),
+            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction ("void PauseTween (int)", asMETHOD (TweenManager, PauseTween),
+                                                    asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction ("void ResumeTween (int)", asMETHOD (TweenManager, ResumeTween),
+                                                    asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
+        assert (r >= 0);
+
         // FlagPoint
         r = m_ScriptEngine->RegisterObjectType ("FlagPoint", 0, asOBJ_REF | asOBJ_NOCOUNT);
         assert (r >= 0);
@@ -421,8 +447,15 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod ("Camera", "void SetFollowActor (Actor@)",
                                                   asMETHOD (Camera, SetFollowActor), asCALL_THISCALL);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("Camera", "void TweenToPoint (Point, float)",
-                                                  asMETHOD (Camera, TweenToPoint), asCALL_THISCALL);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "Camera", "void TweenToPoint (Point point, float timeMs = 1000, bool centerScreen = true)",
+            asMETHODPR (Camera, TweenToPoint, (Point, float, bool), void), asCALL_THISCALL);
+        assert (r >= 0);
+
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "Camera",
+            "void TweenToPoint (Point point, TweenFuncPointFinish @te, float timeMs = 1000, bool centerScreen = true)",
+            asMETHODPR (Camera, TweenToPoint, (Point, asIScriptFunction*, float, bool), void), asCALL_THISCALL);
         assert (r >= 0);
 
         //  Global
@@ -444,32 +477,6 @@ namespace aga
         r = m_ScriptEngine->RegisterGlobalFunction ("void SetBackgroundColor (Color)",
                                                     asMETHODPR (Screen, SetBackgroundColor, (ALLEGRO_COLOR), void),
                                                     asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetScreen ());
-        assert (r >= 0);
-
-        //  Tweening
-        //        r = m_ScriptEngine->RegisterFuncdef ("bool TweenFuncFloat (float, float)");
-        //        assert (r >= 0);
-        //        r = m_ScriptEngine->RegisterGlobalFunction ("void AddTween (int, float, float, int, TweenFuncFloat
-        //        @tf)",
-        //            asMETHODPR (TweenManager, AddTween, (int, float, float, int, asIScriptFunction*), void),
-        //            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
-        //        assert (r >= 0);
-
-        r = m_ScriptEngine->RegisterFuncdef ("bool TweenFuncPoint (int id, float progress, Point value)");
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterFuncdef ("void TweenFuncPointFinish (int)");
-        assert (r >= 0);
-
-        r = m_ScriptEngine->RegisterGlobalFunction (
-            "void AddTween (int, Point, Point, int, TweenFuncPoint @tf, TweenFuncPointFinish @te)",
-            asMETHODPR (TweenManager, AddTween, (int, Point, Point, int, asIScriptFunction*, asIScriptFunction*), void),
-            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("void PauseTween (int)", asMETHOD (TweenManager, PauseTween),
-                                                    asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("void ResumeTween (int)", asMETHOD (TweenManager, ResumeTween),
-                                                    asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
         assert (r >= 0);
     }
 

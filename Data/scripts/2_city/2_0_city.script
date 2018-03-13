@@ -1,0 +1,17 @@
+
+Point playerSize = player.GetSize ();
+Point screenSize = GetWindowSize ();
+
+void Start ()
+{
+
+}
+
+void BeforeEnterScene ()
+{
+	camera.SetFollowActor (GetActor ("PLAYER"));
+}
+
+void Update (float deltaTime)
+{
+}

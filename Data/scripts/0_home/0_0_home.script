@@ -50,10 +50,22 @@ void BeforeEnterScene ()
 	camera.SetFollowActor (null);
 	camera.SetCenter (0, 0);
 	
-	camera.TweenToPoint (Point (0, screenSize.Height * 0.5f), 2000);
+	player.SetPreventInput (true);
+	camera.TweenToPoint (Point (300, 0), AfterCameraTween1, 500);
 	
     //AddTween (TWEEN_1, flag1, flag2, 800, PlayerTween, NextTween1);
 }
+
+void AfterCameraTween1 (int tweenID)
+{
+	camera.TweenToPoint (Point (300, 300), AfterCameraTween2, 500);
+}
+
+void AfterCameraTween2 (int tweenID)
+{
+	player.SetPreventInput (false);
+}
+
 
 void AfterLeaveScene ()
 {

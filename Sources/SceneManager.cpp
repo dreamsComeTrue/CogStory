@@ -15,7 +15,7 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    const int SCENE_FADE_ID = 99999;
+    static int SCENE_FADE_ID = 200000;
 
     //--------------------------------------------------------------------------------------------------
 
@@ -287,6 +287,11 @@ namespace aga
 
     Actor* SceneManager::GetActor (const std::string& name)
     {
+        if (name == "PLAYER")
+        {
+            return &m_Player;
+        }
+
         if (m_ActiveScene)
         {
             return m_ActiveScene->GetActor (name);
@@ -380,7 +385,7 @@ namespace aga
                                          .during (fadeOutMs)
                                          .onStep (fadeOutFunc);
 
-        m_TweenFade = &m_MainLoop->GetTweenManager ().AddTween (SCENE_FADE_ID, tween);
+        m_TweenFade = &m_MainLoop->GetTweenManager ().AddTween (SCENE_FADE_ID++, tween);
     }
 
     //--------------------------------------------------------------------------------------------------

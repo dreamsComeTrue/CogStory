@@ -57,6 +57,8 @@ namespace aga
         m_Editor->OnResetTranslate ();
         m_Editor->SetDrawUITiles (true);
 
+        m_Editor->GetMainLoop ()->GetSceneManager ().GetPlayer ().ResetParticleEmitters ();
+
         if (m_Editor->GetCursorMode () == EditPhysBodyMode)
         {
             m_Editor->SwitchCursorMode ();

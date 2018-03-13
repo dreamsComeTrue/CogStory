@@ -35,6 +35,8 @@ namespace aga
         TweenData& AddTween (int id, float from, float to, int during, std::function<bool(float)>);
         TweenData& AddTween (int id, tweeny::tween<float>& func);
         TweenData& AddTween (int id, Point from, Point to, int during, std::function<bool(float, float)> func);
+        TweenData& AddTween (int id, Point from, Point to, int during, std::function<bool(float, float)> func,
+                             asIScriptFunction* finishFunc);
 
         bool Update (float deltaTime);
         MainLoop* GetMainLoop ();

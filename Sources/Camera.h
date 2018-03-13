@@ -32,7 +32,8 @@ namespace aga
         Point GetCenter ();
 
         void SetFollowActor (Actor* actor);
-        void TweenToPoint (Point point, float timeMs = 500);
+        void TweenToPoint (Point point, float timeMs = 1000, bool centerScreen = true);
+        void TweenToPoint (Point point, asIScriptFunction* finishFunc, float timeMs = 1000, bool centerScreen = true);
 
     private:
         ALLEGRO_TRANSFORM m_Transform;

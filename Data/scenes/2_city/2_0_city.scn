@@ -43,7 +43,12 @@
     "min_size": "-111 -145",
     "name": "City",
     "player_start": "-34 -38",
-    "scripts": [],
+    "scripts": [
+        {
+            "name": "main",
+            "path": "2_city/2_0_city.script"
+        }
+    ],
     "speeches": [
         {
             "abs_pos": "0 0",

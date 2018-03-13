@@ -10,7 +10,7 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    const int CAMERA_TWEEN_ID = 99998;
+    static int CAMERA_TWEEN_ID = 100000;
 
     //--------------------------------------------------------------------------------------------------
 
@@ -122,12 +122,15 @@ namespace aga
                 SetTranslate (screenSize.Width * 0.5 - actorPos.X * scale.X - actorSize.Width,
                               screenSize.Height * 0.5 - actorPos.Y * scale.Y - actorSize.Height);
             };
+
+            //  In case of first new frame rendered - update camera with new actor as a target
+            m_CameraFollowActor->MoveCallback (0, 0);
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::TweenToPoint (Point point, float timeMs)
+    void Camera::TweenToPoint (Point point, float timeMs, bool centerScreen)
     {
         if (m_CameraFollowActor)
         {
@@ -138,7 +141,39 @@ namespace aga
         auto tweenFunc = [&](float x, float y) {
             SetTranslate (x, y);
 
-            printf ("%f, %f\n", x, y);
+            return false;
+        };
+
+        Point startPoint = GetTranslate ();
+        startPoint.X = -startPoint.X;
+        startPoint.Y = -startPoint.Y;
+
+        if (centerScreen)
+        {
+            const Point winSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+            point.X = -point.X;
+            point.Y = -point.Y;
+
+            point.X += winSize.Width * 0.5f;
+            point.Y += winSize.Height * 0.5f;
+        }
+
+        m_TweenToPoint = &m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (CAMERA_TWEEN_ID++, startPoint,
+                                                                                       point, timeMs, tweenFunc);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Camera::TweenToPoint (Point point, asIScriptFunction* finishFunc, float timeMs, bool centerScreen)
+    {
+        if (m_CameraFollowActor)
+        {
+            m_CameraFollowActor->MoveCallback = nullptr;
+            m_CameraFollowActor = nullptr;
+        }
+
+        auto tweenFunc = [&](float x, float y) {
+            SetTranslate (x, y);
 
             return false;
         };
@@ -147,8 +182,18 @@ namespace aga
         startPoint.X = -startPoint.X;
         startPoint.Y = -startPoint.Y;
 
-        m_TweenToPoint = &m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (CAMERA_TWEEN_ID, startPoint,
-                                                                                       point, timeMs, tweenFunc);
+        if (centerScreen)
+        {
+            const Point winSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+            point.X = -point.X;
+            point.Y = -point.Y;
+
+            point.X += winSize.Width * 0.5f;
+            point.Y += winSize.Height * 0.5f;
+        }
+
+        m_TweenToPoint = &m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (
+            CAMERA_TWEEN_ID++, startPoint, point, timeMs, tweenFunc, finishFunc);
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -216,7 +216,6 @@ namespace aga
         //  We can only emit where new position is different than last one
         m_WalkParticleEmitter.SetCanEmit (!AreSame (m_OldPosition, Bounds.Pos));
         m_WalkParticleEmitter.Update (deltaTime);
-
         m_HeadParticleEmitter.Update (deltaTime);
 
         m_OldPosition = Bounds.GetPos ();
