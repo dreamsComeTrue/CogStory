@@ -133,6 +133,19 @@ namespace aga
 
         if (flagPoint != "")
         {
+            FlagPoint* flag = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoint (flagPoint);
+
+            for (int i = 0; i < flag->Connections.size (); ++i)
+            {
+                for (int j = 0; j < flag->Connections[i]->Connections.size (); ++j)
+                {
+                    if (flag->Connections[i]->Connections[j] == flag)
+                    {
+                        flag->Connections[i]->Connections.erase (flag->Connections[i]->Connections.begin () + j);
+                    }
+                }
+            }
+
             m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoints ().erase (flagPoint);
             return true;
         }
