@@ -15,6 +15,7 @@ namespace aga
 
     EditorState::EditorState (MainLoop* mainLoop)
         : State (mainLoop, EDITOR_STATE_NAME)
+        , m_LastEditedScene (nullptr)
     {
     }
 
@@ -57,6 +58,14 @@ namespace aga
         m_Editor->OnResetTranslate ();
         m_Editor->SetDrawUITiles (true);
 
+        if (m_LastEditedScene != nullptr && m_LastEditedScene != m_MainLoop->GetSceneManager ().GetActiveScene ())
+        {
+            m_MainLoop->GetSceneManager ().SetActiveScene (m_LastEditedScene);
+            m_MainLoop->GetSceneManager ().GetPlayer ().TemplateBounds.Pos
+                = m_MainLoop->GetSceneManager ().GetPlayer ().GetPosition ();
+        }
+
+        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->ResetAllActorsPositions ();
         m_Editor->GetMainLoop ()->GetSceneManager ().GetPlayer ().ResetParticleEmitters ();
 
         if (m_Editor->GetCursorMode () == EditPhysBodyMode)
@@ -67,7 +76,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::AfterLeave () {}
+    void EditorState::AfterLeave () { m_LastEditedScene = m_MainLoop->GetSceneManager ().GetActiveScene (); }
 
     //--------------------------------------------------------------------------------------------------
 

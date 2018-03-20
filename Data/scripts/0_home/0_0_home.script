@@ -6,8 +6,6 @@ SpeechFrame@ topFrame;
 SpeechFrame@ mainFrame;
 
 Point lastPoint;
-
-Point playerSize = player.GetSize ();
 Point screenSize = GetWindowSize ();
 
 void Start ()
@@ -33,7 +31,7 @@ void BeforeEnterScene ()
 	topFrame.SetDrawTextCenter (true);
 
 	lastPoint = GetFlagPoint ("A").Pos;
-    player.SetPosition (lastPoint.X, lastPoint.Y);	
+   // player.SetPosition (lastPoint.X, lastPoint.Y);	
 	
 	 //  player.SetPreventInput (true);
 
@@ -51,19 +49,28 @@ void BeforeEnterScene ()
 	camera.SetCenter (0, 0);
 	
 	player.SetPreventInput (true);
-	camera.TweenToPoint (Point (300, 0), AfterCameraTween1, 500);
+	camera.TweenToPoint (Point (200, 0), AfterCameraTween1, 1000);
 	
     //AddTween (TWEEN_1, flag1, flag2, 800, PlayerTween, NextTween1);
 }
 
 void AfterCameraTween1 (int tweenID)
 {
-	camera.TweenToPoint (Point (300, 300), AfterCameraTween2, 500);
+	camera.TweenToPoint (Point (200, 200), AfterCameraTween2, 1000);
 }
 
 void AfterCameraTween2 (int tweenID)
 {
+	Point playerSize = player.GetSize ();
+	Point playerPos = player.GetPosition();
+
+	camera.TweenToPoint (Point (playerPos.X + playerSize.Width * 0.5f, playerPos.Y + playerSize.Height * 0.5f), AfterCameraTween3, 1000);
+}
+
+void AfterCameraTween3 (int tweenID)
+{
 	player.SetPreventInput (false);
+	camera.SetFollowActor (GetActor ("PLAYER"));
 }
 
 

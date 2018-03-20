@@ -68,6 +68,10 @@ namespace aga
         bool IsDrawActorsNames ();
 
     private:
+        void SceneIntro (float duration = 1000.f);
+        void PrintCenterText (const std::string& text);
+
+    private:
         SpeechFrameManager m_SpeechFrameManager;
         Player m_Player;
         Camera m_Camera;
@@ -81,6 +85,10 @@ namespace aga
         TweenData* m_TweenFade;
         bool m_Transitioning;
         ALLEGRO_COLOR m_FadeColor;
+
+        TweenData* m_TweenSceneIntro;
+        bool m_SceneIntro;
+        ALLEGRO_COLOR m_CenterTextColor;
 
         bool m_DrawPhysData;
         bool m_DrawBoundingBox;

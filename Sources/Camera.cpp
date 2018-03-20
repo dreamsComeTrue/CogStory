@@ -130,41 +130,14 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::TweenToPoint (Point point, float timeMs, bool centerScreen)
+    void Camera::TweenToPoint (Point endPoint, float timeMs, bool centerScreen)
     {
-        if (m_CameraFollowActor)
-        {
-            m_CameraFollowActor->MoveCallback = nullptr;
-            m_CameraFollowActor = nullptr;
-        }
-
-        auto tweenFunc = [&](float x, float y) {
-            SetTranslate (x, y);
-
-            return false;
-        };
-
-        Point startPoint = GetTranslate ();
-        startPoint.X = -startPoint.X;
-        startPoint.Y = -startPoint.Y;
-
-        if (centerScreen)
-        {
-            const Point winSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
-            point.X = -point.X;
-            point.Y = -point.Y;
-
-            point.X += winSize.Width * 0.5f;
-            point.Y += winSize.Height * 0.5f;
-        }
-
-        m_TweenToPoint = &m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (CAMERA_TWEEN_ID++, startPoint,
-                                                                                       point, timeMs, tweenFunc);
+        TweenToPoint (endPoint, nullptr, timeMs, centerScreen);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::TweenToPoint (Point point, asIScriptFunction* finishFunc, float timeMs, bool centerScreen)
+    void Camera::TweenToPoint (Point endPoint, asIScriptFunction* finishFunc, float timeMs, bool centerScreen)
     {
         if (m_CameraFollowActor)
         {
@@ -185,15 +158,25 @@ namespace aga
         if (centerScreen)
         {
             const Point winSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
-            point.X = -point.X;
-            point.Y = -point.Y;
 
-            point.X += winSize.Width * 0.5f;
-            point.Y += winSize.Height * 0.5f;
+            //  Weird multiplication, but works :)
+            endPoint.X = -endPoint.X * 2;
+            endPoint.Y = -endPoint.Y * 2;
+
+            endPoint.X += winSize.Width * 0.5f;
+            endPoint.Y += winSize.Height * 0.5f;
         }
 
-        m_TweenToPoint = &m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (
-            CAMERA_TWEEN_ID++, startPoint, point, timeMs, tweenFunc, finishFunc);
+        if (finishFunc)
+        {
+            m_TweenToPoint = &m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (
+                CAMERA_TWEEN_ID++, startPoint, endPoint, timeMs, tweenFunc, finishFunc);
+        }
+        else
+        {
+            m_TweenToPoint = &m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (
+                CAMERA_TWEEN_ID++, startPoint, endPoint, timeMs, tweenFunc);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

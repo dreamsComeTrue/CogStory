@@ -28,7 +28,7 @@
             "rot": "0",
             "scripts": [
                 {
-                    "name": "TEST1_2_2",
+                    "name": "TEST1_2_2_2_2",
                     "path": "0_home/0_0_home_tile.script"
                 }
             ],
@@ -211,7 +211,7 @@
     "max_size": "786.938 354",
     "min_size": "-543.799 -256",
     "name": "Home",
-    "player_start": "-70 216",
+    "player_start": "0 200",
     "scripts": [
         {
             "name": "home",
@@ -221,7 +221,7 @@
     "speeches": [
         {
             "abs_pos": "0 0",
-            "max_chars": 30,
+            "max_chars": 20,
             "max_lines": 3,
             "name": "GREET_1",
             "outcomes": [
@@ -230,12 +230,12 @@
                     "texts": [
                         {
                             "action": "",
-                            "data": "aaa",
+                            "data": "OK",
                             "name": ""
                         },
                         {
                             "action": "",
-                            "data": "wwww",
+                            "data": "No, no, no!!!",
                             "name": ""
                         }
                     ]
@@ -246,10 +246,10 @@
                 }
             ],
             "region_name": "player_head",
-            "rel_pos": 2,
+            "rel_pos": 5,
             "texts": [
                 {
-                    "data": "LINE1\nLINE2\nLINE3\nLINE4\nSo, what you think??",
+                    "data": "LINE1\nLINE2\nSo, what you think??",
                     "langID": "EN"
                 },
                 {

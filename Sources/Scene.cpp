@@ -683,4 +683,15 @@ namespace aga
     Actor* Scene::GetCurrentlyProcessedActor () { return m_CurrentActor; }
 
     //--------------------------------------------------------------------------------------------------
+
+    void Scene::ResetAllActorsPositions ()
+    {
+        for (Actor* actor : m_Actors)
+        {
+            actor->Bounds = actor->TemplateBounds;
+            actor->SetPhysOffset (actor->Bounds.GetPos () + actor->Bounds.GetHalfSize ());
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
 }

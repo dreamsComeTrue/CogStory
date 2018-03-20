@@ -64,7 +64,8 @@ namespace aga
         float scale = 2.0f;
         m_MainLoop->GetSceneManager ().GetCamera ().Scale (scale, scale, winSize.Width * 0.5, winSize.Height * 0.5);
 
-        m_MainLoop->GetSceneManager ().GetActiveScene ()->BeforeEnter ();
+        //  Re-init current initial scene everytime we start GamePlayState
+        m_MainLoop->GetSceneManager ().SetActiveScene (m_MainLoop->GetSceneManager ().GetActiveScene ());
 
         //  Reset camera to player
         m_MainLoop->GetSceneManager ().GetPlayer ().Move (0, 0.00001);

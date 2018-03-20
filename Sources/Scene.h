@@ -136,6 +136,8 @@ namespace aga
         void SetPlayerStartLocation (Point location) { m_PlayerStartLocation = location; }
         Point GetPlayerStartLocation () { return m_PlayerStartLocation; }
 
+        void ResetAllActorsPositions ();
+
     private:
         static void UpdateMaxTileID (Scene* scene);
         void DrawQuadTree (QuadTreeNode* node);

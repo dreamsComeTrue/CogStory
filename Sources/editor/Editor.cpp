@@ -908,6 +908,8 @@ namespace aga
 
         OnResetScale ();
         OnResetTranslate ();
+
+        m_MainLoop->GetSceneManager ().GetActiveScene ()->ResetAllActorsPositions ();
     }
 
     //--------------------------------------------------------------------------------------------------

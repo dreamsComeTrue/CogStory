@@ -15,7 +15,7 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    static int SCENE_FADE_ID = 200000;
+    static int SCENE_TWEEN_ID = 200000;
 
     //--------------------------------------------------------------------------------------------------
 
@@ -135,6 +135,8 @@ namespace aga
 
             m_ActiveScene = scene;
             m_ActiveScene->BeforeEnter ();
+
+            SceneIntro (2500.0f);
         }
     }
 
@@ -224,6 +226,17 @@ namespace aga
         {
             const Point size = m_MainLoop->GetScreen ()->GetWindowSize ();
             al_draw_filled_rectangle (0, 0, size.Width, size.Height, m_FadeColor);
+        }
+
+        if (m_ActiveScene != nullptr && m_SceneIntro)
+        {
+            int blendOp, blendSrc, blendDst;
+            al_get_blender (&blendOp, &blendSrc, &blendDst);
+            al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+
+            PrintCenterText (m_ActiveScene->GetName ());
+
+            al_set_blender (blendOp, blendSrc, blendDst);
         }
     }
 
@@ -335,6 +348,9 @@ namespace aga
         m_Camera.ClearTransformations ();
         m_FadeColor.a = 0.0f;
         m_Transitioning = false;
+
+        m_CenterTextColor.a = 0.0f;
+        m_SceneIntro = false;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -385,7 +401,51 @@ namespace aga
                                          .during (fadeOutMs)
                                          .onStep (fadeOutFunc);
 
-        m_TweenFade = &m_MainLoop->GetTweenManager ().AddTween (SCENE_FADE_ID++, tween);
+        m_TweenFade = &m_MainLoop->GetTweenManager ().AddTween (SCENE_TWEEN_ID++, tween);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::SceneIntro (float duration)
+    {
+        m_CenterTextColor = al_map_rgb (160, 160, 160);
+        m_CenterTextColor.a = 0.0f;
+        m_SceneIntro = true;
+
+        auto introFunc = [&](float v) {
+            if (m_TweenSceneIntro->TweenF.progress () < 1.0f)
+            {
+                m_CenterTextColor.a = std::min (1.0f, v);
+            }
+            else
+            {
+                m_SceneIntro = false;
+            }
+
+            return false;
+        };
+
+        float showTime = 1200.0f;
+        tweeny::tween<float> tween = tweeny::from (0.0f)
+                                         .to (1.0f)
+                                         .during (showTime)
+                                         .to (1.0f)
+                                         .during (duration)
+                                         .to (0.0f)
+                                         .during (showTime)
+                                         .onStep (introFunc);
+
+        m_TweenSceneIntro = &m_MainLoop->GetTweenManager ().AddTween (SCENE_TWEEN_ID++, tween);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::PrintCenterText (const std::string& text)
+    {
+        const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+        Font& font = m_MainLoop->GetScreen ()->GetFont ();
+
+        font.DrawText (FONT_NAME_MENU_TITLE, m_CenterTextColor, winSize.Width * 0.5f, 50, text, ALLEGRO_ALIGN_CENTER);
     }
 
     //--------------------------------------------------------------------------------------------------

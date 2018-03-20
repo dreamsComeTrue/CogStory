@@ -28,6 +28,7 @@ namespace aga
 
     private:
         Editor* m_Editor;
+        Scene* m_LastEditedScene;
     };
 }
 
