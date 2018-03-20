@@ -303,6 +303,8 @@ namespace aga
         EditorScriptWindow* scriptWindow = m_Editor->GetScriptWindow ();
 
         std::function<bool(void)> AcceptFunc = [&] {
+            EditorScriptWindow* scriptWindow = m_Editor->GetScriptWindow ();
+
             if (scriptWindow->GetName () != "" && scriptWindow->GetPath () != "")
             {
                 AddScriptEntry (scriptWindow->GetName (), scriptWindow->GetPath ());
@@ -340,7 +342,7 @@ namespace aga
             {
                 if (m_SelectedActor)
                 {
-                    m_SelectedActor->RemoveScript (property->GetPropertyValue ());
+                    m_SelectedActor->RemoveScript (node->GetLabel ()->GetText ());
                 }
 
                 m_ScriptSection->GetChildren ().remove (control);

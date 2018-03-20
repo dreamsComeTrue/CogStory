@@ -211,7 +211,7 @@ namespace aga
                         std::string path = scriptIt["path"];
 
                         Script* script = sceneManager->GetMainLoop ()->GetScriptManager ().LoadScriptFromFile (
-                            GetDataPath () + "scripts/" + path, name + "_" + id);
+                            GetDataPath () + "scripts/" + path, name);
 
                         if (script)
                         {

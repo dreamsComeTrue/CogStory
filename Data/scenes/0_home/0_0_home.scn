@@ -28,7 +28,7 @@
             "rot": "0",
             "scripts": [
                 {
-                    "name": "TEST1_2_2_2_2",
+                    "name": "TEST_1",
                     "path": "0_home/0_0_home_tile.script"
                 }
             ],
