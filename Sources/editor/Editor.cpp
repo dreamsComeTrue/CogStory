@@ -461,6 +461,16 @@ namespace aga
 
     void Editor::TryToCloseWindows ()
     {
+        if (m_OpenSceneWindow->GetSceneWindow ()->Visible ())
+        {
+            m_OpenSceneWindow->GetSceneWindow ()->CloseButtonPressed ();
+        }
+
+        if (m_SaveSceneWindow->GetSceneWindow ()->Visible ())
+        {
+            m_SaveSceneWindow->GetSceneWindow ()->CloseButtonPressed ();
+        }
+
         if (m_EditorSceneWindow->GetSceneWindow ()->Visible ())
         {
             m_EditorSceneWindow->GetSceneWindow ()->CloseButtonPressed ();
@@ -861,17 +871,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnOpenScene (Gwk::Controls::Base* control)
-    {
-        m_OpenSceneWindow->Show (m_SaveSceneWindow->GetFileName ());
-    }
+    void Editor::OnOpenScene (Gwk::Controls::Base* control) { m_OpenSceneWindow->Show (m_LastScenePath); }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnSaveScene (Gwk::Controls::Base* control)
-    {
-        m_SaveSceneWindow->Show (m_OpenSceneWindow->GetFileName ());
-    }
+    void Editor::OnSaveScene (Gwk::Controls::Base* control) { m_SaveSceneWindow->Show (m_LastScenePath); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -888,6 +892,8 @@ namespace aga
 
             UpdateSceneNameLabel (
                 std::string ("SCENE: " + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ()));
+
+            m_LastScenePath = m_OpenSceneWindow->GetFileName ();
         }
     }
 
@@ -897,6 +903,8 @@ namespace aga
     {
         std::string path = GetDataPath () + "scenes/" + filePath;
         SceneLoader::SaveScene (m_MainLoop->GetSceneManager ().GetActiveScene (), path);
+
+        m_LastScenePath = m_SaveSceneWindow->GetFileName ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1097,6 +1105,9 @@ namespace aga
         Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
         Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
 
+        ALLEGRO_MOUSE_STATE state;
+        al_get_mouse_state (&state);
+
         avgFPSLabel->SetText (Gwk::Utility::Format ("    AVG: %.2f ms", 1000.0f / m_MainLoop->GetScreen ()->GetFPS ()));
         avgFPSLabel->SizeToContents ();
 
@@ -1113,10 +1124,10 @@ namespace aga
         idLabel->SetText (std::string ("       ID: " + (selectedEntity ? ToString (selectedEntity->ID) : "-")));
         idLabel->SizeToContents ();
 
-        xPosLabel->SetText (std::string ("        X: " + ToString (translate.X * (1 / scale.X))));
+        xPosLabel->SetText (std::string ("        X: " + ToString ((translate.X + state.x) * (1 / scale.X))));
         xPosLabel->SizeToContents ();
 
-        yPosLabel->SetText (std::string ("        Y: " + ToString (translate.Y * (1 / scale.Y))));
+        yPosLabel->SetText (std::string ("        Y: " + ToString ((translate.Y + state.y) * (1 / scale.Y))));
         yPosLabel->SizeToContents ();
 
         widthLabel->SetText (std::string (

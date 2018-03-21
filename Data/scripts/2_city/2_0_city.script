@@ -9,7 +9,16 @@ void Start ()
 
 void BeforeEnterScene ()
 {
+	AddOnEnterCallback ("CITY_EXIT", OnCityExitEnter);
+
 	camera.SetFollowActor (GetActor ("PLAYER"));
+}
+
+void OnCityExitEnter (Point p)
+{
+//	Color color = COLOR_BLACK;
+//	SceneFadeInOut (400, 400, color);
+	SetActiveScene ("0_home/0_0_home.scn");
 }
 
 void Update (float deltaTime)

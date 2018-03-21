@@ -107,10 +107,8 @@ namespace aga
     {
         if (m_SceneManager->IsDrawBoundingBox ())
         {
-            al_draw_rectangle (Bounds.GetTopLeft ().X - Bounds.GetHalfSize ().Width,
-                               Bounds.GetTopLeft ().Y - Bounds.GetHalfSize ().Height,
-                               Bounds.GetBottomRight ().X - Bounds.GetHalfSize ().Width,
-                               Bounds.GetBottomRight ().Y - Bounds.GetHalfSize ().Height, COLOR_YELLOW, 2);
+            al_draw_rectangle (Bounds.GetTopLeft ().X, Bounds.GetTopLeft ().Y, Bounds.GetBottomRight ().X,
+                               Bounds.GetBottomRight ().Y, COLOR_YELLOW, 2);
         }
     }
 

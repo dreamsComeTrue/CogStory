@@ -89,8 +89,7 @@ namespace aga
     {
         PhysPoints.clear ();
         PhysPoints.push_back ({ { 20, 30 }, { 25, 20 }, { 39, 20 }, { 44, 30 }, { 44, 64 }, { 20, 64 } });
-        SetPhysOffset (Bounds.GetPos ().X - Bounds.GetHalfSize ().Width,
-                       Bounds.GetPos ().Y - Bounds.GetHalfSize ().Height);
+        SetPhysOffset (Bounds.GetPos ().X, Bounds.GetPos ().Y);
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -172,6 +172,8 @@ namespace aga
         Gwk::Skin::TexturedBase* m_GuiSkin;
 
         Gwk::Input::Allegro m_GUIInput;
+
+        std::string m_LastScenePath;
     };
 }
 

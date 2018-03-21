@@ -74,44 +74,53 @@ namespace aga
         {
             TweenData& tween = m_Tweens[i];
 
-            if (tween.TweenMask & TWEEN_F)
+            if (m_Tweens[i].TweenMask & TWEEN_F)
             {
-                if (tween.TweenF.progress () >= 1.0f)
+                if (m_Tweens[i].TweenF.progress () >= 1.0f)
                 {
-                    if (tween.FinishFunc)
+                    if (m_Tweens[i].FinishScriptFunc)
                     {
-                        const char* moduleName = tween.FinishFunc->GetModuleName ();
+                        const char* moduleName = m_Tweens[i].FinishScriptFunc->GetModuleName ();
                         Script* script = m_MainLoop->GetScriptManager ().GetScriptByModuleName (moduleName);
 
                         if (script)
                         {
                             asIScriptContext* ctx = script->GetContext ();
-                            ctx->Prepare (tween.FinishFunc);
-                            ctx->SetArgDWord (0, (int)tween.ID);
+                            ctx->Prepare (tween.FinishScriptFunc);
+                            ctx->SetArgDWord (0, (int)m_Tweens[i].ID);
                             ctx->Execute ();
                         }
+                    }
+
+                    if (m_Tweens[i].FinishFunc)
+                    {
+                        m_Tweens[i].FinishFunc (m_Tweens[i].ID);
                     }
 
                     m_Tweens.erase (m_Tweens.begin () + i);
                 }
             }
-
-            if (tween.TweenMask & TWEEN_FF)
+            else if (m_Tweens[i].TweenMask & TWEEN_FF)
             {
-                if (tween.TweenFF.progress () >= 1.0f)
+                if (m_Tweens[i].TweenFF.progress () >= 1.0f)
                 {
-                    if (tween.FinishFunc)
+                    if (m_Tweens[i].FinishScriptFunc)
                     {
-                        const char* moduleName = tween.FinishFunc->GetModuleName ();
+                        const char* moduleName = m_Tweens[i].FinishScriptFunc->GetModuleName ();
                         Script* script = m_MainLoop->GetScriptManager ().GetScriptByModuleName (moduleName);
 
                         if (script)
                         {
                             asIScriptContext* ctx = script->GetContext ();
-                            ctx->Prepare (tween.FinishFunc);
-                            ctx->SetArgDWord (0, (int)tween.ID);
+                            ctx->Prepare (m_Tweens[i].FinishScriptFunc);
+                            ctx->SetArgDWord (0, (int)m_Tweens[i].ID);
                             ctx->Execute ();
                         }
+                    }
+
+                    if (m_Tweens[i].FinishFunc)
+                    {
+                        m_Tweens[i].FinishFunc (m_Tweens[i].ID);
                     }
 
                     m_Tweens.erase (m_Tweens.begin () + i);
@@ -177,7 +186,9 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    TweenData& TweenManager::AddTween (int id, float from, float to, int during, std::function<bool(float)> func)
+    TweenData& TweenManager::AddTween (int id, float from, float to, int during,
+                                       std::function<bool(float)> callbackFunction,
+                                       std::function<void(int)> finishFunction)
     {
         TweenData* foundTween = GetTween (id);
 
@@ -186,12 +197,13 @@ namespace aga
             return *foundTween;
         }
 
-        tweeny::tween<float> tween = tweeny::from (from).to (to).during (during).onStep (func);
+        tweeny::tween<float> tween = tweeny::from (from).to (to).during (during).onStep (callbackFunction);
 
         TweenData tweenData;
         tweenData.ID = id;
         tweenData.TweenF = tween;
         tweenData.TweenMask |= TWEEN_F;
+        tweenData.FinishFunc = finishFunction;
 
         m_Tweens.push_back (tweenData);
 
@@ -200,7 +212,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    TweenData& TweenManager::AddTween (int id, tweeny::tween<float>& func)
+    TweenData& TweenManager::AddTween (int id, tweeny::tween<float>& callbackFunction,
+                                       std::function<void(int)> finishFunction)
     {
         TweenData* foundTween = GetTween (id);
 
@@ -211,8 +224,9 @@ namespace aga
 
         TweenData tweenData;
         tweenData.ID = id;
-        tweenData.TweenF = func;
+        tweenData.TweenF = callbackFunction;
         tweenData.TweenMask |= TWEEN_F;
+        tweenData.FinishFunc = finishFunction;
 
         m_Tweens.push_back (tweenData);
 
@@ -221,7 +235,9 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    TweenData& TweenManager::AddTween (int id, Point from, Point to, int during, std::function<bool(float, float)> func)
+    TweenData& TweenManager::AddTween (int id, Point from, Point to, int during,
+                                       std::function<bool(float, float)> callbackFunction,
+                                       std::function<void(int)> finishFunction)
     {
         TweenData* foundTween = GetTween (id);
 
@@ -230,12 +246,14 @@ namespace aga
             return *foundTween;
         }
 
-        tweeny::tween<float, float> tween = tweeny::from (from.X, from.Y).to (to.X, to.Y).during (during).onStep (func);
+        tweeny::tween<float, float> tween
+            = tweeny::from (from.X, from.Y).to (to.X, to.Y).during (during).onStep (callbackFunction);
 
         TweenData tweenData;
         tweenData.ID = id;
         tweenData.TweenFF = tween;
         tweenData.TweenMask |= TWEEN_FF;
+        tweenData.FinishFunc = finishFunction;
 
         m_Tweens.push_back (tweenData);
 
@@ -244,7 +262,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    TweenData& TweenManager::AddTween (int id, Point from, Point to, int during, std::function<bool(float, float)> func,
+    TweenData& TweenManager::AddTween (int id, Point from, Point to, int during,
+                                       std::function<bool(float, float)> callbackFunction,
                                        asIScriptFunction* finishFunc)
     {
         TweenData* foundTween = GetTween (id);
@@ -254,11 +273,12 @@ namespace aga
             return *foundTween;
         }
 
-        tweeny::tween<float, float> tween = tweeny::from (from.X, from.Y).to (to.X, to.Y).during (during).onStep (func);
+        tweeny::tween<float, float> tween
+            = tweeny::from (from.X, from.Y).to (to.X, to.Y).during (during).onStep (callbackFunction);
 
         TweenData tweenData;
         tweenData.ID = id;
-        tweenData.FinishFunc = finishFunc;
+        tweenData.FinishScriptFunc = finishFunc;
         tweenData.TweenFF = tween;
         tweenData.TweenMask |= TWEEN_FF;
 
@@ -280,12 +300,12 @@ namespace aga
                 = [&](tweeny::tween<float, float>& t, float x, float y) {
                       TweenData* tweenData = FindTweenData (t);
 
-                      if (!tweenData || !tweenData->CallbackFunc)
+                      if (!tweenData || !tweenData->CallbackScriptFunc)
                       {
                           return true;
                       }
 
-                      asIScriptFunction* callback = tweenData->CallbackFunc;
+                      asIScriptFunction* callback = tweenData->CallbackScriptFunc;
                       Point p = { x, y };
 
                       const char* moduleName = callback->GetModuleName ();
@@ -318,8 +338,8 @@ namespace aga
 
             TweenData tweenData;
             tweenData.ID = id;
-            tweenData.CallbackFunc = asFunc;
-            tweenData.FinishFunc = finishFunc;
+            tweenData.CallbackScriptFunc = asFunc;
+            tweenData.FinishScriptFunc = finishFunc;
             tweenData.TweenFF = tween;
             tweenData.TweenMask |= TWEEN_FF;
 

@@ -129,5 +129,10 @@
             ]
         }
     ],
-    "trigger_areas": []
+    "trigger_areas": [
+        {
+            "name": "CITY_EXIT",
+            "poly": "95 -136 98 75 208 82 210 -138 "
+        }
+    ]
 }

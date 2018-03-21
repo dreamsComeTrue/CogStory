@@ -24,6 +24,8 @@ namespace aga
 
         std::string GetFileName () const { return m_FileName; }
 
+        Gwk::Controls::WindowControl* GetSceneWindow () { return m_SceneWindow; }
+
     private:
         Editor* m_Editor;
         Gwk::Controls::WindowControl* m_SceneWindow;

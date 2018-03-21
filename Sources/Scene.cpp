@@ -111,19 +111,25 @@ namespace aga
 
     void Scene::BeforeEnter ()
     {
+        SetBackgroundColor (m_BackgroundColor);
+
         m_VisibleEntities.clear ();
+        m_VisibleLastCameraPos = Point::MIN_POINT;
+
+        //  Reset camera to player
+        Player& player = m_SceneManager->GetPlayer ();
 
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
         {
-            m_SceneManager->GetPlayer ().SetPosition (m_PlayerStartLocation);
-            m_SceneManager->GetPlayer ().BeforeEnter ();
+            player.BeforeEnter ();
+            player.SetPosition (m_PlayerStartLocation);
         }
-
-        for (Actor* actor : m_Actors)
+        else
         {
-            actor->Bounds = actor->TemplateBounds;
+            player.SetPosition (player.TemplateBounds.Pos);
         }
 
+        ResetAllActorsPositions ();
         RunAllScripts ("void BeforeEnterScene ()");
 
         for (Actor* actor : m_Actors)
@@ -131,8 +137,6 @@ namespace aga
             m_CurrentActor = actor;
             actor->RunAllScripts ("void BeforeEnterScene ()");
         }
-
-        SetBackgroundColor (m_BackgroundColor);
 
         m_CurrentActor = nullptr;
     }
@@ -158,6 +162,7 @@ namespace aga
         RunAllScripts ("void AfterLeaveScene ()");
 
         m_VisibleEntities.clear ();
+        m_VisibleLastCameraPos = Point::MIN_POINT;
     }
 
     //--------------------------------------------------------------------------------------------------

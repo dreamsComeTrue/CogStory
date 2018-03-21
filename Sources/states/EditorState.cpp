@@ -58,15 +58,21 @@ namespace aga
         m_Editor->OnResetTranslate ();
         m_Editor->SetDrawUITiles (true);
 
-        if (m_LastEditedScene != nullptr && m_LastEditedScene != m_MainLoop->GetSceneManager ().GetActiveScene ())
+        SceneManager& sceneManager = m_MainLoop->GetSceneManager ();
+        Player& player = sceneManager.GetPlayer ();
+
+        if (m_LastEditedScene != nullptr && m_LastEditedScene != sceneManager.GetActiveScene ())
         {
-            m_MainLoop->GetSceneManager ().SetActiveScene (m_LastEditedScene);
-            m_MainLoop->GetSceneManager ().GetPlayer ().TemplateBounds.Pos
-                = m_MainLoop->GetSceneManager ().GetPlayer ().GetPosition ();
+            sceneManager.SetActiveScene (m_LastEditedScene);
+            player.TemplateBounds.Pos = player.GetPosition ();
         }
 
-        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->ResetAllActorsPositions ();
-        m_Editor->GetMainLoop ()->GetSceneManager ().GetPlayer ().ResetParticleEmitters ();
+        sceneManager.GetActiveScene ()->ResetAllActorsPositions ();
+        player.ResetParticleEmitters ();
+
+        //  Reset camera to player
+        player.Move (0, 0.00001);
+        player.SetPosition (player.TemplateBounds.Pos);
 
         if (m_Editor->GetCursorMode () == EditPhysBodyMode)
         {

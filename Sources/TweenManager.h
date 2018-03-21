@@ -15,8 +15,9 @@ namespace aga
         int ID = -1;
         tweeny::tween<float> TweenF;
         tweeny::tween<float, float> TweenFF;
-        asIScriptFunction* CallbackFunc = nullptr;
-        asIScriptFunction* FinishFunc = nullptr;
+        asIScriptFunction* CallbackScriptFunc = nullptr;
+        asIScriptFunction* FinishScriptFunc = nullptr;
+        std::function<void(int)> FinishFunc = nullptr;
 
         char TweenMask = 0;
         bool IsPaused = false;
@@ -32,11 +33,14 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
-        TweenData& AddTween (int id, float from, float to, int during, std::function<bool(float)>);
-        TweenData& AddTween (int id, tweeny::tween<float>& func);
-        TweenData& AddTween (int id, Point from, Point to, int during, std::function<bool(float, float)> func);
-        TweenData& AddTween (int id, Point from, Point to, int during, std::function<bool(float, float)> func,
-                             asIScriptFunction* finishFunc);
+        TweenData& AddTween (int id, float from, float to, int during, std::function<bool(float)> callbackFunction,
+                             std::function<void(int)> finishFunction = nullptr);
+        TweenData& AddTween (int id, tweeny::tween<float>& func, std::function<void(int)> finishFunction = nullptr);
+        TweenData& AddTween (int id, Point from, Point to, int during,
+                             std::function<bool(float, float)> callbackFunction,
+                             std::function<void(int)> finishFunction = nullptr);
+        TweenData& AddTween (int id, Point from, Point to, int during,
+                             std::function<bool(float, float)> callbackFunction, asIScriptFunction* finishFunc);
 
         bool Update (float deltaTime);
         MainLoop* GetMainLoop ();

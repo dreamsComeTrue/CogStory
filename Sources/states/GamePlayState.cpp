@@ -56,26 +56,18 @@ namespace aga
             return;
         }
 
-        m_MainLoop->GetSceneManager ().GetSpeechFrameManager ().Clear ();
-        m_MainLoop->GetSceneManager ().GetCamera ().ClearTransformations ();
+        SceneManager& sceneManager = m_MainLoop->GetSceneManager ();
+
+        sceneManager.GetSpeechFrameManager ().Clear ();
+        sceneManager.GetCamera ().ClearTransformations ();
 
         //  Initial scale in gameplay twice big as normal
         const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
         float scale = 2.0f;
-        m_MainLoop->GetSceneManager ().GetCamera ().Scale (scale, scale, winSize.Width * 0.5, winSize.Height * 0.5);
+        sceneManager.GetCamera ().Scale (scale, scale, winSize.Width * 0.5, winSize.Height * 0.5);
 
         //  Re-init current initial scene everytime we start GamePlayState
-        m_MainLoop->GetSceneManager ().SetActiveScene (m_MainLoop->GetSceneManager ().GetActiveScene ());
-
-        //  Reset camera to player
-        m_MainLoop->GetSceneManager ().GetPlayer ().Move (0, 0.00001);
-
-#ifndef EDITOR_ENABLED
-        m_MainLoop->GetSceneManager ().GetActiveScene ()->SetDrawPhysData (false);
-#else
-        Point playerPos = m_MainLoop->GetSceneManager ().GetPlayer ().TemplateBounds.Pos;
-        m_MainLoop->GetSceneManager ().GetPlayer ().SetPosition (playerPos);
-#endif
+        sceneManager.SetActiveScene (sceneManager.GetActiveScene ());
     }
 
     //--------------------------------------------------------------------------------------------------

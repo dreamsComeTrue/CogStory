@@ -90,7 +90,9 @@ namespace aga
 
     void SceneManager::AddScene (Scene* scene)
     {
-        if (m_Scenes.find (scene->GetPath ()) == m_Scenes.end ())
+        Scene* foundScene = GetScene (scene->GetPath ());
+
+        if (!foundScene)
         {
             m_Scenes.insert (std::make_pair (scene->GetPath (), scene));
         }
@@ -135,6 +137,7 @@ namespace aga
 
             m_ActiveScene = scene;
             m_ActiveScene->BeforeEnter ();
+            m_NextScene = nullptr;
 
             SceneIntro (2500.0f);
         }
@@ -144,12 +147,12 @@ namespace aga
 
     void SceneManager::SetActiveScene (const std::string& scenePath, bool fadeAnimation)
     {
-        Scene* scene = m_MainLoop->GetSceneManager ().GetScene (scenePath);
+        Scene* scene = GetScene (scenePath);
 
         if (!scene)
         {
             scene = SceneLoader::LoadScene (this, scenePath);
-            m_MainLoop->GetSceneManager ().AddScene (scene);
+            AddScene (scene);
         }
 
         if (fadeAnimation)
@@ -366,16 +369,11 @@ namespace aga
             {
                 m_FadeColor.a = v;
             }
-            else
-            {
-                m_Transitioning = false;
-            }
 
             return false;
         };
 
         auto fadeInFunc = [&](float v) {
-
             if (m_TweenFade->TweenF.progress () < 1.0f)
             {
                 m_FadeColor.a = v;
@@ -401,7 +399,8 @@ namespace aga
                                          .during (fadeOutMs)
                                          .onStep (fadeOutFunc);
 
-        m_TweenFade = &m_MainLoop->GetTweenManager ().AddTween (SCENE_TWEEN_ID++, tween);
+        m_TweenFade = &m_MainLoop->GetTweenManager ().AddTween (SCENE_TWEEN_ID++, tween,
+                                                                [&](int tweenID) { m_Transitioning = false; });
     }
 
     //--------------------------------------------------------------------------------------------------

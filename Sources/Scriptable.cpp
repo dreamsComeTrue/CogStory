@@ -67,6 +67,8 @@ namespace aga
         {
             if (it->Name == name)
             {
+                SAFE_DELETE ((*it).ScriptObj);
+
                 m_Scripts.erase (it);
 
                 break;
@@ -76,18 +78,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scriptable::RemoveScript (Script* script)
-    {
-        for (std::vector<ScriptMetaData>::iterator it = m_Scripts.begin (); it != m_Scripts.end (); ++it)
-        {
-            if (it->Name == script->GetName ())
-            {
-                m_Scripts.erase (it);
-
-                break;
-            }
-        }
-    }
+    void Scriptable::RemoveScript (Script* script) { RemoveScript (script->GetName ()); }
 
     //--------------------------------------------------------------------------------------------------
 

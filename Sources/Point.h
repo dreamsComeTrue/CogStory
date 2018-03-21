@@ -80,6 +80,8 @@ namespace aga
             X -= p.X;
             Y -= p.Y;
         }
+
+        static Point MIN_POINT;
     };
 }
 
