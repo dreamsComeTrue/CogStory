@@ -206,11 +206,7 @@ namespace aga
                                 {
                                     Point point
                                         = { dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y };
-                                    asIScriptContext* ctx = script->GetContext ();
-                                    ctx->Prepare (area.ScriptOnEnterCallback);
-                                    ctx->SetArgObject (0, &point);
-
-                                    ctx->Execute ();
+                                    script->Run (area.ScriptOnEnterCallback->GetDeclaration (), &point);
                                 }
                             }
                         }
@@ -235,11 +231,7 @@ namespace aga
                             if (script)
                             {
                                 Point point = { dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y };
-                                asIScriptContext* ctx = script->GetContext ();
-                                ctx->Prepare (area.ScriptOnLeaveCallback);
-                                ctx->SetArgObject (0, &point);
-
-                                ctx->Execute ();
+                                script->Run (area.ScriptOnLeaveCallback->GetDeclaration (), &point);
                             }
                         }
                     }

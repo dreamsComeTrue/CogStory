@@ -85,10 +85,7 @@ namespace aga
 
                         if (script)
                         {
-                            asIScriptContext* ctx = script->GetContext ();
-                            ctx->Prepare (tween.FinishScriptFunc);
-                            ctx->SetArgDWord (0, (int)m_Tweens[i].ID);
-                            ctx->Execute ();
+                            script->Run (tween.FinishScriptFunc->GetName (), (int)m_Tweens[i].ID);
                         }
                     }
 
@@ -111,10 +108,7 @@ namespace aga
 
                         if (script)
                         {
-                            asIScriptContext* ctx = script->GetContext ();
-                            ctx->Prepare (m_Tweens[i].FinishScriptFunc);
-                            ctx->SetArgDWord (0, (int)m_Tweens[i].ID);
-                            ctx->Execute ();
+                            script->Run (tween.FinishScriptFunc->GetName (), (int)m_Tweens[i].ID);
                         }
                     }
 

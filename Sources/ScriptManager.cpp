@@ -73,7 +73,10 @@ namespace aga
     {
         for (std::map<std::string, Script*>::iterator it = m_Scripts.begin (); it != m_Scripts.end (); ++it)
         {
-            SAFE_DELETE (it->second);
+            if (it->second)
+            {
+                SAFE_DELETE (it->second);
+            }
         }
 
         m_ScriptEngine->ShutDownAndRelease ();
@@ -144,6 +147,25 @@ namespace aga
 
         return script;
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void ScriptManager::RemoveScript (const std::string& name)
+    {
+        for (std::map<std::string, Script*>::iterator it = m_Scripts.begin (); it != m_Scripts.end (); ++it)
+        {
+            if (it->second->GetName () == name)
+            {
+                SAFE_DELETE (it->second);
+                m_Scripts.erase (it);
+                return;
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void ScriptManager::RemoveScript (Script* script) { RemoveScript (script->GetName ()); }
 
     //--------------------------------------------------------------------------------------------------
 

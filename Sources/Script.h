@@ -21,20 +21,20 @@ namespace aga
 
         bool Run (const std::string& functionName);
         bool Run (const std::string& functionName, float arg0);
+        bool Run (const std::string& functionName, int arg0);
+        bool Run (const std::string& functionName, void* arg0);
 
         std::string GetName ();
         asIScriptContext* GetContext ();
 
     private:
         asIScriptContext* GetContext (const std::string& functionName);
-        bool InternalRun ();
+        bool InternalRun (asIScriptContext* ctx);
 
     private:
         std::string m_Name;
         ScriptManager* m_Manager;
         asIScriptModule* m_Module;
-
-        asIScriptContext* m_FuncContext;
     };
 }
 

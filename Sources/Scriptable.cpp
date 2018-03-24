@@ -15,6 +15,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    Scriptable::~Scriptable () { RemoveAllScripts (); }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Scriptable::AttachScript (const std::string& name, const std::string& path)
     {
         bool found = false;
@@ -41,11 +45,16 @@ namespace aga
 
     void Scriptable::AttachScript (Script* script, const std::string& path)
     {
+        if (!script)
+        {
+            return;
+        }
+
         bool found = false;
 
-        for (std::vector<ScriptMetaData>::iterator it = m_Scripts.begin (); it != m_Scripts.end (); ++it)
+        for (ScriptMetaData& sc : m_Scripts)
         {
-            if (it->Name == script->GetName ())
+            if (sc.Name == script->GetName ())
             {
                 found = true;
                 break;
@@ -67,11 +76,10 @@ namespace aga
         {
             if (it->Name == name)
             {
-                SAFE_DELETE ((*it).ScriptObj);
-
+                m_ScriptManager->RemoveScript (name);
                 m_Scripts.erase (it);
 
-                break;
+                return;
             }
         }
     }

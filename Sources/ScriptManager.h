@@ -22,6 +22,9 @@ namespace aga
         Script* LoadScriptFromText (const std::string& text, const std::string& moduleName);
         asIScriptEngine* GetEngine ();
 
+        void RemoveScript (const std::string& name);
+        void RemoveScript (Script* script);
+
         Script* GetScriptByModuleName (const std::string& moduleName);
 
     private:

@@ -210,13 +210,7 @@ namespace aga
                         std::string name = scriptIt["name"];
                         std::string path = scriptIt["path"];
 
-                        Script* script = sceneManager->GetMainLoop ()->GetScriptManager ().LoadScriptFromFile (
-                            GetDataPath () + "scripts/" + path, name);
-
-                        if (script)
-                        {
-                            newActor->AttachScript (script, path);
-                        }
+                        newActor->AttachScript (name, path);
                     }
 
                     newActor->SetCollisionEnabled (false);
@@ -353,13 +347,7 @@ namespace aga
                 std::string name = j_tile["name"];
                 std::string path = j_tile["path"];
 
-                Script* script = sceneManager->GetMainLoop ()->GetScriptManager ().LoadScriptFromFile (
-                    GetDataPath () + "scripts/" + path, name);
-
-                if (script)
-                {
-                    scene->AttachScript (script, path);
-                }
+                scene->AttachScript (name, path);
             }
 
             return scene;

@@ -142,6 +142,8 @@ namespace aga
         static void UpdateMaxTileID (Scene* scene);
         void DrawQuadTree (QuadTreeNode* node);
 
+        void CleanUpTriggerAreas ();
+
     private:
         std::string m_Name;
         std::string m_Path;

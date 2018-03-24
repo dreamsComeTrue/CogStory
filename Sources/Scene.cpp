@@ -104,6 +104,8 @@ namespace aga
             SAFE_DELETE (m_Actors[i]);
         }
 
+        CleanUpTriggerAreas ();
+
         return Lifecycle::Destroy ();
     }
 
@@ -163,6 +165,8 @@ namespace aga
 
         m_VisibleEntities.clear ();
         m_VisibleLastCameraPos = Point::MIN_POINT;
+
+        CleanUpTriggerAreas ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -695,6 +699,27 @@ namespace aga
         {
             actor->Bounds = actor->TemplateBounds;
             actor->SetPhysOffset (actor->Bounds.GetPos () + actor->Bounds.GetHalfSize ());
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::CleanUpTriggerAreas ()
+    {
+        for (std::map<std::string, TriggerArea>::iterator it = m_TriggerAreas.begin (); it != m_TriggerAreas.end ();
+             ++it)
+        {
+            if (it->second.ScriptOnEnterCallback)
+            {
+                it->second.ScriptOnEnterCallback->Release ();
+                it->second.ScriptOnEnterCallback = nullptr;
+            }
+
+            if (it->second.ScriptOnLeaveCallback)
+            {
+                it->second.ScriptOnLeaveCallback->Release ();
+                it->second.ScriptOnLeaveCallback = nullptr;
+            }
         }
     }
 

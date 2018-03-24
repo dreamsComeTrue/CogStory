@@ -106,16 +106,17 @@ namespace aga
         {
             if (it->second == scene)
             {
+                it->second->AfterLeave ();
+
                 if (it->second == m_ActiveScene)
                 {
-                    m_ActiveScene->AfterLeave ();
                     m_ActiveScene = nullptr;
                 }
 
                 SAFE_DELETE (it->second);
                 m_Scenes.erase (it);
 
-                break;
+                return;
             }
             else
             {

@@ -44,7 +44,6 @@ namespace aga
     Script::Script (asIScriptModule* module, ScriptManager* manager, const std::string& name)
         : m_Module (module)
         , m_Manager (manager)
-        , m_FuncContext (nullptr)
         , m_Name (name)
     {
     }
@@ -65,36 +64,24 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
-        m_FuncContext = m_Module->GetEngine ()->RequestContext ();
-        m_FuncContext->SetExceptionCallback (asFUNCTION (ExceptionCallback), this, asCALL_THISCALL);
-
         return true;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Script::Destroy ()
-    {
-        if (m_FuncContext != nullptr)
-        {
-            m_FuncContext->GetEngine ()->ReturnContext (m_FuncContext);
-            m_FuncContext = nullptr;
-        }
-
-        return Lifecycle::Destroy ();
-    }
+    bool Script::Destroy () { return Lifecycle::Destroy (); }
 
     //--------------------------------------------------------------------------------------------------
 
     bool Script::Update (float deltaTime)
     {
-        asIScriptContext* fun = GetContext ("void Update (float deltaTime)");
+        asIScriptContext* ctx = GetContext ("void Update (float deltaTime)");
 
-        if (fun)
+        if (ctx)
         {
-            m_FuncContext->SetArgFloat (0, deltaTime);
+            ctx->SetArgFloat (0, deltaTime);
 
-            return InternalRun ();
+            return InternalRun (ctx);
         }
 
         return false;
@@ -104,11 +91,11 @@ namespace aga
 
     bool Script::Run (const std::string& functionName)
     {
-        asIScriptContext* fun = GetContext (functionName);
+        asIScriptContext* ctx = GetContext (functionName);
 
-        if (fun)
+        if (ctx)
         {
-            return InternalRun ();
+            return InternalRun (ctx);
         }
 
         return false;
@@ -118,13 +105,45 @@ namespace aga
 
     bool Script::Run (const std::string& functionName, float arg0)
     {
-        asIScriptContext* fun = GetContext (functionName);
+        asIScriptContext* ctx = GetContext (functionName);
 
-        if (fun)
+        if (ctx)
         {
-            m_FuncContext->SetArgFloat (0, arg0);
+            ctx->SetArgFloat (0, arg0);
 
-            return InternalRun ();
+            return InternalRun (ctx);
+        }
+
+        return false;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Script::Run (const std::string& functionName, int arg0)
+    {
+        asIScriptContext* ctx = GetContext (functionName);
+
+        if (ctx)
+        {
+            ctx->SetArgDWord (0, arg0);
+
+            return InternalRun (ctx);
+        }
+
+        return false;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Script::Run (const std::string& functionName, void* arg0)
+    {
+        asIScriptContext* ctx = GetContext (functionName);
+
+        if (ctx)
+        {
+            ctx->SetArgObject (0, arg0);
+
+            return InternalRun (ctx);
         }
 
         return false;
@@ -136,7 +155,13 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    asIScriptContext* Script::GetContext () { return m_FuncContext; }
+    asIScriptContext* Script::GetContext ()
+    {
+        asIScriptContext* ctx = m_Module->GetEngine ()->RequestContext ();
+        ctx->SetExceptionCallback (asFUNCTION (ExceptionCallback), this, asCALL_THISCALL);
+
+        return ctx;
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -149,17 +174,24 @@ namespace aga
             return nullptr;
         }
 
-        // Create our context, prepare it, and then execute
-        m_FuncContext->Prepare (func);
+        asIScriptContext* ctx = GetContext ();
 
-        return m_FuncContext;
+        // Create our context, prepare it, and then execute
+        ctx->Prepare (func);
+
+        return ctx;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Script::InternalRun ()
+    bool Script::InternalRun (asIScriptContext* ctx)
     {
-        int r = m_FuncContext->Execute ();
+        if (!ctx)
+        {
+            return false;
+        }
+
+        int r = ctx->Execute ();
 
         if (r != asEXECUTION_FINISHED)
         {
@@ -168,13 +200,14 @@ namespace aga
             {
                 // An exception occurred, let the script writer know what happened so it can be corrected.
                 printf ("An exception '%s' occurred. Please correct the code and try again.\n",
-                        m_FuncContext->GetExceptionString ());
+                        ctx->GetExceptionString ());
             }
 
             return false;
         }
 
-        m_FuncContext->Unprepare ();
+        ctx->Unprepare ();
+        ctx->GetEngine ()->ReturnContext (ctx);
 
         return true;
     }

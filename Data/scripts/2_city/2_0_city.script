@@ -14,11 +14,15 @@ void BeforeEnterScene ()
 	camera.SetFollowActor (GetActor ("PLAYER"));
 }
 
+void AfterLeaveScene ()
+{
+}
+
 void OnCityExitEnter (Point p)
 {
 //	Color color = COLOR_BLACK;
 //	SceneFadeInOut (400, 400, color);
-	SetActiveScene ("0_home/0_0_home.scn");
+	SetActiveScene ("0_home/0_0_home.scn", false);
 }
 
 void Update (float deltaTime)
