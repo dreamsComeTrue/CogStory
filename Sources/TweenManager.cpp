@@ -4,7 +4,6 @@
 #include "Common.h"
 #include "MainLoop.h"
 #include "Screen.h"
-#include "Script.h"
 
 namespace aga
 {
@@ -72,53 +71,27 @@ namespace aga
     {
         for (int i = 0; i < m_Tweens.size (); ++i)
         {
-            TweenData& tween = m_Tweens[i];
-
-            if (m_Tweens[i].TweenMask & TWEEN_F)
+            if (((m_Tweens[i].TweenMask & TWEEN_F) && (m_Tweens[i].TweenF.progress () >= 1.0f))
+                || ((m_Tweens[i].TweenMask & TWEEN_FF) && (m_Tweens[i].TweenFF.progress () >= 1.0f)))
             {
-                if (m_Tweens[i].TweenF.progress () >= 1.0f)
+                TweenData& tweenToProcess = m_Tweens[i];
+
+                if (tweenToProcess.FinishFunc)
                 {
-                    if (m_Tweens[i].FinishScriptFunc)
-                    {
-                        const char* moduleName = m_Tweens[i].FinishScriptFunc->GetModuleName ();
-                        Script* script = m_MainLoop->GetScriptManager ().GetScriptByModuleName (moduleName);
-
-                        if (script)
-                        {
-                            script->Run (tween.FinishScriptFunc->GetName (), (int)m_Tweens[i].ID);
-                        }
-                    }
-
-                    if (m_Tweens[i].FinishFunc)
-                    {
-                        m_Tweens[i].FinishFunc (m_Tweens[i].ID);
-                    }
-
-                    m_Tweens.erase (m_Tweens.begin () + i);
+                    tweenToProcess.FinishFunc (tweenToProcess.ID);
                 }
-            }
-            else if (m_Tweens[i].TweenMask & TWEEN_FF)
-            {
-                if (m_Tweens[i].TweenFF.progress () >= 1.0f)
+
+                if (tweenToProcess.FinishScriptFunc)
                 {
-                    if (m_Tweens[i].FinishScriptFunc)
-                    {
-                        const char* moduleName = m_Tweens[i].FinishScriptFunc->GetModuleName ();
-                        Script* script = m_MainLoop->GetScriptManager ().GetScriptByModuleName (moduleName);
-
-                        if (script)
-                        {
-                            script->Run (tween.FinishScriptFunc->GetName (), (int)m_Tweens[i].ID);
-                        }
-                    }
-
-                    if (m_Tweens[i].FinishFunc)
-                    {
-                        m_Tweens[i].FinishFunc (m_Tweens[i].ID);
-                    }
-
-                    m_Tweens.erase (m_Tweens.begin () + i);
+                    asIScriptContext* ctx = m_MainLoop->GetScriptManager ().GetContext ();
+                    ctx->Prepare (tweenToProcess.FinishScriptFunc);
+                    ctx->SetArgDWord (0, tweenToProcess.ID);
+                    ctx->Execute ();
+                    ctx->Unprepare ();
+                    ctx->GetEngine ()->ReturnContext (ctx);
                 }
+
+                m_Tweens.erase (m_Tweens.begin () + i);
             }
         }
     }
@@ -299,32 +272,26 @@ namespace aga
                           return true;
                       }
 
-                      asIScriptFunction* callback = tweenData->CallbackScriptFunc;
                       Point p = { x, y };
 
-                      const char* moduleName = callback->GetModuleName ();
-                      Script* script = m_MainLoop->GetScriptManager ().GetScriptByModuleName (moduleName);
+                      asIScriptContext* ctx = m_MainLoop->GetScriptManager ().GetContext ();
+                      ctx->Prepare (tweenData->CallbackScriptFunc);
+                      ctx->SetArgDWord (0, tweenData->ID);
+                      ctx->SetArgFloat (1, t.progress ());
+                      ctx->SetArgObject (2, &p);
 
-                      if (script)
+                      int r = ctx->Execute ();
+
+                      asDWORD ret = 0;
+                      if (r == asEXECUTION_FINISHED)
                       {
-                          asIScriptContext* ctx = script->GetContext ();
-                          ctx->Prepare (callback);
-                          ctx->SetArgDWord (0, tweenData->ID);
-                          ctx->SetArgFloat (1, t.progress ());
-                          ctx->SetArgObject (2, &p);
-
-                          int r = ctx->Execute ();
-
-                          asDWORD ret = 0;
-                          if (r == asEXECUTION_FINISHED)
-                          {
-                              ret = ctx->GetReturnDWord ();
-                          }
-
-                          return (bool)ret;
+                          ret = ctx->GetReturnDWord ();
                       }
 
-                      return false;
+                      ctx->Unprepare ();
+                      ctx->GetEngine ()->ReturnContext (ctx);
+
+                      return (bool)ret;
                   };
 
             tweeny::tween<float, float> tween
@@ -338,6 +305,20 @@ namespace aga
             tweenData.TweenMask |= TWEEN_FF;
 
             m_Tweens.push_back (tweenData);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void TweenManager::RemoveTween (int id)
+    {
+        for (int i = 0; i < m_Tweens.size (); ++i)
+        {
+            if (m_Tweens[i].ID == id)
+            {
+                m_Tweens.erase (m_Tweens.begin () + i);
+                return;
+            }
         }
     }
 

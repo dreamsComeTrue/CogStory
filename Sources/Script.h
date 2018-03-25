@@ -25,7 +25,6 @@ namespace aga
         bool Run (const std::string& functionName, void* arg0);
 
         std::string GetName ();
-        asIScriptContext* GetContext ();
 
     private:
         asIScriptContext* GetContext (const std::string& functionName);

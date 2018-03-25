@@ -26,12 +26,7 @@
             ],
             "pos": "-272.131 -254.083",
             "rot": "0",
-            "scripts": [
-                {
-                    "name": "TEST_1",
-                    "path": "0_home/0_0_home_tile.script"
-                }
-            ],
+            "scripts": [],
             "size": "512 382",
             "tileset": "0_0_home",
             "type": "Tile",
@@ -47,7 +42,12 @@
             ],
             "pos": "-128 192",
             "rot": "270",
-            "scripts": [],
+            "scripts": [
+                {
+                    "name": "bb2",
+                    "path": "0_home/0_0_home_tile.script"
+                }
+            ],
             "size": "20 13",
             "tileset": "menu_ui",
             "type": "Tile",
@@ -62,8 +62,13 @@
                 }
             ],
             "pos": "-160 192",
-            "rot": "270",
-            "scripts": [],
+            "rot": "-90",
+            "scripts": [
+                {
+                    "name": "bb",
+                    "path": "0_home/0_0_home_tile.script"
+                }
+            ],
             "size": "20 13",
             "tileset": "menu_ui",
             "type": "Tile",
@@ -78,7 +83,7 @@
                 }
             ],
             "pos": "-160 224",
-            "rot": "180",
+            "rot": "0",
             "scripts": [],
             "size": "20 30",
             "tileset": "characters_ui",
@@ -125,6 +130,22 @@
                 }
             ],
             "pos": "512 -32",
+            "rot": "0",
+            "scripts": [],
+            "size": "272 160",
+            "tileset": "0_0_home",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "id": "11",
+            "name": "parallax-forest-back-trees",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "35 129.904",
             "rot": "0",
             "scripts": [],
             "size": "272 160",
@@ -306,7 +327,7 @@
     "trigger_areas": [
         {
             "name": "CITY_EXIT",
-            "poly": "90.2453 131.675 91.6107 289.371 313.16 289.974 312.016 129.291 "
+            "poly": "33.832 132.096 32.808 287.232 313.16 289.974 312.016 129.291 "
         },
         {
             "name": "TOP",

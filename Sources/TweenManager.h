@@ -41,6 +41,7 @@ namespace aga
                              std::function<void(int)> finishFunction = nullptr);
         TweenData& AddTween (int id, Point from, Point to, int during,
                              std::function<bool(float, float)> callbackFunction, asIScriptFunction* finishFunc);
+        void RemoveTween (int id);
 
         bool Update (float deltaTime);
         MainLoop* GetMainLoop ();

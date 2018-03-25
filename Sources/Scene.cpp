@@ -104,8 +104,6 @@ namespace aga
             SAFE_DELETE (m_Actors[i]);
         }
 
-        CleanUpTriggerAreas ();
-
         return Lifecycle::Destroy ();
     }
 
@@ -711,13 +709,11 @@ namespace aga
         {
             if (it->second.ScriptOnEnterCallback)
             {
-                it->second.ScriptOnEnterCallback->Release ();
                 it->second.ScriptOnEnterCallback = nullptr;
             }
 
             if (it->second.ScriptOnLeaveCallback)
             {
-                it->second.ScriptOnLeaveCallback->Release ();
                 it->second.ScriptOnLeaveCallback = nullptr;
             }
         }

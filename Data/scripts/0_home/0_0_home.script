@@ -46,14 +46,14 @@ void BeforeEnterScene ()
 	Point flag2 = GetFlagPoint ("B").Pos;
 
 	//camera.SetFollowActor (null);
-	camera.SetCenter (0, 0);
+	//camera.SetCenter (0, 0);
 	
-//	player.SetPreventInput (true);
+	//player.SetPreventInput (true);
 
 	Point playerSize = player.GetSize ();
 	Point playerPos = player.GetPosition();
 
-//	camera.TweenToPoint (Point (playerPos.X + playerSize.Width * 0.5f, playerPos.Y + playerSize.Height * 0.5f), AfterCameraTween1, 1000);
+//camera.TweenToPoint (Point (playerPos.X + playerSize.Width * 0.5f, playerPos.Y + playerSize.Height * 0.5f), AfterCameraTween1, 1000);
 	
     //AddTween (TWEEN_1, flag1, flag2, 800, PlayerTween, NextTween1);
 }
@@ -82,7 +82,7 @@ void OnCityExitEnter (Point p)
 {
 //	Color color = COLOR_BLACK;
 //	SceneFadeInOut (400, 400, color);
-	SetActiveScene ("2_city/2_0_city.scn", false);
+	SetActiveScene ("2_city/2_0_city.scn", true);
 }
 
 bool PlayerTween (int id, float progress, Point value)

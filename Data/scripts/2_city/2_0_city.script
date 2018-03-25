@@ -22,7 +22,7 @@ void OnCityExitEnter (Point p)
 {
 //	Color color = COLOR_BLACK;
 //	SceneFadeInOut (400, 400, color);
-	SetActiveScene ("0_home/0_0_home.scn", false);
+	SetActiveScene ("0_home/0_0_home.scn", true);
 }
 
 void Update (float deltaTime)

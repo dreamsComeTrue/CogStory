@@ -21,6 +21,7 @@ namespace aga
         Script* LoadScriptFromFile (const std::string& path, const std::string& moduleName);
         Script* LoadScriptFromText (const std::string& text, const std::string& moduleName);
         asIScriptEngine* GetEngine ();
+        asIScriptContext* GetContext ();
 
         void RemoveScript (const std::string& name);
         void RemoveScript (Script* script);

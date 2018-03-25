@@ -32,6 +32,39 @@ namespace aga
         printf ("%s", g_ScriptErrorBuffer);
     }
 
+    //---------------------------------------------------------------------------
+
+    std::string GetCallStack (asIScriptContext* context)
+    {
+        std::string str ("AngelScript callstack:\n");
+
+        // Append the call stack
+        for (asUINT i = 0; i < context->GetCallstackSize (); i++)
+        {
+            const char* scriptSection;
+            int column;
+            asIScriptFunction* func = context->GetFunction (i);
+            int line = context->GetLineNumber (i, &column, &scriptSection);
+
+            char buffer[1024] = {};
+            sprintf (buffer, "\t%s:%s:%d,%d\n", scriptSection, func->GetDeclaration (), line, column);
+            str += buffer;
+        }
+
+        return str;
+    }
+
+    //---------------------------------------------------------------------------
+
+    void ExceptionCallback (asIScriptContext* context)
+    {
+        char buffer[1024] = {};
+        sprintf (buffer, "- Exception '%s' in '%s'\n%s", context->GetExceptionString (),
+                 context->GetExceptionFunction ()->GetDeclaration (), GetCallStack (context).c_str ());
+
+        printf ("%s", buffer);
+    }
+
     //--------------------------------------------------------------------------------------------------
 
     ScriptManager::ScriptManager (MainLoop* mainLoop)
@@ -291,7 +324,7 @@ namespace aga
         assert (r >= 0);
 
         r = m_ScriptEngine->RegisterGlobalFunction (
-            "void AddTween (int, Point, Point, int, TweenFuncPoint @tf, TweenFuncPointFinish @te)",
+            "void AddTween (int, Point, Point, int, TweenFuncPoint @+ tf, TweenFuncPointFinish @+ te)",
             asMETHODPR (TweenManager, AddTween, (int, Point, Point, int, asIScriptFunction*, asIScriptFunction*), void),
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
         assert (r >= 0);
@@ -366,12 +399,12 @@ namespace aga
         r = m_ScriptEngine->RegisterFuncdef ("void TriggerFunc (Point)");
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction (
-            "void AddOnEnterCallback (const string &in, TriggerFunc @tf)",
+            "void AddOnEnterCallback (const string &in, TriggerFunc @+ tf)",
             asMETHODPR (SceneManager, AddOnEnterCallback, (const std::string&, asIScriptFunction*), void),
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction (
-            "void AddOnLeaveCallback (const string &in, TriggerFunc @tf)",
+            "void AddOnLeaveCallback (const string &in, TriggerFunc @+ tf)",
             asMETHODPR (SceneManager, AddOnLeaveCallback, (const std::string&, asIScriptFunction*), void),
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
@@ -476,7 +509,8 @@ namespace aga
 
         r = m_ScriptEngine->RegisterObjectMethod (
             "Camera",
-            "void TweenToPoint (Point point, TweenFuncPointFinish @te, float timeMs = 1000, bool centerScreen = true)",
+            "void TweenToPoint (Point point, TweenFuncPointFinish @+ te, float timeMs = 1000, bool centerScreen = "
+            "true)",
             asMETHODPR (Camera, TweenToPoint, (Point, asIScriptFunction*, float, bool), void), asCALL_THISCALL);
         assert (r >= 0);
 
@@ -509,6 +543,16 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Script* ScriptManager::GetScriptByModuleName (const std::string& moduleName) { return m_Scripts[moduleName]; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    asIScriptContext* ScriptManager::GetContext ()
+    {
+        asIScriptContext* ctx = m_ScriptEngine->RequestContext ();
+        ctx->SetExceptionCallback (asFUNCTION (ExceptionCallback), this, asCALL_THISCALL);
+
+        return ctx;
+    }
 
     //--------------------------------------------------------------------------------------------------
 }

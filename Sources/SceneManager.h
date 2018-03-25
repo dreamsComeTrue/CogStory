@@ -86,7 +86,6 @@ namespace aga
         bool m_Transitioning;
         ALLEGRO_COLOR m_FadeColor;
 
-        TweenData* m_TweenSceneIntro;
         bool m_SceneIntro;
         ALLEGRO_COLOR m_CenterTextColor;
 

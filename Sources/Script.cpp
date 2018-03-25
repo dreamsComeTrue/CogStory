@@ -7,40 +7,6 @@ namespace aga
 {
     //---------------------------------------------------------------------------
 
-    std::string GetCallStack (asIScriptContext* context)
-    {
-        std::string str ("AngelScript callstack:\n");
-
-        // Append the call stack
-        for (asUINT i = 0; i < context->GetCallstackSize (); i++)
-        {
-            const char* scriptSection;
-            int column;
-            asIScriptFunction* func = context->GetFunction (i);
-            int line = context->GetLineNumber (i, &column, &scriptSection);
-
-            char buffer[1024] = {};
-            sprintf (buffer, "\t%s:%s:%d,%d\n", scriptSection, func->GetDeclaration (), line, column);
-            str += buffer;
-        }
-
-        return str;
-    }
-
-    //---------------------------------------------------------------------------
-
-    void ExceptionCallback (asIScriptContext* context)
-    {
-        char buffer[1024] = {};
-        sprintf (buffer, "- Exception '%s' in '%s'\n%s", context->GetExceptionString (),
-                 context->GetExceptionFunction ()->GetDeclaration (), GetCallStack (context).c_str ());
-
-        printf ("%s", buffer);
-    }
-
-    //---------------------------------------------------------------------------
-    //---------------------------------------------------------------------------
-
     Script::Script (asIScriptModule* module, ScriptManager* manager, const std::string& name)
         : m_Module (module)
         , m_Manager (manager)
@@ -155,16 +121,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    asIScriptContext* Script::GetContext ()
-    {
-        asIScriptContext* ctx = m_Module->GetEngine ()->RequestContext ();
-        ctx->SetExceptionCallback (asFUNCTION (ExceptionCallback), this, asCALL_THISCALL);
-
-        return ctx;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
     asIScriptContext* Script::GetContext (const std::string& functionName)
     {
         asIScriptFunction* func = m_Module->GetFunctionByDecl (functionName.c_str ());
@@ -174,7 +130,7 @@ namespace aga
             return nullptr;
         }
 
-        asIScriptContext* ctx = GetContext ();
+        asIScriptContext* ctx = m_Manager->GetContext ();
 
         // Create our context, prepare it, and then execute
         ctx->Prepare (func);

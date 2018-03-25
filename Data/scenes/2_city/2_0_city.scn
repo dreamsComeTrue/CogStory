@@ -35,11 +35,23 @@
             "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "0"
+        },
+        {
+            "id": "13",
+            "name": "parallax-forest-back-trees",
+            "phys": [],
+            "pos": "47.2 -78.4",
+            "rot": "0",
+            "scripts": [],
+            "size": "272 160",
+            "tileset": "0_0_home",
+            "type": "Tile",
+            "z-order": "0"
         }
     ],
     "color": "35 31 54 255",
     "flag_points": [],
-    "max_size": "95 38",
+    "max_size": "319.2 81.6",
     "min_size": "-111 -145",
     "name": "City",
     "player_start": "-34 -38",
@@ -132,7 +144,7 @@
     "trigger_areas": [
         {
             "name": "CITY_EXIT",
-            "poly": "95 -136 98 75 208 82 210 -138 "
+            "poly": "46 -73 53 79 208 82 220.8 -80 "
         }
     ]
 }

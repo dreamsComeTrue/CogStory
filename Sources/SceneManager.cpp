@@ -16,6 +16,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     static int SCENE_TWEEN_ID = 200000;
+    static int SCENE_TWEEN_INTRO_ID = 200001;
 
     //--------------------------------------------------------------------------------------------------
 
@@ -138,7 +139,6 @@ namespace aga
 
             m_ActiveScene = scene;
             m_ActiveScene->BeforeEnter ();
-            m_NextScene = nullptr;
 
             SceneIntro (2500.0f);
         }
@@ -365,24 +365,12 @@ namespace aga
         m_FadeColor.a = 0.0f;
         m_Transitioning = true;
 
-        auto fadeOutFunc = [&](float v) {
-            if (m_TweenFade->TweenF.progress () < 1.0f)
-            {
-                m_FadeColor.a = v;
-            }
-
-            return false;
-        };
-
-        auto fadeInFunc = [&](float v) {
-            if (m_TweenFade->TweenF.progress () < 1.0f)
-            {
-                m_FadeColor.a = v;
-            }
+        auto fadeFunc = [&](float v) {
+            m_FadeColor.a = v;
 
             if (m_TweenFade->TweenF.progress () > 0.5f)
             {
-                if (m_NextScene)
+                if (m_NextScene && m_NextScene != m_ActiveScene)
                 {
                     SetActiveScene (m_NextScene);
                     m_NextScene = nullptr;
@@ -392,16 +380,13 @@ namespace aga
             return false;
         };
 
-        tweeny::tween<float> tween = tweeny::from (0.0f)
-                                         .to (1.0f)
-                                         .during (fadeInMs)
-                                         .onStep (fadeInFunc)
-                                         .to (0.0f)
-                                         .during (fadeOutMs)
-                                         .onStep (fadeOutFunc);
+        tweeny::tween<float> tween
+            = tweeny::from (0.0f).to (1.0f).during (fadeInMs).onStep (fadeFunc).to (0.0f).during (fadeOutMs).onStep (
+                fadeFunc);
 
-        m_TweenFade = &m_MainLoop->GetTweenManager ().AddTween (SCENE_TWEEN_ID++, tween,
-                                                                [&](int tweenID) { m_Transitioning = false; });
+        m_MainLoop->GetTweenManager ().RemoveTween (SCENE_TWEEN_ID);
+        m_TweenFade
+            = &m_MainLoop->GetTweenManager ().AddTween (SCENE_TWEEN_ID, tween, [&](int) { m_Transitioning = false; });
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -413,29 +398,23 @@ namespace aga
         m_SceneIntro = true;
 
         auto introFunc = [&](float v) {
-            if (m_TweenSceneIntro->TweenF.progress () < 1.0f)
-            {
-                m_CenterTextColor.a = std::min (1.0f, v);
-            }
-            else
-            {
-                m_SceneIntro = false;
-            }
+            m_CenterTextColor.a = std::min (1.0f, v);
 
             return false;
         };
 
-        float showTime = 1200.0f;
+        float fadeShowTime = duration * 0.5f;
         tweeny::tween<float> tween = tweeny::from (0.0f)
                                          .to (1.0f)
-                                         .during (showTime)
+                                         .during (fadeShowTime)
                                          .to (1.0f)
                                          .during (duration)
                                          .to (0.0f)
-                                         .during (showTime)
+                                         .during (fadeShowTime)
                                          .onStep (introFunc);
 
-        m_TweenSceneIntro = &m_MainLoop->GetTweenManager ().AddTween (SCENE_TWEEN_ID++, tween);
+        m_MainLoop->GetTweenManager ().RemoveTween (SCENE_TWEEN_INTRO_ID);
+        m_MainLoop->GetTweenManager ().AddTween (SCENE_TWEEN_INTRO_ID, tween, [&](int) { m_SceneIntro = false; });
     }
 
     //--------------------------------------------------------------------------------------------------
