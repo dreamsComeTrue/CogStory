@@ -272,7 +272,7 @@ namespace aga
     {
         std::vector<Entity*> result;
 
-        if (Intersect (targetRect, m_Bounds))
+        // if (Intersect (targetRect, m_Bounds))
         {
             for (QuadTreeData& data : m_Data)
             {

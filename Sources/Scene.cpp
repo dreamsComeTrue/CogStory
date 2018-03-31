@@ -7,6 +7,7 @@
 #include "SceneManager.h"
 #include "Screen.h"
 #include "actors/TileActor.h"
+#include "states/EditorState.h"
 
 #include "addons/triangulator/Triangulator.h"
 
@@ -119,7 +120,7 @@ namespace aga
         //  Reset camera to player
         Player& player = m_SceneManager->GetPlayer ();
 
-        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
+        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != EDITOR_STATE_NAME)
         {
             player.BeforeEnter ();
             player.SetPosition (m_PlayerStartLocation);
@@ -145,7 +146,7 @@ namespace aga
 
     void Scene::AfterLeave ()
     {
-        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
+        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != EDITOR_STATE_NAME)
         {
             m_SceneManager->GetPlayer ().AfterLeave ();
         }
@@ -172,7 +173,7 @@ namespace aga
 
     void Scene::Update (float deltaTime)
     {
-        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
+        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != EDITOR_STATE_NAME)
         {
             m_SceneManager->GetPlayer ().Update (deltaTime);
             UpdateScripts (deltaTime);
@@ -193,68 +194,40 @@ namespace aga
     {
         m_SceneManager->GetCamera ().Update (deltaTime);
 
+        bool isPlayerDrawn = false;
+        std::vector<Entity*> entities = GetVisibleEntities ();
+
         if (m_SceneManager->IsDrawBoundingBox ())
         {
             DrawQuadTree (&m_QuadTree);
         }
 
-        bool isPlayerDrawn = false;
-        std::vector<Entity*> entities;
-
-        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () == "EDITOR_STATE")
+        for (int i = 0; i < entities.size (); ++i)
         {
-            for (Actor* actor : m_Actors)
+            Actor* actor = (Actor*)entities[i];
+
+            if (!isPlayerDrawn && actor->ZOrder >= PLAYER_Z_ORDER)
             {
-                if (!isPlayerDrawn && actor->ZOrder >= PLAYER_Z_ORDER)
-                {
-                    m_SceneManager->GetPlayer ().Render (deltaTime);
-                    isPlayerDrawn = true;
-                }
-
-                actor->Render (deltaTime);
-
-                if (m_SceneManager->IsDrawBoundingBox ())
-                {
-                    actor->DrawBounds ();
-                }
-
-                if (m_SceneManager->IsDrawPhysData ())
-                {
-                    actor->DrawPhysBody ();
-                }
-
-                if (m_SceneManager->IsDrawActorsNames ())
-                {
-                    actor->DrawName ();
-                }
+                m_SceneManager->GetPlayer ().Render (deltaTime);
+                isPlayerDrawn = true;
             }
-        }
-        else
-        {
-            entities = GetVisibleEntities ();
 
-            for (int i = 0; i < entities.size (); ++i)
+            actor->RenderID = i;
+            actor->Render (deltaTime);
+
+            if (m_SceneManager->IsDrawBoundingBox ())
             {
-                Actor* actor = (Actor*)entities[i];
+                actor->DrawBounds ();
+            }
 
-                if (!isPlayerDrawn && actor->ZOrder >= PLAYER_Z_ORDER)
-                {
-                    m_SceneManager->GetPlayer ().Render (deltaTime);
-                    isPlayerDrawn = true;
-                }
+            if (m_SceneManager->IsDrawPhysData ())
+            {
+                actor->DrawPhysBody ();
+            }
 
-                actor->RenderID = i;
-                actor->Render (deltaTime);
-
-                if (m_SceneManager->IsDrawBoundingBox ())
-                {
-                    actor->DrawBounds ();
-                }
-
-                if (m_SceneManager->IsDrawPhysData ())
-                {
-                    actor->DrawPhysBody ();
-                }
+            if (m_SceneManager->IsDrawActorsNames ())
+            {
+                actor->DrawName ();
             }
         }
 
@@ -273,37 +246,40 @@ namespace aga
             m_SceneManager->GetPlayer ().DrawPhysBody ();
         }
 
-        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
+        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () == EDITOR_STATE_NAME)
         {
-            m_SceneManager->GetCamera ().UseIdentityTransform ();
-
-            Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
-            font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), 10, 10, ToString (entities.size ()),
-                           ALLEGRO_ALIGN_LEFT);
+            al_draw_filled_circle (0, 0, 5, COLOR_RED);
         }
 
-        al_draw_filled_circle (0, 0, 5, COLOR_RED);
+        m_SceneManager->GetCamera ().UseIdentityTransform ();
+
+        Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
+        font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), 10, 10, ToString (entities.size ()),
+                       ALLEGRO_ALIGN_LEFT);
     }
 
     //--------------------------------------------------------------------------------------------------
 
     std::vector<Entity*> Scene::GetVisibleEntities ()
     {
-        Point cameraPos = m_SceneManager->GetCamera ().GetTranslate ();
+        Point cameraCenter = m_SceneManager->GetCamera ().GetCenter ();
 
-        if (cameraPos != m_VisibleLastCameraPos)
+        if (cameraCenter != m_VisibleLastCameraPos)
         {
-            Point size = m_SceneManager->GetCamera ().GetScale ()
-                * m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
-            float offsetMultiplier = 0.5f;
+            Point cameraScale = m_SceneManager->GetCamera ().GetScale ();
+            Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
 
-            m_VisibleEntities = m_QuadTree.GetEntitiesWithinRect (
-                Rect (cameraPos - size * offsetMultiplier, cameraPos + size + size * offsetMultiplier));
+            float visibleScale = 0.5f;
+            Point moveBy (screenSize.Width * visibleScale / cameraScale.X,
+                          screenSize.Height * visibleScale / cameraScale.Y);
+            Rect targetRect = Rect (cameraCenter - moveBy, cameraCenter + moveBy);
+
+            m_VisibleEntities = m_QuadTree.GetEntitiesWithinRect (targetRect);
 
             std::sort (m_VisibleEntities.begin (), m_VisibleEntities.end (), Entity::CompareByZOrder);
         }
 
-        m_VisibleLastCameraPos = cameraPos;
+        m_VisibleLastCameraPos = cameraCenter;
 
         return m_VisibleEntities;
     }

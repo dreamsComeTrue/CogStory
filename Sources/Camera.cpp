@@ -95,9 +95,11 @@ namespace aga
     Point Camera::GetCenter ()
     {
         Point trans = GetTranslate ();
+        Point scale = GetScale ();
         const Point winSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
 
-        return { trans.X + winSize.Width * 0.5f, trans.Y + winSize.Height * 0.5f };
+        return { (trans.X + winSize.Width * 0.5f) * (1.0f / scale.X),
+                 (trans.Y + winSize.Height * 0.5f) * (1.0f / scale.Y) };
     }
 
     //--------------------------------------------------------------------------------------------------

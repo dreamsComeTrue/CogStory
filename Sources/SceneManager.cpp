@@ -8,6 +8,7 @@
 #include "Scene.h"
 #include "SceneLoader.h"
 #include "Screen.h"
+#include "states/EditorState.h"
 
 #include <algorithm>
 
@@ -201,7 +202,7 @@ namespace aga
         {
             m_ActiveScene->Update (deltaTime);
 
-            if (m_MainLoop->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
+            if (m_MainLoop->GetStateManager ().GetActiveStateName () != EDITOR_STATE_NAME)
             {
                 m_SpeechFrameManager.Update (deltaTime);
             }
@@ -220,7 +221,7 @@ namespace aga
 
             m_Camera.UseIdentityTransform ();
 
-            if (m_MainLoop->GetStateManager ().GetActiveStateName () != "EDITOR_STATE")
+            if (m_MainLoop->GetStateManager ().GetActiveStateName () != EDITOR_STATE_NAME)
             {
                 m_SpeechFrameManager.Render (deltaTime);
             }
