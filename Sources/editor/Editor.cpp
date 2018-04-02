@@ -242,7 +242,7 @@ namespace aga
         actorButton = new Gwk::Controls::Button (m_MainCanvas);
         actorButton->SetText ("ACTOR");
         actorButton->SetPos (20, speechButton->Bottom () + 5);
-        actorButton->onPress.Add (this, &Editor::OnActor);
+        actorButton->onPress.Add (this, &Editor::OnActorSelected);
 
         playButton = new Gwk::Controls::Button (m_MainCanvas);
         playButton->SetText ("PLAY");
@@ -416,7 +416,8 @@ namespace aga
 
     bool Editor::IsEditorCanvasNotCovered ()
     {
-        return ((m_CursorMode == CursorMode::TileSelectMode || m_CursorMode == CursorMode::TileEditMode)
+        return ((m_CursorMode == CursorMode::TileSelectMode || m_CursorMode == CursorMode::TileEditMode
+                 || m_CursorMode == CursorMode::EditPhysBodyMode)
                 && !m_EditorSceneWindow->GetSceneWindow ()->Visible () && !m_SpeechWindow->GetSceneWindow ()->Visible ()
                 && !m_TriggerAreaWindow->GetSceneWindow ()->Visible ()
                 && !m_FlagPointWindow->GetSceneWindow ()->Visible () && !m_ActorWindow->GetSceneWindow ()->Visible ());
@@ -766,13 +767,14 @@ namespace aga
             m_EditorActorMode.GetSelectedActor ()->Render (deltaTime);
             m_EditorActorMode.GetSelectedActor ()->DrawBounds ();
             m_EditorActorMode.GetSelectedActor ()->DrawPhysBody ();
+
+            ALLEGRO_MOUSE_STATE state;
+            al_get_mouse_state (&state);
+
+            m_EditorPhysMode.DrawPhysPoints (state.x, state.y);
         }
 
-        ALLEGRO_MOUSE_STATE state;
-        al_get_mouse_state (&state);
-
         camera.UseIdentityTransform ();
-        m_EditorPhysMode.DrawPhysBody (state.x, state.y);
         RenderUI ();
     }
 
@@ -996,19 +998,17 @@ namespace aga
         if (m_CursorMode != CursorMode::EditPhysBodyMode)
         {
             Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
-            Point scale = camera.GetScale ();
-            Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-            Rect bounds;
 
             if (m_EditorActorMode.GetSelectedActor ())
             {
-                bounds = m_EditorActorMode.GetSelectedActor ()->Bounds;
+                //  In case of messed up scaling...
+                OnResetScale ();
+
+                Rect bounds = m_EditorActorMode.GetSelectedActor ()->Bounds;
+                camera.SetCenter (-bounds.GetCenter ().X, -bounds.GetCenter ().Y);
+
+                m_CursorMode = CursorMode::EditPhysBodyMode;
             }
-
-            camera.SetTranslate (screenSize.Width * 0.5 - bounds.Pos.X * scale.X,
-                                 screenSize.Height * 0.5 - bounds.Pos.Y * scale.Y);
-
-            m_CursorMode = CursorMode::EditPhysBodyMode;
         }
         else
         {

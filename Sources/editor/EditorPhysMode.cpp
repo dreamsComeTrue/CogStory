@@ -26,11 +26,12 @@ namespace aga
 
     bool EditorPhysMode::MoveSelectedPhysPoint ()
     {
-        Point origin;
+        Point origin = { 0, 0 };
+        Actor* actor = m_Editor->GetEditorActorMode ().GetSelectedActor ();
 
-        if (m_Editor->GetEditorActorMode ().GetSelectedActor ())
+        if (actor)
         {
-            origin = m_Editor->GetEditorActorMode ().GetSelectedActor ()->Bounds.GetPos ();
+            origin = actor->Bounds.GetPos () + actor->Bounds.GetHalfSize ();
         }
 
         ALLEGRO_MOUSE_STATE state;
@@ -51,81 +52,77 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorPhysMode::DrawPhysBody (float mouseX, float mouseY)
+    void EditorPhysMode::DrawPhysPoints (float mouseX, float mouseY)
     {
-        Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
-        Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
-        Point* selectedPoint = GetPhysPointUnderCursor (mouseX, mouseY);
-        Point origin;
+        Point origin = { 0, 0 };
         std::vector<std::vector<Point>>* physPoints = nullptr;
+        Actor* actor = m_Editor->GetEditorActorMode ().GetSelectedActor ();
 
-        if (m_Editor->GetEditorActorMode ().GetSelectedActor ())
+        if (actor)
         {
-            origin = m_Editor->GetEditorActorMode ().GetSelectedActor ()->Bounds.GetPos ();
-            physPoints = &m_Editor->GetEditorActorMode ().GetSelectedActor ()->PhysPoints;
+            origin = actor->Bounds.GetPos () + actor->Bounds.GetHalfSize ();
+            physPoints = &actor->PhysPoints;
         }
 
         if (physPoints)
         {
             for (std::vector<Point>& points : *physPoints)
             {
-                if (!points.empty ())
+                int i = 0;
+                int selectedIndex = std::numeric_limits<int>::min ();
+
+                for (int j = 0; j < points.size (); ++j)
                 {
-                    int i = 0;
-                    int selectedIndex = std::numeric_limits<int>::min ();
-
-                    for (int j = 0; j < points.size (); ++j)
+                    if (m_PhysPoint && points[j] == *m_PhysPoint)
                     {
-                        if (m_PhysPoint && points[j] == *m_PhysPoint)
-                        {
-                            selectedIndex = j;
-                            break;
-                        }
+                        selectedIndex = j;
+                        break;
+                    }
+                }
+
+                for (const Point& p : points)
+                {
+                    float xPoint = origin.X + p.X;
+                    float yPoint = origin.Y + p.Y;
+
+                    ALLEGRO_COLOR color;
+
+                    if (i == 0)
+                    {
+                        color = COLOR_GREEN;
+                    }
+                    else
+                    {
+                        color = COLOR_YELLOW;
                     }
 
-                    for (const Point& p : points)
+                    if (i == selectedIndex)
                     {
-                        float xPoint = (origin.X + p.X) * scale.X - translate.X;
-                        float yPoint = (origin.Y + p.Y) * scale.Y - translate.Y;
-
-                        ALLEGRO_COLOR color;
-
-                        if (i == 0)
-                        {
-                            color = COLOR_GREEN;
-                        }
-                        else
-                        {
-                            color = COLOR_YELLOW;
-                        }
-
-                        if (i == selectedIndex)
-                        {
-                            //  Mark selected corner
-                            color = COLOR_BLUE;
-                        }
-                        else if ((i == 0 && selectedIndex == points.size () - 1) || (i == selectedIndex + 1))
-                        {
-                            //  Mark also next corner
-                            color = COLOR_LIGHTBLUE;
-                        }
-
-                        if (selectedPoint != nullptr && p == *selectedPoint)
-                        {
-                            color = COLOR_RED;
-                        }
-
-                        if (m_Editor->GetMainLoop ()->GetSceneManager ().IsDrawPhysData () && false)
-                        {
-                            m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
-                                FONT_NAME_SMALL, al_map_rgb (0, 255, 0), xPoint, yPoint, ToString (i),
-                                ALLEGRO_ALIGN_CENTER);
-                        }
-
-                        ++i;
-
-                        al_draw_filled_circle (xPoint, yPoint, 4, color);
+                        //  Mark selected corner
+                        color = COLOR_BLUE;
                     }
+                    else if ((i == 0 && selectedIndex == points.size () - 1) || (i == selectedIndex + 1))
+                    {
+                        //  Mark also next corner
+                        color = COLOR_LIGHTBLUE;
+                    }
+
+                    Point* selectedPoint = GetPhysPointUnderCursor (mouseX, mouseY);
+                    if (selectedPoint != nullptr && p == *selectedPoint)
+                    {
+                        color = COLOR_RED;
+                    }
+
+                    if (m_Editor->GetMainLoop ()->GetSceneManager ().IsDrawPhysData () && false)
+                    {
+                        m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
+                            FONT_NAME_SMALL, al_map_rgb (0, 255, 0), xPoint, yPoint, ToString (i),
+                            ALLEGRO_ALIGN_CENTER);
+                    }
+
+                    ++i;
+
+                    al_draw_filled_circle (xPoint, yPoint, 4, color);
                 }
             }
         }
@@ -136,13 +133,14 @@ namespace aga
     void EditorPhysMode::InsertPhysPointAtCursor (int mouseX, int mouseY)
     {
         Point p = m_Editor->CalculateCursorPoint (mouseX, mouseY);
-        Point origin;
+        Point origin = { 0, 0 };
         std::vector<std::vector<Point>>* physPoints;
+        Actor* actor = m_Editor->GetEditorActorMode ().GetSelectedActor ();
 
-        if (m_Editor->GetEditorActorMode ().GetSelectedActor ())
+        if (actor)
         {
-            origin = m_Editor->GetEditorActorMode ().GetSelectedActor ()->Bounds.GetPos ();
-            physPoints = &m_Editor->GetEditorActorMode ().GetSelectedActor ()->PhysPoints;
+            origin = actor->Bounds.GetPos () + actor->Bounds.GetHalfSize ();
+            physPoints = &actor->PhysPoints;
         }
 
         if (physPoints)
@@ -190,9 +188,11 @@ namespace aga
 
             if (inserted)
             {
-                if (m_Editor->GetEditorActorMode ().GetSelectedActor ())
+                Actor* actor = m_Editor->GetEditorActorMode ().GetSelectedActor ();
+
+                if (actor)
                 {
-                    m_Editor->GetEditorActorMode ().GetSelectedActor ()->SetPhysOffset (origin);
+                    actor->SetPhysOffset (origin);
                 }
             }
         }
@@ -202,13 +202,15 @@ namespace aga
 
     Point* EditorPhysMode::GetPhysPointUnderCursor (int mouseX, int mouseY)
     {
-        Point origin;
+        Point origin = { 0, 0 };
         std::vector<std::vector<Point>>* physPoints;
 
-        if (m_Editor->GetEditorActorMode ().GetSelectedActor ())
+        Actor* actor = m_Editor->GetEditorActorMode ().GetSelectedActor ();
+
+        if (actor)
         {
-            origin = m_Editor->GetEditorActorMode ().GetSelectedActor ()->Bounds.GetPos ();
-            physPoints = &m_Editor->GetEditorActorMode ().GetSelectedActor ()->PhysPoints;
+            origin = actor->Bounds.GetPos () + actor->Bounds.GetHalfSize ();
+            physPoints = &actor->PhysPoints;
         }
 
         if (physPoints && !physPoints->empty ())

@@ -17,7 +17,7 @@ namespace aga
         EditorPhysMode (Editor* editor);
         virtual ~EditorPhysMode ();
 
-        void DrawPhysBody (float mouseX, float mouseY);
+        void DrawPhysPoints (float mouseX, float mouseY);
 
         bool MoveSelectedPhysPoint ();
 

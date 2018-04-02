@@ -118,7 +118,7 @@ namespace aga
         void OnNewPoly ();
 
         void OnSpeech ();
-        void OnActor ();
+        void OnActorSelected ();
 
         void MarkPlayerPosition ();
 
