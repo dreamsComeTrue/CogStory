@@ -30,25 +30,10 @@ namespace aga
 
         m_Data.clear ();
 
-        if (m_TopLeftTree)
-        {
-            SAFE_DELETE (m_TopLeftTree);
-        }
-
-        if (m_TopRightTree)
-        {
-            SAFE_DELETE (m_TopRightTree);
-        }
-
-        if (m_BottomLeftTree)
-        {
-            SAFE_DELETE (m_BottomLeftTree);
-        }
-
-        if (m_BottomRightTree)
-        {
-            SAFE_DELETE (m_BottomRightTree);
-        }
+        SAFE_DELETE (m_TopLeftTree);
+        SAFE_DELETE (m_TopRightTree);
+        SAFE_DELETE (m_BottomLeftTree);
+        SAFE_DELETE (m_BottomRightTree);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -321,49 +306,68 @@ namespace aga
     {
         if (m_IsDivided)
         {
+            bool updateParent = false;
+
             if (m_TopLeftTree)
             {
-                m_TopLeftTree->UpdateStructures ();
+                if (m_TopLeftTree->m_IsDivided)
+                {
+                    m_TopLeftTree->UpdateStructures ();
+                }
+                else if (m_TopLeftTree->m_Data.empty ())
+                {
+                    SAFE_DELETE (m_TopLeftTree);
+                    updateParent = true;
+                }
             }
 
             if (m_TopRightTree)
             {
-                m_TopRightTree->UpdateStructures ();
+                if (m_TopRightTree->m_IsDivided)
+                {
+                    m_TopRightTree->UpdateStructures ();
+                }
+                else if (m_TopRightTree->m_Data.empty ())
+                {
+                    SAFE_DELETE (m_TopRightTree);
+                    updateParent = true;
+                }
             }
 
             if (m_BottomLeftTree)
             {
-                m_BottomLeftTree->UpdateStructures ();
+                if (m_BottomLeftTree->m_IsDivided)
+                {
+                    m_BottomLeftTree->UpdateStructures ();
+                }
+                else if (m_BottomLeftTree->m_Data.empty ())
+                {
+                    SAFE_DELETE (m_BottomLeftTree);
+                    updateParent = true;
+                }
             }
 
             if (m_BottomRightTree)
             {
-                m_BottomRightTree->UpdateStructures ();
-            }
-        }
-        else if (m_Data.empty () && m_Parent)
-        {
-            if (this == m_Parent->m_TopLeftTree)
-            {
-                SAFE_DELETE (m_Parent->m_TopLeftTree);
-            }
-            else if (this == m_Parent->m_TopRightTree)
-            {
-                SAFE_DELETE (m_Parent->m_TopRightTree);
-            }
-            else if (this == m_Parent->m_BottomLeftTree)
-            {
-                SAFE_DELETE (m_Parent->m_BottomLeftTree);
-            }
-            else if (this == m_Parent->m_BottomRightTree)
-            {
-                SAFE_DELETE (m_Parent->m_BottomRightTree);
+                if (m_BottomRightTree->m_IsDivided)
+                {
+                    m_BottomRightTree->UpdateStructures ();
+                }
+                else if (m_BottomRightTree->m_Data.empty ())
+                {
+                    SAFE_DELETE (m_BottomRightTree);
+                    updateParent = true;
+                }
             }
 
-            if (!m_Parent->m_TopLeftTree && !m_Parent->m_TopRightTree && !m_Parent->m_BottomLeftTree
-                && !m_Parent->m_BottomRightTree)
+            if (!m_TopLeftTree && !m_TopRightTree && !m_BottomLeftTree && !m_BottomRightTree)
             {
-                m_Parent->m_IsDivided = false;
+                m_IsDivided = false;
+            }
+
+            if (updateParent && m_Parent)
+            {
+                m_Parent->UpdateStructures ();
             }
         }
     }
