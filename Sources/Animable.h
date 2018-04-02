@@ -30,8 +30,11 @@ namespace aga
         void SetAnimation (Animation animation) { m_Animation = animation; }
         std::map<std::string, AnimationFrames>& GetAnimations ();
 
+        std::string GetImagePath () const { return m_ImagePath; }
+
     private:
         ALLEGRO_BITMAP* m_Image;
+        std::string m_ImagePath;
         int m_ImageWidth;
         int m_ImageHeight;
 

@@ -9,6 +9,7 @@
             "scripts": [],
             "size": "64 64",
             "tileset": "0_0_home",
+            "tile": "bed",
             "type": "Tile",
             "z-order": "0"
         },
@@ -21,6 +22,7 @@
             "scripts": [],
             "size": "64 64",
             "tileset": "0_0_home",
+            "tile": "bed",
             "type": "Tile",
             "z-order": "0"
         },
@@ -33,6 +35,7 @@
             "scripts": [],
             "size": "64 64",
             "tileset": "0_0_home",
+            "tile": "bed",
             "type": "Tile",
             "z-order": "0"
         },
@@ -45,6 +48,7 @@
             "scripts": [],
             "size": "272 160",
             "tileset": "0_0_home",
+            "tile": "parallax-forest-back-trees",
             "type": "Tile",
             "z-order": "0"
         }

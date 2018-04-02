@@ -7,6 +7,8 @@
 #include "EditorWindows.h"
 #include "MainLoop.h"
 #include "Screen.h"
+#include "actors/NPCActor.h"
+#include "actors/TileActor.h"
 
 namespace aga
 {
@@ -18,6 +20,8 @@ namespace aga
     Gwk::Controls::Property::Text* positionProperty;
     Gwk::Controls::Property::Text* rotationProperty;
     Gwk::Controls::Property::Text* zOrderProperty;
+    Gwk::Controls::Property::Text* imageProperty;
+    Gwk::Controls::Property::LabelButton* imagePathProperty;
 
     EditorActorWindow::EditorActorWindow (Editor* editor, Gwk::Controls::Canvas* canvas)
         : m_Editor (editor)
@@ -76,6 +80,14 @@ namespace aga
             m_TransformSection->Add ("Rotation");
             m_TransformSection->Add ("ZOrder");
 
+            m_ApperanceSection = m_ActorProperties->Add ("Apperance");
+            m_ApperanceSection->Add ("Image");
+
+            imagePathProperty = new Gwk::Controls::Property::LabelButton (m_ApperanceSection, "", "...");
+            imagePathProperty->FuncButton->onPress.Add (this, &EditorActorWindow::BrowseForImage);
+
+            m_ApperanceSection->Add ("Path", imagePathProperty);
+
             m_ScriptSection = m_ActorProperties->Add ("Scripts");
 
             idProperty = static_cast<Gwk::Controls::Property::Text*> (
@@ -93,6 +105,8 @@ namespace aga
                 static_cast<Gwk::Controls::PropertyRow*> (m_TransformSection->Find ("Rotation"))->GetProperty ());
             zOrderProperty = static_cast<Gwk::Controls::Property::Text*> (
                 static_cast<Gwk::Controls::PropertyRow*> (m_TransformSection->Find ("ZOrder"))->GetProperty ());
+            imageProperty = static_cast<Gwk::Controls::Property::Text*> (
+                static_cast<Gwk::Controls::PropertyRow*> (m_ApperanceSection->Find ("Image"))->GetProperty ());
         }
 
         m_ActorProperties->ExpandAll ();
@@ -140,6 +154,8 @@ namespace aga
         positionProperty->SetPropertyValue ("", false);
         rotationProperty->SetPropertyValue ("", false);
         zOrderProperty->SetPropertyValue ("", false);
+        imageProperty->SetPropertyValue ("", false);
+        imagePathProperty->TextLabel->SetText ("", false);
 
         m_SceneWindow->SetPosition (Gwk::Position::Center);
         m_SceneWindow->SetHidden (false);
@@ -178,9 +194,10 @@ namespace aga
 
             sscanf (positionProperty->GetPropertyValue ().c_str (), "%f,%f", &m_Position.X, &m_Position.Y);
             sscanf (rotationProperty->GetPropertyValue ().c_str (), "%f", &m_Rotation);
+            sscanf (zOrderProperty->GetPropertyValue ().c_str (), "%d", &m_ZOrder);
 
-            bool ret
-                = m_Editor->GetEditorActorMode ().AddOrUpdateActor (oldName, typePropertyTxt, m_Position, m_Rotation);
+            bool ret = m_Editor->GetEditorActorMode ().AddOrUpdateActor (oldName, typePropertyTxt, m_Position,
+                                                                         m_Rotation, m_ZOrder);
 
             if (ret)
             {
@@ -209,17 +226,37 @@ namespace aga
 
     void EditorActorWindow::SelectActor (const std::string& name)
     {
-        Gwk::Controls::Base::List children = m_ActorsTree->GetChildNodes ();
-        for (Gwk::Controls::Base* node : children)
-        {
-            Gwk::Controls::TreeNode* treeNode = static_cast<Gwk::Controls::TreeNode*> (node);
+        Gwk::Controls::TreeNode* node = FindNode (m_ActorsTree, name);
 
-            if (treeNode->GetText () == name)
+        if (node)
+        {
+            node->SetSelected (true);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Gwk::Controls::TreeNode* EditorActorWindow::FindNode (Gwk::Controls::TreeNode* node, const std::string& name)
+    {
+        Gwk::Controls::Base::List children = node->GetChildNodes ();
+        for (Gwk::Controls::Base* n : children)
+        {
+            Gwk::Controls::TreeNode* childNode = static_cast<Gwk::Controls::TreeNode*> (n);
+
+            if (childNode->GetText () == name)
             {
-                treeNode->SetSelected (true);
-                break;
+                return childNode;
+            }
+
+            Gwk::Controls::TreeNode* foundNode = FindNode (childNode, name);
+
+            if (foundNode)
+            {
+                return foundNode;
             }
         }
+
+        return nullptr;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -228,17 +265,79 @@ namespace aga
     {
         m_ActorsTree->Clear ();
 
+        Gwk::Controls::TreeNode* tilesNode = m_ActorsTree->AddNode ("Tiles");
+        Gwk::Controls::TreeNode* actorsNode = m_ActorsTree->AddNode ("Actors");
+        Gwk::Controls::TreeNode* npcNode = actorsNode->AddNode ("NPC");
+
         std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
 
         for (Actor* actor : actors)
         {
-            Gwk::Controls::TreeNode* node = m_ActorsTree->AddNode (actor->Name);
-            node->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
+            Gwk::Controls::TreeNode* node;
+
+            std::string name = actor->Name + std::string (" [") + ToString (actor->ID) + std::string ("]");
+
+            if (actor->GetTypeName () == TileActor::TypeName)
+            {
+                node = tilesNode->AddNode (name);
+            }
+            else if (actor->GetTypeName () == NPCActor::TypeName)
+            {
+                node = npcNode->AddNode (name);
+            }
+
+            if (node)
+            {
+                node->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
+            }
         }
 
         m_ActorsTree->ExpandAll ();
 
         m_SelectedActor = nullptr;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string EditorActorWindow::GetImageName (Actor* actor)
+    {
+        std::string imageName = "";
+
+        if (actor->GetTypeName () == TileActor::TypeName)
+        {
+            imageName = static_cast<TileActor*> (actor)->TileName;
+        }
+        else if (actor->GetTypeName () == NPCActor::TypeName)
+        {
+        }
+
+        return imageName;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string EditorActorWindow::GetImagePath (Actor* actor)
+    {
+        std::string imagePath = "";
+
+        if (actor->GetTypeName () == TileActor::TypeName)
+        {
+            imagePath = static_cast<TileActor*> (actor)->Tileset;
+        }
+        else if (actor->GetTypeName () == NPCActor::TypeName)
+        {
+            imagePath = actor->GetImagePath ();
+            std::replace (imagePath.begin (), imagePath.end (), '\\', '/');
+            std::string dataPath = "Data/gfx/";
+            size_t index = imagePath.find (dataPath);
+
+            if (index != std::string::npos)
+            {
+                imagePath = imagePath.substr (index + dataPath.length ());
+            }
+        }
+
+        return imagePath;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -253,7 +352,9 @@ namespace aga
 
             for (Actor* actor : actors)
             {
-                if (actor->Name == node->GetText ())
+                std::string name = actor->Name + std::string (" [") + ToString (actor->ID) + std::string ("]");
+
+                if (name == node->GetText ())
                 {
                     m_SelectedActor = actor;
 
@@ -266,6 +367,8 @@ namespace aga
                         Gwk::Utility::Format ("%f,%f", actor->Bounds.Pos.X, actor->Bounds.Pos.Y), false);
                     rotationProperty->SetPropertyValue (Gwk::Utility::Format ("%f", actor->Rotation), false);
                     zOrderProperty->SetPropertyValue (ToString (actor->ZOrder), false);
+                    imageProperty->SetPropertyValue (GetImageName (actor), false);
+                    imagePathProperty->TextLabel->SetText (GetImagePath (actor), false);
 
                     m_ScriptSection->Clear ();
 
@@ -359,6 +462,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void EditorActorWindow::OnCancel () { m_SceneWindow->CloseButtonPressed (); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::BrowseForImage () {}
 
     //--------------------------------------------------------------------------------------------------
 }

@@ -33,7 +33,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     bool EditorActorMode::AddOrUpdateActor (const std::string& name, const std::string& actorType, Point pos,
-                                            float rotation)
+                                            float rotation, int zOrder)
     {
         Actor* actor = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActor (name);
 
@@ -43,18 +43,20 @@ namespace aga
             actor->Bounds.Pos = pos;
             actor->TemplateBounds.Pos = pos;
             actor->Rotation = rotation;
+            actor->ZOrder = zOrder;
         }
         else
         {
-            Actor* newActor = ActorFactory::GetActor (&m_Editor->GetMainLoop ()->GetSceneManager (), actorType);
-            newActor->Name = name;
-            newActor->Bounds.Pos = pos;
-            newActor->TemplateBounds.Pos = pos;
-            newActor->Rotation = rotation;
+            actor = ActorFactory::GetActor (&m_Editor->GetMainLoop ()->GetSceneManager (), actorType);
+            actor->Name = name;
+            actor->Bounds.Pos = pos;
+            actor->TemplateBounds.Pos = pos;
+            actor->Rotation = rotation;
+            actor->ZOrder = zOrder;
 
-            newActor->Initialize ();
+            actor->Initialize ();
 
-            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddActor (name, newActor);
+            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddActor (name, actor);
         }
 
         m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->SortActors ();
@@ -265,7 +267,8 @@ namespace aga
 
         tile->ID = Entity::GetNextID ();
         tile->Tileset = m_Atlas->GetName ();
-        tile->Name = m_SelectedAtlasRegion.Name;
+        tile->TileName = m_SelectedAtlasRegion.Name;
+        tile->Name = tile->TileName;
 
         tile->Bounds = { { point.X, point.Y },
                          { point.X + region.Bounds.GetSize ().Width, point.Y + region.Bounds.GetSize ().Height } };

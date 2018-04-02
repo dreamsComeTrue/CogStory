@@ -84,8 +84,10 @@ namespace aga
         void Render (float deltaTime);
 
         void AddActor (const std::string& name, Actor* actor);
+        void RemoveActor (Actor* actor);
         void RemoveActor (const std::string& name);
         Actor* GetActor (const std::string& name);
+        Actor* GetActor (int id);
         std::vector<Actor*>& GetActors ();
 
         void AddTile (TileActor* tile);
@@ -160,6 +162,7 @@ namespace aga
         QuadTreeNode m_QuadTree;
         Point m_VisibleLastCameraPos;
         std::vector<Entity*> m_VisibleEntities;
+        bool m_ActorsTreeChanged;
 
         Point m_PlayerStartLocation;
     };

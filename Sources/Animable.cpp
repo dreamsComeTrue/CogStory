@@ -20,6 +20,7 @@ namespace aga
 
     bool Animable::Initialize (const std::string& filePath)
     {
+        m_ImagePath = filePath;
         m_Image = al_load_bitmap (filePath.c_str ());
         m_ImageWidth = al_get_bitmap_width (m_Image);
         m_ImageHeight = al_get_bitmap_height (m_Image);

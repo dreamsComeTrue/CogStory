@@ -1070,13 +1070,16 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnActor ()
+    void Editor::OnActorSelected ()
     {
         m_ActorWindow->Show ();
 
         if (m_EditorActorMode.GetSelectedActor ())
         {
-            m_ActorWindow->SelectActor (m_EditorActorMode.GetSelectedActor ()->Name);
+            Actor* actor = m_EditorActorMode.GetSelectedActor ();
+            std::string name = actor->Name + std::string (" [") + ToString (actor->ID) + std::string ("]");
+
+            m_ActorWindow->SelectActor (name);
         }
     }
 
@@ -1204,7 +1207,7 @@ namespace aga
     {
         if (m_CursorMode != EditPhysBodyMode && m_EditorActorMode.GetSelectedActor ())
         {
-            OnActor ();
+            OnActorSelected ();
         }
     }
 

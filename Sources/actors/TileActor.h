@@ -25,11 +25,13 @@ namespace aga
         virtual std::string GetTypeName () override;
 
         std::string Tileset;
+        std::string TileName;
 
     private:
         bool operator== (const TileActor& rhs) const
         {
-            return Tileset == rhs.Tileset && Name == rhs.Name && Bounds == rhs.Bounds && Rotation == rhs.Rotation;
+            return Tileset == rhs.Tileset && TileName == rhs.TileName && Name == rhs.Name && Bounds == rhs.Bounds
+                && Rotation == rhs.Rotation;
         }
     };
 }

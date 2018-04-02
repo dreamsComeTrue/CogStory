@@ -79,6 +79,7 @@ namespace aga
         , m_QuadTree (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }))
         , m_CurrentActor (nullptr)
         , m_BackgroundColor (al_map_rgb (60, 60, 70))
+        , m_ActorsTreeChanged (false)
     {
     }
 
@@ -195,16 +196,17 @@ namespace aga
         m_SceneManager->GetCamera ().Update (deltaTime);
 
         bool isPlayerDrawn = false;
-        std::vector<Entity*> entities = GetVisibleEntities ();
+
+        GetVisibleEntities ();
 
         if (m_SceneManager->IsDrawBoundingBox ())
         {
             DrawQuadTree (&m_QuadTree);
         }
 
-        for (int i = 0; i < entities.size (); ++i)
+        for (int i = 0; i < m_VisibleEntities.size (); ++i)
         {
-            Actor* actor = (Actor*)entities[i];
+            Actor* actor = (Actor*)m_VisibleEntities[i];
 
             if (!isPlayerDrawn && actor->ZOrder >= PLAYER_Z_ORDER)
             {
@@ -254,7 +256,7 @@ namespace aga
         m_SceneManager->GetCamera ().UseIdentityTransform ();
 
         Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
-        font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), 10, 10, ToString (entities.size ()),
+        font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), 10, 10, ToString (m_VisibleEntities.size ()),
                        ALLEGRO_ALIGN_LEFT);
     }
 
@@ -264,7 +266,7 @@ namespace aga
     {
         Point cameraCenter = m_SceneManager->GetCamera ().GetCenter ();
 
-        if (cameraCenter != m_VisibleLastCameraPos)
+        if ((cameraCenter != m_VisibleLastCameraPos) || m_ActorsTreeChanged)
         {
             Point cameraScale = m_SceneManager->GetCamera ().GetScale ();
             Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
@@ -277,6 +279,8 @@ namespace aga
             m_VisibleEntities = m_QuadTree.GetEntitiesWithinRect (targetRect);
 
             std::sort (m_VisibleEntities.begin (), m_VisibleEntities.end (), Entity::CompareByZOrder);
+
+            m_ActorsTreeChanged = false;
         }
 
         m_VisibleLastCameraPos = cameraCenter;
@@ -295,6 +299,27 @@ namespace aga
             m_Actors.push_back (actor);
             m_QuadTree.Insert (actor);
             m_QuadTree.UpdateStructures ();
+
+            m_ActorsTreeChanged = true;
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::RemoveActor (Actor* actor)
+    {
+        for (int i = 0; i < m_Actors.size (); ++i)
+        {
+            if (m_Actors[i] == actor)
+            {
+                m_ActorsTreeChanged = true;
+
+                m_QuadTree.Remove (m_Actors[i]);
+                m_QuadTree.UpdateStructures ();
+                SAFE_DELETE (m_Actors[i]);
+                m_Actors.erase (m_Actors.begin () + i);
+                break;
+            }
         }
     }
 
@@ -302,16 +327,11 @@ namespace aga
 
     void Scene::RemoveActor (const std::string& name)
     {
-        for (int i = 0; i < m_Actors.size (); ++i)
+        Actor* actor = GetActor (name);
+
+        if (actor)
         {
-            if (m_Actors[i]->Name == name)
-            {
-                m_QuadTree.Remove (m_Actors[i]);
-                m_QuadTree.UpdateStructures ();
-                SAFE_DELETE (m_Actors[i]);
-                m_Actors.erase (m_Actors.begin () + i);
-                break;
-            }
+            RemoveActor (actor);
         }
     }
 
@@ -332,6 +352,21 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    Actor* Scene::GetActor (int id)
+    {
+        for (Actor* actor : m_Actors)
+        {
+            if (actor->ID == id)
+            {
+                return actor;
+            }
+        }
+
+        return nullptr;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     std::vector<Actor*>& Scene::GetActors () { return m_Actors; }
 
     //--------------------------------------------------------------------------------------------------
@@ -341,16 +376,13 @@ namespace aga
         m_Actors.push_back (tile);
         m_QuadTree.Insert (tile);
         m_QuadTree.UpdateStructures ();
+
+        m_ActorsTreeChanged = true;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::RemoveTile (TileActor* tile)
-    {
-        m_Actors.erase (std::remove (m_Actors.begin (), m_Actors.end (), tile), m_Actors.end ());
-        m_QuadTree.Remove (tile);
-        m_QuadTree.UpdateStructures ();
-    }
+    void Scene::RemoveTile (TileActor* tile) { RemoveActor (tile); }
 
     //--------------------------------------------------------------------------------------------------
 

@@ -28,7 +28,11 @@ namespace aga
     {
         Actor::Initialize ();
 
-        Bounds.Size = m_SceneManager->GetAtlasManager ()->GetAtlas (Tileset)->GetRegion (Name).Bounds.GetSize ();
+        if (Tileset != "" && TileName != "")
+        {
+            Bounds.Size
+                = m_SceneManager->GetAtlasManager ()->GetAtlas (Tileset)->GetRegion (TileName).Bounds.GetSize ();
+        }
 
         return true;
     }
@@ -46,7 +50,7 @@ namespace aga
         if (atlas)
         {
             Point pos = Bounds.GetPos ();
-            atlas->DrawRegion (Name, pos.X, pos.Y, 1.0f, 1.0f, DegressToRadians (Rotation));
+            atlas->DrawRegion (TileName, pos.X, pos.Y, 1.0f, 1.0f, DegressToRadians (Rotation));
         }
     }
 
@@ -58,7 +62,7 @@ namespace aga
 
         if (atlas)
         {
-            Rect regionBounds = atlas->GetRegion (Name).Bounds;
+            Rect regionBounds = atlas->GetRegion (TileName).Bounds;
 
             Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
             Point pos = { Bounds.GetPos ().X + regionBounds.GetHalfSize ().Width,

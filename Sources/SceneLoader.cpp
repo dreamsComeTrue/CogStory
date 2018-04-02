@@ -188,6 +188,7 @@ namespace aga
                     if (newActor->GetTypeName () == TileActor::TypeName)
                     {
                         dynamic_cast<TileActor*> (newActor)->Tileset = actorIt["tileset"];
+                        dynamic_cast<TileActor*> (newActor)->TileName = actorIt["tile"];
                     }
 
                     //  Physics
@@ -423,6 +424,7 @@ namespace aga
                 if (actor->GetTypeName () == TileActor::TypeName)
                 {
                     actorObj["tileset"] = dynamic_cast<TileActor*> (actor)->Tileset;
+                    actorObj["tile"] = dynamic_cast<TileActor*> (actor)->TileName;
                 }
 
                 actorObj["phys"] = json::array ({});

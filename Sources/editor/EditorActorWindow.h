@@ -38,11 +38,18 @@ namespace aga
 
         void AddScriptEntry (const std::string& name, const std::string& path);
 
+        void BrowseForImage ();
+        std::string GetImageName (class Actor* actor);
+        std::string GetImagePath (class Actor* actor);
+
+        Gwk::Controls::TreeNode* FindNode (Gwk::Controls::TreeNode* node, const std::string& name);
+
     private:
         Editor* m_Editor;
 
         int m_SelectedType;
         float m_Rotation;
+        int m_ZOrder;
         Point m_Position;
 
         class Actor* m_SelectedActor;
@@ -53,6 +60,7 @@ namespace aga
         Gwk::Controls::PropertyTree* m_ActorProperties;
         Gwk::Controls::Properties* m_GeneralSection;
         Gwk::Controls::Properties* m_TransformSection;
+        Gwk::Controls::Properties* m_ApperanceSection;
         Gwk::Controls::Properties* m_ScriptSection;
     };
 }
