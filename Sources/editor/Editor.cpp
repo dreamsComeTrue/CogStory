@@ -785,31 +785,35 @@ namespace aga
         const ALLEGRO_COLOR LIGHT_GRAY{ 0.4f, 0.4f, 0.4f, 1.0f };
 
         const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-        Point t = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
-        Point cameraCenter = m_MainLoop->GetSceneManager ().GetCamera ().GetCenter ();
-        cameraCenter.X = cameraCenter.X / m_GridSize;
-        cameraCenter.Y = cameraCenter.Y / m_GridSize;
+        Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
+        Point trans = camera.GetTranslate ();
+        Point scale = camera.GetScale ();
+        Point cameraCenter = camera.GetCenter ();
+
+        cameraCenter.X = cameraCenter.X / m_GridSize * scale.X;
+        cameraCenter.Y = cameraCenter.Y / m_GridSize * scale.Y;
 
         int halfSegmentsX = screenSize.Width * 0.5f / m_GridSize;
         int halfSegmentsY = screenSize.Height * 0.5f / m_GridSize;
 
-        float horBeginX = cameraCenter.X - halfSegmentsX;
-        float horEndX = cameraCenter.X + halfSegmentsX;
+        int spareSegments = 2;
+        int horBeginX = cameraCenter.X - halfSegmentsX - spareSegments;
+        int horEndX = cameraCenter.X + halfSegmentsX + spareSegments;
 
         for (int i = horBeginX; i < horEndX; ++i)
         {
-            float xOffset = i * m_GridSize - t.X;
+            float xOffset = i * m_GridSize - trans.X;
 
             //  |
             al_draw_line (xOffset, 0, xOffset, screenSize.Height, LIGHT_GRAY, 1);
         }
 
-        float horBeginY = cameraCenter.Y - halfSegmentsY;
-        float horEndY = cameraCenter.Y + halfSegmentsY;
+        int horBeginY = cameraCenter.Y - halfSegmentsY - spareSegments;
+        int horEndY = cameraCenter.Y + halfSegmentsY + spareSegments;
 
         for (int i = horBeginY; i < horEndY; ++i)
         {
-            float yOffset = i * m_GridSize - t.Y;
+            float yOffset = i * m_GridSize - trans.Y;
 
             //  --
             al_draw_line (0, yOffset, screenSize.Width, yOffset, LIGHT_GRAY, 1);
