@@ -110,7 +110,7 @@ namespace aga
     Actor* EditorActorMode::GetActorUnderCursor (int mouseX, int mouseY, Rect&& outRect)
     {
         std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
-        Actor* result = nullptr;
+        Actor* resultActor = nullptr;
 
         for (Actor* actorIt : actors)
         {
@@ -118,17 +118,17 @@ namespace aga
 
             if (InsideRect (mouseX, mouseY, r))
             {
-                if ((result == nullptr) || (result && (result->RenderID < actorIt->RenderID)))
+                if ((resultActor == nullptr) || (resultActor && (resultActor->RenderID < actorIt->RenderID)))
                 {
                     outRect = r;
-                    result = actorIt;
+                    resultActor = actorIt;
 
                     m_TileSelectionOffset = { r.GetTopLeft ().X - mouseX, r.GetTopLeft ().Y - mouseY };
                 }
             }
         }
 
-        return result;
+        return resultActor;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -203,13 +203,18 @@ namespace aga
             {
                 m_SelectedAtlasRegion = regions[i];
                 m_SelectedActor = AddTile (mouseX, mouseY);
-                m_Editor->SetCursorMode (CursorMode::TileEditMode);
                 m_Rotation = m_SelectedActor->Rotation;
+
+                //  Orient mouse cursor in middle of tile regarding camera scaling
+                m_TileSelectionOffset = -m_SelectedActor->Bounds.GetHalfSize ()
+                    * m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
 
                 if (!m_SelectedActor->PhysPoints.empty ())
                 {
                     m_Editor->GetEditorPhysMode ().SetPhysPoly (&m_SelectedActor->PhysPoints[0]);
                 }
+
+                m_Editor->SetCursorMode (CursorMode::TileEditMode);
 
                 return true;
             }
@@ -261,17 +266,16 @@ namespace aga
     TileActor* EditorActorMode::AddTile (int mouseX, int mouseY)
     {
         TileActor* tile = new TileActor (&m_Editor->GetMainLoop ()->GetSceneManager ());
-        AtlasRegion region = m_Atlas->GetRegion (m_SelectedAtlasRegion.Name);
-        Point point
-            = m_Editor->CalculateCursorPoint (mouseX + m_TileSelectionOffset.X, mouseY + m_TileSelectionOffset.Y);
+        Point regionSize = m_Atlas->GetRegion (m_SelectedAtlasRegion.Name).Bounds.GetSize ();
+        Point point = m_Editor->CalculateCursorPoint (mouseX, mouseY);
 
         tile->ID = Entity::GetNextID ();
+        tile->Name = tile->TileName;
         tile->Tileset = m_Atlas->GetName ();
         tile->TileName = m_SelectedAtlasRegion.Name;
-        tile->Name = tile->TileName;
 
-        tile->Bounds = { { point.X, point.Y },
-                         { point.X + region.Bounds.GetSize ().Width, point.Y + region.Bounds.GetSize ().Height } };
+        tile->Bounds = Rect (point.X - regionSize.Width * 0.5f, point.Y - regionSize.Height * 0.5f, regionSize.Width,
+                             regionSize.Height);
         tile->Rotation = m_Rotation;
 
         m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddTile (tile);
@@ -297,6 +301,12 @@ namespace aga
         float beginning = windowSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
         float advance = 0;
 
+        ALLEGRO_MOUSE_STATE state;
+        al_get_mouse_state (&state);
+
+        Point drawNamePoint = Point::MIN_POINT;
+        std::string drawName = "";
+
         for (int i = 0; i < TILES_COUNT; ++i)
         {
             advance = beginning + i * TILE_SIZE;
@@ -310,8 +320,22 @@ namespace aga
                 al_draw_scaled_bitmap (m_Atlas->GetImage (), region.GetPos ().X, region.GetPos ().Y,
                                        region.GetSize ().Width, region.GetSize ().Height, advance + 1,
                                        windowSize.Height - TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2, 0);
+
+                float x = advance;
+                float y = windowSize.Height - TILE_SIZE - 1;
+                Rect r = Rect{ { x, y }, { x + TILE_SIZE, y + TILE_SIZE - 2 } };
+
+                if (InsideRect (state.x, state.y, r))
+                {
+                    drawNamePoint = { state.x, state.y - 10 };
+                    drawName = regions[i].Name;
+                }
             }
         }
+
+        Font& font = m_Editor->GetMainLoop ()->GetScreen ()->GetFont ();
+        font.DrawText (FONT_NAME_SMALL, al_map_rgb (255, 255, 0), drawNamePoint.X, drawNamePoint.Y, drawName,
+                       ALLEGRO_ALIGN_CENTER);
     }
 
     //--------------------------------------------------------------------------------------------------

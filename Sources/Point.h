@@ -88,6 +88,7 @@ namespace aga
         }
 
         static Point MIN_POINT;
+        static Point ZERO_POINT;
     };
 }
 
