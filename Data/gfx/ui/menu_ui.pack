@@ -1,19 +1,34 @@
 
 menu_ui.png
+size: 128,64
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-arrow_light
-  rotate: false
-  xy: 1, 1
-  size: 20, 13
-  orig: 20, 13
-  offset: 0, 0
-  index: -1
 arrow_dark
   rotate: false
-  xy: 23, 1
-  size: 20, 13
-  orig: 20, 13
+  xy: 64, 30
+  size: 22, 16
+  orig: 22, 16
+  offset: 0, 0
+  index: -1
+arrow_light
+  rotate: false
+  xy: 86, 48
+  size: 22, 16
+  orig: 22, 16
+  offset: 0, 0
+  index: -1
+cog
+  rotate: false
+  xy: 0, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+text_frame
+  rotate: false
+  xy: 64, 46
+  size: 22, 18
+  orig: 22, 18
   offset: 0, 0
   index: -1

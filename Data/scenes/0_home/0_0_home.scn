@@ -12,8 +12,8 @@
             "rot": "0",
             "scripts": [],
             "size": "272 160",
-            "tileset": "0_0_home",
             "tile": "parallax-forest-front-trees",
+            "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "-1"
         },
@@ -29,8 +29,8 @@
             "rot": "0",
             "scripts": [],
             "size": "512 382",
-            "tileset": "0_0_home",
             "tile": "main_room",
+            "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "0"
         },
@@ -50,9 +50,9 @@
                     "path": "0_home/0_0_home_tile.script"
                 }
             ],
-            "size": "20 13",
-            "tileset": "menu_ui",
+            "size": "22 16",
             "tile": "arrow_dark",
+            "tileset": "menu_ui",
             "type": "Tile",
             "z-order": "0"
         },
@@ -72,9 +72,9 @@
                     "path": "0_home/0_0_home_tile.script"
                 }
             ],
-            "size": "20 13",
-            "tileset": "menu_ui",
+            "size": "22 16",
             "tile": "arrow_light",
+            "tileset": "menu_ui",
             "type": "Tile",
             "z-order": "0"
         },
@@ -90,8 +90,8 @@
             "rot": "0",
             "scripts": [],
             "size": "20 30",
-            "tileset": "characters_ui",
             "tile": "player_head",
+            "tileset": "actors_ui",
             "type": "Tile",
             "z-order": "0"
         },
@@ -122,8 +122,8 @@
             "rot": "0",
             "scripts": [],
             "size": "272 160",
-            "tileset": "0_0_home",
             "tile": "parallax-forest-front-trees",
+            "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "0"
         },
@@ -139,8 +139,8 @@
             "rot": "0",
             "scripts": [],
             "size": "272 160",
-            "tileset": "0_0_home",
             "tile": "parallax-forest-front-trees",
+            "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "0"
         },
@@ -156,8 +156,8 @@
             "rot": "0",
             "scripts": [],
             "size": "272 160",
-            "tileset": "0_0_home",
             "tile": "parallax-forest-back-trees",
+            "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "0"
         },
@@ -173,8 +173,8 @@
             "rot": "0",
             "scripts": [],
             "size": "64 64",
-            "tileset": "0_0_home",
             "tile": "bed",
+            "tileset": "0_0_home",
             "type": "Tile",
             "z-order": "1"
         },
@@ -205,8 +205,8 @@
             "rot": "-90",
             "scripts": [],
             "size": "20 30",
-            "tileset": "characters_ui",
             "tile": "player_head",
+            "tileset": "actors_ui",
             "type": "Tile",
             "z-order": "3"
         }
@@ -337,7 +337,7 @@
     "trigger_areas": [
         {
             "name": "CITY_EXIT",
-            "poly": "33.832 132.096 32.808 287.232 313.16 289.974 312.016 129.291 "
+            "poly": "33.832 132.096 36 179 313.16 289.974 312.016 129.291 "
         },
         {
             "name": "TOP",

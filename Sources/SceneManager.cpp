@@ -2,7 +2,6 @@
 
 #include "SceneManager.h"
 #include "ActorFactory.h"
-#include "AtlasManager.h"
 #include "Common.h"
 #include "MainLoop.h"
 #include "Scene.h"
@@ -23,10 +22,9 @@ namespace aga
 
     SceneManager::SceneManager (MainLoop* mainLoop)
         : m_MainLoop (mainLoop)
+        , m_Player (nullptr)
         , m_Camera (this)
-        , m_Player (this)
         , m_SpeechFrameManager (this)
-        , m_AtlasManager (nullptr)
         , m_ActiveScene (nullptr)
         , m_Transitioning (true)
         , m_FadeColor (COLOR_BLACK)
@@ -57,13 +55,11 @@ namespace aga
         ActorFactory::RegisterActorTypes ();
         ActorFactory::RegisterAnimations ();
 
-        m_AtlasManager = new AtlasManager ();
-        m_AtlasManager->Initialize ();
+        m_Player = new Player (this);
+        m_Player->Initialize ();
+        m_Player->SetCheckOverlap (true);
 
-        m_Player.Initialize ();
-        m_Player.SetCheckOverlap (true);
-
-        m_Camera.SetFollowActor (&m_Player);
+        m_Camera.SetFollowActor (m_Player);
 
         m_SpeechFrameManager.Initialize ();
 
@@ -74,9 +70,8 @@ namespace aga
 
     bool SceneManager::Destroy ()
     {
-        SAFE_DELETE (m_AtlasManager);
+        SAFE_DELETE (m_Player);
 
-        m_Player.Destroy ();
         m_SpeechFrameManager.Destroy ();
 
         for (std::map<std::string, Scene*>::iterator it = m_Scenes.begin (); it != m_Scenes.end ();)
@@ -247,7 +242,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Player& SceneManager::GetPlayer () { return m_Player; }
+    Player* SceneManager::GetPlayer () { return m_Player; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -256,10 +251,6 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     MainLoop* SceneManager::GetMainLoop () { return m_MainLoop; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    AtlasManager* SceneManager::GetAtlasManager () { return m_AtlasManager; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -307,7 +298,7 @@ namespace aga
     {
         if (name == "PLAYER")
         {
-            return &m_Player;
+            return m_Player;
         }
 
         if (m_ActiveScene)

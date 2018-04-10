@@ -1,16 +1,22 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "ParticleEmitter.h"
+#include "Atlas.h"
+#include "AtlasManager.h"
 
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    ParticleEmitter::ParticleEmitter (unsigned maxParticles, unsigned emitLifeSpan, const std::string& imagePath)
+    ParticleEmitter::ParticleEmitter (AtlasManager* atlasManager, const std::string& atlasName,
+                                      const std::string& atlasRegionName, unsigned maxParticles, unsigned emitLifeSpan)
         : m_CanEmit (true)
         , m_MaxParticles (maxParticles)
         , m_EmitLifeSpan (emitLifeSpan)
-        , m_ImagePath (imagePath)
+        , m_AtlasManager (atlasManager)
+        , m_Atlas (nullptr)
+        , m_AtlasName (atlasName)
+        , m_AtlasRegionName (atlasRegionName)
         , m_ParticleMinLife (1.0f)
         , m_ParticleMaxLife (1.0f)
         , m_VelocityMinVariance (-1.0f, -1.0f)
@@ -36,7 +42,7 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
-        m_Image = al_load_bitmap (m_ImagePath.c_str ());
+        m_Atlas = m_AtlasManager->GetAtlas (m_AtlasName);
 
         if (m_CanEmit)
         {
@@ -51,16 +57,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool ParticleEmitter::Destroy ()
-    {
-        if (m_Image != nullptr)
-        {
-            al_destroy_bitmap (m_Image);
-            m_Image = nullptr;
-        }
-
-        return Lifecycle::Destroy ();
-    }
+    bool ParticleEmitter::Destroy () { return Lifecycle::Destroy (); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -100,14 +97,10 @@ namespace aga
         al_get_blender (&blendOp, &blendSrc, &blendDst);
         al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
 
-        for (int i = 0; i < m_Particles.size (); ++i)
+        for (Particle& particle : m_Particles)
         {
-            Particle& particle = m_Particles[i];
-            float sourceWidth = al_get_bitmap_width (m_Image);
-            float sourceHeight = al_get_bitmap_height (m_Image);
-
-            al_draw_tinted_scaled_rotated_bitmap (m_Image, particle.Color, sourceWidth * 0.5, sourceHeight * 0.5,
-                                                  particle.Position.X, particle.Position.Y, 1, 1, particle.Rotation, 0);
+            m_Atlas->DrawRegion (m_AtlasRegionName, particle.Position.X, particle.Position.Y, 1.f, 1.f,
+                                 particle.Rotation, false, particle.Color);
         }
 
         al_set_blender (blendOp, blendSrc, blendDst);

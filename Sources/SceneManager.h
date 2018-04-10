@@ -36,10 +36,9 @@ namespace aga
         bool Update (float deltaTime);
         void Render (float deltaTime);
 
-        Player& GetPlayer ();
+        Player* GetPlayer ();
         Camera& GetCamera ();
         MainLoop* GetMainLoop ();
-        AtlasManager* GetAtlasManager ();
 
         void AddOnEnterCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
         void AddOnEnterCallback (const std::string& triggerName, asIScriptFunction* func);
@@ -73,10 +72,9 @@ namespace aga
 
     private:
         SpeechFrameManager m_SpeechFrameManager;
-        Player m_Player;
+        Player* m_Player;
         Camera m_Camera;
 
-        AtlasManager* m_AtlasManager;
         MainLoop* m_MainLoop;
         std::map<std::string, Scene*> m_Scenes;
         Scene* m_ActiveScene;

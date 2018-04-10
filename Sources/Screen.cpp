@@ -144,6 +144,8 @@ namespace aga
 
         m_Font.Initialize ();
 
+        al_set_new_bitmap_flags (ALLEGRO_VIDEO_BITMAP);
+
         return true;
     }
 

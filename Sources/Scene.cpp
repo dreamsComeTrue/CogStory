@@ -119,16 +119,16 @@ namespace aga
         m_VisibleLastCameraPos = Point::MIN_POINT;
 
         //  Reset camera to player
-        Player& player = m_SceneManager->GetPlayer ();
+        Player* player = m_SceneManager->GetPlayer ();
 
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != EDITOR_STATE_NAME)
         {
-            player.BeforeEnter ();
-            player.SetPosition (m_PlayerStartLocation);
+            player->BeforeEnter ();
+            player->SetPosition (m_PlayerStartLocation);
         }
         else
         {
-            player.SetPosition (player.TemplateBounds.Pos);
+            player->SetPosition (player->TemplateBounds.Pos);
         }
 
         ResetAllActorsPositions ();
@@ -149,7 +149,7 @@ namespace aga
     {
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != EDITOR_STATE_NAME)
         {
-            m_SceneManager->GetPlayer ().AfterLeave ();
+            m_SceneManager->GetPlayer ()->AfterLeave ();
         }
 
         for (Actor* actor : m_Actors)
@@ -176,7 +176,7 @@ namespace aga
     {
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != EDITOR_STATE_NAME)
         {
-            m_SceneManager->GetPlayer ().Update (deltaTime);
+            m_SceneManager->GetPlayer ()->Update (deltaTime);
             UpdateScripts (deltaTime);
 
             for (Actor* actor : m_Actors)
@@ -210,7 +210,7 @@ namespace aga
 
             if (!isPlayerDrawn && actor->ZOrder >= PLAYER_Z_ORDER)
             {
-                m_SceneManager->GetPlayer ().Render (deltaTime);
+                m_SceneManager->GetPlayer ()->Render (deltaTime);
                 isPlayerDrawn = true;
             }
 
@@ -235,17 +235,17 @@ namespace aga
 
         if (!isPlayerDrawn)
         {
-            m_SceneManager->GetPlayer ().Render (deltaTime);
+            m_SceneManager->GetPlayer ()->Render (deltaTime);
         }
 
         if (m_SceneManager->IsDrawBoundingBox ())
         {
-            m_SceneManager->GetPlayer ().DrawBounds ();
+            m_SceneManager->GetPlayer ()->DrawBounds ();
         }
 
         if (m_SceneManager->IsDrawPhysData ())
         {
-            m_SceneManager->GetPlayer ().DrawPhysBody ();
+            m_SceneManager->GetPlayer ()->DrawPhysBody ();
         }
 
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () == EDITOR_STATE_NAME)

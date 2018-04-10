@@ -36,8 +36,8 @@ namespace aga
 
         m_MainLoop->GetSceneManager ().SetActiveScene ("0_home/0_0_home.scn", false);
 
-        m_MainLoop->GetSceneManager ().GetPlayer ().TemplateBounds.Pos
-            = m_MainLoop->GetSceneManager ().GetPlayer ().GetPosition ();
+        m_MainLoop->GetSceneManager ().GetPlayer ()->TemplateBounds.Pos
+            = m_MainLoop->GetSceneManager ().GetPlayer ()->GetPosition ();
 
         return true;
     }
@@ -78,7 +78,7 @@ namespace aga
 
     void GamePlayState::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
     {
-        m_MainLoop->GetSceneManager ().GetPlayer ().ProcessEvent (event, deltaTime);
+        m_MainLoop->GetSceneManager ().GetPlayer ()->ProcessEvent (event, deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -87,9 +87,9 @@ namespace aga
     {
         SceneManager& sceneManager = m_MainLoop->GetSceneManager ();
 
-        if (!sceneManager.IsTransitioning () && !sceneManager.GetPlayer ().IsPreventInput ())
+        if (!sceneManager.IsTransitioning () && !sceneManager.GetPlayer ()->IsPreventInput ())
         {
-            sceneManager.GetPlayer ().HandleInput (deltaTime);
+            sceneManager.GetPlayer ()->HandleInput (deltaTime);
         }
     }
 

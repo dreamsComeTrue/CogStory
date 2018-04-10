@@ -46,6 +46,7 @@ namespace aga
 
     private:
         void InitializeAnimations ();
+        void CreateParticleEmitters ();
         void UpdateParticleEmitters ();
 
         void CollisionEvent (Collidable* other) override;
@@ -53,8 +54,8 @@ namespace aga
     private:
         bool m_FollowCamera;
         bool m_PreventInput;
-        ParticleEmitter m_HeadParticleEmitter;
-        ParticleEmitter m_WalkParticleEmitter;
+        ParticleEmitter* m_HeadParticleEmitter;
+        ParticleEmitter* m_WalkParticleEmitter;
     };
 }
 

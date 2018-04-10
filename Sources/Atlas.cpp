@@ -41,9 +41,10 @@ namespace aga
         std::string fileName = GetDirectory (path) + "/" + line;
         m_Image = al_load_bitmap (fileName.c_str ());
 
-        getline (packFile, line); //  skip
-        getline (packFile, line); //  skip
-        getline (packFile, line); //  skip
+        getline (packFile, line); //  skip - size
+        getline (packFile, line); //  skip - format
+        getline (packFile, line); //  skip - filter
+        getline (packFile, line); //  skip - repeat
 
         std::string name;
         std::string xy;
@@ -51,28 +52,47 @@ namespace aga
 
         while (packFile)
         {
-            getline (packFile, name); //    name
-            getline (packFile, line); //    rotate
-            getline (packFile, xy); //    xy
-            getline (packFile, size); //    size
-            getline (packFile, line); //    orig
-            getline (packFile, line); //    offset
-            getline (packFile, line); //    index
+            getline (packFile, line);
 
-            std::vector<std::string> xyData = SplitString (xy.substr (xy.find (":") + 1), ',');
-            int x = atoi (xyData[0].c_str ());
-            int y = atoi (xyData[1].c_str ());
+            //  We can parse - we have a name
+            if (!StartsWith (line, "  "))
+            {
+                name = line;
 
-            std::vector<std::string> sizeData = SplitString (size.substr (size.find (":") + 1), ',');
-            int width = atoi (sizeData[0].c_str ());
-            int height = atoi (sizeData[1].c_str ());
+                std::streampos oldpos;
 
-            AtlasRegion region;
-            region.Bounds = Rect{ { x, y }, { x + width, y + height } };
-            region.Name = name;
+                do
+                {
+                    oldpos = packFile.tellg ();
+                    getline (packFile, line);
 
-            m_Regions.insert (std::make_pair (name, region));
-            m_RegionsVector.push_back (region);
+                    if (StartsWith (line, "  xy:"))
+                    {
+                        xy = line;
+                    }
+                    else if (StartsWith (line, "  size:"))
+                    {
+                        size = line;
+                    }
+                } while (StartsWith (line, "  "));
+
+                packFile.seekg (oldpos);
+
+                std::vector<std::string> xyData = SplitString (xy.substr (xy.find (":") + 1), ',');
+                int x = atoi (xyData[0].c_str ());
+                int y = atoi (xyData[1].c_str ());
+
+                std::vector<std::string> sizeData = SplitString (size.substr (size.find (":") + 1), ',');
+                int width = atoi (sizeData[0].c_str ());
+                int height = atoi (sizeData[1].c_str ());
+
+                AtlasRegion region;
+                region.Bounds = Rect{ { x, y }, { x + width, y + height } };
+                region.Name = name;
+
+                m_Regions.insert (std::make_pair (name, region));
+                m_RegionsVector.push_back (region);
+            }
         }
 
         packFile.close ();
@@ -81,7 +101,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Atlas::DrawRegion (const std::string& name, float x, float y, float scaleX, float scaleY, float rotation,
-                            bool offsetByCenter)
+                            bool offsetByCenter, ALLEGRO_COLOR color)
     {
         if (m_Regions.find (name) != m_Regions.end ())
         {
@@ -94,10 +114,25 @@ namespace aga
             }
 
             al_draw_tinted_scaled_rotated_bitmap_region (m_Image, r.GetPos ().X, r.GetPos ().Y, r.GetSize ().Width,
-                                                         r.GetSize ().Height, al_map_rgb (255, 255, 255),
-                                                         r.GetHalfSize ().Width, r.GetHalfSize ().Height, x, y, scaleX,
-                                                         scaleY, rotation, 0);
+                                                         r.GetSize ().Height, color, r.GetHalfSize ().Width,
+                                                         r.GetHalfSize ().Height, x, y, scaleX, scaleY, rotation, 0);
         }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Atlas::DrawRegion (float sourceX, float sourceY, float sourceWidth, float sourceHeight, float x, float y,
+                            float scaleX, float scaleY, float rotation, bool offsetByCenter, ALLEGRO_COLOR color)
+    {
+        if (offsetByCenter)
+        {
+            x += sourceWidth * 0.5f;
+            y += sourceHeight * 0.5f;
+        }
+
+        al_draw_tinted_scaled_rotated_bitmap_region (m_Image, sourceX, sourceY, sourceWidth, sourceHeight, color,
+                                                     sourceWidth * 0.5f, sourceHeight * 0.5f, x, y, scaleX, scaleY,
+                                                     rotation, 0);
     }
 
     //--------------------------------------------------------------------------------------------------

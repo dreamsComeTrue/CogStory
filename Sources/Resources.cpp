@@ -9,9 +9,10 @@ namespace aga
 
     std::string GFX = "gfx";
     std::string GFX_UI = "gfx/ui";
-    std::string GFX_CHARACTERS = "gfx/characters";
+    std::string GFX_ACTORS = "gfx/actors";
+    std::string GFX_EFFECTS = "gfx/effects";
 
-    std::string GFX_0_HOME = "gfx/0_home";
+    std::string GFX_0_HOME = "gfx/scenes/0_home";
 
     std::string FONTS = "fonts";
     std::string SCENES_HOME = "scenes/0_home";
@@ -20,15 +21,13 @@ namespace aga
 
     Resource g_Resources[] = {
         //  Graphics
-        { GFX_DEFAULT_SKIN, GFX, "DefaultSkin.png" },
-        { GFX_MENU_COG, GFX_UI, "cog.png" },
+        { GFX_DEFAULT_SKIN, GFX, "UISkin.png" },
         { GFX_TEXT_FRAME, GFX_UI, "text_frame.9.png" },
-        { GFX_PLAYER, GFX_CHARACTERS, "player.png" },
-        { GFX_DUST_PARTICLES, GFX, "dust_particles.png" },
-        { GFX_SMOG_PARTICLES, GFX, "smog_particles.png" },
 
         { PACK_MENU_UI, GFX_UI, "menu_ui.pack" },
-        { PACK_CHARACTERS_UI, GFX_CHARACTERS, "characters_ui.pack" },
+        { PACK_ACTORS_UI, GFX_UI, "actors_ui.pack" },
+        { PACK_PLAYER, GFX_ACTORS, "player.pack" },
+        { PACK_PARTICLES, GFX_EFFECTS, "particles.pack" },
         { PACK_0_0_HOME, GFX_0_HOME, "0_0_home.pack" },
 
         //  Fonts
@@ -72,6 +71,10 @@ namespace aga
 
         return path;
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Resource& GetResource (ResourceID id) { return g_Resources[id]; }
 
     //--------------------------------------------------------------------------------------------------
 }

@@ -39,7 +39,7 @@ namespace aga
 
     private:
         AudioSample* m_SelectSample;
-        ALLEGRO_BITMAP* m_SelectImage;
+        class Atlas* m_SelectItemAtlas;
         float m_SelectionAngle;
         int m_Selection;
     };

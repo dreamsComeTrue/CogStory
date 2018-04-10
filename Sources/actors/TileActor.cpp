@@ -30,8 +30,11 @@ namespace aga
 
         if (Tileset != "" && TileName != "")
         {
-            Bounds.Size
-                = m_SceneManager->GetAtlasManager ()->GetAtlas (Tileset)->GetRegion (TileName).Bounds.GetSize ();
+            Bounds.Size = m_SceneManager->GetMainLoop ()
+                              ->GetAtlasManager ()
+                              .GetAtlas (Tileset)
+                              ->GetRegion (TileName)
+                              .Bounds.GetSize ();
         }
 
         return true;
@@ -45,7 +48,7 @@ namespace aga
 
     void TileActor::Render (float deltaTime)
     {
-        Atlas* atlas = m_SceneManager->GetAtlasManager ()->GetAtlas (Tileset);
+        Atlas* atlas = m_SceneManager->GetMainLoop ()->GetAtlasManager ().GetAtlas (Tileset);
 
         if (atlas)
         {
@@ -58,7 +61,7 @@ namespace aga
 
     void TileActor::DrawName ()
     {
-        Atlas* atlas = m_SceneManager->GetAtlasManager ()->GetAtlas (Tileset);
+        Atlas* atlas = m_SceneManager->GetMainLoop ()->GetAtlasManager ().GetAtlas (Tileset);
 
         if (atlas)
         {

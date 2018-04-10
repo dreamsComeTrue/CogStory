@@ -10,14 +10,15 @@ namespace aga
 {
     class PhysicsManager;
     class Transformable;
+    class AtlasManager;
 
     class Animable
     {
     public:
-        Animable ();
+        Animable (AtlasManager* atlasManager);
         virtual ~Animable ();
 
-        bool Initialize (const std::string& filePath);
+        bool Initialize (const std::string& atlasName, const std::string& atlasRegionName);
         bool Destroy ();
 
         bool Update (float deltaTime);
@@ -25,18 +26,16 @@ namespace aga
 
         void SetCurrentAnimation (const std::string& name);
 
-        ALLEGRO_BITMAP* GetImage ();
         Animation& GetAnimation () { return m_Animation; }
         void SetAnimation (Animation animation) { m_Animation = animation; }
         std::map<std::string, AnimationFrames>& GetAnimations ();
 
-        std::string GetImagePath () const { return m_ImagePath; }
+        std::string GetAtlasRegionName () const { return m_AtlasRegionName; }
 
     private:
-        ALLEGRO_BITMAP* m_Image;
-        std::string m_ImagePath;
-        int m_ImageWidth;
-        int m_ImageHeight;
+        AtlasManager* m_AtlasManager;
+        class Atlas* m_Atlas;
+        std::string m_AtlasRegionName;
 
         Animation m_Animation;
     };

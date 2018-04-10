@@ -27,7 +27,7 @@ namespace aga
     bool NPCActor::Initialize ()
     {
         Actor::Initialize ();
-        Animable::Initialize (GetResourcePath (ResourceID::GFX_MENU_COG).c_str ());
+        Animable::Initialize ("menu_ui", "cog");
 
         Bounds.SetSize ({ 64, 64 });
         SetCheckOverlap (true);

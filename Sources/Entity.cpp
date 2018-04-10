@@ -35,7 +35,7 @@ namespace aga
         std::vector<Entity*> visibleEntites = m_SceneManager->GetActiveScene ()->GetVisibleEntities ();
 
         //  Special-case entity :)
-        visibleEntites.push_back (&m_SceneManager->GetPlayer ());
+        visibleEntites.push_back (m_SceneManager->GetPlayer ());
 
         for (Entity* ent : visibleEntites)
         {

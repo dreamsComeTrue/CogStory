@@ -20,7 +20,8 @@ namespace aga
     class ParticleEmitter : public Lifecycle
     {
     public:
-        ParticleEmitter (unsigned maxParticles, unsigned emitLifeSpan, const std::string& imagePath);
+        ParticleEmitter (class AtlasManager* atlasManager, const std::string& atlasName,
+                         const std::string& atlasRegionName, unsigned maxParticles, unsigned emitLifeSpan);
         virtual ~ParticleEmitter ();
         bool Initialize ();
         bool Destroy ();
@@ -54,8 +55,10 @@ namespace aga
         ALLEGRO_COLOR m_BeginColor;
         ALLEGRO_COLOR m_EndColor;
 
-        std::string m_ImagePath;
-        ALLEGRO_BITMAP* m_Image;
+        class AtlasManager* m_AtlasManager;
+        std::string m_AtlasName;
+        std::string m_AtlasRegionName;
+        class Atlas* m_Atlas;
     };
 }
 

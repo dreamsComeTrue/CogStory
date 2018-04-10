@@ -288,8 +288,7 @@ namespace aga
 
     void EditorActorMode::InitializeUI ()
     {
-        m_Atlas = m_Editor->GetMainLoop ()->GetSceneManager ().GetAtlasManager ()->GetAtlas (
-            GetBaseName (GetResourcePath (PACK_0_0_HOME)));
+        m_Atlas = m_Editor->GetMainLoop ()->GetAtlasManager ().GetAtlas (GetBaseName (GetResourcePath (PACK_0_0_HOME)));
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -350,7 +349,7 @@ namespace aga
 
     void EditorActorMode::ChangeAtlas (const std::string& newAtlasName)
     {
-        m_Atlas = m_Editor->GetMainLoop ()->GetSceneManager ().GetAtlasManager ()->GetAtlas (newAtlasName);
+        m_Atlas = m_Editor->GetMainLoop ()->GetAtlasManager ().GetAtlas (newAtlasName);
     }
 
     //--------------------------------------------------------------------------------------------------

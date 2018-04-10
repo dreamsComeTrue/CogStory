@@ -21,15 +21,13 @@ namespace aga
     {
         //  Graphics
         GFX_DEFAULT_SKIN,
-        GFX_MENU_COG,
         GFX_TEXT_FRAME,
-        GFX_PLAYER,
-        GFX_DUST_PARTICLES,
-        GFX_SMOG_PARTICLES,
 
         //  PACKS
         PACK_MENU_UI,
-        PACK_CHARACTERS_UI,
+        PACK_ACTORS_UI,
+        PACK_PLAYER,
+        PACK_PARTICLES,
         PACK_0_0_HOME,
 
         //  Fonts
@@ -64,6 +62,7 @@ namespace aga
 
     const std::string GetDataPath ();
     const std::string GetResourcePath (ResourceID id);
+    Resource& GetResource (ResourceID id);
 }
 
 #endif //   __RESOURCES_H__

@@ -12,7 +12,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Actor::Actor (SceneManager* sceneManager)
-        : Animable ()
+        : Animable (&sceneManager->GetMainLoop ()->GetAtlasManager ())
         , Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
         , Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
         , Entity (sceneManager)

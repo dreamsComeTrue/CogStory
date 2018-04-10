@@ -1,14 +1,17 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Animable.h"
+#include "Atlas.h"
+#include "AtlasManager.h"
 #include "Transformable.h"
 
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    Animable::Animable ()
-        : m_Image (nullptr)
+    Animable::Animable (AtlasManager* atlasManager)
+        : m_AtlasManager (atlasManager)
+        , m_Atlas (nullptr)
     {
     }
 
@@ -18,28 +21,17 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Animable::Initialize (const std::string& filePath)
+    bool Animable::Initialize (const std::string& atlasName, const std::string& atlasRegionName)
     {
-        m_ImagePath = filePath;
-        m_Image = al_load_bitmap (filePath.c_str ());
-        m_ImageWidth = al_get_bitmap_width (m_Image);
-        m_ImageHeight = al_get_bitmap_height (m_Image);
+        m_Atlas = m_AtlasManager->GetAtlas (atlasName);
+        m_AtlasRegionName = atlasRegionName;
 
         return true;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Animable::Destroy ()
-    {
-        if (m_Image != nullptr)
-        {
-            al_destroy_bitmap (m_Image);
-            m_Image = nullptr;
-        }
-
-        return true;
-    }
+    bool Animable::Destroy () { return true; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -55,17 +47,30 @@ namespace aga
 
     void Animable::Render (Transformable* transformable)
     {
-        if (m_Image)
+        if (m_Atlas)
         {
             float sourceX = 0;
             float sourceY = 0;
             float sourceWidth;
             float sourceHeight;
 
+            Rect bounds = m_Atlas->GetRegion (m_AtlasRegionName).Bounds;
+            Point pos = transformable->Bounds.GetPos ();
+
             if (m_Animation.GetAnimations ().empty ())
             {
-                sourceWidth = m_ImageWidth;
-                sourceHeight = m_ImageHeight;
+                if (m_AtlasRegionName != "")
+                {
+                    m_Atlas->DrawRegion (m_AtlasRegionName, pos.X, pos.Y, 1.f, 1.f, transformable->Rotation, true);
+                }
+                else
+                {
+                    sourceWidth = al_get_bitmap_width (m_Atlas->GetImage ());
+                    sourceHeight = al_get_bitmap_height (m_Atlas->GetImage ());
+
+                    m_Atlas->DrawRegion (0, 0, sourceWidth, sourceHeight, pos.X, pos.Y, 1.f, 1.f,
+                                         transformable->Rotation, true);
+                }
             }
             else
             {
@@ -76,24 +81,16 @@ namespace aga
                 sourceY = frame.GetPos ().Y;
                 sourceWidth = frame.GetSize ().Width;
                 sourceHeight = frame.GetSize ().Height;
+
+                m_Atlas->DrawRegion (sourceX, sourceY, sourceWidth, sourceHeight, pos.X, pos.Y, 1, 1,
+                                     transformable->Rotation, true);
             }
-
-            Point pos = transformable->Bounds.GetPos ();
-
-            al_draw_tinted_scaled_rotated_bitmap_region (m_Image, sourceX, sourceY, sourceWidth, sourceHeight,
-                                                         al_map_rgb (255, 255, 255), sourceWidth * 0.5,
-                                                         sourceHeight * 0.5, pos.X + sourceWidth * 0.5f,
-                                                         pos.Y + sourceHeight * 0.5f, 1, 1, transformable->Rotation, 0);
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void Animable::SetCurrentAnimation (const std::string& name) { m_Animation.SetCurrentAnimation (name); }
-
-    //--------------------------------------------------------------------------------------------------
-
-    ALLEGRO_BITMAP* Animable::GetImage () { return m_Image; }
 
     //--------------------------------------------------------------------------------------------------
 

@@ -79,7 +79,7 @@ namespace aga
                     SAFE_DELETE (it->second);
                     m_Speeches.erase (it++);
 
-                    m_SceneManager->GetPlayer ().SetPreventInput (false);
+                    m_SceneManager->GetPlayer ()->SetPreventInput (false);
 
                     if (m_Speeches.empty ())
                     {
@@ -106,7 +106,7 @@ namespace aga
             {
                 if (frame->IsShouldBeHandled ())
                 {
-                    m_SceneManager->GetPlayer ().SetPreventInput (true);
+                    m_SceneManager->GetPlayer ()->SetPreventInput (true);
                 }
 
                 frame->Update (deltaTime);
@@ -137,9 +137,9 @@ namespace aga
     {
         m_Speeches.clear ();
 
-        if (m_SceneManager->GetPlayer ().IsPreventInput ())
+        if (m_SceneManager->GetPlayer ()->IsPreventInput ())
         {
-            m_SceneManager->GetPlayer ().SetPreventInput (false);
+            m_SceneManager->GetPlayer ()->SetPreventInput (false);
         }
     }
 

@@ -116,11 +116,11 @@ namespace aga
         m_GUIRenderer = new Gwk::Renderer::Allegro (*m_ResourceLoader);
 
         m_GuiSkin = new Gwk::Skin::TexturedBase (m_GUIRenderer);
-        m_GuiSkin->Init ("UISkin.png");
+        m_GuiSkin->Init ("gfx/" + GetResource (GFX_DEFAULT_SKIN).Name);
 
         // The fonts work differently in Allegro - it can't use
         // system fonts. So force the skin to use a local one.
-        m_GuiSkin->SetDefaultFont ("fonts/OpenSans.ttf", 12);
+        m_GuiSkin->SetDefaultFont ("fonts/" + GetResource (FONT_EDITOR).Name, 12);
 
         // Create a Canvas (it's root, on which all other Gwork panels are created)
         const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
@@ -253,7 +253,7 @@ namespace aga
         tilesetCombo->SetWidth (90);
         tilesetCombo->SetKeyboardInputEnabled (false);
 
-        std::map<std::string, Atlas*>& atlases = m_MainLoop->GetSceneManager ().GetAtlasManager ()->GetAtlases ();
+        std::map<std::string, Atlas*>& atlases = m_MainLoop->GetAtlasManager ().GetAtlases ();
 
         for (const auto& atlas : atlases)
         {
@@ -1094,15 +1094,15 @@ namespace aga
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
 
-        Player& player = m_MainLoop->GetSceneManager ().GetPlayer ();
+        Player* player = m_MainLoop->GetSceneManager ().GetPlayer ();
 
         Point point = CalculateCursorPoint (state.x, state.y);
-        point -= player.Bounds.GetHalfSize ();
+        point -= player->Bounds.GetHalfSize ();
 
-        player.SetPosition (point);
-        player.TemplateBounds.Pos = player.GetPosition ();
+        player->SetPosition (point);
+        player->TemplateBounds.Pos = player->GetPosition ();
 
-        m_MainLoop->GetSceneManager ().GetActiveScene ()->SetPlayerStartLocation (player.GetPosition ());
+        m_MainLoop->GetSceneManager ().GetActiveScene ()->SetPlayerStartLocation (player->GetPosition ());
     }
 
     //--------------------------------------------------------------------------------------------------

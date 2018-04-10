@@ -46,12 +46,18 @@ namespace aga
         , m_IsDelayed (false)
         , m_ActualChoiceIndex (0)
     {
-        m_FrameBitmap = load_nine_patch_bitmap (GetResourcePath (ResourceID::GFX_TEXT_FRAME).c_str ());
+        Atlas* atlas = m_Manager->GetSceneManager ()->GetMainLoop ()->GetAtlasManager ().GetAtlas (
+            GetBaseName (GetResourcePath (PACK_MENU_UI)));
+        Rect atlasRect = atlas->GetRegion ("text_frame").Bounds;
+        ALLEGRO_BITMAP* bmp = al_create_sub_bitmap (atlas->GetImage (), atlasRect.GetPos ().X, atlasRect.GetPos ().Y,
+                                                    atlasRect.GetSize ().Width, atlasRect.GetSize ().Height);
+
+        m_FrameBitmap = create_nine_patch_bitmap (bmp, true);
 
         if (m_ActorRegionName != "")
         {
-            m_Atlas = m_Manager->GetSceneManager ()->GetAtlasManager ()->GetAtlas (
-                GetBaseName (GetResourcePath (PACK_CHARACTERS_UI)));
+            m_Atlas = m_Manager->GetSceneManager ()->GetMainLoop ()->GetAtlasManager ().GetAtlas (
+                GetBaseName (GetResourcePath (PACK_ACTORS_UI)));
         }
 
         SetText (text);
@@ -535,8 +541,9 @@ namespace aga
         float yPos = yOffset + (m_ActualChoiceIndex) * (m_LineHeight + SPEECH_FRAME_LINE_OFFSET) + m_LineHeight * 0.5f;
 
         m_Manager->GetSceneManager ()
+            ->GetMainLoop ()
             ->GetAtlasManager ()
-            ->GetAtlas (GetBaseName (GetResourcePath (PACK_MENU_UI)))
+            .GetAtlas (GetBaseName (GetResourcePath (PACK_MENU_UI)))
             ->DrawRegion ("arrow_light", xPos, yPos, 1.0f, 1.0f, DegressToRadians (-90.0f), false);
     }
 
@@ -550,7 +557,7 @@ namespace aga
 
         int maxLines = GetMaxLinesCanFit ();
 
-        Atlas* atlas = m_Manager->GetSceneManager ()->GetAtlasManager ()->GetAtlas (
+        Atlas* atlas = m_Manager->GetSceneManager ()->GetMainLoop ()->GetAtlasManager ().GetAtlas (
             GetBaseName (GetResourcePath (PACK_MENU_UI)));
 
         //  Up arrow

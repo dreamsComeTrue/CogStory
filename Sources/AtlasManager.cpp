@@ -25,9 +25,11 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
+        LoadFromFile (GetResourcePath (PACK_PLAYER));
         LoadFromFile (GetResourcePath (PACK_0_0_HOME));
         LoadFromFile (GetResourcePath (PACK_MENU_UI));
-        LoadFromFile (GetResourcePath (PACK_CHARACTERS_UI));
+        LoadFromFile (GetResourcePath (PACK_PARTICLES));
+        LoadFromFile (GetResourcePath (PACK_ACTORS_UI));
 
         return true;
     }

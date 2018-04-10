@@ -1,6 +1,8 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "MainMenuState.h"
+#include "Atlas.h"
+#include "AtlasManager.h"
 #include "AudioSample.h"
 #include "Common.h"
 #include "GamePlayState.h"
@@ -39,19 +41,15 @@ namespace aga
 
         m_SelectSample = m_MainLoop->GetSceneManager ().GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
             "SELECT_MENU", GetResourcePath (SOUND_MENU_SELECT));
-        m_SelectImage = al_load_bitmap (GetResourcePath (ResourceID::GFX_MENU_COG).c_str ());
+
+        m_SelectItemAtlas = m_MainLoop->GetAtlasManager ().GetAtlas ("menu_ui");
 
         return true;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool MainMenuState::Destroy ()
-    {
-        al_destroy_bitmap (m_SelectImage);
-
-        return Lifecycle::Destroy ();
-    }
+    bool MainMenuState::Destroy () { return Lifecycle::Destroy (); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -166,17 +164,14 @@ namespace aga
                            menuItems[i], ALLEGRO_ALIGN_CENTER);
         }
 
-        int sourceWidth = al_get_bitmap_width (m_SelectImage);
-        int sourceHeight = al_get_bitmap_height (m_SelectImage);
-
         int xPos = winSize.Width * 0.5f - textSize.Width * 0.5 - 30;
         int yPos = menuItemStartY + textSize.Height * 0.5 + m_Selection * menuItemSpacing - 5;
 
         m_SelectionAngle += MENU_SELECTION_ROTATION_SPEED * deltaTime;
 
         float scale = 0.6f;
-        al_draw_tinted_scaled_rotated_bitmap (m_SelectImage, COLOR_WHITE, sourceWidth * 0.5, sourceHeight * 0.5, xPos,
-                                              yPos, scale, scale, m_SelectionAngle, 0);
+
+        m_SelectItemAtlas->DrawRegion ("cog", xPos, yPos, scale, scale, m_SelectionAngle, false, COLOR_WHITE);
 
         font.DrawText (FONT_NAME_SMALL, al_map_rgb (130, 130, 130), winSize.Width - 5, winSize.Height - 20, "v 0.1",
                        ALLEGRO_ALIGN_RIGHT);

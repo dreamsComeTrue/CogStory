@@ -326,7 +326,7 @@ namespace aga
         }
         else if (actor->GetTypeName () == NPCActor::TypeName)
         {
-            imagePath = actor->GetImagePath ();
+            imagePath = actor->GetAtlasRegionName ();
             std::replace (imagePath.begin (), imagePath.end (), '\\', '/');
             std::string dataPath = "Data/gfx/";
             size_t index = imagePath.find (dataPath);

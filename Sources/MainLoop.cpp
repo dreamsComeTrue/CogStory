@@ -14,10 +14,10 @@ namespace aga
 
     MainLoop::MainLoop (Screen* screen)
         : m_AudioManager (this)
-        , m_SceneManager (this)
-        , m_StateManager (this)
         , m_ScriptManager (this)
         , m_PhysicsManager (this)
+        , m_SceneManager (this)
+        , m_StateManager (this)
         , m_TweenManager (this)
         , m_EditorState (nullptr)
         , m_GamePlayState (nullptr)
@@ -43,6 +43,7 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
+        m_AtlasManager.Initialize ();
         m_AudioManager.Initialize ();
         m_SceneManager.Initialize ();
         m_PhysicsManager.Initialize ();
@@ -84,6 +85,7 @@ namespace aga
     {
         DestroyStates ();
 
+        m_AtlasManager.Destroy ();
         m_PhysicsManager.Destroy ();
         m_TweenManager.Destroy ();
         m_StateManager.Destroy ();
@@ -170,6 +172,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     TweenManager& MainLoop::GetTweenManager () { return m_TweenManager; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    AtlasManager& MainLoop::GetAtlasManager () { return m_AtlasManager; }
 
     //--------------------------------------------------------------------------------------------------
 }

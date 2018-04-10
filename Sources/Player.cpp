@@ -20,8 +20,6 @@ namespace aga
 
     Player::Player (SceneManager* sceneManager)
         : Actor (sceneManager)
-        , m_WalkParticleEmitter (2, 0.7f, GetResourcePath (GFX_DUST_PARTICLES))
-        , m_HeadParticleEmitter (3, 2.0f, GetResourcePath (GFX_SMOG_PARTICLES))
         , m_FollowCamera (true)
         , m_PreventInput (false)
     {
@@ -45,23 +43,10 @@ namespace aga
     {
         Actor::Initialize ();
 
+        CreateParticleEmitters ();
         UpdateParticleEmitters ();
 
-        m_WalkParticleEmitter.SetColorTransition (COLOR_WHITE, al_map_rgba (255, 255, 255, 0));
-        float velVar = 0.4f;
-        m_WalkParticleEmitter.SetVelocityVariance (Point (-velVar, -velVar), Point (velVar, velVar));
-        float partLife = 0.4f;
-        m_WalkParticleEmitter.SetParticleLifeVariance (partLife, partLife);
-        m_WalkParticleEmitter.Initialize ();
-
-        m_HeadParticleEmitter.SetColorTransition (COLOR_WHITE, al_map_rgba (255, 255, 255, 0));
-        float xSpread = 0.12f;
-        m_HeadParticleEmitter.SetVelocityVariance (Point (-xSpread, 0.4f), Point (xSpread, 0.4f));
-        partLife = 1.0f;
-        m_HeadParticleEmitter.SetParticleLifeVariance (partLife, partLife);
-        m_HeadParticleEmitter.Initialize ();
-
-        Animable::Initialize (GetResourcePath (ResourceID::GFX_PLAYER).c_str ());
+        Animable::Initialize ("player", "");
         Bounds.SetSize ({ 64, 64 });
 
         InitializeAnimations ();
@@ -77,8 +62,8 @@ namespace aga
 
     bool Player::Destroy ()
     {
-        m_WalkParticleEmitter.Destroy ();
-        m_HeadParticleEmitter.Destroy ();
+        SAFE_DELETE (m_WalkParticleEmitter);
+        SAFE_DELETE (m_HeadParticleEmitter);
 
         return Actor::Destroy ();
     }
@@ -103,11 +88,34 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Player::CreateParticleEmitters ()
+    {
+        m_WalkParticleEmitter = new ParticleEmitter (&m_SceneManager->GetMainLoop ()->GetAtlasManager (), "particles",
+                                                     "dust_particles", 2, 0.7f);
+        m_WalkParticleEmitter->SetColorTransition (COLOR_WHITE, al_map_rgba (255, 255, 255, 0));
+        float velVar = 0.4f;
+        m_WalkParticleEmitter->SetVelocityVariance (Point (-velVar, -velVar), Point (velVar, velVar));
+        float partLife = 0.4f;
+        m_WalkParticleEmitter->SetParticleLifeVariance (partLife, partLife);
+        m_WalkParticleEmitter->Initialize ();
+
+        m_HeadParticleEmitter = new ParticleEmitter (&m_SceneManager->GetMainLoop ()->GetAtlasManager (), "particles",
+                                                     "smog_particles", 3, 2.0f);
+        m_HeadParticleEmitter->SetColorTransition (COLOR_WHITE, al_map_rgba (255, 255, 255, 0));
+        float xSpread = 0.12f;
+        m_HeadParticleEmitter->SetVelocityVariance (Point (-xSpread, 0.4f), Point (xSpread, 0.4f));
+        partLife = 1.0f;
+        m_HeadParticleEmitter->SetParticleLifeVariance (partLife, partLife);
+        m_HeadParticleEmitter->Initialize ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Player::UpdateParticleEmitters ()
     {
-        m_WalkParticleEmitter.SetPosition (Bounds.Pos.X + Bounds.GetHalfSize ().Width,
-                                           Bounds.Pos.Y + Bounds.GetSize ().Height);
-        m_HeadParticleEmitter.SetPosition (Bounds.Pos.X + Bounds.GetHalfSize ().Width + 5, Bounds.Pos.Y - 5);
+        m_WalkParticleEmitter->SetPosition (Bounds.Pos.X + Bounds.GetHalfSize ().Width,
+                                            Bounds.Pos.Y + Bounds.GetSize ().Height);
+        m_HeadParticleEmitter->SetPosition (Bounds.Pos.X + Bounds.GetHalfSize ().Width + 5, Bounds.Pos.Y - 5);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -213,9 +221,9 @@ namespace aga
         Actor::Update (deltaTime);
 
         //  We can only emit where new position is different than last one
-        m_WalkParticleEmitter.SetCanEmit (!AreSame (m_OldPosition, Bounds.Pos));
-        m_WalkParticleEmitter.Update (deltaTime);
-        m_HeadParticleEmitter.Update (deltaTime);
+        m_WalkParticleEmitter->SetCanEmit (!AreSame (m_OldPosition, Bounds.Pos));
+        m_WalkParticleEmitter->Update (deltaTime);
+        m_HeadParticleEmitter->Update (deltaTime);
 
         m_OldPosition = Bounds.GetPos ();
 
@@ -226,8 +234,8 @@ namespace aga
 
     void Player::Render (float deltaTime)
     {
-        m_WalkParticleEmitter.Render (deltaTime);
-        m_HeadParticleEmitter.Render (deltaTime);
+        m_WalkParticleEmitter->Render (deltaTime);
+        m_HeadParticleEmitter->Render (deltaTime);
 
         return Actor::Render (deltaTime);
     }
@@ -312,8 +320,8 @@ namespace aga
 
     void Player::ResetParticleEmitters ()
     {
-        m_WalkParticleEmitter.Reset ();
-        m_HeadParticleEmitter.Reset ();
+        m_WalkParticleEmitter->Reset ();
+        m_HeadParticleEmitter->Reset ();
     }
 
     //--------------------------------------------------------------------------------------------------

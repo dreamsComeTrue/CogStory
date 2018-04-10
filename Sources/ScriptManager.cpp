@@ -358,7 +358,7 @@ namespace aga
         //  Player
         r = m_ScriptEngine->RegisterObjectType ("Player", sizeof (Player), asOBJ_VALUE | asOBJ_POD);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalProperty ("Player player", &m_MainLoop->GetSceneManager ().GetPlayer ());
+        r = m_ScriptEngine->RegisterGlobalProperty ("Player player", m_MainLoop->GetSceneManager ().GetPlayer ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("Player", "void SetPosition (Point)",
                                                   asMETHODPR (Player, SetPosition, (Point), void), asCALL_THISCALL);

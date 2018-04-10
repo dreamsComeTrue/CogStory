@@ -3,6 +3,7 @@
 #ifndef __MAIN_LOOP_H__
 #define __MAIN_LOOP_H__
 
+#include "AtlasManager.h"
 #include "AudioManager.h"
 #include "Lifecycle.h"
 #include "PhysicsManager.h"
@@ -36,6 +37,7 @@ namespace aga
         PhysicsManager& GetPhysicsManager ();
         TweenManager& GetTweenManager ();
         AudioManager& GetAudioManager ();
+        AtlasManager& GetAtlasManager ();
 
     private:
         void InitializeStates ();
@@ -49,6 +51,7 @@ namespace aga
         ScriptManager m_ScriptManager;
         PhysicsManager m_PhysicsManager;
         TweenManager m_TweenManager;
+        AtlasManager m_AtlasManager;
 
         MainMenuState* m_MainMenuState;
         GamePlayState* m_GamePlayState;
