@@ -191,8 +191,8 @@ namespace aga
         decreaseGridButton = new Gwk::Controls::Button (m_MainCanvas);
         decreaseGridButton->SetText ("---");
         decreaseGridButton->SetWidth (45);
-        decreaseGridButton->SetPos (increaseGridButton->GetPos ().x + increaseGridButton->GetSize ().x + 10,
-                                    showGridButton->Bottom () + 5);
+        decreaseGridButton->SetPos (
+            increaseGridButton->GetPos ().x + increaseGridButton->GetSize ().x + 10, showGridButton->Bottom () + 5);
         decreaseGridButton->onPress.Add (this, &Editor::OnGridDecrease);
 
         sceneButton = new Gwk::Controls::Button (m_MainCanvas);
@@ -262,6 +262,8 @@ namespace aga
 
         tilesetCombo->onSelection.Add (this, &Editor::OnTilesetSelected);
 
+        m_EditorActorMode.ChangeAtlas ((*atlases.begin ()).first);
+
         leftPrevTileButton = new Gwk::Controls::Button (m_MainCanvas);
         leftPrevTileButton->SetWidth (30);
         leftPrevTileButton->SetText ("<<");
@@ -322,9 +324,6 @@ namespace aga
 
         gridLabel = new Gwk::Controls::Label (m_MainCanvas);
         gridLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-
-        m_EditorActorMode.InitializeUI ();
-        m_EditorSpeechMode.Clear ();
 
         LoadConfig ();
         ScreenResize ();
@@ -417,10 +416,10 @@ namespace aga
     bool Editor::IsEditorCanvasNotCovered ()
     {
         return ((m_CursorMode == CursorMode::TileSelectMode || m_CursorMode == CursorMode::TileEditMode
-                 || m_CursorMode == CursorMode::EditPhysBodyMode)
-                && !m_EditorSceneWindow->GetSceneWindow ()->Visible () && !m_SpeechWindow->GetSceneWindow ()->Visible ()
-                && !m_TriggerAreaWindow->GetSceneWindow ()->Visible ()
-                && !m_FlagPointWindow->GetSceneWindow ()->Visible () && !m_ActorWindow->GetSceneWindow ()->Visible ());
+                    || m_CursorMode == CursorMode::EditPhysBodyMode)
+            && !m_EditorSceneWindow->GetSceneWindow ()->Visible () && !m_SpeechWindow->GetSceneWindow ()->Visible ()
+            && !m_TriggerAreaWindow->GetSceneWindow ()->Visible () && !m_FlagPointWindow->GetSceneWindow ()->Visible ()
+            && !m_ActorWindow->GetSceneWindow ()->Visible ());
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -724,7 +723,7 @@ namespace aga
                         m_EditorActorMode.GetSelectedActor (), true);
 
                     al_draw_rectangle (r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X,
-                                       r.GetBottomRight ().Y, COLOR_RED, 2);
+                        r.GetBottomRight ().Y, COLOR_RED, 2);
                 }
 
                 if (m_CursorMode == CursorMode::TileSelectMode)
@@ -739,18 +738,23 @@ namespace aga
                     if (m_EditorActorMode.GetActorUnderCursor ())
                     {
                         al_draw_rectangle (r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X,
-                                           r.GetBottomRight ().Y, COLOR_YELLOW, 2);
+                            r.GetBottomRight ().Y, COLOR_YELLOW, 2);
                     }
                 }
             }
 
             m_EditorFlagPointMode.DrawFlagPoints ();
-            m_EditorTriggerAreaMode.DrawTriggerAreas ();
+            m_EditorTriggerAreaMode.MarkSelectedTriggerAreas ();
 
             if (m_EditorActorMode.IsDrawTiles ())
             {
                 m_EditorActorMode.DrawTiles ();
                 RenderUI ();
+            }
+
+            if (m_ActorWindow->GetSceneWindow ()->Visible ())
+            {
+                m_ActorWindow->RenderActorImage ();
             }
         }
     }
@@ -868,8 +872,8 @@ namespace aga
 
             ResetSettings ();
 
-            UpdateSceneNameLabel (std::string ("SCENE: ")
-                                  + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ());
+            UpdateSceneNameLabel (
+                std::string ("SCENE: ") + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ());
         };
 
         m_InputWindow->Show ("Are you sure clearing current scene?", "", YesFunc, nullptr);

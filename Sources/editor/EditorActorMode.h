@@ -23,8 +23,8 @@ namespace aga
         EditorActorMode (Editor* editor);
         virtual ~EditorActorMode ();
 
-        bool AddOrUpdateActor (const std::string& name, const std::string& actorType, Point pos, float rotation,
-                               int zOrder);
+        Actor* AddOrUpdateActor (
+            const std::string& name, const std::string& actorType, Point pos, float rotation, int zOrder);
         void RemoveActor (const std::string& name);
         void Clear ();
 
@@ -42,8 +42,6 @@ namespace aga
         bool ChooseTile (int mouseX, int mouseY);
 
         void ResetSettings ();
-
-        void InitializeUI ();
 
         AtlasRegion& GetSelectedAtlasRegion () { return m_SelectedAtlasRegion; }
 

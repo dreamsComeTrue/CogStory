@@ -63,6 +63,8 @@ namespace aga
     const std::string GetDataPath ();
     const std::string GetResourcePath (ResourceID id);
     Resource& GetResource (ResourceID id);
+
+    std::vector<ResourceID> GetPacks ();
 }
 
 #endif //   __RESOURCES_H__

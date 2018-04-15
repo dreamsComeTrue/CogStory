@@ -42,7 +42,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorTriggerAreaMode::DrawTriggerAreas ()
+    void EditorTriggerAreaMode::MarkSelectedTriggerAreas ()
     {
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
@@ -79,71 +79,29 @@ namespace aga
                     out.push_back (yPoint);
                 }
 
-                al_draw_polygon (out.data (), (int)it->second.Points.size (), 0, COLOR_DARKBLUE, 2, 0);
-
-                Point min{ std::numeric_limits<int>::max (), std::numeric_limits<int>::max () };
-                Point max{ std::numeric_limits<int>::min (), std::numeric_limits<int>::min () };
-
                 for (const Point& p : it->second.Points)
                 {
                     float xPoint = p.X * scale.X - translate.X;
                     float yPoint = p.Y * scale.Y - translate.Y;
 
-                    if (xPoint < min.X)
-                    {
-                        min.X = xPoint;
-                    }
-
-                    if (yPoint < min.Y)
-                    {
-                        min.Y = yPoint;
-                    }
-
-                    if (xPoint > max.X)
-                    {
-                        max.X = xPoint;
-                    }
-
-                    if (yPoint > max.Y)
-                    {
-                        max.Y = yPoint;
-                    }
-
-                    ALLEGRO_COLOR color;
-
-                    if (i == 0)
-                    {
-                        color = COLOR_GREEN;
-                    }
-                    else
-                    {
-                        color = COLOR_YELLOW;
-                    }
-
                     if (i == selectedIndex)
                     {
                         //  Mark selected corner
-                        color = COLOR_BLUE;
+                        al_draw_filled_circle (xPoint, yPoint, 4, COLOR_PINK);
                     }
                     else if ((i == 0 && selectedIndex == it->second.Points.size () - 1) || (i == selectedIndex + 1))
                     {
                         //  Mark also next corner
-                        color = COLOR_LIGHTBLUE;
+                        al_draw_filled_circle (xPoint, yPoint, 4, COLOR_PINK);
                     }
 
                     if (selectedPoint != nullptr && p == *selectedPoint)
                     {
-                        color = COLOR_RED;
+                        al_draw_filled_circle (xPoint, yPoint, 4, COLOR_RED);
                     }
 
                     ++i;
-
-                    al_draw_filled_circle (xPoint, yPoint, 4, color);
                 }
-
-                m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
-                    FONT_NAME_SMALL, al_map_rgb (0, 255, 0), min.X + (max.X - min.X) * 0.5,
-                    min.Y + (max.Y - min.Y) * 0.5, ToString (it->second.Name), ALLEGRO_ALIGN_CENTER);
             }
         }
     }

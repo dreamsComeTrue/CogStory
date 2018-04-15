@@ -23,6 +23,8 @@ namespace aga
 
         Gwk::Controls::WindowControl* GetSceneWindow () { return m_SceneWindow; }
 
+        void RenderActorImage ();
+
     private:
         void OnSave ();
         void OnRemove ();
@@ -33,12 +35,14 @@ namespace aga
         void OnAccept ();
         void OnCancel ();
 
+        void OnImagePathSelected (Gwk::Controls::Base* control);
+        void OnImageSelected (Gwk::Controls::Base* control);
+
         void UpdateActorsTree ();
         void OnActorSelect (Gwk::Controls::Base* control);
 
         void AddScriptEntry (const std::string& name, const std::string& path);
 
-        void BrowseForImage ();
         std::string GetImageName (class Actor* actor);
         std::string GetImagePath (class Actor* actor);
 
@@ -57,11 +61,17 @@ namespace aga
         Gwk::Controls::WindowControl* m_SceneWindow;
         Gwk::Controls::TreeControl* m_ActorsTree;
 
+        Gwk::Controls::Property::ComboBox* m_ImageComboBox;
+        Gwk::Controls::Property::ComboBox* m_ImagePathComboBox;
+
         Gwk::Controls::PropertyTree* m_ActorProperties;
         Gwk::Controls::Properties* m_GeneralSection;
         Gwk::Controls::Properties* m_TransformSection;
         Gwk::Controls::Properties* m_ApperanceSection;
         Gwk::Controls::Properties* m_ScriptSection;
+
+        class Atlas* m_SelectedAtlas;
+        std::string m_SelectedAtlasRegion;
     };
 }
 

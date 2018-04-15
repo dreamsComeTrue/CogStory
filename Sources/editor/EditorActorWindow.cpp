@@ -7,6 +7,8 @@
 #include "EditorWindows.h"
 #include "MainLoop.h"
 #include "Screen.h"
+#include "AtlasManager.h"
+#include "Atlas.h"
 #include "actors/NPCActor.h"
 #include "actors/TileActor.h"
 
@@ -20,14 +22,15 @@ namespace aga
     Gwk::Controls::Property::Text* positionProperty;
     Gwk::Controls::Property::Text* rotationProperty;
     Gwk::Controls::Property::Text* zOrderProperty;
-    Gwk::Controls::Property::Text* imageProperty;
-    Gwk::Controls::Property::LabelButton* imagePathProperty;
+    Gwk::Controls::Property::ComboBox* imageProperty;
+    Gwk::Controls::Property::ComboBox* imagePathProperty;
 
     EditorActorWindow::EditorActorWindow (Editor* editor, Gwk::Controls::Canvas* canvas)
         : m_Editor (editor)
+        , m_SelectedAtlas (nullptr)
+        , m_SelectedAtlasRegion ("")
+        , m_SelectedType (0)
     {
-        m_SelectedType = 0;
-
         m_SceneWindow = new Gwk::Controls::WindowControl (canvas);
         m_SceneWindow->SetTitle ("Actor Editor");
         m_SceneWindow->SetSize (680, canvas->Height () - 150);
@@ -81,12 +84,25 @@ namespace aga
             m_TransformSection->Add ("ZOrder");
 
             m_ApperanceSection = m_ActorProperties->Add ("Apperance");
-            m_ApperanceSection->Add ("Image");
 
-            imagePathProperty = new Gwk::Controls::Property::LabelButton (m_ApperanceSection, "", "...");
-            imagePathProperty->FuncButton->onPress.Add (this, &EditorActorWindow::BrowseForImage);
+            m_ImagePathComboBox = new Gwk::Controls::Property::ComboBox (m_ApperanceSection);
 
-            m_ApperanceSection->Add ("Path", imagePathProperty);
+            for (ResourceID resID : GetPacks ())
+            {
+                Resource res = GetResource (resID);
+                std::string name = GetBaseName (res.Name);
+                m_ImagePathComboBox->GetComboBox ()->AddItem (name, name);
+            }
+
+            m_ApperanceSection->Add ("Path", m_ImagePathComboBox);
+
+            m_ImageComboBox = new Gwk::Controls::Property::ComboBox (m_ApperanceSection);
+            m_ImageComboBox->GetComboBox ()->onSelection.Add (this, &EditorActorWindow::OnImageSelected);
+
+            m_ApperanceSection->Add ("Image", m_ImageComboBox);
+
+            m_ImagePathComboBox->GetComboBox ()->onSelection.Add (this, &EditorActorWindow::OnImagePathSelected);
+            OnImagePathSelected (m_ImagePathComboBox);
 
             m_ScriptSection = m_ActorProperties->Add ("Scripts");
 
@@ -105,8 +121,10 @@ namespace aga
                 static_cast<Gwk::Controls::PropertyRow*> (m_TransformSection->Find ("Rotation"))->GetProperty ());
             zOrderProperty = static_cast<Gwk::Controls::Property::Text*> (
                 static_cast<Gwk::Controls::PropertyRow*> (m_TransformSection->Find ("ZOrder"))->GetProperty ());
-            imageProperty = static_cast<Gwk::Controls::Property::Text*> (
+            imageProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
                 static_cast<Gwk::Controls::PropertyRow*> (m_ApperanceSection->Find ("Image"))->GetProperty ());
+            imagePathProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
+                static_cast<Gwk::Controls::PropertyRow*> (m_ApperanceSection->Find ("Path"))->GetProperty ());
         }
 
         m_ActorProperties->ExpandAll ();
@@ -154,12 +172,15 @@ namespace aga
         positionProperty->SetPropertyValue ("", false);
         rotationProperty->SetPropertyValue ("", false);
         zOrderProperty->SetPropertyValue ("", false);
+        imagePathProperty->SetPropertyValue ("", false);
         imageProperty->SetPropertyValue ("", false);
-        imagePathProperty->TextLabel->SetText ("", false);
 
         m_SceneWindow->SetPosition (Gwk::Position::Center);
         m_SceneWindow->SetHidden (false);
         m_SceneWindow->MakeModal (true);
+
+        m_SelectedAtlas = nullptr;
+        m_SelectedAtlasRegion = "";
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -196,10 +217,26 @@ namespace aga
             sscanf (rotationProperty->GetPropertyValue ().c_str (), "%f", &m_Rotation);
             sscanf (zOrderProperty->GetPropertyValue ().c_str (), "%d", &m_ZOrder);
 
-            bool ret = m_Editor->GetEditorActorMode ().AddOrUpdateActor (oldName, typePropertyTxt, m_Position,
-                                                                         m_Rotation, m_ZOrder);
+            Actor* retActor = m_Editor->GetEditorActorMode ().AddOrUpdateActor (
+                oldName, typePropertyTxt, m_Position, m_Rotation, m_ZOrder);
 
-            if (ret)
+            if (m_SelectedAtlas && m_SelectedAtlasRegion != "")
+            {
+                if (typePropertyTxt == TileActor::TypeName)
+                {
+                    TileActor* tileActor = static_cast<TileActor*> (retActor);
+                    tileActor->Tileset = m_SelectedAtlas->GetName ();
+                    tileActor->TileName = m_SelectedAtlasRegion;
+                    tileActor->Bounds.SetSize (m_SelectedAtlas->GetRegion (m_SelectedAtlasRegion).Bounds.Size);
+                }
+                else
+                {
+                    retActor->SetAtlas (m_SelectedAtlas);
+                    retActor->SetAtlasRegionName (m_SelectedAtlasRegion);
+                }
+            }
+
+            if (retActor)
             {
                 m_Editor->GetEditorActorMode ().Clear ();
 
@@ -232,6 +269,37 @@ namespace aga
         {
             node->SetSelected (true);
         }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::OnImagePathSelected (Gwk::Controls::Base* control)
+    {
+        Gwk::String packName = m_ImagePathComboBox->GetPropertyValue ();
+
+        m_SelectedAtlas = m_Editor->GetMainLoop ()->GetAtlasManager ().GetAtlas (packName);
+        m_SelectedAtlasRegion = "";
+
+        std::vector<AtlasRegion> regions = m_SelectedAtlas->GetRegions ();
+
+        m_ImageComboBox->GetComboBox ()->ClearItems ();
+        m_ImageComboBox->GetComboBox ()->AddItem ("", "");
+
+        for (AtlasRegion region : regions)
+        {
+            m_ImageComboBox->GetComboBox ()->AddItem (region.Name, region.Name);
+        }
+
+        m_ImageComboBox->GetComboBox ()->SelectItemByName ("", false);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::OnImageSelected (Gwk::Controls::Base* control)
+    {
+        Gwk::String imageName = m_ImageComboBox->GetPropertyValue ();
+
+        m_SelectedAtlasRegion = imageName;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -309,6 +377,7 @@ namespace aga
         }
         else if (actor->GetTypeName () == NPCActor::TypeName)
         {
+            imageName = static_cast<NPCActor*> (actor)->GetAtlasRegionName ();
         }
 
         return imageName;
@@ -326,15 +395,7 @@ namespace aga
         }
         else if (actor->GetTypeName () == NPCActor::TypeName)
         {
-            imagePath = actor->GetAtlasRegionName ();
-            std::replace (imagePath.begin (), imagePath.end (), '\\', '/');
-            std::string dataPath = "Data/gfx/";
-            size_t index = imagePath.find (dataPath);
-
-            if (index != std::string::npos)
-            {
-                imagePath = imagePath.substr (index + dataPath.length ());
-            }
+            imagePath = actor->GetAtlas ()->GetName ();
         }
 
         return imagePath;
@@ -367,8 +428,7 @@ namespace aga
                         Gwk::Utility::Format ("%f,%f", actor->Bounds.Pos.X, actor->Bounds.Pos.Y), false);
                     rotationProperty->SetPropertyValue (Gwk::Utility::Format ("%f", actor->Rotation), false);
                     zOrderProperty->SetPropertyValue (ToString (actor->ZOrder), false);
-                    imageProperty->SetPropertyValue (GetImageName (actor), false);
-                    imagePathProperty->TextLabel->SetText (GetImagePath (actor), false);
+                    imagePathProperty->SetPropertyValue (GetImagePath (actor), false);
 
                     m_ScriptSection->Clear ();
 
@@ -376,6 +436,14 @@ namespace aga
                     {
                         AddScriptEntry (scriptData.Name, scriptData.Path);
                     }
+
+                    OnImagePathSelected (m_ImagePathComboBox);
+
+                    imageProperty->SetPropertyValue (GetImageName (actor), false);
+
+                    m_SelectedAtlas = m_Editor->GetMainLoop ()->GetAtlasManager ().GetAtlas (
+                        imagePathProperty->GetPropertyValue ());
+                    m_SelectedAtlasRegion = imageProperty->GetPropertyValue ();
 
                     break;
                 }
@@ -465,7 +533,27 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorActorWindow::BrowseForImage () {}
+    void EditorActorWindow::RenderActorImage ()
+    {
+        const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+
+        const int margin = 10;
+        const int previewSize = 96;
+
+        al_draw_filled_rectangle (winSize.Width - previewSize - margin, winSize.Height - previewSize - margin,
+            winSize.Width - margin, winSize.Height - margin, COLOR_BLACK);
+        al_draw_rectangle (winSize.Width - previewSize - margin, winSize.Height - previewSize - margin,
+            winSize.Width - margin, winSize.Height - margin, COLOR_GREEN, 2);
+
+        if (m_SelectedAtlas && m_SelectedAtlasRegion != "")
+        {
+            AtlasRegion& region = m_SelectedAtlas->GetRegion (m_SelectedAtlasRegion);
+
+            al_draw_scaled_bitmap (m_SelectedAtlas->GetImage (), region.Bounds.GetPos ().X, region.Bounds.GetPos ().Y,
+                region.Bounds.GetSize ().Width, region.Bounds.GetSize ().Height, winSize.Width - previewSize - margin,
+                winSize.Height - previewSize - margin, previewSize, previewSize, 0);
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 }

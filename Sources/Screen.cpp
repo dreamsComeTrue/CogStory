@@ -53,8 +53,8 @@ namespace aga
             return false;
         }
 
-        float winX = 2; //    px - frame border;
-        float winY = 32; //    px - frame border;
+        float winX = 0; // 2; //    px - frame border;
+        float winY = 0; // 32; //    px - frame border;
 
         if (m_CenterOnScreen)
         {
@@ -212,8 +212,8 @@ namespace aga
             }
         }
         else if ((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) || (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
-                 || (ev.type == ALLEGRO_EVENT_MOUSE_AXES) || (ev.type == ALLEGRO_EVENT_KEY_DOWN)
-                 || (ev.type == ALLEGRO_EVENT_KEY_UP) || (ev.type == ALLEGRO_EVENT_KEY_CHAR))
+            || (ev.type == ALLEGRO_EVENT_MOUSE_AXES) || (ev.type == ALLEGRO_EVENT_KEY_DOWN)
+            || (ev.type == ALLEGRO_EVENT_KEY_UP) || (ev.type == ALLEGRO_EVENT_KEY_CHAR))
         {
             if (ProcessEventFunction != nullptr)
             {

@@ -11,6 +11,7 @@ namespace aga
     class PhysicsManager;
     class Transformable;
     class AtlasManager;
+    class Atlas;
 
     class Animable
     {
@@ -30,11 +31,15 @@ namespace aga
         void SetAnimation (Animation animation) { m_Animation = animation; }
         std::map<std::string, AnimationFrames>& GetAnimations ();
 
+        void SetAtlasRegionName (const std::string& name) { m_AtlasRegionName = name; }
+        void SetAtlas (Atlas* atlas) { m_Atlas = atlas; }
+
         std::string GetAtlasRegionName () const { return m_AtlasRegionName; }
+        Atlas* GetAtlas () { return m_Atlas; }
 
     private:
         AtlasManager* m_AtlasManager;
-        class Atlas* m_Atlas;
+        Atlas* m_Atlas;
         std::string m_AtlasRegionName;
 
         Animation m_Animation;

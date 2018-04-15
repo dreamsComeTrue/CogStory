@@ -140,6 +140,8 @@ namespace aga
 
         void ResetAllActorsPositions ();
 
+        void DrawTriggerAreas ();
+
     private:
         static void UpdateMaxTileID (Scene* scene);
         void DrawQuadTree (QuadTreeNode* node);

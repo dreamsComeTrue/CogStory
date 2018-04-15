@@ -17,6 +17,7 @@ link_directories(   ${ROOT_THIRD_PARTY_DIR}/anglescript/angelscript/lib/
                  )
 file(GLOB_RECURSE SRC_LIST   "Sources/*")
 
+if (WIN32)
 include_directories(Sources/
                     Sources/editor/
                     Sources/editor/ui/
@@ -30,8 +31,25 @@ include_directories(Sources/
                     ThirdParty/anglescript/add_on
                     External/allegro/include
                     )
+else()
+    include_directories(Sources/
+                        Sources/editor/
+                        Sources/editor/ui/
+                        Sources/addons/nine-patch/
+                        Sources/addons/tweeny/
+                        Sources/addons/json/
+                        ThirdParty/
+                        ThirdParty/GWork/source/gwork/include/
+                        ThirdParty/GWork/source/platform/include/
+                        ThirdParty/anglescript/angelscript/include
+                        ThirdParty/anglescript/add_on
+                        )
+endif (WIN32)
+
 
 add_executable(${PROJECT_NAME} ${SRC_LIST} ${IMGUI_SRC_LIST})
+
+if (WIN32)
 target_link_libraries(${PROJECT_NAME}
     libGwork.a
     libGworkAllegro5.a
@@ -48,6 +66,23 @@ target_link_libraries(${PROJECT_NAME}
     freetype
     pthread
     )
+else()
+    target_link_libraries(${PROJECT_NAME}
+        libGwork_LINUX.a
+        libGworkAllegro5_LINUX.a
+        libangelscript_LINUX.a
+
+        allegro
+        allegro_image
+        allegro_font
+        allegro_ttf
+        allegro_primitives
+        allegro_dialog
+        allegro_audio
+        allegro_acodec
+        pthread
+        )
+endif (WIN32)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
                       RUNTIME_OUTPUT_DIRECTORY_DEBUG ../

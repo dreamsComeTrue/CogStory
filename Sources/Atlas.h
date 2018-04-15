@@ -23,10 +23,9 @@ namespace aga
         ~Atlas ();
 
         void DrawRegion (const std::string& name, float x, float y, float scaleX, float scaleY, float rotation,
-                         bool offsetByCenter = true, ALLEGRO_COLOR color = COLOR_WHITE);
+            bool offsetByCenter = true, ALLEGRO_COLOR color = COLOR_WHITE);
         void DrawRegion (float sourceX, float sourceY, float sourceWidth, float sourceHeight, float x, float y,
-                         float scaleX, float scaleY, float rotation, bool offsetByCenter = true,
-                         ALLEGRO_COLOR color = COLOR_WHITE);
+            float scaleX, float scaleY, float rotation, bool offsetByCenter = true, ALLEGRO_COLOR color = COLOR_WHITE);
         ALLEGRO_BITMAP* GetImage ();
         AtlasRegion& GetRegion (const std::string& name);
         std::vector<AtlasRegion>& GetRegions ();

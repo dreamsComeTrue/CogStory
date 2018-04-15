@@ -12,6 +12,7 @@ namespace aga
     EditorSpeechMode::EditorSpeechMode (Editor* editor)
         : m_Editor (editor)
     {
+        Clear ();
     }
 
     //--------------------------------------------------------------------------------------------------
