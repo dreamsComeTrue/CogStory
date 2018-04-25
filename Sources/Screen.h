@@ -8,6 +8,15 @@
 
 namespace aga
 {
+    struct DebugMessage
+    {
+        std::string Message;
+        float MaxDuration = 2000.0f; //  milliseconds
+        ALLEGRO_COLOR Color = COLOR_GREEN;
+
+        float ActualDuration = 0.0f;
+    };
+
     class Screen : public Lifecycle
     {
     public:
@@ -36,6 +45,13 @@ namespace aga
         std::function<void(float deltaTime)> UpdateFunction;
         std::function<void()> RenderFunction;
 
+        void AddDebugMessage (const std::string& text, float duration = 5000.f, ALLEGRO_COLOR color = COLOR_GREEN);
+
+        static Screen* GetSingleton () { return m_Singleton; }
+
+    private:
+        void DrawDebugMessages ();
+
     private:
         Point m_RealSize;
         unsigned m_Width, m_Height;
@@ -49,6 +65,10 @@ namespace aga
         ALLEGRO_DISPLAY* m_Display;
         ALLEGRO_EVENT_QUEUE* m_EventQueue;
         ALLEGRO_TIMER* m_DisplayTimer;
+
+        std::deque<DebugMessage> m_DebugMessages;
+
+        static Screen* m_Singleton;
     };
 }
 

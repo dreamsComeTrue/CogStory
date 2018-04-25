@@ -59,7 +59,7 @@ namespace aga
         m_Player->Initialize ();
         m_Player->SetCheckOverlap (true);
 
-        m_Camera.SetFollowActor (m_Player);
+        m_Camera.SetFollowActor (m_Player, { 0, 0 });
 
         m_SpeechFrameManager.Initialize ();
 
@@ -274,6 +274,16 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void SceneManager::RemoveOnEnterCallback (const std::string& triggerName)
+    {
+        if (m_ActiveScene)
+        {
+            m_ActiveScene->RemoveOnEnterCallback (triggerName);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void SceneManager::AddOnLeaveCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func)
     {
         if (m_ActiveScene)
@@ -289,6 +299,16 @@ namespace aga
         if (m_ActiveScene)
         {
             m_ActiveScene->AddOnLeaveCallback (triggerName, func);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::RemoveOnLeaveCallback (const std::string& triggerName)
+    {
+        if (m_ActiveScene)
+        {
+            m_ActiveScene->RemoveOnLeaveCallback (triggerName);
         }
     }
 

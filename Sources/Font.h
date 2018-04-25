@@ -15,31 +15,20 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
-        void DrawText (const std::string& fontName,
-                       ALLEGRO_COLOR color,
-                       float x,
-                       float y,
-                       const std::string& text,
-                       int flags = ALLEGRO_ALIGN_CENTRE);
-        void DrawMultilineText (const std::string& fontName,
-                                ALLEGRO_COLOR color,
-                                float x,
-                                float y,
-                                float max_width,
-                                float line_height,
-                                int flags,
-                                const char* text,
-                                ...);
+        static void DrawText (const std::string& fontName, ALLEGRO_COLOR color, float x, float y,
+                              const std::string& text, int flags = ALLEGRO_ALIGN_CENTRE);
+        static void DrawMultilineText (const std::string& fontName, ALLEGRO_COLOR color, float x, float y,
+                                       float max_width, float line_height, int flags, const char* text, ...);
 
-        Point GetTextDimensions (const std::string& fontName, const std::string& text);
-        unsigned GetFontAscent (const std::string& fontName);
-        unsigned GetFontDescent (const std::string& fontName);
+        static Point GetTextDimensions (const std::string& fontName, const std::string& text);
+        static unsigned GetFontAscent (const std::string& fontName);
+        static unsigned GetFontDescent (const std::string& fontName);
 
     private:
         void GenerateFont (const std::string& name, const std::string& path, float size);
 
     private:
-        std::map<std::string, ALLEGRO_FONT*> m_Fonts;
+        static std::map<std::string, ALLEGRO_FONT*> m_Fonts;
     };
 }
 

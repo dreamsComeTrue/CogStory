@@ -3,13 +3,59 @@
 #include "ScriptManager.h"
 #include "MainLoop.h"
 #include "Scene.h"
+#include "SceneManager.h"
 #include "Screen.h"
 #include "Script.h"
 #include "SpeechFrame.h"
 #include "SpeechFrameManager.h"
 
+#include <chrono>
+
 namespace aga
 {
+    //--------------------------------------------------------------------------------------------------
+
+    std::string lastWatchedFile;
+    std::chrono::system_clock::time_point lastTimePoint;
+
+    void FileUpdateListener::handleFileAction (FW::WatchID watchid, const FW::String& dir, const FW::String& fileName,
+                                               FW::Action action)
+    {
+        std::chrono::system_clock::time_point now = std::chrono::system_clock::now ();
+
+        auto fraction = now - lastTimePoint;
+        auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds> (fraction);
+        if (milliseconds.count () < 500)
+        {
+            return;
+        }
+
+        auto reloadScriptsFunc = [&](Scriptable* scriptable) {
+            for (ScriptMetaData& script : scriptable->GetScripts ())
+            {
+                std::string file = fileName;
+                std::replace (file.begin (), file.end (), '\\', '/');
+
+                if (script.Path == file)
+                {
+                    scriptable->ReloadScript (script.Name);
+                }
+            }
+        };
+
+        reloadScriptsFunc (m_SceneManager->GetActiveScene ());
+
+        std::vector<Actor*>& actors = m_SceneManager->GetActiveScene ()->GetActors ();
+
+        for (Actor* actor : actors)
+        {
+            reloadScriptsFunc (actor);
+        }
+
+        lastTimePoint = now;
+    }
+
+    //--------------------------------------------------------------------------------------------------
     //---------------------------------------------------------------------------
 
     char g_ScriptErrorBuffer[1024];
@@ -29,7 +75,7 @@ namespace aga
 
         sprintf (g_ScriptErrorBuffer, "%s [%d, %d]: %s: %s\n", msg->section, msg->row, msg->col, type, msg->message);
 
-        printf ("%s", g_ScriptErrorBuffer);
+        Log (8000.f, COLOR_ORANGE, "%s", g_ScriptErrorBuffer);
     }
 
     //---------------------------------------------------------------------------
@@ -62,13 +108,14 @@ namespace aga
         sprintf (buffer, "- Exception '%s' in '%s'\n%s", context->GetExceptionString (),
                  context->GetExceptionFunction ()->GetDeclaration (), GetCallStack (context).c_str ());
 
-        printf ("%s", buffer);
+        Log (8000.f, COLOR_ORANGE, "%s", buffer);
     }
 
     //--------------------------------------------------------------------------------------------------
 
     ScriptManager::ScriptManager (MainLoop* mainLoop)
-        : m_MainLoop (mainLoop)
+        : m_FileListener (&mainLoop->GetSceneManager ())
+        , m_MainLoop (mainLoop)
     {
     }
 
@@ -97,6 +144,8 @@ namespace aga
         RegisterStdString (m_ScriptEngine);
         RegisterAPI ();
 
+        m_FileWatcher.addWatch (GetDataPath () + "/scripts", &m_FileListener, true);
+
         return true;
     }
 
@@ -116,6 +165,10 @@ namespace aga
 
         return Lifecycle::Destroy ();
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void ScriptManager::Update (float deltaTime) { m_FileWatcher.update (); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -148,7 +201,7 @@ namespace aga
         {
             // If the code fails here it is usually because there
             // is no more memory to allocate the module
-            printf ("Unrecoverable error while starting a new module.\n");
+            Log (8000.f, COLOR_ORANGE, "Unrecoverable error while starting a new module.\n");
             return nullptr;
         }
 
@@ -159,7 +212,7 @@ namespace aga
             // The builder wasn't able to load the file. Maybe the file
             // has been removed, or the wrong name was given, or some
             // preprocessing commands are incorrectly written.
-            printf ("Please correct the errors in the script and try again.\n");
+            Log (8000.f, COLOR_ORANGE, "Please correct the errors in the script and try again.\n");
             return nullptr;
         }
 
@@ -169,7 +222,7 @@ namespace aga
         {
             // An error occurred. Instruct the script writer to fix the
             // compilation errors that were listed in the output stream.
-            printf ("Please correct the errors in the script and try again.\n");
+            Log (8000.f, COLOR_ORANGE, "Please correct the errors in the script and try again.\n");
             return nullptr;
         }
 
@@ -226,15 +279,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    static void Log (const std::string& data) { printf ("%s\n", data.c_str ()); }
+    static void Log (const std::string& data) { Log ("%s\n", data.c_str ()); }
 
     //--------------------------------------------------------------------------------------------------
 
-    static void Log (Point point) { printf ("Point [X = %f, Y = %f]\n", point.X, point.Y); }
+    static void Log (Point point) { Log ("Point [X = %f, Y = %f]\n", point.X, point.Y); }
 
     //--------------------------------------------------------------------------------------------------
 
-    static void Log (float data) { printf ("%f\n", data); }
+    static void Log (float data) { Log ("%f\n", data); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -376,9 +429,6 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod ("Player", "void Move (float, float)", asMETHOD (Player, Move),
                                                   asCALL_THISCALL);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("Player", "void SetFollowCamera (bool)",
-                                                  asMETHOD (Player, SetFollowCamera), asCALL_THISCALL);
-        assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("Player", "void SetCurrentAnimation (const string &in)",
                                                   asMETHOD (Player, SetCurrentAnimation), asCALL_THISCALL);
         assert (r >= 0);
@@ -404,9 +454,19 @@ namespace aga
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction (
+            "void RemoveOnEnterCallback (const string &in)",
+            asMETHODPR (SceneManager, RemoveOnEnterCallback, (const std::string&), void), asCALL_THISCALL_ASGLOBAL,
+            &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction (
             "void AddOnLeaveCallback (const string &in, TriggerFunc @+ tf)",
             asMETHODPR (SceneManager, AddOnLeaveCallback, (const std::string&, asIScriptFunction*), void),
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction (
+            "void RemoveOnLeaveCallback (const string &in)",
+            asMETHODPR (SceneManager, RemoveOnLeaveCallback, (const std::string&), void), asCALL_THISCALL_ASGLOBAL,
+            &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
 
         //  Speech Frame
@@ -499,7 +559,8 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod ("Camera", "void SetCenter (float, float)",
                                                   asMETHOD (Camera, SetCenter), asCALL_THISCALL);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("Camera", "void SetFollowActor (Actor@)",
+        r = m_ScriptEngine->RegisterObjectMethod ("Camera",
+                                                  "void SetFollowActor (Actor@, Point followOffset = Point(0.f, 0.f))",
                                                   asMETHOD (Camera, SetFollowActor), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (

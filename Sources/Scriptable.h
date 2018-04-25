@@ -35,6 +35,8 @@ namespace aga
         void UpdateScripts (float deltaTime);
         void RunAllScripts (const std::string& functionName);
 
+        ScriptMetaData* GetScript (const std::string& name);
+
 #ifdef _MSC_VER
         std::optional<ScriptMetaData> GetScriptByName (const std::string& name);
 #else

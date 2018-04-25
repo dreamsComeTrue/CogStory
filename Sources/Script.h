@@ -9,6 +9,8 @@ namespace aga
 {
     class ScriptManager;
 
+    //---------------------------------------------------------------------------
+
     class Script : public Lifecycle
     {
     public:
@@ -24,7 +26,8 @@ namespace aga
         bool Run (const std::string& functionName, int arg0);
         bool Run (const std::string& functionName, void* arg0);
 
-        std::string GetName ();
+        std::string GetName () { return m_Name; }
+        asIScriptModule* GetModule () { return m_Module; }
 
     private:
         asIScriptContext* GetContext (const std::string& functionName);

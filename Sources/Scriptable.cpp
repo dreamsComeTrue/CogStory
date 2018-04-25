@@ -21,20 +21,12 @@ namespace aga
 
     void Scriptable::AttachScript (const std::string& name, const std::string& path)
     {
-        bool found = false;
-
-        for (ScriptMetaData& script : m_Scripts)
-        {
-            if (script.Name == name)
-            {
-                found = true;
-                break;
-            }
-        }
+        ScriptMetaData* found = GetScript (name);
 
         if (!found)
         {
-            Script* script = m_ScriptManager->LoadScriptFromFile (GetDataPath () + "/scripts/" + path, name);
+            std::string realPath = GetDataPath () + "/scripts/" + path;
+            Script* script = m_ScriptManager->LoadScriptFromFile (realPath, name);
 
             ScriptMetaData meta = { name, path, script };
             m_Scripts.push_back (meta);
@@ -50,16 +42,7 @@ namespace aga
             return;
         }
 
-        bool found = false;
-
-        for (ScriptMetaData& sc : m_Scripts)
-        {
-            if (sc.Name == script->GetName ())
-            {
-                found = true;
-                break;
-            }
-        }
+        ScriptMetaData* found = GetScript (script->GetName ());
 
         if (!found)
         {
@@ -126,7 +109,22 @@ namespace aga
         }
     }
 
-        //--------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
+
+    ScriptMetaData* Scriptable::GetScript (const std::string& name)
+    {
+        for (ScriptMetaData& sc : m_Scripts)
+        {
+            if (sc.Name == name)
+            {
+                return &sc;
+            }
+        }
+
+        return nullptr;
+    }
+
+    //--------------------------------------------------------------------------------------------------
 
 #ifdef _MSC_VER
     std::optional<ScriptMetaData> Scriptable::GetScriptByName (const std::string& name)
@@ -166,13 +164,11 @@ namespace aga
         if (metaScript)
         {
             std::string path = metaScript.value ().Path;
-            Script* s = m_ScriptManager->LoadScriptFromFile (GetDataPath () + "scripts/" + path, name);
 
-            if (s)
-            {
-                RemoveScript (metaScript.value ().ScriptObj);
-                AttachScript (s, path);
-            }
+            RemoveScript (name);
+            AttachScript (name, path);
+
+            Log ("Script: %s (%s) reloaded.\n", name.c_str (), path.c_str ());
         }
     }
 

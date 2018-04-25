@@ -25,6 +25,7 @@ list(APPEND INCLUDE_DIRS
         Sources/addons/nine-patch/
         Sources/addons/tweeny/
         Sources/addons/json/
+        Sources/addons/file-watcher/
         ThirdParty/GWork/source/gwork/include/
         ThirdParty/GWork/source/platform/include/
         ThirdParty/anglescript/angelscript/include

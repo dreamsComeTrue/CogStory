@@ -129,8 +129,6 @@ namespace aga
         m_OldPosition = Bounds.GetPos ();
         Bounds.SetPos (Bounds.GetPos () + Point (dx, dy));
 
-        ChooseAnimation (ToPositiveAngle (RadiansToDegrees (std::atan2 (dy, dx))));
-
         if (MoveCallback != nullptr)
         {
             MoveCallback (dx, dy);
@@ -150,13 +148,9 @@ namespace aga
         m_OldPosition = Bounds.GetPos ();
         Bounds.SetPos ({ x, y });
 
-        if (MoveCallback != nullptr)
-        {
-            MoveCallback (Bounds.GetPos ().X - m_OldPosition.X, Bounds.GetPos ().Y - m_OldPosition.Y);
-        }
+        FireMoveCallback ();
 
-        SetPhysOffset (Bounds.GetPos ().X - Bounds.GetHalfSize ().Width,
-                       Bounds.GetPos ().Y - Bounds.GetHalfSize ().Height);
+        SetPhysOffset (Bounds.GetPos ().X, Bounds.GetPos ().Y);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -237,6 +231,16 @@ namespace aga
                     }
                 }
             }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Actor::FireMoveCallback ()
+    {
+        if (MoveCallback != nullptr)
+        {
+            MoveCallback (Bounds.GetPos ().X - m_OldPosition.X, Bounds.GetPos ().Y - m_OldPosition.Y);
         }
     }
 

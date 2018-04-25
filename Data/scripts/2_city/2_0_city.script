@@ -11,11 +11,14 @@ void BeforeEnterScene ()
 {
 	AddOnEnterCallback ("CITY_EXIT", OnCityExitEnter);
 
-	camera.SetFollowActor (GetActor ("PLAYER"));
+	Point offset (0, -180);
+	camera.SetFollowActor (GetActor ("PLAYER"), offset);
 }
 
 void AfterLeaveScene ()
 {
+	Point offset (0, 0);
+	camera.SetFollowActor (GetActor ("PLAYER"), offset);
 }
 
 void OnCityExitEnter (Point p)

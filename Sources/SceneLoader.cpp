@@ -185,10 +185,12 @@ namespace aga
                     std::string rot = actorIt["rot"];
                     newActor->Rotation = atof (rot.c_str ());
 
-                    if (newActor->GetTypeName () == TileActor::TypeName)
+                    if (!actorIt["atlas"].is_null ())
                     {
-                        dynamic_cast<TileActor*> (newActor)->Tileset = actorIt["tileset"];
-                        dynamic_cast<TileActor*> (newActor)->TileName = actorIt["tile"];
+                        Atlas* atlas = sceneManager->GetMainLoop ()->GetAtlasManager ().GetAtlas (actorIt["atlas"]);
+
+                        newActor->SetAtlas (atlas);
+                        newActor->SetAtlasRegionName (actorIt["atlas-region"]);
                     }
 
                     //  Physics
@@ -227,7 +229,7 @@ namespace aga
                     }
                     else
                     {
-                        scene->AddActor (actorIt["name"], newActor);
+                        scene->AddActor (newActor);
                     }
                 }
             }
@@ -420,12 +422,8 @@ namespace aga
                 actorObj["size"] = PointToString (actor->Bounds.GetSize ());
                 actorObj["z-order"] = ToString (actor->ZOrder);
                 actorObj["rot"] = ToString (actor->Rotation);
-
-                if (actor->GetTypeName () == TileActor::TypeName)
-                {
-                    actorObj["tileset"] = dynamic_cast<TileActor*> (actor)->Tileset;
-                    actorObj["tile"] = dynamic_cast<TileActor*> (actor)->TileName;
-                }
+                actorObj["atlas"] = actor != nullptr ? actor->GetAtlas ()->GetName () : "";
+                actorObj["atlas-region"] = actor->GetAtlasRegionName ();
 
                 actorObj["phys"] = json::array ({});
 

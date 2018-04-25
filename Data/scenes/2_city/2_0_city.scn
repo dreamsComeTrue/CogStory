@@ -1,6 +1,8 @@
 {
     "actors": [
         {
+            "atlas": "0_0_home",
+            "atlas-region": "bed",
             "id": "2",
             "name": "bed",
             "phys": [],
@@ -8,12 +10,12 @@
             "rot": "0",
             "scripts": [],
             "size": "64 64",
-            "tileset": "0_0_home",
-            "tile": "bed",
             "type": "Tile",
             "z-order": "0"
         },
         {
+            "atlas": "0_0_home",
+            "atlas-region": "bed",
             "id": "4",
             "name": "bed",
             "phys": [],
@@ -21,12 +23,12 @@
             "rot": "0",
             "scripts": [],
             "size": "64 64",
-            "tileset": "0_0_home",
-            "tile": "bed",
             "type": "Tile",
             "z-order": "0"
         },
         {
+            "atlas": "0_0_home",
+            "atlas-region": "bed",
             "id": "6",
             "name": "bed",
             "phys": [],
@@ -34,31 +36,33 @@
             "rot": "0",
             "scripts": [],
             "size": "64 64",
-            "tileset": "0_0_home",
-            "tile": "bed",
             "type": "Tile",
             "z-order": "0"
         },
         {
+            "atlas": "actors_ui",
+            "atlas-region": "player_head",
             "id": "13",
-            "name": "parallax-forest-back-trees",
-            "phys": [],
-            "pos": "47.2 -78.4",
+            "name": "back",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "48.3078 -73.7235",
             "rot": "0",
             "scripts": [],
-            "size": "272 160",
-            "tileset": "0_0_home",
-            "tile": "parallax-forest-back-trees",
+            "size": "20 30",
             "type": "Tile",
             "z-order": "0"
         }
     ],
     "color": "35 31 54 255",
     "flag_points": [],
-    "max_size": "319.2 81.6",
+    "max_size": "95 38",
     "min_size": "-111 -145",
     "name": "City",
-    "player_start": "-34 -38",
+    "player_start": "-33.5598 -32.0616",
     "scripts": [
         {
             "name": "main",
@@ -148,7 +152,7 @@
     "trigger_areas": [
         {
             "name": "CITY_EXIT",
-            "poly": "46 -73 53 79 208 82 220.8 -80 "
+            "poly": "46.3743 -74.2159 48.3627 -42.799 70.2352 -42.4014 72.6213 -73.4206 "
         }
     ]
 }

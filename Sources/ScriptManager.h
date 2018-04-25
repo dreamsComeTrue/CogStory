@@ -10,6 +10,21 @@ namespace aga
     class MainLoop;
     class Script;
 
+    class FileUpdateListener : public FW::FileWatchListener
+    {
+    public:
+        FileUpdateListener (class SceneManager* sceneManager)
+            : m_SceneManager (sceneManager)
+        {
+        }
+
+        void handleFileAction (FW::WatchID watchid, const FW::String& dir, const FW::String& filename,
+                               FW::Action action) override;
+
+    private:
+        class SceneManager* m_SceneManager;
+    };
+
     class ScriptManager : public Lifecycle
     {
     public:
@@ -17,6 +32,8 @@ namespace aga
         virtual ~ScriptManager ();
         bool Initialize ();
         bool Destroy ();
+
+        void Update (float deltaTime);
 
         Script* LoadScriptFromFile (const std::string& path, const std::string& moduleName);
         Script* LoadScriptFromText (const std::string& text, const std::string& moduleName);
@@ -35,6 +52,9 @@ namespace aga
         MainLoop* m_MainLoop;
         asIScriptEngine* m_ScriptEngine;
         std::map<std::string, Script*> m_Scripts;
+
+        FW::FileWatcher m_FileWatcher;
+        FileUpdateListener m_FileListener;
     };
 
     extern char g_ScriptErrorBuffer[1024];

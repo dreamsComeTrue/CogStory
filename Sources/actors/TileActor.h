@@ -24,14 +24,16 @@ namespace aga
 
         virtual std::string GetTypeName () override;
 
+        virtual void SetAtlasRegionName (const std::string& name) override;
+        virtual void SetAtlas (Atlas* atlas) override;
+
         std::string Tileset;
-        std::string TileName;
 
     private:
         bool operator== (const TileActor& rhs) const
         {
-            return Tileset == rhs.Tileset && TileName == rhs.TileName && Name == rhs.Name && Bounds == rhs.Bounds
-                && Rotation == rhs.Rotation;
+            return Tileset == rhs.Tileset && m_AtlasRegionName == rhs.m_AtlasRegionName && Name == rhs.Name
+                && Bounds == rhs.Bounds && Rotation == rhs.Rotation;
         }
     };
 }

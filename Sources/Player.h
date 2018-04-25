@@ -38,11 +38,7 @@ namespace aga
         void SetPosition (float x, float y) override;
         void SetPosition (Point pos) override;
 
-        void SetFollowCamera (bool follow);
-
         virtual std::string GetTypeName () override;
-
-        void ResetParticleEmitters ();
 
     private:
         void InitializeAnimations ();
@@ -52,7 +48,6 @@ namespace aga
         void CollisionEvent (Collidable* other) override;
 
     private:
-        bool m_FollowCamera;
         bool m_PreventInput;
         ParticleEmitter* m_HeadParticleEmitter;
         ParticleEmitter* m_WalkParticleEmitter;

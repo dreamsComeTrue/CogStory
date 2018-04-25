@@ -83,7 +83,7 @@ namespace aga
         void Update (float deltaTime);
         void Render (float deltaTime);
 
-        void AddActor (const std::string& name, Actor* actor);
+        void AddActor (Actor* actor);
         void RemoveActor (Actor* actor);
         void RemoveActor (const std::string& name);
         Actor* GetActor (const std::string& name);
@@ -93,7 +93,7 @@ namespace aga
         void AddTile (TileActor* tile);
         void RemoveTile (TileActor* tile);
         std::vector<TileActor*> GetTiles ();
-        std::vector<Entity*> GetVisibleEntities ();
+        std::vector<Entity*> RecomputeVisibleEntities (bool force);
 
         void AddFlagPoint (const std::string& name, Point point);
         FlagPoint* GetFlagPoint (const std::string& name);
@@ -110,7 +110,6 @@ namespace aga
         void RemoveSpeech (const std::string& name);
 
         void SortActors ();
-        void UpdateRenderIDs ();
 
         void Reset ();
 
@@ -130,8 +129,12 @@ namespace aga
         void AddOnEnterCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
         void AddOnEnterCallback (const std::string& triggerName, asIScriptFunction* func);
 
+        void RemoveOnEnterCallback (const std::string& triggerName);
+
         void AddOnLeaveCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
         void AddOnLeaveCallback (const std::string& triggerName, asIScriptFunction* func);
+
+        void RemoveOnLeaveCallback (const std::string& triggerName);
 
         Actor* GetCurrentlyProcessedActor ();
 

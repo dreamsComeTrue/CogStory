@@ -1,6 +1,8 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Common.h"
+#include "Font.h"
+#include "Screen.h"
 
 #include <chrono>
 
@@ -159,6 +161,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    int ToInteger (const std::string& str) { return std::stoi (str); }
+
+    //--------------------------------------------------------------------------------------------------
+
     std::string GetDirectory (const std::string& fullPath)
     {
         std::string str = fullPath;
@@ -225,6 +231,74 @@ namespace aga
         return std::chrono::duration_cast<std::chrono::milliseconds> (
                    std::chrono::steady_clock::now ().time_since_epoch ())
             .count ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Log (const char* str, ...)
+    {
+        const char* const zcFormat = str;
+
+        // initialize use of the variable argument array
+        va_list vaArgs;
+        va_start (vaArgs, str);
+
+        // reliably acquire the size from a copy of
+        // the variable argument array
+        // and a functionally reliable call
+        // to mock the formatting
+        va_list vaCopy;
+        va_copy (vaCopy, vaArgs);
+        const int iLen = std::vsnprintf (NULL, 0, zcFormat, vaCopy);
+        va_end (vaCopy);
+
+        // return a formatted string without
+        // risking memory mismanagement
+        // and without assuming any compiler
+        // or platform specific behavior
+        std::vector<char> zc (iLen + 1);
+        std::vsnprintf (zc.data (), zc.size (), zcFormat, vaArgs);
+        va_end (vaArgs);
+
+        std::string result = std::string (zc.data (), zc.size ());
+
+        std::cout << result;
+
+        Screen::GetSingleton ()->AddDebugMessage (result, 5000);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Log (float timeout, ALLEGRO_COLOR color, const char* str, ...)
+    {
+        const char* const zcFormat = str;
+
+        // initialize use of the variable argument array
+        va_list vaArgs;
+        va_start (vaArgs, str);
+
+        // reliably acquire the size from a copy of
+        // the variable argument array
+        // and a functionally reliable call
+        // to mock the formatting
+        va_list vaCopy;
+        va_copy (vaCopy, vaArgs);
+        const int iLen = std::vsnprintf (NULL, 0, zcFormat, vaCopy);
+        va_end (vaCopy);
+
+        // return a formatted string without
+        // risking memory mismanagement
+        // and without assuming any compiler
+        // or platform specific behavior
+        std::vector<char> zc (iLen + 1);
+        std::vsnprintf (zc.data (), zc.size (), zcFormat, vaArgs);
+        va_end (vaArgs);
+
+        std::string result = std::string (zc.data (), zc.size ());
+
+        std::cout << result;
+
+        Screen::GetSingleton ()->AddDebugMessage (result, timeout, color);
     }
 
     //--------------------------------------------------------------------------------------------------

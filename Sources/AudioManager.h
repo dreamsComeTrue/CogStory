@@ -19,6 +19,7 @@ namespace aga
         bool Destroy ();
 
         AudioSample* LoadSampleFromFile (const std::string& sampleName, const std::string& path);
+        AudioSample* GetSample (const std::string& sampleName);
 
         MainLoop* GetMainLoop ();
 

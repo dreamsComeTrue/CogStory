@@ -23,8 +23,8 @@ namespace aga
         EditorActorMode (Editor* editor);
         virtual ~EditorActorMode ();
 
-        Actor* AddOrUpdateActor (
-            const std::string& name, const std::string& actorType, Point pos, float rotation, int zOrder);
+        Actor* AddOrUpdateActor (int id, const std::string& name, const std::string& actorType, Point pos,
+                                 float rotation, int zOrder);
         void RemoveActor (const std::string& name);
         void Clear ();
 
@@ -34,8 +34,8 @@ namespace aga
         Actor* GetActorUnderCursor (int mouseX, int mouseY, Rect&& outRect);
 
         TileActor* AddTile (int mouseX, int mouseY);
-        void RemoveSelectedTile ();
-        void CopySelectedTile ();
+        void RemoveSelectedActor ();
+        void CopySelectedActor ();
         void DrawTiles ();
 
         void ChangeAtlas (const std::string& newAtlasName);

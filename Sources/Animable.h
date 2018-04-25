@@ -31,13 +31,13 @@ namespace aga
         void SetAnimation (Animation animation) { m_Animation = animation; }
         std::map<std::string, AnimationFrames>& GetAnimations ();
 
-        void SetAtlasRegionName (const std::string& name) { m_AtlasRegionName = name; }
-        void SetAtlas (Atlas* atlas) { m_Atlas = atlas; }
+        virtual void SetAtlasRegionName (const std::string& name) { m_AtlasRegionName = name; }
+        virtual void SetAtlas (Atlas* atlas) { m_Atlas = atlas; }
 
         std::string GetAtlasRegionName () const { return m_AtlasRegionName; }
         Atlas* GetAtlas () { return m_Atlas; }
 
-    private:
+    protected:
         AtlasManager* m_AtlasManager;
         Atlas* m_Atlas;
         std::string m_AtlasRegionName;

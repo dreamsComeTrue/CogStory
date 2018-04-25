@@ -53,6 +53,8 @@ namespace aga
 
         void ChooseAnimation (float angleDeg);
 
+        void FireMoveCallback ();
+
     protected:
         Point m_OldPosition;
 

@@ -20,7 +20,8 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_ttf.h>
 
-extern "C" {
+extern "C"
+{
 #include "addons/nine-patch/nine_patch.h"
 }
 
@@ -41,11 +42,14 @@ extern "C" {
 #include <fstream>
 #include <functional>
 #include <map>
+#include <queue>
 #include <sstream>
 #include <string>
 #include <vector>
 
 #include "addons/tweeny/tweeny.h"
+
+#include "addons/file-watcher/FileWatcher.h"
 
 #define SAFE_DELETE(x)                                                                                                 \
     {                                                                                                                  \
@@ -115,6 +119,8 @@ namespace aga
     float RandZeroToOne ();
     float RandInRange (float min, float max);
 
+    int ToInteger (const std::string& str);
+
     std::string GetDirectory (const std::string& fullPath);
 
     std::string GetBaseName (const std::string& fullPath);
@@ -124,6 +130,9 @@ namespace aga
     std::string GetCurrentDir ();
 
     long GetCurrentTime ();
+
+    void Log (const char* str, ...);
+    void Log (float timeout, ALLEGRO_COLOR color, const char* str, ...);
 }
 
 #endif //   __COMMON_H__

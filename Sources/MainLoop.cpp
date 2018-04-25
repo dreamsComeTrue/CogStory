@@ -65,6 +65,7 @@ namespace aga
                 m_TweenManager.Update (deltaTime);
             }
 
+            m_ScriptManager.Update (deltaTime);
             m_SceneManager.Update (deltaTime);
             m_StateManager.Update (deltaTime);
         };

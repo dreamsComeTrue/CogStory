@@ -68,9 +68,9 @@ namespace aga
         }
 
         sceneManager.GetActiveScene ()->ResetAllActorsPositions ();
-        player->ResetParticleEmitters ();
 
         //  Reset camera to player
+        player->BeforeEnter ();
         player->Move (0, 0.00001);
         player->SetPosition (player->TemplateBounds.Pos);
 

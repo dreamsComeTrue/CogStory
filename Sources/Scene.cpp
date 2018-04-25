@@ -124,7 +124,10 @@ namespace aga
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != EDITOR_STATE_NAME)
         {
             player->BeforeEnter ();
-            player->SetPosition (m_PlayerStartLocation);
+
+            Point playerHalfSize = player->Bounds.GetHalfSize ();
+            player->SetPosition (
+                { m_PlayerStartLocation.X - playerHalfSize.Width, m_PlayerStartLocation.Y - playerHalfSize.Height });
         }
         else
         {
@@ -195,9 +198,11 @@ namespace aga
     {
         m_SceneManager->GetCamera ().Update (deltaTime);
 
+        Player* player = m_SceneManager->GetPlayer ();
+
         bool isPlayerDrawn = false;
 
-        GetVisibleEntities ();
+        RecomputeVisibleEntities (false);
 
         if (m_SceneManager->IsDrawBoundingBox ())
         {
@@ -210,7 +215,7 @@ namespace aga
 
             if (!isPlayerDrawn && actor->ZOrder >= PLAYER_Z_ORDER)
             {
-                m_SceneManager->GetPlayer ()->Render (deltaTime);
+                player->Render (deltaTime);
                 isPlayerDrawn = true;
             }
 
@@ -235,22 +240,25 @@ namespace aga
 
         if (!isPlayerDrawn)
         {
-            m_SceneManager->GetPlayer ()->Render (deltaTime);
+            player->Render (deltaTime);
         }
 
         if (m_SceneManager->IsDrawBoundingBox ())
         {
-            m_SceneManager->GetPlayer ()->DrawBounds ();
+            player->DrawBounds ();
         }
 
         if (m_SceneManager->IsDrawPhysData ())
         {
-            m_SceneManager->GetPlayer ()->DrawPhysBody ();
+            player->DrawPhysBody ();
         }
 
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () == EDITOR_STATE_NAME)
         {
-            al_draw_filled_circle (0, 0, 5, COLOR_RED);
+            //  Draw circle in center for reference
+            al_draw_filled_circle (0, 0, 4, COLOR_RED);
+
+            al_draw_filled_circle (m_PlayerStartLocation.X, m_PlayerStartLocation.Y, 4, COLOR_LIGHTBLUE);
         }
 
         m_SceneManager->GetCamera ().UseIdentityTransform ();
@@ -262,24 +270,24 @@ namespace aga
         }
 
         Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
-        font.DrawText (
-            FONT_NAME_SMALL, al_map_rgb (0, 255, 0), 10, 10, ToString (m_VisibleEntities.size ()), ALLEGRO_ALIGN_LEFT);
+        font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), 10, 10, ToString (m_VisibleEntities.size ()),
+                       ALLEGRO_ALIGN_LEFT);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    std::vector<Entity*> Scene::GetVisibleEntities ()
+    std::vector<Entity*> Scene::RecomputeVisibleEntities (bool force)
     {
         Point cameraCenter = m_SceneManager->GetCamera ().GetCenter ();
 
-        if ((cameraCenter != m_VisibleLastCameraPos) || m_ActorsTreeChanged)
+        if ((cameraCenter != m_VisibleLastCameraPos) || m_ActorsTreeChanged || force)
         {
             Point cameraScale = m_SceneManager->GetCamera ().GetScale ();
             Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
 
             float visibleScale = 0.5f;
-            Point moveBy (
-                screenSize.Width * visibleScale / cameraScale.X, screenSize.Height * visibleScale / cameraScale.Y);
+            Point moveBy (screenSize.Width * visibleScale / cameraScale.X,
+                          screenSize.Height * visibleScale / cameraScale.Y);
             Rect targetRect = Rect (cameraCenter - moveBy, cameraCenter + moveBy);
 
             m_VisibleEntities = m_QuadTree.GetEntitiesWithinRect (targetRect);
@@ -296,9 +304,9 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::AddActor (const std::string& name, Actor* actor)
+    void Scene::AddActor (Actor* actor)
     {
-        Actor* act = GetActor (name);
+        Actor* act = GetActor (actor->ID);
 
         if (!act)
         {
@@ -392,23 +400,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::SortActors ()
-    {
-        std::sort (m_Actors.begin (), m_Actors.end (), Entity::CompareByZOrder);
-        UpdateRenderIDs ();
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Scene::UpdateRenderIDs ()
-    {
-        std::sort (m_Actors.begin (), m_Actors.end (), Entity::CompareByZOrder);
-
-        for (int i = 0; i < m_Actors.size (); ++i)
-        {
-            m_Actors[i]->RenderID = i;
-        }
-    }
+    void Scene::SortActors () { std::sort (m_Actors.begin (), m_Actors.end (), Entity::CompareByZOrder); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -585,11 +577,11 @@ namespace aga
     {
         Rect bounds = node->GetBounds ();
         al_draw_rectangle (bounds.GetTopLeft ().X, bounds.GetTopLeft ().Y, bounds.GetBottomRight ().X,
-            bounds.GetBottomRight ().Y, COLOR_WHITE, 1);
+                           bounds.GetBottomRight ().Y, COLOR_WHITE, 1);
 
         Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
         font.DrawText (FONT_NAME_SMALL, al_map_rgb (255, 255, 0), bounds.GetCenter ().X, bounds.GetCenter ().Y,
-            ToString (node->GetData ().size ()), ALLEGRO_ALIGN_CENTER);
+                       ToString (node->GetData ().size ()), ALLEGRO_ALIGN_CENTER);
 
         if (node->GetTopLeftTree ())
         {
@@ -614,6 +606,21 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void ReleaseASFunction (asIScriptFunction* function)
+    {
+        if (function)
+        {
+            int refCount = function->AddRef ();
+
+            for (int i = 0; i < refCount; ++i)
+            {
+                function->Release ();
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Scene::AddOnEnterCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func)
     {
         if (m_TriggerAreas.find (triggerName) != m_TriggerAreas.end ())
@@ -628,12 +635,21 @@ namespace aga
     {
         if (m_TriggerAreas.find (triggerName) != m_TriggerAreas.end ())
         {
-            if (m_TriggerAreas[triggerName].ScriptOnEnterCallback)
-            {
-                m_TriggerAreas[triggerName].ScriptOnEnterCallback->Release ();
-            }
+            ReleaseASFunction (m_TriggerAreas[triggerName].ScriptOnEnterCallback);
+        }
 
-            m_TriggerAreas[triggerName].ScriptOnEnterCallback = func;
+        m_TriggerAreas[triggerName].ScriptOnEnterCallback = func;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::RemoveOnEnterCallback (const std::string& triggerName)
+    {
+        if (m_TriggerAreas.find (triggerName) != m_TriggerAreas.end ())
+        {
+            ReleaseASFunction (m_TriggerAreas[triggerName].ScriptOnEnterCallback);
+
+            m_TriggerAreas[triggerName].ScriptOnEnterCallback = nullptr;
         }
     }
 
@@ -653,12 +669,21 @@ namespace aga
     {
         if (m_TriggerAreas.find (triggerName) != m_TriggerAreas.end ())
         {
-            if (m_TriggerAreas[triggerName].ScriptOnLeaveCallback)
-            {
-                m_TriggerAreas[triggerName].ScriptOnLeaveCallback->Release ();
-            }
+            ReleaseASFunction (m_TriggerAreas[triggerName].ScriptOnLeaveCallback);
+        }
 
-            m_TriggerAreas[triggerName].ScriptOnLeaveCallback = func;
+        m_TriggerAreas[triggerName].ScriptOnLeaveCallback = func;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::RemoveOnLeaveCallback (const std::string& triggerName)
+    {
+        if (m_TriggerAreas.find (triggerName) != m_TriggerAreas.end ())
+        {
+            ReleaseASFunction (m_TriggerAreas[triggerName].ScriptOnLeaveCallback);
+
+            m_TriggerAreas[triggerName].ScriptOnLeaveCallback = nullptr;
         }
     }
 
@@ -803,9 +828,9 @@ namespace aga
                     al_draw_filled_circle (xPoint, yPoint, 4, color);
                 }
 
-                m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_SMALL,
-                    al_map_rgb (0, 255, 0), min.X + (max.X - min.X) * 0.5, min.Y + (max.Y - min.Y) * 0.5,
-                    ToString (it->second.Name), ALLEGRO_ALIGN_CENTER);
+                m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
+                    FONT_NAME_SMALL, al_map_rgb (0, 255, 0), min.X + (max.X - min.X) * 0.5,
+                    min.Y + (max.Y - min.Y) * 0.5, ToString (it->second.Name), ALLEGRO_ALIGN_CENTER);
             }
         }
     }

@@ -59,7 +59,7 @@ namespace aga
                 out.push_back (yPoint);
             }
 
-            al_draw_polygon (out.data (), (int)PhysPoints[i].size (), 0, COLOR_GREEN, 2, 0);
+            al_draw_polygon (out.data (), (int)PhysPoints[i].size (), 0, COLOR_GREEN, 1, 0);
         }
     }
 

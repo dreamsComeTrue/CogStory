@@ -43,8 +43,12 @@ namespace aga
         void AddOnEnterCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
         void AddOnEnterCallback (const std::string& triggerName, asIScriptFunction* func);
 
+        void RemoveOnEnterCallback (const std::string& triggerName);
+
         void AddOnLeaveCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
         void AddOnLeaveCallback (const std::string& triggerName, asIScriptFunction* func);
+
+        void RemoveOnLeaveCallback (const std::string& triggerName);
 
         Actor* GetActor (const std::string& name);
         FlagPoint* GetFlagPoint (const std::string& name);

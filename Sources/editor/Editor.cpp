@@ -191,8 +191,8 @@ namespace aga
         decreaseGridButton = new Gwk::Controls::Button (m_MainCanvas);
         decreaseGridButton->SetText ("---");
         decreaseGridButton->SetWidth (45);
-        decreaseGridButton->SetPos (
-            increaseGridButton->GetPos ().x + increaseGridButton->GetSize ().x + 10, showGridButton->Bottom () + 5);
+        decreaseGridButton->SetPos (increaseGridButton->GetPos ().x + increaseGridButton->GetSize ().x + 10,
+                                    showGridButton->Bottom () + 5);
         decreaseGridButton->onPress.Add (this, &Editor::OnGridDecrease);
 
         sceneButton = new Gwk::Controls::Button (m_MainCanvas);
@@ -416,10 +416,10 @@ namespace aga
     bool Editor::IsEditorCanvasNotCovered ()
     {
         return ((m_CursorMode == CursorMode::TileSelectMode || m_CursorMode == CursorMode::TileEditMode
-                    || m_CursorMode == CursorMode::EditPhysBodyMode)
-            && !m_EditorSceneWindow->GetSceneWindow ()->Visible () && !m_SpeechWindow->GetSceneWindow ()->Visible ()
-            && !m_TriggerAreaWindow->GetSceneWindow ()->Visible () && !m_FlagPointWindow->GetSceneWindow ()->Visible ()
-            && !m_ActorWindow->GetSceneWindow ()->Visible ());
+                 || m_CursorMode == CursorMode::EditPhysBodyMode)
+                && !m_EditorSceneWindow->GetSceneWindow ()->Visible () && !m_SpeechWindow->GetSceneWindow ()->Visible ()
+                && !m_TriggerAreaWindow->GetSceneWindow ()->Visible ()
+                && !m_FlagPointWindow->GetSceneWindow ()->Visible () && !m_ActorWindow->GetSceneWindow ()->Visible ());
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -558,13 +558,13 @@ namespace aga
 
             case ALLEGRO_KEY_X:
             {
-                m_EditorActorMode.RemoveSelectedTile ();
+                m_EditorActorMode.RemoveSelectedActor ();
                 break;
             }
 
             case ALLEGRO_KEY_C:
             {
-                m_EditorActorMode.CopySelectedTile ();
+                m_EditorActorMode.CopySelectedActor ();
                 break;
             }
 
@@ -723,7 +723,7 @@ namespace aga
                         m_EditorActorMode.GetSelectedActor (), true);
 
                     al_draw_rectangle (r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X,
-                        r.GetBottomRight ().Y, COLOR_RED, 2);
+                                       r.GetBottomRight ().Y, COLOR_RED, 2);
                 }
 
                 if (m_CursorMode == CursorMode::TileSelectMode)
@@ -738,7 +738,7 @@ namespace aga
                     if (m_EditorActorMode.GetActorUnderCursor ())
                     {
                         al_draw_rectangle (r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X,
-                            r.GetBottomRight ().Y, COLOR_YELLOW, 2);
+                                           r.GetBottomRight ().Y, COLOR_YELLOW, 2);
                     }
                 }
             }
@@ -872,8 +872,8 @@ namespace aga
 
             ResetSettings ();
 
-            UpdateSceneNameLabel (
-                std::string ("SCENE: ") + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ());
+            UpdateSceneNameLabel (std::string ("SCENE: ")
+                                  + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ());
         };
 
         m_InputWindow->Show ("Are you sure clearing current scene?", "", YesFunc, nullptr);
@@ -1098,15 +1098,16 @@ namespace aga
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
 
+        Point point = CalculateCursorPoint (state.x, state.y);
+
+        m_MainLoop->GetSceneManager ().GetActiveScene ()->SetPlayerStartLocation (point);
+
         Player* player = m_MainLoop->GetSceneManager ().GetPlayer ();
 
-        Point point = CalculateCursorPoint (state.x, state.y);
         point -= player->Bounds.GetHalfSize ();
 
         player->SetPosition (point);
         player->TemplateBounds.Pos = player->GetPosition ();
-
-        m_MainLoop->GetSceneManager ().GetActiveScene ()->SetPlayerStartLocation (player->GetPosition ());
     }
 
     //--------------------------------------------------------------------------------------------------

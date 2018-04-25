@@ -20,7 +20,6 @@ namespace aga
 
     Player::Player (SceneManager* sceneManager)
         : Actor (sceneManager)
-        , m_FollowCamera (true)
         , m_PreventInput (false)
     {
     }
@@ -37,8 +36,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    AudioSample* sample;
-
     bool Player::Initialize ()
     {
         Actor::Initialize ();
@@ -51,9 +48,12 @@ namespace aga
 
         InitializeAnimations ();
 
-        sample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
+        AudioSample* sample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
             "FOOT_STEP", GetResourcePath (SOUND_FOOT_STEP));
-        sample->SetVolume (1.0f);
+        sample->SetVolume (2.0f);
+
+        PhysPoints.clear ();
+        PhysPoints.push_back ({ { 20, 30 }, { 25, 20 }, { 39, 20 }, { 44, 30 }, { 44, 64 }, { 20, 64 } });
 
         return true;
     }
@@ -72,9 +72,10 @@ namespace aga
 
     void Player::BeforeEnter ()
     {
-        PhysPoints.clear ();
-        PhysPoints.push_back ({ { 20, 30 }, { 25, 20 }, { 39, 20 }, { 44, 30 }, { 44, 64 }, { 20, 64 } });
         SetPhysOffset (Bounds.GetPos ().X, Bounds.GetPos ().Y);
+
+        m_WalkParticleEmitter->Reset ();
+        m_HeadParticleEmitter->Reset ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -187,7 +188,7 @@ namespace aga
 
         ProcessTriggerAreas (dx, dy);
 
-        std::vector<Entity*> entites = m_SceneManager->GetActiveScene ()->GetVisibleEntities ();
+        std::vector<Entity*> entites = m_SceneManager->GetActiveScene ()->RecomputeVisibleEntities (true);
         for (Entity* ent : entites)
         {
             Collidable* collidable = (Actor*)ent;
@@ -242,36 +243,30 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    float sampleCounter = 0;
-
     void Player::Move (float dx, float dy)
     {
+        Actor::Move (dx, dy);
+
         float playerSpeed = 0.8f;
 
         dx *= playerSpeed;
         dy *= playerSpeed;
 
+        static float sampleCounter = 0.0f;
+
         sampleCounter += m_SceneManager->GetMainLoop ()->GetScreen ()->GetDeltaTime ();
 
-        if (sampleCounter > 0.3f)
+        if (sampleCounter > 0.28f)
         {
-            sample->Play ();
+            m_SceneManager->GetMainLoop ()->GetAudioManager ().GetSample ("FOOT_STEP")->Play ();
+
             sampleCounter = 0;
         }
-
-        Bounds.SetPos (Bounds.GetPos () + Point (dx, dy));
 
         if (!(std::abs (dx) < 0.1 && std::abs (dy) < 0.1f))
         {
             ChooseAnimation (ToPositiveAngle (RadiansToDegrees (std::atan2 (dy, dx))));
         }
-
-        if (MoveCallback != nullptr)
-        {
-            MoveCallback (dx, dy);
-        }
-
-        AddPhysOffset ({ dx, dy });
 
         UpdateParticleEmitters ();
     }
@@ -280,25 +275,15 @@ namespace aga
 
     void Player::SetPosition (float x, float y)
     {
-        Bounds.SetPos ({ x, y });
-
-        if (MoveCallback != nullptr && m_FollowCamera)
-        {
-            MoveCallback (Bounds.GetPos ().X - m_OldPosition.X, Bounds.GetPos ().Y - m_OldPosition.Y);
-        }
-
-        SetPhysOffset (Bounds.GetPos ().X, Bounds.GetPos ().Y);
+        Actor::SetPosition (x, y);
 
         UpdateParticleEmitters ();
+        SetCurrentAnimation (ANIM_IDLE_NAME);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Player::SetPosition (Point pos) { Actor::SetPosition (pos); }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Player::SetFollowCamera (bool follow) { m_FollowCamera = follow; }
+    void Player::SetPosition (Point pos) { Player::SetPosition (pos.X, pos.Y); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -314,14 +299,6 @@ namespace aga
         {
             m_SceneManager->GetSpeechFrameManager ().AddSpeechFrame ("GREET_1", true);
         }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Player::ResetParticleEmitters ()
-    {
-        m_WalkParticleEmitter->Reset ();
-        m_HeadParticleEmitter->Reset ();
     }
 
     //--------------------------------------------------------------------------------------------------

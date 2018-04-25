@@ -11,6 +11,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    Screen* Screen::m_Singleton = nullptr;
+
+    //--------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
+
     Screen::Screen (unsigned width, unsigned height, bool centerOnScreen)
         : m_Width (width)
         , m_Height (height)
@@ -19,6 +24,7 @@ namespace aga
         , m_Redraw (false)
         , m_BackgroundColor (al_map_rgb (0, 0, 0))
     {
+        m_Singleton = this;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -39,7 +45,7 @@ namespace aga
 
         if (!al_init ())
         {
-            fprintf (stderr, "Failed to initialize allegro!\n");
+            Log ("Failed to initialize allegro!\n");
             return false;
         }
 
@@ -74,7 +80,7 @@ namespace aga
 
         if (!m_Display)
         {
-            fprintf (stderr, "Failed to create display!\n");
+            Log ("Failed to create display!\n");
             return false;
         }
 
@@ -85,19 +91,19 @@ namespace aga
 
         if (!al_install_audio ())
         {
-            fprintf (stderr, "failed to initialize audio!\n");
+            Log ("failed to initialize audio!\n");
             return false;
         }
 
         if (!al_init_acodec_addon ())
         {
-            fprintf (stderr, "failed to initialize audio codecs!\n");
+            Log ("failed to initialize audio codecs!\n");
             return false;
         }
 
         if (!al_reserve_samples (3))
         {
-            fprintf (stderr, "failed to reserve samples!\n");
+            Log ("failed to reserve samples!\n");
             return false;
         }
 
@@ -120,7 +126,7 @@ namespace aga
 
         if (!m_DisplayTimer)
         {
-            fprintf (stderr, "Failed to create timer!\n");
+            Log ("Failed to create timer!\n");
             return false;
         }
 
@@ -128,7 +134,7 @@ namespace aga
 
         if (!m_EventQueue)
         {
-            fprintf (stderr, "Failed to create event_queue!\n");
+            Log ("Failed to create event_queue!\n");
             al_destroy_display (m_Display);
             return false;
         }
@@ -233,12 +239,34 @@ namespace aga
                 RenderFunction ();
             }
 
+            DrawDebugMessages ();
+
             al_flip_display ();
             al_clear_to_color (m_BackgroundColor);
             m_Redraw = false;
         }
 
         return true;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Screen::DrawDebugMessages ()
+    {
+        for (int i = 0; i < m_DebugMessages.size (); ++i)
+        {
+            DebugMessage& msg = m_DebugMessages.at (i);
+            msg.ActualDuration += (m_DeltaTime * 1000.0f);
+
+            if (msg.ActualDuration >= msg.MaxDuration)
+            {
+                m_DebugMessages.erase (m_DebugMessages.begin () + i);
+            }
+            else
+            {
+                GetFont ().DrawText (FONT_NAME_SMALL, msg.Color, 130, 5 + i * 10, msg.Message, ALLEGRO_ALIGN_LEFT);
+            }
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -285,6 +313,18 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     float Screen::GetFPS () const { return 1 / m_DeltaTime; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Screen::AddDebugMessage (const std::string& text, float duration, ALLEGRO_COLOR color)
+    {
+        DebugMessage msg;
+        msg.Message = text;
+        msg.MaxDuration = duration;
+        msg.Color = color;
+
+        m_DebugMessages.push_back (msg);
+    }
 
     //--------------------------------------------------------------------------------------------------
 }

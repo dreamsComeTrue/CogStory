@@ -63,6 +63,18 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    AudioSample* AudioManager::GetSample (const std::string& sampleName)
+    {
+        if (m_Samples.find (sampleName) != m_Samples.end ())
+        {
+            return m_Samples[sampleName];
+        }
+
+        return nullptr;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     MainLoop* AudioManager::GetMainLoop () { return m_MainLoop; }
 
     //--------------------------------------------------------------------------------------------------

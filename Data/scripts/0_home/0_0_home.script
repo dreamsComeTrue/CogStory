@@ -66,6 +66,10 @@ void AfterCameraTween1 (int tweenID)
 
 void AfterLeaveScene ()
 {
+	RemoveOnEnterCallback ("TOP");
+	RemoveOnEnterCallback ("CITY_EXIT");
+
+	RemoveOnLeaveCallback ("TOP");
 }
 
 void TopOnEnter (Point p)

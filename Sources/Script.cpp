@@ -117,10 +117,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    std::string Script::GetName () { return m_Name; }
-
-    //--------------------------------------------------------------------------------------------------
-
     asIScriptContext* Script::GetContext (const std::string& functionName)
     {
         asIScriptFunction* func = m_Module->GetFunctionByDecl (functionName.c_str ());
@@ -155,8 +151,8 @@ namespace aga
             if (r == asEXECUTION_EXCEPTION)
             {
                 // An exception occurred, let the script writer know what happened so it can be corrected.
-                printf ("An exception '%s' occurred. Please correct the code and try again.\n",
-                        ctx->GetExceptionString ());
+                Log ("An exception '%s' occurred. Please correct the code and try again.\n",
+                     ctx->GetExceptionString ());
             }
 
             return false;

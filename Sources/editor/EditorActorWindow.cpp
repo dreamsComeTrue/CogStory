@@ -2,13 +2,13 @@
 
 #include "EditorActorWindow.h"
 #include "ActorFactory.h"
+#include "Atlas.h"
+#include "AtlasManager.h"
 #include "Editor.h"
 #include "EditorScriptWindow.h"
 #include "EditorWindows.h"
 #include "MainLoop.h"
 #include "Screen.h"
-#include "AtlasManager.h"
-#include "Atlas.h"
 #include "actors/NPCActor.h"
 #include "actors/TileActor.h"
 
@@ -193,7 +193,7 @@ namespace aga
         if (namePropertyTxt != "" && typePropertyTxt != "")
         {
             Gwk::Controls::Base::List& childNodes = m_ActorsTree->GetChildNodes ();
-            std::string oldName;
+            std::string actorName;
             std::string selectedNodeName;
 
             for (Gwk::Controls::Base* control : childNodes)
@@ -202,7 +202,7 @@ namespace aga
 
                 if (node->IsSelected ())
                 {
-                    oldName = node->GetText ();
+                    actorName = node->GetText ();
                     selectedNodeName = node->GetText ();
                     break;
                 }
@@ -210,30 +210,29 @@ namespace aga
 
             if (namePropertyTxt != "")
             {
-                oldName = namePropertyTxt;
+                actorName = namePropertyTxt;
+            }
+
+            Gwk::String idStr = idProperty->GetPropertyValue ();
+            int id = -1;
+
+            if (idStr != "")
+            {
+                id = ToInteger (idStr);
             }
 
             sscanf (positionProperty->GetPropertyValue ().c_str (), "%f,%f", &m_Position.X, &m_Position.Y);
             sscanf (rotationProperty->GetPropertyValue ().c_str (), "%f", &m_Rotation);
             sscanf (zOrderProperty->GetPropertyValue ().c_str (), "%d", &m_ZOrder);
 
-            Actor* retActor = m_Editor->GetEditorActorMode ().AddOrUpdateActor (
-                oldName, typePropertyTxt, m_Position, m_Rotation, m_ZOrder);
+            Actor* retActor = m_Editor->GetEditorActorMode ().AddOrUpdateActor (id, actorName, typePropertyTxt,
+                                                                                m_Position, m_Rotation, m_ZOrder);
 
             if (m_SelectedAtlas && m_SelectedAtlasRegion != "")
             {
-                if (typePropertyTxt == TileActor::TypeName)
-                {
-                    TileActor* tileActor = static_cast<TileActor*> (retActor);
-                    tileActor->Tileset = m_SelectedAtlas->GetName ();
-                    tileActor->TileName = m_SelectedAtlasRegion;
-                    tileActor->Bounds.SetSize (m_SelectedAtlas->GetRegion (m_SelectedAtlasRegion).Bounds.Size);
-                }
-                else
-                {
-                    retActor->SetAtlas (m_SelectedAtlas);
-                    retActor->SetAtlasRegionName (m_SelectedAtlasRegion);
-                }
+                retActor->Bounds.SetSize (m_SelectedAtlas->GetRegion (m_SelectedAtlasRegion).Bounds.Size);
+                retActor->SetAtlas (m_SelectedAtlas);
+                retActor->SetAtlasRegionName (m_SelectedAtlasRegion);
             }
 
             if (retActor)
@@ -334,8 +333,13 @@ namespace aga
         m_ActorsTree->Clear ();
 
         Gwk::Controls::TreeNode* tilesNode = m_ActorsTree->AddNode ("Tiles");
+        tilesNode->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
+
         Gwk::Controls::TreeNode* actorsNode = m_ActorsTree->AddNode ("Actors");
+        actorsNode->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
+
         Gwk::Controls::TreeNode* npcNode = actorsNode->AddNode ("NPC");
+        npcNode->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
 
         std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
 
@@ -367,24 +371,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    std::string EditorActorWindow::GetImageName (Actor* actor)
-    {
-        std::string imageName = "";
-
-        if (actor->GetTypeName () == TileActor::TypeName)
-        {
-            imageName = static_cast<TileActor*> (actor)->TileName;
-        }
-        else if (actor->GetTypeName () == NPCActor::TypeName)
-        {
-            imageName = static_cast<NPCActor*> (actor)->GetAtlasRegionName ();
-        }
-
-        return imageName;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
     std::string EditorActorWindow::GetImagePath (Actor* actor)
     {
         std::string imagePath = "";
@@ -407,6 +393,8 @@ namespace aga
     {
         Gwk::Controls::TreeNode* node = (Gwk::Controls::TreeNode*)control;
 
+        Actor* selectedActor = nullptr;
+
         if (node != nullptr && node->IsSelected ())
         {
             std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
@@ -417,38 +405,50 @@ namespace aga
 
                 if (name == node->GetText ())
                 {
-                    m_SelectedActor = actor;
-
-                    m_Editor->GetEditorActorMode ().SetActor (actor);
-
-                    idProperty->SetPropertyValue (ToString (actor->ID), false);
-                    nameProperty->SetPropertyValue (actor->Name, false);
-                    typeProperty->SetPropertyValue (actor->GetTypeName (), false);
-                    positionProperty->SetPropertyValue (
-                        Gwk::Utility::Format ("%f,%f", actor->Bounds.Pos.X, actor->Bounds.Pos.Y), false);
-                    rotationProperty->SetPropertyValue (Gwk::Utility::Format ("%f", actor->Rotation), false);
-                    zOrderProperty->SetPropertyValue (ToString (actor->ZOrder), false);
-                    imagePathProperty->SetPropertyValue (GetImagePath (actor), false);
-
-                    m_ScriptSection->Clear ();
-
-                    for (ScriptMetaData& scriptData : actor->GetScripts ())
-                    {
-                        AddScriptEntry (scriptData.Name, scriptData.Path);
-                    }
-
-                    OnImagePathSelected (m_ImagePathComboBox);
-
-                    imageProperty->SetPropertyValue (GetImageName (actor), false);
-
-                    m_SelectedAtlas = m_Editor->GetMainLoop ()->GetAtlasManager ().GetAtlas (
-                        imagePathProperty->GetPropertyValue ());
-                    m_SelectedAtlasRegion = imageProperty->GetPropertyValue ();
+                    selectedActor = actor;
 
                     break;
                 }
             }
         }
+
+        m_SelectedActor = selectedActor;
+
+        m_Editor->GetEditorActorMode ().SetSelectedActor (selectedActor);
+        m_Editor->GetEditorActorMode ().SetActor (selectedActor);
+
+        idProperty->SetPropertyValue (selectedActor != nullptr ? ToString (selectedActor->ID) : "", false);
+        nameProperty->SetPropertyValue (selectedActor != nullptr ? selectedActor->Name : "", false);
+        typeProperty->SetPropertyValue (selectedActor != nullptr ? selectedActor->GetTypeName () : "", false);
+        positionProperty->SetPropertyValue (
+            selectedActor != nullptr
+                ? Gwk::Utility::Format ("%f,%f", selectedActor->Bounds.Pos.X, selectedActor->Bounds.Pos.Y)
+                : Gwk::Utility::Format ("%f,%f", 0.f, 0.f),
+            false);
+        rotationProperty->SetPropertyValue (selectedActor != nullptr
+                                                ? Gwk::Utility::Format ("%f", selectedActor->Rotation)
+                                                : Gwk::Utility::Format ("%f", 0.f),
+                                            false);
+        zOrderProperty->SetPropertyValue (selectedActor != nullptr ? ToString (selectedActor->ZOrder) : "0", false);
+        imagePathProperty->SetPropertyValue (selectedActor != nullptr ? GetImagePath (selectedActor) : "", false);
+
+        m_ScriptSection->Clear ();
+
+        if (selectedActor)
+        {
+            for (ScriptMetaData& scriptData : selectedActor->GetScripts ())
+            {
+                AddScriptEntry (scriptData.Name, scriptData.Path);
+            }
+        }
+
+        OnImagePathSelected (m_ImagePathComboBox);
+
+        imageProperty->SetPropertyValue (selectedActor != nullptr ? selectedActor->GetAtlasRegionName () : "", false);
+
+        m_SelectedAtlas
+            = m_Editor->GetMainLoop ()->GetAtlasManager ().GetAtlas (imagePathProperty->GetPropertyValue ());
+        m_SelectedAtlasRegion = imageProperty->GetPropertyValue ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -541,17 +541,18 @@ namespace aga
         const int previewSize = 96;
 
         al_draw_filled_rectangle (winSize.Width - previewSize - margin, winSize.Height - previewSize - margin,
-            winSize.Width - margin, winSize.Height - margin, COLOR_BLACK);
+                                  winSize.Width - margin, winSize.Height - margin, COLOR_BLACK);
         al_draw_rectangle (winSize.Width - previewSize - margin, winSize.Height - previewSize - margin,
-            winSize.Width - margin, winSize.Height - margin, COLOR_GREEN, 2);
+                           winSize.Width - margin, winSize.Height - margin, COLOR_GREEN, 2);
 
         if (m_SelectedAtlas && m_SelectedAtlasRegion != "")
         {
             AtlasRegion& region = m_SelectedAtlas->GetRegion (m_SelectedAtlasRegion);
 
             al_draw_scaled_bitmap (m_SelectedAtlas->GetImage (), region.Bounds.GetPos ().X, region.Bounds.GetPos ().Y,
-                region.Bounds.GetSize ().Width, region.Bounds.GetSize ().Height, winSize.Width - previewSize - margin,
-                winSize.Height - previewSize - margin, previewSize, previewSize, 0);
+                                   region.Bounds.GetSize ().Width, region.Bounds.GetSize ().Height,
+                                   winSize.Width - previewSize - margin, winSize.Height - previewSize - margin,
+                                   previewSize, previewSize, 0);
         }
     }
 

@@ -171,6 +171,8 @@ namespace aga
             {
                 if (script.Name == selectedName)
                 {
+                    script.ScriptObj->Run ("void AfterLeaveScene ()");
+
                     scene->ReloadScript (script.Name);
 
                     if (strlen (g_ScriptErrorBuffer) != 0)
@@ -188,7 +190,6 @@ namespace aga
 
                         if (metaScript)
                         {
-                            (*metaScript).ScriptObj->Run ("void AfterLeaveScene ()");
                             (*metaScript).ScriptObj->Run ("void Start ()");
                             (*metaScript).ScriptObj->Run ("void BeforeEnterScene ()");
                         }

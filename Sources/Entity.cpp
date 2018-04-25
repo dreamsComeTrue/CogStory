@@ -31,8 +31,10 @@ namespace aga
             return;
         }
 
-        Rect myBounds = m_SceneManager->GetActiveScene ()->GetRenderBounds (this);
-        std::vector<Entity*> visibleEntites = m_SceneManager->GetActiveScene ()->GetVisibleEntities ();
+        Scene* activeScene = m_SceneManager->GetActiveScene ();
+
+        Rect myBounds = activeScene->GetRenderBounds (this);
+        std::vector<Entity*> visibleEntites = activeScene->RecomputeVisibleEntities (true);
 
         //  Special-case entity :)
         visibleEntites.push_back (m_SceneManager->GetPlayer ());
@@ -41,7 +43,7 @@ namespace aga
         {
             if (ent != this && ent->IsCheckOverlap ())
             {
-                Rect otherBounds = m_SceneManager->GetActiveScene ()->GetRenderBounds (ent);
+                Rect otherBounds = activeScene->GetRenderBounds (ent);
 
                 if (Intersect (myBounds, otherBounds))
                 {

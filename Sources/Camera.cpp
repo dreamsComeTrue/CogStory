@@ -104,7 +104,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::SetFollowActor (Actor* actor)
+    void Camera::SetFollowActor (Actor* actor, Point followOffset)
     {
         if (m_CameraFollowActor)
         {
@@ -112,17 +112,18 @@ namespace aga
         }
 
         m_CameraFollowActor = actor;
+        m_FollowOffset = followOffset;
 
         if (m_CameraFollowActor)
         {
             m_CameraFollowActor->MoveCallback = [&](float dx, float dy) {
                 Point scale = GetScale ();
                 Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
-                Point actorSize = m_CameraFollowActor->GetSize ();
-                Point actorPos = m_CameraFollowActor->GetPosition ();
+                Point actorHalfSize = m_CameraFollowActor->Bounds.GetHalfSize ();
+                Point pos = m_CameraFollowActor->GetPosition ();
 
-                SetTranslate (screenSize.Width * 0.5 - actorPos.X * scale.X - actorSize.Width,
-                              screenSize.Height * 0.5 - actorPos.Y * scale.Y - actorSize.Height);
+                SetTranslate (screenSize.Width * 0.5 - (pos.X + actorHalfSize.Width) * scale.X - m_FollowOffset.X,
+                              screenSize.Height * 0.5 - (pos.Y + actorHalfSize.Height) * scale.Y - m_FollowOffset.Y);
             };
 
             //  In case of first new frame rendered - update camera with new actor as a target

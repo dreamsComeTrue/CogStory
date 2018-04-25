@@ -31,7 +31,7 @@ namespace aga
         void SetCenter (float x, float y);
         Point GetCenter ();
 
-        void SetFollowActor (Actor* actor);
+        void SetFollowActor (Actor* actor, Point followOffset = { 0.f, 0.f });
         void TweenToPoint (Point endPoint, float timeMs = 1000, bool centerScreen = true);
         void TweenToPoint (Point endPoint, asIScriptFunction* finishFunc, float timeMs = 1000,
                            bool centerScreen = true);
@@ -41,6 +41,8 @@ namespace aga
         SceneManager* m_SceneManager;
 
         Actor* m_CameraFollowActor;
+        Point m_FollowOffset;
+
         TweenData* m_TweenToPoint;
     };
 }

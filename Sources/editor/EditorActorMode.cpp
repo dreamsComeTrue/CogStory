@@ -33,10 +33,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Actor* EditorActorMode::AddOrUpdateActor (
-        const std::string& name, const std::string& actorType, Point pos, float rotation, int zOrder)
+    Actor* EditorActorMode::AddOrUpdateActor (int id, const std::string& name, const std::string& actorType, Point pos,
+                                              float rotation, int zOrder)
     {
-        Actor* actor = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActor (name);
+        Actor* actor = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActor (id);
 
         if (actor)
         {
@@ -57,11 +57,13 @@ namespace aga
 
             actor->Initialize ();
 
-            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddActor (name, actor);
+            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddActor (actor);
         }
 
         m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->SortActors ();
         m_Editor->GetEditorActorMode ().Clear ();
+
+        m_SelectedActor = actor;
 
         return actor;
     }
@@ -163,9 +165,12 @@ namespace aga
 
             int currentID = m_SelectedActor->ID;
 
-            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->SortActors ();
+            Scene* activeScene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
 
-            std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
+            activeScene->SortActors ();
+            activeScene->RecomputeVisibleEntities (true);
+
+            std::vector<Actor*>& actors = activeScene->GetActors ();
 
             for (Actor* actor : actors)
             {
@@ -228,12 +233,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorActorMode::RemoveSelectedTile ()
+    void EditorActorMode::RemoveSelectedActor ()
     {
-        if (m_SelectedActor && m_SelectedActor->GetTypeName () == TileActor::TypeName)
+        if (m_SelectedActor)
         {
-            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveTile (
-                dynamic_cast<TileActor*> (m_SelectedActor));
+            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveActor (m_SelectedActor);
             m_SelectedActor = nullptr;
             m_Editor->SetCursorMode (CursorMode::TileSelectMode);
         }
@@ -241,27 +245,40 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorActorMode::CopySelectedTile ()
+    void EditorActorMode::CopySelectedActor ()
     {
-        if (m_Atlas && m_SelectedActor && m_SelectedActor->GetTypeName () == TileActor::TypeName)
+        if (m_SelectedActor)
         {
             m_SelectedAtlasRegion = m_Atlas->GetRegion (m_SelectedActor->Name);
 
             ALLEGRO_MOUSE_STATE state;
             al_get_mouse_state (&state);
 
-            Actor* currentTile = m_SelectedActor;
+            Point point = m_Editor->CalculateCursorPoint (state.x, state.y);
+            Point regionSize = m_SelectedActor->Bounds.GetSize ();
 
-            m_SelectedActor = AddTile (state.x, state.y);
+            Actor* newActor = ActorFactory::GetActor (&m_Editor->GetMainLoop ()->GetSceneManager (),
+                                                      m_SelectedActor->GetTypeName ());
+            newActor->Name = m_SelectedActor->Name + "_" + ToString (newActor->ID);
+            newActor->Bounds = Rect (point.X - regionSize.Width * 0.5f, point.Y - regionSize.Height * 0.5f,
+                                     regionSize.Width, regionSize.Height);
+            newActor->TemplateBounds.Pos = m_SelectedActor->Bounds.Pos;
+            newActor->Rotation = m_SelectedActor->Rotation;
+            newActor->ZOrder = m_SelectedActor->ZOrder;
+            newActor->SetAtlas (m_SelectedActor->GetAtlas ());
+            newActor->SetAtlasRegionName (m_SelectedActor->GetAtlasRegionName ());
 
-            if (currentTile)
-            {
-                m_SelectedActor->PhysPoints = currentTile->PhysPoints;
-            }
+            newActor->PhysPoints = m_SelectedActor->PhysPoints;
 
-            m_Editor->SetCursorMode (CursorMode::TileEditMode);
-            m_Rotation = m_SelectedActor->Rotation;
+            newActor->Initialize ();
+
+            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddActor (newActor);
+
+            m_Rotation = newActor->Rotation;
+            m_SelectedActor = newActor;
         }
+
+        m_Editor->SetCursorMode (CursorMode::TileEditMode);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -279,11 +296,11 @@ namespace aga
 
         tile->ID = Entity::GetNextID ();
         tile->Tileset = m_Atlas->GetName ();
-        tile->TileName = m_SelectedAtlasRegion.Name;
-        tile->Name = tile->TileName;
+        tile->SetAtlasRegionName (m_SelectedAtlasRegion.Name);
+        tile->Name = tile->GetAtlasRegionName ();
 
-        tile->Bounds = Rect (
-            point.X - regionSize.Width * 0.5f, point.Y - regionSize.Height * 0.5f, regionSize.Width, regionSize.Height);
+        tile->Bounds = Rect (point.X - regionSize.Width * 0.5f, point.Y - regionSize.Height * 0.5f, regionSize.Width,
+                             regionSize.Height);
         tile->Rotation = m_Rotation;
 
         m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddTile (tile);
@@ -316,15 +333,15 @@ namespace aga
         {
             advance = beginning + i * TILE_SIZE;
 
-            al_draw_rectangle (
-                advance, windowSize.Height - TILE_SIZE, advance + TILE_SIZE, windowSize.Height - 1, COLOR_GREEN, 1);
+            al_draw_rectangle (advance, windowSize.Height - TILE_SIZE, advance + TILE_SIZE, windowSize.Height - 1,
+                               COLOR_GREEN, 1);
 
             if (i < regions.size ())
             {
                 Rect region = regions[i].Bounds;
                 al_draw_scaled_bitmap (m_Atlas->GetImage (), region.GetPos ().X, region.GetPos ().Y,
-                    region.GetSize ().Width, region.GetSize ().Height, advance + 1, windowSize.Height - TILE_SIZE + 1,
-                    TILE_SIZE - 2, TILE_SIZE - 2, 0);
+                                       region.GetSize ().Width, region.GetSize ().Height, advance + 1,
+                                       windowSize.Height - TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2, 0);
 
                 float x = advance;
                 float y = windowSize.Height - TILE_SIZE - 1;
@@ -340,7 +357,7 @@ namespace aga
 
         Font& font = m_Editor->GetMainLoop ()->GetScreen ()->GetFont ();
         font.DrawText (FONT_NAME_SMALL, al_map_rgb (255, 255, 0), drawNamePoint.X, drawNamePoint.Y, drawName,
-            ALLEGRO_ALIGN_CENTER);
+                       ALLEGRO_ALIGN_CENTER);
     }
 
     //--------------------------------------------------------------------------------------------------
