@@ -545,6 +545,15 @@ namespace aga
                                                     &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
 
+        r = m_ScriptEngine->RegisterFuncdef ("string ChoiceFunction (void)");
+        assert (r >= 0);
+
+        r = m_ScriptEngine->RegisterGlobalFunction (
+            "void RegisterChoiceFunction (string, ChoiceFunction @+ func)",
+            asMETHOD (SceneManager, RegisterChoiceFunction), asCALL_THISCALL_ASGLOBAL, 
+                &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+
         //  Camera
         r = m_ScriptEngine->RegisterObjectType ("Camera", sizeof (Camera), asOBJ_VALUE | asOBJ_POD);
         assert (r >= 0);

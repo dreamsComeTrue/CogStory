@@ -56,6 +56,8 @@ void BeforeEnterScene ()
 //camera.TweenToPoint (Point (playerPos.X + playerSize.Width * 0.5f, playerPos.Y + playerSize.Height * 0.5f), AfterCameraTween1, 1000);
 	
     //AddTween (TWEEN_1, flag1, flag2, 800, PlayerTween, NextTween1);
+
+    RegisterChoiceFunction ("CHOICE_1", Choice1);
 }
 
 void AfterCameraTween1 (int tweenID)
@@ -80,6 +82,13 @@ void TopOnEnter (Point p)
 void TopOnLeave (Point p)
 {
 	topFrame.Hide ();	
+}
+
+string Choice1 ()
+{
+    Log ("Works!!!");
+
+    return "GREET_1";
 }
 
 void OnCityExitEnter (Point p)

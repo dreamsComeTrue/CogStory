@@ -101,6 +101,8 @@ namespace aga
     Gwk::Controls::Label* scaleLabel;
     Gwk::Controls::Label* snapLabel;
     Gwk::Controls::Label* gridLabel;
+    Gwk::Controls::Label* tilesLabel;
+    Gwk::Controls::Label* actorsLabel;
 
     bool Editor::Initialize ()
     {
@@ -324,6 +326,12 @@ namespace aga
 
         gridLabel = new Gwk::Controls::Label (m_MainCanvas);
         gridLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
+
+        tilesLabel = new Gwk::Controls::Label (m_MainCanvas);
+        tilesLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
+
+        actorsLabel = new Gwk::Controls::Label (m_MainCanvas);
+        actorsLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
 
         LoadConfig ();
         ScreenResize ();
@@ -904,6 +912,12 @@ namespace aga
                 std::string ("SCENE: " + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ()));
 
             m_LastScenePath = m_OpenSceneWindow->GetFileName ();
+
+            Log ("Scene loaded: %s", openFileName.c_str ());
+        }
+        else
+        {
+            Log ("Scene %s doesn't exist!", openFileName.c_str ());
         }
     }
 
@@ -915,6 +929,8 @@ namespace aga
         SceneLoader::SaveScene (m_MainLoop->GetSceneManager ().GetActiveScene (), path);
 
         m_LastScenePath = m_SaveSceneWindow->GetFileName ();
+
+        Log ("Scene saved: %s", filePath.c_str ());
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1166,6 +1182,14 @@ namespace aga
         gridLabel->SetText (std::string (" GRID: " + ToString (m_BaseGridSize)));
         gridLabel->SizeToContents ();
 
+        Scene* activeScene = m_MainLoop->GetSceneManager ().GetActiveScene ();
+
+        tilesLabel->SetText (std::string (" TILES: " + ToString (activeScene->GetTiles ().size ())));
+        tilesLabel->SizeToContents ();
+
+        actorsLabel->SetText (std::string ("ACTORS: " + ToString (activeScene->GetActors ().size ())));
+        actorsLabel->SizeToContents ();
+
         m_MainCanvas->RenderCanvas ();
     }
 
@@ -1200,6 +1224,8 @@ namespace aga
         scaleLabel->SetPos (m_MainCanvas->Width () - 120.0f, zOrderLabel->Bottom () + 5);
         snapLabel->SetPos (m_MainCanvas->Width () - 120.0f, scaleLabel->Bottom () + 5);
         gridLabel->SetPos (m_MainCanvas->Width () - 120.0f, snapLabel->Bottom () + 5);
+        tilesLabel->SetPos (m_MainCanvas->Width () - 120.0f, gridLabel->Bottom () + 5);
+        actorsLabel->SetPos (m_MainCanvas->Width () - 120.0f, tilesLabel->Bottom () + 5);
 
         float beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
 

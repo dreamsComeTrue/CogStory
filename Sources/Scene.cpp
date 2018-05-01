@@ -836,4 +836,14 @@ namespace aga
     }
 
     //--------------------------------------------------------------------------------------------------
+
+    void Scene::RegisterChoiceFunction (const std::string& name, asIScriptFunction* func)
+    {
+        if (m_ChoiceFunctions.find (name) == m_ChoiceFunctions.end ())
+        {
+            m_ChoiceFunctions.insert (std::make_pair (name, func));
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
 }

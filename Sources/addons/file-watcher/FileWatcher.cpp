@@ -30,7 +30,7 @@
 #include <FileWatcher/FileWatcherOSX.h>
 #define FILEWATCHER_IMPL FileWatcherOSX
 #elif FILEWATCHER_PLATFORM == FILEWATCHER_PLATFORM_LINUX
-#include <FileWatcher/FileWatcherLinux.h>
+#include <FileWatcherLinux.h>
 #define FILEWATCHER_IMPL FileWatcherLinux
 #endif
 

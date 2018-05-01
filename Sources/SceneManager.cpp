@@ -313,6 +313,16 @@ namespace aga
     }
 
     //--------------------------------------------------------------------------------------------------
+    //
+    void SceneManager::RegisterChoiceFunction (const std::string& name, asIScriptFunction* func)
+    {
+        if (m_ActiveScene)
+        {
+            m_ActiveScene->RegisterChoiceFunction (name, func);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
 
     Actor* SceneManager::GetActor (const std::string& name)
     {

@@ -8,6 +8,8 @@
 #include "SceneManager.h"
 #include "Screen.h"
 #include "SpeechFrameManager.h"
+#include "Script.h"
+#include "Scene.h"
 
 #include <stack>
 
@@ -118,7 +120,7 @@ namespace aga
 
     void SpeechFrame::HandleKeyUp ()
     {
-        if (!IsTextFitWithoutScroll ())
+        // if (!IsTextFitWithoutScroll ())
         {
             //  We can only scroll, when there are no choices
             if (!m_Choices.empty () && !m_StillUpdating)
@@ -144,7 +146,7 @@ namespace aga
 
     void SpeechFrame::HandleKeyDown ()
     {
-        if (!IsTextFitWithoutScroll ())
+        // if (!IsTextFitWithoutScroll ())
         {
             if (!m_Choices.empty () && !m_StillUpdating)
             {
@@ -238,7 +240,8 @@ namespace aga
             m_KeyDelta += deltaTime * 1000;
         }
 
-        if (!IsTextFitWithoutScroll () && m_KeyDelta > m_MaxKeyDelta)
+        if ( //! IsTextFitWithoutScroll () &&
+            m_KeyDelta > m_MaxKeyDelta)
         {
             ALLEGRO_KEYBOARD_STATE state;
             al_get_keyboard_state (&state);
@@ -271,6 +274,7 @@ namespace aga
             switch (event->keyboard.keycode)
             {
             case ALLEGRO_KEY_UP:
+            case ALLEGRO_KEY_W:
             {
                 HandleKeyUp ();
                 m_KeyEventHandled = true;
@@ -279,6 +283,7 @@ namespace aga
             }
 
             case ALLEGRO_KEY_DOWN:
+            case ALLEGRO_KEY_S:
             {
                 HandleKeyDown ();
                 m_KeyEventHandled = true;
@@ -292,11 +297,41 @@ namespace aga
                 {
                     if (!m_Choices.empty ())
                     {
-                        std::function<void()>& handler = m_Choices[m_ActualChoiceIndex].Func;
+                        SpeechChoice& choice = m_Choices[m_ActualChoiceIndex];
+
+                        std::function<void()>& handler = choice.Func;
 
                         if (handler)
                         {
                             handler ();
+                        }
+
+                        //  Check, if we are using plain OUTCOME reference,
+                        //  or one with REGISTERED_CHOICE_PREFIX (usually '*' mark) as the prefix
+                        //  which coresponds to function registered with 'RegisterChoiceFunction' 
+                        if (StartsWith (choice.Action, REGISTERED_CHOICE_PREFIX))
+                        {
+                            std::string actionName = choice.Action.substr (REGISTERED_CHOICE_PREFIX.length ());
+                            std::map<std::string, asIScriptFunction*>& choiceFunctions = m_Manager->GetSceneManager ()->GetActiveScene ()->GetChoiceFunctions ();
+                            asIScriptFunction* func = choiceFunctions[actionName];
+
+                            if (func)
+                            {
+                                asIScriptContext* ctx = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScriptManager ().GetContext ();
+                                ctx->Prepare (func);
+
+                                if (ctx->Execute () == asEXECUTION_FINISHED)
+                                {
+                                    m_OutcomeAction = *(std::string*)ctx->GetReturnObject ();
+                                }
+
+                                ctx->Unprepare ();
+                                ctx->GetEngine ()->ReturnContext (ctx);
+                            }
+                        }
+                        else
+                        {
+                            m_OutcomeAction = choice.Action;
                         }
                     }
 
@@ -368,10 +403,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SpeechFrame::AddChoice (const std::string& text, std::function<void()> func)
+    void SpeechFrame::AddChoice (const std::string& text, const std::string& action, std::function<void()> func)
     {
         SpeechChoice choice;
         choice.Text = text;
+        choice.Action = action;
         choice.Func = func;
 
         m_Choices.push_back (choice);

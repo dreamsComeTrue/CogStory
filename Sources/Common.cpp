@@ -264,6 +264,7 @@ namespace aga
 
         std::cout << result;
 
+        result.erase(std::remove(result.begin(), result.end(), '\n'), result.end());
         Screen::GetSingleton ()->AddDebugMessage (result, 5000);
     }
 
@@ -298,6 +299,7 @@ namespace aga
 
         std::cout << result;
 
+        result.erase(std::remove(result.begin(), result.end(), '\n'), result.end());
         Screen::GetSingleton ()->AddDebugMessage (result, timeout, color);
     }
 

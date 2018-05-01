@@ -3,6 +3,7 @@
 #include "EditorSpeechWindow.h"
 #include "Editor.h"
 #include "MainLoop.h"
+#include "SpeechFrame.h"
 
 namespace aga
 {
@@ -417,6 +418,9 @@ namespace aga
         std::map<std::string, SpeechData>& speeches
             = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
 
+        std::map<std::string, asIScriptFunction*>& choiceFunctions = 
+            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetChoiceFunctions ();
+
         int currentY = 0;
         for (int i = 0; i < outcomes.size (); ++i)
         {
@@ -442,6 +446,13 @@ namespace aga
             for (std::map<std::string, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
             {
                 actionCombo->AddItem ((*it).first, (*it).first);
+            }
+
+            for (std::map<std::string, asIScriptFunction*>::iterator it = choiceFunctions.begin (); 
+                    it != choiceFunctions.end (); ++it)
+            {
+                std::string name = REGISTERED_CHOICE_PREFIX + (*it).first;
+                actionCombo->AddItem (name, name);
             }
 
             actionCombo->SelectItemByName (outcomes[i].Action, false);
@@ -546,8 +557,9 @@ namespace aga
             if (control == child)
             {
                 Gwk::Controls::ComboBox* actionCombo = (Gwk::Controls::ComboBox*)control;
+                std::string actionName = actionCombo->GetSelectedItem ()->GetText ();
 
-                outcomes[i].Action = actionCombo->GetSelectedItem ()->GetText ();
+                outcomes[i].Action = actionName;
                 break;
             }
 

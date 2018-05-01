@@ -1,0 +1,37 @@
+import os
+import ycm_core
+
+flags = [
+  '-Wall',
+  '-Wextra',
+  '-Werror',
+  '-Wno-long-long',
+  '-Wno-variadic-macros',
+  '-fexceptions',
+  '-ferror-limit=10000',
+  '-DNDEBUG',
+  '-std=c++1z',
+  '-xc++',
+  '-IC:/Users/squall/GoogleDrive/RobotTales/Sources/',
+  '-IC:/Users/squall/GoogleDrive/RobotTales/ThirdParty/anglescript/angelscript/include',
+  '-IC:/Users/squall/GoogleDrive/RobotTales/ThirdParty/GWork/source/gwork/include',
+  '-IC:/Users/squall/GoogleDrive/RobotTales/ThirdParty/GWork/source/platform/include',
+  '-IC:/Users/squall/GoogleDrive/RobotTales/External/allegro/include/',
+  '-IC:/Qt/Tools/mingw530_32/i686-w64-mingw32/include/c++/',  
+  '-IC:/Qt/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32/',  
+  '-IC:/Qt/Tools/mingw530_32/i686-w64-mingw32/include/',  
+  '-I/media/squall/SYSTEM/Users/squall/GoogleDrive/RobotTales/Sources/',
+  '-I/media/squall/SYSTEM/Users/squall/GoogleDrive/RobotTales/ThirdParty/angelscript/angelscript/include',
+  '-I/media/squall/SYSTEM/Users/squall/GoogleDrive/RobotTales/ThirdParty/GWork/source/gwork/include',
+  '-I/media/squall/SYSTEM/Users/squall/GoogleDrive/RobotTales/ThirdParty/GWork/source/platform/include',
+  '-I/usr/include',
+  '-I/usr/include/c++/7.2.0',
+  ]
+
+SOURCE_EXTENSIONS = [ '.cpp', '.cxx', '.cc', '.c', ]
+
+def FlagsForFile( filename, **kwargs ):
+  return {
+  'flags': flags,
+  'do_cache': True
+  }

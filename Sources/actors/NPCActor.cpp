@@ -4,7 +4,6 @@
 #include "MainLoop.h"
 #include "Player.h"
 #include "SceneManager.h"
-#include "SpeechFrame.h"
 
 namespace aga
 {

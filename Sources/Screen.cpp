@@ -59,8 +59,13 @@ namespace aga
             return false;
         }
 
+#ifdef __linux__
+        float winX = 0; //    px - frame border;
+        float winY = 0; //    px - frame border;
+#else
         float winX = 2; //    px - frame border;
         float winY = 32; //    px - frame border;
+#endif
 
         if (m_CenterOnScreen)
         {

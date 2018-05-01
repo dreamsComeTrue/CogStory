@@ -76,14 +76,16 @@ namespace aga
 
                 if (frame->IsShouldBeHandled () && frame->IsHandled ())
                 {
+                    std::string outcomeAction = frame->GetOutcomeAction ();
+
                     SAFE_DELETE (it->second);
                     m_Speeches.erase (it++);
 
                     m_SceneManager->GetPlayer ()->SetPreventInput (false);
 
-                    if (m_Speeches.empty ())
+                    if (outcomeAction != "")
                     {
-                        break;
+                        AddSpeechFrame (outcomeAction);
                     }
 
                     continue;
@@ -205,7 +207,7 @@ namespace aga
 
             for (SpeechOutcome& outcome : outcomes)
             {
-                frame->AddChoice (outcome.Text, nullptr);
+                frame->AddChoice (outcome.Text, outcome.Action, nullptr);
             }
         }
 

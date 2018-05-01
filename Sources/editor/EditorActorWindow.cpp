@@ -10,6 +10,7 @@
 #include "MainLoop.h"
 #include "Screen.h"
 #include "actors/NPCActor.h"
+#include "actors/EnemyActor.h"
 #include "actors/TileActor.h"
 
 namespace aga
@@ -332,14 +333,17 @@ namespace aga
     {
         m_ActorsTree->Clear ();
 
-        Gwk::Controls::TreeNode* tilesNode = m_ActorsTree->AddNode ("Tiles");
-        tilesNode->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
-
         Gwk::Controls::TreeNode* actorsNode = m_ActorsTree->AddNode ("Actors");
         actorsNode->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
 
         Gwk::Controls::TreeNode* npcNode = actorsNode->AddNode ("NPC");
         npcNode->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
+
+        Gwk::Controls::TreeNode* enemyNode = actorsNode->AddNode ("Enemy");
+        enemyNode->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
+
+        Gwk::Controls::TreeNode* tilesNode = m_ActorsTree->AddNode ("Tiles");
+        tilesNode->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
 
         std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
 
@@ -349,13 +353,17 @@ namespace aga
 
             std::string name = actor->Name + std::string (" [") + ToString (actor->ID) + std::string ("]");
 
-            if (actor->GetTypeName () == TileActor::TypeName)
-            {
-                node = tilesNode->AddNode (name);
-            }
-            else if (actor->GetTypeName () == NPCActor::TypeName)
+            if (actor->GetTypeName () == NPCActor::TypeName)
             {
                 node = npcNode->AddNode (name);
+            }
+            else if (actor->GetTypeName () == EnemyActor::TypeName)
+            {
+                node = enemyNode->AddNode (name);
+            }
+            else if (actor->GetTypeName () == TileActor::TypeName)
+            {
+                node = tilesNode->AddNode (name);
             }
 
             if (node)
@@ -380,6 +388,10 @@ namespace aga
             imagePath = static_cast<TileActor*> (actor)->Tileset;
         }
         else if (actor->GetTypeName () == NPCActor::TypeName)
+        {
+            imagePath = actor->GetAtlas ()->GetName ();
+        }
+        else if (actor->GetTypeName () == EnemyActor::TypeName)
         {
             imagePath = actor->GetAtlas ()->GetName ();
         }

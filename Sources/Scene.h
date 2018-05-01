@@ -109,6 +109,9 @@ namespace aga
         SpeechData* GetSpeech (const std::string& name);
         void RemoveSpeech (const std::string& name);
 
+        void RegisterChoiceFunction (const std::string& name, asIScriptFunction* func);
+        std::map<std::string, asIScriptFunction*>& GetChoiceFunctions () { return m_ChoiceFunctions; }
+
         void SortActors ();
 
         void Reset ();
@@ -161,6 +164,8 @@ namespace aga
         std::map<std::string, SpeechData> m_Speeches;
         std::vector<Actor*> m_Actors;
         SceneManager* m_SceneManager;
+
+        std::map<std::string, asIScriptFunction*> m_ChoiceFunctions;
 
         Actor* m_CurrentActor;
 

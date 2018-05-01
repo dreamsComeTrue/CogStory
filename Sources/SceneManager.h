@@ -50,6 +50,8 @@ namespace aga
 
         void RemoveOnLeaveCallback (const std::string& triggerName);
 
+        void RegisterChoiceFunction (const std::string& name, asIScriptFunction* func);
+
         Actor* GetActor (const std::string& name);
         FlagPoint* GetFlagPoint (const std::string& name);
 
