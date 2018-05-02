@@ -88,10 +88,9 @@ namespace aga
 
             m_ImagePathComboBox = new Gwk::Controls::Property::ComboBox (m_ApperanceSection);
 
-            for (ResourceID resID : GetPacks ())
+            for (ResourceID resID : GetGfxPacks ())
             {
-                Resource res = GetResource (resID);
-                std::string name = GetBaseName (res.Name);
+                std::string name = GetBaseName (GetResource (resID).Name);
                 m_ImagePathComboBox->GetComboBox ()->AddItem (name, name);
             }
 

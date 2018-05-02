@@ -36,9 +36,10 @@ namespace aga
     Actor* EditorActorMode::AddOrUpdateActor (int id, const std::string& name, const std::string& actorType, Point pos,
                                               float rotation, int zOrder)
     {
-        Actor* actor = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActor (id);
+        Scene* activeScene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
+        Actor* actor = activeScene->GetActor (id);
 
-        if (actor)
+        if (actor && actor->GetTypeName () == actorType)
         {
             actor->Name = name;
             actor->Bounds.Pos = pos;
@@ -48,6 +49,14 @@ namespace aga
         }
         else
         {
+            std::vector<ScriptMetaData> pendingScripts;
+
+            if (actor && actor->GetTypeName () != actorType)
+            {
+                pendingScripts = actor->GetScripts ();
+                activeScene->RemoveActor (actor);
+            }
+
             actor = ActorFactory::GetActor (&m_Editor->GetMainLoop ()->GetSceneManager (), actorType);
             actor->Name = name;
             actor->Bounds.Pos = pos;
@@ -57,10 +66,18 @@ namespace aga
 
             actor->Initialize ();
 
-            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddActor (actor);
+            if (!pendingScripts.empty ())
+            {
+                for (ScriptMetaData scriptData : pendingScripts)
+                {
+                    actor->AttachScript (scriptData.Name, scriptData.Path);
+                }
+            }
+
+            activeScene->AddActor (actor);
         }
 
-        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->SortActors ();
+        activeScene->SortActors ();
         m_Editor->GetEditorActorMode ().Clear ();
 
         m_SelectedActor = actor;
@@ -72,8 +89,10 @@ namespace aga
 
     void EditorActorMode::RemoveActor (const std::string& name)
     {
-        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveActor (name);
-        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->SortActors ();
+        Scene* activeScene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
+
+        activeScene->RemoveActor (name);
+        activeScene->SortActors ();
     }
 
     //--------------------------------------------------------------------------------------------------

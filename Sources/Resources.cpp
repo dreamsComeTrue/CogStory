@@ -21,17 +21,24 @@ namespace aga
 
     Resource g_Resources[] = {
         //  Graphics
-        { GFX_DEFAULT_SKIN, GFX, "UISkin.png" }, { GFX_TEXT_FRAME, GFX_UI, "text_frame.9.png" },
+        { GFX_DEFAULT_SKIN, GFX, "UISkin.png" }, 
+        { GFX_TEXT_FRAME, GFX_UI, "text_frame.9.png" },
 
-        { PACK_MENU_UI, GFX_UI, "menu_ui.pack" }, { PACK_ACTORS_UI, GFX_UI, "actors_ui.pack" },
-        { PACK_PLAYER, GFX_ACTORS, "player.pack" }, { PACK_PARTICLES, GFX_EFFECTS, "particles.pack" },
+        { PACK_MENU_UI, GFX_UI, "menu_ui.pack" }, 
+        { PACK_ACTORS_UI, GFX_UI, "actors_ui.pack" },
+        { PACK_PLAYER, GFX_ACTORS, "player.pack" }, 
+        { PACK_PARTICLES, GFX_EFFECTS, "particles.pack" },
         { PACK_0_0_HOME, GFX_0_HOME, "0_0_home.pack" },
 
         //  Fonts
-        { FONT_SMALL, FONTS, "coders_crux.ttf" }, { FONT_MEDIUM, FONTS, "coders_crux.ttf" },
-        { FONT_NORMAL, FONTS, "coders_crux.ttf" }, { FONT_MENU_TITLE, FONTS, "coders_crux.ttf" },
-        { FONT_MENU_ITEM_NORMAL, FONTS, "coders_crux.ttf" }, { FONT_MENU_ITEM_SMALL, FONTS, "coders_crux.ttf" },
-        { FONT_SPEECH_FRAME, FONTS, "coders_crux.ttf" }, { FONT_EDITOR, FONTS, "OpenSans.ttf" },
+        { FONT_SMALL, FONTS, "coders_crux.ttf" }, 
+        { FONT_MEDIUM, FONTS, "coders_crux.ttf" },
+        { FONT_NORMAL, FONTS, "coders_crux.ttf" }, 
+        { FONT_MENU_TITLE, FONTS, "coders_crux.ttf" },
+        { FONT_MENU_ITEM_NORMAL, FONTS, "coders_crux.ttf" }, 
+        { FONT_MENU_ITEM_SMALL, FONTS, "coders_crux.ttf" },
+        { FONT_SPEECH_FRAME, FONTS, "coders_crux.ttf" }, 
+        { FONT_EDITOR, FONTS, "OpenSans.ttf" },
 
         //  Scenes
         { SCENE_0_0, SCENES_HOME, "0_0_home.scn" },
@@ -71,11 +78,9 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    std::vector<ResourceID> GetPacks ()
+    std::vector<ResourceID> GetGfxPacks ()
     {
-        std::vector<ResourceID> packs = { PACK_MENU_UI, PACK_ACTORS_UI, PACK_PLAYER, PACK_PARTICLES, PACK_0_0_HOME };
-
-        return packs;
+        return { PACK_MENU_UI, PACK_ACTORS_UI, PACK_PLAYER, PACK_PARTICLES, PACK_0_0_HOME };
     }
 
     //--------------------------------------------------------------------------------------------------

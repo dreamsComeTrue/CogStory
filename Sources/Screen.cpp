@@ -7,7 +7,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     const float TARGET_FPS = 60;
-    const char* GAME_TITLE = "Robot Tale";
+    const char* GAME_TITLE = "Robot Tales";
 
     //--------------------------------------------------------------------------------------------------
 
@@ -156,6 +156,9 @@ namespace aga
         m_Font.Initialize ();
 
         al_set_new_bitmap_flags (ALLEGRO_VIDEO_BITMAP);
+
+        ALLEGRO_BITMAP *windowIcon = al_load_bitmap ((GetDataPath () + "/gfx/icon.png").c_str ());  
+        al_set_display_icon (m_Display, windowIcon);
 
         return true;
     }

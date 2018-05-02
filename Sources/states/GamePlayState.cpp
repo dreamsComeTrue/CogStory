@@ -8,6 +8,7 @@
 #include "SceneManager.h"
 #include "Screen.h"
 #include "StateManager.h"
+#include "Script.h"
 
 namespace aga
 {
@@ -34,7 +35,8 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
-        m_MainLoop->GetSceneManager ().SetActiveScene ("0_home/0_0_home.scn", false);
+        Script* masterScript = m_MainLoop->GetScriptManager ().LoadScriptFromFile (GetDataPath () + "/scripts/Master.script", "master");
+        masterScript->Run ("void Start ()");
 
         m_MainLoop->GetSceneManager ().GetPlayer ()->TemplateBounds.Pos
             = m_MainLoop->GetSceneManager ().GetPlayer ()->GetPosition ();
