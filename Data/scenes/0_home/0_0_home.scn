@@ -88,7 +88,7 @@
                     "poly": "-0 -22 -18 0 1 20 21 -2 "
                 }
             ],
-            "pos": "-120 223",
+            "pos": "-149 291",
             "rot": "0",
             "scripts": [],
             "size": "64 64",
@@ -114,7 +114,7 @@
         },
         {
             "atlas": "0_0_home",
-            "atlas-region": "parallax-forest-front-trees",
+            "atlas-region": "bed",
             "id": "11",
             "name": "back2",
             "phys": [
@@ -122,16 +122,16 @@
                     "poly": ""
                 }
             ],
-            "pos": "98 142",
+            "pos": "41 126",
             "rot": "0",
             "scripts": [],
-            "size": "272 160",
+            "size": "64 64",
             "type": "Tile",
             "z-order": "0"
         },
         {
-            "atlas": "actors_ui",
-            "atlas-region": "player_head",
+            "atlas": "menu_ui",
+            "atlas-region": "cog",
             "id": "33",
             "name": "head1",
             "phys": [
@@ -142,7 +142,7 @@
             "pos": "-103 140",
             "rot": "0",
             "scripts": [],
-            "size": "20 30",
+            "size": "64 64",
             "type": "NPC",
             "z-order": "0"
         },
@@ -226,7 +226,7 @@
             "pos": "-243 -236"
         }
     ],
-    "max_size": "512 302",
+    "max_size": "512 355",
     "min_size": "-544 -254",
     "name": "Home",
     "player_start": "3 260",

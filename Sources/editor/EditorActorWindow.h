@@ -47,9 +47,6 @@ namespace aga
         void AddScriptEntry (const std::string& name, const std::string& path);
         void AddComponentEntry (const std::string& name, const std::string& type);
 
-        std::string GetImageName (class Actor* actor);
-        std::string GetImagePath (class Actor* actor);
-
         Gwk::Controls::TreeNode* FindNode (Gwk::Controls::TreeNode* node, const std::string& name);
 
     private:

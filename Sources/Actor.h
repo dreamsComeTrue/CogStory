@@ -39,6 +39,7 @@ namespace aga
         virtual void Render (float deltaTime);
 
         virtual void Move (float dx, float dy);
+        virtual void Move (Point deltaPos);
         virtual void SetPosition (float x, float y);
         virtual void SetPosition (Point pos);
         Point GetPosition ();
@@ -53,6 +54,8 @@ namespace aga
         virtual void DrawName ();
 
         std::function<void(float dx, float dy)> MoveCallback;
+
+        virtual std::string GetTypeName () = 0;
 
     protected:
         void ProcessTriggerAreas (float dx, float dy);

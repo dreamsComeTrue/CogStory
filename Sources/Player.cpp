@@ -287,10 +287,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    std::string Player::GetTypeName () { return TypeName; }
-
-    //--------------------------------------------------------------------------------------------------
-
     void Player::CollisionEvent (Collidable* other)
     {
         Entity* entity = dynamic_cast<Entity*> (other);

@@ -38,7 +38,7 @@ namespace aga
         void SetPosition (float x, float y) override;
         void SetPosition (Point pos) override;
 
-        virtual std::string GetTypeName () override;
+        virtual std::string GetTypeName () override { return TypeName; }
 
     private:
         void InitializeAnimations ();

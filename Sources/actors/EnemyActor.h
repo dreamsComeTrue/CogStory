@@ -19,7 +19,7 @@ namespace aga
 
         virtual bool Update (float deltaTime);
 
-        virtual std::string GetTypeName () override;
+        virtual std::string GetTypeName () override { return TypeName; }
 
     private:
     };

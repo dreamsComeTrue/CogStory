@@ -13,6 +13,7 @@
 #include "actors/NPCActor.h"
 #include "actors/EnemyActor.h"
 #include "actors/TileActor.h"
+#include "actors/components/Component.h"
 
 namespace aga
 {
@@ -383,28 +384,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    std::string EditorActorWindow::GetImagePath (Actor* actor)
-    {
-        std::string imagePath = "";
-
-        if (actor->GetTypeName () == TileActor::TypeName)
-        {
-            imagePath = static_cast<TileActor*> (actor)->Tileset;
-        }
-        else if (actor->GetTypeName () == NPCActor::TypeName)
-        {
-            imagePath = actor->GetAtlas ()->GetName ();
-        }
-        else if (actor->GetTypeName () == EnemyActor::TypeName)
-        {
-            imagePath = actor->GetAtlas ()->GetName ();
-        }
-
-        return imagePath;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
     void EditorActorWindow::OnActorSelect (Gwk::Controls::Base* control)
     {
         Gwk::Controls::TreeNode* node = (Gwk::Controls::TreeNode*)control;
@@ -446,7 +425,7 @@ namespace aga
                                                 : Gwk::Utility::Format ("%f", 0.f),
                                             false);
         zOrderProperty->SetPropertyValue (selectedActor != nullptr ? ToString (selectedActor->ZOrder) : "0", false);
-        imagePathProperty->SetPropertyValue (selectedActor != nullptr ? GetImagePath (selectedActor) : "", false);
+        imagePathProperty->SetPropertyValue (selectedActor != nullptr ? selectedActor->GetAtlas ()->GetName () : "", false);
 
         m_ScriptSection->Clear ();
         m_ComponentSection->Clear ();
@@ -462,7 +441,7 @@ namespace aga
 
             for (std::map<std::string, Component*>::iterator it = components.begin (); it != components.end (); ++it)
             {
-                AddComponentEntry (it->first, "MovementComponent");
+                AddComponentEntry (it->first, it->second->GetTypeName ()); 
             }
         }
 

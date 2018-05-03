@@ -31,7 +31,7 @@ namespace aga
 
     void ActorFactory::RegisterActorComponents ()
     {
-        s_ActorComponents.push_back ("MovementComponent");
+        s_ActorComponents.push_back (MovementComponent::TypeName);
     }
     
     //--------------------------------------------------------------------------------------------------

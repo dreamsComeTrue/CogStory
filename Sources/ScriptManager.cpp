@@ -426,8 +426,8 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod ("Player", "Point GetSize ()", asMETHOD (Player, GetSize),
                                                   asCALL_THISCALL);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("Player", "void Move (float, float)", asMETHOD (Player, Move),
-                                                  asCALL_THISCALL);
+        r = m_ScriptEngine->RegisterObjectMethod ("Player", "void Move (float, float)", asMETHODPR (Player, Move, 
+                                                 (float, float), void), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("Player", "void SetCurrentAnimation (const string &in)",
                                                   asMETHOD (Player, SetCurrentAnimation), asCALL_THISCALL);
@@ -512,8 +512,8 @@ namespace aga
         //  Actor
         r = m_ScriptEngine->RegisterObjectType ("Actor", 0, asOBJ_REF | asOBJ_NOCOUNT);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("Actor", "void Move (float, float)", asMETHOD (Actor, Move),
-                                                  asCALL_THISCALL);
+        r = m_ScriptEngine->RegisterObjectMethod ("Actor", "void Move (float, float)", asMETHODPR (Actor, Move, 
+                                                 (float, float), void), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("Actor", "void SetPosition (float, float)",
                                                   asMETHODPR (Actor, SetPosition, (float, float), void),

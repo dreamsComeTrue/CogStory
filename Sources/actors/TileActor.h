@@ -22,7 +22,7 @@ namespace aga
 
         virtual void DrawName () override;
 
-        virtual std::string GetTypeName () override;
+        virtual std::string GetTypeName () override { return TypeName; }
 
         virtual void SetAtlasRegionName (const std::string& name) override;
         virtual void SetAtlas (Atlas* atlas) override;
