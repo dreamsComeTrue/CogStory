@@ -6,6 +6,7 @@
 #include "AtlasManager.h"
 #include "MainLoop.h"
 #include "SceneManager.h"
+#include "Component.h"
 #include "actors/TileActor.h"
 
 using json = nlohmann::json;
@@ -214,6 +215,21 @@ namespace aga
                         std::string path = scriptIt["path"];
 
                         newActor->AttachScript (name, path);
+                    }
+
+                    auto& components = actorIt["components"];
+
+                    for (auto& component : components)
+                    {
+                        std::string name = component["name"];
+                        std::string type = component["type"];
+
+                        Component* componentObj = ActorFactory::GetActorComponent (newActor, type);
+
+                        if (componentObj)
+                        {
+                            newActor->AddComponent (name, componentObj);
+                        }
                     }
 
                     newActor->SetCollisionEnabled (false);
@@ -446,6 +462,19 @@ namespace aga
                     scriptObj["path"] = script.Path;
 
                     actorObj["scripts"].push_back (scriptObj);
+                }
+
+                actorObj["components"] = json::array ({});
+
+                std::map<std::string, Component*>& components = actor->GetComponents ();
+                for (std::map<std::string, Component*>::iterator it = components.begin (); it != components.end (); ++it)
+                {
+                    json componentObj = json::object ({});
+
+                    componentObj["name"] = it->first;
+                    componentObj["type"] = it->second->GetTypeName ();
+
+                    actorObj["components"].push_back (componentObj);
                 }
 
                 j["actors"].push_back (actorObj);

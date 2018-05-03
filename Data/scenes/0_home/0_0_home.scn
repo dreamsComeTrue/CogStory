@@ -3,6 +3,7 @@
         {
             "atlas": "0_0_home",
             "atlas-region": "parallax-forest-front-trees",
+            "components": [],
             "id": "7",
             "name": "back0",
             "phys": [
@@ -20,6 +21,7 @@
         {
             "atlas": "0_0_home",
             "atlas-region": "main_room",
+            "components": [],
             "id": "2",
             "name": "main_room",
             "phys": [
@@ -37,6 +39,7 @@
         {
             "atlas": "menu_ui",
             "atlas-region": "arrow_dark",
+            "components": [],
             "id": "12",
             "name": "a2",
             "phys": [
@@ -59,6 +62,7 @@
         {
             "atlas": "menu_ui",
             "atlas-region": "arrow_light",
+            "components": [],
             "id": "13",
             "name": "a1",
             "phys": [
@@ -81,6 +85,12 @@
         {
             "atlas": "menu_ui",
             "atlas-region": "cog",
+            "components": [
+                {
+                    "name": "MOVE",
+                    "type": "MovementComponent"
+                }
+            ],
             "id": "21",
             "name": "cog1",
             "phys": [
@@ -98,6 +108,7 @@
         {
             "atlas": "0_0_home",
             "atlas-region": "parallax-forest-front-trees",
+            "components": [],
             "id": "27",
             "name": "back1",
             "phys": [
@@ -115,6 +126,7 @@
         {
             "atlas": "0_0_home",
             "atlas-region": "bed",
+            "components": [],
             "id": "11",
             "name": "back2",
             "phys": [
@@ -132,6 +144,7 @@
         {
             "atlas": "menu_ui",
             "atlas-region": "cog",
+            "components": [],
             "id": "33",
             "name": "head1",
             "phys": [
@@ -149,6 +162,7 @@
         {
             "atlas": "0_0_home",
             "atlas-region": "bed",
+            "components": [],
             "id": "3",
             "name": "bed",
             "phys": [
@@ -166,6 +180,7 @@
         {
             "atlas": "menu_ui",
             "atlas-region": "cog",
+            "components": [],
             "id": "19",
             "name": "cog2",
             "phys": [
@@ -183,6 +198,7 @@
         {
             "atlas": "actors_ui",
             "atlas-region": "player_head",
+            "components": [],
             "id": "31",
             "name": "head2",
             "phys": [

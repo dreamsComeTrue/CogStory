@@ -10,10 +10,10 @@
 #include "EditorWindows.h"
 #include "MainLoop.h"
 #include "Screen.h"
+#include "Component.h"
 #include "actors/NPCActor.h"
 #include "actors/EnemyActor.h"
 #include "actors/TileActor.h"
-#include "actors/components/Component.h"
 
 namespace aga
 {

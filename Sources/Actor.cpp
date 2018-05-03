@@ -6,7 +6,7 @@
 #include "SceneManager.h"
 #include "Screen.h"
 #include "Script.h"
-#include "actors/components/Component.h"
+#include "Component.h"
 
 namespace aga
 {
