@@ -1,13 +1,15 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 #include "Player.h"
 #include "ActorFactory.h"
-#include "AudioSample.h"
 #include "MainLoop.h"
 #include "PhysicsManager.h"
 #include "Scene.h"
 #include "SceneManager.h"
 #include "Screen.h"
 #include "actors/NPCActor.h"
+#include "AudioSample.h"
+#include "actors/components/AudioSampleComponent.h"
+#include "actors/components/ParticleEmitterComponent.h"
 
 namespace aga
 {
@@ -48,9 +50,12 @@ namespace aga
 
         InitializeAnimations ();
 
-        AudioSample* sample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
-            "FOOT_STEP", GetResourcePath (SOUND_FOOT_STEP));
-        sample->SetVolume (2.0f);
+        m_FootStepComponent = (AudioSampleComponent*)ActorFactory::GetActorComponent (this, 
+                                                     AudioSampleComponent::TypeName);
+        m_FootStepComponent->LoadSampleFromFile ("FOOT_STEP", GetResourcePath (SOUND_FOOT_STEP));
+        m_FootStepComponent->GetAudioSample ()->SetVolume (2.0f);
+
+        m_Components.insert (std::make_pair ("FOOT_STEP_COMPONENT", m_FootStepComponent));
 
         PhysPoints.clear ();
         PhysPoints.push_back ({ { 20, 30 }, { 25, 20 }, { 39, 20 }, { 44, 30 }, { 44, 64 }, { 20, 64 } });
@@ -62,9 +67,6 @@ namespace aga
 
     bool Player::Destroy ()
     {
-        SAFE_DELETE (m_WalkParticleEmitter);
-        SAFE_DELETE (m_HeadParticleEmitter);
-
         return Actor::Destroy ();
     }
 
@@ -74,8 +76,8 @@ namespace aga
     {
         SetPhysOffset (Bounds.GetPos ().X, Bounds.GetPos ().Y);
 
-        m_WalkParticleEmitter->Reset ();
-        m_HeadParticleEmitter->Reset ();
+        m_HeadParticleComponent->GetEmitter ()->Reset ();
+        m_FootParticleComponent->GetEmitter ()->Reset ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -91,32 +93,41 @@ namespace aga
 
     void Player::CreateParticleEmitters ()
     {
-        m_WalkParticleEmitter = new ParticleEmitter (&m_SceneManager->GetMainLoop ()->GetAtlasManager (), "particles",
-                                                     "dust_particles", 2, 0.7f);
-        m_WalkParticleEmitter->SetColorTransition (COLOR_WHITE, al_map_rgba (255, 255, 255, 0));
-        float velVar = 0.4f;
-        m_WalkParticleEmitter->SetVelocityVariance (Point (-velVar, -velVar), Point (velVar, velVar));
-        float partLife = 0.4f;
-        m_WalkParticleEmitter->SetParticleLifeVariance (partLife, partLife);
-        m_WalkParticleEmitter->Initialize ();
+        m_HeadParticleComponent = (ParticleEmitterComponent*)ActorFactory::GetActorComponent (this, 
+                                                     ParticleEmitterComponent::TypeName);
 
-        m_HeadParticleEmitter = new ParticleEmitter (&m_SceneManager->GetMainLoop ()->GetAtlasManager (), "particles",
-                                                     "smog_particles", 3, 2.0f);
-        m_HeadParticleEmitter->SetColorTransition (COLOR_WHITE, al_map_rgba (255, 255, 255, 0));
+        m_HeadParticleComponent->CreateEmitter ("particles", "smog_particles", 3, 2.0f);
+        m_HeadParticleComponent->GetEmitter ()->SetColorTransition (COLOR_WHITE, al_map_rgba (255, 255, 255, 0));
         float xSpread = 0.12f;
-        m_HeadParticleEmitter->SetVelocityVariance (Point (-xSpread, 0.4f), Point (xSpread, 0.4f));
-        partLife = 1.0f;
-        m_HeadParticleEmitter->SetParticleLifeVariance (partLife, partLife);
-        m_HeadParticleEmitter->Initialize ();
+        m_HeadParticleComponent->GetEmitter ()->SetVelocityVariance (Point (-xSpread, 0.4f), Point (xSpread, 0.4f));
+        float partLife = 1.0f;
+        m_HeadParticleComponent->GetEmitter ()->SetParticleLifeVariance (partLife, partLife);
+        m_HeadParticleComponent->GetEmitter ()->Initialize ();
+
+        m_Components.insert (std::make_pair ("HEAD_PARTICLE_COMPONENT", m_HeadParticleComponent));
+
+        m_FootParticleComponent = (ParticleEmitterComponent*)ActorFactory::GetActorComponent (this, 
+                                                     ParticleEmitterComponent::TypeName);
+
+        m_FootParticleComponent->CreateEmitter ("particles", "dust_particles", 2, 0.7f);
+        m_FootParticleComponent->GetEmitter ()->SetColorTransition (COLOR_WHITE, al_map_rgba (255, 255, 255, 0));
+        float velVar = 0.4f;
+        m_FootParticleComponent->GetEmitter ()->SetVelocityVariance (Point (-velVar, -velVar), Point (velVar, velVar));
+        partLife = 0.4f;
+        m_FootParticleComponent->GetEmitter ()->SetParticleLifeVariance (partLife, partLife);
+        m_FootParticleComponent->GetEmitter ()->Initialize ();
+
+        m_Components.insert (std::make_pair ("FOOT_PARTICLE_COMPONENT", m_FootParticleComponent));
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void Player::UpdateParticleEmitters ()
     {
-        m_WalkParticleEmitter->SetPosition (Bounds.Pos.X + Bounds.GetHalfSize ().Width,
+        m_HeadParticleComponent->GetEmitter ()->SetPosition (Bounds.Pos.X + Bounds.GetHalfSize ().Width + 5, 
+                                                             Bounds.Pos.Y - 5);
+        m_FootParticleComponent->GetEmitter ()->SetPosition (Bounds.Pos.X + Bounds.GetHalfSize ().Width,
                                             Bounds.Pos.Y + Bounds.GetSize ().Height);
-        m_HeadParticleEmitter->SetPosition (Bounds.Pos.X + Bounds.GetHalfSize ().Width + 5, Bounds.Pos.Y - 5);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -222,9 +233,9 @@ namespace aga
         Actor::Update (deltaTime);
 
         //  We can only emit where new position is different than last one
-        m_WalkParticleEmitter->SetCanEmit (!AreSame (m_OldPosition, Bounds.Pos));
-        m_WalkParticleEmitter->Update (deltaTime);
-        m_HeadParticleEmitter->Update (deltaTime);
+        m_FootParticleComponent->GetEmitter ()->SetCanEmit (!AreSame (m_OldPosition, Bounds.Pos));
+        m_HeadParticleComponent->Update (deltaTime);
+        m_FootParticleComponent->Update (deltaTime);
 
         m_OldPosition = Bounds.GetPos ();
 
@@ -235,8 +246,8 @@ namespace aga
 
     void Player::Render (float deltaTime)
     {
-        m_WalkParticleEmitter->Render (deltaTime);
-        m_HeadParticleEmitter->Render (deltaTime);
+        m_HeadParticleComponent->Render (deltaTime);
+        m_FootParticleComponent->Render (deltaTime);
 
         return Actor::Render (deltaTime);
     }
@@ -258,7 +269,7 @@ namespace aga
 
         if (sampleCounter > 0.28f)
         {
-            m_SceneManager->GetMainLoop ()->GetAudioManager ().GetSample ("FOOT_STEP")->Play ();
+            m_FootStepComponent->GetAudioSample ()->Play ();
 
             sampleCounter = 0;
         }

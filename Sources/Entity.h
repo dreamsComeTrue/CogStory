@@ -17,6 +17,8 @@ namespace aga
         void SetCheckOverlap (bool check);
         bool IsCheckOverlap ();
 
+        SceneManager* GetSceneManager () { return m_SceneManager; }
+
         int ID = 0;
         std::string Name;
         int ZOrder = 0;

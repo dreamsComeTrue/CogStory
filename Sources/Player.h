@@ -13,6 +13,9 @@ namespace aga
     class SceneManager;
     class Scene;
 
+    class AudioSampleComponent;
+    class ParticleEmitterComponent;
+
     class Player : public Actor
     {
     public:
@@ -49,8 +52,10 @@ namespace aga
 
     private:
         bool m_PreventInput;
-        ParticleEmitter* m_HeadParticleEmitter;
-        ParticleEmitter* m_WalkParticleEmitter;
+
+        AudioSampleComponent* m_FootStepComponent;
+        ParticleEmitterComponent* m_HeadParticleComponent;
+        ParticleEmitterComponent* m_FootParticleComponent;
     };
 }
 

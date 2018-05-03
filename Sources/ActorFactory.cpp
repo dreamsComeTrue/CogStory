@@ -4,7 +4,9 @@
 #include "actors/EnemyActor.h"
 #include "actors/TileActor.h"
 
+#include "actors/components/AudioSampleComponent.h"
 #include "actors/components/MovementComponent.h"
+#include "actors/components/ParticleEmitterComponent.h"
 
 namespace aga
 {
@@ -31,7 +33,9 @@ namespace aga
 
     void ActorFactory::RegisterActorComponents ()
     {
+        s_ActorComponents.push_back (AudioSampleComponent::TypeName);
         s_ActorComponents.push_back (MovementComponent::TypeName);
+        s_ActorComponents.push_back (ParticleEmitterComponent::TypeName);
     }
     
     //--------------------------------------------------------------------------------------------------
@@ -124,9 +128,17 @@ namespace aga
     {
         Component* newComponent = nullptr;
 
-        if (type == "MovementComponent")
+        if (type == AudioSampleComponent::TypeName) 
+        {
+            newComponent = new AudioSampleComponent (actor);
+        }
+        else if (type == MovementComponent::TypeName)
         {
             newComponent = new MovementComponent (actor);
+        }
+        else if (type == ParticleEmitterComponent::TypeName)
+        {
+            newComponent = new ParticleEmitterComponent (actor);
         }
 
         return newComponent;
