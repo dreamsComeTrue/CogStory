@@ -17,9 +17,14 @@ namespace aga
 
         virtual bool Render (float deltaTime) = 0;
 
+        void SetEnabled (bool enabled) { m_IsEnabled = enabled; }
+        bool IsEnabled () const { return m_IsEnabled; }
+
         virtual std::string GetTypeName () = 0;
+
     protected:
         Actor* m_Actor;
+        bool m_IsEnabled;
     };
 }
 

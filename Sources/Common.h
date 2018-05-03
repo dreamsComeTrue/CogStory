@@ -86,8 +86,8 @@ namespace aga
 
     float ToPositiveAngle (float degrees);
 
-    bool AreSame (float a, float b);
-    bool AreSame (Point a, Point b);
+    bool AreSame (float a, float b, float epsilon = 1.0E-8);
+    bool AreSame (Point a, Point b, Point epsilonPoint = Point(1.0E-8f, 1.0E-8f));
 
     //--------------------------------------------------------------------------------------------------
 
@@ -117,6 +117,7 @@ namespace aga
     bool StartsWith (const std::string& str, const std::string& prefix);
 
     float RandZeroToOne ();
+    bool RandBool ();
     float RandInRange (float min, float max);
 
     int ToInteger (const std::string& str);

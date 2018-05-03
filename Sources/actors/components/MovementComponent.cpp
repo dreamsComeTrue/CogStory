@@ -13,9 +13,16 @@ namespace aga
 
     MovementComponent::MovementComponent (Actor* owner) :
         Component (owner),
-        m_MoveType (MoveHorizontal),
-        m_Speed (4.f)
+        m_MoveType (MoveWander),
+        m_Speed (30.f),
+        m_MovingHorizontal (false),
+        m_WaitTimeBounds (1.f, 4.f),
+        m_WaitLikelihood (0.001f),
+        m_WaitTimeElapsed (0.f),
+        m_MaxWaitTime (0.f)
     {
+        m_StartPos = owner->Bounds.Pos;
+
         SetMoveExtents ({-50.f, -50.f}, {50.f, 50.f});
     }
 
@@ -32,9 +39,8 @@ namespace aga
 
     void MovementComponent::SetMoveExtents (Point min, Point max)
     {
-        Point ownerPos = m_Actor->Bounds.Pos;
-        m_MinExtent = ownerPos + min;
-        m_MaxExtent = ownerPos + max;
+        m_MinExtent = min;
+        m_MaxExtent = max;
 
         ComputerTargetPos ();
     }
@@ -43,41 +49,59 @@ namespace aga
 
     bool MovementComponent::Update (float deltaTime)
     {
-        Point deltaMove;
+        if (!m_IsEnabled)
+        {
+            return true;
+        }
+
         Point currentPos = m_Actor->Bounds.Pos;
 
-//            Log ("%f %f === %f %f\n", currentPos.X, currentPos.Y, m_TargetPos.X, m_TargetPos.Y);
-        if ((int)currentPos.X != (int)m_TargetPos.X || (int)currentPos.Y != (int)m_TargetPos.Y)
+        if (AreSame (m_MaxWaitTime, 0.0f) && RandZeroToOne () < m_WaitLikelihood)
         {
-            switch (m_MoveType)
-            {
-                case MoveHorizontal:
-                {
-                    if (m_TargetPos.X >= currentPos.X)
-                    {
-                        deltaMove.X += m_Speed * deltaTime;
-                    }
-                    else
-                    {
-                        deltaMove.X -= m_Speed * deltaTime;
-                    }
-                }
-                break;
+            m_MaxWaitTime = RandInRange (m_WaitTimeBounds.X, m_WaitTimeBounds.Y);
+            m_WaitTimeElapsed = 0.f;
+        }
 
-                case MoveVertical:
-                    deltaMove.Y += m_Speed * deltaTime;
-                    break;
+        if (m_WaitTimeElapsed >= m_MaxWaitTime)
+        {
+            m_MaxWaitTime = 0.0f;
+        }
 
-                case MoveWander:
-                    deltaMove.X += m_Speed * deltaTime;
-                    break;
-            }
-
-            m_Actor->Move (deltaMove * m_Speed);
+        if (m_MaxWaitTime > 0.0f)
+        {
+            m_WaitTimeElapsed += deltaTime;
         }
         else
         {
-            ComputerTargetPos ();
+            if (!AreSame (currentPos, m_TargetPos, {0.5f, 0.5f}))
+            {
+                Point deltaMove;
+
+                if (m_MovingHorizontal)
+                {
+                    deltaMove.X = m_Speed * deltaTime;
+                }
+                else
+                {
+                    deltaMove.Y = m_Speed * deltaTime;
+                }
+
+                if (currentPos.X >= m_TargetPos.X)
+                {
+                    deltaMove.X = -deltaMove.X;
+                }
+
+                if (currentPos.Y >= m_TargetPos.Y)
+                {
+                    deltaMove.Y = -deltaMove.Y;
+                }
+
+                m_Actor->Move (deltaMove);
+            }
+            else
+            {
+                ComputerTargetPos ();
+            }
         }
 
         return true;
@@ -87,6 +111,11 @@ namespace aga
 
     bool MovementComponent::Render (float deltaTime)
     {
+        if (!m_IsEnabled)
+        {
+            return true;
+        }
+
         return true;
     }
 
@@ -95,31 +124,47 @@ namespace aga
     void MovementComponent::ComputerTargetPos ()
     {
         Point ownerPos = m_Actor->Bounds.Pos;
+        m_TargetPos = ownerPos;
+
+        float randValue = RandInRange (-1.f, 1.f);
 
         switch (m_MoveType)
         {
             case MoveHorizontal:
-                if ((int)ownerPos.X >= (int)m_MaxExtent.X)
+            {
+                m_TargetPos.X = m_StartPos.X + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.X : 
+                              randValue * m_MaxExtent.X);
+                m_MovingHorizontal = true;
+
+                break;
+            }
+
+            case MoveVertical:
+            {
+                m_TargetPos.Y = m_StartPos.Y + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.Y : 
+                              randValue * m_MaxExtent.Y);
+                m_MovingHorizontal = false;
+
+                break;
+            }
+
+            case MoveWander:
+            {
+                if (RandBool ())
                 {
-                    m_TargetPos.X = m_MinExtent.X;
+                    m_TargetPos.X = m_StartPos.X + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.X : 
+                        randValue * m_MaxExtent.X);
+                    m_MovingHorizontal = true;
                 }
                 else
                 {
-                    m_TargetPos.X = m_MaxExtent.X;
+                    m_TargetPos.Y = m_StartPos.Y + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.Y : 
+                        randValue * m_MaxExtent.Y);
+                    m_MovingHorizontal = false;
                 }
 
-                m_TargetPos.Y = ownerPos.Y;
                 break;
-
-            case MoveVertical:
-                m_TargetPos.X = ownerPos.X;
-                m_TargetPos.Y = m_MaxExtent.Y;
-                break;
-
-            case MoveWander:
-                m_TargetPos.X = m_MaxExtent.X;
-                m_TargetPos.Y = ownerPos.Y;
-                break;
+            }
         }
     }
 

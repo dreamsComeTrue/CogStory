@@ -43,6 +43,9 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
+        // use current time as seed for random generator
+        std::srand (std::time (0)); 
+
         if (!al_init ())
         {
             Log ("Failed to initialize allegro!\n");

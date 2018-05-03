@@ -7,7 +7,8 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Component::Component (Actor* owner) :
-        m_Actor (owner)
+        m_Actor (owner),
+        m_IsEnabled (true)
     {
 
     }

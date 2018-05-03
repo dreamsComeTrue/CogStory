@@ -45,15 +45,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool AreSame (float a, float b)
+    bool AreSame (float a, float b, float epsilon)
     {
-        float epsilon = 1.0E-8;
         return std::fabs (a - b) < epsilon;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool AreSame (Point a, Point b) { return AreSame (a.X, b.X) && AreSame (a.Y, b.Y); }
+    bool AreSame (Point a, Point b, Point epsilonPoint) { return AreSame (a.X, b.X, epsilonPoint.X) 
+        && AreSame (a.Y, b.Y, epsilonPoint.Y); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -154,6 +154,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     float RandZeroToOne () { return rand () / (RAND_MAX + 1.f); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool RandBool () { return RandZeroToOne () > 0.5f ? true : false; }
 
     //--------------------------------------------------------------------------------------------------
 

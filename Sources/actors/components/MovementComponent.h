@@ -31,6 +31,11 @@ namespace aga
 
         void SetMoveExtents (Point min, Point max);
 
+        void SetWaitTimeBounds (float minWaitSeconds, float maxWaitSeconds) 
+        { m_WaitTimeBounds = {minWaitSeconds, maxWaitSeconds};}
+
+        void SetWaitLikelihood (float percentage) { m_WaitLikelihood = percentage; }
+
         void SetSpeed (float speed) { m_Speed = speed; }
         float GetSpeed () const { return m_Speed; }
 
@@ -43,8 +48,15 @@ namespace aga
         MovementType m_MoveType;
         Point m_MinExtent; 
         Point m_MaxExtent; 
+        Point m_StartPos;
         Point m_TargetPos;
         float m_Speed;
+        bool m_MovingHorizontal;
+
+        Point m_WaitTimeBounds;
+        float m_WaitLikelihood;
+        float m_WaitTimeElapsed;
+        float m_MaxWaitTime;
     };
 }
 
