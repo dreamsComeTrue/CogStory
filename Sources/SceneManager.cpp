@@ -53,6 +53,7 @@ namespace aga
         Lifecycle::Initialize ();
 
         ActorFactory::RegisterActorTypes ();
+        ActorFactory::RegisterActorComponents ();
         ActorFactory::RegisterAnimations ();
 
         m_Player = new Player (this);

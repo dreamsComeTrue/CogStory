@@ -79,23 +79,6 @@
             "z-order": "0"
         },
         {
-            "atlas": "actors_ui",
-            "atlas-region": "player_head",
-            "id": "24",
-            "name": "head1",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-103 140",
-            "rot": "0",
-            "scripts": [],
-            "size": "20 30",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
             "atlas": "menu_ui",
             "atlas-region": "cog",
             "id": "21",
@@ -144,6 +127,23 @@
             "scripts": [],
             "size": "272 160",
             "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "actors_ui",
+            "atlas-region": "player_head",
+            "id": "33",
+            "name": "head1",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "-103 140",
+            "rot": "0",
+            "scripts": [],
+            "size": "20 30",
+            "type": "NPC",
             "z-order": "0"
         },
         {

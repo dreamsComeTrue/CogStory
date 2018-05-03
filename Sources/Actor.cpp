@@ -6,6 +6,7 @@
 #include "SceneManager.h"
 #include "Screen.h"
 #include "Script.h"
+#include "actors/components/Component.h"
 
 namespace aga
 {
@@ -34,9 +35,7 @@ namespace aga
 
     bool Actor::Initialize ()
     {
-        Lifecycle::Initialize ();
-
-        return true;
+        return Lifecycle::Initialize ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -49,7 +48,16 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Actor::Destroy () { return Lifecycle::Destroy (); }
+    bool Actor::Destroy () 
+    { 
+        for (std::map<std::string, Component*>::iterator it = m_Components.begin (); it != m_Components.end ();)
+        {
+            SAFE_DELETE (it->second);
+            m_Components.erase (it++);
+        }
+
+        return Lifecycle::Destroy (); 
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -94,12 +102,72 @@ namespace aga
             CheckOverlap ();
         }
 
+        if (!m_Components.empty ())
+        {
+            for (std::map<std::string, Component*>::iterator it = m_Components.begin (); it != m_Components.end (); ++it)
+            {
+                it->second->Update (deltaTime);
+            }
+        }
+
         return true;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Actor::Render (float deltaTime) { Animable::Render (this); }
+    void Actor::Render (float deltaTime) 
+    { 
+        Animable::Render (this); 
+
+        if (!m_Components.empty ())
+        {
+            for (std::map<std::string, Component*>::iterator it = m_Components.begin (); it != m_Components.end (); ++it)
+            {
+                it->second->Render (deltaTime);
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Actor::AddComponent (const std::string& name, Component* component)
+    {
+        if (m_Components.find (name) == m_Components.end ())
+        {
+            m_Components.insert (std::make_pair (name, component));
+            component->Initialize ();
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Actor::RemoveComponent (const std::string& name)
+    {
+        for (std::map<std::string, Component*>::iterator it = m_Components.begin (); it != m_Components.end ();)
+        {
+            if (it->first == name)
+            {
+                SAFE_DELETE (it->second);
+                m_Components.erase (it);
+                break;
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Actor::RemoveComponent (Component* component)
+    {
+        for (std::map<std::string, Component*>::iterator it = m_Components.begin (); it != m_Components.end ();)
+        {
+            if (it->second == component)
+            {
+                SAFE_DELETE (component);
+                m_Components.erase (it);
+                break;
+            }
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 

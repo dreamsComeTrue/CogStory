@@ -4,11 +4,14 @@
 #include "actors/EnemyActor.h"
 #include "actors/TileActor.h"
 
+#include "actors/components/MovementComponent.h"
+
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
     std::vector<std::string> ActorFactory::s_ActorTypes;
+    std::vector<std::string> ActorFactory::s_ActorComponents;
     std::map<std::string, Animation> ActorFactory::s_Animations;
 
     //--------------------------------------------------------------------------------------------------
@@ -24,6 +27,13 @@ namespace aga
         s_ActorTypes.push_back (TileActor::TypeName);
     }
 
+    //--------------------------------------------------------------------------------------------------
+
+    void ActorFactory::RegisterActorComponents ()
+    {
+        s_ActorComponents.push_back ("MovementComponent");
+    }
+    
     //--------------------------------------------------------------------------------------------------
 
     void ActorFactory::RegisterAnimations () { s_Animations[ANIMATION_PLAYER] = RegisterAnimation_Player (); }
@@ -88,10 +98,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    std::vector<std::string>& ActorFactory::GetActorTypes () { return s_ActorTypes; }
-
-    //--------------------------------------------------------------------------------------------------
-
     Actor* ActorFactory::GetActor (SceneManager* sceneManager, const std::string& type)
     {
         Actor* newActor = nullptr;
@@ -110,6 +116,20 @@ namespace aga
         }
 
         return newActor;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Component* ActorFactory::GetActorComponent (Actor* actor, const std::string& type)
+    {
+        Component* newComponent = nullptr;
+
+        if (type == "MovementComponent")
+        {
+            newComponent = new MovementComponent (actor);
+        }
+
+        return newComponent;
     }
 
     //--------------------------------------------------------------------------------------------------

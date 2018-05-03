@@ -32,6 +32,7 @@ namespace aga
     class EditorInputWindow;
     class EditorSceneWindow;
     class EditorScriptWindow;
+    class EditorComponentWindow;
 
     class MainLoop;
     struct Tile;
@@ -83,6 +84,7 @@ namespace aga
         EditorTriggerAreaMode& GetEditorTriggerAreaMode () { return m_EditorTriggerAreaMode; }
 
         EditorScriptWindow* GetScriptWindow () { return m_ScriptWindow; }
+        EditorComponentWindow* GetComponentWindow () { return m_ComponentWindow; }
         EditorInfoWindow* GetEditorInfoWindow () { return m_InfoWindow; }
 
         void UpdateSceneNameLabel (const std::string& name);
@@ -165,6 +167,7 @@ namespace aga
         EditorInfoWindow* m_InfoWindow;
         EditorInputWindow* m_InputWindow;
         EditorScriptWindow* m_ScriptWindow;
+        EditorComponentWindow* m_ComponentWindow;
 
         Gwk::Renderer::AllegroResourceLoader* m_ResourceLoader;
         Gwk::Renderer::Allegro* m_GUIRenderer;

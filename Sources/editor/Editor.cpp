@@ -8,6 +8,7 @@
 #include "EditorSaveSceneWindow.h"
 #include "EditorSceneWindow.h"
 #include "EditorScriptWindow.h"
+#include "EditorComponentWindow.h"
 #include "EditorSpeechWindow.h"
 #include "EditorTriggerAreaWindow.h"
 #include "EditorWindows.h"
@@ -167,6 +168,7 @@ namespace aga
             m_InfoWindow = new EditorInfoWindow (this, m_MainCanvas);
             m_InputWindow = new EditorInputWindow (this, m_MainCanvas);
             m_ScriptWindow = new EditorScriptWindow (this, m_MainCanvas);
+            m_ComponentWindow = new EditorComponentWindow (this, m_MainCanvas);
         }
 
         resetMoveButton = new Gwk::Controls::Button (m_MainCanvas);
@@ -355,6 +357,7 @@ namespace aga
         SAFE_DELETE (m_InputWindow);
         SAFE_DELETE (m_EditorSceneWindow);
         SAFE_DELETE (m_ScriptWindow);
+        SAFE_DELETE (m_ComponentWindow);
 
         SAFE_DELETE (m_ResourceLoader);
         SAFE_DELETE (m_MainCanvas);

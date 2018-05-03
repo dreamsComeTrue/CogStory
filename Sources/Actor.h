@@ -22,6 +22,7 @@ namespace aga
 
     class SceneManager;
     class Scene;
+    class Component;
 
     class Actor : public Entity, public Lifecycle, public Animable, public Scriptable, public Collidable
     {
@@ -43,6 +44,11 @@ namespace aga
         Point GetPosition ();
         Point GetSize ();
 
+        void AddComponent (const std::string& name, Component* component);
+        void RemoveComponent (const std::string& name);
+        void RemoveComponent (Component* component);
+        std::map<std::string, Component*>& GetComponents () { return m_Components; }
+
         virtual void DrawBounds ();
         virtual void DrawName ();
 
@@ -57,6 +63,7 @@ namespace aga
 
     protected:
         Point m_OldPosition;
+        std::map<std::string, Component*> m_Components;
 
     public:
         Rect TemplateBounds;

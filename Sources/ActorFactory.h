@@ -15,10 +15,13 @@ namespace aga
         ActorFactory ();
 
         static void RegisterActorTypes ();
+        static void RegisterActorComponents ();
         static void RegisterAnimations ();
-        static std::vector<std::string>& GetActorTypes ();
+        static std::vector<std::string>& GetActorTypes () { return s_ActorTypes; }
+        static std::vector<std::string>& GetActorComponents () { return s_ActorComponents; }
 
         static Actor* GetActor (SceneManager* sceneManager, const std::string& type);
+        static class Component* GetActorComponent (Actor* actor, const std::string& type);
         static Animation& GetAnimation (const std::string& name);
 
     private:
@@ -26,6 +29,7 @@ namespace aga
 
     protected:
         static std::vector<std::string> s_ActorTypes;
+        static std::vector<std::string> s_ActorComponents;
         static std::map<std::string, Animation> s_Animations;
     };
 }

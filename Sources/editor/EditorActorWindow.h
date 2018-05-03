@@ -32,6 +32,9 @@ namespace aga
         void OnAddScript ();
         void OnRemoveScript (Gwk::Controls::Base* control);
 
+        void OnAddComponent ();
+        void OnRemoveComponent (Gwk::Controls::Base* control);
+
         void OnAccept ();
         void OnCancel ();
 
@@ -42,6 +45,7 @@ namespace aga
         void OnActorSelect (Gwk::Controls::Base* control);
 
         void AddScriptEntry (const std::string& name, const std::string& path);
+        void AddComponentEntry (const std::string& name, const std::string& type);
 
         std::string GetImageName (class Actor* actor);
         std::string GetImagePath (class Actor* actor);
@@ -69,6 +73,7 @@ namespace aga
         Gwk::Controls::Properties* m_TransformSection;
         Gwk::Controls::Properties* m_ApperanceSection;
         Gwk::Controls::Properties* m_ScriptSection;
+        Gwk::Controls::Properties* m_ComponentSection;
 
         class Atlas* m_SelectedAtlas;
         std::string m_SelectedAtlasRegion;

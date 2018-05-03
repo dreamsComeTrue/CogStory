@@ -6,6 +6,7 @@
 #include "AtlasManager.h"
 #include "Editor.h"
 #include "EditorScriptWindow.h"
+#include "EditorComponentWindow.h"
 #include "EditorWindows.h"
 #include "MainLoop.h"
 #include "Screen.h"
@@ -105,6 +106,7 @@ namespace aga
             OnImagePathSelected (m_ImagePathComboBox);
 
             m_ScriptSection = m_ActorProperties->Add ("Scripts");
+            m_ComponentSection = m_ActorProperties->Add ("Components");
 
             idProperty = static_cast<Gwk::Controls::Property::Text*> (
                 static_cast<Gwk::Controls::PropertyRow*> (m_GeneralSection->Find ("ID"))->GetProperty ());
@@ -143,6 +145,11 @@ namespace aga
         addScriptButton->SetText ("ADD SCRIPT");
         addScriptButton->SetPos (m_ActorProperties->Right () + 10, removeButton->Bottom () + 50);
         addScriptButton->onPress.Add (this, &EditorActorWindow::OnAddScript);
+
+        Gwk::Controls::Button* addComponentButton = new Gwk::Controls::Button (center);
+        addComponentButton->SetText ("COMPONENTS");
+        addComponentButton->SetPos (m_ActorProperties->Right () + 10, addScriptButton->Bottom () + 5);
+        addComponentButton->onPress.Add (this, &EditorActorWindow::OnAddComponent);
 
         Gwk::Controls::Button* acceptButton = new Gwk::Controls::Button (center);
         acceptButton->SetText ("ACCEPT");
@@ -296,9 +303,7 @@ namespace aga
 
     void EditorActorWindow::OnImageSelected (Gwk::Controls::Base* control)
     {
-        Gwk::String imageName = m_ImageComboBox->GetPropertyValue ();
-
-        m_SelectedAtlasRegion = imageName;
+        m_SelectedAtlasRegion = m_ImageComboBox->GetPropertyValue ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -444,12 +449,20 @@ namespace aga
         imagePathProperty->SetPropertyValue (selectedActor != nullptr ? GetImagePath (selectedActor) : "", false);
 
         m_ScriptSection->Clear ();
+        m_ComponentSection->Clear ();
 
         if (selectedActor)
         {
             for (ScriptMetaData& scriptData : selectedActor->GetScripts ())
             {
                 AddScriptEntry (scriptData.Name, scriptData.Path);
+            }
+
+            std::map<std::string, Component*>& components = selectedActor->GetComponents ();
+
+            for (std::map<std::string, Component*>::iterator it = components.begin (); it != components.end (); ++it)
+            {
+                AddComponentEntry (it->first, "MovementComponent");
             }
         }
 
@@ -533,6 +546,86 @@ namespace aga
             }
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::AddComponentEntry (const std::string& name, const std::string& typeName)
+    {
+        Gwk::Controls::Property::LabelButton* node
+            = new Gwk::Controls::Property::LabelButton (m_ComponentSection, typeName, "X");
+        node->TextLabel->SetMouseInputEnabled (false);
+        node->TextLabel->SetKeyboardInputEnabled (false);
+        node->FuncButton->onPress.Add (this, &EditorActorWindow::OnRemoveComponent);
+
+        m_ComponentSection->Add (name, node);
+
+        if (m_SelectedActor)
+        {
+            Component* component = ActorFactory::GetActorComponent (m_SelectedActor, typeName);
+
+            if (component)
+            {
+                m_SelectedActor->AddComponent (name, component);
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::OnAddComponent ()
+    {
+        EditorComponentWindow* componentWindow = m_Editor->GetComponentWindow ();
+
+        std::function<bool(void)> AcceptFunc = [&] {
+            EditorComponentWindow* componentWindow = m_Editor->GetComponentWindow ();
+
+            if (componentWindow->GetName () != "" && componentWindow->GetTypeName () != "")
+            {
+                AddComponentEntry (componentWindow->GetName (), componentWindow->GetTypeName ());
+
+                return true;
+            }
+
+            return false;
+        };
+
+        if (nameProperty != nullptr && nameProperty->GetPropertyValue () != "")
+        {
+            componentWindow->Show (AcceptFunc, nullptr);
+        }
+        else
+        {
+            m_Editor->GetEditorInfoWindow ()->Show ("Select Actor first!");
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::OnRemoveComponent (Gwk::Controls::Base* control)
+    {
+        Gwk::Controls::Button* button = (Gwk::Controls::Button*)control;
+        Gwk::Controls::Base::List& childNodes = m_ComponentSection->GetChildren ();
+
+        for (Gwk::Controls::Base* control : childNodes)
+        {
+            Gwk::Controls::PropertyRow* node = (Gwk::Controls::PropertyRow*)control;
+            Gwk::Controls::Property::LabelButton* property
+                = (Gwk::Controls::Property::LabelButton*)node->GetProperty ();
+
+            if (property->FuncButton == button)
+            {
+                if (m_SelectedActor)
+                {
+                    m_SelectedActor->RemoveComponent (node->GetLabel ()->GetText ());
+                }
+
+                m_ScriptSection->GetChildren ().remove (control);
+
+                break;
+            }
+        }
+    }
+
 
     //--------------------------------------------------------------------------------------------------
 
