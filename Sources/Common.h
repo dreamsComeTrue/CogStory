@@ -94,6 +94,7 @@ namespace aga
     Point RotatePoint (float x, float y, const Point& origin, float angle);
 
     float Lerp (float a, float b, float percentage);
+    Point Lerp (Point a, Point b, float percentage);
     ALLEGRO_COLOR Lerp (ALLEGRO_COLOR a, ALLEGRO_COLOR b, float percentage);
 
     std::vector<std::string> SplitString (const std::string& s, char seperator);

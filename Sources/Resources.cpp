@@ -10,6 +10,7 @@ namespace aga
     std::string GFX = "gfx";
     std::string GFX_UI = "gfx/ui";
     std::string GFX_ACTORS = "gfx/actors";
+    std::string GFX_NPC = "gfx/actors/npc";
     std::string GFX_EFFECTS = "gfx/effects";
 
     std::string GFX_0_HOME = "gfx/scenes/0_home";
@@ -28,6 +29,7 @@ namespace aga
         { PACK_ACTORS_UI, GFX_UI, "actors_ui.pack" },
         { PACK_PLAYER, GFX_ACTORS, "player.pack" }, 
         { PACK_PARTICLES, GFX_EFFECTS, "particles.pack" },
+        { PACK_NPC_1, GFX_NPC, "npc-1.pack" },
         { PACK_0_0_HOME, GFX_0_HOME, "0_0_home.pack" },
 
         //  Fonts
@@ -80,7 +82,12 @@ namespace aga
 
     std::vector<ResourceID> GetGfxPacks ()
     {
-        return { PACK_MENU_UI, PACK_ACTORS_UI, PACK_PLAYER, PACK_PARTICLES, PACK_0_0_HOME };
+        return { PACK_MENU_UI, 
+                 PACK_ACTORS_UI, 
+                 PACK_PLAYER, 
+                 PACK_NPC_1,
+                 PACK_PARTICLES, 
+                 PACK_0_0_HOME };
     }
 
     //--------------------------------------------------------------------------------------------------

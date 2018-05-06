@@ -48,6 +48,21 @@ namespace aga
     private:
         void RegisterAPI ();
 
+        void RegisterPointAPI ();
+        void RegisterColorAPI ();
+        void RegisterRectAPI ();
+        void RegisterTweenAPI ();
+        void RegisterFlagPointAPI ();
+        void RegisterPlayerAPI ();
+        void RegisterScreenAPI ();
+        void RegisterTriggerAreaAPI ();
+        void RegisterSpeechFrameAPI ();
+        void RegisterSpeechFrameManagerAPI ();
+        void RegisterActorAPI ();
+        void RegisterSceneManagerAPI ();
+        void RegisterCameraAPI ();
+        void RegisterGlobalAPI ();
+
     private:
         MainLoop* m_MainLoop;
         asIScriptEngine* m_ScriptEngine;

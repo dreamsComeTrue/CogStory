@@ -28,6 +28,7 @@ namespace aga
         PACK_ACTORS_UI,
         PACK_PLAYER,
         PACK_PARTICLES,
+        PACK_NPC_1,
         PACK_0_0_HOME,
 
         //  Fonts

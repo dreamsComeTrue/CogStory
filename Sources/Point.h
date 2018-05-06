@@ -69,6 +69,14 @@ namespace aga
 
         Point operator* (float b) { return { X * b, Y * b }; }
 
+        friend float Distance (const Point& lhs, const Point& rhs) 
+        {
+            float xDiff = lhs.X - rhs.X;
+            float yDiff = lhs.Y - rhs.Y;
+
+            return std::sqrt (xDiff * xDiff + yDiff * yDiff);
+        }
+
         void operator*= (float p)
         {
             X *= p;

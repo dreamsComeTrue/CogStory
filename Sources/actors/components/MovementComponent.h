@@ -11,6 +11,7 @@ namespace aga
     {
         MoveHorizontal,
         MoveVertical,
+        MovePoints,
         MoveWander,
     };
 
@@ -39,19 +40,29 @@ namespace aga
         void SetSpeed (float speed) { m_Speed = speed; }
         float GetSpeed () const { return m_Speed; }
 
+        void SetWalkPoints (std::vector<Point> points) { m_Points = points; }
+
         virtual std::string GetTypeName () override { return TypeName; }
 
     private:
         void ComputerTargetPos ();
+        void ComputeMovePoints ();
+        void ComputeMoveWander ();
 
     private:
         MovementType m_MoveType;
         Point m_MinExtent; 
         Point m_MaxExtent; 
+        Point m_InitialPos;
         Point m_StartPos;
         Point m_TargetPos;
+        float m_MaxTargetTime;
+        float m_CurrentTargetTime;
         float m_Speed;
-        bool m_MovingHorizontal;
+
+        std::vector<Point> m_Points;
+        int m_CurrentPointIndex;
+        bool m_PointsMovingForward;
 
         Point m_WaitTimeBounds;
         float m_WaitLikelihood;

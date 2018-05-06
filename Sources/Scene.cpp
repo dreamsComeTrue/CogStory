@@ -120,19 +120,21 @@ namespace aga
 
         //  Reset camera to player
         Player* player = m_SceneManager->GetPlayer ();
+        Point newPosition;
 
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != EDITOR_STATE_NAME)
         {
             player->BeforeEnter ();
 
             Point playerHalfSize = player->Bounds.GetHalfSize ();
-            player->SetPosition (
-                { m_PlayerStartLocation.X - playerHalfSize.Width, m_PlayerStartLocation.Y - playerHalfSize.Height });
+            newPosition = { m_PlayerStartLocation.X - playerHalfSize.Width, m_PlayerStartLocation.Y - playerHalfSize.Height };
         }
         else
         {
-            player->SetPosition (player->TemplateBounds.Pos);
+            newPosition = player->TemplateBounds.Pos;
         }
+
+        player->SetPosition (newPosition);
 
         ResetAllActorsPositions ();
         RunAllScripts ("void BeforeEnterScene ()");

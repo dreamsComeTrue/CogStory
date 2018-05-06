@@ -214,10 +214,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Actor::SetPosition (Point pos) { SetPosition (pos.X, pos.Y); }
-
-    //--------------------------------------------------------------------------------------------------
-
     void Actor::SetPosition (float x, float y)
     {
         m_OldPosition = Bounds.GetPos ();

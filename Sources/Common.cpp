@@ -79,6 +79,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    Point Lerp (Point a, Point b, float percentage) { return {Lerp (a.X, b.X, percentage), Lerp (a.Y, b.Y, percentage)}; }
+    
+    //--------------------------------------------------------------------------------------------------
+
     ALLEGRO_COLOR Lerp (ALLEGRO_COLOR a, ALLEGRO_COLOR b, float percentage)
     {
         ALLEGRO_COLOR result;

@@ -14,14 +14,17 @@ namespace aga
     MovementComponent::MovementComponent (Actor* owner) :
         Component (owner),
         m_MoveType (MoveWander),
-        m_Speed (30.f),
-        m_MovingHorizontal (false),
+        m_Speed (150.f),
         m_WaitTimeBounds (1.f, 4.f),
         m_WaitLikelihood (0.001f),
         m_WaitTimeElapsed (0.f),
-        m_MaxWaitTime (0.f)
+        m_MaxWaitTime (0.f),
+        m_MaxTargetTime (0.f),
+        m_CurrentTargetTime (0.f),
+        m_CurrentPointIndex (0),
+        m_PointsMovingForward (true)
     {
-        m_StartPos = owner->Bounds.Pos;
+        m_InitialPos = owner->Bounds.Pos;
 
         SetMoveExtents ({-50.f, -50.f}, {50.f, 50.f});
     }
@@ -73,30 +76,16 @@ namespace aga
         }
         else
         {
-            if (!AreSame (currentPos, m_TargetPos, {0.5f, 0.5f}))
+            bool xEqual = m_TargetPos.X > m_StartPos.X ? currentPos.X >= m_TargetPos.X : currentPos.X <= m_TargetPos.X;
+            bool yEqual = m_TargetPos.Y > m_StartPos.Y ? currentPos.Y >= m_TargetPos.Y : currentPos.Y <= m_TargetPos.Y;
+
+            if (!xEqual || !yEqual)
             {
-                Point deltaMove;
+                m_CurrentTargetTime += m_Speed * deltaTime;
 
-                if (m_MovingHorizontal)
-                {
-                    deltaMove.X = m_Speed * deltaTime;
-                }
-                else
-                {
-                    deltaMove.Y = m_Speed * deltaTime;
-                }
+                Point newPos = Lerp (m_StartPos, m_TargetPos, m_CurrentTargetTime / m_MaxTargetTime);
 
-                if (currentPos.X >= m_TargetPos.X)
-                {
-                    deltaMove.X = -deltaMove.X;
-                }
-
-                if (currentPos.Y >= m_TargetPos.Y)
-                {
-                    deltaMove.Y = -deltaMove.Y;
-                }
-
-                m_Actor->Move (deltaMove);
+                m_Actor->Move (newPos - currentPos);
             }
             else
             {
@@ -125,6 +114,7 @@ namespace aga
     {
         Point ownerPos = m_Actor->Bounds.Pos;
         m_TargetPos = ownerPos;
+        m_StartPos = ownerPos;
 
         float randValue = RandInRange (-1.f, 1.f);
 
@@ -132,39 +122,90 @@ namespace aga
         {
             case MoveHorizontal:
             {
-                m_TargetPos.X = m_StartPos.X + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.X : 
+                m_TargetPos.X = m_InitialPos.X + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.X : 
                               randValue * m_MaxExtent.X);
-                m_MovingHorizontal = true;
-
                 break;
             }
 
             case MoveVertical:
             {
-                m_TargetPos.Y = m_StartPos.Y + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.Y : 
+                m_TargetPos.Y = m_InitialPos.Y + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.Y : 
                               randValue * m_MaxExtent.Y);
-                m_MovingHorizontal = false;
+                break;
+            }
+
+            case MovePoints:
+            {
+                ComputeMovePoints ();
 
                 break;
             }
 
             case MoveWander:
             {
-                if (RandBool ())
-                {
-                    m_TargetPos.X = m_StartPos.X + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.X : 
-                        randValue * m_MaxExtent.X);
-                    m_MovingHorizontal = true;
-                }
-                else
-                {
-                    m_TargetPos.Y = m_StartPos.Y + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.Y : 
-                        randValue * m_MaxExtent.Y);
-                    m_MovingHorizontal = false;
-                }
+                ComputeMoveWander ();
 
                 break;
             }
+        }
+
+        m_CurrentTargetTime = 0.f;
+        m_MaxTargetTime = Distance (m_StartPos, m_TargetPos) / m_Speed * 1000.f;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void MovementComponent::ComputeMovePoints ()
+    {
+        int index = m_CurrentPointIndex;
+
+        if (m_PointsMovingForward)
+        {
+            if (index + 1 >= m_Points.size ())
+            {
+                m_PointsMovingForward = false;
+                --m_CurrentPointIndex;
+            }
+            else
+            {
+                ++m_CurrentPointIndex;
+            }
+        }
+
+        if (m_PointsMovingForward)
+        {
+            if (index - 1 < 0)
+            {
+                m_PointsMovingForward = true;
+                ++m_CurrentPointIndex;
+            }
+            else
+            {
+                --m_CurrentPointIndex;
+            }
+        }
+
+        if (m_CurrentPointIndex >= 0 && m_CurrentPointIndex < m_Points.size ())
+        {
+            m_TargetPos = m_Points[m_CurrentPointIndex];
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void MovementComponent::ComputeMoveWander ()
+    {
+        float randValue = RandInRange (-1.f, 1.f);
+
+        if (RandBool ())
+        {
+            m_TargetPos.X = m_InitialPos.X + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.X : 
+                    randValue * m_MaxExtent.X);
+        }
+        else
+        {
+            m_TargetPos.Y = m_InitialPos.Y + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.Y : 
+                    randValue * m_MaxExtent.Y);
         }
     }
 

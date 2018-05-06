@@ -99,8 +99,8 @@ namespace aga
         m_HeadParticleComponent->CreateEmitter ("particles", "smog_particles", 3, 2.0f);
         m_HeadParticleComponent->GetEmitter ()->SetColorTransition (COLOR_WHITE, al_map_rgba (255, 255, 255, 0));
         float xSpread = 0.12f;
-        m_HeadParticleComponent->GetEmitter ()->SetVelocityVariance (Point (-xSpread, 0.4f), Point (xSpread, 0.4f));
-        float partLife = 1.0f;
+        m_HeadParticleComponent->GetEmitter ()->SetVelocityVariance (Point (-xSpread, 0.3f), Point (xSpread, 0.3f));
+        float partLife = 2.0f;
         m_HeadParticleComponent->GetEmitter ()->SetParticleLifeVariance (partLife, partLife);
         m_HeadParticleComponent->GetEmitter ()->Initialize ();
 
@@ -139,14 +139,6 @@ namespace aga
             SetCurrentAnimation (ANIM_IDLE_NAME);
         }
     }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Player::SetPreventInput (bool prevent) { m_PreventInput = prevent; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool Player::IsPreventInput () const { return m_PreventInput; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -291,10 +283,6 @@ namespace aga
         UpdateParticleEmitters ();
         SetCurrentAnimation (ANIM_IDLE_NAME);
     }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Player::SetPosition (Point pos) { Player::SetPosition (pos.X, pos.Y); }
 
     //--------------------------------------------------------------------------------------------------
 

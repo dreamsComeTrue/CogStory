@@ -83,8 +83,8 @@
             "z-order": "0"
         },
         {
-            "atlas": "menu_ui",
-            "atlas-region": "cog",
+            "atlas": "npc-1",
+            "atlas-region": "npc-1",
             "components": [
                 {
                     "name": "MOVE",
@@ -101,7 +101,7 @@
             "pos": "-149 291",
             "rot": "0",
             "scripts": [],
-            "size": "64 64",
+            "size": "20 41",
             "type": "NPC",
             "z-order": "0"
         },
@@ -242,7 +242,7 @@
             "pos": "-243 -236"
         }
     ],
-    "max_size": "512 355",
+    "max_size": "512 332",
     "min_size": "-544 -254",
     "name": "Home",
     "player_start": "3 260",

@@ -14,6 +14,111 @@
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
+    
+
+    /*
+     *  === API Documentation ===
+     *
+     *  Point
+     *      Point ()
+     *      Point (float, float)
+     *      Log (Point)
+     *      float X
+     *      float Y
+     *      float Width
+     *      float Height
+     *
+     *  Color
+     *      float r
+     *      float g
+     *      float b
+     *      float a
+     *      Color COLOR_BLACK
+     *
+     *  Rect
+     *      Rect ()
+     *      Rect (Point, Point)
+     *      SetPos (Point)
+     *      Point GetPos ()
+     *      SetSize (Point)
+     *      Point GetSize ()
+     *
+     *  Tween
+     *      bool TweenFuncPoint (int id, float progress, Point value)
+     *      void TweenFuncPointFinish (int)
+     *      void AddTween (int, Point, Point, int, TweenFuncPoint @+ tf, TweenFuncPointFinish @+ te)
+     *      void PauseTween (int) 
+     *      void ResumeTween (int)
+     *
+     *  FlagPoint
+     *      Point Pos
+     *      string Name
+     *      FlagPoint@ GetFlagPoint (const string &in)
+     *
+     *  Player
+     *      Player player
+     *      void SetPosition (Point)
+     *      void SetPosition (float, float)
+     *      Point GetPosition ()
+     *      Point GetSize ()
+     *      void Move (float, float)
+     *      void SetCurrentAnimation (const string &in)
+     *      void SetPreventInput (bool)
+     *      bool IsPreventInput ()
+     *
+     *  Screen
+     *      Screen screen
+     *
+     *  TriggerArea
+     *      void TriggerFunc (Point)
+     *      void AddOnEnterCallback (const string &in, TriggerFunc @+ tf)
+     *      void RemoveOnEnterCallback (const string &in)
+     *      void AddOnLeaveCallback (const string &in, TriggerFunc @+ tf)
+     *      void RemoveOnLeaveCallback (const string &in)
+     *
+     *  SpeechFrame
+     *      void Show ()
+     *      void Hide ()
+     *      bool IsVisible ()
+     *      void SetDrawRect (Rect)
+     *      void SetDrawTextCenter (bool)
+     *      bool IsDrawTextCenter ()
+     *
+     *  SpeechFrameManager
+     *      SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Rect, bool = true, const string &in = "")
+     *      SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Point, int, int, bool = true, const string &in="")
+     *
+     *  Actor
+     *      void Move (float, float)
+     *      void SetPosition (float, float)
+     *      void SetPosition (Point)
+     *      Point GetPosition ()
+     *      Actor@ GetCurrentActor ()
+     *
+     *  SceneManager
+     *      void SetActiveScene (const string &in, bool fadeAnim = true)
+     *      void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, Color color = COLOR_BLACK)
+     *      Actor@ GetActor (const string &in)
+     *      string ChoiceFunction (void)
+     *      void RegisterChoiceFunction (string, ChoiceFunction @+ func)
+     *
+     *  Camera
+     *      Camer camera
+     *      void SetTranslate (float dx, float dy)
+     *      Point GetScale ()
+     *      void SetCenter (float, float)
+     *      void SetFollowActor (Actor@, Point followOffset = Point(0.f, 0.f))
+     *      void TweenToPoint (Point point, float timeMs = 1000, bool centerScreen = true)
+     *      void TweenToPoint (Point point, TweenFuncPointFinish @+ te, float timeMs = 1000, bool centerScreen = true)
+     *
+     *  Global
+     *      void Log(const string &in)
+     *      void Log (float)
+     *      const Point& GetWindowSize ()
+     *      float GetDeltaTime ()
+     *      float GetFPS ()
+     *      void SetBackgroundColor (Color)
+     */
 
     std::string lastWatchedFile;
     std::chrono::system_clock::time_point lastTimePoint;
@@ -296,6 +401,52 @@ namespace aga
     void ScriptManager::RegisterAPI ()
     {
         //  Point
+        RegisterPointAPI ();
+
+        //  Color
+        RegisterColorAPI ();
+
+        // Rect
+        RegisterRectAPI ();
+
+        //  Tween
+        RegisterTweenAPI ();
+
+        // FlagPoint
+        RegisterFlagPointAPI ();
+
+        //  Player
+        RegisterPlayerAPI ();
+
+        //  Screen
+        RegisterScreenAPI ();
+
+        //  Trigger Area
+        RegisterTriggerAreaAPI ();
+
+        //  Speech Frame
+        RegisterSpeechFrameAPI ();
+        
+        //  Speech Frame Manager
+        RegisterSpeechFrameManagerAPI ();
+
+        //  Actor
+        RegisterActorAPI ();
+
+        // Scene Manager
+        RegisterSceneManagerAPI ();
+
+        //  Camera
+        RegisterCameraAPI ();
+
+        //  Global
+        RegisterGlobalAPI ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+    
+    void ScriptManager::RegisterPointAPI ()
+    {
         int r = m_ScriptEngine->RegisterObjectType (
             "Point", sizeof (Point), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_CLASS_CA | asOBJ_APP_CLASS_ALLFLOATS);
         assert (r >= 0);
@@ -320,9 +471,13 @@ namespace aga
         r = m_ScriptEngine->RegisterGlobalFunction ("void Log (Point)", asFUNCTIONPR (Log, (Point), void),
                                                     asCALL_CDECL);
         assert (r >= 0);
+    }
 
-        //  Color
-        r = m_ScriptEngine->RegisterObjectType ("Color", sizeof (ALLEGRO_COLOR),
+    //--------------------------------------------------------------------------------------------------
+
+    void ScriptManager::RegisterColorAPI ()
+    {
+        int r = m_ScriptEngine->RegisterObjectType ("Color", sizeof (ALLEGRO_COLOR),
                                                 asOBJ_VALUE | asOBJ_POD | asOBJ_APP_FLOAT);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectProperty ("Color", "float r", asOFFSET (ALLEGRO_COLOR, r));
@@ -336,9 +491,13 @@ namespace aga
 
         r = m_ScriptEngine->RegisterGlobalProperty ("Color COLOR_BLACK", &COLOR_BLACK_REF);
         assert (r >= 0);
+    }
 
-        // Rect
-        r = m_ScriptEngine->RegisterObjectType (
+    //--------------------------------------------------------------------------------------------------
+
+    void ScriptManager::RegisterRectAPI ()
+    {
+        int r = m_ScriptEngine->RegisterObjectType (
             "Rect", sizeof (Rect), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_CLASS_CA | asOBJ_APP_CLASS_ALLFLOATS);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectBehaviour ("Rect", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION (ConstructRect),
@@ -361,17 +520,13 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod ("Rect", "Point GetSize ()", asMETHOD (Rect, GetSize),
                                                   asCALL_THISCALL);
         assert (r >= 0);
+    }
 
-        //  Tweening
-        //        r = m_ScriptEngine->RegisterFuncdef ("bool TweenFuncFloat (float, float)");
-        //        assert (r >= 0);
-        //        r = m_ScriptEngine->RegisterGlobalFunction ("void AddTween (int, float, float, int, TweenFuncFloat
-        //        @tf)",
-        //            asMETHODPR (TweenManager, AddTween, (int, float, float, int, asIScriptFunction*), void),
-        //            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
-        //        assert (r >= 0);
+    //--------------------------------------------------------------------------------------------------
 
-        r = m_ScriptEngine->RegisterFuncdef ("bool TweenFuncPoint (int id, float progress, Point value)");
+    void ScriptManager::RegisterTweenAPI ()
+    {
+        int r = m_ScriptEngine->RegisterFuncdef ("bool TweenFuncPoint (int id, float progress, Point value)");
         assert (r >= 0);
         r = m_ScriptEngine->RegisterFuncdef ("void TweenFuncPointFinish (int)");
         assert (r >= 0);
@@ -387,9 +542,14 @@ namespace aga
         r = m_ScriptEngine->RegisterGlobalFunction ("void ResumeTween (int)", asMETHOD (TweenManager, ResumeTween),
                                                     asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
         assert (r >= 0);
+    }
 
-        // FlagPoint
-        r = m_ScriptEngine->RegisterObjectType ("FlagPoint", 0, asOBJ_REF | asOBJ_NOCOUNT);
+    //--------------------------------------------------------------------------------------------------
+
+    
+    void ScriptManager::RegisterFlagPointAPI ()
+    {
+        int r = m_ScriptEngine->RegisterObjectType ("FlagPoint", 0, asOBJ_REF | asOBJ_NOCOUNT);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectProperty ("FlagPoint", "Point Pos", asOFFSET (FlagPoint, Pos));
         assert (r >= 0);
@@ -407,9 +567,13 @@ namespace aga
                                                     asMETHOD (SceneManager, GetFlagPoint), asCALL_THISCALL_ASGLOBAL,
                                                     &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
-
-        //  Player
-        r = m_ScriptEngine->RegisterObjectType ("Player", sizeof (Player), asOBJ_VALUE | asOBJ_POD);
+    }
+    
+    //--------------------------------------------------------------------------------------------------
+    
+    void ScriptManager::RegisterPlayerAPI ()
+    {
+        int r = m_ScriptEngine->RegisterObjectType ("Player", sizeof (Player), asOBJ_VALUE | asOBJ_POD);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalProperty ("Player player", m_MainLoop->GetSceneManager ().GetPlayer ());
         assert (r >= 0);
@@ -438,15 +602,23 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod ("Player", "bool IsPreventInput ()", asMETHOD (Player, IsPreventInput),
                                                   asCALL_THISCALL);
         assert (r >= 0);
+    }
 
-        //  Screen
-        r = m_ScriptEngine->RegisterObjectType ("Screen", sizeof (Screen), asOBJ_VALUE | asOBJ_POD);
+    //--------------------------------------------------------------------------------------------------
+
+    void ScriptManager::RegisterScreenAPI ()
+    {
+        int r = m_ScriptEngine->RegisterObjectType ("Screen", sizeof (Screen), asOBJ_VALUE | asOBJ_POD);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalProperty ("Screen screen", m_MainLoop->GetScreen ());
         assert (r >= 0);
+    }
 
-        //  Trigger Area
-        r = m_ScriptEngine->RegisterFuncdef ("void TriggerFunc (Point)");
+    //--------------------------------------------------------------------------------------------------
+
+    void ScriptManager::RegisterTriggerAreaAPI ()
+    {
+        int r = m_ScriptEngine->RegisterFuncdef ("void TriggerFunc (Point)");
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction (
             "void AddOnEnterCallback (const string &in, TriggerFunc @+ tf)",
@@ -468,9 +640,13 @@ namespace aga
             asMETHODPR (SceneManager, RemoveOnLeaveCallback, (const std::string&), void), asCALL_THISCALL_ASGLOBAL,
             &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
+    }
 
-        //  Speech Frame
-        r = m_ScriptEngine->RegisterObjectType ("SpeechFrame", 0, asOBJ_REF | asOBJ_NOCOUNT);
+    //--------------------------------------------------------------------------------------------------
+
+    void ScriptManager::RegisterSpeechFrameAPI ()
+    {
+        int r = m_ScriptEngine->RegisterObjectType ("SpeechFrame", 0, asOBJ_REF | asOBJ_NOCOUNT);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("SpeechFrame", "void Show ()", asMETHOD (SpeechFrame, Show),
                                                   asCALL_THISCALL);
@@ -490,9 +666,13 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod ("SpeechFrame", "bool IsDrawTextCenter ()",
                                                   asMETHOD (SpeechFrame, IsDrawTextCenter), asCALL_THISCALL);
         assert (r >= 0);
+    }
 
-        //  Speech Frame Manager
-        r = m_ScriptEngine->RegisterGlobalFunction (
+    //--------------------------------------------------------------------------------------------------
+
+    void ScriptManager::RegisterSpeechFrameManagerAPI ()
+    {
+        int r = m_ScriptEngine->RegisterGlobalFunction (
             "SpeechFrame@ AddSpeechFrame (const string &in, const string &in, "
             "Rect, bool = true, const string &in = \"\")",
             asMETHODPR (SpeechFrameManager, AddSpeechFrame,
@@ -508,9 +688,13 @@ namespace aga
                         SpeechFrame*),
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);
+    }
 
-        //  Actor
-        r = m_ScriptEngine->RegisterObjectType ("Actor", 0, asOBJ_REF | asOBJ_NOCOUNT);
+    //--------------------------------------------------------------------------------------------------
+
+    void ScriptManager::RegisterActorAPI ()
+    {
+        int r = m_ScriptEngine->RegisterObjectType ("Actor", 0, asOBJ_REF | asOBJ_NOCOUNT);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("Actor", "void Move (float, float)", asMETHODPR (Actor, Move, 
                                                  (float, float), void), asCALL_THISCALL);
@@ -529,9 +713,13 @@ namespace aga
                                                     asMETHOD (SceneManager, GetCurrentlyProcessedActor),
                                                     asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
+    }
 
-        // Scene Manager
-        r = m_ScriptEngine->RegisterGlobalFunction (
+    //--------------------------------------------------------------------------------------------------
+
+    void ScriptManager::RegisterSceneManagerAPI ()
+    {
+        int r = m_ScriptEngine->RegisterGlobalFunction (
             "void SetActiveScene (const string &in, bool fadeAnim = true)",
             asMETHODPR (SceneManager, SetActiveScene, (const std::string&, bool), void), asCALL_THISCALL_ASGLOBAL,
             &m_MainLoop->GetSceneManager ());
@@ -553,9 +741,13 @@ namespace aga
             asMETHOD (SceneManager, RegisterChoiceFunction), asCALL_THISCALL_ASGLOBAL, 
                 &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
+    }
 
-        //  Camera
-        r = m_ScriptEngine->RegisterObjectType ("Camera", sizeof (Camera), asOBJ_VALUE | asOBJ_POD);
+    //--------------------------------------------------------------------------------------------------
+
+    void ScriptManager::RegisterCameraAPI ()
+    {
+        int r = m_ScriptEngine->RegisterObjectType ("Camera", sizeof (Camera), asOBJ_VALUE | asOBJ_POD);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalProperty ("Camera camera", &m_MainLoop->GetSceneManager ().GetCamera ());
         assert (r >= 0);
@@ -583,9 +775,13 @@ namespace aga
             "true)",
             asMETHODPR (Camera, TweenToPoint, (Point, asIScriptFunction*, float, bool), void), asCALL_THISCALL);
         assert (r >= 0);
+    }
 
-        //  Global
-        r = m_ScriptEngine->RegisterGlobalFunction ("void Log(const string &in)",
+    //--------------------------------------------------------------------------------------------------
+
+    void ScriptManager::RegisterGlobalAPI ()
+    {
+        int  r = m_ScriptEngine->RegisterGlobalFunction ("void Log(const string &in)",
                                                     asFUNCTIONPR (Log, (const std::string&), void), asCALL_CDECL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction ("void Log (float)", asFUNCTIONPR (Log, (float), void),

@@ -29,17 +29,17 @@ namespace aga
 
         void BeforeEnter () override;
 
-        void SetPreventInput (bool prevent = false);
-        bool IsPreventInput () const;
+        void SetPreventInput (bool prevent = false) { m_PreventInput = prevent; }
+        bool IsPreventInput () const { return m_PreventInput; }
         void HandleInput (float deltaTime);
         void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
 
         bool Update (float deltaTime) override;
         void Render (float deltaTime) override;
 
-        void Move (float dx, float dy) override;
-        void SetPosition (float x, float y) override;
-        void SetPosition (Point pos) override;
+        virtual void Move (float dx, float dy) override;
+        virtual void SetPosition (float x, float y) override;
+        virtual void SetPosition (Point point) override { Player::SetPosition (point.X, point.Y); }
 
         virtual std::string GetTypeName () override { return TypeName; }
 
