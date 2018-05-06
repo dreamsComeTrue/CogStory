@@ -23,6 +23,7 @@ namespace aga
     class SceneManager;
     class Scene;
     class Component;
+    class MovementComponent;
 
     class Actor : public Entity, public Lifecycle, public Animable, public Scriptable, public Collidable
     {
@@ -48,6 +49,8 @@ namespace aga
         void AddComponent (const std::string& name, Component* component);
         void RemoveComponent (const std::string& name);
         void RemoveComponent (Component* component);
+        Component* FindComponent (const std::string& name, const std::string& typeName);
+        MovementComponent* GetMovementComponent (const std::string& name);
         std::map<std::string, Component*>& GetComponents () { return m_Components; }
 
         virtual void DrawBounds ();

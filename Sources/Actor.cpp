@@ -7,6 +7,7 @@
 #include "Screen.h"
 #include "Script.h"
 #include "Component.h"
+#include "actors/components/MovementComponent.h"
 
 namespace aga
 {
@@ -168,7 +169,29 @@ namespace aga
             }
         }
     }
+    
+    //--------------------------------------------------------------------------------------------------
 
+    Component* Actor::FindComponent (const std::string& name, const std::string& typeName)
+    {
+        for (std::map<std::string, Component*>::iterator it = m_Components.begin (); it != m_Components.end ();)
+        {
+            if (it->first == name && it->second->GetTypeName () == typeName)
+            {
+                return it->second;
+            }
+        }
+
+        return nullptr;
+    }
+    
+    //--------------------------------------------------------------------------------------------------
+
+    MovementComponent* Actor::GetMovementComponent (const std::string& name)
+    {
+        return static_cast<MovementComponent*>(FindComponent (name, MovementComponent::TypeName));
+    }
+    
     //--------------------------------------------------------------------------------------------------
 
     void Actor::DrawBounds ()

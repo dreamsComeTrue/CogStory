@@ -219,22 +219,22 @@
         {
             "connections": "B ",
             "name": "A",
-            "pos": "9 204"
+            "pos": "-7.672 202.832"
         },
         {
             "connections": "A C ",
             "name": "B",
-            "pos": "10 83"
+            "pos": "-4.6 81.488"
         },
         {
             "connections": "B D ",
             "name": "C",
-            "pos": "126 82"
+            "pos": "107.528 82"
         },
         {
             "connections": "C ",
             "name": "D",
-            "pos": "126 -79"
+            "pos": "107.016 -121.264"
         },
         {
             "connections": "",

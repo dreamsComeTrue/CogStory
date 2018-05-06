@@ -149,6 +149,8 @@ namespace aga
             }
         }
 
+        m_TargetPos -= m_Actor->Bounds.GetHalfSize ();
+
         m_CurrentTargetTime = 0.f;
         m_MaxTargetTime = Distance (m_StartPos, m_TargetPos) / m_Speed * 1000.f;
     }
@@ -171,8 +173,7 @@ namespace aga
                 ++m_CurrentPointIndex;
             }
         }
-
-        if (m_PointsMovingForward)
+        else if (!m_PointsMovingForward)
         {
             if (index - 1 < 0)
             {
@@ -206,6 +207,18 @@ namespace aga
         {
             m_TargetPos.Y = m_InitialPos.Y + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.Y : 
                     randValue * m_MaxExtent.Y);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void MovementComponent::SetWalkPoints (CScriptArray* array)
+    {
+        m_Points.clear ();
+
+        for (asUINT i = 0; i < array->GetSize (); ++i)
+        {
+            m_Points.push_back (*((Point*)array->At (i)));
         }
     }
 

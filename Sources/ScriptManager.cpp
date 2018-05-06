@@ -8,6 +8,7 @@
 #include "Script.h"
 #include "SpeechFrame.h"
 #include "SpeechFrameManager.h"
+#include "actors/components/MovementComponent.h"
 
 #include <chrono>
 
@@ -94,6 +95,21 @@ namespace aga
      *      void SetPosition (Point)
      *      Point GetPosition ()
      *      Actor@ GetCurrentActor ()
+     *
+     *  MovementComponent
+     *      MovementType
+     *          MoveHorizontal
+     *          MoveVertical
+     *          MovePoints
+     *          MoveWander
+     *      MovementComponent@ GetMovementComponent (const string &in)
+     *      void SetMovementType (MovementType type)
+     *      MovementType GetMovementType ()
+     *      void SetMoveExtents (Point min, Point max)
+     *      void SetSpeed (float speed)
+     *      float GetSpeed ()
+     *      void SetWaitLikelihood (float percentage)
+     *      void SetWalkPoints (array<Point>@+ points)
      *
      *  SceneManager
      *      void SetActiveScene (const string &in, bool fadeAnim = true)
@@ -247,6 +263,7 @@ namespace aga
         assert (r >= 0);
 
         RegisterStdString (m_ScriptEngine);
+        RegisterScriptArray (m_ScriptEngine, true);
         RegisterAPI ();
 
         m_FileWatcher.addWatch (GetDataPath () + "/scripts", &m_FileListener, true);
@@ -432,6 +449,9 @@ namespace aga
 
         //  Actor
         RegisterActorAPI ();
+
+        //  MovementComponent
+        RegisterMovementComponentAPI ();
 
         // Scene Manager
         RegisterSceneManagerAPI ();
@@ -712,6 +732,48 @@ namespace aga
         r = m_ScriptEngine->RegisterGlobalFunction ("Actor@ GetCurrentActor ()",
                                                     asMETHOD (SceneManager, GetCurrentlyProcessedActor),
                                                     asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void ScriptManager::RegisterMovementComponentAPI ()
+    {
+        int r = m_ScriptEngine->RegisterObjectType ("MovementComponent", 0, asOBJ_REF | asOBJ_NOCOUNT);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterEnum ("MovementType");
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterEnumValue ("MovementType", "MoveHorizontal", MovementType::MoveHorizontal);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterEnumValue ("MovementType", "MoveVertical", MovementType::MoveVertical);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterEnumValue ("MovementType", "MovePoints", MovementType::MovePoints);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterEnumValue ("MovementType", "MoveWander", MovementType::MoveWander);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Actor", "MovementComponent@ GetMovementComponent (const string &in)",
+                                                    asMETHOD (Actor, GetMovementComponent), asCALL_THISCALL);
+        r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetMovementType (MovementType type)", 
+                                                  asMETHOD (MovementComponent, SetMovementType), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "MovementType GetMovementType ()", 
+                                                  asMETHOD (MovementComponent, GetMovementType), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetMoveExtents (Point min, Point max)", 
+                                                  asMETHOD (MovementComponent, SetMoveExtents), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetSpeed (float speed)", 
+                                                  asMETHOD (MovementComponent, SetSpeed), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "float GetSpeed ()", 
+                                                  asMETHOD (MovementComponent, GetSpeed), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetWaitLikelihood (float percentage)", 
+                                                  asMETHOD (MovementComponent, SetWaitLikelihood), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetWalkPoints (array<Point>@+ points)", 
+                                                  asMETHODPR (MovementComponent, SetWalkPoints, (CScriptArray*), void),
+                                                  asCALL_THISCALL);
         assert (r >= 0);
     }
 

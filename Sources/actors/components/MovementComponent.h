@@ -40,6 +40,7 @@ namespace aga
         void SetSpeed (float speed) { m_Speed = speed; }
         float GetSpeed () const { return m_Speed; }
 
+        void SetWalkPoints (CScriptArray* array);
         void SetWalkPoints (std::vector<Point> points) { m_Points = points; }
 
         virtual std::string GetTypeName () override { return TypeName; }

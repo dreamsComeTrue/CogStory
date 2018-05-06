@@ -30,6 +30,7 @@ extern "C"
 #include <angelscript.h>
 #include <scriptbuilder/scriptbuilder.h>
 #include <scriptstdstring/scriptstdstring.h>
+#include <scriptarray/scriptarray.h>
 
 #include <cmath>
 #include <cstdarg>

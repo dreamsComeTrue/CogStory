@@ -58,6 +58,19 @@ void BeforeEnterScene ()
     //AddTween (TWEEN_1, flag1, flag2, 800, PlayerTween, NextTween1);
 
     RegisterChoiceFunction ("CHOICE_1", Choice1);
+
+    Actor@ npc = GetActor ("cog1");
+    MovementComponent@ moveCP = npc.GetMovementComponent ("MOVE");
+    moveCP.SetMovementType (MovePoints);
+    moveCP.SetSpeed (300);
+    moveCP.SetWaitLikelihood (0.0f);
+
+    array<Point> walkPoints = { GetFlagPoint ("A").Pos,
+                                GetFlagPoint ("B").Pos,
+                                GetFlagPoint ("C").Pos,
+                                GetFlagPoint ("D").Pos
+                              };
+    moveCP.SetWalkPoints (walkPoints);
 }
 
 void AfterCameraTween1 (int tweenID)
