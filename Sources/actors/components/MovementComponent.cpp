@@ -1,6 +1,8 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "MovementComponent.h"
+#include "SceneManager.h"
+#include "MainLoop.h"
 
 namespace aga
 {
@@ -22,7 +24,8 @@ namespace aga
         m_MaxTargetTime (0.f),
         m_CurrentTargetTime (0.f),
         m_CurrentPointIndex (0),
-        m_PointsMovingForward (true)
+        m_PointsMovingForward (true),
+        m_ScriptMoveCallback (nullptr)
     {
         m_InitialPos = owner->Bounds.Pos;
 
@@ -86,6 +89,11 @@ namespace aga
                 Point newPos = Lerp (m_StartPos, m_TargetPos, m_CurrentTargetTime / m_MaxTargetTime);
 
                 m_Actor->Move (newPos - currentPos);
+
+                if (m_ScriptMoveCallback)
+                {
+                    CallScriptMoveCallback (m_Actor->GetPosition ());
+                }
             }
             else
             {
@@ -94,6 +102,25 @@ namespace aga
         }
 
         return true;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void MovementComponent::CallScriptMoveCallback (Point newPos)
+    {
+        asIScriptContext* ctx = m_Actor->GetSceneManager ()->GetMainLoop ()->GetScriptManager ().GetContext ();
+        ctx->Prepare (m_ScriptMoveCallback);
+        ctx->SetArgObject (0, &newPos);
+
+        int r = ctx->Execute ();
+
+        asDWORD ret = 0;
+        if (r == asEXECUTION_FINISHED)
+        {
+        }
+
+        ctx->Unprepare ();
+        ctx->GetEngine ()->ReturnContext (ctx);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -212,13 +239,13 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void MovementComponent::SetWalkPoints (CScriptArray* array)
+    void MovementComponent::SetWalkPoints (CScriptArray* points)
     {
         m_Points.clear ();
 
-        for (asUINT i = 0; i < array->GetSize (); ++i)
+        for (asUINT i = 0; i < points->GetSize (); ++i)
         {
-            m_Points.push_back (*((Point*)array->At (i)));
+            m_Points.push_back (*((Point*)points->At (i)));
         }
     }
 

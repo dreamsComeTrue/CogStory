@@ -45,8 +45,8 @@ namespace aga
      *      Point GetSize ()
      *
      *  Tween
-     *      bool TweenFuncPoint (int id, float progress, Point value)
-     *      void TweenFuncPointFinish (int)
+     *          = bool TweenFuncPoint (int id, float progress, Point value)
+     *          = void TweenFuncPointFinish (int)
      *      void AddTween (int, Point, Point, int, TweenFuncPoint @+ tf, TweenFuncPointFinish @+ te)
      *      void PauseTween (int) 
      *      void ResumeTween (int)
@@ -71,7 +71,7 @@ namespace aga
      *      Screen screen
      *
      *  TriggerArea
-     *      void TriggerFunc (Point)
+     *          = void TriggerFunc (Point)
      *      void AddOnEnterCallback (const string &in, TriggerFunc @+ tf)
      *      void RemoveOnEnterCallback (const string &in)
      *      void AddOnLeaveCallback (const string &in, TriggerFunc @+ tf)
@@ -102,6 +102,8 @@ namespace aga
      *          MoveVertical
      *          MovePoints
      *          MoveWander
+     *      void SetEnabled (bool enabled)
+     *      bool IsEnabled () const
      *      MovementComponent@ GetMovementComponent (const string &in)
      *      void SetMovementType (MovementType type)
      *      MovementType GetMovementType ()
@@ -110,6 +112,8 @@ namespace aga
      *      float GetSpeed ()
      *      void SetWaitLikelihood (float percentage)
      *      void SetWalkPoints (array<Point>@+ points)
+     *          = void MovementCallback (Point)
+     *      void SetMovementCallback (MovementCallback @+ mc)
      *
      *  SceneManager
      *      void SetActiveScene (const string &in, bool fadeAnim = true)
@@ -753,6 +757,12 @@ namespace aga
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("Actor", "MovementComponent@ GetMovementComponent (const string &in)",
                                                     asMETHOD (Actor, GetMovementComponent), asCALL_THISCALL);
+        r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetEnabled (bool enabled)", 
+                                                  asMETHOD (MovementComponent, SetEnabled), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "bool IsEnabled () const", 
+                                                  asMETHOD (MovementComponent, IsEnabled), asCALL_THISCALL);
+        assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetMovementType (MovementType type)", 
                                                   asMETHOD (MovementComponent, SetMovementType), asCALL_THISCALL);
         assert (r >= 0);
@@ -774,6 +784,11 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetWalkPoints (array<Point>@+ points)", 
                                                   asMETHODPR (MovementComponent, SetWalkPoints, (CScriptArray*), void),
                                                   asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterFuncdef ("void MovementCallback (Point)");
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetMovementCallback (MovementCallback @+ mc)",
+                                                  asMETHOD (MovementComponent, SetMovementCallback), asCALL_THISCALL);
         assert (r >= 0);
     }
 

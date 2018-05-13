@@ -110,15 +110,15 @@
 #ifndef TWEENY_H
 #define TWEENY_H
 
-#include "easing.h"
 #include "tween.h"
+#include "tween.h"
+#include "easing.h"
 
 /**
  * @brief The tweeny namespace contains all symbols and names for the Tweeny library.
  */
-namespace tweeny
-{
-    /**
+namespace tweeny {
+  /**
    * @brief Creates a tween starting from the values defined in the arguments.
    *
    * Starting values can have heterogeneous types, even user-defined types, provided they implement the
@@ -127,8 +127,7 @@ namespace tweeny
    *
    * @sa tweeny::tween
    */
-    template <typename... Ts>
-    tween<Ts...> from (Ts... vs);
+    template<typename... Ts> tween<Ts...> from(Ts... vs);
 }
 
 #include "tweeny.tcc"

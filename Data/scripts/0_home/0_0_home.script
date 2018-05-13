@@ -4,6 +4,7 @@ const int TWEEN_2 = 2;
 const int TWEEN_3 = 3;
 SpeechFrame@ topFrame;
 SpeechFrame@ mainFrame;
+MovementComponent@ moveCP;
 
 Point lastPoint;
 Point screenSize = GetWindowSize ();
@@ -60,7 +61,8 @@ void BeforeEnterScene ()
     RegisterChoiceFunction ("CHOICE_1", Choice1);
 
     Actor@ npc = GetActor ("cog1");
-    MovementComponent@ moveCP = npc.GetMovementComponent ("MOVE");
+    @moveCP = npc.GetMovementComponent ("MOVE");
+    moveCP.SetEnabled (true);
     moveCP.SetMovementType (MovePoints);
     moveCP.SetSpeed (300);
     moveCP.SetWaitLikelihood (0.0f);
@@ -71,6 +73,15 @@ void BeforeEnterScene ()
                                 GetFlagPoint ("D").Pos
                               };
     moveCP.SetWalkPoints (walkPoints);
+    moveCP.SetMovementCallback (MoveCallback);
+}
+
+void MoveCallback (Point pos)
+{
+    if (pos.X > -2)
+    {
+        moveCP.SetEnabled (false);
+    }
 }
 
 void AfterCameraTween1 (int tweenID)

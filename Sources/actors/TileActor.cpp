@@ -68,8 +68,8 @@ namespace aga
             Rect regionBounds = atlas->GetRegion (m_AtlasRegionName).Bounds;
 
             Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
-            Point pos = { Bounds.GetPos ().X + regionBounds.GetHalfSize ().Width,
-                          Bounds.GetPos ().Y + regionBounds.GetSize ().Height };
+            Point pos = {Bounds.GetPos ().X + regionBounds.GetHalfSize ().Width,
+                Bounds.GetPos ().Y + regionBounds.GetSize ().Height};
             std::string str = Name + "[" + ToString (ID) + "]";
             font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), pos.X, pos.Y, str, ALLEGRO_ALIGN_CENTER);
         }

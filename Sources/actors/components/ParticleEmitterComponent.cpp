@@ -25,6 +25,8 @@ namespace aga
     bool ParticleEmitterComponent::Destroy ()
     {
         SAFE_DELETE (m_Emitter);
+
+        return Component::Destroy();
     }
 
     //--------------------------------------------------------------------------------------------------

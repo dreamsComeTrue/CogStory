@@ -43,12 +43,16 @@ namespace aga
         void SetWalkPoints (CScriptArray* array);
         void SetWalkPoints (std::vector<Point> points) { m_Points = points; }
 
+        void SetMovementCallback (asIScriptFunction* callback) { m_ScriptMoveCallback = callback; }
+
         virtual std::string GetTypeName () override { return TypeName; }
 
     private:
         void ComputerTargetPos ();
         void ComputeMovePoints ();
         void ComputeMoveWander ();
+
+        void CallScriptMoveCallback (Point newPos);
 
     private:
         MovementType m_MoveType;
@@ -69,6 +73,8 @@ namespace aga
         float m_WaitLikelihood;
         float m_WaitTimeElapsed;
         float m_MaxWaitTime;
+
+        asIScriptFunction* m_ScriptMoveCallback;
     };
 }
 

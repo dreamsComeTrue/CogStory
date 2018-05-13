@@ -261,11 +261,11 @@ namespace aga
     {
         std::map<std::string, TriggerArea>& triggerAreas = m_SceneManager->GetActiveScene ()->GetTriggerAreas ();
 
-        for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)
-        {
-            TriggerArea& area = it->second;
+		for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)
+		{
+			TriggerArea& area = it->second; 
 
-            for (Polygon& polygon : area.Polygons)
+			for (Polygon& polygon : area.Polygons)
             {
                 if (area.OnEnterCallback || area.ScriptOnEnterCallback || area.OnLeaveCallback
                     || area.ScriptOnLeaveCallback)
