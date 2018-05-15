@@ -44,7 +44,7 @@ namespace aga
         Lifecycle::Initialize ();
 
         m_SelectSample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
-            "SELECT_MENU", GetResourcePath (SOUND_MENU_SELECT));
+            "SELECT_MENU", GetResource (SOUND_MENU_SELECT).Name);
 
         return true;
     }

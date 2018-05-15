@@ -40,7 +40,7 @@ namespace aga
         Lifecycle::Initialize ();
 
         m_SelectSample = m_MainLoop->GetSceneManager ().GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
-            "SELECT_MENU", GetResourcePath (SOUND_MENU_SELECT));
+            "SELECT_MENU", GetResource (SOUND_MENU_SELECT).Name);
 
         m_SelectItemAtlas = m_MainLoop->GetAtlasManager ().GetAtlas ("menu_ui");
 

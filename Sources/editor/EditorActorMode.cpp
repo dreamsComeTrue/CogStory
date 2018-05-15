@@ -52,9 +52,9 @@ namespace aga
             std::vector<ScriptMetaData> pendingScripts;
 
             if (actor && actor->GetTypeName () != actorType)
-            {
-                pendingScripts = actor->GetScripts ();
-                activeScene->RemoveActor (actor);
+			{
+				pendingScripts = actor->GetScripts ();
+				activeScene->RemoveActor (actor);
             }
 
             actor = ActorFactory::GetActor (&m_Editor->GetMainLoop ()->GetSceneManager (), actorType);
@@ -87,8 +87,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorActorMode::RemoveActor (const std::string& name)
-    {
+	void EditorActorMode::RemoveActor (const std::string& name)
+	{
         Scene* activeScene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
 
         activeScene->RemoveActor (name);

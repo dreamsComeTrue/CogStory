@@ -6,7 +6,10 @@
 #include "MainLoop.h"
 #include "SceneManager.h"
 #include "Screen.h"
+#include "AudioManager.h"
+#include "AudioSample.h"
 #include "actors/TileActor.h"
+#include "states/GamePlayState.h"
 #include "states/EditorState.h"
 
 #include "addons/triangulator/Triangulator.h"
@@ -80,6 +83,7 @@ namespace aga
         , m_CurrentActor (nullptr)
         , m_BackgroundColor (al_map_rgb (60, 60, 70))
         , m_ActorsTreeChanged (false)
+        , m_SceneAudioStream (nullptr)
     {
     }
 
@@ -114,6 +118,7 @@ namespace aga
     void Scene::BeforeEnter ()
     {
         SetBackgroundColor (m_BackgroundColor);
+        CleanUpSceneAudio ();
 
         m_VisibleEntities.clear ();
         m_VisibleLastCameraPos = Point::MIN_POINT;
@@ -122,7 +127,7 @@ namespace aga
         Player* player = m_SceneManager->GetPlayer ();
         Point newPosition;
 
-        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != EDITOR_STATE_NAME)
+        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () == GAMEPLAY_STATE_NAME)
         {
             player->BeforeEnter ();
 
@@ -137,41 +142,48 @@ namespace aga
         player->SetPosition (newPosition);
 
         ResetAllActorsPositions ();
-        RunAllScripts ("void BeforeEnterScene ()");
 
-        for (Actor* actor : m_Actors)
+        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () == GAMEPLAY_STATE_NAME)
         {
-            m_CurrentActor = actor;
-            actor->RunAllScripts ("void BeforeEnterScene ()");
+            RunAllScripts ("void BeforeEnterScene ()");
+
+            for (Actor* actor : m_Actors)
+            {
+                m_CurrentActor = actor;
+                actor->RunAllScripts ("void BeforeEnterScene ()");
+            }
         }
 
-        m_CurrentActor = nullptr;
+		m_CurrentActor = nullptr;
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void Scene::AfterLeave ()
     {
-        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != EDITOR_STATE_NAME)
+        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () == GAMEPLAY_STATE_NAME)
         {
             m_SceneManager->GetPlayer ()->AfterLeave ();
+
+            for (Actor* actor : m_Actors)
+            {
+                m_CurrentActor = actor;
+                actor->RunAllScripts ("void AfterLeaveScene ()");
+                actor->Bounds = actor->TemplateBounds;
+            }
+
+            m_CurrentActor = nullptr;
+
+            RunAllScripts ("void AfterLeaveScene ()");
         }
-
-        for (Actor* actor : m_Actors)
-        {
-            m_CurrentActor = actor;
-            actor->RunAllScripts ("void AfterLeaveScene ()");
-            actor->Bounds = actor->TemplateBounds;
-        }
-
-        m_CurrentActor = nullptr;
-
-        RunAllScripts ("void AfterLeaveScene ()");
 
         m_VisibleEntities.clear ();
         m_VisibleLastCameraPos = Point::MIN_POINT;
 
         CleanUpTriggerAreas ();
+//          CleanUpSceneAudio ();
+        if (GetSceneAudioStream ())
+        GetSceneAudioStream ()->SetFadeOut (3000.f);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -179,7 +191,7 @@ namespace aga
 
     void Scene::Update (float deltaTime)
     {
-        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () != EDITOR_STATE_NAME)
+        if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () == GAMEPLAY_STATE_NAME)
         {
             m_SceneManager->GetPlayer ()->Update (deltaTime);
             UpdateScripts (deltaTime);
@@ -845,6 +857,29 @@ namespace aga
         {
             m_ChoiceFunctions.insert (std::make_pair (name, func));
         }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+    
+    AudioSample* Scene::SetSceneAudioStream (const std::string& path)
+    {
+        CleanUpSceneAudio ();
+
+        AudioManager& audioManager = m_SceneManager->GetMainLoop ()->GetAudioManager ();
+        std::string sampleName = this->GetName () + "_SCENE_SAMPLE";
+        m_SceneAudioStream = audioManager.LoadSampleFromFile (sampleName, path);
+
+        return m_SceneAudioStream;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::CleanUpSceneAudio ()
+    {
+        AudioManager& audioManager = m_SceneManager->GetMainLoop ()->GetAudioManager ();
+        std::string sampleName = this->GetName () + "_SCENE_SAMPLE";
+
+        audioManager.RemoveSample (sampleName);
     }
 
     //--------------------------------------------------------------------------------------------------

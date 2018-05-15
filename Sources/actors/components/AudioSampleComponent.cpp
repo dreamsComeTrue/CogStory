@@ -25,6 +25,8 @@ namespace aga
 
     bool AudioSampleComponent::Update (float deltaTime)
     {
+        m_Sample->Update (deltaTime);
+
         return true;
     }
 

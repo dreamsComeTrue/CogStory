@@ -55,12 +55,15 @@ namespace aga
         void RegisterFlagPointAPI ();
         void RegisterPlayerAPI ();
         void RegisterScreenAPI ();
+        void RegisterAudioSampleAPI ();
+        void RegisterAudioManagerAPI ();
         void RegisterTriggerAreaAPI ();
         void RegisterSpeechFrameAPI ();
         void RegisterSpeechFrameManagerAPI ();
         void RegisterActorAPI ();
         void RegisterMovementComponentAPI ();
         void RegisterSceneManagerAPI ();
+        void RegisterSceneAPI ();
         void RegisterCameraAPI ();
         void RegisterGlobalAPI ();
 

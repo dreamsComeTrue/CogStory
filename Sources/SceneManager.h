@@ -72,6 +72,9 @@ namespace aga
         void SetDrawActorsNames (bool enable);
         bool IsDrawActorsNames ();
 
+        AudioSample* SetSceneAudioStream (const std::string& path);
+        AudioSample* GetSceneAudioStream ();
+
     private:
         void SceneIntro (float duration = 1000.f);
         void PrintCenterText (const std::string& text);

@@ -8,6 +8,7 @@ MovementComponent@ moveCP;
 
 Point lastPoint;
 Point screenSize = GetWindowSize ();
+AudioSample@ sample;
 
 void Start ()
 {
@@ -74,6 +75,11 @@ void BeforeEnterScene ()
                               };
     moveCP.SetWalkPoints (walkPoints);
     moveCP.SetMovementCallback (MoveCallback);
+
+    @sample = SetSceneAudioStream ("output.ogg");
+    sample.SetLooping (true);
+    sample.SetFadeIn (4000.f);
+    sample.Play ();
 }
 
 void MoveCallback (Point pos)

@@ -52,7 +52,7 @@ namespace aga
 
         m_FootStepComponent = (AudioSampleComponent*)ActorFactory::GetActorComponent (this, 
                                                      AudioSampleComponent::TypeName);
-        m_FootStepComponent->LoadSampleFromFile ("FOOT_STEP", GetResourcePath (SOUND_FOOT_STEP));
+        m_FootStepComponent->LoadSampleFromFile ("FOOT_STEP", GetResource (SOUND_FOOT_STEP).Name);
         m_FootStepComponent->GetAudioSample ()->SetVolume (2.0f);
 
         m_Components.insert (std::make_pair ("FOOT_STEP_COMPONENT", m_FootStepComponent));
