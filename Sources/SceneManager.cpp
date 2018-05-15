@@ -7,7 +7,7 @@
 #include "Scene.h"
 #include "SceneLoader.h"
 #include "Screen.h"
-#include "states/EditorState.h"
+#include "states/GamePlayState.h"
 
 #include <algorithm>
 
@@ -198,7 +198,7 @@ namespace aga
         {
             m_ActiveScene->Update (deltaTime);
 
-            if (m_MainLoop->GetStateManager ().GetActiveStateName () != EDITOR_STATE_NAME)
+            if (m_MainLoop->GetStateManager ().GetActiveStateName () == GAMEPLAY_STATE_NAME)
             {
                 m_SpeechFrameManager.Update (deltaTime);
             }
@@ -217,7 +217,7 @@ namespace aga
 
             m_Camera.UseIdentityTransform ();
 
-            if (m_MainLoop->GetStateManager ().GetActiveStateName () != EDITOR_STATE_NAME)
+            if (m_MainLoop->GetStateManager ().GetActiveStateName () == GAMEPLAY_STATE_NAME)
             {
                 m_SpeechFrameManager.Render (deltaTime);
             }
@@ -359,6 +359,30 @@ namespace aga
         if (m_ActiveScene)
         {
             return m_ActiveScene->GetCurrentlyProcessedActor ();
+        }
+
+        return nullptr;
+    }
+
+	//--------------------------------------------------------------------------------------------------
+
+	AudioSample* SceneManager::SetSceneAudioStream (const std::string& path) 
+    {
+        if (m_ActiveScene)
+        {
+            return m_ActiveScene->SetSceneAudioStream (path);
+        }
+
+        return nullptr;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    AudioSample* SceneManager::GetSceneAudioStream ()
+    {
+        if (m_ActiveScene)
+        {
+            return m_ActiveScene->GetSceneAudioStream ();
         }
 
         return nullptr;

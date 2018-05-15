@@ -20,14 +20,17 @@ namespace aga
 
         AudioSample* LoadSampleFromFile (const std::string& sampleName, const std::string& path);
         AudioSample* GetSample (const std::string& sampleName);
+        void RemoveSample (const std::string& sampleName);
 
-        MainLoop* GetMainLoop ();
+        MainLoop* GetMainLoop () { return m_MainLoop; }
 
-        void SetMasterVolume (float volume = 1.0f);
-        float GetMasterVolume () const;
+        void Update (float deltaTime);
 
-        void SetEnabled (bool enabled);
-        bool IsEnabled ();
+        void SetMasterVolume (float volume = 1.0f) { m_MasterVolume = volume; }
+        float GetMasterVolume () const { return m_MasterVolume; }
+
+        void SetEnabled (bool enabled) { m_Enabled = enabled; }
+        bool IsEnabled () { return m_Enabled; }
 
     private:
         MainLoop* m_MainLoop;

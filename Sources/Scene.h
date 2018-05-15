@@ -22,6 +22,7 @@ namespace aga
     class Triangulator;
     class SceneLoader;
     class TileActor;
+    class AudioSample;
 
     struct SpeechOutcome
     {
@@ -144,6 +145,9 @@ namespace aga
         void SetPlayerStartLocation (Point location) { m_PlayerStartLocation = location; }
         Point GetPlayerStartLocation () { return m_PlayerStartLocation; }
 
+        AudioSample* SetSceneAudioStream (const std::string& path);
+        AudioSample* GetSceneAudioStream () { return m_SceneAudioStream; }
+
         void ResetAllActorsPositions ();
 
         void DrawTriggerAreas ();
@@ -152,6 +156,7 @@ namespace aga
         static void UpdateMaxTileID (Scene* scene);
         void DrawQuadTree (QuadTreeNode* node);
         void CleanUpTriggerAreas ();
+        void CleanUpSceneAudio ();
 
     private:
         std::string m_Name;
@@ -175,6 +180,7 @@ namespace aga
         bool m_ActorsTreeChanged;
 
         Point m_PlayerStartLocation;
+        AudioSample* m_SceneAudioStream;
     };
 }
 

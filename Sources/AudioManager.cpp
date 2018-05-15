@@ -52,7 +52,8 @@ namespace aga
     {
         if (m_Samples.find (sampleName) == m_Samples.end ())
         {
-            AudioSample* sample = new AudioSample (this, sampleName, path);
+            std::string finalPath = GetDataPath () + "/sounds/" + path;
+            AudioSample* sample = new AudioSample (this, sampleName, finalPath);
             sample->Initialize ();
 
             m_Samples.insert (std::make_pair (sampleName, sample));
@@ -74,24 +75,29 @@ namespace aga
     }
 
     //--------------------------------------------------------------------------------------------------
+    
+    void AudioManager::RemoveSample (const std::string& sampleName)
+    {
+        std::map<std::string, AudioSample*>::iterator samplePos = m_Samples.find (sampleName);
 
-    MainLoop* AudioManager::GetMainLoop () { return m_MainLoop; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void AudioManager::SetMasterVolume (float volume) { m_MasterVolume = volume; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    float AudioManager::GetMasterVolume () const { return m_MasterVolume; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void AudioManager::SetEnabled (bool enabled) { m_Enabled = enabled; }
+        if (samplePos != m_Samples.end ())
+        {
+            SAFE_DELETE (samplePos->second);
+            m_Samples.erase (sampleName);
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
+    
+    void AudioManager::Update (float deltaTime)
+    {
+        for (std::map<std::string, AudioSample*>::iterator it = m_Samples.begin (); it != m_Samples.end ();
+             ++it)
+        {
+            it->second->Update (deltaTime);
+        }
 
-    bool AudioManager::IsEnabled () { return m_Enabled; }
+    }
 
     //--------------------------------------------------------------------------------------------------
 }

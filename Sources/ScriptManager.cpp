@@ -7,6 +7,8 @@
 #include "Screen.h"
 #include "Script.h"
 #include "SpeechFrame.h"
+#include "AudioSample.h"
+#include "AudioManager.h"
 #include "SpeechFrameManager.h"
 #include "actors/components/MovementComponent.h"
 
@@ -70,6 +72,19 @@ namespace aga
      *  Screen
      *      Screen screen
      *
+     *  AudioManager
+     *      AudioSample@ LoadSampleFromFile (const std::string& sampleName, const std::string& path);
+     *      AudioSample@ GetSample (const std::string& sampleName);
+     *      void RemoveSample (const std::string& sampleName);
+     *
+     *  AudioSample
+     *      void Play ()
+     *      void SetVolume (float volume)
+     *      void SetLooping (bool loop)
+     *      bool IsLooping () const
+     *      void SetFadeIn (float milliseconds)
+     *      void SetFadeOut (float milliseconds)
+     *
      *  TriggerArea
      *          = void TriggerFunc (Point)
      *      void AddOnEnterCallback (const string &in, TriggerFunc @+ tf)
@@ -121,9 +136,11 @@ namespace aga
      *      Actor@ GetActor (const string &in)
      *      string ChoiceFunction (void)
      *      void RegisterChoiceFunction (string, ChoiceFunction @+ func)
+     *      AudioSample@ SetSceneAudioStream (const string &in path)
+     *      AudioSample@ GetSceneAudioStream ()
      *
      *  Camera
-     *      Camer camera
+     *      Camera camera
      *      void SetTranslate (float dx, float dy)
      *      Point GetScale ()
      *      void SetCenter (float, float)
@@ -442,6 +459,12 @@ namespace aga
         //  Screen
         RegisterScreenAPI ();
 
+        //  Audio Sample
+        RegisterAudioSampleAPI ();
+
+        //  Audio Manager
+        RegisterAudioManagerAPI ();
+
         //  Trigger Area
         RegisterTriggerAreaAPI ();
 
@@ -459,6 +482,9 @@ namespace aga
 
         // Scene Manager
         RegisterSceneManagerAPI ();
+
+        // Scene 
+        RegisterSceneAPI ();
 
         //  Camera
         RegisterCameraAPI ();
@@ -635,6 +661,43 @@ namespace aga
         int r = m_ScriptEngine->RegisterObjectType ("Screen", sizeof (Screen), asOBJ_VALUE | asOBJ_POD);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalProperty ("Screen screen", m_MainLoop->GetScreen ());
+        assert (r >= 0);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+    
+    void ScriptManager::RegisterAudioSampleAPI ()
+    {
+        int r = m_ScriptEngine->RegisterObjectType ("AudioSample", 0, asOBJ_REF | asOBJ_NOCOUNT);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("AudioSample", "void Play ()", 
+                                                  asMETHOD (AudioSample, Play), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("AudioSample", "void SetVolume (float volume = 1.0f)", 
+                                                  asMETHOD (AudioSample, SetVolume), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("AudioSample", "void SetLooping (bool loop)", 
+                                                  asMETHOD (AudioSample, SetLooping), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("AudioSample", "bool IsLooping () const",
+                                                  asMETHOD (AudioSample, IsLooping), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("AudioSample", "void SetFadeIn (float milliseconds)", 
+                                                  asMETHOD (AudioSample, SetFadeIn), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("AudioSample", "void SetFadeOut (float milliseconds)", 
+                                                  asMETHOD (AudioSample, SetFadeOut), asCALL_THISCALL);
+        assert (r >= 0);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+    
+    void ScriptManager::RegisterAudioManagerAPI ()
+    {
+        int r = m_ScriptEngine->RegisterGlobalFunction (
+            "AudioSample@ LoadSampleFromFile (const string &in sampleName, const string &in path)",
+            asMETHOD (AudioManager, LoadSampleFromFile), asCALL_THISCALL_ASGLOBAL, 
+            &m_MainLoop->GetAudioManager ());
         assert (r >= 0);
     }
 
@@ -818,6 +881,20 @@ namespace aga
             asMETHOD (SceneManager, RegisterChoiceFunction), asCALL_THISCALL_ASGLOBAL, 
                 &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction (
+            "AudioSample@ SetSceneAudioStream (const string &in path)", asMETHOD (SceneManager, SetSceneAudioStream),
+            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction (
+            "AudioSample@ GetSceneAudioStream ()", asMETHOD (SceneManager, GetSceneAudioStream),
+            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+    
+    void ScriptManager::RegisterSceneAPI ()
+    {
     }
 
     //--------------------------------------------------------------------------------------------------
