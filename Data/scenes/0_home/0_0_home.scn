@@ -142,24 +142,6 @@
             "z-order": "0"
         },
         {
-            "atlas": "menu_ui",
-            "atlas-region": "cog",
-            "components": [],
-            "id": "33",
-            "name": "head1",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-103 140",
-            "rot": "0",
-            "scripts": [],
-            "size": "64 64",
-            "type": "NPC",
-            "z-order": "0"
-        },
-        {
             "atlas": "0_0_home",
             "atlas-region": "bed",
             "components": [],
@@ -178,8 +160,8 @@
             "z-order": "1"
         },
         {
-            "atlas": "menu_ui",
-            "atlas-region": "cog",
+            "atlas": "npc-1",
+            "atlas-region": "npc-1",
             "components": [],
             "id": "19",
             "name": "cog2",
@@ -212,6 +194,24 @@
             "size": "20 30",
             "type": "Tile",
             "z-order": "3"
+        },
+        {
+            "atlas": "npc-1",
+            "atlas-region": "npc-1",
+            "components": [],
+            "id": "33",
+            "name": "head1",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "-102 140",
+            "rot": "0",
+            "scripts": [],
+            "size": "64 64",
+            "type": "NPC",
+            "z-order": "11"
         }
     ],
     "color": "50 50 100 255",
@@ -296,7 +296,7 @@
     "trigger_areas": [
         {
             "name": "CITY_EXIT",
-            "poly": "37 132 38 181 208 179 209 238 242 239 238 131 "
+            "poly": "37 132 38 181 237.36 181.2 238 131 "
         },
         {
             "name": "TOP",

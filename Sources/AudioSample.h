@@ -19,15 +19,20 @@ namespace aga
         bool Destroy ();
 
         void Play ();
+        void Stop ();
+
+        void Pause ();
+        void Resume ();
+
         void SetVolume (float volume = 1.0f);
 
         void Update (float deltaTime);
 
-        void SetLooping (bool looping) { m_Looping = looping; }
+        void SetLooping (bool looping);
         bool IsLooping () const { return m_Looping; }
 
         void SetFadeIn (float milliSeconds);
-        void SetFadeOut (float milliSeconds);
+        void SetFadeOut (float milliSeconds, bool pauseOnFinish = true);
 
     private:
         void CleanUpInstances ();
@@ -44,6 +49,9 @@ namespace aga
 
         float m_FadeInCurrent, m_FadeInMax;
         float m_FadeOutCurrent, m_FadeOutMax;
+
+        unsigned m_CurrentPos;
+        bool m_PauseOnFinish;
     };
 }
 

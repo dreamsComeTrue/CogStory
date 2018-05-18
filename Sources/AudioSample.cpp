@@ -18,6 +18,8 @@ namespace aga
         , m_FadeInMax (-1.f)
         , m_FadeOutCurrent (-1.f)
         , m_FadeOutMax (-1.f)
+        , m_CurrentPos (0)
+        , m_PauseOnFinish (false)
     {
     }
 
@@ -49,6 +51,7 @@ namespace aga
         for (int i = 0; i < m_SampleInstances.size (); ++i)
         {
             al_destroy_sample_instance (m_SampleInstances[i]);
+            m_SampleInstances.erase (m_SampleInstances.begin () + i);
         }
 
         if (m_Sample)
@@ -87,6 +90,51 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void AudioSample::Stop ()
+    {
+        if (m_Sample && m_AudioManager->IsEnabled ())
+        {
+            CleanUpInstances ();
+
+            for (int i = 0; i < m_SampleInstances.size (); ++i)
+            {
+                al_stop_sample_instance (m_SampleInstances[i]);
+            }
+		}
+	}
+
+    //--------------------------------------------------------------------------------------------------
+
+    void AudioSample::Pause ()
+    {
+        m_CurrentPos = 0;
+
+        for (int i = 0; i < m_SampleInstances.size (); ++i)
+        {
+            unsigned pos = al_get_sample_instance_position (m_SampleInstances[i]);
+
+            if (pos > m_CurrentPos)
+            {
+                m_CurrentPos = pos;
+            }
+
+            al_set_sample_instance_playing (m_SampleInstances[i], false);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void AudioSample::Resume ()
+    {
+        for (int i = 0; i < m_SampleInstances.size (); ++i)
+        {
+            al_set_sample_instance_position (m_SampleInstances[i], m_CurrentPos);
+            al_set_sample_instance_playing (m_SampleInstances[i], true);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void AudioSample::Update (float deltaTime)
     {
         float gain = m_Gain;
@@ -98,7 +146,8 @@ namespace aga
             if (m_FadeInCurrent < m_FadeInMax)
             {
                 gain = m_FadeInCurrent / m_FadeInMax;
-            }
+				SetVolume (gain);
+			}
         }
 
         if (m_FadeOutMax > 0.f)
@@ -108,21 +157,41 @@ namespace aga
             if (m_FadeOutCurrent > 0)
             {
                 gain = m_FadeOutCurrent / m_FadeOutMax;
+                SetVolume (gain);
+            }
+            else
+            {
+                if (m_PauseOnFinish)
+                {
+                    Pause ();
+                    m_PauseOnFinish = false;
+                }
             }
         }
-
-        SetVolume (gain);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void AudioSample::SetVolume (float volume) 
-    { 
-        m_Gain = volume; 
+    void AudioSample::SetLooping (bool looping)
+    {
+        m_Looping = looping;
 
-        for (ALLEGRO_SAMPLE_INSTANCE* instance : m_SampleInstances)
+        for (int i = 0; i < m_SampleInstances.size (); ++i)
         {
-            al_set_sample_instance_gain (instance, m_Gain);
+            al_set_sample_instance_playmode (
+                m_SampleInstances[i], m_Looping ? ALLEGRO_PLAYMODE_LOOP : ALLEGRO_PLAYMODE_ONCE);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void AudioSample::SetVolume (float volume)
+    {
+        m_Gain = volume;
+
+        for (int i = 0; i < m_SampleInstances.size (); ++i)
+        {
+            al_set_sample_instance_gain (m_SampleInstances[i], m_Gain);
         }
     }
 
@@ -131,11 +200,9 @@ namespace aga
 	void AudioSample::CleanUpInstances ()
 	{
         for (int i = 0; i < m_SampleInstances.size (); ++i)
-        {
-            if (al_get_sample_instance_position (m_SampleInstances[i]) >= 
-                al_get_sample_instance_length (m_SampleInstances[i]))
+		{
+            if (!al_get_sample_instance_playing (m_SampleInstances[i]))
             {
-                al_detach_sample_instance (m_SampleInstances[i]);
                 al_destroy_sample_instance (m_SampleInstances[i]);
                 m_SampleInstances.erase (m_SampleInstances.begin () + i);
             }
@@ -155,13 +222,14 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void AudioSample::SetFadeOut (float milliSeconds)
+    void AudioSample::SetFadeOut (float milliSeconds, bool pauseOnFinish)
     {
         m_FadeOutMax = milliSeconds;
         m_FadeOutCurrent = milliSeconds;
         m_FadeInMax = -1.f;
         m_FadeInCurrent = -1.f;
         m_Gain = 1.f;
+        m_PauseOnFinish = pauseOnFinish;
     }
 
     //--------------------------------------------------------------------------------------------------

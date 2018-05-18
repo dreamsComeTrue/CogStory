@@ -3,14 +3,14 @@
 #include "Scene.h"
 #include "Atlas.h"
 #include "AtlasManager.h"
+#include "AudioManager.h"
+#include "AudioSample.h"
 #include "MainLoop.h"
 #include "SceneManager.h"
 #include "Screen.h"
-#include "AudioManager.h"
-#include "AudioSample.h"
 #include "actors/TileActor.h"
-#include "states/GamePlayState.h"
 #include "states/EditorState.h"
+#include "states/GamePlayState.h"
 
 #include "addons/triangulator/Triangulator.h"
 
@@ -79,7 +79,7 @@ namespace aga
     Scene::Scene (SceneManager* sceneManager)
         : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
         , m_SceneManager (sceneManager)
-        , m_QuadTree (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }))
+        , m_QuadTree (Rect ({-boundSize, -boundSize}, {boundSize, boundSize}))
         , m_CurrentActor (nullptr)
         , m_BackgroundColor (al_map_rgb (60, 60, 70))
         , m_ActorsTreeChanged (false)
@@ -105,6 +105,8 @@ namespace aga
 
     bool Scene::Destroy ()
     {
+        CleanUpSceneAudio ();
+
         for (int i = 0; i < m_Actors.size (); ++i)
         {
             SAFE_DELETE (m_Actors[i]);
@@ -118,7 +120,6 @@ namespace aga
     void Scene::BeforeEnter ()
     {
         SetBackgroundColor (m_BackgroundColor);
-        CleanUpSceneAudio ();
 
         m_VisibleEntities.clear ();
         m_VisibleLastCameraPos = Point::MIN_POINT;
@@ -132,7 +133,8 @@ namespace aga
             player->BeforeEnter ();
 
             Point playerHalfSize = player->Bounds.GetHalfSize ();
-            newPosition = { m_PlayerStartLocation.X - playerHalfSize.Width, m_PlayerStartLocation.Y - playerHalfSize.Height };
+            newPosition
+                = {m_PlayerStartLocation.X - playerHalfSize.Width, m_PlayerStartLocation.Y - playerHalfSize.Height};
         }
         else
         {
@@ -181,9 +183,6 @@ namespace aga
         m_VisibleLastCameraPos = Point::MIN_POINT;
 
         CleanUpTriggerAreas ();
-//          CleanUpSceneAudio ();
-        if (GetSceneAudioStream ())
-        GetSceneAudioStream ()->SetFadeOut (3000.f);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -284,8 +283,8 @@ namespace aga
         }
 
         Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
-        font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), 10, 10, ToString (m_VisibleEntities.size ()),
-                       ALLEGRO_ALIGN_LEFT);
+        font.DrawText (
+            FONT_NAME_SMALL, al_map_rgb (0, 255, 0), 10, 10, ToString (m_VisibleEntities.size ()), ALLEGRO_ALIGN_LEFT);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -300,8 +299,8 @@ namespace aga
             Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
 
             float visibleScale = 0.5f;
-            Point moveBy (screenSize.Width * visibleScale / cameraScale.X,
-                          screenSize.Height * visibleScale / cameraScale.Y);
+            Point moveBy (
+                screenSize.Width * visibleScale / cameraScale.X, screenSize.Height * visibleScale / cameraScale.Y);
             Rect targetRect = Rect (cameraCenter - moveBy, cameraCenter + moveBy);
 
             m_VisibleEntities = m_QuadTree.GetEntitiesWithinRect (targetRect);
@@ -474,7 +473,7 @@ namespace aga
     {
         if (m_TriggerAreas.find (name) == m_TriggerAreas.end ())
         {
-            TriggerArea area{ name, points };
+            TriggerArea area{name, points};
             area.UpdatePolygons (&m_SceneManager->GetMainLoop ()->GetPhysicsManager ().GetTriangulator ());
 
             m_TriggerAreas.insert (std::make_pair (name, area));
@@ -552,7 +551,7 @@ namespace aga
         m_FlagPoints.clear ();
         m_TriggerAreas.clear ();
 
-        m_QuadTree = QuadTreeNode (Rect ({ -boundSize, -boundSize }, { boundSize, boundSize }));
+        m_QuadTree = QuadTreeNode (Rect ({-boundSize, -boundSize}, {boundSize, boundSize}));
 
         Entity::GlobalID = 0;
     }
@@ -591,11 +590,11 @@ namespace aga
     {
         Rect bounds = node->GetBounds ();
         al_draw_rectangle (bounds.GetTopLeft ().X, bounds.GetTopLeft ().Y, bounds.GetBottomRight ().X,
-                           bounds.GetBottomRight ().Y, COLOR_WHITE, 1);
+            bounds.GetBottomRight ().Y, COLOR_WHITE, 1);
 
         Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
         font.DrawText (FONT_NAME_SMALL, al_map_rgb (255, 255, 0), bounds.GetCenter ().X, bounds.GetCenter ().Y,
-                       ToString (node->GetData ().size ()), ALLEGRO_ALIGN_CENTER);
+            ToString (node->GetData ().size ()), ALLEGRO_ALIGN_CENTER);
 
         if (node->GetTopLeftTree ())
         {
@@ -717,7 +716,7 @@ namespace aga
         float x2 = (b.GetPos ().X - translate.X * (1.0f / scale.X) + 2 * halfWidth) * (scale.X);
         float y2 = (b.GetPos ().Y - translate.Y * (1.0f / scale.Y) + 2 * halfHeight) * (scale.Y);
 
-        Point origin = { x1 + (x2 - x1) * 0.5f, y1 + (y2 - y1) * 0.5f };
+        Point origin = {x1 + (x2 - x1) * 0.5f, y1 + (y2 - y1) * 0.5f};
         Point pointA = RotatePoint (x1, y1, origin, entity->Rotation);
         Point pointB = RotatePoint (x1, y2, origin, entity->Rotation);
         Point pointC = RotatePoint (x2, y1, origin, entity->Rotation);
@@ -725,8 +724,8 @@ namespace aga
 
         if (drawOOBBox)
         {
-            float vertices[] = { pointA.X, pointA.Y, pointB.X, pointB.Y, pointD.X, pointD.Y, pointC.X, pointC.Y };
-            ALLEGRO_COLOR color = { 0.5f, 0.0f, 0.0f, 1.0f };
+            float vertices[] = {pointA.X, pointA.Y, pointB.X, pointB.Y, pointD.X, pointD.Y, pointC.X, pointC.Y};
+            ALLEGRO_COLOR color = {0.5f, 0.0f, 0.0f, 1.0f};
             al_draw_polygon (vertices, 4, ALLEGRO_LINE_JOIN_BEVEL, color, 2, 0);
         }
 
@@ -735,7 +734,7 @@ namespace aga
         float maxX = std::max (pointA.X, std::max (pointB.X, std::max (pointC.X, pointD.X)));
         float maxY = std::max (pointA.Y, std::max (pointB.Y, std::max (pointC.Y, pointD.Y)));
 
-        return { { minX, minY }, { maxX, maxY } };
+        return {{minX, minY}, {maxX, maxY}};
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -798,8 +797,8 @@ namespace aga
 
                 al_draw_polygon (out.data (), (int)it->second.Points.size (), 0, COLOR_LIGHTBLUE, 2, 0);
 
-                Point min{ std::numeric_limits<int>::max (), std::numeric_limits<int>::max () };
-                Point max{ std::numeric_limits<int>::min (), std::numeric_limits<int>::min () };
+                Point min{std::numeric_limits<int>::max (), std::numeric_limits<int>::max ()};
+                Point max{std::numeric_limits<int>::min (), std::numeric_limits<int>::min ()};
 
                 for (const Point& p : it->second.Points)
                 {
@@ -842,9 +841,9 @@ namespace aga
                     al_draw_filled_circle (xPoint, yPoint, 4, color);
                 }
 
-                m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
-                    FONT_NAME_SMALL, al_map_rgb (0, 255, 0), min.X + (max.X - min.X) * 0.5,
-                    min.Y + (max.Y - min.Y) * 0.5, ToString (it->second.Name), ALLEGRO_ALIGN_CENTER);
+                m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_SMALL,
+                    al_map_rgb (0, 255, 0), min.X + (max.X - min.X) * 0.5, min.Y + (max.Y - min.Y) * 0.5,
+                    ToString (it->second.Name), ALLEGRO_ALIGN_CENTER);
             }
         }
     }
@@ -860,7 +859,7 @@ namespace aga
     }
 
     //--------------------------------------------------------------------------------------------------
-    
+
     AudioSample* Scene::SetSceneAudioStream (const std::string& path)
     {
         CleanUpSceneAudio ();

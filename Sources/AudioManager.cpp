@@ -75,7 +75,7 @@ namespace aga
     }
 
     //--------------------------------------------------------------------------------------------------
-    
+
     void AudioManager::RemoveSample (const std::string& sampleName)
     {
         std::map<std::string, AudioSample*>::iterator samplePos = m_Samples.find (sampleName);
@@ -88,15 +88,13 @@ namespace aga
     }
 
     //--------------------------------------------------------------------------------------------------
-    
+
     void AudioManager::Update (float deltaTime)
     {
-        for (std::map<std::string, AudioSample*>::iterator it = m_Samples.begin (); it != m_Samples.end ();
-             ++it)
+        for (std::map<std::string, AudioSample*>::iterator it = m_Samples.begin (); it != m_Samples.end (); ++it)
         {
             it->second->Update (deltaTime);
         }
-
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -1,13 +1,13 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 #include "Player.h"
 #include "ActorFactory.h"
+#include "AudioSample.h"
 #include "MainLoop.h"
 #include "PhysicsManager.h"
 #include "Scene.h"
 #include "SceneManager.h"
 #include "Screen.h"
 #include "actors/NPCActor.h"
-#include "AudioSample.h"
 #include "actors/components/AudioSampleComponent.h"
 #include "actors/components/ParticleEmitterComponent.h"
 
@@ -46,29 +46,26 @@ namespace aga
         UpdateParticleEmitters ();
 
         Animable::Initialize ("player", "");
-        Bounds.SetSize ({ 64, 64 });
+        Bounds.SetSize ({64, 64});
 
         InitializeAnimations ();
 
-        m_FootStepComponent = (AudioSampleComponent*)ActorFactory::GetActorComponent (this, 
-                                                     AudioSampleComponent::TypeName);
+        m_FootStepComponent
+            = (AudioSampleComponent*)ActorFactory::GetActorComponent (this, AudioSampleComponent::TypeName);
         m_FootStepComponent->LoadSampleFromFile ("FOOT_STEP", GetResource (SOUND_FOOT_STEP).Name);
         m_FootStepComponent->GetAudioSample ()->SetVolume (2.0f);
 
         m_Components.insert (std::make_pair ("FOOT_STEP_COMPONENT", m_FootStepComponent));
 
         PhysPoints.clear ();
-        PhysPoints.push_back ({ { 20, 30 }, { 25, 20 }, { 39, 20 }, { 44, 30 }, { 44, 64 }, { 20, 64 } });
+        PhysPoints.push_back ({{20, 30}, {25, 20}, {39, 20}, {44, 30}, {44, 64}, {20, 64}});
 
         return true;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Player::Destroy ()
-    {
-        return Actor::Destroy ();
-    }
+    bool Player::Destroy () { return Actor::Destroy (); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -93,8 +90,8 @@ namespace aga
 
     void Player::CreateParticleEmitters ()
     {
-        m_HeadParticleComponent = (ParticleEmitterComponent*)ActorFactory::GetActorComponent (this, 
-                                                     ParticleEmitterComponent::TypeName);
+        m_HeadParticleComponent
+            = (ParticleEmitterComponent*)ActorFactory::GetActorComponent (this, ParticleEmitterComponent::TypeName);
 
         m_HeadParticleComponent->CreateEmitter ("particles", "smog_particles", 3, 2.0f);
         m_HeadParticleComponent->GetEmitter ()->SetColorTransition (COLOR_WHITE, al_map_rgba (255, 255, 255, 0));
@@ -106,8 +103,8 @@ namespace aga
 
         m_Components.insert (std::make_pair ("HEAD_PARTICLE_COMPONENT", m_HeadParticleComponent));
 
-        m_FootParticleComponent = (ParticleEmitterComponent*)ActorFactory::GetActorComponent (this, 
-                                                     ParticleEmitterComponent::TypeName);
+        m_FootParticleComponent
+            = (ParticleEmitterComponent*)ActorFactory::GetActorComponent (this, ParticleEmitterComponent::TypeName);
 
         m_FootParticleComponent->CreateEmitter ("particles", "dust_particles", 2, 0.7f);
         m_FootParticleComponent->GetEmitter ()->SetColorTransition (COLOR_WHITE, al_map_rgba (255, 255, 255, 0));
@@ -124,10 +121,10 @@ namespace aga
 
     void Player::UpdateParticleEmitters ()
     {
-        m_HeadParticleComponent->GetEmitter ()->SetPosition (Bounds.Pos.X + Bounds.GetHalfSize ().Width + 5, 
-                                                             Bounds.Pos.Y - 5);
-        m_FootParticleComponent->GetEmitter ()->SetPosition (Bounds.Pos.X + Bounds.GetHalfSize ().Width,
-                                            Bounds.Pos.Y + Bounds.GetSize ().Height);
+        m_HeadParticleComponent->GetEmitter ()->SetPosition (
+            Bounds.Pos.X + Bounds.GetHalfSize ().Width + 5, Bounds.Pos.Y - 5);
+        m_FootParticleComponent->GetEmitter ()->SetPosition (
+            Bounds.Pos.X + Bounds.GetHalfSize ().Width, Bounds.Pos.Y + Bounds.GetSize ().Height);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -261,7 +258,7 @@ namespace aga
 
         if (sampleCounter > 0.28f)
         {
-            m_FootStepComponent->GetAudioSample ()->Play ();
+            //            m_FootStepComponent->GetAudioSample ()->Play ();
 
             sampleCounter = 0;
         }

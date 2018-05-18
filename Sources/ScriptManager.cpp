@@ -79,11 +79,14 @@ namespace aga
      *
      *  AudioSample
      *      void Play ()
+     *      void Stop ()
+     *      void Pause ()
+     *      void Resume ()
      *      void SetVolume (float volume)
      *      void SetLooping (bool loop)
      *      bool IsLooping () const
      *      void SetFadeIn (float milliseconds)
-     *      void SetFadeOut (float milliseconds)
+     *      void SetFadeOut (float milliseconds, bool pauseOnFinish)
      *
      *  TriggerArea
      *          = void TriggerFunc (Point)
@@ -670,8 +673,17 @@ namespace aga
     {
         int r = m_ScriptEngine->RegisterObjectType ("AudioSample", 0, asOBJ_REF | asOBJ_NOCOUNT);
         assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("AudioSample", "void Stop ()", 
+                                                  asMETHOD (AudioSample, Stop), asCALL_THISCALL);
+        assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("AudioSample", "void Play ()", 
                                                   asMETHOD (AudioSample, Play), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("AudioSample", "void Pause ()", 
+                                                  asMETHOD (AudioSample, Pause), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("AudioSample", "void Resume ()", 
+                                                  asMETHOD (AudioSample, Resume), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("AudioSample", "void SetVolume (float volume = 1.0f)", 
                                                   asMETHOD (AudioSample, SetVolume), asCALL_THISCALL);
@@ -685,8 +697,9 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod ("AudioSample", "void SetFadeIn (float milliseconds)", 
                                                   asMETHOD (AudioSample, SetFadeIn), asCALL_THISCALL);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("AudioSample", "void SetFadeOut (float milliseconds)", 
-                                                  asMETHOD (AudioSample, SetFadeOut), asCALL_THISCALL);
+        r = m_ScriptEngine->RegisterObjectMethod ("AudioSample", "void SetFadeOut (float milliseconds,"
+                                                  "bool pauseOnFinish = true)", asMETHOD (AudioSample, SetFadeOut), 
+                                                   asCALL_THISCALL);
         assert (r >= 0);
     }
 

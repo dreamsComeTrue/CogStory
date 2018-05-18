@@ -8,7 +8,7 @@ MovementComponent@ moveCP;
 
 Point lastPoint;
 Point screenSize = GetWindowSize ();
-AudioSample@ sample;
+AudioSample@ sceneMusic = null;
 
 void Start ()
 {
@@ -76,10 +76,18 @@ void BeforeEnterScene ()
     moveCP.SetWalkPoints (walkPoints);
     moveCP.SetMovementCallback (MoveCallback);
 
-    @sample = SetSceneAudioStream ("output.ogg");
-    sample.SetLooping (true);
-    sample.SetFadeIn (4000.f);
-    sample.Play ();
+    if (sceneMusic is null)
+    {
+        @sceneMusic = SetSceneAudioStream ("output.ogg");
+        sceneMusic.SetLooping (true);
+        sceneMusic.Play ();
+    }
+    else
+    {
+        sceneMusic.Resume ();
+    }
+
+    sceneMusic.SetFadeIn (2000.f);
 }
 
 void MoveCallback (Point pos)
@@ -98,6 +106,11 @@ void AfterCameraTween1 (int tweenID)
 
 void AfterLeaveScene ()
 {
+    if (sceneMusic !is null)
+    {
+        sceneMusic.SetFadeOut (2000.f, true);
+    }
+
 	RemoveOnEnterCallback ("TOP");
 	RemoveOnEnterCallback ("CITY_EXIT");
 
