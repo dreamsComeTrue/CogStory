@@ -20,7 +20,7 @@ namespace aga
             Point p2;
             Edges.clear ();
 
-            for (int i = 0; i < Points.size (); i++)
+            for (size_t i = 0; i < Points.size (); i++)
             {
                 p1 = Points[i];
 
@@ -42,7 +42,7 @@ namespace aga
             float totalX = 0;
             float totalY = 0;
 
-            for (int i = 0; i < Points.size (); i++)
+            for (size_t i = 0; i < Points.size (); i++)
             {
                 totalX += Points[i].X;
                 totalY += Points[i].Y;
@@ -55,7 +55,7 @@ namespace aga
 
         void Offset (float x, float y)
         {
-            for (int i = 0; i < Points.size (); i++)
+            for (size_t i = 0; i < Points.size (); i++)
             {
                 Point& p = Points[i];
                 p.X += x;

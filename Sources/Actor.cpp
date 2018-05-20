@@ -1,12 +1,12 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 #include "Actor.h"
+#include "Component.h"
 #include "Font.h"
 #include "MainLoop.h"
 #include "Scene.h"
 #include "SceneManager.h"
 #include "Screen.h"
 #include "Script.h"
-#include "Component.h"
 #include "actors/components/MovementComponent.h"
 
 namespace aga
@@ -34,10 +34,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Actor::Initialize ()
-    {
-        return Lifecycle::Initialize ();
-    }
+    bool Actor::Initialize () { return Lifecycle::Initialize (); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -49,15 +46,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Actor::Destroy () 
-    { 
+    bool Actor::Destroy ()
+    {
         for (std::map<std::string, Component*>::iterator it = m_Components.begin (); it != m_Components.end ();)
         {
             SAFE_DELETE (it->second);
             m_Components.erase (it++);
         }
 
-        return Lifecycle::Destroy (); 
+        return Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -105,7 +102,8 @@ namespace aga
 
         if (!m_Components.empty ())
         {
-            for (std::map<std::string, Component*>::iterator it = m_Components.begin (); it != m_Components.end (); ++it)
+            for (std::map<std::string, Component*>::iterator it = m_Components.begin (); it != m_Components.end ();
+                 ++it)
             {
                 it->second->Update (deltaTime);
             }
@@ -116,13 +114,14 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Actor::Render (float deltaTime) 
-    { 
-        Animable::Render (this); 
+    void Actor::Render (float deltaTime)
+    {
+        Animable::Render (this);
 
         if (!m_Components.empty ())
         {
-            for (std::map<std::string, Component*>::iterator it = m_Components.begin (); it != m_Components.end (); ++it)
+            for (std::map<std::string, Component*>::iterator it = m_Components.begin (); it != m_Components.end ();
+                 ++it)
             {
                 it->second->Render (deltaTime);
             }
@@ -169,7 +168,7 @@ namespace aga
             }
         }
     }
-    
+
     //--------------------------------------------------------------------------------------------------
 
     Component* Actor::FindComponent (const std::string& name, const std::string& typeName)
@@ -184,14 +183,14 @@ namespace aga
 
         return nullptr;
     }
-    
+
     //--------------------------------------------------------------------------------------------------
 
     MovementComponent* Actor::GetMovementComponent (const std::string& name)
     {
-        return static_cast<MovementComponent*>(FindComponent (name, MovementComponent::TypeName));
+        return static_cast<MovementComponent*> (FindComponent (name, MovementComponent::TypeName));
     }
-    
+
     //--------------------------------------------------------------------------------------------------
 
     void Actor::DrawBounds ()
@@ -199,7 +198,7 @@ namespace aga
         if (m_SceneManager->IsDrawBoundingBox ())
         {
             al_draw_rectangle (Bounds.GetTopLeft ().X, Bounds.GetTopLeft ().Y, Bounds.GetBottomRight ().X,
-                               Bounds.GetBottomRight ().Y, COLOR_YELLOW, 2);
+                Bounds.GetBottomRight ().Y, COLOR_YELLOW, 2);
         }
     }
 
@@ -208,7 +207,7 @@ namespace aga
     void Actor::DrawName ()
     {
         Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
-        Point pos = { Bounds.GetCenter ().X, Bounds.GetBottomRight ().Y };
+        Point pos = {Bounds.GetCenter ().X, Bounds.GetBottomRight ().Y};
         std::string str = Name + "[" + ToString (ID) + "]";
         font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), pos.X, pos.Y, str, ALLEGRO_ALIGN_CENTER);
     }
@@ -225,22 +224,19 @@ namespace aga
             MoveCallback (dx, dy);
         }
 
-        AddPhysOffset ({ dx, dy });
+        AddPhysOffset ({dx, dy});
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Actor::Move (Point deltaMove)
-    {
-        Actor::Move (deltaMove.X, deltaMove.Y);
-    }
+    void Actor::Move (Point deltaMove) { Actor::Move (deltaMove.X, deltaMove.Y); }
 
     //--------------------------------------------------------------------------------------------------
 
     void Actor::SetPosition (float x, float y)
     {
         m_OldPosition = Bounds.GetPos ();
-        Bounds.SetPos ({ x, y });
+        Bounds.SetPos ({x, y});
 
         FireMoveCallback ();
 
@@ -263,15 +259,16 @@ namespace aga
 
 		for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)
 		{
-			TriggerArea& area = it->second; 
+            TriggerArea& area = it->second;
 
 			for (Polygon& polygon : area.Polygons)
             {
-                if (area.OnEnterCallback || area.ScriptOnEnterCallback || area.OnLeaveCallback
-                    || area.ScriptOnLeaveCallback)
+                if (GetPhysPolygonsCount () > 0
+                    && (area.OnEnterCallback || area.ScriptOnEnterCallback || area.OnLeaveCallback
+                           || area.ScriptOnLeaveCallback))
                 {
                     PolygonCollisionResult r = m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (
-                        GetPhysPolygon (0), polygon, { dx, dy });
+                        GetPhysPolygon (0), polygon, {dx, dy});
 
                     if (r.WillIntersect || r.Intersect)
                     {
@@ -279,8 +276,8 @@ namespace aga
                         {
                             if (area.OnEnterCallback)
                             {
-                                area.OnEnterCallback (dx + r.MinimumTranslationVector.X,
-                                                      dy + r.MinimumTranslationVector.Y);
+                                area.OnEnterCallback (
+                                    dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y);
                             }
 
                             if (area.ScriptOnEnterCallback)
@@ -293,7 +290,7 @@ namespace aga
                                 if (script)
                                 {
                                     Point point
-                                        = { dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y };
+                                        = {dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y};
                                     script->Run (area.ScriptOnEnterCallback->GetDeclaration (), &point);
                                 }
                             }
@@ -318,7 +315,7 @@ namespace aga
 
                             if (script)
                             {
-                                Point point = { dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y };
+                                Point point = {dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y};
                                 script->Run (area.ScriptOnLeaveCallback->GetDeclaration (), &point);
                             }
                         }

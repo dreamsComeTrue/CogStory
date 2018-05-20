@@ -20,18 +20,14 @@ namespace aga
 
     void Collidable::AddPhysOffset (const Point& offset)
     {
-        m_Offset.X += offset.X;
-        m_Offset.Y += offset.Y;
-
-        UpdatePhysPolygon ();
+        SetPhysOffset (m_Offset.X + offset.X, m_Offset.Y + offset.Y);
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void Collidable::SetPhysOffset (const Point& offset)
     {
-        m_Offset = offset;
-        UpdatePhysPolygon ();
+        SetPhysOffset (offset.X, offset.Y);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -46,21 +42,36 @@ namespace aga
 
     void Collidable::DrawPhysBody ()
     {
-        for (int i = 0; i < PhysPoints.size (); ++i)
+        for (int i = 0; i < m_PhysPolygons.size (); ++i)
         {
             std::vector<float> out;
 
-            for (int j = 0; j < PhysPoints[i].size (); ++j)
+            for (int j = 0; j < m_PhysPolygons[i].Points.size (); ++j)
             {
-                float xPoint = m_Offset.X + PhysPoints[i][j].X;
-                float yPoint = m_Offset.Y + PhysPoints[i][j].Y;
+                float xPoint = m_PhysPolygons[i].Points[j].X;
+                float yPoint = m_PhysPolygons[i].Points[j].Y;
 
                 out.push_back (xPoint);
                 out.push_back (yPoint);
             }
 
-            al_draw_polygon (out.data (), (int)PhysPoints[i].size (), 0, COLOR_GREEN, 1, 0);
+            al_draw_polygon (out.data (), (int)out.size () / 2, 0, COLOR_GREEN, 1, 0);
         }
+        //for (int i = 0; i < PhysPoints.size (); ++i)
+        //{
+            //std::vector<float> out;
+
+            //for (int j = 0; j < PhysPoints[i].size (); ++j)
+            //{
+                //float xPoint = m_Offset.X + PhysPoints[i][j].X;
+                //float yPoint = m_Offset.Y + PhysPoints[i][j].Y;
+
+                //out.push_back (xPoint);
+                //out.push_back (yPoint);
+            //}
+
+            //al_draw_polygon (out.data (), out.size () / 2, 0, COLOR_GREEN, 1, 0);
+        //}
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -80,7 +91,6 @@ namespace aga
         int counter = 0;
         for (int i = 0; i < PhysPoints.size (); ++i)
         {
-            std::vector<std::vector<Point>> result;
             std::vector<Point> pointsCopy = PhysPoints[i];
 
             int validate = m_PhysicsManager->GetTriangulator ().Validate (pointsCopy);
@@ -92,14 +102,17 @@ namespace aga
 
             if (m_PhysicsManager->GetTriangulator ().Validate (pointsCopy) == 0)
             {
+                std::vector<std::vector<Point>> result;
                 m_PhysicsManager->GetTriangulator ().ProcessVertices (&pointsCopy, result);
 
                 for (int j = 0; j < result.size (); ++j)
                 {
-                    m_PhysPolygons.push_back (Polygon ());
-                    m_PhysPolygons[counter].Points = result[j];
-                    m_PhysPolygons[counter].Offset (m_Offset);
-                    m_PhysPolygons[counter].BuildEdges ();
+                    Polygon poly = Polygon ();
+                    poly.Points = result[j];
+                    poly.Offset (m_Offset);
+                    poly.BuildEdges ();
+
+                    m_PhysPolygons.push_back (poly);
 
                     ++counter;
                 }
@@ -119,9 +132,9 @@ namespace aga
 
     void Collidable::BuildEdges ()
     {
-        for (int i = 0; i < m_PhysPolygons.size (); ++i)
+        for (Polygon& poly : m_PhysPolygons)
         {
-            m_PhysPolygons[i].BuildEdges ();
+            poly.BuildEdges ();
         }
     }
 
@@ -131,6 +144,8 @@ namespace aga
     {
         if (m_CollisionEnabled && !PhysPoints.empty () && !other->PhysPoints.empty ())
         {
+            Point combinedOffset = Point::ZERO_POINT;
+
             for (int i = 0; i < GetPhysPolygonsCount (); ++i)
             {
                 Polygon& myPolygon = GetPhysPolygon (i);
@@ -157,7 +172,7 @@ namespace aga
 
                             if (r.WillIntersect)
                             {
-                                offset = r.MinimumTranslationVector;
+                                combinedOffset += r.MinimumTranslationVector;
 
                                 if (!found)
                                 {
@@ -165,8 +180,6 @@ namespace aga
 
                                     CollisionEvent (other);
                                 }
-
-                                return true;
                             }
                             else
                             {
@@ -183,6 +196,13 @@ namespace aga
                         }
                     }
                 }
+            }
+
+            if (combinedOffset != Point::ZERO_POINT)
+            {
+                offset = combinedOffset;
+
+                return true;
             }
         }
 

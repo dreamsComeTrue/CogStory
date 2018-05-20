@@ -45,7 +45,6 @@ namespace aga
         {
             Polygons.clear ();
 
-            int counter = 0;
             std::vector<std::vector<Point>> result;
             std::vector<Point> pointsCopy = Points;
 
@@ -62,11 +61,11 @@ namespace aga
 
                 for (int j = 0; j < result.size (); ++j)
                 {
-                    Polygons.push_back (Polygon ());
-                    Polygons[counter].Points = result[j];
-                    Polygons[counter].BuildEdges ();
+                    Polygon poly = Polygon ();
+                    poly.Points = result[j];
+                    poly.BuildEdges ();
 
-                    ++counter;
+                    Polygons.push_back (poly);
                 }
             }
         }

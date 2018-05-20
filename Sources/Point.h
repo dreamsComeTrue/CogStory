@@ -65,6 +65,10 @@ namespace aga
 
         Point operator- (const Point& rhs) { return Point (X - rhs.X, Y - rhs.Y); }
 
+        bool operator< (const Point& rhs) { return X < rhs.X || Y < rhs.Y; }
+
+        bool operator> (const Point& rhs) { return X > rhs.X || Y > rhs.Y; }
+
         Point operator- () { return { -X, -Y }; }
 
         Point operator* (float b) { return { X * b, Y * b }; }
@@ -96,6 +100,7 @@ namespace aga
         }
 
         static Point MIN_POINT;
+        static Point MAX_POINT;
         static Point ZERO_POINT;
     };
 }

@@ -188,6 +188,13 @@ namespace aga
 
         ProcessTriggerAreas (dx, dy);
 
+        if (al_key_down (&state, ALLEGRO_KEY_LSHIFT))
+        {
+            float multiplier = 3;
+            dx *= multiplier;
+            dy *= multiplier;
+        }
+
         std::vector<Entity*> entites = m_SceneManager->GetActiveScene ()->RecomputeVisibleEntities (true);
         for (Entity* ent : entites)
         {
@@ -203,15 +210,7 @@ namespace aga
 
         if (!((AreSame (dx, 0) && AreSame (dy, 0))))
         {
-            if (al_key_down (&state, ALLEGRO_KEY_LSHIFT))
-            {
-                float multiplier = 3;
-                Move (dx * multiplier, dy * multiplier);
-            }
-            else
-            {
-                Move (dx, dy);
-            }
+            Move (dx, dy);
         }
     }
 
@@ -258,7 +257,7 @@ namespace aga
 
         if (sampleCounter > 0.28f)
         {
-            //            m_FootStepComponent->GetAudioSample ()->Play ();
+            m_FootStepComponent->GetAudioSample ()->Play ();
 
             sampleCounter = 0;
         }
