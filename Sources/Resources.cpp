@@ -14,6 +14,7 @@ namespace aga
     std::string GFX_EFFECTS = "gfx/effects";
 
     std::string GFX_0_HOME = "gfx/scenes/0_home";
+    std::string GFX_1_FACTORY = "gfx/scenes/1_factory";
 
     std::string FONTS = "fonts";
     std::string SCENES_HOME = "scenes/0_home";
@@ -31,6 +32,7 @@ namespace aga
         { PACK_PARTICLES, GFX_EFFECTS, "particles.pack" },
         { PACK_NPC_1, GFX_NPC, "npc-1.pack" },
         { PACK_0_0_HOME, GFX_0_HOME, "0_0_home.pack" },
+        { PACK_1_0_FACTORY, GFX_1_FACTORY, "1_0_factory.pack" },
 
         //  Fonts
         { FONT_SMALL, FONTS, "coders_crux.ttf" }, 
@@ -87,7 +89,9 @@ namespace aga
                  PACK_PLAYER, 
                  PACK_NPC_1,
                  PACK_PARTICLES, 
-                 PACK_0_0_HOME };
+                 PACK_0_0_HOME,
+                 PACK_1_0_FACTORY
+               };
     }
 
     //--------------------------------------------------------------------------------------------------

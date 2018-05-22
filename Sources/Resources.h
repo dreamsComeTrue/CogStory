@@ -30,6 +30,7 @@ namespace aga
         PACK_PARTICLES,
         PACK_NPC_1,
         PACK_0_0_HOME,
+        PACK_1_0_FACTORY,
 
         //  Fonts
         FONT_SMALL,

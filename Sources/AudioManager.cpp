@@ -91,9 +91,27 @@ namespace aga
 
     void AudioManager::Update (float deltaTime)
     {
-        for (std::map<std::string, AudioSample*>::iterator it = m_Samples.begin (); it != m_Samples.end (); ++it)
+        if (m_Enabled)
         {
-            it->second->Update (deltaTime);
+            for (std::map<std::string, AudioSample*>::iterator it = m_Samples.begin (); it != m_Samples.end (); ++it)
+            {
+                it->second->Update (deltaTime);
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+    
+    void AudioManager::SetEnabled (bool enabled) 
+    {
+        m_Enabled = enabled; 
+
+        if (!enabled)
+        {
+            for (std::map<std::string, AudioSample*>::iterator it = m_Samples.begin (); it != m_Samples.end (); ++it)
+            {
+                it->second->Stop ();
+            }
         }
     }
 

@@ -88,6 +88,8 @@ void BeforeEnterScene ()
     }
 
     sceneMusic.SetFadeIn (2000.f);
+
+    audioManager.SetEnabled (false);
 }
 
 void MoveCallback (Point pos)
@@ -138,7 +140,8 @@ void OnCityExitEnter (Point p)
 {
 //	Color color = COLOR_BLACK;
 //	SceneFadeInOut (400, 400, color);
-	SetActiveScene ("2_city/2_0_city.scn", true);
+	//SetActiveScene ("2_city/2_0_city.scn", true);
+	SetActiveScene ("1_factory/1_0_factory.scn", true);
 }
 
 bool PlayerTween (int id, float progress, Point value)

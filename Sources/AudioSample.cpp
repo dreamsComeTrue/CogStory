@@ -92,13 +92,16 @@ namespace aga
 
     void AudioSample::Stop ()
     {
-        if (m_Sample && m_AudioManager->IsEnabled ())
+        if (m_Sample)
         {
             CleanUpInstances ();
 
-            for (int i = 0; i < m_SampleInstances.size (); ++i)
+            for (ALLEGRO_SAMPLE_INSTANCE* instance : m_SampleInstances)
             {
-                al_stop_sample_instance (m_SampleInstances[i]);
+                if (al_get_sample_instance_playing (instance))
+                {
+                    al_stop_sample_instance (instance);
+                }
             }
 		}
 	}
@@ -107,18 +110,21 @@ namespace aga
 
     void AudioSample::Pause ()
     {
-        m_CurrentPos = 0;
-
-        for (int i = 0; i < m_SampleInstances.size (); ++i)
+        if (m_AudioManager->IsEnabled ())
         {
-            unsigned pos = al_get_sample_instance_position (m_SampleInstances[i]);
+            m_CurrentPos = 0;
 
-            if (pos > m_CurrentPos)
+            for (int i = 0; i < m_SampleInstances.size (); ++i)
             {
-                m_CurrentPos = pos;
-            }
+                unsigned pos = al_get_sample_instance_position (m_SampleInstances[i]);
 
-            al_set_sample_instance_playing (m_SampleInstances[i], false);
+                if (pos > m_CurrentPos)
+                {
+                    m_CurrentPos = pos;
+                }
+
+                al_set_sample_instance_playing (m_SampleInstances[i], false);
+            }
         }
     }
 
@@ -126,10 +132,13 @@ namespace aga
 
     void AudioSample::Resume ()
     {
-        for (int i = 0; i < m_SampleInstances.size (); ++i)
+        if (m_AudioManager->IsEnabled ())
         {
-            al_set_sample_instance_position (m_SampleInstances[i], m_CurrentPos);
-            al_set_sample_instance_playing (m_SampleInstances[i], true);
+            for (int i = 0; i < m_SampleInstances.size (); ++i)
+            {
+                al_set_sample_instance_position (m_SampleInstances[i], m_CurrentPos);
+                al_set_sample_instance_playing (m_SampleInstances[i], true);
+            }
         }
     }
 
@@ -137,6 +146,11 @@ namespace aga
 
     void AudioSample::Update (float deltaTime)
     {
+        if (!m_AudioManager->IsEnabled ())
+        {
+            return;
+        }
+
         float gain = m_Gain;
 
         if (m_FadeInMax > 0.f)
@@ -174,12 +188,15 @@ namespace aga
 
     void AudioSample::SetLooping (bool looping)
     {
-        m_Looping = looping;
-
-        for (int i = 0; i < m_SampleInstances.size (); ++i)
+        if (m_AudioManager->IsEnabled ())
         {
-            al_set_sample_instance_playmode (
-                m_SampleInstances[i], m_Looping ? ALLEGRO_PLAYMODE_LOOP : ALLEGRO_PLAYMODE_ONCE);
+            m_Looping = looping;
+
+            for (int i = 0; i < m_SampleInstances.size (); ++i)
+            {
+                al_set_sample_instance_playmode (
+                        m_SampleInstances[i], m_Looping ? ALLEGRO_PLAYMODE_LOOP : ALLEGRO_PLAYMODE_ONCE);
+            }
         }
     }
 
@@ -187,11 +204,14 @@ namespace aga
 
     void AudioSample::SetVolume (float volume)
     {
-        m_Gain = volume;
-
-        for (int i = 0; i < m_SampleInstances.size (); ++i)
+        if (m_AudioManager->IsEnabled ())
         {
-            al_set_sample_instance_gain (m_SampleInstances[i], m_Gain);
+            m_Gain = volume;
+
+            for (int i = 0; i < m_SampleInstances.size (); ++i)
+            {
+                al_set_sample_instance_gain (m_SampleInstances[i], m_Gain);
+            }
         }
     }
 

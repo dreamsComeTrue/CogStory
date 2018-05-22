@@ -29,7 +29,7 @@ namespace aga
         void SetMasterVolume (float volume = 1.0f) { m_MasterVolume = volume; }
         float GetMasterVolume () const { return m_MasterVolume; }
 
-        void SetEnabled (bool enabled) { m_Enabled = enabled; }
+        void SetEnabled (bool enabled);
         bool IsEnabled () { return m_Enabled; }
 
     private:

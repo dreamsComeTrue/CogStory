@@ -33,8 +33,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Actor* EditorActorMode::AddOrUpdateActor (int id, const std::string& name, const std::string& actorType, Point pos,
-                                              float rotation, int zOrder)
+    Actor* EditorActorMode::AddOrUpdateActor (
+        int id, const std::string& name, const std::string& actorType, Point pos, float rotation, int zOrder)
     {
         Scene* activeScene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
         Actor* actor = activeScene->GetActor (id);
@@ -144,7 +144,7 @@ namespace aga
                     outRect = r;
                     resultActor = actorIt;
 
-                    m_TileSelectionOffset = { r.GetTopLeft ().X - mouseX, r.GetTopLeft ().Y - mouseY };
+                    m_TileSelectionOffset = {r.GetTopLeft ().X - mouseX, r.GetTopLeft ().Y - mouseY};
                 }
             }
         }
@@ -223,7 +223,7 @@ namespace aga
                 advance = beginning + i * TILE_SIZE;
                 float x = advance;
                 float y = screenSize.Height - TILE_SIZE - 1;
-                Rect r = Rect{ { x, y }, { x + TILE_SIZE, y + TILE_SIZE - 2 } };
+                Rect r = Rect{{x, y}, {x + TILE_SIZE, y + TILE_SIZE - 2}};
 
                 if (InsideRect (mouseX, mouseY, r))
                 {
@@ -276,11 +276,11 @@ namespace aga
             Point point = m_Editor->CalculateCursorPoint (state.x, state.y);
             Point regionSize = m_SelectedActor->Bounds.GetSize ();
 
-            Actor* newActor = ActorFactory::GetActor (&m_Editor->GetMainLoop ()->GetSceneManager (),
-                                                      m_SelectedActor->GetTypeName ());
+            Actor* newActor = ActorFactory::GetActor (
+                &m_Editor->GetMainLoop ()->GetSceneManager (), m_SelectedActor->GetTypeName ());
             newActor->Name = m_SelectedActor->Name + "_" + ToString (newActor->ID);
             newActor->Bounds = Rect (point.X - regionSize.Width * 0.5f, point.Y - regionSize.Height * 0.5f,
-                                     regionSize.Width, regionSize.Height);
+                regionSize.Width, regionSize.Height);
             newActor->TemplateBounds.Pos = m_SelectedActor->Bounds.Pos;
             newActor->Rotation = m_SelectedActor->Rotation;
             newActor->ZOrder = m_SelectedActor->ZOrder;
@@ -315,11 +315,12 @@ namespace aga
 
         tile->ID = Entity::GetNextID ();
         tile->Tileset = m_Atlas->GetName ();
+        tile->SetAtlas (m_Atlas);
         tile->SetAtlasRegionName (m_SelectedAtlasRegion.Name);
         tile->Name = tile->GetAtlasRegionName ();
 
-        tile->Bounds = Rect (point.X - regionSize.Width * 0.5f, point.Y - regionSize.Height * 0.5f, regionSize.Width,
-                             regionSize.Height);
+        tile->Bounds = Rect (
+            point.X - regionSize.Width * 0.5f, point.Y - regionSize.Height * 0.5f, regionSize.Width, regionSize.Height);
         tile->Rotation = m_Rotation;
 
         m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddTile (tile);
@@ -352,23 +353,23 @@ namespace aga
         {
             advance = beginning + i * TILE_SIZE;
 
-            al_draw_rectangle (advance, windowSize.Height - TILE_SIZE, advance + TILE_SIZE, windowSize.Height - 1,
-                               COLOR_GREEN, 1);
+            al_draw_rectangle (
+                advance, windowSize.Height - TILE_SIZE, advance + TILE_SIZE, windowSize.Height - 1, COLOR_GREEN, 1);
 
             if (i < regions.size ())
             {
                 Rect region = regions[i].Bounds;
                 al_draw_scaled_bitmap (m_Atlas->GetImage (), region.GetPos ().X, region.GetPos ().Y,
-                                       region.GetSize ().Width, region.GetSize ().Height, advance + 1,
-                                       windowSize.Height - TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2, 0);
+                    region.GetSize ().Width, region.GetSize ().Height, advance + 1, windowSize.Height - TILE_SIZE + 1,
+                    TILE_SIZE - 2, TILE_SIZE - 2, 0);
 
                 float x = advance;
                 float y = windowSize.Height - TILE_SIZE - 1;
-                Rect r = Rect{ { x, y }, { x + TILE_SIZE, y + TILE_SIZE - 2 } };
+                Rect r = Rect{{x, y}, {x + TILE_SIZE, y + TILE_SIZE - 2}};
 
                 if (InsideRect (state.x, state.y, r))
                 {
-                    drawNamePoint = { state.x, state.y - 10 };
+                    drawNamePoint = {state.x, state.y - 10};
                     drawName = regions[i].Name;
                 }
             }
@@ -376,7 +377,7 @@ namespace aga
 
         Font& font = m_Editor->GetMainLoop ()->GetScreen ()->GetFont ();
         font.DrawText (FONT_NAME_SMALL, al_map_rgb (255, 255, 0), drawNamePoint.X, drawNamePoint.Y, drawName,
-                       ALLEGRO_ALIGN_CENTER);
+            ALLEGRO_ALIGN_CENTER);
     }
 
     //--------------------------------------------------------------------------------------------------

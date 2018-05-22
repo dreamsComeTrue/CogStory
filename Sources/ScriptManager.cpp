@@ -76,6 +76,8 @@ namespace aga
      *      AudioSample@ LoadSampleFromFile (const std::string& sampleName, const std::string& path);
      *      AudioSample@ GetSample (const std::string& sampleName);
      *      void RemoveSample (const std::string& sampleName);
+     *      void SetEnabled (bool enabled);
+     *      bool IsEnabled (); 
      *
      *  AudioSample
      *      void Play ()
@@ -707,10 +709,23 @@ namespace aga
     
     void ScriptManager::RegisterAudioManagerAPI ()
     {
-        int r = m_ScriptEngine->RegisterGlobalFunction (
-            "AudioSample@ LoadSampleFromFile (const string &in sampleName, const string &in path)",
-            asMETHOD (AudioManager, LoadSampleFromFile), asCALL_THISCALL_ASGLOBAL, 
-            &m_MainLoop->GetAudioManager ());
+        int r = m_ScriptEngine->RegisterObjectType ("AudioManager", sizeof (AudioManager), asOBJ_VALUE | asOBJ_POD);
+        assert (r >= 0);
+
+        r = m_ScriptEngine->RegisterGlobalProperty ("AudioManager audioManager", &m_MainLoop->GetAudioManager ());
+        assert (r >= 0);
+
+        r = m_ScriptEngine->RegisterObjectMethod ("AudioManager", "AudioSample@ LoadSampleFromFile "
+                "(const string &in sampleName, const string &in path)", 
+                asMETHOD (AudioManager, LoadSampleFromFile), asCALL_THISCALL);
+        assert (r >= 0);
+
+        r = m_ScriptEngine->RegisterObjectMethod ("AudioManager", "void SetEnabled (bool enabled)",
+                asMETHOD (AudioManager, SetEnabled), asCALL_THISCALL);
+        assert (r >= 0);
+
+        r = m_ScriptEngine->RegisterObjectMethod ("AudioManager", "bool IsEnabled ()",
+                asMETHOD (AudioManager, IsEnabled), asCALL_THISCALL);
         assert (r >= 0);
     }
 
