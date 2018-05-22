@@ -4,6 +4,24 @@
             "atlas": "0_0_home",
             "atlas-region": "parallax-forest-front-trees",
             "components": [],
+            "id": "27",
+            "name": "back1",
+            "phys": [
+                {
+                    "poly": "-33 52 17 37 18 -74 54 -82 54 33 137 58 137 80 -133 78 -135 51 -99 38 -88 8 -90 -79 -57 -78 -55 42 "
+                }
+            ],
+            "pos": "192 -32",
+            "rot": "0",
+            "scripts": [],
+            "size": "272 160",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "0_0_home",
+            "atlas-region": "parallax-forest-front-trees",
+            "components": [],
             "id": "7",
             "name": "back0",
             "phys": [
@@ -29,7 +47,7 @@
                     "poly": "-17 189 -256 190 -255 -192 254 -192 254 189 39 190 39 180 243 180 243 35 147 34 147 24 244 24 242 -181 16 -179 15 23 99 23 99 34 3 35 3 -180 -244 -180 -244 180 -17 180 "
                 }
             ],
-            "pos": "-272 -254",
+            "pos": "-288 -256",
             "rot": "0",
             "scripts": [],
             "size": "512 382",
@@ -107,24 +125,6 @@
         },
         {
             "atlas": "0_0_home",
-            "atlas-region": "parallax-forest-front-trees",
-            "components": [],
-            "id": "27",
-            "name": "back1",
-            "phys": [
-                {
-                    "poly": "-33 52 17 37 18 -74 54 -82 54 33 137 58 137 80 -133 78 -135 51 -99 38 -88 8 -90 -79 -57 -78 -55 42 "
-                }
-            ],
-            "pos": "240 -32",
-            "rot": "0",
-            "scripts": [],
-            "size": "272 160",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "0_0_home",
             "atlas-region": "bed",
             "components": [],
             "id": "11",
@@ -152,7 +152,7 @@
                     "poly": "-17 -28 -18 29 17 28 18 -27 "
                 }
             ],
-            "pos": "40 -224",
+            "pos": "78.2544 -196.915",
             "rot": "0",
             "scripts": [],
             "size": "64 64",
@@ -188,8 +188,8 @@
                     "poly": ""
                 }
             ],
-            "pos": "48 -207",
-            "rot": "-90",
+            "pos": "85.6698 -185.944",
+            "rot": "-75",
             "scripts": [],
             "size": "20 30",
             "type": "Tile",
@@ -242,8 +242,8 @@
             "pos": "-243 -236"
         }
     ],
-    "max_size": "512 332",
-    "min_size": "-544 -254",
+    "max_size": "464 332",
+    "min_size": "-544 -256",
     "name": "Home",
     "player_start": "3 260",
     "scripts": [
@@ -296,7 +296,7 @@
     "trigger_areas": [
         {
             "name": "CITY_EXIT",
-            "poly": "37 132 38 181 237.36 181.2 238 131 "
+            "poly": "37 132 38 181 176.593 176.792 176.866 132.57 "
         },
         {
             "name": "TOP",

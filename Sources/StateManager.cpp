@@ -217,22 +217,17 @@ namespace aga
 
         auto fadeFunc = [&](float v) {
             m_FadeColor.a = v;
-            if (m_TweenFade->TweenF.progress () < 1.0f)
-            {
-            }
-            else
+
+            if (m_TweenFade->TweenF.progress () >= 1.0f)
             {
                 al_set_blender (m_BlendOp, m_BlendSrc, m_BlendDst);
                 m_Transitioning = false;
             }
 
-            if (m_TweenFade->TweenF.progress () > 0.5f)
+            if (m_TransitionFunc && !m_TransitionFuncFired && m_TweenFade->TweenF.progress () > 0.5f)
             {
-                if (m_TransitionFunc && !m_TransitionFuncFired)
-                {
-                    m_TransitionFuncFired = true;
-                    m_TransitionFunc ();
-                }
+                m_TransitionFuncFired = true;
+                m_TransitionFunc ();
             }
 
             return false;

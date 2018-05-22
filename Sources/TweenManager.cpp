@@ -154,8 +154,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     TweenData& TweenManager::AddTween (int id, float from, float to, int during,
-                                       std::function<bool(float)> callbackFunction,
-                                       std::function<void(int)> finishFunction)
+        std::function<bool(float)> callbackFunction, std::function<void(int)> finishFunction)
     {
         TweenData* foundTween = GetTween (id);
 
@@ -179,8 +178,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    TweenData& TweenManager::AddTween (int id, tweeny::tween<float>& callbackFunction,
-                                       std::function<void(int)> finishFunction)
+    TweenData& TweenManager::AddTween (
+        int id, tweeny::tween<float>& callbackFunction, std::function<void(int)> finishFunction)
     {
         TweenData* foundTween = GetTween (id);
 
@@ -203,8 +202,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     TweenData& TweenManager::AddTween (int id, Point from, Point to, int during,
-                                       std::function<bool(float, float)> callbackFunction,
-                                       std::function<void(int)> finishFunction)
+        std::function<bool(float, float)> callbackFunction, std::function<void(int)> finishFunction)
     {
         TweenData* foundTween = GetTween (id);
 
@@ -230,8 +228,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     TweenData& TweenManager::AddTween (int id, Point from, Point to, int during,
-                                       std::function<bool(float, float)> callbackFunction,
-                                       asIScriptFunction* finishFunc)
+        std::function<bool(float, float)> callbackFunction, asIScriptFunction* finishFunc)
     {
         TweenData* foundTween = GetTween (id);
 
@@ -256,8 +253,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void TweenManager::AddTween (int id, Point from, Point to, int during, asIScriptFunction* asFunc,
-                                 asIScriptFunction* finishFunc)
+    void TweenManager::AddTween (
+        int id, Point from, Point to, int during, asIScriptFunction* asFunc, asIScriptFunction* finishFunc)
     {
         TweenData* foundTween = GetTween (id);
 
@@ -272,7 +269,7 @@ namespace aga
                           return true;
                       }
 
-                      Point p = { x, y };
+                      Point p = {x, y};
 
                       asIScriptContext* ctx = m_MainLoop->GetScriptManager ().GetContext ();
                       ctx->Prepare (tweenData->CallbackScriptFunc);
@@ -326,14 +323,14 @@ namespace aga
 
     TweenData* TweenManager::FindTweenData (tweeny::tween<float, float>& t)
     {
-        for (std::vector<TweenData>::iterator it = m_Tweens.begin (); it != m_Tweens.end (); ++it)
+        for (TweenData& tween : m_Tweens)
         {
-            if (it->TweenMask & TWEEN_FF)
+            if (tween.TweenMask & TWEEN_FF)
             {
                 //  Very nasty - address comparison, but it works!
-                if (&it->TweenFF == &t)
+                if (&tween.TweenFF == &t)
                 {
-                    return &(*it);
+                    return &tween;
                 }
             }
         }
@@ -349,11 +346,11 @@ namespace aga
 
     TweenData* TweenManager::GetTween (int id)
     {
-        for (std::vector<TweenData>::iterator it = m_Tweens.begin (); it != m_Tweens.end (); ++it)
+        for (TweenData& tween : m_Tweens)
         {
-            if (it->ID == id)
+            if (tween.ID == id)
             {
-                return &(*it);
+                return &tween;
             }
         }
 
