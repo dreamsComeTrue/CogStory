@@ -141,7 +141,7 @@ namespace aga
     void MainMenuState::Render (float deltaTime)
     {
         const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-        std::string menuItems[3] = { "NEW STORY", "CONTINUE", "EXIT" };
+        std::string menuItems[3] = {"NEW STORY", "CONTINUE", "EXIT"};
 
         Font& font = m_MainLoop->GetScreen ()->GetFont ();
         Point textSize = font.GetTextDimensions (FONT_NAME_MENU_ITEM_NORMAL, menuItems[m_Selection]);
@@ -152,16 +152,16 @@ namespace aga
 
         ALLEGRO_COLOR menuItemColor = al_map_rgb (140, 140, 160);
 
-        font.DrawText (FONT_NAME_MENU_TITLE, menuItemColor, winSize.Width * 0.5f, menuItemStartY - 5 * menuItemSpacing,
-                       "ROBOT TALES", ALLEGRO_ALIGN_CENTER);
+        font.DrawText (FONT_NAME_MENU_TITLE, menuItemColor, winSize.Width * 0.5f, menuItemStartY - 4 * menuItemSpacing,
+            "ROBOT TALES", ALLEGRO_ALIGN_CENTER);
 
         for (int i = 0; i < 3; ++i)
         {
             font.DrawText (m_Selection == i ? FONT_NAME_MENU_ITEM_NORMAL : FONT_NAME_MENU_ITEM_SMALL, menuItemColor,
-                           winSize.Width * 0.5f,
-                           m_Selection == i ? menuItemStartY + i * menuItemSpacing - offset * 0.5
-                                            : menuItemStartY + i * menuItemSpacing,
-                           menuItems[i], ALLEGRO_ALIGN_CENTER);
+                winSize.Width * 0.5f,
+                m_Selection == i ? menuItemStartY + i * menuItemSpacing - offset * 0.5
+                                 : menuItemStartY + i * menuItemSpacing,
+                menuItems[i], ALLEGRO_ALIGN_CENTER);
         }
 
         int xPos = winSize.Width * 0.5f - textSize.Width * 0.5 - 30;
@@ -174,7 +174,7 @@ namespace aga
         m_SelectItemAtlas->DrawRegion ("cog", xPos, yPos, scale, scale, m_SelectionAngle, false, COLOR_WHITE);
 
         font.DrawText (FONT_NAME_SMALL, al_map_rgb (130, 130, 130), winSize.Width - 5, winSize.Height - 20, "v 0.1",
-                       ALLEGRO_ALIGN_RIGHT);
+            ALLEGRO_ALIGN_RIGHT);
     }
 
     //--------------------------------------------------------------------------------------------------

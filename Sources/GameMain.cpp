@@ -15,7 +15,7 @@ const int SCREEN_HEIGHT = 600;
 
 int main (int argc, char** argv)
 {
-    Screen mainScreen (SCREEN_WIDTH, SCREEN_HEIGHT, false);
+    Screen mainScreen (SCREEN_WIDTH, SCREEN_HEIGHT, true);
 
     if (mainScreen.Initialize ())
     {

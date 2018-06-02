@@ -34,6 +34,7 @@ namespace aga
 
     struct SpeechData
     {
+        long ID = -1;
         std::string Name = "";
         std::map<int, std::string> Text; //  LangID, data
         std::map<int, std::vector<SpeechOutcome>> Outcomes; //  LangID, outcomes
@@ -41,7 +42,7 @@ namespace aga
         std::string ActorRegionName;
         int MaxCharsInLine = 0;
         int MaxLines = 0;
-        Point AbsoluteFramePosition = { 0, 0 };
+        Point AbsoluteFramePosition = {0, 0};
         SpeechFramePosition RelativeFramePosition = SpeechFramePosition::Center;
     };
 
@@ -106,8 +107,10 @@ namespace aga
         void RemoveTriggerArea (const std::string& name);
 
         bool AddSpeech (SpeechData data);
-        std::map<std::string, SpeechData>& GetSpeeches ();
+        std::map<int, SpeechData>& GetSpeeches ();
+        SpeechData* GetSpeech (int id);
         SpeechData* GetSpeech (const std::string& name);
+        void RemoveSpeech (int id);
         void RemoveSpeech (const std::string& name);
 
         void RegisterChoiceFunction (const std::string& name, asIScriptFunction* func);
@@ -166,7 +169,7 @@ namespace aga
 
         std::map<std::string, FlagPoint> m_FlagPoints;
         std::map<std::string, TriggerArea> m_TriggerAreas;
-        std::map<std::string, SpeechData> m_Speeches;
+        std::map<int, SpeechData> m_Speeches;
         std::vector<Actor*> m_Actors;
         SceneManager* m_SceneManager;
 

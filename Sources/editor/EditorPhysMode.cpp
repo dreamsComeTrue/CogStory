@@ -26,7 +26,7 @@ namespace aga
 
     bool EditorPhysMode::MoveSelectedPhysPoint ()
     {
-        Point origin = { 0, 0 };
+        Point origin = {0, 0};
         Actor* actor = m_Editor->GetEditorActorMode ().GetSelectedActor ();
 
         if (actor)
@@ -54,7 +54,7 @@ namespace aga
 
     void EditorPhysMode::DrawPhysPoints (float mouseX, float mouseY)
     {
-        Point origin = { 0, 0 };
+        Point origin = {0, 0};
         std::vector<std::vector<Point>>* physPoints = nullptr;
         Actor* actor = m_Editor->GetEditorActorMode ().GetSelectedActor ();
 
@@ -115,9 +115,8 @@ namespace aga
 
                     if (m_Editor->GetMainLoop ()->GetSceneManager ().IsDrawPhysData () && false)
                     {
-                        m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
-                            FONT_NAME_SMALL, al_map_rgb (0, 255, 0), xPoint, yPoint, ToString (i),
-                            ALLEGRO_ALIGN_CENTER);
+                        m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_SMALL,
+                            al_map_rgb (0, 255, 0), xPoint, yPoint, ToString (i), ALLEGRO_ALIGN_CENTER);
                     }
 
                     ++i;
@@ -133,7 +132,7 @@ namespace aga
     void EditorPhysMode::InsertPhysPointAtCursor (int mouseX, int mouseY)
     {
         Point p = m_Editor->CalculateCursorPoint (mouseX, mouseY);
-        Point origin = { 0, 0 };
+        Point origin = {0, 0};
         std::vector<std::vector<Point>>* physPoints;
         Actor* actor = m_Editor->GetEditorActorMode ().GetSelectedActor ();
 
@@ -145,7 +144,7 @@ namespace aga
 
         if (physPoints)
         {
-            Point pointToInsert = { p.X - origin.X, p.Y - origin.Y };
+            Point pointToInsert = {p.X - origin.X, p.Y - origin.Y};
 
             bool inserted = false;
 
@@ -202,7 +201,7 @@ namespace aga
 
     Point* EditorPhysMode::GetPhysPointUnderCursor (int mouseX, int mouseY)
     {
-        Point origin = { 0, 0 };
+        Point origin = {0, 0};
         std::vector<std::vector<Point>>* physPoints;
 
         Actor* actor = m_Editor->GetEditorActorMode ().GetSelectedActor ();
@@ -221,7 +220,7 @@ namespace aga
                 int index = 0;
                 for (Point& point : points)
                 {
-                    Point p = { point.X + origin.X, point.Y + origin.Y };
+                    Point p = {point.X + origin.X, point.Y + origin.Y};
 
                     if (m_Editor->IsMouseWithinPointRect (mouseX, mouseY, p, outsets))
                     {

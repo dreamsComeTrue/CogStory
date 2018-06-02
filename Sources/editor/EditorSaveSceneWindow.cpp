@@ -67,7 +67,7 @@ namespace aga
 
     void EditorSaveSceneWindow::OnBrowse ()
     {
-        std::string path = GetDataPath () + "scenes/";
+        std::string path = GetDataPath () + "scenes/x/";
 
         ALLEGRO_FILECHOOSER* fileSaveDialog
             = al_create_native_file_dialog (path.c_str (), "Save scene file", "*.scn", ALLEGRO_FILECHOOSER_SAVE);

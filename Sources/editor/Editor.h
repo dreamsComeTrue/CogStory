@@ -29,6 +29,7 @@ namespace aga
     class EditorActorWindow;
     class EditorActorScriptWindow;
     class EditorInfoWindow;
+    class EditorQuestionWindow;
     class EditorInputWindow;
     class EditorSceneWindow;
     class EditorScriptWindow;
@@ -86,6 +87,7 @@ namespace aga
         EditorScriptWindow* GetScriptWindow () { return m_ScriptWindow; }
         EditorComponentWindow* GetComponentWindow () { return m_ComponentWindow; }
         EditorInfoWindow* GetEditorInfoWindow () { return m_InfoWindow; }
+        EditorQuestionWindow* GetEditorQuestionWindow () { return m_QuestionWindow; }
 
         void UpdateSceneNameLabel (const std::string& name);
 
@@ -165,6 +167,7 @@ namespace aga
         EditorSpeechWindow* m_SpeechWindow;
         EditorActorWindow* m_ActorWindow;
         EditorInfoWindow* m_InfoWindow;
+        EditorQuestionWindow* m_QuestionWindow;
         EditorInputWindow* m_InputWindow;
         EditorScriptWindow* m_ScriptWindow;
         EditorComponentWindow* m_ComponentWindow;

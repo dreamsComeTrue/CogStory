@@ -33,7 +33,7 @@ namespace aga
         EditorQuestionWindow (Editor* editor, Gwk::Controls::Canvas* canvas);
 
         void Show (const std::string& text, std::function<void(void)> OnYesFunc, std::function<void(void)> OnNoFunc);
-        bool GetResult ();
+        bool GetResult () { return m_Result; }
 
     private:
         void OnYes ();

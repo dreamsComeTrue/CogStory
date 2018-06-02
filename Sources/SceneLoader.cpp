@@ -4,9 +4,9 @@
 #include "ActorFactory.h"
 #include "Atlas.h"
 #include "AtlasManager.h"
+#include "Component.h"
 #include "MainLoop.h"
 #include "SceneManager.h"
-#include "Component.h"
 #include "actors/TileActor.h"
 
 using json = nlohmann::json;
@@ -44,7 +44,7 @@ namespace aga
 
             float y = atof (pch);
 
-            nums.push_back ({ x, y });
+            nums.push_back ({x, y});
         }
 
         return nums;
@@ -310,6 +310,7 @@ namespace aga
             for (auto& speech : speeches)
             {
                 SpeechData speechData;
+                speechData.ID = speech["id"];
                 speechData.Name = speech["name"];
                 speechData.ActorRegionName = speech["region_name"];
                 speechData.MaxCharsInLine = speech["max_chars"];
@@ -381,8 +382,8 @@ namespace aga
 
     void SceneLoader::SaveScene (Scene* scene, const std::string& filePath)
     {
-        Point minRect{ std::numeric_limits<float>::max (), std::numeric_limits<float>::max () };
-        Point maxRect{ std::numeric_limits<float>::min (), std::numeric_limits<float>::min () };
+        Point minRect{std::numeric_limits<float>::max (), std::numeric_limits<float>::max ()};
+        Point maxRect{std::numeric_limits<float>::min (), std::numeric_limits<float>::min ()};
 
         try
         {
@@ -392,7 +393,7 @@ namespace aga
 
             ALLEGRO_COLOR color = scene->m_BackgroundColor;
             j["color"] = IntsToString (
-                { (int)(color.r * 255.f), (int)(color.g * 255.f), (int)(color.b * 255.f), (int)(color.a * 255.f) });
+                {(int)(color.r * 255.f), (int)(color.g * 255.f), (int)(color.b * 255.f), (int)(color.a * 255.f)});
 
             j["player_start"] = PointToString (scene->GetPlayerStartLocation ());
 
@@ -467,7 +468,8 @@ namespace aga
                 actorObj["components"] = json::array ({});
 
                 std::map<std::string, Component*>& components = actor->GetComponents ();
-                for (std::map<std::string, Component*>::iterator it = components.begin (); it != components.end (); ++it)
+                for (std::map<std::string, Component*>::iterator it = components.begin (); it != components.end ();
+                     ++it)
                 {
                     json componentObj = json::object ({});
 
@@ -519,12 +521,13 @@ namespace aga
 
             j["speeches"] = json::array ({});
 
-            for (std::map<std::string, SpeechData>::iterator it = scene->m_Speeches.begin ();
-                 it != scene->m_Speeches.end (); ++it)
+            for (std::map<int, SpeechData>::iterator it = scene->m_Speeches.begin (); it != scene->m_Speeches.end ();
+                 ++it)
             {
                 json speechObj = json::object ({});
 
-                speechObj["name"] = it->first;
+                speechObj["id"] = it->first;
+                speechObj["name"] = it->second.Name;
                 speechObj["region_name"] = it->second.ActorRegionName;
                 speechObj["max_chars"] = it->second.MaxCharsInLine;
                 speechObj["max_lines"] = it->second.MaxLines;

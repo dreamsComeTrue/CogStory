@@ -13,10 +13,10 @@
 namespace aga
 {
     std::map<SpeechFramePosition, std::string> g_SpeechFramePosition
-        = { std::make_pair (Absoulte, "Absolute"),       std::make_pair (TopLeft, "TopLeft"),
-            std::make_pair (TopCenter, "TopCenter"),     std::make_pair (TopRight, "TopRight"),
-            std::make_pair (BottomLeft, "BottomLeft"),   std::make_pair (BottomCenter, "BottomCenter"),
-            std::make_pair (BottomRight, "BottomRight"), std::make_pair (Center, "Center") };
+        = {std::make_pair (Absoulte, "Absolute"), std::make_pair (TopLeft, "TopLeft"),
+            std::make_pair (TopCenter, "TopCenter"), std::make_pair (TopRight, "TopRight"),
+            std::make_pair (BottomLeft, "BottomLeft"), std::make_pair (BottomCenter, "BottomCenter"),
+            std::make_pair (BottomRight, "BottomRight"), std::make_pair (Center, "Center")};
 
     typedef std::map<std::string, SpeechFrame*>::iterator SpeechFrameIterator;
 
@@ -66,6 +66,8 @@ namespace aga
 
     void SpeechFrameManager::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
     {
+        std::vector<SpeechFrame*> nextSpeeches;
+
         for (SpeechFrameIterator it = m_Speeches.begin (); it != m_Speeches.end ();)
         {
             SpeechFrame* frame = it->second;
@@ -74,7 +76,8 @@ namespace aga
             {
                 frame->ProcessEvent (event, deltaTime);
 
-                if (frame->IsShouldBeHandled () && frame->IsHandled ())
+                if (frame->IsShouldBeHandled () && frame->IsHandled ()
+                    && std::find (nextSpeeches.begin (), nextSpeeches.end (), frame) == nextSpeeches.end ())
                 {
                     std::string outcomeAction = frame->GetOutcomeAction ();
 
@@ -85,7 +88,7 @@ namespace aga
 
                     if (outcomeAction != "")
                     {
-                        AddSpeechFrame (outcomeAction);
+                        nextSpeeches.push_back (AddSpeechFrame (outcomeAction));
                     }
 
                     continue;
@@ -93,6 +96,11 @@ namespace aga
             }
 
             ++it;
+        }
+
+        for (SpeechFrame* nextSpeech : nextSpeeches)
+        {
+            nextSpeech->Show ();
         }
     }
 
@@ -147,8 +155,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& id, const std::string& text, Rect rect,
-                                                     bool shouldBeHandled, const std::string& regionName)
+    SpeechFrame* SpeechFrameManager::AddSpeechFrame (
+        const std::string& id, const std::string& text, Rect rect, bool shouldBeHandled, const std::string& regionName)
     {
         if (m_Speeches.find (id) == m_Speeches.end ())
         {
@@ -168,8 +176,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& id, const std::string& text, Point pos,
-                                                     int maxLineCharsCount, int linesCount, bool shouldBeHandled,
-                                                     const std::string& regionName)
+        int maxLineCharsCount, int linesCount, bool shouldBeHandled, const std::string& regionName)
     {
         Point size = GetTextRectSize (maxLineCharsCount, linesCount);
 
@@ -185,10 +192,10 @@ namespace aga
     SpeechFrame* SpeechFrameManager::AddSpeechFrame (SpeechData* speechData, bool shouldBeHandled)
     {
         Point pos = GetFramePos (speechData->RelativeFramePosition, speechData->AbsoluteFramePosition,
-                                 speechData->MaxCharsInLine, speechData->MaxLines, speechData->ActorRegionName != "");
+            speechData->MaxCharsInLine, speechData->MaxLines, speechData->ActorRegionName != "");
 
         return AddSpeechFrame (speechData->Name, speechData->Text[CURRENT_LANG], pos, speechData->MaxCharsInLine,
-                               speechData->MaxLines, shouldBeHandled, speechData->ActorRegionName);
+            speechData->MaxLines, shouldBeHandled, speechData->ActorRegionName);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -201,7 +208,7 @@ namespace aga
         if (instance)
         {
             frame = AddSpeechFrame (instance->Name, instance->Text[CURRENT_LANG], pos, instance->MaxCharsInLine,
-                                    instance->MaxLines, shouldBeHandled, instance->ActorRegionName);
+                instance->MaxLines, shouldBeHandled, instance->ActorRegionName);
 
             std::vector<SpeechOutcome>& outcomes = instance->Outcomes[CURRENT_LANG];
 
@@ -223,7 +230,7 @@ namespace aga
         if (instance)
         {
             Point pos = GetFramePos (instance->RelativeFramePosition, instance->AbsoluteFramePosition,
-                                     instance->MaxCharsInLine, instance->MaxLines, instance->ActorRegionName != "");
+                instance->MaxCharsInLine, instance->MaxLines, instance->ActorRegionName != "");
 
             return AddSpeechFrame (speechID, pos, shouldBeHandled);
         }
@@ -253,8 +260,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Point SpeechFrameManager::GetFramePos (SpeechFramePosition position, Point absolutePos, int maxCharsInLine,
-                                           int maxLines, bool showActor)
+    Point SpeechFrameManager::GetFramePos (
+        SpeechFramePosition position, Point absolutePos, int maxCharsInLine, int maxLines, bool showActor)
     {
         const int SCREEN_OFFSET = 10;
         Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
@@ -346,7 +353,7 @@ namespace aga
         float height = linesCount * (ascent + descent + SPEECH_FRAME_LINE_OFFSET) + SPEECH_FRAME_LINE_OFFSET
             + SPEECH_FRAME_TEXT_INSETS;
 
-        return { width, height };
+        return {width, height};
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -2,11 +2,17 @@
 
 #include "EditorSpeechWindow.h"
 #include "Editor.h"
+#include "EditorWindows.h"
+#include "Font.h"
 #include "MainLoop.h"
 #include "SpeechFrame.h"
 
 namespace aga
 {
+    //--------------------------------------------------------------------------------------------------
+
+    Point letterSize;
+
     //--------------------------------------------------------------------------------------------------
 
     EditorSpeechWindow::EditorSpeechWindow (Editor* editor, Gwk::Controls::Canvas* canvas)
@@ -16,7 +22,8 @@ namespace aga
 
         m_SceneWindow = new Gwk::Controls::WindowControl (canvas);
         m_SceneWindow->SetTitle ("Speech Editor");
-        m_SceneWindow->SetSize (canvas->Width () - 150, canvas->Height () - 80);
+        m_SceneWindow->SetSize (canvas->Width () - 190, canvas->Height () - 200);
+        m_SceneWindow->onWindowClosed.Add (this, &EditorSpeechWindow::OnWindoClosed);
         m_SceneWindow->CloseButtonPressed ();
 
         Gwk::Controls::DockBase* dock = new Gwk::Controls::DockBase (m_SceneWindow);
@@ -37,18 +44,35 @@ namespace aga
         Gwk::Controls::Base* center = new Gwk::Controls::Base (dock);
         center->Dock (Gwk::Position::Fill);
 
+        Gwk::Controls::Button* newSpeechButton = new Gwk::Controls::Button (center);
+        newSpeechButton->SetText ("NEW");
+        newSpeechButton->SetWidth (90);
+        newSpeechButton->SetPos (xOffset, 10);
+        newSpeechButton->onPress.Add (this, &EditorSpeechWindow::OnSave);
+
+        Gwk::Controls::Label* idLabel = new Gwk::Controls::Label (center);
+        idLabel->SetPos (newSpeechButton->Right () + 10, 10);
+        idLabel->SetText ("ID:");
+        idLabel->SizeToContents ();
+
+        m_IDTextBox = new Gwk::Controls::TextBox (center);
+        m_IDTextBox->SetTextColor (Gwk::Colors::White);
+        m_IDTextBox->SetText ("");
+        m_IDTextBox->SetKeyboardInputEnabled (false);
+        m_IDTextBox->SetMouseInputEnabled (false);
+        m_IDTextBox->SetWidth (100);
+        m_IDTextBox->SetPos (idLabel->Right () + 5, 10);
+
         Gwk::Controls::Label* nameLabel = new Gwk::Controls::Label (center);
-        nameLabel->SetPos (xOffset, 10);
+        nameLabel->SetPos (m_IDTextBox->Right () + 10, 10);
         nameLabel->SetText ("Name:");
         nameLabel->SizeToContents ();
-
-        int controlWidth = 610;
 
         m_NameTextBox = new Gwk::Controls::TextBox (center);
         m_NameTextBox->SetTextColor (Gwk::Colors::White);
         m_NameTextBox->SetText ("");
-        m_NameTextBox->SetWidth (controlWidth);
-        m_NameTextBox->SetPos (xOffset, nameLabel->Bottom () + 5);
+        m_NameTextBox->SetWidth (200);
+        m_NameTextBox->SetPos (nameLabel->Right () + 5, 10);
         m_NameTextBox->onTextChanged.Add (this, &EditorSpeechWindow::OnNameEdit);
 
         Gwk::Controls::Label* langLabel = new Gwk::Controls::Label (center);
@@ -58,10 +82,25 @@ namespace aga
 
         m_LanguageCombo = new Gwk::Controls::ComboBox (center);
         m_LanguageCombo->SetPos (xOffset, langLabel->Bottom () + 5);
-        m_LanguageCombo->SetWidth (controlWidth);
+        m_LanguageCombo->SetWidth (470);
         m_LanguageCombo->AddItem ("EN", "EN");
         m_LanguageCombo->AddItem ("PL", "PL");
         m_LanguageCombo->onSelection.Add (this, &EditorSpeechWindow::OnLangSelected);
+
+        Gwk::Controls::Button* addSpeechButton = new Gwk::Controls::Button (center);
+        addSpeechButton->SetText ("SAVE");
+        addSpeechButton->SetPos (m_NameTextBox->Right () + 10, 10);
+        addSpeechButton->onPress.Add (this, &EditorSpeechWindow::OnSave);
+
+        Gwk::Controls::Button* removeSpeechButton = new Gwk::Controls::Button (center);
+        removeSpeechButton->SetText ("REMOVE");
+        removeSpeechButton->SetPos (addSpeechButton->X (), addSpeechButton->Bottom () + 5);
+        removeSpeechButton->onPress.Add (this, &EditorSpeechWindow::OnRemove);
+
+        Gwk::Controls::Button* previewButton = new Gwk::Controls::Button (center);
+        previewButton->SetText ("PREVIEW");
+        previewButton->SetPos (addSpeechButton->X (), removeSpeechButton->Bottom () + 5);
+        previewButton->onPress.Add (this, &EditorSpeechWindow::OnPreview);
 
         Gwk::Controls::Label* textLabel = new Gwk::Controls::Label (center);
         textLabel->SetPos (xOffset, m_LanguageCombo->Bottom () + 5);
@@ -71,8 +110,13 @@ namespace aga
         m_TextData = new Gwk::Controls::TextBoxMultiline (center);
         m_TextData->SetTextColor (Gwk::Colors::White);
         m_TextData->SetPos (xOffset, textLabel->Bottom () + 5);
-        m_TextData->SetSize (controlWidth, 70);
+        m_TextData->SetSize (m_LanguageCombo->Width (), 70);
         m_TextData->onTextChanged.Add (this, &EditorSpeechWindow::OnTextChanged);
+
+        Gwk::Controls::Button* outcomeButton = new Gwk::Controls::Button (center);
+        outcomeButton->SetText ("OUTCOME");
+        outcomeButton->SetPos (addSpeechButton->X (), m_TextData->Bottom () - 25);
+        outcomeButton->onPress.Add (this, &EditorSpeechWindow::OnOutcome);
 
         Gwk::Controls::Label* regionLabel = new Gwk::Controls::Label (center);
         regionLabel->SetPos (xOffset, m_TextData->Bottom () + 5);
@@ -102,7 +146,6 @@ namespace aga
         m_MaxCharsInLineNumeric->SetIntValue (0);
         m_MaxCharsInLineNumeric->SetWidth (50);
         m_MaxCharsInLineNumeric->SetPos (maxCharsInLineLabel->Right () + 5, m_TextData->Bottom () + 5);
-        m_MaxCharsInLineNumeric->onTextChanged.Add (this, &EditorSpeechWindow::OnMaxCharsChanged);
 
         Gwk::Controls::Label* maxLinesLabel = new Gwk::Controls::Label (center);
         maxLinesLabel->SetPos (m_MaxCharsInLineNumeric->Right () + 10, m_TextData->Bottom () + 5);
@@ -114,7 +157,6 @@ namespace aga
         m_MaxLinesNumeric->SetIntValue (0);
         m_MaxLinesNumeric->SetWidth (50);
         m_MaxLinesNumeric->SetPos (maxLinesLabel->Right () + 5, m_TextData->Bottom () + 5);
-        m_MaxLinesNumeric->onTextChanged.Add (this, &EditorSpeechWindow::OnMaxLinesChanged);
 
         Gwk::Controls::Label* relPosLabel = new Gwk::Controls::Label (center);
         relPosLabel->SetPos (xOffset, m_MaxLinesNumeric->Bottom () + 5);
@@ -160,36 +202,20 @@ namespace aga
         m_AbsPositionYNumeric->SetPos (yPosLabel->Right () + 5, m_MaxLinesNumeric->Bottom () + 5);
         m_AbsPositionYNumeric->onTextChanged.Add (this, &EditorSpeechWindow::OnPositionYChanged);
 
-        Gwk::Controls::Button* addSpeechButton = new Gwk::Controls::Button (center);
-        addSpeechButton->SetText ("SAVE");
-        addSpeechButton->SetWidth (155);
-        addSpeechButton->SetPos (xOffset, m_AbsPositionYNumeric->Bottom () + 10);
-        addSpeechButton->onPress.Add (this, &EditorSpeechWindow::OnSave);
-
-        Gwk::Controls::Button* removeSpeechButton = new Gwk::Controls::Button (center);
-        removeSpeechButton->SetText ("REMOVE");
-        removeSpeechButton->SetWidth (155);
-        removeSpeechButton->SetPos (addSpeechButton->Right () + 5, m_AbsPositionYNumeric->Bottom () + 10);
-        removeSpeechButton->onPress.Add (this, &EditorSpeechWindow::OnRemove);
-
-        Gwk::Controls::Button* outcomeButton = new Gwk::Controls::Button (center);
-        outcomeButton->SetText ("OUTCOME");
-        outcomeButton->SetWidth (160);
-        outcomeButton->SetPos (removeSpeechButton->Right () + 5, m_AbsPositionYNumeric->Bottom () + 10);
-        outcomeButton->onPress.Add (this, &EditorSpeechWindow::OnOutcome);
-
         m_OutcomesContainer = new Gwk::Controls::ScrollControl (center);
-        m_OutcomesContainer->SetBounds (xOffset, outcomeButton->Bottom () + 10, 610, 190);
+        m_OutcomesContainer->SetBounds (xOffset, m_AbsPositionYNumeric->Bottom () + 10, 610, 65);
 
         Gwk::Controls::Button* acceptButton = new Gwk::Controls::Button (center);
         acceptButton->SetText ("ACCEPT");
-        acceptButton->SetPos (m_SceneWindow->Width () - 330, m_SceneWindow->Height () - 85);
+        acceptButton->SetPos (m_NameTextBox->Right () + 10, m_SceneWindow->Height () - 85);
         acceptButton->onPress.Add (this, &EditorSpeechWindow::OnAccept);
 
         Gwk::Controls::Button* cancelButton = new Gwk::Controls::Button (center);
         cancelButton->SetText ("CANCEL");
-        cancelButton->SetPos (m_SceneWindow->Width () - 330, acceptButton->Bottom () + 5);
+        cancelButton->SetPos (m_NameTextBox->Right () + 10, acceptButton->Bottom () + 5);
         cancelButton->onPress.Add (this, &EditorSpeechWindow::OnCancel);
+
+        letterSize = {7.f, 17.f}; // Font::GetTextDimensions (FONT_NAME_SMALL, "-");
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -199,6 +225,9 @@ namespace aga
         m_SceneWindow->SetPosition (Gwk::Position::Center);
         m_SceneWindow->SetHidden (false);
         m_SceneWindow->MakeModal (true);
+
+        ClearControls ();
+        UpdateOutcomes ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -216,42 +245,42 @@ namespace aga
             }
         }
 
-        speechData.ActorRegionName = m_RegionCombo->GetSelectedItem ()->GetText ();
-        speechData.AbsoluteFramePosition.X = m_AbsPositionXNumeric->GetIntValue ();
-        speechData.AbsoluteFramePosition.Y = m_AbsPositionYNumeric->GetIntValue ();
-
-        if (m_NameTextBox->GetText () != "")
+        if (m_IDTextBox->GetText () != "")
         {
-            Gwk::Controls::Base::List& childNodes = m_SpeechesTree->GetChildNodes ();
-            std::string oldName = "";
+            speechData.ID = atoi (m_IDTextBox->GetText ().c_str ());
+        }
+        else
+        {
+            int maxID = -1;
 
-            for (Gwk::Controls::Base* control : childNodes)
+            std::map<int, SpeechData>& speeches
+                = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
+            for (std::map<int, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
             {
-                Gwk::Controls::TreeNode* node = (Gwk::Controls::TreeNode*)control;
-
-                if (node->IsSelected ())
+                if (it->first > maxID)
                 {
-                    oldName = node->GetText ();
-                    break;
+                    maxID = it->first;
                 }
             }
 
-            bool ret = m_Editor->GetEditorSpeechMode ().AddOrUpdateSpeech (oldName);
+            speechData.ID = maxID + 1;
+        }
 
-            if (ret)
+        speechData.ActorRegionName = m_RegionCombo->GetSelectedItem ()->GetText ();
+        speechData.AbsoluteFramePosition.X = m_AbsPositionXNumeric->GetIntValue ();
+        speechData.AbsoluteFramePosition.Y = m_AbsPositionYNumeric->GetIntValue ();
+        speechData.MaxCharsInLine = m_MaxCharsInLineNumeric->GetIntValue ();
+        speechData.MaxLines = m_MaxLinesNumeric->GetIntValue ();
+
+        if (m_NameTextBox->GetText () != "")
+        {
+            if (m_Editor->GetEditorSpeechMode ().AddOrUpdateSpeech ())
             {
-                m_NameTextBox->SetText ("");
-                m_TextData->SetText ("");
-                m_LanguageCombo->SelectItemByName ("EN");
-                m_MaxCharsInLineNumeric->SetIntValue (0);
-                m_MaxLinesNumeric->SetIntValue (0);
-                m_RelPositionCombo->SetValue (g_SpeechFramePosition[BottomCenter]);
-                m_AbsPositionXNumeric->SetIntValue (0);
-                m_AbsPositionYNumeric->SetIntValue (0);
-                m_Editor->GetEditorSpeechMode ().Clear ();
-
+                ClearControls ();
                 UpdateSpeechesTree ();
                 UpdateOutcomes ();
+
+                SelectSpeech (speechData.ID);
             }
         }
     }
@@ -260,20 +289,28 @@ namespace aga
 
     void EditorSpeechWindow::OnRemove ()
     {
+        std::function<void(void)> YesFunc = [&]() {
+            if (m_NameTextBox->GetText () != "")
+            {
+                m_Editor->GetEditorSpeechMode ().RemoveSpeech (atoi (m_IDTextBox->GetText ().c_str ()));
+
+                ClearControls ();
+                UpdateSpeechesTree ();
+                UpdateOutcomes ();
+            }
+        };
+
+        m_Editor->GetEditorQuestionWindow ()->Show ("Are you sure", YesFunc, nullptr);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorSpeechWindow::OnOutcome ()
+    {
         if (m_NameTextBox->GetText () != "")
         {
-            m_Editor->GetEditorSpeechMode ().RemoveSpeech (m_NameTextBox->GetText ());
-            UpdateSpeechesTree ();
-
-            m_NameTextBox->SetText ("");
-            m_TextData->SetText ("");
-            m_LanguageCombo->SelectItemByName ("EN");
-            m_MaxCharsInLineNumeric->SetIntValue (0);
-            m_MaxLinesNumeric->SetIntValue (0);
-            m_RelPositionCombo->SetValue (g_SpeechFramePosition[BottomCenter]);
-            m_AbsPositionXNumeric->SetIntValue (0);
-            m_AbsPositionYNumeric->SetIntValue (0);
-            m_Editor->GetEditorSpeechMode ().Clear ();
+            SpeechOutcome outcome;
+            m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex].push_back (outcome);
 
             UpdateOutcomes ();
         }
@@ -281,12 +318,25 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorSpeechWindow::OnOutcome ()
+    void EditorSpeechWindow::OnPreview ()
     {
-        SpeechOutcome outcome;
-        m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex].push_back (outcome);
+        SpeechFrameManager& frameManager = m_Editor->GetMainLoop ()->GetSceneManager ().GetSpeechFrameManager ();
 
-        UpdateOutcomes ();
+        if (frameManager.GetSpeechFrames ().empty ())
+        {
+            frameManager.AddSpeechFrame (m_NameTextBox->GetText ());
+        }
+        else
+        {
+            frameManager.Clear ();
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorSpeechWindow::OnWindoClosed ()
+    {
+        m_Editor->GetMainLoop ()->GetSceneManager ().GetSpeechFrameManager ().Clear ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -305,21 +355,7 @@ namespace aga
 
         if (node != nullptr && node->IsSelected ())
         {
-            std::map<std::string, SpeechData>& speeches
-                = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
-            SpeechData& speech = speeches[node->GetText ()];
-            m_Editor->GetEditorSpeechMode ().SetSpeechData (speech);
-
-            m_NameTextBox->SetText (speech.Name);
-            m_RegionCombo->SelectItemByName (speech.ActorRegionName);
-            m_TextData->SetText (speech.Text[m_LangIndex]);
-            m_MaxCharsInLineNumeric->SetIntValue (speech.MaxCharsInLine);
-            m_MaxLinesNumeric->SetIntValue (speech.MaxLines);
-            m_RelPositionCombo->SelectItemByName (g_SpeechFramePosition[speech.RelativeFramePosition]);
-            m_AbsPositionXNumeric->SetIntValue (speech.AbsoluteFramePosition.X);
-            m_AbsPositionYNumeric->SetIntValue (speech.AbsoluteFramePosition.Y);
-
-            UpdateOutcomes ();
+            SelectSpeech (atoi (node->GetName ().c_str ()));
         }
     }
 
@@ -365,20 +401,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorSpeechWindow::OnMaxCharsChanged ()
-    {
-        m_Editor->GetEditorSpeechMode ().GetSpeechData ().MaxCharsInLine = m_MaxCharsInLineNumeric->GetIntValue ();
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void EditorSpeechWindow::OnMaxLinesChanged ()
-    {
-        m_Editor->GetEditorSpeechMode ().GetSpeechData ().MaxLines = m_MaxLinesNumeric->GetIntValue ();
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
     void EditorSpeechWindow::OnPositionTypeChanged ()
     {
         for (const auto& pos : g_SpeechFramePosition)
@@ -411,15 +433,15 @@ namespace aga
 
     void EditorSpeechWindow::UpdateOutcomes ()
     {
-        m_OutcomesContainer->RemoveAllChildren ();
+        m_OutcomesContainer->Clear ();
 
         std::vector<SpeechOutcome>& outcomes = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
 
-        std::map<std::string, SpeechData>& speeches
+        std::map<int, SpeechData>& speeches
             = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
 
-        std::map<std::string, asIScriptFunction*>& choiceFunctions = 
-            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetChoiceFunctions ();
+        std::map<std::string, asIScriptFunction*>& choiceFunctions
+            = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetChoiceFunctions ();
 
         int currentY = 0;
         for (int i = 0; i < outcomes.size (); ++i)
@@ -434,7 +456,7 @@ namespace aga
             Gwk::Controls::TextBox* dataTextBox = new Gwk::Controls::TextBox (m_OutcomesContainer);
             dataTextBox->SetTextColor (Gwk::Colors::White);
             dataTextBox->SetText (outcomes[i].Text);
-            dataTextBox->SetWidth (255);
+            dataTextBox->SetWidth (240);
             dataTextBox->SetPos (idTextBox->Right () + 5, currentY);
             dataTextBox->onTextChanged.Add (this, &EditorSpeechWindow::OnOutcomeDataTextChanged);
 
@@ -443,13 +465,13 @@ namespace aga
             actionCombo->SetWidth (150);
             actionCombo->AddItem ("[CLOSE]", "[CLOSE]");
 
-            for (std::map<std::string, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
+            for (std::map<int, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
             {
-                actionCombo->AddItem ((*it).first, (*it).first);
+                actionCombo->AddItem ((*it).second.Name, (*it).second.Name);
             }
 
-            for (std::map<std::string, asIScriptFunction*>::iterator it = choiceFunctions.begin (); 
-                    it != choiceFunctions.end (); ++it)
+            for (std::map<std::string, asIScriptFunction*>::iterator it = choiceFunctions.begin ();
+                 it != choiceFunctions.end (); ++it)
             {
                 std::string name = REGISTERED_CHOICE_PREFIX + (*it).first;
                 actionCombo->AddItem (name, name);
@@ -489,12 +511,13 @@ namespace aga
     {
         m_SpeechesTree->Clear ();
 
-        std::map<std::string, SpeechData>& speeches
+        std::map<int, SpeechData>& speeches
             = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
 
-        for (std::map<std::string, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
+        for (std::map<int, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
         {
-            Gwk::Controls::TreeNode* node = m_SpeechesTree->AddNode ((*it).first);
+            Gwk::Controls::TreeNode* node = m_SpeechesTree->AddNode ((*it).second.Name);
+            node->SetName (ToString ((*it).first));
             node->onSelect.Add (this, &EditorSpeechWindow::OnSpeechSelect);
         }
 
@@ -575,12 +598,9 @@ namespace aga
     {
         std::vector<SpeechOutcome>& outcomes = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
 
-        int childIndex = 3;
         for (int i = 0; i < outcomes.size (); ++i)
         {
-            Gwk::Controls::Base* child = m_OutcomesContainer->GetChild (childIndex);
-
-            if (control == child)
+            if (control->GetName () == ToString (i))
             {
                 if (i == 0)
                 {
@@ -593,8 +613,6 @@ namespace aga
 
                 break;
             }
-
-            childIndex += 6;
         }
 
         UpdateOutcomes ();
@@ -606,12 +624,9 @@ namespace aga
     {
         std::vector<SpeechOutcome>& outcomes = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
 
-        int childIndex = 4;
         for (int i = 0; i < outcomes.size (); ++i)
         {
-            Gwk::Controls::Base* child = m_OutcomesContainer->GetChild (childIndex);
-
-            if (control == child)
+            if (control->GetName () == ToString (i))
             {
                 if (i == outcomes.size () - 1)
                 {
@@ -624,8 +639,6 @@ namespace aga
 
                 break;
             }
-
-            childIndex += 6;
         }
 
         UpdateOutcomes ();
@@ -633,23 +646,65 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    std::string outcomeControlToRemove = "";
+
     void EditorSpeechWindow::OnRemoveOutcome (Gwk::Controls::Base* control)
     {
-        std::vector<SpeechOutcome>& outcomes = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
+        outcomeControlToRemove = control->GetName ();
 
-        int childIndex = 5;
-        for (int i = 0; i < outcomes.size (); ++i)
-        {
-            Gwk::Controls::Base* child = m_OutcomesContainer->GetChild (childIndex);
+        std::function<void(void)> YesFunc = [&]() {
+            std::vector<SpeechOutcome>& outcomes
+                = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
 
-            if (control == child)
+            for (int i = 0; i < outcomes.size (); ++i)
             {
-                outcomes.erase (outcomes.begin () + i);
-                break;
+                if (outcomeControlToRemove == ToString (i))
+                {
+                    outcomes.erase (outcomes.begin () + i);
+                    break;
+                }
             }
 
-            childIndex += 6;
-        }
+            UpdateOutcomes ();
+        };
+
+        m_Editor->GetEditorQuestionWindow ()->Show ("Are you sure", YesFunc, nullptr);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorSpeechWindow::ClearControls ()
+    {
+        m_IDTextBox->SetText ("");
+        m_NameTextBox->SetText ("");
+        m_TextData->SetText ("");
+        m_LanguageCombo->SelectItemByName ("EN");
+        m_MaxCharsInLineNumeric->SetIntValue (0);
+        m_MaxLinesNumeric->SetIntValue (0);
+        m_RelPositionCombo->SetValue (g_SpeechFramePosition[BottomCenter]);
+        m_AbsPositionXNumeric->SetIntValue (0);
+        m_AbsPositionYNumeric->SetIntValue (0);
+        m_Editor->GetEditorSpeechMode ().Clear ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorSpeechWindow::SelectSpeech (int id)
+    {
+        std::map<int, SpeechData>& speeches
+            = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
+        SpeechData& speech = speeches[id];
+        m_Editor->GetEditorSpeechMode ().SetSpeechData (speech);
+
+        m_IDTextBox->SetText (ToString (speech.ID));
+        m_NameTextBox->SetText (speech.Name);
+        m_RegionCombo->SelectItemByName (speech.ActorRegionName);
+        m_TextData->SetText (speech.Text[m_LangIndex]);
+        m_MaxCharsInLineNumeric->SetIntValue (speech.MaxCharsInLine);
+        m_MaxLinesNumeric->SetIntValue (speech.MaxLines);
+        m_RelPositionCombo->SelectItemByName (g_SpeechFramePosition[speech.RelativeFramePosition]);
+        m_AbsPositionXNumeric->SetIntValue (speech.AbsoluteFramePosition.X);
+        m_AbsPositionYNumeric->SetIntValue (speech.AbsoluteFramePosition.Y);
 
         UpdateOutcomes ();
     }

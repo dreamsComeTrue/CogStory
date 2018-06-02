@@ -495,9 +495,9 @@ namespace aga
 
     bool Scene::AddSpeech (SpeechData data)
     {
-        if (m_Speeches.find (data.Name) == m_Speeches.end ())
+        if (!GetSpeech (data.ID))
         {
-            m_Speeches.insert (std::make_pair (data.Name, data));
+            m_Speeches.insert (std::make_pair (data.ID, data));
 
             return true;
         }
@@ -507,15 +507,18 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    std::map<std::string, SpeechData>& Scene::GetSpeeches () { return m_Speeches; }
+    std::map<int, SpeechData>& Scene::GetSpeeches () { return m_Speeches; }
 
     //--------------------------------------------------------------------------------------------------
 
-    SpeechData* Scene::GetSpeech (const std::string& name)
+    SpeechData* Scene::GetSpeech (int id)
     {
-        if (m_Speeches.find (name) != m_Speeches.end ())
+        for (std::map<int, SpeechData>::iterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
         {
-            return &m_Speeches[name];
+            if (it->first == id)
+            {
+                return &(*it).second;
+            }
         }
 
         return nullptr;
@@ -523,11 +526,44 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    SpeechData* Scene::GetSpeech (const std::string& name)
+    {
+        for (std::map<int, SpeechData>::iterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
+        {
+            if (it->second.Name == name)
+            {
+                return &(*it).second;
+            }
+        }
+
+        return nullptr;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::RemoveSpeech (int id)
+    {
+        for (std::map<int, SpeechData>::iterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
+        {
+            if (it->first == id)
+            {
+                m_Speeches.erase (it);
+                return;
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Scene::RemoveSpeech (const std::string& name)
     {
-        if (m_Speeches.find (name) != m_Speeches.end ())
+        for (std::map<int, SpeechData>::iterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
         {
-            m_Speeches.erase (name);
+            if (it->second.Name == name)
+            {
+                m_Speeches.erase (it);
+                return;
+            }
         }
     }
 

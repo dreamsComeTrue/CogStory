@@ -255,7 +255,8 @@
     "speeches": [
         {
             "abs_pos": "0 0",
-            "max_chars": 20,
+            "id": 0,
+            "max_chars": 27,
             "max_lines": 3,
             "name": "GREET_1",
             "outcomes": [
@@ -263,7 +264,7 @@
                     "langID": "EN",
                     "texts": [
                         {
-                            "action": "*CHOICE_1",
+                            "action": "asd",
                             "data": "OK",
                             "name": ""
                         },
@@ -283,7 +284,42 @@
             "rel_pos": 5,
             "texts": [
                 {
-                    "data": "So, what you think??",
+                    "data": "So, what you think?? Mister...",
+                    "langID": "EN"
+                },
+                {
+                    "data": "",
+                    "langID": "PL"
+                }
+            ]
+        },
+        {
+            "abs_pos": "0 0",
+            "id": 1,
+            "max_chars": 22,
+            "max_lines": 3,
+            "name": "asd",
+            "outcomes": [
+                {
+                    "langID": "EN",
+                    "texts": [
+                        {
+                            "action": "",
+                            "data": "Bye bye",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "langID": "PL",
+                    "texts": []
+                }
+            ],
+            "region_name": "player_head",
+            "rel_pos": 5,
+            "texts": [
+                {
+                    "data": "Really, didn't know... Nice to meet you!",
                     "langID": "EN"
                 },
                 {

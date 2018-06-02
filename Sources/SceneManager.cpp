@@ -8,6 +8,7 @@
 #include "SceneLoader.h"
 #include "Screen.h"
 #include "states/GamePlayState.h"
+#include "states/MainMenuState.h"
 
 #include <algorithm>
 
@@ -60,7 +61,7 @@ namespace aga
         m_Player->Initialize ();
         m_Player->SetCheckOverlap (true);
 
-        m_Camera.SetFollowActor (m_Player, { 0, 0 });
+        m_Camera.SetFollowActor (m_Player, {0, 0});
 
         m_SpeechFrameManager.Initialize ();
 
@@ -366,7 +367,7 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	AudioSample* SceneManager::SetSceneAudioStream (const std::string& path) 
+    AudioSample* SceneManager::SetSceneAudioStream (const std::string& path)
     {
         if (m_ActiveScene)
         {
@@ -389,7 +390,7 @@ namespace aga
     }
 
     //--------------------------------------------------------------------------------------------------
-    
+
     SpeechFrameManager& SceneManager::GetSpeechFrameManager () { return m_SpeechFrameManager; }
 
     //--------------------------------------------------------------------------------------------------

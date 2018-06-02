@@ -21,20 +21,48 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool EditorSpeechMode::AddOrUpdateSpeech (const std::string& oldName)
+    bool EditorSpeechMode::AddOrUpdateSpeech ()
     {
         if (strlen (m_Speech.Name.c_str ()) > 0)
         {
-            std::string nameToFind = oldName != "" ? oldName : m_Speech.Name;
             SceneManager& sceneManager = m_Editor->GetMainLoop ()->GetSceneManager ();
-            SpeechData* speech = sceneManager.GetActiveScene ()->GetSpeech (nameToFind);
+            SpeechData* speech = sceneManager.GetActiveScene ()->GetSpeech (m_Speech.ID);
 
             if (speech)
             {
-                sceneManager.GetActiveScene ()->RemoveSpeech (nameToFind);
+                std::map<int, SpeechData>& speeches
+                    = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
+                for (std::map<int, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
+                {
+                    std::map<int, std::vector<SpeechOutcome>>& outcomes = it->second.Outcomes;
+
+                    for (std::map<int, std::vector<SpeechOutcome>>::iterator it2 = outcomes.begin ();
+                         it2 != outcomes.end (); ++it2)
+                    {
+                        for (SpeechOutcome& out : it2->second)
+                        {
+                            if (out.Action == speech->Name)
+                            {
+                                out.Action = m_Speech.Name;
+                            }
+                        }
+                    }
+                }
+
+                speech->AbsoluteFramePosition = m_Speech.AbsoluteFramePosition;
+                speech->RelativeFramePosition = m_Speech.RelativeFramePosition;
+                speech->ActorRegionName = m_Speech.ActorRegionName;
+                speech->MaxCharsInLine = m_Speech.MaxCharsInLine;
+                speech->MaxLines = m_Speech.MaxLines;
+                speech->Name = m_Speech.Name;
+                speech->Text = m_Speech.Text;
+                speech->Outcomes = m_Speech.Outcomes;
+            }
+            else
+            {
+                sceneManager.GetActiveScene ()->AddSpeech (m_Speech);
             }
 
-            sceneManager.GetActiveScene ()->AddSpeech (m_Speech);
             m_Editor->GetEditorSpeechMode ().Clear ();
 
             return true;
@@ -45,9 +73,9 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorSpeechMode::RemoveSpeech (const std::string& name)
+    void EditorSpeechMode::RemoveSpeech (int id)
     {
-        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveSpeech (name);
+        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveSpeech (id);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -59,7 +87,7 @@ namespace aga
         m_Speech.MaxCharsInLine = 0;
         m_Speech.MaxLines = 0;
         m_Speech.RelativeFramePosition = BottomCenter;
-        m_Speech.AbsoluteFramePosition = { 0, 0 };
+        m_Speech.AbsoluteFramePosition = {0, 0};
         m_Speech.Text.clear ();
         m_Speech.Outcomes.clear ();
     }

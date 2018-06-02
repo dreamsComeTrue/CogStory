@@ -18,11 +18,18 @@ namespace aga
         EditorSpeechWindow (Editor* editor, Gwk::Controls::Canvas* canvas);
 
         void Show ();
+        void UpdateSpeechesTree ();
+        Gwk::Controls::WindowControl* GetSceneWindow () { return m_SceneWindow; }
 
+    private:
         void OnSave ();
         void OnRemove ();
         void OnOutcome ();
+        void OnPreview ();
 
+        void SelectSpeech (int id);
+
+        void OnWindoClosed ();
         void OnAccept ();
         void OnCancel ();
         void OnSpeechSelect (Gwk::Controls::Base*);
@@ -31,15 +38,11 @@ namespace aga
         void OnRegionNameSelected ();
         void OnTextChanged ();
 
-        void OnMaxCharsChanged ();
-        void OnMaxLinesChanged ();
-
         void OnPositionTypeChanged ();
         void OnPositionXChanged ();
         void OnPositionYChanged ();
 
         void UpdateOutcomes ();
-        void UpdateSpeechesTree ();
 
         void OnOutcomeIDTextChanged (Gwk::Controls::Base* control);
         void OnOutcomeDataTextChanged (Gwk::Controls::Base* control);
@@ -48,7 +51,7 @@ namespace aga
         void OnDownOutcome (Gwk::Controls::Base* control);
         void OnRemoveOutcome (Gwk::Controls::Base* control);
 
-        Gwk::Controls::WindowControl* GetSceneWindow () { return m_SceneWindow; }
+        void ClearControls ();
 
     private:
         Editor* m_Editor;
@@ -57,6 +60,7 @@ namespace aga
 
         Gwk::Controls::WindowControl* m_SceneWindow;
         Gwk::Controls::TreeControl* m_SpeechesTree;
+        Gwk::Controls::TextBox* m_IDTextBox;
         Gwk::Controls::TextBox* m_NameTextBox;
         Gwk::Controls::ComboBox* m_LanguageCombo;
         Gwk::Controls::ComboBox* m_RegionCombo;

@@ -87,7 +87,7 @@ namespace aga
 
     void EditorOpenSceneWindow::OnBrowse ()
     {
-        std::string path = GetDataPath () + "scenes/";
+        std::string path = GetDataPath () + "scenes/x/";
 
         ALLEGRO_FILECHOOSER* fileOpenDialog
             = al_create_native_file_dialog (path.c_str (), "Open scene file", "*.scn", 0);

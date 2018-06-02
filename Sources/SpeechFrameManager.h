@@ -42,9 +42,9 @@ namespace aga
         void Clear ();
 
         SpeechFrame* AddSpeechFrame (const std::string& id, const std::string& text, Rect rect,
-                                     bool shouldBeHandled = true, const std::string& regionName = "");
+            bool shouldBeHandled = true, const std::string& regionName = "");
         SpeechFrame* AddSpeechFrame (const std::string& id, const std::string& text, Point pos, int maxLineCharsCount,
-                                     int linesCount, bool shouldBeHandled = true, const std::string& regionName = "");
+            int linesCount, bool shouldBeHandled = true, const std::string& regionName = "");
 
         SpeechFrame* AddSpeechFrame (SpeechData* speechData, bool shouldBeHandled = true);
 
@@ -55,9 +55,11 @@ namespace aga
 
         SceneManager* GetSceneManager ();
 
+        std::map<std::string, SpeechFrame*>& GetSpeechFrames () { return m_Speeches; }
+
     private:
-        Point GetFramePos (SpeechFramePosition position, Point absolutePos, int maxCharsInLine, int maxLines,
-                           bool showActor);
+        Point GetFramePos (
+            SpeechFramePosition position, Point absolutePos, int maxCharsInLine, int maxLines, bool showActor);
         Point GetTextRectSize (int maxLineCharsCount, int linesCount);
 
     private:

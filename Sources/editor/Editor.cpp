@@ -3,12 +3,12 @@
 #include "Editor.h"
 #include "AtlasManager.h"
 #include "EditorActorWindow.h"
+#include "EditorComponentWindow.h"
 #include "EditorFlagPointWindow.h"
 #include "EditorOpenSceneWindow.h"
 #include "EditorSaveSceneWindow.h"
 #include "EditorSceneWindow.h"
 #include "EditorScriptWindow.h"
-#include "EditorComponentWindow.h"
 #include "EditorSpeechWindow.h"
 #include "EditorTriggerAreaWindow.h"
 #include "EditorWindows.h"
@@ -166,6 +166,7 @@ namespace aga
             m_SpeechWindow = new EditorSpeechWindow (this, m_MainCanvas);
             m_ActorWindow = new EditorActorWindow (this, m_MainCanvas);
             m_InfoWindow = new EditorInfoWindow (this, m_MainCanvas);
+            m_QuestionWindow = new EditorQuestionWindow (this, m_MainCanvas);
             m_InputWindow = new EditorInputWindow (this, m_MainCanvas);
             m_ScriptWindow = new EditorScriptWindow (this, m_MainCanvas);
             m_ComponentWindow = new EditorComponentWindow (this, m_MainCanvas);
@@ -195,8 +196,8 @@ namespace aga
         decreaseGridButton = new Gwk::Controls::Button (m_MainCanvas);
         decreaseGridButton->SetText ("---");
         decreaseGridButton->SetWidth (45);
-        decreaseGridButton->SetPos (increaseGridButton->GetPos ().x + increaseGridButton->GetSize ().x + 10,
-                                    showGridButton->Bottom () + 5);
+        decreaseGridButton->SetPos (
+            increaseGridButton->GetPos ().x + increaseGridButton->GetSize ().x + 10, showGridButton->Bottom () + 5);
         decreaseGridButton->onPress.Add (this, &Editor::OnGridDecrease);
 
         sceneButton = new Gwk::Controls::Button (m_MainCanvas);
@@ -354,6 +355,7 @@ namespace aga
         SAFE_DELETE (m_SpeechWindow);
         SAFE_DELETE (m_ActorWindow);
         SAFE_DELETE (m_InfoWindow);
+        SAFE_DELETE (m_QuestionWindow);
         SAFE_DELETE (m_InputWindow);
         SAFE_DELETE (m_EditorSceneWindow);
         SAFE_DELETE (m_ScriptWindow);
@@ -427,10 +429,10 @@ namespace aga
     bool Editor::IsEditorCanvasNotCovered ()
     {
         return ((m_CursorMode == CursorMode::TileSelectMode || m_CursorMode == CursorMode::TileEditMode
-                 || m_CursorMode == CursorMode::EditPhysBodyMode)
-                && !m_EditorSceneWindow->GetSceneWindow ()->Visible () && !m_SpeechWindow->GetSceneWindow ()->Visible ()
-                && !m_TriggerAreaWindow->GetSceneWindow ()->Visible ()
-                && !m_FlagPointWindow->GetSceneWindow ()->Visible () && !m_ActorWindow->GetSceneWindow ()->Visible ());
+                    || m_CursorMode == CursorMode::EditPhysBodyMode)
+            && !m_EditorSceneWindow->GetSceneWindow ()->Visible () && !m_SpeechWindow->GetSceneWindow ()->Visible ()
+            && !m_TriggerAreaWindow->GetSceneWindow ()->Visible () && !m_FlagPointWindow->GetSceneWindow ()->Visible ()
+            && !m_ActorWindow->GetSceneWindow ()->Visible ());
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -734,7 +736,7 @@ namespace aga
                         m_EditorActorMode.GetSelectedActor (), true);
 
                     al_draw_rectangle (r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X,
-                                       r.GetBottomRight ().Y, COLOR_RED, 2);
+                        r.GetBottomRight ().Y, COLOR_RED, 2);
                 }
 
                 if (m_CursorMode == CursorMode::TileSelectMode)
@@ -749,7 +751,7 @@ namespace aga
                     if (m_EditorActorMode.GetActorUnderCursor ())
                     {
                         al_draw_rectangle (r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X,
-                                           r.GetBottomRight ().Y, COLOR_YELLOW, 2);
+                            r.GetBottomRight ().Y, COLOR_YELLOW, 2);
                     }
                 }
             }
@@ -767,6 +769,10 @@ namespace aga
             {
                 m_ActorWindow->RenderActorImage ();
             }
+
+            SpeechFrameManager& frameManager = m_MainLoop->GetSceneManager ().GetSpeechFrameManager ();
+            frameManager.Update (deltaTime);
+            frameManager.Render (deltaTime);
         }
     }
 
@@ -797,7 +803,7 @@ namespace aga
 
     void Editor::DrawGrid ()
     {
-        const ALLEGRO_COLOR LIGHT_GRAY{ 0.4f, 0.4f, 0.4f, 1.0f };
+        const ALLEGRO_COLOR LIGHT_GRAY{0.4f, 0.4f, 0.4f, 1.0f};
 
         const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
         Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
@@ -842,7 +848,7 @@ namespace aga
         Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
         Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
 
-        Rect r = Rect{ { point.X - outsets, point.Y - outsets }, { point.X + outsets, point.Y + outsets } };
+        Rect r = Rect{{point.X - outsets, point.Y - outsets}, {point.X + outsets, point.Y + outsets}};
 
         if (InsideRect ((mouseX + translate.X) * 1 / scale.X, (mouseY + translate.Y) * 1 / scale.Y, r))
         {
@@ -870,7 +876,7 @@ namespace aga
             finalY = std::floor ((finalY) / gridSizeScale) * gridSizeScale;
         }
 
-        return { finalX / scale.X, finalY / scale.Y };
+        return {finalX / scale.X, finalY / scale.Y};
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -883,8 +889,8 @@ namespace aga
 
             ResetSettings ();
 
-            UpdateSceneNameLabel (std::string ("SCENE: ")
-                                  + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ());
+            UpdateSceneNameLabel (
+                std::string ("SCENE: ") + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ());
         };
 
         m_InputWindow->Show ("Are you sure clearing current scene?", "", YesFunc, nullptr);
