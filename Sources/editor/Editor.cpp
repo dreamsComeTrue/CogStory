@@ -239,19 +239,19 @@ namespace aga
         newPolyButton->onPress.Add (this, &Editor::OnNewPoly);
         newPolyButton->Hide ();
 
-        speechButton = new Gwk::Controls::Button (m_MainCanvas);
-        speechButton->SetText ("SPEECH");
-        speechButton->SetPos (20, selectModeButton->Bottom () + 40);
-        speechButton->onPress.Add (this, &Editor::OnSpeech);
-
         actorButton = new Gwk::Controls::Button (m_MainCanvas);
-        actorButton->SetText ("ACTOR");
-        actorButton->SetPos (20, speechButton->Bottom () + 5);
+        actorButton->SetText ("ACTOR (F2)");
+        actorButton->SetPos (20, selectModeButton->Bottom () + 5);
         actorButton->onPress.Add (this, &Editor::OnActorSelected);
 
+        speechButton = new Gwk::Controls::Button (m_MainCanvas);
+        speechButton->SetText ("SPEECH (F3)");
+        speechButton->SetPos (20, actorButton->Bottom () + 5);
+        speechButton->onPress.Add (this, &Editor::OnSpeech);
+
         playButton = new Gwk::Controls::Button (m_MainCanvas);
-        playButton->SetText ("PLAY");
-        playButton->SetPos (20, actorButton->Bottom () + 20);
+        playButton->SetText ("PLAY (F1)");
+        playButton->SetPos (20, speechButton->Bottom () + 20);
         playButton->onPress.Add (this, &Editor::OnPlay);
 
         tilesetCombo = new Gwk::Controls::ComboBox (m_MainCanvas);
@@ -288,11 +288,6 @@ namespace aga
         rightNextTileButton->SetWidth (30);
         rightNextTileButton->SetText (">>");
         rightNextTileButton->onPress.Add (this, &Editor::OnPlay);
-
-        playButton = new Gwk::Controls::Button (m_MainCanvas);
-        playButton->SetText ("PLAY");
-        playButton->SetPos (20, actorButton->Bottom () + 20);
-        playButton->onPress.Add (this, &Editor::OnPlay);
 
         avgFPSLabel = new Gwk::Controls::Label (m_MainCanvas);
         avgFPSLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
@@ -630,6 +625,18 @@ namespace aga
             case ALLEGRO_KEY_F1:
             {
                 OnPlay ();
+                break;
+            }
+
+            case ALLEGRO_KEY_F2:
+            {
+                OnActorSelected ();
+                break;
+            }
+
+            case ALLEGRO_KEY_F3:
+            {
+                OnSpeech ();
                 break;
             }
 

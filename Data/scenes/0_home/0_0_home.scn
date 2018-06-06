@@ -29,7 +29,7 @@
                     "poly": ""
                 }
             ],
-            "pos": "-544 -32",
+            "pos": "-543 -32",
             "rot": "0",
             "scripts": [],
             "size": "272 160",
@@ -65,7 +65,7 @@
                     "poly": "-7 -11 -7 10 8 -0 "
                 }
             ],
-            "pos": "-67 181",
+            "pos": "-219.653 276.352",
             "rot": "270",
             "scripts": [
                 {
@@ -88,7 +88,7 @@
                     "poly": ""
                 }
             ],
-            "pos": "-37 236",
+            "pos": "-120.667 236.757",
             "rot": "-90",
             "scripts": [
                 {
@@ -203,10 +203,10 @@
             "name": "head1",
             "phys": [
                 {
-                    "poly": ""
+                    "poly": "-5487.66 -2178.54 "
                 }
             ],
-            "pos": "-102 140",
+            "pos": "-129.541 151.424",
             "rot": "0",
             "scripts": [],
             "size": "64 64",
@@ -243,7 +243,7 @@
         }
     ],
     "max_size": "464 332",
-    "min_size": "-544 -256",
+    "min_size": "-543 -256",
     "name": "Home",
     "player_start": "3 260",
     "scripts": [
@@ -319,7 +319,7 @@
             "rel_pos": 5,
             "texts": [
                 {
-                    "data": "Really, didn't know... Nice to meet you!",
+                    "data": "[WAIT=200]Really[/WAIT], [COLOR=YELLOW]didn't[/COLOR] know... [COLOR=GREEN]Nice to meet[/COLOR] [WAIT=300]you![/WAIT]",
                     "langID": "EN"
                 },
                 {

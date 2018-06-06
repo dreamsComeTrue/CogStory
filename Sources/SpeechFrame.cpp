@@ -5,11 +5,11 @@
 #include "AtlasManager.h"
 #include "Font.h"
 #include "MainLoop.h"
+#include "Scene.h"
 #include "SceneManager.h"
 #include "Screen.h"
-#include "SpeechFrameManager.h"
 #include "Script.h"
-#include "Scene.h"
+#include "SpeechFrameManager.h"
 
 #include <stack>
 
@@ -25,7 +25,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     SpeechFrame::SpeechFrame (SpeechFrameManager* manager, const std::string& text, Rect rect, bool shouldBeHandled,
-                              const std::string& regionName)
+        const std::string& regionName)
         : m_Manager (manager)
         , m_DrawRect (rect)
         , m_Visible (true)
@@ -47,12 +47,14 @@ namespace aga
         , m_DelayCounter (0.0f)
         , m_IsDelayed (false)
         , m_ActualChoiceIndex (0)
+        , m_AttrColorIndex (0)
+        , m_AttrDelayIndex (0)
     {
         Atlas* atlas = m_Manager->GetSceneManager ()->GetMainLoop ()->GetAtlasManager ().GetAtlas (
             GetBaseName (GetResourcePath (PACK_MENU_UI)));
         Rect atlasRect = atlas->GetRegion ("text_frame").Bounds;
         ALLEGRO_BITMAP* bmp = al_create_sub_bitmap (atlas->GetImage (), atlasRect.GetPos ().X, atlasRect.GetPos ().Y,
-                                                    atlasRect.GetSize ().Width, atlasRect.GetSize ().Height);
+            atlasRect.GetSize ().Width, atlasRect.GetSize ().Height);
 
         m_FrameBitmap = create_nine_patch_bitmap (bmp, true);
 
@@ -208,6 +210,7 @@ namespace aga
                 if (!m_IsDelayed)
                 {
                     ++m_CurrentIndex;
+                    ++m_AttrDelayIndex;
                 }
 
                 if (m_CurrentIndex > m_TextLines[m_CurrentLine].size () - 1)
@@ -308,16 +311,18 @@ namespace aga
 
                         //  Check, if we are using plain OUTCOME reference,
                         //  or one with REGISTERED_CHOICE_PREFIX (usually '*' mark) as the prefix
-                        //  which coresponds to function registered with 'RegisterChoiceFunction' 
+                        //  which coresponds to function registered with 'RegisterChoiceFunction'
                         if (StartsWith (choice.Action, REGISTERED_CHOICE_PREFIX))
                         {
                             std::string actionName = choice.Action.substr (REGISTERED_CHOICE_PREFIX.length ());
-                            std::map<std::string, asIScriptFunction*>& choiceFunctions = m_Manager->GetSceneManager ()->GetActiveScene ()->GetChoiceFunctions ();
+                            std::map<std::string, asIScriptFunction*>& choiceFunctions
+                                = m_Manager->GetSceneManager ()->GetActiveScene ()->GetChoiceFunctions ();
                             asIScriptFunction* func = choiceFunctions[actionName];
 
                             if (func)
                             {
-                                asIScriptContext* ctx = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScriptManager ().GetContext ();
+                                asIScriptContext* ctx
+                                    = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScriptManager ().GetContext ();
                                 ctx->Prepare (func);
 
                                 if (ctx->Execute () == asEXECUTION_FINISHED)
@@ -389,8 +394,11 @@ namespace aga
 
     void SpeechFrame::SetText (const std::string& text)
     {
-        m_Text = text;
+        m_TextLines.clear ();
         m_Attributes.clear ();
+
+        m_OriginalText = text;
+        m_Text = text;
         PreprocessText (m_Text);
 
         Font& font = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetFont ();
@@ -399,6 +407,8 @@ namespace aga
 
         m_LineHeight = ascent + descent;
         m_TextLines = BreakLine (m_Text, m_DrawRect.GetSize ().Width - 2 * SPEECH_FRAME_TEXT_INSETS);
+        m_AttrColorIndex = 0;
+        m_AttrDelayIndex = 0;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -412,7 +422,7 @@ namespace aga
 
         m_Choices.push_back (choice);
 
-        SetText (m_Text + "\n" + text);
+        SetText (m_OriginalText + "\n" + text);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -428,7 +438,7 @@ namespace aga
 
         //  Draw background
         draw_nine_patch_bitmap (m_FrameBitmap, m_DrawRect.GetPos ().X, m_DrawRect.GetPos ().Y,
-                                m_DrawRect.GetSize ().Width, m_DrawRect.GetSize ().Height);
+            m_DrawRect.GetSize ().Width, m_DrawRect.GetSize ().Height);
 
         int maxLines = GetMaxLinesCanFit ();
         int currentDrawingLine = GetCurrentDrawingLine ();
@@ -437,7 +447,7 @@ namespace aga
         int x, y, w, h;
         al_get_clipping_rectangle (&x, &y, &w, &h);
         al_set_clipping_rectangle (m_DrawRect.GetPos ().X, m_DrawRect.GetPos ().Y, m_DrawRect.GetSize ().Width,
-                                   m_DrawRect.GetSize ().Height - SPEECH_FRAME_LINE_OFFSET);
+            m_DrawRect.GetSize ().Height - SPEECH_FRAME_LINE_OFFSET);
 
         float yOffset = -1;
 
@@ -462,14 +472,15 @@ namespace aga
                 yOffset = drawPoint.Y;
             }
 
-            int currentCharIndex = 0;
+            m_AttrColorIndex = 0;
+
             for (int j = 0; j < currentDrawingLine; ++j)
             {
-                currentCharIndex += m_TextLines[j].size ();
+                m_AttrColorIndex += m_TextLines[j].size ();
             }
 
             float advance = GetTextAdvance (currentDrawingLine);
-            DrawTextLine (line, currentCharIndex, drawPoint, advance);
+            DrawTextLine (line, drawPoint, advance);
         }
 
         al_set_clipping_rectangle (x, y, w, h);
@@ -499,8 +510,8 @@ namespace aga
                 = std::min (m_DrawRect.GetSize ().Height - 2 * characterOffset.Y, SPEECH_FRAME_MAX_CHAR_EDGE_LENGTH);
             AtlasRegion region = m_Atlas->GetRegion (m_ActorRegionName);
 
-            float ratio = std::min ((float)edgeLength / region.Bounds.Size.Width,
-                                    (float)edgeLength / region.Bounds.Size.Height);
+            float ratio = std::min (
+                (float)edgeLength / region.Bounds.Size.Width, (float)edgeLength / region.Bounds.Size.Height);
 
             float xPos = m_DrawRect.GetPos ().X - ratio * region.Bounds.Size.Width * 0.5f - characterOffset.X;
             float yPos
@@ -512,44 +523,43 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SpeechFrame::DrawTextLine (const std::string& line, int currentCharIndex, Point drawPoint, int advance)
+    void SpeechFrame::DrawTextLine (const std::string& line, Point drawPoint, int advance)
     {
         Font& font = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetFont ();
 
         for (int j = 0; j < line.length (); ++j)
         {
-            ALLEGRO_COLOR color = { 0.9f, 0.9f, 0.9f, 1.0f };
+            ALLEGRO_COLOR color = {0.9f, 0.9f, 0.9f, 1.0f};
 
             for (int k = 0; k < m_Attributes.size (); ++k)
             {
                 SpeechTextAttribute& attr = m_Attributes[k];
 
-                if (currentCharIndex >= attr.BeginIndex && currentCharIndex <= attr.EndIndex)
+                if (m_AttrColorIndex + j >= attr.BeginIndex && m_AttrColorIndex + j <= attr.EndIndex)
                 {
                     if (attr.AttributesMask & ATTRIBUTE_COLOR)
                     {
                         color = attr.Color;
                     }
+                }
 
+                if (m_AttrDelayIndex >= attr.BeginIndex && m_AttrDelayIndex <= attr.EndIndex)
+                {
                     if (attr.AttributesMask & ATTRIBUTE_DELAY && !m_IsDelayed && attr.Delay > 0.0f)
                     {
                         m_IsDelayed = true;
                         m_DelayCounter = attr.Delay;
                     }
-
-                    break;
                 }
             }
-
-            ++currentCharIndex;
 
             std::string begin = line.substr (0, j);
             if (!(isspace (line[j]) && TrimString (begin) == ""))
             {
                 std::string charToDraw = std::string (1, line[j]);
 
-                font.DrawText (FONT_NAME_SPEECH_FRAME, color, drawPoint.X + advance, drawPoint.Y, charToDraw,
-                               GetTextAlign ());
+                font.DrawText (
+                    FONT_NAME_SPEECH_FRAME, color, drawPoint.X + advance, drawPoint.Y, charToDraw, GetTextAlign ());
 
                 if (charToDraw == " ")
                 {
@@ -600,7 +610,7 @@ namespace aga
         if (currentDrawingLine > 0)
         {
             atlas->DrawRegion (regionName, m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width - xOffset,
-                               m_DrawRect.GetPos ().Y + yOffset, 1.0f, 1.0f, DegressToRadians (180.0f), false);
+                m_DrawRect.GetPos ().Y + yOffset, 1.0f, 1.0f, DegressToRadians (180.0f), false);
         }
 
         //  How many lines are hidden
@@ -610,8 +620,7 @@ namespace aga
         if (currentDrawingLine < diff)
         {
             atlas->DrawRegion (regionName, m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width - xOffset,
-                               m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Height - yOffset, 1.0f, 1.0f, 0.0f,
-                               false);
+                m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Height - yOffset, 1.0f, 1.0f, 0.0f, false);
         }
     }
 
@@ -639,7 +648,7 @@ namespace aga
 
         yPoint = yPoint + lineIndex * (m_LineHeight + SPEECH_FRAME_LINE_OFFSET);
 
-        return { xPoint, yPoint };
+        return {xPoint, yPoint};
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -738,6 +747,8 @@ namespace aga
     {
         m_Visible = true;
         m_CurrentIndex = 0;
+        m_AttrColorIndex = 0;
+        m_AttrDelayIndex = 0;
         m_CurrentLine = 0;
         m_CurrentDrawTime = 0;
         m_ChosenLineDelta = 0;
@@ -837,12 +848,23 @@ namespace aga
                         attr.Delay = atof (value.c_str ());
                         attr.BeginIndex -= 1;
 
+                        if (attr.BeginIndex < 0)
+                        {
+                            attr.BeginIndex = 0;
+                        }
+
                         attr.AttributesMask |= ATTRIBUTE_DELAY;
                     }
 
                     attributes.push (attr);
 
                     text.erase (currIndex, close - currIndex + 1);
+                    currIndex -= 1;
+
+                    if (currIndex < 0)
+                    {
+                        currIndex = 0;
+                    }
                 }
             }
 

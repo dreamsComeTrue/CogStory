@@ -48,7 +48,7 @@ namespace aga
     public:
         SpeechFrame (SpeechFrameManager* manager);
         SpeechFrame (SpeechFrameManager* manager, const std::string& text, Rect rect, bool shouldBeHandled = true,
-                     const std::string& regionName = "");
+            const std::string& regionName = "");
         virtual ~SpeechFrame ();
 
         bool Update (float deltaTime);
@@ -85,7 +85,7 @@ namespace aga
 
     private:
         void DrawActorSprite ();
-        void DrawTextLine (const std::string& line, int currentCharIndex, Point drawPoint, int advance);
+        void DrawTextLine (const std::string& line, Point drawPoint, int advance);
         void DrawChoiceArrow (float yOffset);
         void DrawScrollArrows (int currentDrawingLine);
 
@@ -116,6 +116,7 @@ namespace aga
         int m_ActualChoiceIndex;
 
         std::string m_Text;
+        std::string m_OriginalText;
         std::vector<std::string> m_TextLines;
         std::vector<SpeechTextAttribute> m_Attributes;
         Rect m_DrawRect;
@@ -147,6 +148,9 @@ namespace aga
 
         float m_DelayCounter;
         bool m_IsDelayed;
+
+        int m_AttrColorIndex;
+        int m_AttrDelayIndex;
 
         std::string m_OutcomeAction;
     };

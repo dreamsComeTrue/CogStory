@@ -108,6 +108,7 @@ namespace aga
         textLabel->SizeToContents ();
 
         m_TextData = new Gwk::Controls::TextBoxMultiline (center);
+        m_TextData->SetFont (m_TextData->GetFont ()->facename, 15, false);
         m_TextData->SetTextColor (Gwk::Colors::White);
         m_TextData->SetPos (xOffset, textLabel->Bottom () + 5);
         m_TextData->SetSize (m_LanguageCombo->Width (), 70);
