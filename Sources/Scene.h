@@ -43,7 +43,7 @@ namespace aga
         int MaxCharsInLine = 0;
         int MaxLines = 0;
         Point AbsoluteFramePosition = {0, 0};
-        SpeechFramePosition RelativeFramePosition = SpeechFramePosition::Center;
+        ScreenRelativePosition RelativeFramePosition = ScreenRelativePosition::Center;
     };
 
     struct FlagPoint
@@ -151,6 +151,9 @@ namespace aga
         AudioSample* SetSceneAudioStream (const std::string& path);
         AudioSample* GetSceneAudioStream () { return m_SceneAudioStream; }
 
+        void SetSuppressSceneInfo (bool suppress) { m_SuppressSceneInfo = suppress; }
+        bool IsSuppressSceneInfo () const { return m_SuppressSceneInfo; }
+
         void ResetAllActorsPositions ();
 
         void DrawTriggerAreas ();
@@ -184,6 +187,8 @@ namespace aga
 
         Point m_PlayerStartLocation;
         AudioSample* m_SceneAudioStream;
+
+        bool m_SuppressSceneInfo;
     };
 }
 

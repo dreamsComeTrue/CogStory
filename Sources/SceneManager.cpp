@@ -18,6 +18,7 @@ namespace aga
 
     static int SCENE_TWEEN_ID = 200000;
     static int SCENE_TWEEN_INTRO_ID = 200001;
+    static int SCENE_TWEEN_OVERLAY_ID = 200002;
 
     //--------------------------------------------------------------------------------------------------
 
@@ -34,6 +35,11 @@ namespace aga
         , m_DrawBoundingBox (true)
         , m_DrawActorsNames (true)
         , m_NextScene (nullptr)
+        , m_OverlayText ("")
+        , m_OverlayPosition (Center)
+        , m_OverlayDuration (2000.f)
+        , m_OverlayActive (false)
+
     {
     }
 
@@ -138,7 +144,10 @@ namespace aga
             m_ActiveScene = scene;
             m_ActiveScene->BeforeEnter ();
 
-            SceneIntro (2500.0f);
+            if (!scene->IsSuppressSceneInfo ())
+            {
+                SceneIntro (2500.0f);
+            }
         }
     }
 
@@ -236,7 +245,21 @@ namespace aga
             al_get_blender (&blendOp, &blendSrc, &blendDst);
             al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
 
-            PrintCenterText (m_ActiveScene->GetName ());
+            if (!m_ActiveScene->IsSuppressSceneInfo ())
+            {
+                PrintOverlayText (m_ActiveScene->GetName (), TopCenter);
+            }
+
+            al_set_blender (blendOp, blendSrc, blendDst);
+        }
+
+        if (m_OverlayActive)
+        {
+            int blendOp, blendSrc, blendDst;
+            al_get_blender (&blendOp, &blendSrc, &blendDst);
+            al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+
+            PrintOverlayText (m_OverlayText, m_OverlayPosition);
 
             al_set_blender (blendOp, blendSrc, blendDst);
         }
@@ -365,7 +388,7 @@ namespace aga
         return nullptr;
     }
 
-	//--------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
 
     AudioSample* SceneManager::SetSceneAudioStream (const std::string& path)
     {
@@ -377,7 +400,7 @@ namespace aga
         return nullptr;
     }
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
     AudioSample* SceneManager::GetSceneAudioStream ()
     {
@@ -387,6 +410,23 @@ namespace aga
         }
 
         return nullptr;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::SetSuppressSceneInfo (bool suppress)
+    {
+        if (m_ActiveScene)
+        {
+            m_ActiveScene->SetSuppressSceneInfo (suppress);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool SceneManager::IsSuppressSceneInfo () const
+    {
+        return m_ActiveScene ? m_ActiveScene->IsSuppressSceneInfo () : false;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -467,12 +507,90 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneManager::PrintCenterText (const std::string& text)
+    void SceneManager::PrintOverlayText (const std::string& text, ScreenRelativePosition screenPos)
     {
         const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
         Font& font = m_MainLoop->GetScreen ()->GetFont ();
+        Point textSize = font.GetTextDimensions (FONT_NAME_MENU_TITLE, text);
+        float offset = 30.f;
 
-        font.DrawText (FONT_NAME_MENU_TITLE, m_CenterTextColor, winSize.Width * 0.5f, 50, text, ALLEGRO_ALIGN_CENTER);
+        Point pos;
+        int align = 0;
+
+        switch (screenPos)
+        {
+        case aga::TopLeft:
+            pos = {offset, offset};
+            align = ALLEGRO_ALIGN_LEFT;
+            break;
+
+        case aga::TopCenter:
+            pos = {winSize.Width * 0.5f, offset};
+            align = ALLEGRO_ALIGN_CENTER;
+            break;
+
+        case aga::TopRight:
+            pos = {winSize.Width - offset, offset};
+            align = ALLEGRO_ALIGN_RIGHT;
+            break;
+
+        case aga::BottomLeft:
+            pos = {offset, winSize.Height - textSize.Height - offset};
+            align = ALLEGRO_ALIGN_LEFT;
+            break;
+
+        case aga::BottomCenter:
+            pos = {winSize.Width * 0.5f, winSize.Height - textSize.Height - offset};
+            align = ALLEGRO_ALIGN_CENTER;
+            break;
+
+        case aga::BottomRight:
+            pos = {winSize.Width - textSize.Height, winSize.Height - textSize.Height - offset};
+            align = ALLEGRO_ALIGN_RIGHT;
+            break;
+
+        case aga::Center:
+            pos = {winSize.Width * 0.5f, winSize.Height * 0.5f - textSize.Height * 0.5f};
+            align = ALLEGRO_ALIGN_CENTER;
+            break;
+        }
+
+        font.DrawText (FONT_NAME_MENU_TITLE, m_CenterTextColor, pos.X, pos.Y, text, align);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::SetOverlayText (const std::string& text, float duration, ScreenRelativePosition pos)
+    {
+        m_OverlayText = text;
+        m_OverlayDuration = duration;
+        m_OverlayPosition = pos;
+        m_OverlayActive = true;
+
+        m_CenterTextColor = al_map_rgb (160, 160, 160);
+
+        auto introFunc = [&](float v) {
+            m_CenterTextColor.a = std::min (1.0f, v);
+
+            return false;
+        };
+
+        float halfTime = duration * 0.5f;
+        tweeny::tween<float> tween = tweeny::from (0.0f)
+                                         .to (1.0f)
+                                         .during (halfTime)
+                                         .to (1.0f)
+                                         .during (duration)
+                                         .to (0.0f)
+                                         .during (halfTime)
+                                         .onStep (introFunc);
+
+        m_MainLoop->GetTweenManager ().RemoveTween (SCENE_TWEEN_OVERLAY_ID);
+        m_MainLoop->GetTweenManager ().AddTween (SCENE_TWEEN_OVERLAY_ID, tween, [&](int) {
+            m_OverlayActive = false;
+            m_OverlayText = "";
+            m_OverlayDuration = 0.f;
+        });
     }
 
     //--------------------------------------------------------------------------------------------------

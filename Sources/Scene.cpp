@@ -83,6 +83,7 @@ namespace aga
         , m_BackgroundColor (al_map_rgb (60, 60, 70))
         , m_ActorsTreeChanged (false)
         , m_SceneAudioStream (nullptr)
+        , m_SuppressSceneInfo (false)
     {
     }
 

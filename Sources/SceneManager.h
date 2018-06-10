@@ -72,12 +72,18 @@ namespace aga
         void SetDrawActorsNames (bool enable);
         bool IsDrawActorsNames ();
 
+        void SetSuppressSceneInfo (bool suppress);
+        bool IsSuppressSceneInfo () const;
+
         AudioSample* SetSceneAudioStream (const std::string& path);
         AudioSample* GetSceneAudioStream ();
 
+        void SetOverlayText (
+            const std::string& text, float duration = 2000.f, ScreenRelativePosition pos = BottomRight);
+
     private:
         void SceneIntro (float duration = 1000.f);
-        void PrintCenterText (const std::string& text);
+        void PrintOverlayText (const std::string& text, ScreenRelativePosition pos = BottomRight);
 
     private:
         SpeechFrameManager m_SpeechFrameManager;
@@ -99,6 +105,11 @@ namespace aga
         bool m_DrawPhysData;
         bool m_DrawBoundingBox;
         bool m_DrawActorsNames;
+
+        std::string m_OverlayText;
+        ScreenRelativePosition m_OverlayPosition;
+        float m_OverlayDuration;
+        bool m_OverlayActive;
     };
 }
 
