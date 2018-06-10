@@ -12,11 +12,7 @@
 
 namespace aga
 {
-    std::map<SpeechFramePosition, std::string> g_SpeechFramePosition
-        = {std::make_pair (Absoulte, "Absolute"), std::make_pair (TopLeft, "TopLeft"),
-            std::make_pair (TopCenter, "TopCenter"), std::make_pair (TopRight, "TopRight"),
-            std::make_pair (BottomLeft, "BottomLeft"), std::make_pair (BottomCenter, "BottomCenter"),
-            std::make_pair (BottomRight, "BottomRight"), std::make_pair (Center, "Center")};
+    //--------------------------------------------------------------------------------------------------
 
     typedef std::map<std::string, SpeechFrame*>::iterator SpeechFrameIterator;
 
@@ -261,7 +257,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Point SpeechFrameManager::GetFramePos (
-        SpeechFramePosition position, Point absolutePos, int maxCharsInLine, int maxLines, bool showActor)
+        ScreenRelativePosition position, Point absolutePos, int maxCharsInLine, int maxLines, bool showActor)
     {
         const int SCREEN_OFFSET = 10;
         Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();

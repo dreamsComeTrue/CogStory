@@ -12,20 +12,6 @@ namespace aga
     class AudioSample;
     struct SpeechData;
 
-    enum SpeechFramePosition
-    {
-        Absoulte,
-        TopLeft,
-        TopCenter,
-        TopRight,
-        BottomLeft,
-        BottomCenter,
-        BottomRight,
-        Center
-    };
-
-    extern std::map<SpeechFramePosition, std::string> g_SpeechFramePosition;
-
     class SpeechFrameManager : public Lifecycle
     {
     public:
@@ -59,7 +45,7 @@ namespace aga
 
     private:
         Point GetFramePos (
-            SpeechFramePosition position, Point absolutePos, int maxCharsInLine, int maxLines, bool showActor);
+            ScreenRelativePosition position, Point absolutePos, int maxCharsInLine, int maxLines, bool showActor);
         Point GetTextRectSize (int maxLineCharsCount, int linesCount);
 
     private:

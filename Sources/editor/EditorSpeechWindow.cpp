@@ -168,7 +168,7 @@ namespace aga
         m_RelPositionCombo->SetPos (relPosLabel->Right () + 5, m_MaxLinesNumeric->Bottom () + 5);
         m_RelPositionCombo->SetWidth (195);
 
-        for (const auto& s : g_SpeechFramePosition)
+        for (const auto& s : g_ScreenRelativePosition)
         {
             m_RelPositionCombo->AddItem (s.second, s.second);
         }
@@ -237,7 +237,7 @@ namespace aga
     {
         SpeechData& speechData = m_Editor->GetEditorSpeechMode ().GetSpeechData ();
 
-        for (const auto& pos : g_SpeechFramePosition)
+        for (const auto& pos : g_ScreenRelativePosition)
         {
             if (pos.second == m_RelPositionCombo->GetSelectedItem ()->GetText ())
             {
@@ -404,7 +404,7 @@ namespace aga
 
     void EditorSpeechWindow::OnPositionTypeChanged ()
     {
-        for (const auto& pos : g_SpeechFramePosition)
+        for (const auto& pos : g_ScreenRelativePosition)
         {
             if (pos.second == m_RelPositionCombo->GetSelectedItem ()->GetText ())
             {
@@ -682,7 +682,7 @@ namespace aga
         m_LanguageCombo->SelectItemByName ("EN");
         m_MaxCharsInLineNumeric->SetIntValue (0);
         m_MaxLinesNumeric->SetIntValue (0);
-        m_RelPositionCombo->SetValue (g_SpeechFramePosition[BottomCenter]);
+        m_RelPositionCombo->SetValue (g_ScreenRelativePosition[BottomCenter]);
         m_AbsPositionXNumeric->SetIntValue (0);
         m_AbsPositionYNumeric->SetIntValue (0);
         m_Editor->GetEditorSpeechMode ().Clear ();
@@ -703,7 +703,7 @@ namespace aga
         m_TextData->SetText (speech.Text[m_LangIndex]);
         m_MaxCharsInLineNumeric->SetIntValue (speech.MaxCharsInLine);
         m_MaxLinesNumeric->SetIntValue (speech.MaxLines);
-        m_RelPositionCombo->SelectItemByName (g_SpeechFramePosition[speech.RelativeFramePosition]);
+        m_RelPositionCombo->SelectItemByName (g_ScreenRelativePosition[speech.RelativeFramePosition]);
         m_AbsPositionXNumeric->SetIntValue (speech.AbsoluteFramePosition.X);
         m_AbsPositionYNumeric->SetIntValue (speech.AbsoluteFramePosition.Y);
 
