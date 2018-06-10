@@ -7,8 +7,8 @@
 #include "Scene.h"
 #include "SceneManager.h"
 #include "Screen.h"
-#include "StateManager.h"
 #include "Script.h"
+#include "StateManager.h"
 
 namespace aga
 {
@@ -35,7 +35,8 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
-        Script* masterScript = m_MainLoop->GetScriptManager ().LoadScriptFromFile (GetDataPath () + "/scripts/Master.script", "master");
+        Script* masterScript
+            = m_MainLoop->GetScriptManager ().LoadScriptFromFile (GetDataPath () + "/scripts/Master.script", "master");
         masterScript->Run ("void Start ()");
 
         m_MainLoop->GetSceneManager ().GetPlayer ()->TemplateBounds.Pos
@@ -52,6 +53,8 @@ namespace aga
 
     void GamePlayState::BeforeEnter ()
     {
+        al_hide_mouse_cursor (m_MainLoop->GetScreen ()->GetDisplay ());
+
         if (m_MainLoop->GetStateManager ().GetPreviousState () != nullptr
             && m_MainLoop->GetStateManager ().GetPreviousState ()->GetName () == MAIN_MENU_STATE_NAME)
         {

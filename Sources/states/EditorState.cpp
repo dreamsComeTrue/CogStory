@@ -54,6 +54,8 @@ namespace aga
 
     void EditorState::BeforeEnter ()
     {
+        al_show_mouse_cursor (m_MainLoop->GetScreen ()->GetDisplay ());
+
         m_Editor->OnResetScale ();
         m_Editor->OnResetTranslate ();
         m_Editor->SetDrawUITiles (true);

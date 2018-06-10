@@ -53,7 +53,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void MainMenuState::BeforeEnter () { m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (60, 60, 70)); }
+    void MainMenuState::BeforeEnter ()
+    {
+        al_hide_mouse_cursor (m_MainLoop->GetScreen ()->GetDisplay ());
+        m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (60, 60, 70));
+    }
 
     //--------------------------------------------------------------------------------------------------
 
