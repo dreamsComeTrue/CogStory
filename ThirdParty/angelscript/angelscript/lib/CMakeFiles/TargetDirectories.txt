@@ -1,0 +1,3 @@
+/home/squall/RobotTales/ThirdParty/anglescript/angelscript/lib/CMakeFiles/rebuild_cache.dir
+/home/squall/RobotTales/ThirdParty/anglescript/angelscript/lib/CMakeFiles/angelscript.dir
+/home/squall/RobotTales/ThirdParty/anglescript/angelscript/lib/CMakeFiles/edit_cache.dir

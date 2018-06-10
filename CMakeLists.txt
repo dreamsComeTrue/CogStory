@@ -10,7 +10,7 @@ set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/Cotire/CMake)
 include(cotire)
 
 cmake_policy(SET CMP0015 NEW)
-link_directories(   ${ROOT_THIRD_PARTY_DIR}/anglescript/angelscript/lib/
+link_directories(   ${ROOT_THIRD_PARTY_DIR}/angelscript/angelscript/lib/
                     ${ROOT_THIRD_PARTY_DIR}/GWork/lib/
                     ./External/allegro/lib/
                     ./External/allegro_deps/lib/
@@ -28,8 +28,8 @@ list(APPEND INCLUDE_DIRS
         Sources/addons/file-watcher/
         ThirdParty/GWork/source/gwork/include/
         ThirdParty/GWork/source/platform/include/
-        ThirdParty/anglescript/angelscript/include
-        ThirdParty/anglescript/add_on
+        ThirdParty/angelscript/angelscript/include
+        ThirdParty/angelscript/add_on
     )
 
 if (WIN32)

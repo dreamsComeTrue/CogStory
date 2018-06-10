@@ -1,0 +1,143 @@
+=== API Documentation ===
+
+  Point
+      Point ()
+      Point (float, float)
+      Log (Point)
+      float X
+      float Y
+      float Width
+      float Height
+
+  Color
+      float r
+      float g
+      float b
+      float a
+      Color COLOR_BLACK
+
+  Rect
+      Rect ()
+      Rect (Point, Point)
+      SetPos (Point)
+      Point GetPos ()
+      SetSize (Point)
+      Point GetSize ()
+
+  Tween
+          = bool TweenFuncPoint (int id, float progress, Point value)
+          = void TweenFuncPointFinish (int)
+      void AddTween (int, Point, Point, int, TweenFuncPoint @+ tf, TweenFuncPointFinish @+ te)
+      void PauseTween (int) 
+      void ResumeTween (int)
+
+  FlagPoint
+      Point Pos
+      string Name
+      FlagPoint@ GetFlagPoint (const string &in)
+
+  Player
+      Player player
+      void SetPosition (Point)
+      void SetPosition (float, float)
+      Point GetPosition ()
+      Point GetSize ()
+      void Move (float, float)
+      void SetCurrentAnimation (const string &in)
+      void SetPreventInput (bool)
+      bool IsPreventInput ()
+
+  Screen
+      Screen screen
+
+  AudioManager
+      AudioSample@ LoadSampleFromFile (const std::string& sampleName, const std::string& path);
+      AudioSample@ GetSample (const std::string& sampleName);
+      void RemoveSample (const std::string& sampleName);
+      void SetEnabled (bool enabled);
+      bool IsEnabled (); 
+
+  AudioSample
+      void Play ()
+      void Stop ()
+      void Pause ()
+      void Resume ()
+      void SetVolume (float volume)
+      void SetLooping (bool loop)
+      bool IsLooping () const
+      void SetFadeIn (float milliseconds)
+      void SetFadeOut (float milliseconds, bool pauseOnFinish)
+
+  TriggerArea
+          = void TriggerFunc (Point)
+      void AddOnEnterCallback (const string &in, TriggerFunc @+ tf)
+      void RemoveOnEnterCallback (const string &in)
+      void AddOnLeaveCallback (const string &in, TriggerFunc @+ tf)
+      void RemoveOnLeaveCallback (const string &in)
+
+  SpeechFrame
+      void Show ()
+      void Hide ()
+      bool IsVisible ()
+      void SetDrawRect (Rect)
+      void SetDrawTextCenter (bool)
+      bool IsDrawTextCenter ()
+
+  SpeechFrameManager
+      SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Rect, bool = true, const string &in = "")
+      SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Point, int, int, bool = true, const string &in="")
+
+  Actor
+      void Move (float, float)
+      void SetPosition (float, float)
+      void SetPosition (Point)
+      Point GetPosition ()
+      Actor@ GetCurrentActor ()
+
+  MovementComponent
+      MovementType
+          MoveHorizontal
+          MoveVertical
+          MovePoints
+          MoveWander
+      void SetEnabled (bool enabled)
+      bool IsEnabled () const
+      MovementComponent@ GetMovementComponent (const string &in)
+      void SetMovementType (MovementType type)
+      MovementType GetMovementType ()
+      void SetMoveExtents (Point min, Point max)
+      void SetSpeed (float speed)
+      float GetSpeed ()
+      void SetWaitLikelihood (float percentage)
+      void SetWalkPoints (array<Point>@+ points)
+          = void MovementCallback (Point)
+      void SetMovementCallback (MovementCallback @+ mc)
+
+  SceneManager
+      void SetActiveScene (const string &in, bool fadeAnim = true)
+      void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, Color color = COLOR_BLACK)
+      void SetSuppressSceneInfo (bool suppress)
+      bool IsSuppressSceneInfo () const
+      void SetOverlayText (const string& in, float duration = 2000.f, ScreenRelativePosition pos = BottomRight)
+      Actor@ GetActor (const string &in)
+      string ChoiceFunction (void)
+      void RegisterChoiceFunction (string, ChoiceFunction @+ func)
+      AudioSample@ SetSceneAudioStream (const string &in path)
+      AudioSample@ GetSceneAudioStream ()
+
+  Camera
+      Camera camera
+      void SetTranslate (float dx, float dy)
+      Point GetScale ()
+      void SetCenter (float, float)
+      void SetFollowActor (Actor@, Point followOffset = Point(0.f, 0.f))
+      void TweenToPoint (Point point, float timeMs = 1000, bool centerScreen = true)
+      void TweenToPoint (Point point, TweenFuncPointFinish @+ te, float timeMs = 1000, bool centerScreen = true)
+
+  Global
+      void Log(const string &in)
+      void Log (float)
+      const Point& GetWindowSize ()
+      float GetDeltaTime ()
+      float GetFPS ()
+      void SetBackgroundColor (Color)

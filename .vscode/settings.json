@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "*.tcc": "cpp",
+        "deque": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "array": "cpp",
+        "forward_list": "cpp",
+        "initializer_list": "cpp",
+        "string_view": "cpp"
+    },
+
+    "cmake.buildDirectory": "${workspaceRoot}/Binaries/Linux/Out",
+    "cmake.buildBeforeRun": true
+}
