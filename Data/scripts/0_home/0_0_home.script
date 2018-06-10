@@ -7,7 +7,6 @@ SpeechFrame@ mainFrame;
 MovementComponent@ moveCP;
 
 Point lastPoint;
-Point screenSize = GetWindowSize ();
 AudioSample@ sceneMusic = null;
 
 void Start ()
@@ -17,6 +16,8 @@ void Start ()
 
 void BeforeEnterScene ()
 {
+    Point screenSize = screen.GetWindowSize ();
+    
  //   Point frameSize1 (350, 100);
 //	Point framePos1 (screenSize.Width / 2 - frameSize1.Width / 2, screenSize.Height - frameSize1.Height - 10);
 //	Rect rect (framePos1, Point (framePos1.X + frameSize1.Width, framePos1.Y + frameSize1.Height));    

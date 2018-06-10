@@ -1,5 +1,5 @@
 void Start ()
 {
     //  Must set active scene as first command
-	SetActiveScene ("0_home/0_0_home.scn", false);
+	SetActiveScene ("special/0_intro.scn", false);
 }

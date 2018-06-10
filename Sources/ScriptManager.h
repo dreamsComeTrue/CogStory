@@ -18,8 +18,8 @@ namespace aga
         {
         }
 
-        void handleFileAction (FW::WatchID watchid, const FW::String& dir, const FW::String& filename,
-                               FW::Action action) override;
+        void handleFileAction (
+            FW::WatchID watchid, const FW::String& dir, const FW::String& filename, FW::Action action) override;
 
     private:
         class SceneManager* m_SceneManager;
@@ -48,6 +48,7 @@ namespace aga
     private:
         void RegisterAPI ();
 
+        void RegisterEnums ();
         void RegisterPointAPI ();
         void RegisterColorAPI ();
         void RegisterRectAPI ();

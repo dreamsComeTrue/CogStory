@@ -1,0 +1,93 @@
+{
+    "actors": [],
+    "color": "39 39 62 255",
+    "flag_points": [],
+    "max_size": "1.17549e-38 1.17549e-38",
+    "min_size": "3.40282e+38 3.40282e+38",
+    "name": "Intro",
+    "player_start": "3 260",
+    "scripts": [
+        {
+            "name": "main",
+            "path": "special/0_intro.script"
+        }
+    ],
+    "speeches": [
+        {
+            "abs_pos": "0 0",
+            "id": 0,
+            "max_chars": 27,
+            "max_lines": 3,
+            "name": "GREET_1",
+            "outcomes": [
+                {
+                    "langID": "EN",
+                    "texts": [
+                        {
+                            "action": "asd",
+                            "data": "OK",
+                            "name": ""
+                        },
+                        {
+                            "action": "",
+                            "data": "No, no, no!!!",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "langID": "PL",
+                    "texts": []
+                }
+            ],
+            "region_name": "player_head",
+            "rel_pos": 5,
+            "texts": [
+                {
+                    "data": "So, what you think?? Mister...",
+                    "langID": "EN"
+                },
+                {
+                    "data": "",
+                    "langID": "PL"
+                }
+            ]
+        },
+        {
+            "abs_pos": "0 0",
+            "id": 1,
+            "max_chars": 22,
+            "max_lines": 3,
+            "name": "asd",
+            "outcomes": [
+                {
+                    "langID": "EN",
+                    "texts": [
+                        {
+                            "action": "",
+                            "data": "Bye bye",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "langID": "PL",
+                    "texts": []
+                }
+            ],
+            "region_name": "player_head",
+            "rel_pos": 5,
+            "texts": [
+                {
+                    "data": "[WAIT=200]Really[/WAIT], [COLOR=YELLOW]didn't[/COLOR] know... [COLOR=GREEN]Nice to meet[/COLOR] [WAIT=300]you![/WAIT]",
+                    "langID": "EN"
+                },
+                {
+                    "data": "",
+                    "langID": "PL"
+                }
+            ]
+        }
+    ],
+    "trigger_areas": []
+}

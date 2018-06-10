@@ -27,10 +27,10 @@ extern "C"
 
 #include "addons/json/json.hpp"
 
-#include <angelscript.h>
-#include <scriptbuilder/scriptbuilder.h>
-#include <scriptstdstring/scriptstdstring.h>
-#include <scriptarray/scriptarray.h>
+#include "angelscript.h"
+#include "scriptarray/scriptarray.h"
+#include "scriptbuilder/scriptbuilder.h"
+#include "scriptstdstring/scriptstdstring.h"
 
 #include <cmath>
 #include <cstdarg>
@@ -67,20 +67,34 @@ extern "C"
 
 namespace aga
 {
-    const ALLEGRO_COLOR COLOR_BLACK{ 0.0f, 0.0f, 0.0f, 1.0f };
-    const ALLEGRO_COLOR COLOR_WHITE{ 1.0f, 1.0f, 1.0f, 1.0f };
-    const ALLEGRO_COLOR COLOR_RED{ 1.0f, 0.0f, 0.0f, 1.0f };
-    const ALLEGRO_COLOR COLOR_GREEN{ 0.0f, 1.0f, 0.0f, 1.0f };
-    const ALLEGRO_COLOR COLOR_BLUE{ 0.0f, 0.0f, 1.0f, 1.0f };
-    const ALLEGRO_COLOR COLOR_LIGHTBLUE{ 51 / 255.f, 153 / 255.f, 255 / 255.f, 1.0f };
-    const ALLEGRO_COLOR COLOR_YELLOW{ 1.0f, 1.0f, 0.0f, 1.0f };
-    const ALLEGRO_COLOR COLOR_GRAY{ 0.3f, 0.3f, 0.3f, 1.0f };
-    const ALLEGRO_COLOR COLOR_LIGHTGRAY{ 0.8f, 0.8f, 0.8f, 1.0f };
-    const ALLEGRO_COLOR COLOR_VIOLET{ 138 / 255.f, 43 / 255.f, 226 / 255.f, 1.0f };
-    const ALLEGRO_COLOR COLOR_INDIGO{ 75 / 255.f, 0 / 255.f, 130 / 255.f, 1.0f };
-    const ALLEGRO_COLOR COLOR_DARKBLUE{ 55 / 255.f, 51 / 255.f, 153 / 255.f, 1.0f };
-    const ALLEGRO_COLOR COLOR_ORANGE{ 255 / 255.f, 165 / 255.f, 0 / 255.f, 1.0f };
-    const ALLEGRO_COLOR COLOR_PINK{ 191 / 255.f, 63 / 255.f, 191 / 255.f, 1.0f };
+    const ALLEGRO_COLOR COLOR_BLACK{0.0f, 0.0f, 0.0f, 1.0f};
+    const ALLEGRO_COLOR COLOR_WHITE{1.0f, 1.0f, 1.0f, 1.0f};
+    const ALLEGRO_COLOR COLOR_RED{1.0f, 0.0f, 0.0f, 1.0f};
+    const ALLEGRO_COLOR COLOR_GREEN{0.0f, 1.0f, 0.0f, 1.0f};
+    const ALLEGRO_COLOR COLOR_BLUE{0.0f, 0.0f, 1.0f, 1.0f};
+    const ALLEGRO_COLOR COLOR_LIGHTBLUE{51 / 255.f, 153 / 255.f, 255 / 255.f, 1.0f};
+    const ALLEGRO_COLOR COLOR_YELLOW{1.0f, 1.0f, 0.0f, 1.0f};
+    const ALLEGRO_COLOR COLOR_GRAY{0.3f, 0.3f, 0.3f, 1.0f};
+    const ALLEGRO_COLOR COLOR_LIGHTGRAY{0.8f, 0.8f, 0.8f, 1.0f};
+    const ALLEGRO_COLOR COLOR_VIOLET{138 / 255.f, 43 / 255.f, 226 / 255.f, 1.0f};
+    const ALLEGRO_COLOR COLOR_INDIGO{75 / 255.f, 0 / 255.f, 130 / 255.f, 1.0f};
+    const ALLEGRO_COLOR COLOR_DARKBLUE{55 / 255.f, 51 / 255.f, 153 / 255.f, 1.0f};
+    const ALLEGRO_COLOR COLOR_ORANGE{255 / 255.f, 165 / 255.f, 0 / 255.f, 1.0f};
+    const ALLEGRO_COLOR COLOR_PINK{191 / 255.f, 63 / 255.f, 191 / 255.f, 1.0f};
+
+    enum ScreenRelativePosition
+    {
+        Absoulte,
+        TopLeft,
+        TopCenter,
+        TopRight,
+        BottomLeft,
+        BottomCenter,
+        BottomRight,
+        Center
+    };
+
+    extern std::map<ScreenRelativePosition, std::string> g_ScreenRelativePosition;
 
     float RadiansToDegrees (float radians);
     float DegressToRadians (float degrees);
@@ -88,7 +102,7 @@ namespace aga
     float ToPositiveAngle (float degrees);
 
     bool AreSame (float a, float b, float epsilon = 1.0E-8);
-    bool AreSame (Point a, Point b, Point epsilonPoint = Point(1.0E-8f, 1.0E-8f));
+    bool AreSame (Point a, Point b, Point epsilonPoint = Point (1.0E-8f, 1.0E-8f));
 
     //--------------------------------------------------------------------------------------------------
 

@@ -46,18 +46,12 @@ namespace aga
             {
                 if (tween.TweenMask & TWEEN_F)
                 {
-                    if (tween.TweenF.progress () < 1.0f)
-                    {
-                        tween.TweenF.step ((int)(deltaTime * 1000));
-                    }
+                    tween.TweenF.step ((int)(deltaTime * 1000));
                 }
 
                 if (tween.TweenMask & TWEEN_FF)
                 {
-                    if (tween.TweenFF.progress () < 1.0f)
-                    {
-                        tween.TweenFF.step ((int)(deltaTime * 1000));
-                    }
+                    tween.TweenFF.step ((int)(deltaTime * 1000));
                 }
             }
         }

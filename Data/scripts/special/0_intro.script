@@ -1,0 +1,48 @@
+bool g_IntroPlayed = false;
+
+void Start ()
+{
+
+}
+
+void BeforeEnterScene ()
+{
+    SetSuppressSceneInfo (true);
+
+    if (!g_IntroPlayed)
+    {
+        g_IntroPlayed = true;
+        IntroAnimation ();        
+    }
+    else
+    {
+        camera.SetFollowActor (GetActor ("PLAYER"));
+    }
+}
+
+void IntroAnimation ()
+{
+    Point screenSize = screen.GetWindowSize ();
+
+    player.SetPreventInput (true);
+    player.SetPosition (0, 0);
+
+    camera.SetTranslate (screenSize.Width * 0.5f - player.Bounds.GetSize ().Width, -200);
+	camera.SetFollowActor (null);
+    camera.TweenToPoint (player.GetPosition () + player.Bounds.GetHalfSize (), IntroAnimationFinish, 5000, true);
+
+    SetOverlayText ("In the near future...", 3000.f, Center);    
+}
+
+void IntroAnimationFinish (int id)
+{
+    player.SetPreventInput (false);
+}
+
+void AfterLeaveScene ()
+{
+}
+
+void Update (float deltaTime)
+{
+}

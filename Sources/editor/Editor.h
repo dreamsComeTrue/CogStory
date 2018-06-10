@@ -11,11 +11,11 @@
 #include "EditorTriggerAreaMode.h"
 #include "Scene.h"
 
-#include <Gwork/Controls.h>
-#include <Gwork/Input/Allegro5.h>
-#include <Gwork/Platform.h>
-#include <Gwork/Renderers/Allegro5.h>
-#include <Gwork/Skins/TexturedBase.h>
+#include "Gwork/Controls.h"
+#include "Gwork/Input/Allegro5.h"
+#include "Gwork/Platform.h"
+#include "Gwork/Renderers/Allegro5.h"
+#include "Gwork/Skins/TexturedBase.h"
 
 namespace aga
 {

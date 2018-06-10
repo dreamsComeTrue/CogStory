@@ -38,7 +38,7 @@ namespace aga
             };
         };
 
-        float Magnitude () { return (float)std::sqrt (X * X + Y * Y); }
+        float Magnitude () const { return (float)std::sqrt (X * X + Y * Y); }
 
         void Normalize ()
         {
@@ -59,21 +59,21 @@ namespace aga
 
         bool operator!= (const Point& rhs) const { return X != rhs.X || Y != rhs.Y; }
 
-        Point operator+ (const Point& rhs) { return Point (X + rhs.X, Y + rhs.Y); }
+        Point operator+ (const Point& rhs) const { return Point (X + rhs.X, Y + rhs.Y); }
 
-        Point operator* (const Point& rhs) { return Point (X * rhs.X, Y * rhs.Y); }
+        Point operator* (const Point& rhs) const { return Point (X * rhs.X, Y * rhs.Y); }
 
-        Point operator- (const Point& rhs) { return Point (X - rhs.X, Y - rhs.Y); }
+        Point operator- (const Point& rhs) const { return Point (X - rhs.X, Y - rhs.Y); }
 
-        bool operator< (const Point& rhs) { return X < rhs.X || Y < rhs.Y; }
+        bool operator< (const Point& rhs) const { return X < rhs.X || Y < rhs.Y; }
 
-        bool operator> (const Point& rhs) { return X > rhs.X || Y > rhs.Y; }
+        bool operator> (const Point& rhs) const { return X > rhs.X || Y > rhs.Y; }
 
-        Point operator- () { return { -X, -Y }; }
+        Point operator- () const { return {-X, -Y}; }
 
-        Point operator* (float b) { return { X * b, Y * b }; }
+        Point operator* (float b) const { return {X * b, Y * b}; }
 
-        friend float Distance (const Point& lhs, const Point& rhs) 
+        friend float Distance (const Point& lhs, const Point& rhs)
         {
             float xDiff = lhs.X - rhs.X;
             float yDiff = lhs.Y - rhs.Y;
