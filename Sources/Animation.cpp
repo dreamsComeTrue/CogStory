@@ -32,8 +32,8 @@ namespace aga
 
     void AnimationFrames::AddFrame (unsigned index, int row, int col)
     {
-        Rect rect = Rect ({ col * m_CellSize.Width, row * m_CellSize.Height },
-                          { col * m_CellSize.Width + m_CellSize.Width, row * m_CellSize.Height + m_CellSize.Height });
+        Rect rect = Rect ({col * m_CellSize.Width, row * m_CellSize.Height},
+            {col * m_CellSize.Width + m_CellSize.Width, row * m_CellSize.Height + m_CellSize.Height});
         m_Frames.insert (m_Frames.begin () + index, rect);
     }
 
@@ -53,7 +53,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Animation::Animation ()
-        : m_CurrentAnimation ("")
+        : m_CurrentAnimationName ("")
         , m_CurrentFrame (0)
     {
     }
@@ -71,11 +71,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    AnimationFrames& Animation::GetCurrentAnimation () { return m_Animations[m_CurrentAnimation]; }
+    AnimationFrames& Animation::GetCurrentAnimation () { return m_Animations[m_CurrentAnimationName]; }
 
     //--------------------------------------------------------------------------------------------------
 
-    std::string Animation::GetCurrentAnimationName () { return m_CurrentAnimation; }
+    std::string Animation::GetCurrentAnimationName () { return m_CurrentAnimationName; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -85,9 +85,9 @@ namespace aga
 
     void Animation::SetCurrentAnimation (const std::string& name)
     {
-        if (m_CurrentAnimation != name)
+        if (m_CurrentAnimationName != name)
         {
-            m_CurrentAnimation = name;
+            m_CurrentAnimationName = name;
             m_CurrentFrame = 0;
         }
     }
@@ -96,7 +96,7 @@ namespace aga
 
     void Animation::Update (float deltaTime)
     {
-        std::map<std::string, AnimationFrames>::iterator it = m_Animations.find (m_CurrentAnimation);
+        std::map<std::string, AnimationFrames>::iterator it = m_Animations.find (m_CurrentAnimationName);
 
         if (it != m_Animations.end ())
         {

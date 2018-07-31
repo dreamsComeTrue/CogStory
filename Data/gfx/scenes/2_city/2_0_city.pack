@@ -1,0 +1,13 @@
+
+2_0_city.png
+size: 256,256
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+single_house
+  rotate: false
+  xy: 2, 2
+  size: 144, 145
+  orig: 144, 145
+  offset: 0, 0
+  index: -1

@@ -70,8 +70,8 @@ namespace aga
                     sourceWidth = al_get_bitmap_width (m_Atlas->GetImage ());
                     sourceHeight = al_get_bitmap_height (m_Atlas->GetImage ());
 
-                    m_Atlas->DrawRegion (0, 0, sourceWidth, sourceHeight, pos.X, pos.Y, 1.f, 1.f,
-                                         transformable->Rotation, true);
+                    m_Atlas->DrawRegion (
+                        0, 0, sourceWidth, sourceHeight, pos.X, pos.Y, 1.f, 1.f, transformable->Rotation, true);
                 }
             }
             else
@@ -84,8 +84,8 @@ namespace aga
                 sourceWidth = frame.GetSize ().Width;
                 sourceHeight = frame.GetSize ().Height;
 
-                m_Atlas->DrawRegion (sourceX, sourceY, sourceWidth, sourceHeight, pos.X, pos.Y, 1, 1,
-                                     transformable->Rotation, true);
+                m_Atlas->DrawRegion (
+                    sourceX, sourceY, sourceWidth, sourceHeight, pos.X, pos.Y, 1, 1, transformable->Rotation, true);
             }
         }
     }

@@ -46,7 +46,7 @@ namespace aga
 
     private:
         std::map<std::string, AnimationFrames> m_Animations;
-        std::string m_CurrentAnimation;
+        std::string m_CurrentAnimationName;
         unsigned m_CurrentFrame;
         float m_TimeTaken;
     };

@@ -43,6 +43,9 @@ namespace aga
 
         virtual std::string GetTypeName () override { return TypeName; }
 
+        //  Override for ScriptManager
+        void SetCurrentAnimation (const std::string& name) { Animable::SetCurrentAnimation (name); }
+
     private:
         void InitializeAnimations ();
         void CreateParticleEmitters ();

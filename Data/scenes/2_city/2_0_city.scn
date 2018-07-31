@@ -15,34 +15,6 @@
             "z-order": "0"
         },
         {
-            "atlas": "0_0_home",
-            "atlas-region": "bed",
-            "components": [],
-            "id": "4",
-            "name": "bed",
-            "phys": [],
-            "pos": "31 -140",
-            "rot": "0",
-            "scripts": [],
-            "size": "64 64",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "0_0_home",
-            "atlas-region": "bed",
-            "components": [],
-            "id": "6",
-            "name": "bed",
-            "phys": [],
-            "pos": "-111 -26",
-            "rot": "0",
-            "scripts": [],
-            "size": "64 64",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
             "atlas": "actors_ui",
             "atlas-region": "player_head",
             "components": [],
@@ -59,12 +31,40 @@
             "size": "20 30",
             "type": "Tile",
             "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "single_house",
+            "components": [],
+            "id": "16",
+            "name": "single_house",
+            "phys": [],
+            "pos": "-289 -34",
+            "rot": "0",
+            "scripts": [],
+            "size": "144 145",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "single_house",
+            "components": [],
+            "id": "18",
+            "name": "single_house",
+            "phys": [],
+            "pos": "191 -226",
+            "rot": "0",
+            "scripts": [],
+            "size": "144 145",
+            "type": "Tile",
+            "z-order": "0"
         }
     ],
     "color": "35 31 54 255",
     "flag_points": [],
-    "max_size": "95 38",
-    "min_size": "-111 -145",
+    "max_size": "335 111",
+    "min_size": "-289 -226",
     "name": "City",
     "player_start": "-33 -32",
     "scripts": [
@@ -101,51 +101,6 @@
             "texts": [
                 {
                     "data": "Hey, what 's up???\nAre you ready, please answr me?",
-                    "langID": "EN"
-                },
-                {
-                    "data": "",
-                    "langID": "PL"
-                }
-            ]
-        },
-        {
-            "abs_pos": "0 0",
-            "id": -1,
-            "max_chars": 0,
-            "max_lines": 0,
-            "name": "Hello2",
-            "outcomes": [
-                {
-                    "langID": "EN",
-                    "texts": [
-                        {
-                            "action": "Hello2",
-                            "data": "a",
-                            "name": "1"
-                        },
-                        {
-                            "action": "GREET_1",
-                            "data": "b",
-                            "name": "2"
-                        },
-                        {
-                            "action": "Hello2",
-                            "data": "c",
-                            "name": "3"
-                        }
-                    ]
-                },
-                {
-                    "langID": "PL",
-                    "texts": []
-                }
-            ],
-            "region_name": "",
-            "rel_pos": 7,
-            "texts": [
-                {
-                    "data": "asdasdasd",
                     "langID": "EN"
                 },
                 {

@@ -5,8 +5,28 @@
     "tasks": [
         {
             "label": "Build",
+            "command" : "ninja",
+            "options": {
+                "cwd": "${workspaceFolder}/Binaries/Linux/Out"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Run RobotTales",
             "type": "shell",
-            "command": "ninja -j8"
+            "command": "${workspaceFolder}/Binaries/Linux/RobotTales",
+            "options": {
+                "cwd": "${workspaceFolder}/Binaries/Linux/"
+            },
+            "dependsOn": [
+                "Build"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ]
         }
     ]
 }

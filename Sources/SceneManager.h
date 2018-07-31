@@ -78,8 +78,8 @@ namespace aga
         AudioSample* SetSceneAudioStream (const std::string& path);
         AudioSample* GetSceneAudioStream ();
 
-        void SetOverlayText (
-            const std::string& text, float duration = 2000.f, ScreenRelativePosition pos = BottomRight);
+        void SetOverlayText (const std::string& text, float duration = 2000.f, float charTimeDelay = 5.f,
+            ScreenRelativePosition pos = BottomRight);
 
     private:
         void SceneIntro (float duration = 1000.f);
@@ -107,8 +107,11 @@ namespace aga
         bool m_DrawActorsNames;
 
         std::string m_OverlayText;
+        int m_OverlayCharPos;
+        float m_OverlayCharDuration;
         ScreenRelativePosition m_OverlayPosition;
         float m_OverlayDuration;
+        float m_OverlayCharMaxDuration;
         bool m_OverlayActive;
     };
 }

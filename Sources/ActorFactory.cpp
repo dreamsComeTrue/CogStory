@@ -1,7 +1,7 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 #include "ActorFactory.h"
-#include "actors/NPCActor.h"
 #include "actors/EnemyActor.h"
+#include "actors/NPCActor.h"
 #include "actors/TileActor.h"
 
 #include "actors/components/AudioSampleComponent.h"
@@ -37,7 +37,7 @@ namespace aga
         s_ActorComponents.push_back (MovementComponent::TypeName);
         s_ActorComponents.push_back (ParticleEmitterComponent::TypeName);
     }
-    
+
     //--------------------------------------------------------------------------------------------------
 
     void ActorFactory::RegisterAnimations () { s_Animations[ANIMATION_PLAYER] = RegisterAnimation_Player (); }
@@ -97,6 +97,11 @@ namespace aga
         moveUpFrames.SetPlaySpeed (animSpeed);
         animation.AddFrames (ANIM_MOVE_UP_NAME, moveUpFrames);
 
+        AnimationFrames moveUpLook (1, cellSize);
+        moveUpLook.AddFrame (0, 4, 0);
+        moveUpLook.SetPlaySpeed (animSpeed);
+        animation.AddFrames (ANIM_MOVE_UP_LOOK_NAME, moveUpLook);
+
         return animation;
     }
 
@@ -128,7 +133,7 @@ namespace aga
     {
         Component* newComponent = nullptr;
 
-        if (type == AudioSampleComponent::TypeName) 
+        if (type == AudioSampleComponent::TypeName)
         {
             newComponent = new AudioSampleComponent (actor);
         }

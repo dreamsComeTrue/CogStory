@@ -119,6 +119,7 @@ namespace aga
            void SetPosition (Point)
            Point GetPosition ()
            Point GetSize ()
+           void SetCurrentAnimation (const string &in)
            Actor@ GetCurrentActor ()
 
        MovementComponent
@@ -145,7 +146,8 @@ namespace aga
            void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, Color color = COLOR_BLACK)
            void SetSuppressSceneInfo (bool suppress)
            bool IsSuppressSceneInfo () const
-           void SetOverlayText (const string& in, float duration = 2000.f, ScreenRelativePosition pos = BottomRight)
+           void SetOverlayText (const string& in, float duration = 2000.f, float charTimeDelay = 5.f,
+                ScreenRelativePosition pos = BottomRight)
            Actor@ GetActor (const string &in)
            string ChoiceFunction (void)
            void RegisterChoiceFunction (string, ChoiceFunction @+ func)
@@ -885,6 +887,9 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod (
             "Actor", "Point GetSize ()", asMETHOD (Actor, GetSize), asCALL_THISCALL);
         assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Actor", "void SetCurrentAnimation (const string &in)",
+            asMETHOD (Actor, SetCurrentAnimation), asCALL_THISCALL);
+        assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction ("Actor@ GetCurrentActor ()",
             asMETHOD (SceneManager, GetCurrentlyProcessedActor), asCALL_THISCALL_ASGLOBAL,
             &m_MainLoop->GetSceneManager ());
@@ -954,7 +959,8 @@ namespace aga
         //            &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction (
-            "void SetOverlayText (const string& in, float duration = 2000.f, ScreenRelativePosition pos = BottomRight)",
+            "void SetOverlayText (const string& in, float duration = 2000.f, float charTimeDelay = 5.f, "
+            "ScreenRelativePosition pos = BottomRight)",
             asMETHOD (SceneManager, SetOverlayText), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction ("Actor@ GetActor (const string &in)",

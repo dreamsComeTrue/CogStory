@@ -1,6 +1,6 @@
 
 Point playerSize = player.GetSize ();
-Point screenSize = GetWindowSize ();
+Point screenSize = screen.GetWindowSize ();
 
 void Start ()
 {

@@ -57,17 +57,14 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
+        void BeforeEnter ();
+
         bool Update (float deltaTime);
         void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
         void Render (float deltaTime);
 
         void LoadScene (const std::string& filePath);
         void SaveScene (const std::string& filePath);
-
-        void OnResetTranslate ();
-        void OnResetScale ();
-
-        void SetDrawUITiles (bool draw);
 
         CursorMode GetCursorMode () const { return m_CursorMode; }
         void SetCursorMode (CursorMode mode) { m_CursorMode = mode; }
@@ -102,6 +99,11 @@ namespace aga
 
         void HandleCameraMovement (const ALLEGRO_MOUSE_EVENT& event);
         void HandleCameraPan (float deltaTime);
+
+        void OnResetTranslate ();
+        void OnResetScale ();
+
+        void SetDrawUITiles (bool draw);
 
         void OnNewScene (Gwk::Controls::Base* control);
         void OnOpenScene (Gwk::Controls::Base* control);

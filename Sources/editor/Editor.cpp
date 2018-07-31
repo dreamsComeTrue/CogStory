@@ -159,8 +159,8 @@ namespace aga
         //  Diaglos & windows
         {
             m_EditorSceneWindow = new EditorSceneWindow (this, m_MainCanvas);
-            m_OpenSceneWindow = new EditorOpenSceneWindow (this, m_MainCanvas, "0_home/0_0_home.scn");
-            m_SaveSceneWindow = new EditorSaveSceneWindow (this, m_MainCanvas, "0_home/0_0_home.scn");
+            m_OpenSceneWindow = new EditorOpenSceneWindow (this, m_MainCanvas, "");
+            m_SaveSceneWindow = new EditorSaveSceneWindow (this, m_MainCanvas, "");
             m_FlagPointWindow = new EditorFlagPointWindow (this, m_MainCanvas);
             m_TriggerAreaWindow = new EditorTriggerAreaWindow (this, m_MainCanvas);
             m_SpeechWindow = new EditorSpeechWindow (this, m_MainCanvas);
@@ -405,6 +405,21 @@ namespace aga
         catch (const std::exception&)
         {
         }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::BeforeEnter ()
+    {
+        OnResetScale ();
+        OnResetTranslate ();
+        SetDrawUITiles (true);
+
+        std::string fileName = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetPath ();
+
+        m_LastScenePath = fileName;
+        m_OpenSceneWindow->SetFileName (fileName);
+        m_SaveSceneWindow->SetFileName (fileName);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -810,7 +825,8 @@ namespace aga
 
     void Editor::DrawGrid ()
     {
-        const ALLEGRO_COLOR LIGHT_GRAY{0.4f, 0.4f, 0.4f, 1.0f};
+        const ALLEGRO_COLOR DARK_GRAY{0.4f, 0.4f, 0.4f, 1.0f};
+        const ALLEGRO_COLOR LIGHT_GRAY{0.5f, 0.5f, 0.5f, 1.0f};
 
         const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
         Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
@@ -833,7 +849,16 @@ namespace aga
             float xOffset = i * m_GridSize - trans.X;
 
             //  |
-            al_draw_line (xOffset, 0, xOffset, screenSize.Height, LIGHT_GRAY, 1);
+            int thickness = 1;
+            ALLEGRO_COLOR color = DARK_GRAY;
+
+            if (i == 0)
+            {
+                thickness = 2;
+                color = LIGHT_GRAY;
+            }
+
+            al_draw_line (xOffset, 0, xOffset, screenSize.Height, color, thickness);
         }
 
         int horBeginY = cameraCenter.Y - halfSegmentsY - spareSegments;
@@ -844,7 +869,16 @@ namespace aga
             float yOffset = i * m_GridSize - trans.Y;
 
             //  --
-            al_draw_line (0, yOffset, screenSize.Width, yOffset, LIGHT_GRAY, 1);
+            int thickness = 1;
+            ALLEGRO_COLOR color = DARK_GRAY;
+
+            if (i == 0)
+            {
+                thickness = 2;
+                color = LIGHT_GRAY;
+            }
+
+            al_draw_line (0, yOffset, screenSize.Width, yOffset, color, thickness);
         }
     }
 

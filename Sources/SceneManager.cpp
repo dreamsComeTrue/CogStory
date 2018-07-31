@@ -259,9 +259,19 @@ namespace aga
             al_get_blender (&blendOp, &blendSrc, &blendDst);
             al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
 
-            PrintOverlayText (m_OverlayText, m_OverlayPosition);
+            PrintOverlayText (m_OverlayText.substr (0, m_OverlayCharPos), m_OverlayPosition);
 
             al_set_blender (blendOp, blendSrc, blendDst);
+
+            m_OverlayCharDuration += deltaTime;
+
+            if (m_OverlayCharDuration > m_OverlayCharMaxDuration)
+            {
+                ++m_OverlayCharPos;
+                m_OverlayCharPos = std::min (m_OverlayCharPos, (int)m_OverlayText.length ());
+
+                m_OverlayCharDuration = 0.f;
+            }
         }
     }
 
@@ -517,6 +527,8 @@ namespace aga
         Point pos;
         int align = 0;
 
+        float textSizeHeight = textSize.Height * (std::count (m_OverlayText.begin (), m_OverlayText.end (), '\n') + 1);
+
         switch (screenPos)
         {
         case aga::TopLeft:
@@ -535,37 +547,42 @@ namespace aga
             break;
 
         case aga::BottomLeft:
-            pos = {offset, winSize.Height - textSize.Height - offset};
+            pos = {offset, winSize.Height - textSizeHeight - offset};
             align = ALLEGRO_ALIGN_LEFT;
             break;
 
         case aga::BottomCenter:
-            pos = {winSize.Width * 0.5f, winSize.Height - textSize.Height - offset};
+            pos = {winSize.Width * 0.5f, winSize.Height - textSizeHeight - offset};
             align = ALLEGRO_ALIGN_CENTER;
             break;
 
         case aga::BottomRight:
-            pos = {winSize.Width - textSize.Height, winSize.Height - textSize.Height - offset};
+            pos = {winSize.Width - textSizeHeight, winSize.Height - textSizeHeight - offset};
             align = ALLEGRO_ALIGN_RIGHT;
             break;
 
         case aga::Center:
-            pos = {winSize.Width * 0.5f, winSize.Height * 0.5f - textSize.Height * 0.5f};
+            pos = {winSize.Width * 0.5f, winSize.Height * 0.5f - textSizeHeight * 0.5f};
             align = ALLEGRO_ALIGN_CENTER;
             break;
         }
 
-        font.DrawText (FONT_NAME_MENU_TITLE, m_CenterTextColor, pos.X, pos.Y, text, align);
+        font.DrawMultilineText (FONT_NAME_MENU_TITLE, m_CenterTextColor, pos.X, pos.Y, winSize.Width, textSize.Height,
+            align, text.c_str ());
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneManager::SetOverlayText (const std::string& text, float duration, ScreenRelativePosition pos)
+    void SceneManager::SetOverlayText (
+        const std::string& text, float duration, float charTimeDelay, ScreenRelativePosition pos)
     {
         m_OverlayText = text;
         m_OverlayDuration = duration;
         m_OverlayPosition = pos;
         m_OverlayActive = true;
+        m_OverlayCharPos = 0;
+        m_OverlayCharDuration = 0.f;
+        m_OverlayCharMaxDuration = charTimeDelay / 1000.f;
 
         m_CenterTextColor = al_map_rgb (160, 160, 160);
 

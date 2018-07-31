@@ -206,12 +206,12 @@ namespace aga
                 float positiveMoveBoundary = 1.5f;
                 float negativeMoveBoundary = -0.5f;
 
-                if (collisionDelta.X < negativeMoveBoundary || collisionDelta.X > positiveMoveBoundary) 
+                if (collisionDelta.X < negativeMoveBoundary || collisionDelta.X > positiveMoveBoundary)
                 {
                     dx = dx + collisionDelta.X;
                 }
 
-                if (collisionDelta.Y < negativeMoveBoundary || collisionDelta.Y > positiveMoveBoundary) 
+                if (collisionDelta.Y < negativeMoveBoundary || collisionDelta.Y > positiveMoveBoundary)
                 {
                     dy = dy + collisionDelta.Y;
                 }

@@ -22,6 +22,7 @@ namespace aga
         void OnCancel ();
         void OnEdit (Gwk::Controls::Base* control);
 
+        void SetFileName (const std::string& fileName) { m_FileName = fileName; }
         std::string GetFileName () const { return m_FileName; }
 
         Gwk::Controls::WindowControl* GetSceneWindow () { return m_SceneWindow; }

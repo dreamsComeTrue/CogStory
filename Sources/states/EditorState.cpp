@@ -56,9 +56,7 @@ namespace aga
     {
         al_show_mouse_cursor (m_MainLoop->GetScreen ()->GetDisplay ());
 
-        m_Editor->OnResetScale ();
-        m_Editor->OnResetTranslate ();
-        m_Editor->SetDrawUITiles (true);
+        m_Editor->BeforeEnter ();
 
         SceneManager& sceneManager = m_MainLoop->GetSceneManager ();
         Player* player = sceneManager.GetPlayer ();
