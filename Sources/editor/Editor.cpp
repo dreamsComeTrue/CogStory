@@ -43,7 +43,7 @@ namespace aga
         , m_IsMousePan (false)
         , m_BaseGridSize (16.0f)
         , m_GridSize (16.0f)
-        , m_CursorMode (CursorMode::TileSelectMode)
+        , m_CursorMode (CursorMode::ActorSelectMode)
         , m_LastTimeClicked (0.0f)
     {
     }
@@ -89,6 +89,7 @@ namespace aga
     Gwk::Controls::Button* leftNextTileButton;
     Gwk::Controls::Button* rightPrevTileButton;
     Gwk::Controls::Button* rightNextTileButton;
+    Gwk::Controls::Button* spriteSheetButton;
 
     Gwk::Controls::Label* avgFPSLabel;
     Gwk::Controls::Label* fpsLabel;
@@ -269,25 +270,30 @@ namespace aga
 
         m_EditorActorMode.ChangeAtlas ((*atlases.begin ()).first);
 
-        leftPrevTileButton = new Gwk::Controls::Button (m_MainCanvas);
-        leftPrevTileButton->SetWidth (30);
-        leftPrevTileButton->SetText ("<<");
-        leftPrevTileButton->onPress.Add (this, &Editor::OnPlay);
-
         leftNextTileButton = new Gwk::Controls::Button (m_MainCanvas);
         leftNextTileButton->SetWidth (30);
-        leftNextTileButton->SetText (">>");
-        leftNextTileButton->onPress.Add (this, &Editor::OnPlay);
+        leftNextTileButton->SetText (">");
+        leftNextTileButton->onPress.Add (this, &Editor::OnScrollNextTiles);
 
-        rightPrevTileButton = new Gwk::Controls::Button (m_MainCanvas);
-        rightPrevTileButton->SetWidth (30);
-        rightPrevTileButton->SetText ("<<");
-        rightPrevTileButton->onPress.Add (this, &Editor::OnPlay);
+        leftPrevTileButton = new Gwk::Controls::Button (m_MainCanvas);
+        leftPrevTileButton->SetWidth (30);
+        leftPrevTileButton->SetText ("<");
+        leftPrevTileButton->onPress.Add (this, &Editor::OnScrollPrevTiles);
 
         rightNextTileButton = new Gwk::Controls::Button (m_MainCanvas);
         rightNextTileButton->SetWidth (30);
         rightNextTileButton->SetText (">>");
-        rightNextTileButton->onPress.Add (this, &Editor::OnPlay);
+        rightNextTileButton->onPress.Add (this, &Editor::OnBigScrollNextTiles);
+
+        rightPrevTileButton = new Gwk::Controls::Button (m_MainCanvas);
+        rightPrevTileButton->SetWidth (30);
+        rightPrevTileButton->SetText ("<<");
+        rightPrevTileButton->onPress.Add (this, &Editor::OnBigScrollPrevTiles);
+
+        spriteSheetButton = new Gwk::Controls::Button (m_MainCanvas);
+        spriteSheetButton->SetWidth (30);
+        spriteSheetButton->SetText ("#");
+        spriteSheetButton->onPress.Add (this, &Editor::OnSpriteSheetEdit);
 
         avgFPSLabel = new Gwk::Controls::Label (m_MainCanvas);
         avgFPSLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
@@ -438,7 +444,7 @@ namespace aga
 
     bool Editor::IsEditorCanvasNotCovered ()
     {
-        return ((m_CursorMode == CursorMode::TileSelectMode || m_CursorMode == CursorMode::TileEditMode
+        return ((m_CursorMode == CursorMode::ActorSelectMode || m_CursorMode == CursorMode::ActorEditMode
                     || m_CursorMode == CursorMode::EditPhysBodyMode)
             && !m_EditorSceneWindow->GetSceneWindow ()->Visible () && !m_SpeechWindow->GetSceneWindow ()->Visible ()
             && !m_TriggerAreaWindow->GetSceneWindow ()->Visible () && !m_FlagPointWindow->GetSceneWindow ()->Visible ()
@@ -518,14 +524,17 @@ namespace aga
         {
             m_TriggerAreaWindow->GetSceneWindow ()->CloseButtonPressed ();
         }
+
+        if (GetCursorMode () == EditSpriteSheetMode)
+        {
+            SetCursorMode (ActorSelectMode);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
 
     bool openTest = false;
     bool saveRequested = false;
-    bool g_IsToolBoxTileSelected = false;
-
     void Editor::ProcessEvent (ALLEGRO_EVENT* event, float)
     {
         if (event->type == ALLEGRO_EVENT_KEY_CHAR)
@@ -536,18 +545,9 @@ namespace aga
             }
         }
 
-        if (m_GUIInput.ProcessMessage (*event))
+        if (m_CursorMode != CursorMode::EditSpriteSheetMode && m_GUIInput.ProcessMessage (*event))
         {
             return;
-        }
-
-        g_IsToolBoxTileSelected = false;
-        if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
-        {
-            if (event->mouse.button == 1 && m_EditorActorMode.IsDrawTiles ())
-            {
-                g_IsToolBoxTileSelected = m_EditorActorMode.ChooseTile (event->mouse.x, event->mouse.y);
-            }
         }
 
         if (event->type == ALLEGRO_EVENT_KEY_CHAR)
@@ -745,6 +745,10 @@ namespace aga
         {
             RenderPhysBodyMode (deltaTime);
         }
+        else if (m_CursorMode == CursorMode::EditSpriteSheetMode)
+        {
+            m_EditorActorMode.RenderSpriteSheet ();
+        }
         else
         {
             m_MainLoop->GetSceneManager ().Render (deltaTime);
@@ -761,7 +765,7 @@ namespace aga
                         r.GetBottomRight ().Y, COLOR_RED, 2);
                 }
 
-                if (m_CursorMode == CursorMode::TileSelectMode)
+                if (m_CursorMode == CursorMode::ActorSelectMode)
                 {
                     ALLEGRO_MOUSE_STATE state;
                     al_get_mouse_state (&state);
@@ -1002,6 +1006,26 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Editor::OnScrollPrevTiles () { m_EditorActorMode.ScrollPrevTile (1); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnScrollNextTiles () { m_EditorActorMode.ScrollNextTile (1); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnBigScrollPrevTiles () { m_EditorActorMode.ScrollPrevTile (TILES_COUNT); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnSpriteSheetEdit () { SetCursorMode (EditSpriteSheetMode); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnBigScrollNextTiles () { m_EditorActorMode.ScrollNextTile (TILES_COUNT); }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Editor::OnExit () { m_MainLoop->Exit (); }
 
     //--------------------------------------------------------------------------------------------------
@@ -1086,10 +1110,10 @@ namespace aga
         }
         else
         {
-            m_CursorMode = CursorMode::TileSelectMode;
+            m_CursorMode = CursorMode::ActorSelectMode;
         }
 
-        SetDrawUITiles (m_CursorMode == CursorMode::TileSelectMode);
+        SetDrawUITiles (m_CursorMode == CursorMode::ActorSelectMode);
         flagPointButton->SetHidden (m_CursorMode == CursorMode::EditPhysBodyMode);
         triggerAreaButton->SetHidden (m_CursorMode == CursorMode::EditPhysBodyMode);
         speechButton->SetHidden (m_CursorMode == CursorMode::EditPhysBodyMode);
@@ -1253,6 +1277,7 @@ namespace aga
         leftNextTileButton->SetHidden (!m_EditorActorMode.IsDrawTiles ());
         rightPrevTileButton->SetHidden (!m_EditorActorMode.IsDrawTiles ());
         rightNextTileButton->SetHidden (!m_EditorActorMode.IsDrawTiles ());
+        spriteSheetButton->SetHidden (!m_EditorActorMode.IsDrawTiles ());
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1280,10 +1305,11 @@ namespace aga
         float beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
 
         tilesetCombo->SetPos (beginning - 140, m_MainCanvas->Bottom () - 35);
-        leftPrevTileButton->SetPos (beginning - 35, m_MainCanvas->Bottom () - TILE_SIZE + 5);
-        leftNextTileButton->SetPos (beginning - 35, leftPrevTileButton->Bottom () + 2);
-        rightPrevTileButton->SetPos (beginning + TILES_COUNT * TILE_SIZE + 5, m_MainCanvas->Bottom () - TILE_SIZE + 5);
-        rightNextTileButton->SetPos (beginning + TILES_COUNT * TILE_SIZE + 5, rightPrevTileButton->Bottom () + 2);
+        leftNextTileButton->SetPos (beginning - 35, m_MainCanvas->Bottom () - TILE_SIZE + 5);
+        leftPrevTileButton->SetPos (beginning - 35, leftNextTileButton->Bottom () + 2);
+        rightNextTileButton->SetPos (beginning + TILES_COUNT * TILE_SIZE + 5, m_MainCanvas->Bottom () - TILE_SIZE + 5);
+        rightPrevTileButton->SetPos (beginning + TILES_COUNT * TILE_SIZE + 5, rightNextTileButton->Bottom () + 2);
+        spriteSheetButton->SetPos (rightNextTileButton->Right () + 5, rightNextTileButton->Bottom () - 8);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1302,9 +1328,16 @@ namespace aga
     {
         m_IsMousePan = event.button == 3;
 
+        bool isToolBoxTileSelected = false;
+
+        if (event.button == 1 && m_EditorActorMode.IsDrawTiles ())
+        {
+            isToolBoxTileSelected = m_EditorActorMode.ChooseTile (event.x, event.y);
+        }
+
         if (event.button == 1)
         {
-            if (m_CursorMode == CursorMode::TileSelectMode && m_EditorFlagPointMode.GetFlagPoint () == "")
+            if (m_CursorMode == CursorMode::ActorSelectMode && m_EditorFlagPointMode.GetFlagPoint () == "")
             {
                 m_EditorActorMode.SetSelectedActor (nullptr);
 
@@ -1314,7 +1347,7 @@ namespace aga
 
                 if (m_EditorActorMode.GetSelectedActor ())
                 {
-                    m_CursorMode = CursorMode::TileEditMode;
+                    m_CursorMode = CursorMode::ActorEditMode;
                     m_EditorActorMode.SetRotation (m_EditorActorMode.GetSelectedActor ()->Rotation);
 
                     if (m_EditorActorMode.GetSelectedActor ()->PhysPoints.empty ())
@@ -1327,7 +1360,7 @@ namespace aga
                     selectModeButton->Show ();
                 }
             }
-            else if (m_CursorMode == CursorMode::TileEditMode && !g_IsToolBoxTileSelected)
+            else if (m_CursorMode == CursorMode::ActorEditMode && !isToolBoxTileSelected)
             {
                 m_EditorActorMode.SetSelectedActor (nullptr);
 
@@ -1339,7 +1372,7 @@ namespace aga
                 {
                     if (newSelectedActor)
                     {
-                        m_CursorMode = CursorMode::TileEditMode;
+                        m_CursorMode = CursorMode::ActorEditMode;
                         m_EditorActorMode.SetSelectedActor (newSelectedActor);
                         m_EditorActorMode.SetRotation (m_EditorActorMode.GetSelectedActor ()->Rotation);
 
@@ -1354,7 +1387,7 @@ namespace aga
                     }
                     else
                     {
-                        m_CursorMode = CursorMode::TileSelectMode;
+                        m_CursorMode = CursorMode::ActorSelectMode;
                         m_EditorActorMode.SetSelectedActor (nullptr);
 
                         selectModeButton->Hide ();
@@ -1401,7 +1434,7 @@ namespace aga
             }
             else if (!flagPointRemoved && !triggerPointRemoved)
             {
-                m_CursorMode = CursorMode::TileSelectMode;
+                m_CursorMode = CursorMode::ActorSelectMode;
             }
         }
     }
@@ -1442,7 +1475,7 @@ namespace aga
     {
         if (!m_EditorFlagPointMode.MoveSelectedFlagPoint () && !m_EditorTriggerAreaMode.MoveSelectedTriggerPoint ())
         {
-            if (m_CursorMode == CursorMode::TileEditMode)
+            if (m_CursorMode == CursorMode::ActorEditMode)
             {
                 if (m_EditorActorMode.GetSelectedActor ())
                 {
@@ -1453,6 +1486,11 @@ namespace aga
             {
                 m_EditorPhysMode.MoveSelectedPhysPoint ();
             }
+        }
+
+        if (m_IsMousePan && m_CursorMode == CursorMode::EditSpriteSheetMode)
+        {
+            m_EditorActorMode.PanSpriteSheet (event.dx, event.dy);
         }
 
         if (IsEditorCanvasNotCovered ())

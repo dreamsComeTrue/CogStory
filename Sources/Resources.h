@@ -32,6 +32,7 @@ namespace aga
         PACK_0_0_HOME,
         PACK_1_0_FACTORY,
         PACK_2_0_CITY,
+        PACK_2_1_CITY,
 
         //  Fonts
         FONT_SMALL,

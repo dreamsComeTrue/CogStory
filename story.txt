@@ -5,8 +5,24 @@ RobotTales v0.1
 
 =============================
 
-..:: Chapter I ::..
+ -- Chapter I --
+ No ordinary day
+
+ = Kamera przesuwa się powoli nad miastem, pokazuje budynki i ludzi oraz roboty wędrujące po nim.
+ = Fade napisu na środku
+    -- Chapter I --
     No ordinary day
+
+ = Kamera zatrzymuje się nad budynkiem fabryki, fading do wnętrza.
+ = Kamera płynie nad robotami podczas pracy przy taśmach.
+ = Kamera zatrzymuje się nad dwójką rozmawiających robotów (R1, R2).
+    R1: Czy wszystko idzie zgodnie z planem?
+    R2: Nastąpiły pewne komplikacje...
+    R1: Co to znaczy kom-pli-ka-cje ?!? [podskakuje]    
+    
+ = Zza sceny przychodzi człowiek (CZ), podchodzi do robotów (R1, R2).
+    - 
+
 
 
 =============================
@@ -36,7 +52,7 @@ RobotTales v0.1
 
 
 
-Peter (PTR 4617) oddaje swój umysł w przyszłości i zostaje umieszczony w ciele robota
+Peter (PTR 467) oddaje swój umysł w przyszłości i zostaje umieszczony w ciele robota
 Pracuje w fabryce
 Walka z korporacją
 Mechanika - wkłada przedmioty do swojego wnętrza i je ożywia (ciepłem)

@@ -62,7 +62,7 @@ namespace aga
 
     void EditorTriggerAreaWindow::OnCancel ()
     {
-        m_Editor->SetCursorMode (CursorMode::TileSelectMode);
+        m_Editor->SetCursorMode (CursorMode::ActorSelectMode);
         m_Editor->GetEditorTriggerAreaMode ().SetTriggerAreaName ("");
         m_SceneWindow->CloseButtonPressed ();
     }

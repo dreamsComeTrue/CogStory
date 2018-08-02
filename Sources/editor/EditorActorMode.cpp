@@ -24,6 +24,7 @@ namespace aga
         , m_ActorUnderCursor (nullptr)
         , m_Rotation (0)
         , m_Atlas (nullptr)
+        , m_CurrentTileBegin (0)
     {
     }
 
@@ -204,109 +205,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool EditorActorMode::ChooseTile (int mouseX, int mouseY)
+    void EditorActorMode::AddActor (int mouseX, int mouseY)
     {
         if (!m_Atlas)
         {
-            return false;
-        }
-
-        const Point screenSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
-        float beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
-        float advance = 0;
-        std::vector<AtlasRegion> regions = m_Atlas->GetRegions ();
-
-        for (int i = 0; i < TILES_COUNT; ++i)
-        {
-            if (i < regions.size ())
-            {
-                advance = beginning + i * TILE_SIZE;
-                float x = advance;
-                float y = screenSize.Height - TILE_SIZE - 1;
-                Rect r = Rect{{x, y}, {x + TILE_SIZE, y + TILE_SIZE - 2}};
-
-                if (InsideRect (mouseX, mouseY, r))
-                {
-                    m_SelectedAtlasRegion = regions[i];
-                    m_SelectedActor = AddTile (mouseX, mouseY);
-                    m_Rotation = m_SelectedActor->Rotation;
-
-                    //  Orient mouse cursor in middle of tile regarding camera scaling
-                    m_TileSelectionOffset = -m_SelectedActor->Bounds.GetHalfSize ()
-                        * m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
-
-                    if (!m_SelectedActor->PhysPoints.empty ())
-                    {
-                        m_Editor->GetEditorPhysMode ().SetPhysPoly (&m_SelectedActor->PhysPoints[0]);
-                    }
-
-                    m_Editor->SetCursorMode (CursorMode::TileEditMode);
-
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void EditorActorMode::RemoveSelectedActor ()
-    {
-        if (m_SelectedActor)
-        {
-            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveActor (m_SelectedActor);
-            m_SelectedActor = nullptr;
-            m_Editor->SetCursorMode (CursorMode::TileSelectMode);
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void EditorActorMode::CopySelectedActor ()
-    {
-        if (m_SelectedActor)
-        {
-            m_SelectedAtlasRegion = m_Atlas->GetRegion (m_SelectedActor->Name);
-
-            ALLEGRO_MOUSE_STATE state;
-            al_get_mouse_state (&state);
-
-            Point point = m_Editor->CalculateCursorPoint (state.x, state.y);
-            Point regionSize = m_SelectedActor->Bounds.GetSize ();
-
-            Actor* newActor = ActorFactory::GetActor (
-                &m_Editor->GetMainLoop ()->GetSceneManager (), m_SelectedActor->GetTypeName ());
-            newActor->Name = m_SelectedActor->Name + "_" + ToString (newActor->ID);
-            newActor->Bounds = Rect (point.X - regionSize.Width * 0.5f, point.Y - regionSize.Height * 0.5f,
-                regionSize.Width, regionSize.Height);
-            newActor->TemplateBounds.Pos = m_SelectedActor->Bounds.Pos;
-            newActor->Rotation = m_SelectedActor->Rotation;
-            newActor->ZOrder = m_SelectedActor->ZOrder;
-            newActor->SetAtlas (m_SelectedActor->GetAtlas ());
-            newActor->SetAtlasRegionName (m_SelectedActor->GetAtlasRegionName ());
-
-            newActor->PhysPoints = m_SelectedActor->PhysPoints;
-
-            newActor->Initialize ();
-
-            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddActor (newActor);
-
-            m_Rotation = newActor->Rotation;
-            m_SelectedActor = newActor;
-        }
-
-        m_Editor->SetCursorMode (CursorMode::TileEditMode);
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    TileActor* EditorActorMode::AddTile (int mouseX, int mouseY)
-    {
-        if (!m_Atlas)
-        {
-            return nullptr;
+            return;
         }
 
         TileActor* tile = new TileActor (&m_Editor->GetMainLoop ()->GetSceneManager ());
@@ -326,7 +229,228 @@ namespace aga
         m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddTile (tile);
         m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->SortActors ();
 
-        return tile;
+        m_SelectedActor = (Actor*)tile;
+        m_Rotation = m_SelectedActor->Rotation;
+
+        //  Orient mouse cursor in middle of tile regarding camera scaling
+        m_TileSelectionOffset = -m_SelectedActor->Bounds.GetHalfSize ()
+            * m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
+
+        if (!m_SelectedActor->PhysPoints.empty ())
+        {
+            m_Editor->GetEditorPhysMode ().SetPhysPoly (&m_SelectedActor->PhysPoints[0]);
+        }
+
+        m_Editor->SetCursorMode (CursorMode::ActorEditMode);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool EditorActorMode::ChooseTile (int mouseX, int mouseY)
+    {
+        if (!m_Atlas)
+        {
+            return false;
+        }
+
+        if (m_Editor->GetCursorMode () == CursorMode::EditSpriteSheetMode && ChooseTileFromSpriteSheet (mouseX, mouseY))
+        {
+            return true;
+        }
+
+        const Point screenSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+        float beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
+        float advance = 0;
+        std::vector<AtlasRegion> regions = m_Atlas->GetRegions ();
+
+        for (int i = 0; i < TILES_COUNT; ++i)
+        {
+            if (i < regions.size ())
+            {
+                advance = beginning + i * TILE_SIZE;
+                float x = advance;
+                float y = screenSize.Height - TILE_SIZE - 1;
+                Rect r = Rect{{x, y}, {x + TILE_SIZE, y + TILE_SIZE - 2}};
+
+                if (InsideRect (mouseX, mouseY, r))
+                {
+                    m_SelectedAtlasRegion = regions[m_CurrentTileBegin + i];
+                    AddActor (mouseX, mouseY);
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool EditorActorMode::ChooseTileFromSpriteSheet (int mouseX, int mouseY)
+    {
+        const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+        const float margin = 10.f;
+        float x = margin;
+        float y = margin;
+        float height = winSize.Height - margin;
+
+        ALLEGRO_BITMAP* image = m_Atlas->GetImage ();
+        int imageWidth = al_get_bitmap_width (image);
+        int imageHeight = al_get_bitmap_height (image);
+
+        float widthRatio = height / imageWidth;
+        float heightRatio = height / imageHeight;
+
+        std::vector<AtlasRegion>& regions = m_Atlas->GetRegions ();
+
+        for (AtlasRegion& region : regions)
+        {
+            Rect bounds = region.Bounds;
+            Point topLeft = bounds.GetTopLeft ();
+            Point botRight = bounds.GetBottomRight ();
+            Rect tileRec = Rect (
+                Point (x + m_PanTranslate.X + topLeft.X * widthRatio, y + m_PanTranslate.Y + topLeft.Y * heightRatio),
+                Point (
+                    x + m_PanTranslate.X + botRight.X * widthRatio, y + m_PanTranslate.Y + botRight.Y * heightRatio));
+
+            if (InsideRect (mouseX, mouseY, tileRec))
+            {
+                m_SelectedAtlasRegion = region;
+                AddActor (mouseX, mouseY);
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorMode::RenderSpriteSheet ()
+    {
+        const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+
+        const float margin = 10.f;
+
+        float x = margin;
+        float y = margin;
+        float width = winSize.Width - margin;
+        float height = winSize.Height - margin;
+
+        al_draw_filled_rectangle (x, y, width, height, COLOR_BLACK);
+        al_draw_rectangle (x - 1, y - 1, width + 1, height + 1, COLOR_GREEN, 2);
+
+        ALLEGRO_BITMAP* image = m_Atlas->GetImage ();
+        int imageWidth = al_get_bitmap_width (image);
+        int imageHeight = al_get_bitmap_height (image);
+
+        float ratioFactor;
+
+        if (width < height)
+        {
+            ratioFactor = width;
+        }
+        else
+        {
+            ratioFactor = height;
+        }
+
+        float widthRatio = ratioFactor / imageWidth;
+        float heightRatio = ratioFactor / imageHeight;
+
+        int clipX, clipY, clipW, clipH;
+        al_get_clipping_rectangle (&clipX, &clipY, &clipW, &clipH);
+        al_set_clipping_rectangle (x, y, width - margin, height - margin);
+
+        al_draw_scaled_bitmap (image, 0, 0, imageWidth, imageHeight, x + m_PanTranslate.X, y + m_PanTranslate.Y,
+            imageWidth * widthRatio, imageHeight * heightRatio, 0);
+
+        std::vector<AtlasRegion>& regions = m_Atlas->GetRegions ();
+
+        ALLEGRO_MOUSE_STATE state;
+        al_get_mouse_state (&state);
+
+        for (AtlasRegion& region : regions)
+        {
+            Rect bounds = region.Bounds;
+            Point topLeft = bounds.GetTopLeft ();
+            Point botRight = bounds.GetBottomRight ();
+            Rect tileRec = Rect (
+                Point (x + m_PanTranslate.X + topLeft.X * widthRatio, y + m_PanTranslate.Y + topLeft.Y * heightRatio),
+                Point (
+                    x + m_PanTranslate.X + botRight.X * widthRatio, y + m_PanTranslate.Y + botRight.Y * heightRatio));
+
+            if (InsideRect (state.x, state.y, tileRec))
+            {
+                ALLEGRO_COLOR selectColor = COLOR_YELLOW;
+                selectColor.a = 0.5f;
+
+                int blendOp, blendSrc, blendDst;
+                al_get_blender (&blendOp, &blendSrc, &blendDst);
+                al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+
+                al_draw_rectangle (tileRec.GetTopLeft ().X, tileRec.GetTopLeft ().Y, tileRec.GetBottomRight ().X,
+                    tileRec.GetBottomRight ().Y, COLOR_YELLOW, 1);
+                al_draw_filled_rectangle (tileRec.GetTopLeft ().X, tileRec.GetTopLeft ().Y, tileRec.GetBottomRight ().X,
+                    tileRec.GetBottomRight ().Y, selectColor);
+
+                al_set_blender (blendOp, blendSrc, blendDst);
+            }
+        }
+
+        al_set_clipping_rectangle (clipX, clipY, clipW, clipH);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorMode::RemoveSelectedActor ()
+    {
+        if (m_SelectedActor)
+        {
+            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveActor (m_SelectedActor);
+            m_SelectedActor = nullptr;
+            m_Editor->SetCursorMode (CursorMode::ActorSelectMode);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorMode::CopySelectedActor ()
+    {
+        if (m_SelectedActor)
+        {
+            m_SelectedAtlasRegion = m_Atlas->GetRegion (m_SelectedActor->Name);
+
+            ALLEGRO_MOUSE_STATE state;
+            al_get_mouse_state (&state);
+
+            Point point = m_Editor->CalculateCursorPoint (state.x, state.y);
+            Point regionSize = m_SelectedActor->Bounds.GetSize ();
+
+            Actor* newActor = ActorFactory::GetActor (
+                &m_Editor->GetMainLoop ()->GetSceneManager (), m_SelectedActor->GetTypeName ());
+            newActor->Name = m_SelectedActor->GetAtlasRegionName ();
+            newActor->Bounds = Rect (point.X - regionSize.Width * 0.5f, point.Y - regionSize.Height * 0.5f,
+                regionSize.Width, regionSize.Height);
+            newActor->TemplateBounds.Pos = m_SelectedActor->Bounds.Pos;
+            newActor->Rotation = m_SelectedActor->Rotation;
+            newActor->ZOrder = m_SelectedActor->ZOrder;
+            newActor->SetAtlas (m_SelectedActor->GetAtlas ());
+            newActor->SetAtlasRegionName (m_SelectedActor->GetAtlasRegionName ());
+
+            newActor->PhysPoints = m_SelectedActor->PhysPoints;
+
+            newActor->Initialize ();
+
+            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddActor (newActor);
+
+            m_Rotation = newActor->Rotation;
+            m_SelectedActor = newActor;
+        }
+
+        m_Editor->SetCursorMode (CursorMode::ActorEditMode);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -358,7 +482,7 @@ namespace aga
 
             if (i < regions.size ())
             {
-                Rect region = regions[i].Bounds;
+                Rect region = regions[m_CurrentTileBegin + i].Bounds;
                 al_draw_scaled_bitmap (m_Atlas->GetImage (), region.GetPos ().X, region.GetPos ().Y,
                     region.GetSize ().Width, region.GetSize ().Height, advance + 1, windowSize.Height - TILE_SIZE + 1,
                     TILE_SIZE - 2, TILE_SIZE - 2, 0);
@@ -386,6 +510,33 @@ namespace aga
     {
         m_SelectedActor = nullptr;
         m_TileUnderCursor = nullptr;
+        m_PanTranslate = Point::ZERO_POINT;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorMode::ScrollNextTile (int offset)
+    {
+        m_CurrentTileBegin += offset;
+
+        std::vector<AtlasRegion>& regions = m_Atlas->GetRegions ();
+
+        if (m_CurrentTileBegin >= regions.size () - 1)
+        {
+            m_CurrentTileBegin = regions.size () - 1;
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorMode::ScrollPrevTile (int offset)
+    {
+        m_CurrentTileBegin -= offset;
+
+        if (m_CurrentTileBegin < 0)
+        {
+            m_CurrentTileBegin = 0;
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -393,6 +544,16 @@ namespace aga
     void EditorActorMode::ChangeAtlas (const std::string& newAtlasName)
     {
         m_Atlas = m_Editor->GetMainLoop ()->GetAtlasManager ().GetAtlas (newAtlasName);
+        m_CurrentTileBegin = 0;
+        m_PanTranslate = Point::ZERO_POINT;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorMode::PanSpriteSheet (float dx, float dy)
+    {
+        m_PanTranslate.X += dx;
+        m_PanTranslate.Y += dy;
     }
 
     //--------------------------------------------------------------------------------------------------

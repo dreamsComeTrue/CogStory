@@ -40,13 +40,12 @@ namespace aga
 
     enum CursorMode
     {
-        TileSelectMode,
-        TileEditMode,
+        ActorSelectMode,
+        ActorEditMode,
         EditPhysBodyMode,
         EditFlagPointsMode,
         EditTriggerAreaMode,
-        SpeechMode,
-        ActorMode
+        EditSpriteSheetMode
     };
 
     class Editor : public Lifecycle, public Gwk::Event::Handler
@@ -111,6 +110,12 @@ namespace aga
 
         void OnPlay ();
         void OnExit ();
+
+        void OnScrollPrevTiles ();
+        void OnScrollNextTiles ();
+        void OnBigScrollPrevTiles ();
+        void OnBigScrollNextTiles ();
+        void OnSpriteSheetEdit ();
 
         void OnShowGrid ();
         void OnGridIncrease ();

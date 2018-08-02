@@ -23,8 +23,8 @@ namespace aga
         EditorActorMode (Editor* editor);
         virtual ~EditorActorMode ();
 
-        Actor* AddOrUpdateActor (int id, const std::string& name, const std::string& actorType, Point pos,
-                                 float rotation, int zOrder);
+        Actor* AddOrUpdateActor (
+            int id, const std::string& name, const std::string& actorType, Point pos, float rotation, int zOrder);
         void RemoveActor (const std::string& name);
         void Clear ();
 
@@ -33,11 +33,11 @@ namespace aga
         bool MoveSelectedActor ();
         Actor* GetActorUnderCursor (int mouseX, int mouseY, Rect&& outRect);
 
-        TileActor* AddTile (int mouseX, int mouseY);
         void RemoveSelectedActor ();
         void CopySelectedActor ();
         void DrawTiles ();
 
+        Atlas* GetAtlas () { return m_Atlas; }
         void ChangeAtlas (const std::string& newAtlasName);
         bool ChooseTile (int mouseX, int mouseY);
 
@@ -60,6 +60,16 @@ namespace aga
         Actor* GetActor () { return m_Actor; }
         void SetActor (Actor* actor) { m_Actor = actor; }
 
+        void ScrollNextTile (int offset);
+        void ScrollPrevTile (int offset);
+
+        void RenderSpriteSheet ();
+        void PanSpriteSheet (float dx, float dy);
+
+    private:
+        void AddActor (int mouseX, int mouseY);
+        bool ChooseTileFromSpriteSheet (int mouseX, int mouseY);
+
     private:
         Atlas* m_Atlas;
         AtlasRegion m_SelectedAtlasRegion;
@@ -73,6 +83,10 @@ namespace aga
 
         bool m_IsDrawTiles;
         TileActor* m_TileUnderCursor;
+
+        int m_CurrentTileBegin;
+
+        Point m_PanTranslate;
     };
 }
 

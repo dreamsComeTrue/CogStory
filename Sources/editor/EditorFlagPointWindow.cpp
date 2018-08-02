@@ -61,7 +61,7 @@ namespace aga
 
     void EditorFlagPointWindow::OnCancel ()
     {
-        m_Editor->SetCursorMode (CursorMode::TileSelectMode);
+        m_Editor->SetCursorMode (CursorMode::ActorSelectMode);
         m_Editor->GetEditorFlagPointMode ().SetFlagPointName ("");
         m_SceneWindow->CloseButtonPressed ();
     }
