@@ -18,6 +18,7 @@ namespace aga
         virtual ~EditorPhysMode ();
 
         void DrawPhysPoints (float mouseX, float mouseY);
+        void DrawGuideLines ();
 
         bool MoveSelectedPhysPoint ();
 

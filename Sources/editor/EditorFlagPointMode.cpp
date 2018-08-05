@@ -34,7 +34,7 @@ namespace aga
             {
                 std::map<std::string, FlagPoint>& flagPoints
                     = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
-                Point p = m_Editor->CalculateCursorPoint (state.x, state.y);
+                Point p = m_Editor->CalculateWorldPoint (state.x, state.y);
 
                 flagPoints[m_FlagPoint].Pos.X = p.X;
                 flagPoints[m_FlagPoint].Pos.Y = p.Y;
@@ -111,7 +111,7 @@ namespace aga
         {
             if (GetFlagPointUnderCursor (mouseX, mouseY) == "")
             {
-                Point p = m_Editor->CalculateCursorPoint (mouseX, mouseY);
+                Point p = m_Editor->CalculateWorldPoint (mouseX, mouseY);
 
                 m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddFlagPoint (m_FlagPointName, p);
                 m_FlagPoint = m_FlagPointName;

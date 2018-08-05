@@ -25,16 +25,19 @@ namespace aga
         void SetTranslate (float dx, float dy);
         Point GetTranslate ();
 
+        ALLEGRO_TRANSFORM& GetCurrentTransform () { return m_Transform; }
+        void SetCurrentTransform (ALLEGRO_TRANSFORM& transform) { m_Transform = transform; }
+
         void Scale (float dx, float dy, float mousePosX = -1, float mousePosY = -1);
         Point GetScale ();
 
         void SetCenter (float x, float y);
         Point GetCenter ();
 
-        void SetFollowActor (Actor* actor, Point followOffset = { 0.f, 0.f });
+        void SetFollowActor (Actor* actor, Point followOffset = {0.f, 0.f});
         void TweenToPoint (Point endPoint, float timeMs = 1000, bool centerScreen = true);
-        void TweenToPoint (Point endPoint, asIScriptFunction* finishFunc, float timeMs = 1000,
-                           bool centerScreen = true);
+        void TweenToPoint (
+            Point endPoint, asIScriptFunction* finishFunc, float timeMs = 1000, bool centerScreen = true);
 
     private:
         ALLEGRO_TRANSFORM m_Transform;

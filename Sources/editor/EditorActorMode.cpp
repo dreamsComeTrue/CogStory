@@ -53,9 +53,9 @@ namespace aga
             std::vector<ScriptMetaData> pendingScripts;
 
             if (actor && actor->GetTypeName () != actorType)
-			{
-				pendingScripts = actor->GetScripts ();
-				activeScene->RemoveActor (actor);
+            {
+                pendingScripts = actor->GetScripts ();
+                activeScene->RemoveActor (actor);
             }
 
             actor = ActorFactory::GetActor (&m_Editor->GetMainLoop ()->GetSceneManager (), actorType);
@@ -88,8 +88,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-	void EditorActorMode::RemoveActor (const std::string& name)
-	{
+    void EditorActorMode::RemoveActor (const std::string& name)
+    {
         Scene* activeScene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
 
         activeScene->RemoveActor (name);
@@ -110,7 +110,7 @@ namespace aga
         if (state.buttons == 1 && m_SelectedActor)
         {
             Point point
-                = m_Editor->CalculateCursorPoint (state.x + m_TileSelectionOffset.X, state.y + m_TileSelectionOffset.Y);
+                = m_Editor->CalculateWorldPoint (state.x + m_TileSelectionOffset.X, state.y + m_TileSelectionOffset.Y);
 
             m_SelectedActor->Bounds.SetPos (point);
             m_SelectedActor->TemplateBounds = m_SelectedActor->Bounds;
@@ -214,7 +214,7 @@ namespace aga
 
         TileActor* tile = new TileActor (&m_Editor->GetMainLoop ()->GetSceneManager ());
         Point regionSize = m_Atlas->GetRegion (m_SelectedAtlasRegion.Name).Bounds.GetSize ();
-        Point point = m_Editor->CalculateCursorPoint (mouseX, mouseY);
+        Point point = m_Editor->CalculateWorldPoint (mouseX, mouseY);
 
         tile->ID = Entity::GetNextID ();
         tile->Tileset = m_Atlas->GetName ();
@@ -240,8 +240,6 @@ namespace aga
         {
             m_Editor->GetEditorPhysMode ().SetPhysPoly (&m_SelectedActor->PhysPoints[0]);
         }
-
-        m_Editor->SetCursorMode (CursorMode::ActorEditMode);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -275,8 +273,6 @@ namespace aga
                 if (InsideRect (mouseX, mouseY, r))
                 {
                     m_SelectedAtlasRegion = regions[m_CurrentTileBegin + i];
-                    AddActor (mouseX, mouseY);
-
                     return true;
                 }
             }
@@ -289,35 +285,14 @@ namespace aga
 
     bool EditorActorMode::ChooseTileFromSpriteSheet (int mouseX, int mouseY)
     {
-        const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
-        const float margin = 10.f;
-        float x = margin;
-        float y = margin;
-        float height = winSize.Height - margin;
-
-        ALLEGRO_BITMAP* image = m_Atlas->GetImage ();
-        int imageWidth = al_get_bitmap_width (image);
-        int imageHeight = al_get_bitmap_height (image);
-
-        float widthRatio = height / imageWidth;
-        float heightRatio = height / imageHeight;
-
         std::vector<AtlasRegion>& regions = m_Atlas->GetRegions ();
+        Point mouseCursor = m_Editor->CalculateWorldPoint (mouseX, mouseY);
 
         for (AtlasRegion& region : regions)
         {
-            Rect bounds = region.Bounds;
-            Point topLeft = bounds.GetTopLeft ();
-            Point botRight = bounds.GetBottomRight ();
-            Rect tileRec = Rect (
-                Point (x + m_PanTranslate.X + topLeft.X * widthRatio, y + m_PanTranslate.Y + topLeft.Y * heightRatio),
-                Point (
-                    x + m_PanTranslate.X + botRight.X * widthRatio, y + m_PanTranslate.Y + botRight.Y * heightRatio));
-
-            if (InsideRect (mouseX, mouseY, tileRec))
+            if (InsideRect (mouseCursor.X, mouseCursor.Y, region.Bounds))
             {
                 m_SelectedAtlasRegion = region;
-                AddActor (mouseX, mouseY);
 
                 return true;
             }
@@ -330,59 +305,24 @@ namespace aga
 
     void EditorActorMode::RenderSpriteSheet ()
     {
-        const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
-
-        const float margin = 10.f;
-
-        float x = margin;
-        float y = margin;
-        float width = winSize.Width - margin;
-        float height = winSize.Height - margin;
-
-        al_draw_filled_rectangle (x, y, width, height, COLOR_BLACK);
-        al_draw_rectangle (x - 1, y - 1, width + 1, height + 1, COLOR_GREEN, 2);
-
         ALLEGRO_BITMAP* image = m_Atlas->GetImage ();
         int imageWidth = al_get_bitmap_width (image);
         int imageHeight = al_get_bitmap_height (image);
 
-        float ratioFactor;
-
-        if (width < height)
-        {
-            ratioFactor = width;
-        }
-        else
-        {
-            ratioFactor = height;
-        }
-
-        float widthRatio = ratioFactor / imageWidth;
-        float heightRatio = ratioFactor / imageHeight;
-
-        int clipX, clipY, clipW, clipH;
-        al_get_clipping_rectangle (&clipX, &clipY, &clipW, &clipH);
-        al_set_clipping_rectangle (x, y, width - margin, height - margin);
-
-        al_draw_scaled_bitmap (image, 0, 0, imageWidth, imageHeight, x + m_PanTranslate.X, y + m_PanTranslate.Y,
-            imageWidth * widthRatio, imageHeight * heightRatio, 0);
+        al_draw_scaled_bitmap (image, 0, 0, imageWidth, imageHeight, 0, 0, imageWidth, imageHeight, 0);
 
         std::vector<AtlasRegion>& regions = m_Atlas->GetRegions ();
 
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
 
+        Point mouseCursor = m_Editor->CalculateWorldPoint (state.x, state.y);
+
         for (AtlasRegion& region : regions)
         {
             Rect bounds = region.Bounds;
-            Point topLeft = bounds.GetTopLeft ();
-            Point botRight = bounds.GetBottomRight ();
-            Rect tileRec = Rect (
-                Point (x + m_PanTranslate.X + topLeft.X * widthRatio, y + m_PanTranslate.Y + topLeft.Y * heightRatio),
-                Point (
-                    x + m_PanTranslate.X + botRight.X * widthRatio, y + m_PanTranslate.Y + botRight.Y * heightRatio));
 
-            if (InsideRect (state.x, state.y, tileRec))
+            if (InsideRect (mouseCursor.X, mouseCursor.Y, bounds))
             {
                 ALLEGRO_COLOR selectColor = COLOR_YELLOW;
                 selectColor.a = 0.5f;
@@ -391,16 +331,14 @@ namespace aga
                 al_get_blender (&blendOp, &blendSrc, &blendDst);
                 al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
 
-                al_draw_rectangle (tileRec.GetTopLeft ().X, tileRec.GetTopLeft ().Y, tileRec.GetBottomRight ().X,
-                    tileRec.GetBottomRight ().Y, COLOR_YELLOW, 1);
-                al_draw_filled_rectangle (tileRec.GetTopLeft ().X, tileRec.GetTopLeft ().Y, tileRec.GetBottomRight ().X,
-                    tileRec.GetBottomRight ().Y, selectColor);
+                al_draw_rectangle (bounds.GetTopLeft ().X, bounds.GetTopLeft ().Y, bounds.GetBottomRight ().X,
+                    bounds.GetBottomRight ().Y, COLOR_YELLOW, 1);
+                al_draw_filled_rectangle (bounds.GetTopLeft ().X, bounds.GetTopLeft ().Y, bounds.GetBottomRight ().X,
+                    bounds.GetBottomRight ().Y, selectColor);
 
                 al_set_blender (blendOp, blendSrc, blendDst);
             }
         }
-
-        al_set_clipping_rectangle (clipX, clipY, clipW, clipH);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -426,7 +364,7 @@ namespace aga
             ALLEGRO_MOUSE_STATE state;
             al_get_mouse_state (&state);
 
-            Point point = m_Editor->CalculateCursorPoint (state.x, state.y);
+            Point point = m_Editor->CalculateWorldPoint (state.x, state.y);
             Point regionSize = m_SelectedActor->Bounds.GetSize ();
 
             Actor* newActor = ActorFactory::GetActor (
@@ -510,7 +448,6 @@ namespace aga
     {
         m_SelectedActor = nullptr;
         m_TileUnderCursor = nullptr;
-        m_PanTranslate = Point::ZERO_POINT;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -545,15 +482,6 @@ namespace aga
     {
         m_Atlas = m_Editor->GetMainLoop ()->GetAtlasManager ().GetAtlas (newAtlasName);
         m_CurrentTileBegin = 0;
-        m_PanTranslate = Point::ZERO_POINT;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void EditorActorMode::PanSpriteSheet (float dx, float dy)
-    {
-        m_PanTranslate.X += dx;
-        m_PanTranslate.Y += dy;
     }
 
     //--------------------------------------------------------------------------------------------------

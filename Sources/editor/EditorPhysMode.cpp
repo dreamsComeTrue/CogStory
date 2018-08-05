@@ -39,15 +39,39 @@ namespace aga
 
         if (m_PhysPoint && state.buttons == 1)
         {
-            Point p = m_Editor->CalculateCursorPoint (state.x, state.y);
+            Point p = m_Editor->CalculateWorldPoint (state.x, state.y);
 
             m_PhysPoint->X = p.X - origin.X;
             m_PhysPoint->Y = p.Y - origin.Y;
+
+            actor->UpdatePhysPolygon ();
 
             return true;
         }
 
         return false;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorPhysMode::DrawGuideLines ()
+    {
+        if (m_PhysPoint)
+        {
+            Point origin = {0, 0};
+            Actor* actor = m_Editor->GetEditorActorMode ().GetSelectedActor ();
+
+            if (actor)
+            {
+                origin = actor->Bounds.GetPos () + actor->Bounds.GetHalfSize ();
+            }
+
+            const Point windowSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+            al_draw_line (
+                -1000.f, m_PhysPoint->Y + origin.Y, windowSize.Width, m_PhysPoint->Y + origin.Y, COLOR_WHITE, 1);
+            al_draw_line (
+                m_PhysPoint->X + origin.X, -1000.f, m_PhysPoint->X + origin.X, windowSize.Height, COLOR_WHITE, 1);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -131,9 +155,9 @@ namespace aga
 
     void EditorPhysMode::InsertPhysPointAtCursor (int mouseX, int mouseY)
     {
-        Point p = m_Editor->CalculateCursorPoint (mouseX, mouseY);
+        Point p = m_Editor->CalculateWorldPoint (mouseX, mouseY);
         Point origin = {0, 0};
-        std::vector<std::vector<Point>>* physPoints;
+        std::vector<std::vector<Point>>* physPoints = nullptr;
         Actor* actor = m_Editor->GetEditorActorMode ().GetSelectedActor ();
 
         if (actor)

@@ -30,7 +30,7 @@ namespace aga
 
         if (m_TriggerPoint && state.buttons == 1)
         {
-            Point point = m_Editor->CalculateCursorPoint (state.x, state.y);
+            Point point = m_Editor->CalculateWorldPoint (state.x, state.y);
             m_TriggerPoint->X = point.X;
             m_TriggerPoint->Y = point.Y;
 
@@ -168,7 +168,7 @@ namespace aga
                 = &m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetTriggerArea (m_TriggerAreaName);
         }
 
-        Point pointToInsert = m_Editor->CalculateCursorPoint (mouseX, mouseY);
+        Point pointToInsert = m_Editor->CalculateWorldPoint (mouseX, mouseY);
         bool inserted = false;
 
         //  After we select one of trigger point, we can insert next one accordingly

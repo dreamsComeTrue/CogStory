@@ -241,18 +241,18 @@ namespace aga
         newPolyButton->Hide ();
 
         actorButton = new Gwk::Controls::Button (m_MainCanvas);
-        actorButton->SetText ("ACTOR (F2)");
+        actorButton->SetText ("ACTOR [F2]");
         actorButton->SetPos (20, selectModeButton->Bottom () + 5);
         actorButton->onPress.Add (this, &Editor::OnActorSelected);
 
         speechButton = new Gwk::Controls::Button (m_MainCanvas);
-        speechButton->SetText ("SPEECH (F3)");
+        speechButton->SetText ("SPEECH [F3]");
         speechButton->SetPos (20, actorButton->Bottom () + 5);
         speechButton->onPress.Add (this, &Editor::OnSpeech);
 
         playButton = new Gwk::Controls::Button (m_MainCanvas);
-        playButton->SetText ("PLAY (F1)");
-        playButton->SetPos (20, speechButton->Bottom () + 20);
+        playButton->SetText ("PLAY [F1]");
+        playButton->SetPos (20, newPolyButton->Bottom () + 20);
         playButton->onPress.Add (this, &Editor::OnPlay);
 
         tilesetCombo = new Gwk::Controls::ComboBox (m_MainCanvas);
@@ -291,8 +291,9 @@ namespace aga
         rightPrevTileButton->onPress.Add (this, &Editor::OnBigScrollPrevTiles);
 
         spriteSheetButton = new Gwk::Controls::Button (m_MainCanvas);
-        spriteSheetButton->SetWidth (30);
-        spriteSheetButton->SetText ("#");
+        spriteSheetButton->SetWidth (50);
+        spriteSheetButton->SetHeight (42);
+        spriteSheetButton->SetText ("# [`]");
         spriteSheetButton->onPress.Add (this, &Editor::OnSpriteSheetEdit);
 
         avgFPSLabel = new Gwk::Controls::Label (m_MainCanvas);
@@ -339,6 +340,8 @@ namespace aga
 
         LoadConfig ();
         ScreenResize ();
+
+        al_identity_transform (&m_NewTransform);
 
         return true;
     }
@@ -445,7 +448,7 @@ namespace aga
     bool Editor::IsEditorCanvasNotCovered ()
     {
         return ((m_CursorMode == CursorMode::ActorSelectMode || m_CursorMode == CursorMode::ActorEditMode
-                    || m_CursorMode == CursorMode::EditPhysBodyMode)
+                    || m_CursorMode == CursorMode::EditPhysBodyMode || m_CursorMode == CursorMode::EditSpriteSheetMode)
             && !m_EditorSceneWindow->GetSceneWindow ()->Visible () && !m_SpeechWindow->GetSceneWindow ()->Visible ()
             && !m_TriggerAreaWindow->GetSceneWindow ()->Visible () && !m_FlagPointWindow->GetSceneWindow ()->Visible ()
             && !m_ActorWindow->GetSceneWindow ()->Visible ());
@@ -525,10 +528,7 @@ namespace aga
             m_TriggerAreaWindow->GetSceneWindow ()->CloseButtonPressed ();
         }
 
-        if (GetCursorMode () == EditSpriteSheetMode)
-        {
-            SetCursorMode (ActorSelectMode);
-        }
+        OnCloseSpriteSheetEdit ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -670,6 +670,19 @@ namespace aga
                 }
                 break;
             }
+
+            case ALLEGRO_KEY_TILDE:
+            {
+                if (m_CursorMode == CursorMode::EditSpriteSheetMode)
+                {
+                    OnCloseSpriteSheetEdit ();
+                }
+                else
+                {
+                    OnSpriteSheetEdit ();
+                }
+                break;
+            }
             }
         }
 
@@ -736,21 +749,22 @@ namespace aga
 
     void Editor::Render (float deltaTime)
     {
-        if (m_IsSnapToGrid)
-        {
-            DrawGrid ();
-        }
-
         if (m_CursorMode == CursorMode::EditPhysBodyMode)
         {
             RenderPhysBodyMode (deltaTime);
         }
         else if (m_CursorMode == CursorMode::EditSpriteSheetMode)
         {
+            m_MainLoop->GetSceneManager ().GetCamera ().Update (deltaTime);
             m_EditorActorMode.RenderSpriteSheet ();
         }
         else
         {
+            if (m_IsSnapToGrid)
+            {
+                DrawGrid ();
+            }
+
             m_MainLoop->GetSceneManager ().Render (deltaTime);
             m_MainLoop->GetSceneManager ().GetCamera ().UseIdentityTransform ();
 
@@ -818,10 +832,12 @@ namespace aga
             ALLEGRO_MOUSE_STATE state;
             al_get_mouse_state (&state);
 
+            m_EditorPhysMode.DrawGuideLines ();
             m_EditorPhysMode.DrawPhysPoints (state.x, state.y);
         }
 
         camera.UseIdentityTransform ();
+
         RenderUI ();
     }
 
@@ -905,20 +921,20 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Point Editor::CalculateCursorPoint (int mouseX, int mouseY)
+    Point Editor::CalculateWorldPoint (int pointX, int pointY)
     {
         Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
         Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
 
-        float finalX = (mouseX + translate.X);
-        float finalY = (mouseY + translate.Y);
+        float finalX = (pointX + translate.X);
+        float finalY = (pointY + translate.Y);
 
         if (m_IsSnapToGrid)
         {
             float gridSizeScale = m_GridSize;
 
-            finalX = std::floor ((finalX) / gridSizeScale) * gridSizeScale;
-            finalY = std::floor ((finalY) / gridSizeScale) * gridSizeScale;
+            finalX = std::floor (finalX / gridSizeScale) * gridSizeScale;
+            finalY = std::floor (finalY / gridSizeScale) * gridSizeScale;
         }
 
         return {finalX / scale.X, finalY / scale.Y};
@@ -1018,7 +1034,28 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnSpriteSheetEdit () { SetCursorMode (EditSpriteSheetMode); }
+    void Editor::OnSpriteSheetEdit ()
+    {
+        m_OldSnapToGrid = m_IsSnapToGrid;
+        m_IsSnapToGrid = false;
+
+        SetCursorMode (EditSpriteSheetMode);
+        m_WorldTransform = m_MainLoop->GetSceneManager ().GetCamera ().GetCurrentTransform ();
+        m_MainLoop->GetSceneManager ().GetCamera ().SetCurrentTransform (m_NewTransform);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OnCloseSpriteSheetEdit ()
+    {
+        if (GetCursorMode () == EditSpriteSheetMode)
+        {
+            m_IsSnapToGrid = m_OldSnapToGrid;
+            m_NewTransform = m_MainLoop->GetSceneManager ().GetCamera ().GetCurrentTransform ();
+            m_MainLoop->GetSceneManager ().GetCamera ().SetCurrentTransform (m_WorldTransform);
+            SetCursorMode (ActorSelectMode);
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -1188,7 +1225,7 @@ namespace aga
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
 
-        Point point = CalculateCursorPoint (state.x, state.y);
+        Point point = CalculateWorldPoint (state.x, state.y);
 
         m_MainLoop->GetSceneManager ().GetActiveScene ()->SetPlayerStartLocation (point);
 
@@ -1309,7 +1346,7 @@ namespace aga
         leftPrevTileButton->SetPos (beginning - 35, leftNextTileButton->Bottom () + 2);
         rightNextTileButton->SetPos (beginning + TILES_COUNT * TILE_SIZE + 5, m_MainCanvas->Bottom () - TILE_SIZE + 5);
         rightPrevTileButton->SetPos (beginning + TILES_COUNT * TILE_SIZE + 5, rightNextTileButton->Bottom () + 2);
-        spriteSheetButton->SetPos (rightNextTileButton->Right () + 5, rightNextTileButton->Bottom () - 8);
+        spriteSheetButton->SetPos (rightNextTileButton->Right () + 5, rightNextTileButton->Y ());
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1333,6 +1370,12 @@ namespace aga
         if (event.button == 1 && m_EditorActorMode.IsDrawTiles ())
         {
             isToolBoxTileSelected = m_EditorActorMode.ChooseTile (event.x, event.y);
+
+            if (isToolBoxTileSelected)
+            {
+                OnCloseSpriteSheetEdit ();
+                m_EditorActorMode.AddActor (event.x, event.y);
+            }
         }
 
         if (event.button == 1)
@@ -1486,11 +1529,6 @@ namespace aga
             {
                 m_EditorPhysMode.MoveSelectedPhysPoint ();
             }
-        }
-
-        if (m_IsMousePan && m_CursorMode == CursorMode::EditSpriteSheetMode)
-        {
-            m_EditorActorMode.PanSpriteSheet (event.dx, event.dy);
         }
 
         if (IsEditorCanvasNotCovered ())

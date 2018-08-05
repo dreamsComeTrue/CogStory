@@ -75,11 +75,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Point Camera::GetTranslate () { return { -m_Transform.m[3][0], -m_Transform.m[3][1] }; }
+    Point Camera::GetTranslate () { return {-m_Transform.m[3][0], -m_Transform.m[3][1]}; }
 
     //--------------------------------------------------------------------------------------------------
 
-    Point Camera::GetScale () { return { m_Transform.m[0][0], m_Transform.m[1][1] }; }
+    Point Camera::GetScale () { return {m_Transform.m[0][0], m_Transform.m[1][1]}; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -98,8 +98,8 @@ namespace aga
         Point scale = GetScale ();
         const Point winSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
 
-        return { (trans.X + winSize.Width * 0.5f) * (1.0f / scale.X),
-                 (trans.Y + winSize.Height * 0.5f) * (1.0f / scale.Y) };
+        return {
+            (trans.X + winSize.Width * 0.5f) * (1.0f / scale.X), (trans.Y + winSize.Height * 0.5f) * (1.0f / scale.Y)};
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -123,7 +123,7 @@ namespace aga
                 Point pos = m_CameraFollowActor->GetPosition ();
 
                 SetTranslate (screenSize.Width * 0.5 - (pos.X + actorHalfSize.Width) * scale.X - m_FollowOffset.X,
-                              screenSize.Height * 0.5 - (pos.Y + actorHalfSize.Height) * scale.Y - m_FollowOffset.Y);
+                    screenSize.Height * 0.5 - (pos.Y + actorHalfSize.Height) * scale.Y - m_FollowOffset.Y);
             };
 
             //  In case of first new frame rendered - update camera with new actor as a target

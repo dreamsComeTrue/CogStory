@@ -69,7 +69,7 @@ namespace aga
         void SetCursorMode (CursorMode mode) { m_CursorMode = mode; }
         void SwitchCursorMode ();
 
-        Point CalculateCursorPoint (int mouseX, int mouseY);
+        Point CalculateWorldPoint (int mouseX, int mouseY);
         bool IsMouseWithinPointRect (int mouseX, int mouseY, Point point, int outsets);
 
         MainLoop* GetMainLoop () { return m_MainLoop; }
@@ -86,6 +86,8 @@ namespace aga
         EditorQuestionWindow* GetEditorQuestionWindow () { return m_QuestionWindow; }
 
         void UpdateSceneNameLabel (const std::string& name);
+
+        ALLEGRO_TRANSFORM& GetWorldTransform () { return m_WorldTransform; }
 
     private:
         void LoadConfig ();
@@ -116,6 +118,7 @@ namespace aga
         void OnBigScrollPrevTiles ();
         void OnBigScrollNextTiles ();
         void OnSpriteSheetEdit ();
+        void OnCloseSpriteSheetEdit ();
 
         void OnShowGrid ();
         void OnGridIncrease ();
@@ -187,6 +190,10 @@ namespace aga
         Gwk::Input::Allegro m_GUIInput;
 
         std::string m_LastScenePath;
+
+        ALLEGRO_TRANSFORM m_WorldTransform;
+        ALLEGRO_TRANSFORM m_NewTransform;
+        bool m_OldSnapToGrid;
     };
 }
 

@@ -25,10 +25,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Collidable::SetPhysOffset (const Point& offset)
-    {
-        SetPhysOffset (offset.X, offset.Y);
-    }
+    void Collidable::SetPhysOffset (const Point& offset) { SetPhysOffset (offset.X, offset.Y); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -45,32 +42,30 @@ namespace aga
         for (int i = 0; i < m_PhysPolygons.size (); ++i)
         {
             std::vector<float> out;
+            std::vector<Point>& points = m_PhysPolygons[i].Points;
 
-            for (int j = 0; j < m_PhysPolygons[i].Points.size (); ++j)
+            for (int j = 0; j < points.size (); ++j)
             {
-                float xPoint = m_PhysPolygons[i].Points[j].X;
-                float yPoint = m_PhysPolygons[i].Points[j].Y;
-
-                out.push_back (xPoint);
-                out.push_back (yPoint);
+                out.push_back (points[j].X);
+                out.push_back (points[j].Y);
             }
 
             al_draw_polygon (out.data (), (int)out.size () / 2, 0, COLOR_GREEN, 1, 0);
         }
-        //for (int i = 0; i < PhysPoints.size (); ++i)
+        // for (int i = 0; i < PhysPoints.size (); ++i)
         //{
-            //std::vector<float> out;
+        // std::vector<float> out;
 
-            //for (int j = 0; j < PhysPoints[i].size (); ++j)
-            //{
-                //float xPoint = m_Offset.X + PhysPoints[i][j].X;
-                //float yPoint = m_Offset.Y + PhysPoints[i][j].Y;
+        // for (int j = 0; j < PhysPoints[i].size (); ++j)
+        //{
+        // float xPoint = m_Offset.X + PhysPoints[i][j].X;
+        // float yPoint = m_Offset.Y + PhysPoints[i][j].Y;
 
-                //out.push_back (xPoint);
-                //out.push_back (yPoint);
-            //}
+        // out.push_back (xPoint);
+        // out.push_back (yPoint);
+        //}
 
-            //al_draw_polygon (out.data (), out.size () / 2, 0, COLOR_GREEN, 1, 0);
+        // al_draw_polygon (out.data (), out.size () / 2, 0, COLOR_GREEN, 1, 0);
         //}
     }
 
@@ -157,7 +152,7 @@ namespace aga
                         if (!other->GetPhysPolygon (j).Points.empty ())
                         {
                             PolygonCollisionResult r = m_PhysicsManager->PolygonCollision (
-                                myPolygon, other->GetPhysPolygon (j), { velocity.X, velocity.Y });
+                                myPolygon, other->GetPhysPolygon (j), {velocity.X, velocity.Y});
 
                             bool found = false;
 

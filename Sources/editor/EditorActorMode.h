@@ -37,6 +37,8 @@ namespace aga
         void CopySelectedActor ();
         void DrawTiles ();
 
+        void AddActor (int mouseX, int mouseY);
+
         Atlas* GetAtlas () { return m_Atlas; }
         void ChangeAtlas (const std::string& newAtlasName);
         bool ChooseTile (int mouseX, int mouseY);
@@ -64,10 +66,8 @@ namespace aga
         void ScrollPrevTile (int offset);
 
         void RenderSpriteSheet ();
-        void PanSpriteSheet (float dx, float dy);
 
     private:
-        void AddActor (int mouseX, int mouseY);
         bool ChooseTileFromSpriteSheet (int mouseX, int mouseY);
 
     private:
@@ -85,8 +85,6 @@ namespace aga
         TileActor* m_TileUnderCursor;
 
         int m_CurrentTileBegin;
-
-        Point m_PanTranslate;
     };
 }
 
