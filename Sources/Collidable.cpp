@@ -174,6 +174,10 @@ namespace aga
                                     m_Collisions.push_back (other);
 
                                     CollisionEvent (other);
+                                    other->CollisionEvent (this);
+
+                                    RunCallbacks (other);
+                                    other->RunCallbacks (this);
                                 }
                             }
                             else
@@ -202,6 +206,51 @@ namespace aga
         }
 
         return false;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Collidable::RunCallbacks (Collidable* other)
+    {
+        for (CollisionCallback& callback : m_Callbacks)
+        {
+            if (callback.Func)
+            {
+                callback.Func (other);
+            }
+
+            if (callback.ScriptFunc)
+            {
+                Actor* actor = dynamic_cast<Actor*> (other);
+
+                asIScriptContext* ctx = m_PhysicsManager->GetMainLoop ()->GetScriptManager ().GetContext ();
+                ctx->Prepare (callback.ScriptFunc);
+                ctx->SetArgObject (0, actor);
+                ctx->Execute ();
+                ctx->Unprepare ();
+                ctx->GetEngine ()->ReturnContext (ctx);
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Collidable::AddCollisionCallback (std::function<void(Collidable* other)> func)
+    {
+        CollisionCallback callback;
+        callback.Func = func;
+
+        m_Callbacks.push_back (callback);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Collidable::AddCollisionCallback (asIScriptFunction* func)
+    {
+        CollisionCallback callback;
+        callback.ScriptFunc = func;
+
+        m_Callbacks.push_back (callback);
     }
 
     //--------------------------------------------------------------------------------------------------

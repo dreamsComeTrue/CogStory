@@ -119,8 +119,10 @@ namespace aga
            void SetPosition (Point)
            Point GetPosition ()
            Point GetSize ()
+           string GetTypeName ()
            void SetCurrentAnimation (const string &in)
            Actor@ GetCurrentActor ()
+           AddCollisionCallback (Actor@ actor)
 
        MovementComponent
            MovementType
@@ -210,6 +212,27 @@ namespace aga
         }
 
         lastTimePoint = now;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    template <class A, class B> B* RefCast (A* a)
+    {
+        // If the handle already is a null handle, then just return the null handle
+        if (!a)
+        {
+            return nullptr;
+        }
+
+        // Now try to dynamically cast the pointer to the wanted type
+        B* b = dynamic_cast<B*> (a);
+        if (b != nullptr)
+        {
+            // Since the cast was made, we need to increase the ref counter for the returned handle
+            // b->addref ();
+        }
+
+        return b;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -471,6 +494,9 @@ namespace aga
         // FlagPoint
         RegisterFlagPointAPI ();
 
+        //  Actor
+        RegisterActorAPI ();
+
         //  Player
         RegisterPlayerAPI ();
 
@@ -491,9 +517,6 @@ namespace aga
 
         //  Speech Frame Manager
         RegisterSpeechFrameManagerAPI ();
-
-        //  Actor
-        RegisterActorAPI ();
 
         //  MovementComponent
         RegisterMovementComponentAPI ();
@@ -687,8 +710,23 @@ namespace aga
 
     void ScriptManager::RegisterPlayerAPI ()
     {
-        int r = m_ScriptEngine->RegisterObjectType ("Player", sizeof (Player), asOBJ_VALUE | asOBJ_POD);
+        // int r = m_ScriptEngine->RegisterObjectType ("Player", sizeof (Player), asOBJ_VALUE | asOBJ_POD);
+        int r = m_ScriptEngine->RegisterObjectType ("Player", 0, asOBJ_REF | asOBJ_NOCOUNT);
         assert (r >= 0);
+
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "Player", "Actor@ opImplCast()", asFUNCTION ((RefCast<Player, Actor>)), asCALL_CDECL_OBJLAST);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "Player", "Actor@ opCast()", asFUNCTION ((RefCast<Player, Actor>)), asCALL_CDECL_OBJLAST);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "Actor", "Player@ opImplCast()", asFUNCTION ((RefCast<Actor, Player>)), asCALL_CDECL_OBJLAST);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "Actor", "Player@ opCast()", asFUNCTION ((RefCast<Actor, Player>)), asCALL_CDECL_OBJLAST);
+        assert (r >= 0);
+
         r = m_ScriptEngine->RegisterGlobalProperty ("Player player", m_MainLoop->GetSceneManager ().GetPlayer ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectProperty ("Player", "Rect Bounds", asOFFSET (Player, Bounds));
@@ -716,6 +754,9 @@ namespace aga
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
             "Player", "bool IsPreventInput ()", asMETHOD (Player, IsPreventInput), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "Player", "string GetTypeName ()", asMETHOD (Player, GetTypeName), asCALL_THISCALL);
         assert (r >= 0);
     }
 
@@ -862,6 +903,10 @@ namespace aga
                 SpeechFrame*),
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction ("SpeechFrame@ AddSpeechFrame (const string &in, bool = true)",
+            asMETHODPR (SpeechFrameManager, AddSpeechFrame, (const std::string&, bool), SpeechFrame*),
+            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
+        assert (r >= 0);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -893,6 +938,14 @@ namespace aga
         r = m_ScriptEngine->RegisterGlobalFunction ("Actor@ GetCurrentActor ()",
             asMETHOD (SceneManager, GetCurrentlyProcessedActor), asCALL_THISCALL_ASGLOBAL,
             &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterFuncdef ("void CollisionCbk (Actor@)");
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Actor", "void AddCollisionCallback (CollisionCbk @+ callback)",
+            asMETHODPR (Actor, AddCollisionCallback, (asIScriptFunction*), void), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "Actor", "string GetTypeName ()", asMETHOD (Actor, GetTypeName), asCALL_THISCALL);
         assert (r >= 0);
     }
 

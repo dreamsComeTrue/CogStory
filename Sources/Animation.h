@@ -17,6 +17,7 @@ namespace aga
 
         void AddFrame (unsigned index, const Rect& rect);
         void AddFrame (unsigned index, int row, int col);
+        void AddFrame (int row, int col);
 
         Rect& GetFrame (unsigned index);
         size_t GetFramesCount () const;
@@ -35,7 +36,7 @@ namespace aga
         Animation ();
 
         void AddFrames (const std::string& name, const AnimationFrames& frames);
-        AnimationFrames& GetAnimation (const std::string& name);
+        AnimationFrames& GetAnimationFrames (const std::string& name);
         AnimationFrames& GetCurrentAnimation ();
         std::string GetCurrentAnimationName ();
         std::map<std::string, AnimationFrames>& GetAnimations ();

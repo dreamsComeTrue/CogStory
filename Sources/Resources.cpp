@@ -28,7 +28,7 @@ namespace aga
 
         {PACK_MENU_UI, GFX_UI, "menu_ui.pack"}, {PACK_ACTORS_UI, GFX_UI, "actors_ui.pack"},
         {PACK_PLAYER, GFX_ACTORS, "player.pack"}, {PACK_PARTICLES, GFX_EFFECTS, "particles.pack"},
-        {PACK_NPC_1, GFX_NPC, "npc-1.pack"}, {PACK_0_0_HOME, GFX_0_HOME, "0_0_home.pack"},
+        {PACK_NPC_1, GFX_NPC, "npc_1.pack"}, {PACK_0_0_HOME, GFX_0_HOME, "0_0_home.pack"},
         {PACK_1_0_FACTORY, GFX_1_FACTORY, "1_0_factory.pack"}, {PACK_2_0_CITY, GFX_2_CITY, "2_0_city.pack"},
         {PACK_2_1_CITY, GFX_2_CITY, "2_1_city.pack"},
 

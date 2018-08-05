@@ -40,67 +40,64 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void ActorFactory::RegisterAnimations () { s_Animations[ANIMATION_PLAYER] = RegisterAnimation_Player (); }
+    void ActorFactory::RegisterAnimations ()
+    {
+        const std::string animPath = GetDataPath () + "/animations/";
+
+        s_Animations[ANIMATION_PLAYER] = LoadAnimationFromFile (animPath + "/player.anim");
+        s_Animations[ANIMATION_NPC_1] = LoadAnimationFromFile (animPath + "/npc_1.anim");
+    }
 
     //--------------------------------------------------------------------------------------------------
 
-    Animation ActorFactory::RegisterAnimation_Player ()
+    Animation ActorFactory::LoadAnimationFromFile (const std::string& path)
     {
+        std::ifstream animFile (path);
+        std::string line = "";
+
         Animation animation;
-        Point cellSize (64, 64);
-        float animSpeed = 80;
 
-        AnimationFrames idleFrames (3, cellSize);
-        idleFrames.AddFrame (0, 0, 0);
-        idleFrames.AddFrame (1, 0, 1);
-        idleFrames.AddFrame (2, 0, 2);
-        idleFrames.SetPlaySpeed (500);
-        animation.AddFrames (ANIM_IDLE_NAME, idleFrames);
+        AnimationFrames* currentFrames = nullptr;
 
-        AnimationFrames moveDownFrames (6, cellSize);
-        moveDownFrames.AddFrame (0, 1, 0);
-        moveDownFrames.AddFrame (1, 1, 1);
-        moveDownFrames.AddFrame (2, 1, 2);
-        moveDownFrames.AddFrame (3, 1, 3);
-        moveDownFrames.AddFrame (4, 1, 4);
-        moveDownFrames.AddFrame (5, 1, 5);
-        moveDownFrames.SetPlaySpeed (animSpeed);
-        animation.AddFrames (ANIM_MOVE_DOWN_NAME, moveDownFrames);
+        while (!animFile.eof ())
+        {
+            getline (animFile, line);
 
-        AnimationFrames moveLeftFrames (6, cellSize);
-        moveLeftFrames.AddFrame (0, 2, 0);
-        moveLeftFrames.AddFrame (1, 2, 1);
-        moveLeftFrames.AddFrame (2, 2, 2);
-        moveLeftFrames.AddFrame (3, 2, 3);
-        moveLeftFrames.AddFrame (4, 2, 4);
-        moveLeftFrames.AddFrame (5, 2, 5);
-        moveLeftFrames.SetPlaySpeed (animSpeed + 30);
-        animation.AddFrames (ANIM_MOVE_LEFT_NAME, moveLeftFrames);
+            if (line == "" || line == "\n")
+            {
+                continue;
+            }
 
-        AnimationFrames moveRightFrames (6, cellSize);
-        moveRightFrames.AddFrame (0, 3, 0);
-        moveRightFrames.AddFrame (1, 3, 1);
-        moveRightFrames.AddFrame (2, 3, 2);
-        moveRightFrames.AddFrame (3, 3, 3);
-        moveRightFrames.AddFrame (4, 3, 4);
-        moveRightFrames.AddFrame (5, 3, 5);
-        moveRightFrames.SetPlaySpeed (animSpeed + 30);
-        animation.AddFrames (ANIM_MOVE_RIGHT_NAME, moveRightFrames);
+            //  We can parse - we have a name
+            if (!StartsWith (line, "\t"))
+            {
+                std::vector<std::string> lineData = SplitString (line, ' ');
+                std::string framesName = lineData[0];
+                int framesCount = atoi (lineData[1].c_str ());
+                int cellWidth = atoi (lineData[2].c_str ());
+                int cellHeight = atoi (lineData[3].c_str ());
+                int framesSpeed = atoi (lineData[4].c_str ());
 
-        AnimationFrames moveUpFrames (6, cellSize);
-        moveUpFrames.AddFrame (0, 4, 0);
-        moveUpFrames.AddFrame (1, 4, 1);
-        moveUpFrames.AddFrame (2, 4, 2);
-        moveUpFrames.AddFrame (3, 4, 3);
-        moveUpFrames.AddFrame (4, 4, 4);
-        moveUpFrames.AddFrame (5, 4, 5);
-        moveUpFrames.SetPlaySpeed (animSpeed);
-        animation.AddFrames (ANIM_MOVE_UP_NAME, moveUpFrames);
+                AnimationFrames frames (framesCount, {cellWidth, cellHeight});
+                frames.SetPlaySpeed (framesSpeed);
 
-        AnimationFrames moveUpLook (1, cellSize);
-        moveUpLook.AddFrame (0, 4, 0);
-        moveUpLook.SetPlaySpeed (animSpeed);
-        animation.AddFrames (ANIM_MOVE_UP_LOOK_NAME, moveUpLook);
+                animation.AddFrames (framesName, frames);
+                currentFrames = &animation.GetAnimationFrames (framesName);
+            }
+            else
+            {
+                std::vector<std::string> lineData = SplitString (TrimString (line), ' ');
+
+                if (currentFrames)
+                {
+                    int x = atoi (lineData[0].c_str ());
+                    int y = atoi (lineData[1].c_str ());
+                    currentFrames->AddFrame (x, y);
+                }
+            }
+        }
+
+        animFile.close ();
 
         return animation;
     }

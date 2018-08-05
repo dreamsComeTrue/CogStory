@@ -1,3 +1,4 @@
+bool g_IntroPlayed = false;
 
 Point playerSize = player.GetSize ();
 Point screenSize = screen.GetWindowSize ();
@@ -9,16 +10,53 @@ void Start ()
 
 void BeforeEnterScene ()
 {
-	AddOnEnterCallback ("CITY_EXIT", OnCityExitEnter);
+    SetSuppressSceneInfo (true);
 
-	Point offset (0, -180);
-	camera.SetFollowActor (GetActor ("PLAYER"), offset);
+    Actor@ npc = GetActor ("npc1");
+
+    if (!g_IntroPlayed)
+    {
+        g_IntroPlayed = true;
+        IntroAnimation ();        
+        npc.AddCollisionCallback (CollisionFunc);
+    }
+    else
+    {
+        camera.SetFollowActor (GetActor ("PLAYER"));
+    }
 }
 
-void AfterLeaveScene ()
+void CollisionFunc (Actor@ other)
 {
-	Point offset (0, 0);
-	camera.SetFollowActor (GetActor ("PLAYER"), offset);
+    if (other.GetTypeName () == "Player")
+    {
+        AddSpeechFrame ("GREET_1", true);
+    }
+    else
+    {
+        Log ("Hello");
+    }
+}
+
+void IntroAnimation ()
+{
+    Point screenSize = screen.GetWindowSize ();
+
+    player.SetPreventInput (true);
+    player.SetPosition (0, 0);
+
+    camera.SetTranslate (screenSize.Width * 0.5f - player.Bounds.GetSize ().Width, -200);
+	camera.SetFollowActor (null);
+    camera.TweenToPoint (player.GetPosition () + player.Bounds.GetHalfSize (), IntroAnimationFinish, 5000, true);
+
+    player.SetCurrentAnimation ("ANIM_MOVE_UP_LOOK");
+
+    SetOverlayText ("-- Chapter I --\nNo ordinary day", 3000.f, 100.f, Center);    
+}
+
+void IntroAnimationFinish (int id)
+{
+    player.SetPreventInput (false);
 }
 
 void OnCityExitEnter (Point p)

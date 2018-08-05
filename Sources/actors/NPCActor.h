@@ -20,6 +20,10 @@ namespace aga
         virtual bool Update (float deltaTime);
 
         virtual std::string GetTypeName () override { return TypeName; }
+
+    private:
+        virtual void BeginOverlap (Entity* entity) override;
+        virtual void CollisionEvent (Collidable* other) override;
     };
 }
 

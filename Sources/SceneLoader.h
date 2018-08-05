@@ -13,7 +13,7 @@ namespace aga
     class SceneLoader
     {
     public:
-        static Scene* LoadScene (SceneManager* sceneManager, const std::string& filePath);
+        static Scene* LoadScene (SceneManager* sceneManager, const std::string& filePath, bool loadBounds = true);
         static void SaveScene (Scene* scene, const std::string& filePath);
 
         static void UpdateMaxEntityID (Scene* scene);

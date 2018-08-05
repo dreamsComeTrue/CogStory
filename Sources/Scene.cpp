@@ -73,12 +73,13 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    const float boundSize = 10000;
+    const float SCENE_INFINITE_BOUND_SIZE = 10000.f;
 
     Scene::Scene (SceneManager* sceneManager)
         : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
         , m_SceneManager (sceneManager)
-        , m_QuadTree (Rect ({-boundSize, -boundSize}, {boundSize, boundSize}))
+        , m_QuadTree (Rect ({-SCENE_INFINITE_BOUND_SIZE, -SCENE_INFINITE_BOUND_SIZE},
+              {SCENE_INFINITE_BOUND_SIZE, SCENE_INFINITE_BOUND_SIZE}))
         , m_CurrentActor (nullptr)
         , m_BackgroundColor (al_map_rgb (60, 60, 70))
         , m_ActorsTreeChanged (false)
@@ -156,7 +157,7 @@ namespace aga
             }
         }
 
-		m_CurrentActor = nullptr;
+        m_CurrentActor = nullptr;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -587,7 +588,8 @@ namespace aga
         m_FlagPoints.clear ();
         m_TriggerAreas.clear ();
 
-        m_QuadTree = QuadTreeNode (Rect ({-boundSize, -boundSize}, {boundSize, boundSize}));
+        m_QuadTree = QuadTreeNode (Rect ({-SCENE_INFINITE_BOUND_SIZE, -SCENE_INFINITE_BOUND_SIZE},
+            {SCENE_INFINITE_BOUND_SIZE, SCENE_INFINITE_BOUND_SIZE}));
 
         Entity::GlobalID = 0;
     }

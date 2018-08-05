@@ -47,7 +47,6 @@ namespace aga
         void SetCurrentAnimation (const std::string& name) { Animable::SetCurrentAnimation (name); }
 
     private:
-        void InitializeAnimations ();
         void CreateParticleEmitters ();
         void UpdateParticleEmitters ();
 

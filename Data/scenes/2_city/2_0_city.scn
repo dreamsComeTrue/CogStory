@@ -1,38 +1,6 @@
 {
     "actors": [
         {
-            "atlas": "0_0_home",
-            "atlas-region": "bed",
-            "components": [],
-            "id": "2",
-            "name": "bed",
-            "phys": [],
-            "pos": "-111 -145",
-            "rot": "0",
-            "scripts": [],
-            "size": "64 64",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "actors_ui",
-            "atlas-region": "player_head",
-            "components": [],
-            "id": "13",
-            "name": "back",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "48 -73",
-            "rot": "0",
-            "scripts": [],
-            "size": "20 30",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
             "atlas": "2_0_city",
             "atlas-region": "single_house",
             "components": [],
@@ -58,6 +26,24 @@
             "scripts": [],
             "size": "144 145",
             "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "npc_1",
+            "atlas-region": "tile000",
+            "components": [],
+            "id": "20",
+            "name": "npc1",
+            "phys": [
+                {
+                    "poly": "-10.6616 15.2198 12.6168 15.4295 12.6168 -11.8335 -10.0324 -11.8335 "
+                }
+            ],
+            "pos": "16.2 -77.8",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "NPC",
             "z-order": "0"
         }
     ],
@@ -86,8 +72,13 @@
                     "texts": [
                         {
                             "action": "",
-                            "data": "a",
+                            "data": "OK",
                             "name": "1"
+                        },
+                        {
+                            "action": "GREET_1",
+                            "data": "Not ok...",
+                            "name": "2"
                         }
                     ]
                 },
@@ -100,7 +91,7 @@
             "rel_pos": 5,
             "texts": [
                 {
-                    "data": "Hey, what 's up???\nAre you ready, please answr me?",
+                    "data": "Hey, what 's up???\nAre you ready, please answer me...",
                     "langID": "EN"
                 },
                 {
@@ -110,10 +101,5 @@
             ]
         }
     ],
-    "trigger_areas": [
-        {
-            "name": "CITY_EXIT",
-            "poly": "46 -74 48 -42 70 -42 72 -73 "
-        }
-    ]
+    "trigger_areas": []
 }

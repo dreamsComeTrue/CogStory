@@ -18,7 +18,8 @@ RobotTales v0.1
  = Kamera zatrzymuje się nad dwójką rozmawiających robotów (R1, R2).
     R1: Czy wszystko idzie zgodnie z planem?
     R2: Nastąpiły pewne komplikacje...
-    R1: Co to znaczy kom-pli-ka-cje ?!? [podskakuje]    
+    R1: Co to znaczy kom-pli-ka-cje ?!? [podskakuje]   
+    R2: Nie zdążymy do końca tygodnia 
     
  = Zza sceny przychodzi człowiek (CZ), podchodzi do robotów (R1, R2).
     - 
@@ -27,17 +28,31 @@ RobotTales v0.1
 
 =============================
 
-..:: Chapter II ::..
-     Awakening
+    -- Chapter II --
+        Awakening
 
 
 =============================
 
-..:: Chapter III ::..
-     Awakening
+   -- Chapter III --
+      Wasteland
 
+=============================
 
+   -- Chapter IV --
+    Space Station
 
+=============================
+
+   -- Chapter V --
+     Outer Space
+
+=============================
+
+   -- Chapter VI --
+     You are me
+
+= PiTi spotyka sam siebie z przeszłości
 
 
 
@@ -60,5 +75,10 @@ Hakowanie umysłu (jak Project IGI), niszczenie kamer w fabryce
 
 Temat detektywistyczny
 Na końcu poznaję matkę - Agatha, gracz może go poświęcić lub nie
+
+Festyn na rynku
+Przemarsz wojsk
+
+PiT odkrywa że jest jedynym myślącym robotem (ma duszę człowieka z przeszłości)
 
 "He created The Core"

@@ -1,6 +1,9 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "NPCActor.h"
+#include "ActorFactory.h"
+#include "Player.h"
+#include "SceneManager.h"
 
 namespace aga
 {
@@ -24,6 +27,9 @@ namespace aga
 
         SetCheckOverlap (true);
 
+        SetAnimation (ActorFactory::GetAnimation (ANIMATION_NPC_1));
+        SetCurrentAnimation (ANIM_STAND_LEFT_NAME);
+
         return true;
     }
 
@@ -35,6 +41,14 @@ namespace aga
 
         return true;
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void NPCActor::BeginOverlap (Entity* entity) {}
+
+    //--------------------------------------------------------------------------------------------------
+
+    void NPCActor::CollisionEvent (Collidable* other) {}
 
     //--------------------------------------------------------------------------------------------------
 }

@@ -452,6 +452,7 @@ namespace aga
             idTextBox->SetText (outcomes[i].Name);
             idTextBox->SetWidth (65);
             idTextBox->SetPos (0, currentY);
+            idTextBox->SetName ("IDTxt_" + ToString (i));
             idTextBox->onTextChanged.Add (this, &EditorSpeechWindow::OnOutcomeIDTextChanged);
 
             Gwk::Controls::TextBox* dataTextBox = new Gwk::Controls::TextBox (m_OutcomesContainer);
@@ -459,6 +460,7 @@ namespace aga
             dataTextBox->SetText (outcomes[i].Text);
             dataTextBox->SetWidth (240);
             dataTextBox->SetPos (idTextBox->Right () + 5, currentY);
+            dataTextBox->SetName ("DataTxt_" + ToString (i));
             dataTextBox->onTextChanged.Add (this, &EditorSpeechWindow::OnOutcomeDataTextChanged);
 
             Gwk::Controls::ComboBox* actionCombo = new Gwk::Controls::ComboBox (m_OutcomesContainer);
@@ -479,6 +481,7 @@ namespace aga
             }
 
             actionCombo->SelectItemByName (outcomes[i].Action, false);
+            actionCombo->SetName ("ActionTxt_" + ToString (i));
             actionCombo->onSelection.Add (this, &EditorSpeechWindow::OnOutcomeActionChanged);
 
             Gwk::Controls::Button* upButton = new Gwk::Controls::Button (m_OutcomesContainer);
@@ -531,18 +534,15 @@ namespace aga
     {
         std::vector<SpeechOutcome>& outcomes = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
 
-        int childIndex = 0;
         for (int i = 0; i < outcomes.size (); ++i)
         {
-            Gwk::Controls::Base* child = m_OutcomesContainer->GetChild (childIndex);
+            Gwk::Controls::Base* child = m_OutcomesContainer->FindChildByName ("IDTxt_" + ToString (i), true);
 
             if (control == child)
             {
                 outcomes[i].Name = ((Gwk::Controls::TextBox*)control)->GetText ();
                 break;
             }
-
-            childIndex += 6;
         }
     }
 
@@ -552,18 +552,15 @@ namespace aga
     {
         std::vector<SpeechOutcome>& outcomes = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
 
-        int childIndex = 1;
         for (int i = 0; i < outcomes.size (); ++i)
         {
-            Gwk::Controls::Base* child = m_OutcomesContainer->GetChild (childIndex);
+            Gwk::Controls::Base* child = m_OutcomesContainer->FindChildByName ("DataTxt_" + ToString (i), true);
 
             if (control == child)
             {
                 outcomes[i].Text = ((Gwk::Controls::TextBox*)control)->GetText ();
                 break;
             }
-
-            childIndex += 6;
         }
     }
 
@@ -573,10 +570,9 @@ namespace aga
     {
         std::vector<SpeechOutcome>& outcomes = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
 
-        int childIndex = 2;
         for (int i = 0; i < outcomes.size (); ++i)
         {
-            Gwk::Controls::Base* child = m_OutcomesContainer->GetChild (childIndex);
+            Gwk::Controls::Base* child = m_OutcomesContainer->FindChildByName ("ActionTxt_" + ToString (i), true);
 
             if (control == child)
             {
@@ -586,8 +582,6 @@ namespace aga
                 outcomes[i].Action = actionName;
                 break;
             }
-
-            childIndex += 6;
         }
 
         UpdateOutcomes ();

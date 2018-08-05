@@ -141,11 +141,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
-    const float boundSize = 10000;
-
-    //--------------------------------------------------------------------------------------------------
-
-    Scene* SceneLoader::LoadScene (SceneManager* sceneManager, const std::string& filePath)
+    Scene* SceneLoader::LoadScene (SceneManager* sceneManager, const std::string& filePath, bool loadBounds)
     {
         try
         {
@@ -165,7 +161,15 @@ namespace aga
             scene->m_Size = Rect (StringToPoint (j["min_size"]), StringToPoint (j["max_size"]));
             scene->m_Size = Rect (Point (-1000, -1000), Point (1000, 1000));
 
-            scene->m_QuadTree = QuadTreeNode (scene->m_Size);
+            if (loadBounds)
+            {
+                scene->m_QuadTree = QuadTreeNode (scene->m_Size);
+            }
+            else
+            {
+                scene->m_QuadTree = QuadTreeNode (Rect ({-SCENE_INFINITE_BOUND_SIZE, -SCENE_INFINITE_BOUND_SIZE},
+                    {SCENE_INFINITE_BOUND_SIZE, SCENE_INFINITE_BOUND_SIZE}));
+            }
 
             auto& actors = j["actors"];
 

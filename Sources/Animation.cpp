@@ -39,6 +39,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void AnimationFrames::AddFrame (int row, int col)
+    {
+        Rect rect = Rect ({col * m_CellSize.Width, row * m_CellSize.Height},
+            {col * m_CellSize.Width + m_CellSize.Width, row * m_CellSize.Height + m_CellSize.Height});
+        m_Frames.push_back (rect);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     Rect& AnimationFrames::GetFrame (unsigned index) { return m_Frames[index]; }
 
     //--------------------------------------------------------------------------------------------------
@@ -67,7 +76,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    AnimationFrames& Animation::GetAnimation (const std::string& name) { return m_Animations[name]; }
+    AnimationFrames& Animation::GetAnimationFrames (const std::string& name) { return m_Animations[name]; }
 
     //--------------------------------------------------------------------------------------------------
 

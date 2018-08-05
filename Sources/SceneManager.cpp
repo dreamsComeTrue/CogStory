@@ -159,7 +159,9 @@ namespace aga
 
         if (!scene)
         {
-            scene = SceneLoader::LoadScene (this, scenePath);
+            bool loadBounds = m_MainLoop->GetStateManager ().GetActiveStateName () == GAMEPLAY_STATE_NAME;
+
+            scene = SceneLoader::LoadScene (this, scenePath, loadBounds);
             AddScene (scene);
         }
 
@@ -410,7 +412,7 @@ namespace aga
         return nullptr;
     }
 
-	//--------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
 
     AudioSample* SceneManager::GetSceneAudioStream ()
     {

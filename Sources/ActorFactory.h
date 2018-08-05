@@ -8,6 +8,7 @@
 namespace aga
 {
     const std::string ANIMATION_PLAYER = "ANIMATION_PLAYER";
+    const std::string ANIMATION_NPC_1 = "NPC_1";
 
     class ActorFactory
     {
@@ -25,7 +26,7 @@ namespace aga
         static Animation& GetAnimation (const std::string& name);
 
     private:
-        static Animation RegisterAnimation_Player ();
+        static Animation LoadAnimationFromFile (const std::string& path);
 
     protected:
         static std::vector<std::string> s_ActorTypes;

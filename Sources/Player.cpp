@@ -7,7 +7,6 @@
 #include "Scene.h"
 #include "SceneManager.h"
 #include "Screen.h"
-#include "actors/NPCActor.h"
 #include "actors/components/AudioSampleComponent.h"
 #include "actors/components/ParticleEmitterComponent.h"
 
@@ -45,10 +44,13 @@ namespace aga
         CreateParticleEmitters ();
         UpdateParticleEmitters ();
 
+        SetCheckOverlap (true);
+
         Animable::Initialize ("player", "");
         Bounds.SetSize ({64, 64});
 
-        InitializeAnimations ();
+        SetAnimation (ActorFactory::GetAnimation (ANIMATION_PLAYER));
+        SetCurrentAnimation (ANIM_IDLE_NAME);
 
         m_FootStepComponent
             = (AudioSampleComponent*)ActorFactory::GetActorComponent (this, AudioSampleComponent::TypeName);
@@ -75,15 +77,6 @@ namespace aga
 
         m_HeadParticleComponent->GetEmitter ()->Reset ();
         m_FootParticleComponent->GetEmitter ()->Reset ();
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Player::InitializeAnimations ()
-    {
-        SetAnimation (ActorFactory::GetAnimation (ANIMATION_PLAYER));
-
-        SetCurrentAnimation (ANIM_IDLE_NAME);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -292,15 +285,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Player::CollisionEvent (Collidable* other)
-    {
-        Entity* entity = dynamic_cast<Entity*> (other);
-
-        if (entity->GetTypeName () == NPCActor::TypeName)
-        {
-            m_SceneManager->GetSpeechFrameManager ().AddSpeechFrame ("GREET_1", true);
-        }
-    }
+    void Player::CollisionEvent (Collidable* other) {}
 
     //--------------------------------------------------------------------------------------------------
 }

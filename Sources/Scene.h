@@ -16,6 +16,8 @@ namespace aga
 #define LANG_PL 1
 #define CURRENT_LANG LANG_EN
 
+    extern const float SCENE_INFINITE_BOUND_SIZE;
+
     class Actor;
     class SceneManager;
     class AtlasManager;

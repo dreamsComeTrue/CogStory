@@ -12,11 +12,16 @@
 namespace aga
 {
     const std::string ANIM_IDLE_NAME = "ANIM_IDLE";
+
     const std::string ANIM_MOVE_DOWN_NAME = "ANIM_MOVE_DOWN";
     const std::string ANIM_MOVE_UP_NAME = "ANIM_MOVE_UP";
-    const std::string ANIM_MOVE_UP_LOOK_NAME = "ANIM_MOVE_UP_LOOK";
     const std::string ANIM_MOVE_LEFT_NAME = "ANIM_MOVE_LEFT";
     const std::string ANIM_MOVE_RIGHT_NAME = "ANIM_MOVE_RIGHT";
+
+    const std::string ANIM_STAND_DOWN_NAME = "ANIM_STAND_DOWN";
+    const std::string ANIM_STAND_UP_NAME = "ANIM_STAND_UP";
+    const std::string ANIM_STAND_LEFT_NAME = "ANIM_STAND_LEFT";
+    const std::string ANIM_STAND_RIGHT_NAME = "ANIM_STAND_RIGHT";
 
     //  Pixels Per Second
     const float MOVE_SPEED = 110.0;
