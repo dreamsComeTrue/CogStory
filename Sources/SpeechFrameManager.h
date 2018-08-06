@@ -28,9 +28,10 @@ namespace aga
         void Clear ();
 
         SpeechFrame* AddSpeechFrame (const std::string& id, const std::string& text, Rect rect,
-            bool shouldBeHandled = true, const std::string& regionName = "");
+            bool shouldBeHandled = true, const std::string& actionName = "", const std::string& regionName = "");
         SpeechFrame* AddSpeechFrame (const std::string& id, const std::string& text, Point pos, int maxLineCharsCount,
-            int linesCount, bool shouldBeHandled = true, const std::string& regionName = "");
+            int linesCount, bool shouldBeHandled = true, const std::string& actionName = "",
+            const std::string& regionName = "");
 
         SpeechFrame* AddSpeechFrame (SpeechData* speechData, bool shouldBeHandled = true);
 

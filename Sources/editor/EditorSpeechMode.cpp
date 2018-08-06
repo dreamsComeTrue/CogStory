@@ -57,6 +57,7 @@ namespace aga
                 speech->Name = m_Speech.Name;
                 speech->Text = m_Speech.Text;
                 speech->Outcomes = m_Speech.Outcomes;
+                speech->Action = m_Speech.Action;
             }
             else
             {

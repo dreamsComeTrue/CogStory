@@ -25,7 +25,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     SpeechFrame::SpeechFrame (SpeechFrameManager* manager, const std::string& text, Rect rect, bool shouldBeHandled,
-        const std::string& regionName)
+        const std::string& actionName, const std::string& regionName)
         : m_Manager (manager)
         , m_DrawRect (rect)
         , m_Visible (true)
@@ -49,6 +49,8 @@ namespace aga
         , m_ActualChoiceIndex (0)
         , m_AttrColorIndex (0)
         , m_AttrDelayIndex (0)
+        , m_Action (actionName)
+        , m_ScriptHandleFunction (nullptr)
     {
         Atlas* atlas = m_Manager->GetSceneManager ()->GetMainLoop ()->GetAtlasManager ().GetAtlas (
             GetBaseName (GetResourcePath (PACK_MENU_UI)));
@@ -122,7 +124,7 @@ namespace aga
 
     void SpeechFrame::HandleKeyUp ()
     {
-        // if (!IsTextFitWithoutScroll ())
+        if (!IsTextFitWithoutScroll ())
         {
             //  We can only scroll, when there are no choices
             if (!m_Choices.empty () && !m_StillUpdating)
@@ -148,7 +150,7 @@ namespace aga
 
     void SpeechFrame::HandleKeyDown ()
     {
-        // if (!IsTextFitWithoutScroll ())
+        if (!IsTextFitWithoutScroll ())
         {
             if (!m_Choices.empty () && !m_StillUpdating)
             {
@@ -339,8 +341,22 @@ namespace aga
                             m_OutcomeAction = choice.Action;
                         }
                     }
+                    else
+                    {
+                        m_OutcomeAction = m_Action;
+                    }
 
                     m_Handled = true;
+
+                    if (m_ScriptHandleFunction)
+                    {
+                        asIScriptContext* ctx
+                            = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScriptManager ().GetContext ();
+                        ctx->Prepare (m_ScriptHandleFunction);
+                        ctx->Execute ();
+                        ctx->Unprepare ();
+                        ctx->GetEngine ()->ReturnContext (ctx);
+                    }
 
                     if (HandledFunction)
                     {
@@ -717,10 +733,13 @@ namespace aga
                 {
                     currentIndex = currentPart.rfind (' ');
 
-                    std::string str = workLine.substr (0, currentIndex);
-                    ret.push_back (str);
-                    workLine = workLine.substr (currentIndex);
-                    currentIndex = 0;
+                    if (currentIndex != std::string::npos)
+                    {
+                        std::string str = workLine.substr (0, currentIndex);
+                        ret.push_back (str);
+                        workLine = workLine.substr (currentIndex);
+                        currentIndex = 0;
+                    }
                 }
                 else
                 {

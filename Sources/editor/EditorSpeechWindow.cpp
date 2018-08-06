@@ -203,6 +203,16 @@ namespace aga
         m_AbsPositionYNumeric->SetPos (yPosLabel->Right () + 5, m_MaxLinesNumeric->Bottom () + 5);
         m_AbsPositionYNumeric->onTextChanged.Add (this, &EditorSpeechWindow::OnPositionYChanged);
 
+        Gwk::Controls::Label* actionLabel = new Gwk::Controls::Label (center);
+        actionLabel->SetPos (m_AbsPositionYNumeric->Right () + 10, m_AbsPositionYNumeric->Y ());
+        actionLabel->SetText ("Action:");
+        actionLabel->SizeToContents ();
+
+        m_ActionCombo = new Gwk::Controls::ComboBox (center);
+        m_ActionCombo->SetPos (actionLabel->Right () + 5, actionLabel->Y ());
+        m_ActionCombo->SetWidth (120);
+        m_ActionCombo->onSelection.Add (this, &EditorSpeechWindow::OnActionChanged);
+
         m_OutcomesContainer = new Gwk::Controls::ScrollControl (center);
         m_OutcomesContainer->SetBounds (xOffset, m_AbsPositionYNumeric->Bottom () + 10, 610, 65);
 
@@ -434,8 +444,6 @@ namespace aga
 
     void EditorSpeechWindow::UpdateOutcomes ()
     {
-        m_OutcomesContainer->Clear ();
-
         std::vector<SpeechOutcome>& outcomes = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
 
         std::map<int, SpeechData>& speeches
@@ -443,6 +451,23 @@ namespace aga
 
         std::map<std::string, asIScriptFunction*>& choiceFunctions
             = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetChoiceFunctions ();
+
+        m_OutcomesContainer->Clear ();
+
+        m_ActionCombo->ClearItems ();
+        m_ActionCombo->AddItem ("[CLOSE]", "[CLOSE]");
+
+        for (std::map<int, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
+        {
+            m_ActionCombo->AddItem ((*it).second.Name, (*it).second.Name);
+        }
+
+        for (std::map<std::string, asIScriptFunction*>::iterator it = choiceFunctions.begin ();
+             it != choiceFunctions.end (); ++it)
+        {
+            std::string name = REGISTERED_CHOICE_PREFIX + (*it).first;
+            m_ActionCombo->AddItem (name, name);
+        }
 
         int currentY = 0;
         for (int i = 0; i < outcomes.size (); ++i)
@@ -664,6 +689,16 @@ namespace aga
         };
 
         m_Editor->GetEditorQuestionWindow ()->Show ("Are you sure", YesFunc, nullptr);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorSpeechWindow::OnActionChanged (Gwk::Controls::Base* control)
+    {
+        Gwk::Controls::ComboBox* actionCombo = (Gwk::Controls::ComboBox*)control;
+        std::string actionName = actionCombo->GetSelectedItem ()->GetText ();
+
+        m_Editor->GetEditorSpeechMode ().GetSpeechData ().Action = actionName;
     }
 
     //--------------------------------------------------------------------------------------------------

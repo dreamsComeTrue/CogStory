@@ -95,7 +95,7 @@ namespace aga
        TriggerArea
                = void TriggerFunc (Point)
            void AddOnEnterCallback (const string &in, TriggerFunc @+ tf)
-          void RemoveOnEnterCallback (const string &in)
+           void RemoveOnEnterCallback (const string &in)
            void AddOnLeaveCallback (const string &in, TriggerFunc @+ tf)
            void RemoveOnLeaveCallback (const string &in)
 
@@ -106,6 +106,8 @@ namespace aga
            void SetDrawRect (Rect)
            void SetDrawTextCenter (bool)
            bool IsDrawTextCenter ()
+               = void ScriptHandleFunc ()
+           void SetHandleFunction (ScriptHandleFunc)
 
        SpeechFrameManager
            SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Rect, bool = true, const string &in = "")
@@ -883,6 +885,11 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod (
             "SpeechFrame", "bool IsDrawTextCenter ()", asMETHOD (SpeechFrame, IsDrawTextCenter), asCALL_THISCALL);
         assert (r >= 0);
+        r = m_ScriptEngine->RegisterFuncdef ("void ScriptHandleFunc ()");
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("SpeechFrame", "void SetHandleFunction (ScriptHandleFunc @+ tf)",
+            asMETHOD (SpeechFrame, SetHandleFunction), asCALL_THISCALL);
+        assert (r >= 0);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -891,15 +898,19 @@ namespace aga
     {
         int r = m_ScriptEngine->RegisterGlobalFunction (
             "SpeechFrame@ AddSpeechFrame (const string &in, const string &in, "
-            "Rect, bool = true, const string &in = \"\")",
+            "Rect, bool = true, const string &in = \"\", const string &in = \"\")",
             asMETHODPR (SpeechFrameManager, AddSpeechFrame,
-                (const std::string&, const std::string&, Rect, bool, const std::string& regionName), SpeechFrame*),
+                (const std::string&, const std::string&, Rect, bool, const std::string& actionName,
+                    const std::string& regionName),
+                SpeechFrame*),
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("SpeechFrame@ AddSpeechFrame (const string &in, const string &in, "
-                                                    "Point, int, int, bool = true, const string &in = \"\")",
+        r = m_ScriptEngine->RegisterGlobalFunction (
+            "SpeechFrame@ AddSpeechFrame (const string &in, const string &in, "
+            "Point, int, int, bool = true, const string &in = \"\", const string &in = \"\")",
             asMETHODPR (SpeechFrameManager, AddSpeechFrame,
-                (const std::string&, const std::string&, Point, int, int, bool, const std::string& regionName),
+                (const std::string&, const std::string&, Point, int, int, bool, const std::string& actionName,
+                    const std::string& regionName),
                 SpeechFrame*),
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);

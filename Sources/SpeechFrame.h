@@ -48,7 +48,7 @@ namespace aga
     public:
         SpeechFrame (SpeechFrameManager* manager);
         SpeechFrame (SpeechFrameManager* manager, const std::string& text, Rect rect, bool shouldBeHandled = true,
-            const std::string& regionName = "");
+            const std::string& actionName = "", const std::string& regionName = "");
         virtual ~SpeechFrame ();
 
         bool Update (float deltaTime);
@@ -83,6 +83,8 @@ namespace aga
 
         std::string GetOutcomeAction () { return m_OutcomeAction; }
 
+        void SetHandleFunction (asIScriptFunction* func) { m_ScriptHandleFunction = func; }
+
     private:
         void DrawActorSprite ();
         void DrawTextLine (const std::string& line, Point drawPoint, int advance);
@@ -112,6 +114,7 @@ namespace aga
         Atlas* m_Atlas;
         std::string m_ActorRegionName;
 
+        std::string m_Action;
         std::vector<SpeechChoice> m_Choices;
         int m_ActualChoiceIndex;
 
@@ -153,6 +156,8 @@ namespace aga
         int m_AttrDelayIndex;
 
         std::string m_OutcomeAction;
+
+        asIScriptFunction* m_ScriptHandleFunction;
     };
 }
 

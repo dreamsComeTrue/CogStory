@@ -51,6 +51,8 @@ namespace aga
         void OnDownOutcome (Gwk::Controls::Base* control);
         void OnRemoveOutcome (Gwk::Controls::Base* control);
 
+        void OnActionChanged (Gwk::Controls::Base* control);
+
         void ClearControls ();
 
     private:
@@ -69,6 +71,7 @@ namespace aga
         Gwk::Controls::ComboBox* m_RelPositionCombo;
         Gwk::Controls::NumericUpDown* m_AbsPositionXNumeric;
         Gwk::Controls::NumericUpDown* m_AbsPositionYNumeric;
+        Gwk::Controls::ComboBox* m_ActionCombo;
         Gwk::Controls::TextBoxMultiline* m_TextData;
         Gwk::Controls::ScrollControl* m_OutcomesContainer;
     };

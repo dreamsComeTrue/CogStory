@@ -3,9 +3,11 @@ bool g_IntroPlayed = false;
 Point playerSize = player.GetSize ();
 Point screenSize = screen.GetWindowSize ();
 
-void Start ()
+string ChoiceFunction1 ()
 {
+    Log ("OK");
 
+    return "SPCH_2";
 }
 
 void BeforeEnterScene ()
@@ -16,6 +18,8 @@ void BeforeEnterScene ()
 
     if (!g_IntroPlayed)
     {
+        RegisterChoiceFunction ("choice1", ChoiceFunction1);
+
         g_IntroPlayed = true;
         IntroAnimation ();        
         npc.AddCollisionCallback (CollisionFunc);
@@ -30,12 +34,18 @@ void CollisionFunc (Actor@ other)
 {
     if (other.GetTypeName () == "Player")
     {
-        AddSpeechFrame ("GREET_1", true);
+        SpeechFrame@ frame = AddSpeechFrame ("GREET_1", true);
+        frame.SetHandleFunction (SpeechHandle);
     }
     else
     {
         Log ("Hello");
     }
+}
+
+void SpeechHandle ()
+{
+    Log ("OK");
 }
 
 void IntroAnimation ()

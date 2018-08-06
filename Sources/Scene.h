@@ -41,6 +41,8 @@ namespace aga
         std::map<int, std::string> Text; //  LangID, data
         std::map<int, std::vector<SpeechOutcome>> Outcomes; //  LangID, outcomes
 
+        std::string Action = ""; //  If no outcomes, action to fire
+
         std::string ActorRegionName;
         int MaxCharsInLine = 0;
         int MaxLines = 0;

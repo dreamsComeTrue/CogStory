@@ -151,12 +151,12 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    SpeechFrame* SpeechFrameManager::AddSpeechFrame (
-        const std::string& id, const std::string& text, Rect rect, bool shouldBeHandled, const std::string& regionName)
+    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& id, const std::string& text, Rect rect,
+        bool shouldBeHandled, const std::string& actionName, const std::string& regionName)
     {
         if (m_Speeches.find (id) == m_Speeches.end ())
         {
-            SpeechFrame* frame = new SpeechFrame (this, text, rect, shouldBeHandled, regionName);
+            SpeechFrame* frame = new SpeechFrame (this, text, rect, shouldBeHandled, actionName, regionName);
             m_Speeches.insert (std::make_pair (id, frame));
 
             frame->ScrollDownFunction = [&]() { m_SelectSample->Play (); };
@@ -172,7 +172,8 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& id, const std::string& text, Point pos,
-        int maxLineCharsCount, int linesCount, bool shouldBeHandled, const std::string& regionName)
+        int maxLineCharsCount, int linesCount, bool shouldBeHandled, const std::string& actionName,
+        const std::string& regionName)
     {
         Point size = GetTextRectSize (maxLineCharsCount, linesCount);
 
@@ -180,7 +181,7 @@ namespace aga
         rect.SetPos (pos);
         rect.SetSize (size.Width, size.Height);
 
-        return AddSpeechFrame (id, text, rect, shouldBeHandled, regionName);
+        return AddSpeechFrame (id, text, rect, shouldBeHandled, actionName, regionName);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -204,7 +205,7 @@ namespace aga
         if (instance)
         {
             frame = AddSpeechFrame (instance->Name, instance->Text[CURRENT_LANG], pos, instance->MaxCharsInLine,
-                instance->MaxLines, shouldBeHandled, instance->ActorRegionName);
+                instance->MaxLines, shouldBeHandled, instance->Action, instance->ActorRegionName);
 
             std::vector<SpeechOutcome>& outcomes = instance->Outcomes[CURRENT_LANG];
 
