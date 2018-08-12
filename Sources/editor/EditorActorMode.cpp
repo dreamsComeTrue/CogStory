@@ -20,7 +20,6 @@ namespace aga
 
     EditorActorMode::EditorActorMode (Editor* editor)
         : m_Editor (editor)
-        , m_SelectedActor (nullptr)
         , m_ActorUnderCursor (nullptr)
         , m_Rotation (0)
         , m_Atlas (nullptr)
@@ -81,7 +80,7 @@ namespace aga
         activeScene->SortActors ();
         m_Editor->GetEditorActorMode ().Clear ();
 
-        m_SelectedActor = actor;
+        SetSelectedActor (actor);
 
         return actor;
     }
@@ -107,20 +106,27 @@ namespace aga
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
 
-        if (state.buttons == 1 && m_SelectedActor)
+        Actor* actor = nullptr;
+
+        if (!m_SelectedActors.empty ())
+        {
+            actor = m_SelectedActors[0];
+        }
+
+        if (state.buttons == 1 && actor)
         {
             Point point
                 = m_Editor->CalculateWorldPoint (state.x + m_TileSelectionOffset.X, state.y + m_TileSelectionOffset.Y);
 
-            m_SelectedActor->Bounds.SetPos (point);
-            m_SelectedActor->TemplateBounds = m_SelectedActor->Bounds;
+            actor->Bounds.SetPos (point);
+            actor->TemplateBounds = actor->Bounds;
 
-            m_SelectedActor->SetPhysOffset (m_SelectedActor->Bounds.GetPos () + m_SelectedActor->Bounds.GetHalfSize ());
+            actor->SetPhysOffset (actor->Bounds.GetPos () + actor->Bounds.GetHalfSize ());
 
             QuadTreeNode& quadTree = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetQuadTree ();
-            quadTree.Remove (m_SelectedActor);
+            quadTree.Remove (actor);
             quadTree.UpdateStructures ();
-            quadTree.Insert (m_SelectedActor);
+            quadTree.Insert (actor);
             quadTree.UpdateStructures ();
         }
 
@@ -129,7 +135,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Actor* EditorActorMode::GetActorUnderCursor (int mouseX, int mouseY, Rect&& outRect)
+    Actor* EditorActorMode::GetActorUnderCursor (int mouseX, int mouseY, bool selecting, Rect&& outRect)
     {
         std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
         Actor* resultActor = nullptr;
@@ -145,7 +151,10 @@ namespace aga
                     outRect = r;
                     resultActor = actorIt;
 
-                    m_TileSelectionOffset = {r.GetTopLeft ().X - mouseX, r.GetTopLeft ().Y - mouseY};
+                    if (selecting)
+                    {
+                        m_TileSelectionOffset = {r.GetTopLeft ().X - mouseX, r.GetTopLeft ().Y - mouseY};
+                    }
                 }
             }
         }
@@ -169,9 +178,9 @@ namespace aga
             m_Rotation = 0;
         }
 
-        if (m_SelectedActor)
+        for (Actor* actor : m_SelectedActors)
         {
-            m_SelectedActor->Rotation = m_Rotation;
+            actor->Rotation = m_Rotation;
         }
     }
 
@@ -179,24 +188,29 @@ namespace aga
 
     void EditorActorMode::ChangeZOrder (bool clockwise)
     {
-        if (m_SelectedActor)
+        std::vector<int> selectedIDs;
+
+        for (Actor* actor : m_SelectedActors)
         {
-            m_SelectedActor->ZOrder += clockwise ? -1 : 1;
+            actor->ZOrder += clockwise ? -1 : 1;
+            selectedIDs.push_back (actor->ID);
+        }
 
-            int currentID = m_SelectedActor->ID;
+        Scene* activeScene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
 
-            Scene* activeScene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
+        activeScene->SortActors ();
+        activeScene->RecomputeVisibleEntities (true);
 
-            activeScene->SortActors ();
-            activeScene->RecomputeVisibleEntities (true);
+        std::vector<Actor*>& actors = activeScene->GetActors ();
+        m_SelectedActors.clear ();
 
-            std::vector<Actor*>& actors = activeScene->GetActors ();
-
-            for (Actor* actor : actors)
+        for (Actor* actor : actors)
+        {
+            for (int id : selectedIDs)
             {
-                if (actor->ID == currentID)
+                if (actor->ID == id)
                 {
-                    m_SelectedActor = actor;
+                    AddActorToSelection ((actor));
                     break;
                 }
             }
@@ -229,16 +243,17 @@ namespace aga
         m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddTile (tile);
         m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->SortActors ();
 
-        m_SelectedActor = (Actor*)tile;
-        m_Rotation = m_SelectedActor->Rotation;
+        SetSelectedActor (tile);
+
+        m_Rotation = tile->Rotation;
 
         //  Orient mouse cursor in middle of tile regarding camera scaling
-        m_TileSelectionOffset = -m_SelectedActor->Bounds.GetHalfSize ()
-            * m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
+        m_TileSelectionOffset
+            = -tile->Bounds.GetHalfSize () * m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
 
-        if (!m_SelectedActor->PhysPoints.empty ())
+        if (!tile->PhysPoints.empty ())
         {
-            m_Editor->GetEditorPhysMode ().SetPhysPoly (&m_SelectedActor->PhysPoints[0]);
+            m_Editor->GetEditorPhysMode ().SetPhysPoly (&tile->PhysPoints[0]);
         }
     }
 
@@ -345,47 +360,48 @@ namespace aga
 
     void EditorActorMode::RemoveSelectedActor ()
     {
-        if (m_SelectedActor)
+        for (Actor* actor : m_SelectedActors)
         {
-            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveActor (m_SelectedActor);
-            m_SelectedActor = nullptr;
-            m_Editor->SetCursorMode (CursorMode::ActorSelectMode);
+            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveActor (actor);
         }
+
+        m_SelectedActors.clear ();
+        m_Editor->SetCursorMode (CursorMode::ActorSelectMode);
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void EditorActorMode::CopySelectedActor ()
     {
-        if (m_SelectedActor)
+        if (!m_SelectedActors.empty ())
         {
-            m_SelectedAtlasRegion = m_Atlas->GetRegion (m_SelectedActor->Name);
+            m_SelectedAtlasRegion = m_Atlas->GetRegion (m_SelectedActors[0]->Name);
 
             ALLEGRO_MOUSE_STATE state;
             al_get_mouse_state (&state);
 
             Point point = m_Editor->CalculateWorldPoint (state.x, state.y);
-            Point regionSize = m_SelectedActor->Bounds.GetSize ();
+            Point regionSize = m_SelectedActors[0]->Bounds.GetSize ();
 
             Actor* newActor = ActorFactory::GetActor (
-                &m_Editor->GetMainLoop ()->GetSceneManager (), m_SelectedActor->GetTypeName ());
-            newActor->Name = m_SelectedActor->GetAtlasRegionName ();
+                &m_Editor->GetMainLoop ()->GetSceneManager (), m_SelectedActors[0]->GetTypeName ());
+            newActor->Name = m_SelectedActors[0]->GetAtlasRegionName ();
             newActor->Bounds = Rect (point.X - regionSize.Width * 0.5f, point.Y - regionSize.Height * 0.5f,
                 regionSize.Width, regionSize.Height);
-            newActor->TemplateBounds.Pos = m_SelectedActor->Bounds.Pos;
-            newActor->Rotation = m_SelectedActor->Rotation;
-            newActor->ZOrder = m_SelectedActor->ZOrder;
-            newActor->SetAtlas (m_SelectedActor->GetAtlas ());
-            newActor->SetAtlasRegionName (m_SelectedActor->GetAtlasRegionName ());
+            newActor->TemplateBounds.Pos = m_SelectedActors[0]->Bounds.Pos;
+            newActor->Rotation = m_SelectedActors[0]->Rotation;
+            newActor->ZOrder = m_SelectedActors[0]->ZOrder;
+            newActor->SetAtlas (m_SelectedActors[0]->GetAtlas ());
+            newActor->SetAtlasRegionName (m_SelectedActors[0]->GetAtlasRegionName ());
 
-            newActor->PhysPoints = m_SelectedActor->PhysPoints;
+            newActor->PhysPoints = m_SelectedActors[0]->PhysPoints;
 
             newActor->Initialize ();
 
             m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddActor (newActor);
 
             m_Rotation = newActor->Rotation;
-            m_SelectedActor = newActor;
+            SetSelectedActor (newActor);
         }
 
         m_Editor->SetCursorMode (CursorMode::ActorEditMode);
@@ -446,7 +462,7 @@ namespace aga
 
     void EditorActorMode::ResetSettings ()
     {
-        m_SelectedActor = nullptr;
+        m_SelectedActors.clear ();
         m_TileUnderCursor = nullptr;
     }
 

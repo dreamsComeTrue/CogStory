@@ -32,7 +32,7 @@ namespace aga
 
         void SetActiveScene (const std::string& scenePath, bool fadeAnimation = true);
 
-        void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
+        bool ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
         bool Update (float deltaTime);
         void Render (float deltaTime);
 

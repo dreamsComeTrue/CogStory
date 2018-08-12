@@ -197,9 +197,9 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneManager::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
+    bool SceneManager::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
     {
-        m_SpeechFrameManager.ProcessEvent (event, deltaTime);
+        return m_SpeechFrameManager.ProcessEvent (event, deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------

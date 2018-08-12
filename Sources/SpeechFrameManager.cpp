@@ -60,7 +60,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SpeechFrameManager::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
+    bool SpeechFrameManager::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
     {
         std::vector<SpeechFrame*> nextSpeeches;
 
@@ -98,6 +98,8 @@ namespace aga
         {
             nextSpeech->Show ();
         }
+
+        return false;
     }
 
     //--------------------------------------------------------------------------------------------------

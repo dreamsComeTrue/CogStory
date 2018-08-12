@@ -24,7 +24,7 @@ namespace aga
     const std::string ANIM_STAND_RIGHT_NAME = "ANIM_STAND_RIGHT";
 
     //  Pixels Per Second
-    const float MOVE_SPEED = 110.0;
+    const float MOVE_SPEED = 80.0;
 
     class SceneManager;
     class Scene;
@@ -59,6 +59,8 @@ namespace aga
         MovementComponent* GetMovementComponent (const std::string& name);
         std::map<std::string, Component*>& GetComponents () { return m_Components; }
 
+        void OrientTo (Actor* actor);
+
         virtual void DrawBounds ();
         virtual void DrawName ();
 
@@ -69,7 +71,8 @@ namespace aga
     protected:
         void ProcessTriggerAreas (float dx, float dy);
 
-        void ChooseAnimation (float angleDeg);
+        void ChooseWalkAnimation (float angleDeg);
+        void ChooseStandAnimation (float angleDeg);
 
         void FireMoveCallback ();
 

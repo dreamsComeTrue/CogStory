@@ -14,6 +14,8 @@ void BeforeEnterScene ()
 {
     SetSuppressSceneInfo (true);
 
+    player.SetActionHandler (PlayerActionFunc);
+
     Actor@ npc = GetActor ("npc1");
 
     if (!g_IntroPlayed)
@@ -30,16 +32,38 @@ void BeforeEnterScene ()
     }
 }
 
+void PlayerActionFunc ()
+{
+    Actor@ npc = GetActor ("npc1");
+
+    if (npc.IsOverlaping (player))
+    {
+        if (npc.GetTypeName () == "NPC")
+        {
+            npc.OrientTo (player);
+            SpeechFrame@ frame = AddSpeechFrame ("GREET_1", true);
+            frame.SetHandleFunction (SpeechHandle);
+        }
+        else
+        {
+            Log ("Hello");
+        }
+    }
+}
+
 void CollisionFunc (Actor@ other)
 {
-    if (other.GetTypeName () == "Player")
+    if (player.IsAction ())
     {
-        SpeechFrame@ frame = AddSpeechFrame ("GREET_1", true);
-        frame.SetHandleFunction (SpeechHandle);
-    }
-    else
-    {
-        Log ("Hello");
+        if (other.GetTypeName () == "Player")
+        {
+            SpeechFrame@ frame = AddSpeechFrame ("GREET_1", true);
+            frame.SetHandleFunction (SpeechHandle);
+        }
+        else
+        {
+            Log ("Hello");
+        }
     }
 }
 

@@ -65,7 +65,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void MainMenuState::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
+    bool MainMenuState::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
     {
         if (event->type == ALLEGRO_EVENT_KEY_DOWN)
         {
@@ -108,6 +108,8 @@ namespace aga
             }
             }
         }
+
+        return true;
     }
 
     //--------------------------------------------------------------------------------------------------

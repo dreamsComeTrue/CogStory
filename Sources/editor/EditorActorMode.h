@@ -31,7 +31,7 @@ namespace aga
         void ChangeRotation (bool clockwise);
         void ChangeZOrder (bool clockwise);
         bool MoveSelectedActor ();
-        Actor* GetActorUnderCursor (int mouseX, int mouseY, Rect&& outRect);
+        Actor* GetActorUnderCursor (int mouseX, int mouseY, bool selecting, Rect&& outRect);
 
         void RemoveSelectedActor ();
         void CopySelectedActor ();
@@ -47,8 +47,14 @@ namespace aga
 
         AtlasRegion& GetSelectedAtlasRegion () { return m_SelectedAtlasRegion; }
 
-        Actor* GetSelectedActor () { return m_SelectedActor; }
-        void SetSelectedActor (Actor* actor) { m_SelectedActor = actor; }
+        std::vector<Actor*> GetSelectedActors () { return m_SelectedActors; }
+        void ClearSelectedActors () { m_SelectedActors.clear (); }
+        void SetSelectedActor (Actor* actor)
+        {
+            ClearSelectedActors ();
+            AddActorToSelection (actor);
+        }
+        void AddActorToSelection (Actor* actor) { m_SelectedActors.push_back (actor); }
 
         Actor* GetActorUnderCursor () { return m_ActorUnderCursor; }
         void SetActorUnderCursor (Actor* actor) { m_ActorUnderCursor = actor; }
@@ -79,7 +85,7 @@ namespace aga
         float m_Rotation;
         Point m_TileSelectionOffset;
         Actor* m_ActorUnderCursor;
-        Actor* m_SelectedActor;
+        std::vector<Actor*> m_SelectedActors;
 
         bool m_IsDrawTiles;
         TileActor* m_TileUnderCursor;

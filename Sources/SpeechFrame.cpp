@@ -297,6 +297,7 @@ namespace aga
             }
 
             case ALLEGRO_KEY_ENTER:
+            case ALLEGRO_KEY_SPACE:
             {
                 if (m_ShouldBeHandled)
                 {

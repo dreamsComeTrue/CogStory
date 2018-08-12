@@ -59,7 +59,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Actor::ChooseAnimation (float angleDeg)
+    void Actor::ChooseWalkAnimation (float angleDeg)
     {
         if (GetAnimations ().empty ())
         {
@@ -84,6 +84,36 @@ namespace aga
         if (angleDeg <= 45 || angleDeg >= 315)
         {
             SetCurrentAnimation (ANIM_MOVE_RIGHT_NAME);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Actor::ChooseStandAnimation (float angleDeg)
+    {
+        if (GetAnimations ().empty ())
+        {
+            return;
+        }
+
+        if (angleDeg > 45 && angleDeg < 135)
+        {
+            SetCurrentAnimation (ANIM_STAND_UP_NAME);
+        }
+
+        if (angleDeg > 225 && angleDeg < 315)
+        {
+            SetCurrentAnimation (ANIM_STAND_DOWN_NAME);
+        }
+
+        if (angleDeg >= 135 && angleDeg <= 225)
+        {
+            SetCurrentAnimation (ANIM_STAND_LEFT_NAME);
+        }
+
+        if (angleDeg <= 45 || angleDeg >= 315)
+        {
+            SetCurrentAnimation (ANIM_STAND_RIGHT_NAME);
         }
     }
 
@@ -257,11 +287,11 @@ namespace aga
     {
         std::map<std::string, TriggerArea>& triggerAreas = m_SceneManager->GetActiveScene ()->GetTriggerAreas ();
 
-		for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)
-		{
+        for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)
+        {
             TriggerArea& area = it->second;
 
-			for (Polygon& polygon : area.Polygons)
+            for (Polygon& polygon : area.Polygons)
             {
                 if (GetPhysPolygonsCount () > 0
                     && (area.OnEnterCallback || area.ScriptOnEnterCallback || area.OnLeaveCallback
@@ -332,6 +362,38 @@ namespace aga
         if (MoveCallback != nullptr)
         {
             MoveCallback (Bounds.GetPos ().X - m_OldPosition.X, Bounds.GetPos ().Y - m_OldPosition.Y);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Actor::OrientTo (Actor* actor)
+    {
+        float angleDeg = GetAngleWith (actor);
+
+        if (GetAnimations ().empty ())
+        {
+            return;
+        }
+
+        if (angleDeg > 45 && angleDeg < 135)
+        {
+            SetCurrentAnimation (ANIM_STAND_DOWN_NAME);
+        }
+
+        if (angleDeg > 225 && angleDeg < 315)
+        {
+            SetCurrentAnimation (ANIM_STAND_UP_NAME);
+        }
+
+        if (angleDeg >= 135 && angleDeg <= 225)
+        {
+            SetCurrentAnimation (ANIM_STAND_RIGHT_NAME);
+        }
+
+        if (angleDeg <= 45 || angleDeg >= 315)
+        {
+            SetCurrentAnimation (ANIM_STAND_LEFT_NAME);
         }
     }
 

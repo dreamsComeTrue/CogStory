@@ -25,7 +25,7 @@ namespace aga
         virtual void BeforeEnter () = 0;
         virtual void AfterLeave () = 0;
 
-        virtual void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime) = 0;
+        virtual bool ProcessEvent (ALLEGRO_EVENT* event, float deltaTime) = 0;
         virtual void Update (float deltaTime) = 0;
         virtual void Render (float deltaTime) = 0;
 

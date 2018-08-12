@@ -117,15 +117,16 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void StateManager::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
+    bool StateManager::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
     {
         std::string before;
         std::string after;
+        bool ret = false;
 
         if (m_ActiveState != nullptr)
         {
             before = GetActiveStateName ();
-            m_ActiveState->ProcessEvent (event, deltaTime);
+            ret = m_ActiveState->ProcessEvent (event, deltaTime);
             after = GetActiveStateName ();
         }
 
@@ -165,6 +166,8 @@ namespace aga
                 }
             }
         }
+
+        return ret;
     }
 
     //--------------------------------------------------------------------------------------------------

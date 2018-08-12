@@ -81,9 +81,9 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
+    bool GamePlayState::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
     {
-        m_MainLoop->GetSceneManager ().GetPlayer ()->ProcessEvent (event, deltaTime);
+        return m_MainLoop->GetSceneManager ().GetPlayer ()->ProcessEvent (event, deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------

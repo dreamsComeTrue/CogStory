@@ -30,7 +30,7 @@ namespace aga
         void BeforeEnter ();
         void AfterLeave ();
 
-        void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
+        bool ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
         void Update (float deltaTime);
         void Render (float deltaTime);
 

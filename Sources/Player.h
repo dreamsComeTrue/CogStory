@@ -32,7 +32,9 @@ namespace aga
         void SetPreventInput (bool prevent = false) { m_PreventInput = prevent; }
         bool IsPreventInput () const { return m_PreventInput; }
         void HandleInput (float deltaTime);
-        void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
+        bool ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
+
+        bool IsAction () { return m_ActionHandling; }
 
         bool Update (float deltaTime) override;
         void Render (float deltaTime) override;
@@ -46,6 +48,8 @@ namespace aga
         //  Override for ScriptManager
         void SetCurrentAnimation (const std::string& name) { Animable::SetCurrentAnimation (name); }
 
+        void SetActionHandler (asIScriptFunction* func) { m_ActionHandler = func; }
+
     private:
         void CreateParticleEmitters ();
         void UpdateParticleEmitters ();
@@ -54,10 +58,13 @@ namespace aga
 
     private:
         bool m_PreventInput;
+        bool m_ActionHandling;
 
         AudioSampleComponent* m_FootStepComponent;
         ParticleEmitterComponent* m_HeadParticleComponent;
         ParticleEmitterComponent* m_FootParticleComponent;
+
+        asIScriptFunction* m_ActionHandler;
     };
 }
 

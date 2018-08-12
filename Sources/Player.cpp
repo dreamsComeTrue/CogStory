@@ -22,6 +22,8 @@ namespace aga
     Player::Player (SceneManager* sceneManager)
         : Actor (sceneManager)
         , m_PreventInput (false)
+        , m_ActionHandling (false)
+        , m_ActionHandler (nullptr)
     {
     }
 
@@ -122,12 +124,59 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Player::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
+    bool Player::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
     {
-        if (event->type == ALLEGRO_EVENT_KEY_UP)
+        if (m_PreventInput)
         {
-            SetCurrentAnimation (ANIM_IDLE_NAME);
+            return false;
         }
+
+        if (event->type == ALLEGRO_EVENT_KEY_DOWN)
+        {
+            if (event->keyboard.keycode == ALLEGRO_KEY_SPACE || event->keyboard.keycode == ALLEGRO_KEY_ENTER)
+            {
+                m_ActionHandling = true;
+
+                if (m_ActionHandler)
+                {
+                    asIScriptContext* ctx = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetContext ();
+                    ctx->Prepare (m_ActionHandler);
+                    ctx->Execute ();
+                    ctx->Unprepare ();
+                    ctx->GetEngine ()->ReturnContext (ctx);
+                }
+
+                return true;
+            }
+        }
+        else if (event->type == ALLEGRO_EVENT_KEY_UP)
+        {
+            if (event->keyboard.keycode == ALLEGRO_KEY_SPACE || event->keyboard.keycode == ALLEGRO_KEY_ENTER)
+            {
+                m_ActionHandling = false;
+            }
+
+            if (m_Animation.GetCurrentAnimationName () == ANIM_MOVE_DOWN_NAME)
+            {
+                SetCurrentAnimation (ANIM_IDLE_NAME);
+            }
+            else if (m_Animation.GetCurrentAnimationName () == ANIM_MOVE_UP_NAME)
+            {
+                SetCurrentAnimation (ANIM_STAND_UP_NAME);
+            }
+            else if (m_Animation.GetCurrentAnimationName () == ANIM_MOVE_LEFT_NAME)
+            {
+                SetCurrentAnimation (ANIM_STAND_LEFT_NAME);
+            }
+            else if (m_Animation.GetCurrentAnimationName () == ANIM_MOVE_RIGHT_NAME)
+            {
+                SetCurrentAnimation (ANIM_STAND_RIGHT_NAME);
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -249,11 +298,6 @@ namespace aga
     {
         Actor::Move (dx, dy);
 
-        float playerSpeed = 0.8f;
-
-        dx *= playerSpeed;
-        dy *= playerSpeed;
-
         static float sampleCounter = 0.0f;
 
         sampleCounter += m_SceneManager->GetMainLoop ()->GetScreen ()->GetDeltaTime ();
@@ -263,11 +307,6 @@ namespace aga
             m_FootStepComponent->GetAudioSample ()->Play ();
 
             sampleCounter = 0;
-        }
-
-        if (!(std::abs (dx) < 0.1 && std::abs (dy) < 0.1f))
-        {
-            ChooseAnimation (ToPositiveAngle (RadiansToDegrees (std::atan2 (dy, dx))));
         }
 
         UpdateParticleEmitters ();

@@ -84,4 +84,31 @@ namespace aga
     }
 
     //--------------------------------------------------------------------------------------------------
+
+    bool Entity::IsOverlaping (Entity* entity)
+    {
+        for (Entity* ent : m_OverlapedEntities)
+        {
+            if (ent == entity)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    float Entity::GetAngleWith (Entity* ent)
+    {
+        Point thisHalf = this->Bounds.GetHalfSize ();
+        Point entHalf = ent->Bounds.GetHalfSize ();
+        float dx = (this->Bounds.Pos.X + thisHalf.Width) - (ent->Bounds.Pos.X + entHalf.Width);
+        float dy = (this->Bounds.Pos.Y + thisHalf.Height) - (ent->Bounds.Pos.Y + entHalf.Height);
+
+        return ToPositiveAngle (RadiansToDegrees (std::atan2 (dy, dx)));
+    }
+
+    //--------------------------------------------------------------------------------------------------
 }

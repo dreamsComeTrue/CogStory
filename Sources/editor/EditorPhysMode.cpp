@@ -27,26 +27,26 @@ namespace aga
     bool EditorPhysMode::MoveSelectedPhysPoint ()
     {
         Point origin = {0, 0};
-        Actor* actor = m_Editor->GetEditorActorMode ().GetSelectedActor ();
+        std::vector<Actor*> actors = m_Editor->GetEditorActorMode ().GetSelectedActors ();
 
-        if (actor)
+        if (!actors.empty ())
         {
-            origin = actor->Bounds.GetPos () + actor->Bounds.GetHalfSize ();
-        }
+            origin = actors[0]->Bounds.GetPos () + actors[0]->Bounds.GetHalfSize ();
 
-        ALLEGRO_MOUSE_STATE state;
-        al_get_mouse_state (&state);
+            ALLEGRO_MOUSE_STATE state;
+            al_get_mouse_state (&state);
 
-        if (m_PhysPoint && state.buttons == 1)
-        {
-            Point p = m_Editor->CalculateWorldPoint (state.x, state.y);
+            if (m_PhysPoint && state.buttons == 1)
+            {
+                Point p = m_Editor->CalculateWorldPoint (state.x, state.y);
 
-            m_PhysPoint->X = p.X - origin.X;
-            m_PhysPoint->Y = p.Y - origin.Y;
+                m_PhysPoint->X = p.X - origin.X;
+                m_PhysPoint->Y = p.Y - origin.Y;
 
-            actor->UpdatePhysPolygon ();
+                actors[0]->UpdatePhysPolygon ();
 
-            return true;
+                return true;
+            }
         }
 
         return false;
@@ -59,11 +59,11 @@ namespace aga
         if (m_PhysPoint)
         {
             Point origin = {0, 0};
-            Actor* actor = m_Editor->GetEditorActorMode ().GetSelectedActor ();
+            std::vector<Actor*> actors = m_Editor->GetEditorActorMode ().GetSelectedActors ();
 
-            if (actor)
+            if (!actors.empty ())
             {
-                origin = actor->Bounds.GetPos () + actor->Bounds.GetHalfSize ();
+                origin = actors[0]->Bounds.GetPos () + actors[0]->Bounds.GetHalfSize ();
             }
 
             const Point windowSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
@@ -80,12 +80,12 @@ namespace aga
     {
         Point origin = {0, 0};
         std::vector<std::vector<Point>>* physPoints = nullptr;
-        Actor* actor = m_Editor->GetEditorActorMode ().GetSelectedActor ();
+        std::vector<Actor*> actors = m_Editor->GetEditorActorMode ().GetSelectedActors ();
 
-        if (actor)
+        if (!actors.empty ())
         {
-            origin = actor->Bounds.GetPos () + actor->Bounds.GetHalfSize ();
-            physPoints = &actor->PhysPoints;
+            origin = actors[0]->Bounds.GetPos () + actors[0]->Bounds.GetHalfSize ();
+            physPoints = &actors[0]->PhysPoints;
         }
 
         if (physPoints)
@@ -158,12 +158,12 @@ namespace aga
         Point p = m_Editor->CalculateWorldPoint (mouseX, mouseY);
         Point origin = {0, 0};
         std::vector<std::vector<Point>>* physPoints = nullptr;
-        Actor* actor = m_Editor->GetEditorActorMode ().GetSelectedActor ();
+        std::vector<Actor*> actors = m_Editor->GetEditorActorMode ().GetSelectedActors ();
 
-        if (actor)
+        if (!actors.empty ())
         {
-            origin = actor->Bounds.GetPos () + actor->Bounds.GetHalfSize ();
-            physPoints = &actor->PhysPoints;
+            origin = actors[0]->Bounds.GetPos () + actors[0]->Bounds.GetHalfSize ();
+            physPoints = &actors[0]->PhysPoints;
         }
 
         if (physPoints)
@@ -211,11 +211,11 @@ namespace aga
 
             if (inserted)
             {
-                Actor* actor = m_Editor->GetEditorActorMode ().GetSelectedActor ();
+                std::vector<Actor*> actors = m_Editor->GetEditorActorMode ().GetSelectedActors ();
 
-                if (actor)
+                if (!actors.empty ())
                 {
-                    actor->SetPhysOffset (origin);
+                    actors[0]->SetPhysOffset (origin);
                 }
             }
         }
@@ -228,12 +228,12 @@ namespace aga
         Point origin = {0, 0};
         std::vector<std::vector<Point>>* physPoints;
 
-        Actor* actor = m_Editor->GetEditorActorMode ().GetSelectedActor ();
+        std::vector<Actor*> actors = m_Editor->GetEditorActorMode ().GetSelectedActors ();
 
-        if (actor)
+        if (!actors.empty ())
         {
-            origin = actor->Bounds.GetPos () + actor->Bounds.GetHalfSize ();
-            physPoints = &actor->PhysPoints;
+            origin = actors[0]->Bounds.GetPos () + actors[0]->Bounds.GetHalfSize ();
+            physPoints = &actors[0]->PhysPoints;
         }
 
         if (physPoints && !physPoints->empty ())
@@ -268,41 +268,40 @@ namespace aga
         Point* point = GetPhysPointUnderCursor (mouseX, mouseY);
         std::vector<std::vector<Point>>* physPoints;
 
-        if (m_Editor->GetEditorActorMode ().GetSelectedActor ())
-        {
-            physPoints = &m_Editor->GetEditorActorMode ().GetSelectedActor ()->PhysPoints;
-        }
+        std::vector<Actor*> actors = m_Editor->GetEditorActorMode ().GetSelectedActors ();
 
-        if (physPoints && point)
+        if (!actors.empty ())
         {
-            for (int j = 0; j < physPoints->size (); ++j)
+            physPoints = &actors[0]->PhysPoints;
+
+            if (physPoints && point)
             {
-                std::vector<Point>& points = (*physPoints)[j];
-
-                for (int i = 0; i < points.size (); ++i)
+                for (int j = 0; j < physPoints->size (); ++j)
                 {
-                    if (points[i] == *point)
+                    std::vector<Point>& points = (*physPoints)[j];
+
+                    for (int i = 0; i < points.size (); ++i)
                     {
-                        points.erase (points.begin () + i);
-
-                        //  If no points left, remove polygon itself
-                        if (points.empty ())
+                        if (points[i] == *point)
                         {
-                            physPoints->erase (physPoints->begin () + j);
-                            m_PhysPoly = nullptr;
-                        }
+                            points.erase (points.begin () + i);
 
-                        if (m_Editor->GetEditorActorMode ().GetSelectedActor ())
-                        {
-                            m_Editor->GetEditorActorMode ().GetSelectedActor ()->UpdatePhysPolygon ();
-                        }
+                            //  If no points left, remove polygon itself
+                            if (points.empty ())
+                            {
+                                physPoints->erase (physPoints->begin () + j);
+                                m_PhysPoly = nullptr;
+                            }
 
-                        if (m_PhysPointIndex == i)
-                        {
-                            m_PhysPointIndex = -1;
-                        }
+                            actors[0]->UpdatePhysPolygon ();
 
-                        return true;
+                            if (m_PhysPointIndex == i)
+                            {
+                                m_PhysPointIndex = -1;
+                            }
+
+                            return true;
+                        }
                     }
                 }
             }

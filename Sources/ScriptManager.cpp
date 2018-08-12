@@ -69,6 +69,9 @@ namespace aga
            void SetCurrentAnimation (const string &in)
            void SetPreventInput (bool)
            bool IsPreventInput ()
+           bool IsAction ()
+            = void ActionHandler ()
+           void SetActionHandler (ActionHandler @+ callback)
 
        Screen
            Screen screen
@@ -124,7 +127,9 @@ namespace aga
            string GetTypeName ()
            void SetCurrentAnimation (const string &in)
            Actor@ GetCurrentActor ()
-           AddCollisionCallback (Actor@ actor)
+           void AddCollisionCallback (Actor@ actor)
+           bool IsOverlaping (Actor* actor)
+           void OrientTo (Actor@)
 
        MovementComponent
            MovementType
@@ -758,7 +763,12 @@ namespace aga
             "Player", "bool IsPreventInput ()", asMETHOD (Player, IsPreventInput), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-            "Player", "string GetTypeName ()", asMETHOD (Player, GetTypeName), asCALL_THISCALL);
+            "Player", "bool IsAction ()", asMETHOD (Player, IsAction), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterFuncdef ("void ActionHandler ()");
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Player", "void SetActionHandler (ActionHandler @+ callback)",
+            asMETHOD (Player, SetActionHandler), asCALL_THISCALL);
         assert (r >= 0);
     }
 
@@ -956,7 +966,13 @@ namespace aga
             asMETHODPR (Actor, AddCollisionCallback, (asIScriptFunction*), void), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
+            "Actor", "bool IsOverlaping (Actor@)", asMETHOD (Actor, IsOverlaping), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
             "Actor", "string GetTypeName ()", asMETHOD (Actor, GetTypeName), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "Actor", "void OrientTo (Actor@)", asMETHOD (Actor, OrientTo), asCALL_THISCALL);
         assert (r >= 0);
     }
 

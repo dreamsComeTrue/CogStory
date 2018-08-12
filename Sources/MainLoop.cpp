@@ -54,8 +54,12 @@ namespace aga
         m_AudioManager.SetMasterVolume (1.0f);
 
         m_Screen->ProcessEventFunction = [&](ALLEGRO_EVENT* event) {
-            m_SceneManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
-            m_StateManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
+            bool ret = m_StateManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
+
+            if (!ret)
+            {
+                m_SceneManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
+            }
         };
 
         m_Screen->RenderFunction = [&]() { m_StateManager.Render (m_Screen->GetDeltaTime ()); };

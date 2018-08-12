@@ -18,6 +18,9 @@ namespace aga
         bool IsCheckOverlap ();
 
         SceneManager* GetSceneManager () { return m_SceneManager; }
+        bool IsOverlaping (Entity* entity);
+
+        float GetAngleWith (Entity* ent);
 
         int ID = 0;
         std::string Name;

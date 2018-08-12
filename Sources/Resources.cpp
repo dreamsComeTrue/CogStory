@@ -12,6 +12,7 @@ namespace aga
     std::string GFX_ACTORS = "gfx/actors";
     std::string GFX_NPC = "gfx/actors/npc";
     std::string GFX_EFFECTS = "gfx/effects";
+    std::string GFX_ENV = "gfx/env";
 
     std::string GFX_0_HOME = "gfx/scenes/0_home";
     std::string GFX_1_FACTORY = "gfx/scenes/1_factory";
@@ -30,7 +31,7 @@ namespace aga
         {PACK_PLAYER, GFX_ACTORS, "player.pack"}, {PACK_PARTICLES, GFX_EFFECTS, "particles.pack"},
         {PACK_NPC_1, GFX_NPC, "npc_1.pack"}, {PACK_0_0_HOME, GFX_0_HOME, "0_0_home.pack"},
         {PACK_1_0_FACTORY, GFX_1_FACTORY, "1_0_factory.pack"}, {PACK_2_0_CITY, GFX_2_CITY, "2_0_city.pack"},
-        {PACK_2_1_CITY, GFX_2_CITY, "2_1_city.pack"},
+        {PACK_2_1_CITY, GFX_2_CITY, "2_1_city.pack"}, {PACK_ENV_5, GFX_ENV, "env_5.pack"},
 
         //  Fonts
         {FONT_SMALL, FONTS, "coders_crux.ttf"}, {FONT_MEDIUM, FONTS, "coders_crux.ttf"},
@@ -78,7 +79,7 @@ namespace aga
     std::vector<ResourceID> GetGfxPacks ()
     {
         return {PACK_MENU_UI, PACK_ACTORS_UI, PACK_PLAYER, PACK_NPC_1, PACK_PARTICLES, PACK_0_0_HOME, PACK_1_0_FACTORY,
-            PACK_2_0_CITY, PACK_2_1_CITY};
+            PACK_2_0_CITY, PACK_2_1_CITY, PACK_ENV_5};
     }
 
     //--------------------------------------------------------------------------------------------------

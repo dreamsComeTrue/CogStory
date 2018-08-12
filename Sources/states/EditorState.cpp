@@ -86,9 +86,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
+    bool EditorState::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
     {
         m_Editor->ProcessEvent (event, deltaTime);
+
+        return true;
     }
 
     //--------------------------------------------------------------------------------------------------

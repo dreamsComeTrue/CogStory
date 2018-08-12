@@ -2,7 +2,7 @@ name=env_7
 filename=2_1_city.pack
 output=../gfx/scenes/2_city
 
-alias=true
+alias=false
 alphaThreshold=0
 debug=false
 duplicatePadding=false
@@ -11,12 +11,12 @@ fast=false
 filterMag=Nearest
 filterMin=Nearest
 ignoreBlankImages=true
-maxHeight=2048
-maxWidth=512
+maxHeight=512
+maxWidth=256
 minHeight=16
 minWidth=16
-paddingX=2
-paddingY=2
+paddingX=0
+paddingY=0
 pot=false
 rotation=false
 stripWhitespaceX=false
@@ -24,7 +24,7 @@ stripWhitespaceY=false
 wrapX=ClampToEdge
 wrapY=ClampToEdge
 premultiplyAlpha=false
-grid=false
+grid=true
 square=false
 bleed=true
 limitMemory=true
@@ -36,7 +36,7 @@ inputFiles=[{path:env/env_7/tile000.png,type:Input,regionName:null},{path:env/en
 
 -PROJ-
 
-version=4.7.1
+version=4.7.3
 fileTypeType=png
 fileTypeData={encoding:RGBA8888}
 previewBackgroundColor=ffffffff
