@@ -200,6 +200,9 @@ namespace aga
         ALLEGRO_TRANSFORM m_WorldTransform;
         ALLEGRO_TRANSFORM m_NewTransform;
         bool m_OldSnapToGrid;
+
+        Rect m_SelectionRect;
+        bool m_IsRectSelection;
     };
 }
 

@@ -111,9 +111,14 @@ namespace aga
         {
             Point movePoint
                 = m_Editor->CalculateWorldPoint (state.x + m_TileSelectionOffset.X, state.y + m_TileSelectionOffset.Y);
-            Point deltaPoint = movePoint - m_PrimarySelectedActor->Bounds.Pos;
+            Point deltaPoint = {0, 0};
 
-            m_PrimarySelectedActor->Bounds.SetPos (movePoint);
+            if (m_PrimarySelectedActor)
+            {
+                deltaPoint = movePoint - m_PrimarySelectedActor->Bounds.Pos;
+
+                m_PrimarySelectedActor->Bounds.SetPos (movePoint);
+            }
 
             for (Actor* actor : m_SelectedActors)
             {
@@ -515,6 +520,14 @@ namespace aga
     {
         ClearSelectedActors ();
         AddActorToSelection (actor);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorMode::ClearSelectedActors ()
+    {
+        m_SelectedActors.clear ();
+        m_PrimarySelectedActor = nullptr;
     }
 
     //--------------------------------------------------------------------------------------------------

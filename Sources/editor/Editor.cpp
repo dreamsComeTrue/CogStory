@@ -45,6 +45,7 @@ namespace aga
         , m_GridSize (16.0f)
         , m_CursorMode (CursorMode::ActorSelectMode)
         , m_LastTimeClicked (0.0f)
+        , m_IsRectSelection (false)
     {
     }
 
@@ -804,6 +805,14 @@ namespace aga
             SpeechFrameManager& frameManager = m_MainLoop->GetSceneManager ().GetSpeechFrameManager ();
             frameManager.Update (deltaTime);
             frameManager.Render (deltaTime);
+
+            //  Prevent drawing selection rect with 1-pixel size (click-down-up)
+            if (m_SelectionRect.GetSize ().Width > 2 || m_SelectionRect.GetSize ().Height > 2)
+            {
+                Rect r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_SelectionRect);
+                al_draw_rectangle (
+                    r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y, COLOR_WHITE, 2);
+            }
         }
     }
 
@@ -1406,36 +1415,46 @@ namespace aga
                 Rect r;
                 Actor* actorUnderCursor = m_EditorActorMode.GetActorUnderCursor (event.x, event.y, true, std::move (r));
 
-                if (!m_EditorActorMode.IsActorSelected (actorUnderCursor))
+                if (!actorUnderCursor)
                 {
-                    if (actorUnderCursor)
-                    {
-                        m_EditorActorMode.ClearSelectedActors ();
-                        m_EditorActorMode.AddActorToSelection (actorUnderCursor);
-                        selectModeButton->Show ();
-                    }
-                    else
-                    {
-                        m_EditorActorMode.ClearSelectedActors ();
-                        selectModeButton->Hide ();
-                    }
+                    m_IsRectSelection = true;
+                    m_SelectionRect.Pos = CalculateWorldPoint (event.x, event.y);
 
-                    if (!m_EditorActorMode.GetSelectedActors ().empty ())
-                    {
-                        Actor* actor = m_EditorActorMode.GetSelectedActors ()[0];
-                        m_EditorActorMode.SetRotation (actor->Rotation);
-
-                        if (actor->PhysPoints.empty ())
-                        {
-                            actor->PhysPoints.push_back ({});
-                        }
-
-                        m_EditorPhysMode.SetPhysPoly (&actor->PhysPoints[0]);
-                    }
+                    m_EditorActorMode.ClearSelectedActors ();
                 }
                 else
                 {
-                    m_EditorActorMode.SetPrimarySelectedActor (actorUnderCursor);
+                    if (!m_EditorActorMode.IsActorSelected (actorUnderCursor))
+                    {
+                        if (actorUnderCursor)
+                        {
+                            m_EditorActorMode.ClearSelectedActors ();
+                            m_EditorActorMode.AddActorToSelection (actorUnderCursor);
+                            selectModeButton->Show ();
+                        }
+                        else
+                        {
+                            m_EditorActorMode.ClearSelectedActors ();
+                            selectModeButton->Hide ();
+                        }
+
+                        if (!m_EditorActorMode.GetSelectedActors ().empty ())
+                        {
+                            Actor* actor = m_EditorActorMode.GetSelectedActors ()[0];
+                            m_EditorActorMode.SetRotation (actor->Rotation);
+
+                            if (actor->PhysPoints.empty ())
+                            {
+                                actor->PhysPoints.push_back ({});
+                            }
+
+                            m_EditorPhysMode.SetPhysPoly (&actor->PhysPoints[0]);
+                        }
+                    }
+                    else
+                    {
+                        m_EditorActorMode.SetPrimarySelectedActor (actorUnderCursor);
+                    }
                 }
             }
             else if (m_CursorMode == CursorMode::EditPhysBodyMode)
@@ -1487,7 +1506,22 @@ namespace aga
 
     void Editor::ProcessMouseButtonUp (ALLEGRO_MOUSE_EVENT& event)
     {
+        std::vector<Actor*>& actors = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActors ();
+        Rect selectionWorld = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_SelectionRect);
+
+        for (Actor* actorIt : actors)
+        {
+            Rect r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (actorIt);
+
+            if (Intersect (r, selectionWorld))
+            {
+                m_EditorActorMode.AddActorToSelection (actorIt);
+            }
+        }
+
         m_IsMousePan = false;
+        m_IsRectSelection = false;
+        m_SelectionRect = {};
 
         if (m_EditorPhysMode.GetPhysPoint () && !m_EditorActorMode.GetSelectedActors ().empty () && event.button == 1)
         {
@@ -1526,6 +1560,11 @@ namespace aga
             else
             {
                 m_EditorActorMode.MoveSelectedActors ();
+
+                if (m_IsRectSelection)
+                {
+                    m_SelectionRect.SetBottomRight (CalculateWorldPoint (event.x, event.y));
+                }
             }
         }
 

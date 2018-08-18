@@ -136,6 +136,7 @@ namespace aga
         QuadTreeNode& GetQuadTree ();
 
         Rect GetRenderBounds (Entity* entity, bool drawOOBBox = false);
+        Rect GetRenderBounds (Rect b);
 
         void AddOnEnterCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
         void AddOnEnterCallback (const std::string& triggerName, asIScriptFunction* func);

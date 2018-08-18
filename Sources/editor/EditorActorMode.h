@@ -48,7 +48,7 @@ namespace aga
         AtlasRegion& GetSelectedAtlasRegion () { return m_SelectedAtlasRegion; }
 
         std::vector<Actor*> GetSelectedActors () { return m_SelectedActors; }
-        void ClearSelectedActors () { m_SelectedActors.clear (); }
+        void ClearSelectedActors ();
         void SetSelectedActor (Actor* actor);
         bool IsActorSelected (Actor* actor);
         void AddActorToSelection (Actor* actor);

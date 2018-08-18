@@ -777,6 +777,29 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    Rect Scene::GetRenderBounds (Rect b)
+    {
+        Point translate = m_SceneManager->GetCamera ().GetTranslate ();
+        Point scale = m_SceneManager->GetCamera ().GetScale ();
+
+        int halfWidth = b.GetHalfSize ().Width;
+        int halfHeight = b.GetHalfSize ().Height;
+
+        float x1 = (b.GetPos ().X - translate.X * (1.0f / scale.X)) * (scale.X);
+        float y1 = (b.GetPos ().Y - translate.Y * (1.0f / scale.Y)) * (scale.Y);
+        float x2 = (b.GetPos ().X - translate.X * (1.0f / scale.X) + 2 * halfWidth) * (scale.X);
+        float y2 = (b.GetPos ().Y - translate.Y * (1.0f / scale.Y) + 2 * halfHeight) * (scale.Y);
+
+        float minX = std::min (x1, x2);
+        float minY = std::min (y1, y2);
+        float maxX = std::max (x1, x2);
+        float maxY = std::max (y1, y2);
+
+        return {{minX, minY}, {maxX, maxY}};
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     Actor* Scene::GetCurrentlyProcessedActor () { return m_CurrentActor; }
 
     //--------------------------------------------------------------------------------------------------
