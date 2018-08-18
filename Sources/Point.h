@@ -63,6 +63,8 @@ namespace aga
 
         Point operator* (const Point& rhs) const { return Point (X * rhs.X, Y * rhs.Y); }
 
+        Point operator/ (const Point& rhs) const { return Point (X / rhs.X, Y / rhs.Y); }
+
         Point operator- (const Point& rhs) const { return Point (X - rhs.X, Y - rhs.Y); }
 
         bool operator< (const Point& rhs) const { return X < rhs.X || Y < rhs.Y; }
@@ -72,6 +74,8 @@ namespace aga
         Point operator- () const { return {-X, -Y}; }
 
         Point operator* (float b) const { return {X * b, Y * b}; }
+
+        Point operator/ (float b) const { return {X / b, Y / b}; }
 
         friend float Distance (const Point& lhs, const Point& rhs)
         {
@@ -97,6 +101,18 @@ namespace aga
         {
             X -= p.X;
             Y -= p.Y;
+        }
+
+        void operator*= (const Point& p)
+        {
+            X *= p.X;
+            Y *= p.Y;
+        }
+
+        void operator/= (const Point& p)
+        {
+            X /= p.X;
+            Y /= p.Y;
         }
 
         static Point MIN_POINT;

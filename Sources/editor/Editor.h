@@ -41,7 +41,6 @@ namespace aga
     enum CursorMode
     {
         ActorSelectMode,
-        ActorEditMode,
         EditPhysBodyMode,
         EditFlagPointsMode,
         EditTriggerAreaMode,
@@ -70,7 +69,8 @@ namespace aga
         void SwitchCursorMode ();
 
         Point CalculateWorldPoint (int mouseX, int mouseY);
-        bool IsMouseWithinPointRect (int mouseX, int mouseY, Point point, int outsets);
+        bool IsMouseWithinRect (int mouseX, int mouseY, Rect rect);
+        bool IsMouseWithinPointRect (int mouseX, int mouseY, Point point, int outsets = 0);
 
         MainLoop* GetMainLoop () { return m_MainLoop; }
 
@@ -88,6 +88,11 @@ namespace aga
         void UpdateSceneNameLabel (const std::string& name);
 
         ALLEGRO_TRANSFORM& GetWorldTransform () { return m_WorldTransform; }
+
+        Point GetLastMousePos () { return m_LastMousePos; }
+
+        bool IsSnapToGrid () { return m_IsSnapToGrid; }
+        float GetGridSize () { return m_GridSize; }
 
     private:
         void LoadConfig ();
@@ -167,6 +172,7 @@ namespace aga
 
         bool m_IsMousePan;
 
+        Point m_LastMousePos;
         long m_LastTimeClicked;
 
         EditorSceneWindow* m_EditorSceneWindow;

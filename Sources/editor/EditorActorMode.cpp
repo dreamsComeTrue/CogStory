@@ -24,6 +24,7 @@ namespace aga
         , m_Rotation (0)
         , m_Atlas (nullptr)
         , m_CurrentTileBegin (0)
+        , m_PrimarySelectedActor (nullptr)
     {
     }
 
@@ -101,33 +102,43 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool EditorActorMode::MoveSelectedActor ()
+    bool EditorActorMode::MoveSelectedActors ()
     {
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
 
-        Actor* actor = nullptr;
-
-        if (!m_SelectedActors.empty ())
+        if (state.buttons == 1)
         {
-            actor = m_SelectedActors[0];
-        }
-
-        if (state.buttons == 1 && actor)
-        {
-            Point point
+            Point movePoint
                 = m_Editor->CalculateWorldPoint (state.x + m_TileSelectionOffset.X, state.y + m_TileSelectionOffset.Y);
+            Point deltaPoint = movePoint - m_PrimarySelectedActor->Bounds.Pos;
 
-            actor->Bounds.SetPos (point);
-            actor->TemplateBounds = actor->Bounds;
+            m_PrimarySelectedActor->Bounds.SetPos (movePoint);
 
-            actor->SetPhysOffset (actor->Bounds.GetPos () + actor->Bounds.GetHalfSize ());
+            for (Actor* actor : m_SelectedActors)
+            {
+                if (m_SelectedActors.size () == 1)
+                {
+                    actor->Bounds.SetPos (movePoint);
+                }
+                else
+                {
+                    if (actor != m_PrimarySelectedActor)
+                    {
+                        actor->Bounds.Offset (deltaPoint);
+                    }
+                }
 
-            QuadTreeNode& quadTree = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetQuadTree ();
-            quadTree.Remove (actor);
-            quadTree.UpdateStructures ();
-            quadTree.Insert (actor);
-            quadTree.UpdateStructures ();
+                actor->TemplateBounds = actor->Bounds;
+
+                actor->SetPhysOffset (actor->Bounds.GetPos () + actor->Bounds.GetHalfSize ());
+
+                QuadTreeNode& quadTree = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetQuadTree ();
+                quadTree.Remove (actor);
+                quadTree.UpdateStructures ();
+                quadTree.Insert (actor);
+                quadTree.UpdateStructures ();
+            }
         }
 
         return true;
@@ -358,7 +369,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorActorMode::RemoveSelectedActor ()
+    void EditorActorMode::RemoveSelectedActors ()
     {
         for (Actor* actor : m_SelectedActors)
         {
@@ -403,8 +414,6 @@ namespace aga
             m_Rotation = newActor->Rotation;
             SetSelectedActor (newActor);
         }
-
-        m_Editor->SetCursorMode (CursorMode::ActorEditMode);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -498,6 +507,57 @@ namespace aga
     {
         m_Atlas = m_Editor->GetMainLoop ()->GetAtlasManager ().GetAtlas (newAtlasName);
         m_CurrentTileBegin = 0;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorMode::SetSelectedActor (Actor* actor)
+    {
+        ClearSelectedActors ();
+        AddActorToSelection (actor);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool EditorActorMode::IsActorSelected (Actor* actor)
+    {
+        for (std::vector<Actor*>::iterator it = m_SelectedActors.begin (); it != m_SelectedActors.end (); ++it)
+        {
+            if (*it == actor)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorMode::AddActorToSelection (Actor* actor)
+    {
+        if (!IsActorSelected (actor))
+        {
+            m_SelectedActors.push_back (actor);
+        }
+
+        m_PrimarySelectedActor = actor;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorMode::RemoveActorFromSelection (Actor* actor)
+    {
+        for (std::vector<Actor*>::iterator it = m_SelectedActors.begin (); it != m_SelectedActors.end (); ++it)
+        {
+            if (*it == actor)
+            {
+                m_SelectedActors.erase (it);
+                break;
+            }
+        }
+
+        m_PrimarySelectedActor = nullptr;
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -30,10 +30,10 @@ namespace aga
 
         void ChangeRotation (bool clockwise);
         void ChangeZOrder (bool clockwise);
-        bool MoveSelectedActor ();
+        bool MoveSelectedActors ();
         Actor* GetActorUnderCursor (int mouseX, int mouseY, bool selecting, Rect&& outRect);
 
-        void RemoveSelectedActor ();
+        void RemoveSelectedActors ();
         void CopySelectedActor ();
         void DrawTiles ();
 
@@ -49,12 +49,10 @@ namespace aga
 
         std::vector<Actor*> GetSelectedActors () { return m_SelectedActors; }
         void ClearSelectedActors () { m_SelectedActors.clear (); }
-        void SetSelectedActor (Actor* actor)
-        {
-            ClearSelectedActors ();
-            AddActorToSelection (actor);
-        }
-        void AddActorToSelection (Actor* actor) { m_SelectedActors.push_back (actor); }
+        void SetSelectedActor (Actor* actor);
+        bool IsActorSelected (Actor* actor);
+        void AddActorToSelection (Actor* actor);
+        void RemoveActorFromSelection (Actor* actor);
 
         Actor* GetActorUnderCursor () { return m_ActorUnderCursor; }
         void SetActorUnderCursor (Actor* actor) { m_ActorUnderCursor = actor; }
@@ -67,6 +65,8 @@ namespace aga
 
         Actor* GetActor () { return m_Actor; }
         void SetActor (Actor* actor) { m_Actor = actor; }
+
+        void SetPrimarySelectedActor (Actor* actor) { m_PrimarySelectedActor = actor; }
 
         void ScrollNextTile (int offset);
         void ScrollPrevTile (int offset);
@@ -86,6 +86,8 @@ namespace aga
         Point m_TileSelectionOffset;
         Actor* m_ActorUnderCursor;
         std::vector<Actor*> m_SelectedActors;
+
+        Actor* m_PrimarySelectedActor;
 
         bool m_IsDrawTiles;
         TileActor* m_TileUnderCursor;
