@@ -23,17 +23,24 @@ namespace aga
         GFX_DEFAULT_SKIN,
         GFX_TEXT_FRAME,
 
+        __PACKS__MARKER__,
+
         //  PACKS
         PACK_MENU_UI,
         PACK_ACTORS_UI,
         PACK_PLAYER,
         PACK_PARTICLES,
         PACK_NPC_1,
+        PACK_NPC_2,
+        PACK_NPC_3,
+        PACK_NPC_4,
         PACK_0_0_HOME,
         PACK_1_0_FACTORY,
         PACK_2_0_CITY,
         PACK_2_1_CITY,
         PACK_ENV_5,
+
+        __FONTS__MARKER__,
 
         //  Fonts
         FONT_SMALL,

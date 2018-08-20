@@ -171,6 +171,58 @@ namespace aga
                     {SCENE_INFINITE_BOUND_SIZE, SCENE_INFINITE_BOUND_SIZE}));
             }
 
+            auto& flag_points = j["flag_points"];
+
+            for (auto& flag_point : flag_points)
+            {
+                std::string name = flag_point["name"];
+                Point pos = StringToPoint (flag_point["pos"]);
+
+                scene->AddFlagPoint (name, pos);
+            }
+
+            for (std::map<std::string, FlagPoint>::iterator it = scene->m_FlagPoints.begin ();
+                 it != scene->m_FlagPoints.end (); ++it)
+            {
+                for (auto& flag_point : flag_points)
+                {
+                    std::string name = flag_point["name"];
+
+                    if (name == it->first)
+                    {
+                        std::vector<std::string> connections = StringToVectorStrings (flag_point["connections"]);
+
+                        if (!connections.empty ())
+                        {
+                            for (std::map<std::string, FlagPoint>::iterator it2 = scene->m_FlagPoints.begin ();
+                                 it2 != scene->m_FlagPoints.end (); ++it2)
+                            {
+                                for (int i = 0; i < connections.size (); ++i)
+                                {
+                                    if (connections[i] == it2->first)
+                                    {
+                                        it->second.Connections.push_back (&it2->second);
+                                        break;
+                                    }
+                                }
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            }
+
+            auto& triggerAreas = j["trigger_areas"];
+
+            for (auto& triggerArea : triggerAreas)
+            {
+                std::string name = triggerArea["name"];
+                std::vector<Point> poly = StringToVectorPoints (triggerArea["poly"]);
+
+                scene->AddTriggerArea (name, poly);
+            }
+
             auto& actors = j["actors"];
 
             for (auto& actorIt : actors)
@@ -236,7 +288,9 @@ namespace aga
                         }
                     }
 
-                    newActor->SetCollisionEnabled (false);
+                    std::string collisionStr = actorIt["collision"];
+                    newActor->SetCollisionEnabled (atoi (collisionStr.c_str ()));
+
                     newActor->Initialize ();
                     newActor->TemplateBounds = newActor->Bounds;
 
@@ -256,58 +310,6 @@ namespace aga
 
             UpdateMaxEntityID (scene);
             scene->SortActors ();
-
-            auto& flag_points = j["flag_points"];
-
-            for (auto& flag_point : flag_points)
-            {
-                std::string name = flag_point["name"];
-                Point pos = StringToPoint (flag_point["pos"]);
-
-                scene->AddFlagPoint (name, pos);
-            }
-
-            for (std::map<std::string, FlagPoint>::iterator it = scene->m_FlagPoints.begin ();
-                 it != scene->m_FlagPoints.end (); ++it)
-            {
-                for (auto& flag_point : flag_points)
-                {
-                    std::string name = flag_point["name"];
-
-                    if (name == it->first)
-                    {
-                        std::vector<std::string> connections = StringToVectorStrings (flag_point["connections"]);
-
-                        if (!connections.empty ())
-                        {
-                            for (std::map<std::string, FlagPoint>::iterator it2 = scene->m_FlagPoints.begin ();
-                                 it2 != scene->m_FlagPoints.end (); ++it2)
-                            {
-                                for (int i = 0; i < connections.size (); ++i)
-                                {
-                                    if (connections[i] == it2->first)
-                                    {
-                                        it->second.Connections.push_back (&it2->second);
-                                        break;
-                                    }
-                                }
-                            }
-
-                            break;
-                        }
-                    }
-                }
-            }
-
-            auto& triggerAreas = j["trigger_areas"];
-
-            for (auto& triggerArea : triggerAreas)
-            {
-                std::string name = triggerArea["name"];
-                std::vector<Point> poly = StringToVectorPoints (triggerArea["poly"]);
-
-                scene->AddTriggerArea (name, poly);
-            }
 
             auto& speeches = j["speeches"];
 
@@ -446,6 +448,7 @@ namespace aga
                 actorObj["rot"] = ToString (actor->Rotation);
                 actorObj["atlas"] = actor != nullptr ? actor->GetAtlas ()->GetName () : "";
                 actorObj["atlas-region"] = actor->GetAtlasRegionName ();
+                actorObj["collision"] = ToString (actor->IsCollisionEnabled ());
 
                 actorObj["phys"] = json::array ({});
 

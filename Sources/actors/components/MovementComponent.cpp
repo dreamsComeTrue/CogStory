@@ -1,8 +1,9 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "MovementComponent.h"
-#include "SceneManager.h"
 #include "MainLoop.h"
+#include "Scene.h"
+#include "SceneManager.h"
 
 namespace aga
 {
@@ -13,32 +14,34 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
-    MovementComponent::MovementComponent (Actor* owner) :
-        Component (owner),
-        m_MoveType (MoveWander),
-        m_Speed (150.f),
-        m_WaitTimeBounds (1.f, 4.f),
-        m_WaitLikelihood (0.001f),
-        m_WaitTimeElapsed (0.f),
-        m_MaxWaitTime (0.f),
-        m_MaxTargetTime (0.f),
-        m_CurrentTargetTime (0.f),
-        m_CurrentPointIndex (0),
-        m_PointsMovingForward (true),
-        m_ScriptMoveCallback (nullptr)
+    MovementComponent::MovementComponent (Actor* owner)
+        : Component (owner)
+        , m_MoveType (MoveWander)
+        , m_Speed (150.f)
+        , m_WaitTimeBounds (1.f, 4.f)
+        , m_WaitLikelihood (0.001f)
+        , m_WaitTimeElapsed (0.f)
+        , m_MaxWaitTime (0.f)
+        , m_MaxTargetTime (0.f)
+        , m_CurrentTargetTime (0.f)
+        , m_CurrentPointIndex (0)
+        , m_PointsMovingForward (true)
+        , m_ScriptMoveCallback (nullptr)
     {
         m_InitialPos = owner->Bounds.Pos;
 
         SetMoveExtents ({-50.f, -50.f}, {50.f, 50.f});
+
+        m_Actor->AddCollisionCallback ([&](Collidable* other) { ComputeTargetPos (); });
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void MovementComponent::SetMovementType (MovementType type) 
-    { 
-        m_MoveType = type; 
+    void MovementComponent::SetMovementType (MovementType type)
+    {
+        m_MoveType = type;
 
-        ComputerTargetPos ();
+        ComputeTargetPos ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -48,7 +51,16 @@ namespace aga
         m_MinExtent = min;
         m_MaxExtent = max;
 
-        ComputerTargetPos ();
+        ComputeTargetPos ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void MovementComponent::SetStartPos (Point pos)
+    {
+        m_StartPos = pos;
+
+        ComputeTargetPos ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -76,6 +88,8 @@ namespace aga
         if (m_MaxWaitTime > 0.0f)
         {
             m_WaitTimeElapsed += deltaTime;
+
+            m_Actor->ChooseStandAnimation (m_LastAngle);
         }
         else
         {
@@ -87,17 +101,48 @@ namespace aga
                 m_CurrentTargetTime += m_Speed * deltaTime;
 
                 Point newPos = Lerp (m_StartPos, m_TargetPos, m_CurrentTargetTime / m_MaxTargetTime);
+                Point deltaPos = newPos - currentPos;
 
-                m_Actor->Move (newPos - currentPos);
-
-                if (m_ScriptMoveCallback)
+                std::vector<Entity*> entites
+                    = m_Actor->GetSceneManager ()->GetActiveScene ()->RecomputeVisibleEntities (true);
+                for (Entity* ent : entites)
                 {
-                    CallScriptMoveCallback (m_Actor->GetPosition ());
+                    Collidable* collidable = (Actor*)ent;
+                    Point collisionDelta;
+
+                    if (ent != m_Actor && m_Actor->IsCollidingWith (collidable, deltaPos, std::move (collisionDelta)))
+                    {
+                        float positiveMoveBoundary = 1.5f;
+                        float negativeMoveBoundary = -0.5f;
+
+                        if (collisionDelta.X < negativeMoveBoundary || collisionDelta.X > positiveMoveBoundary)
+                        {
+                            deltaPos.X = deltaPos.X + collisionDelta.X;
+                        }
+
+                        if (collisionDelta.Y < negativeMoveBoundary || collisionDelta.Y > positiveMoveBoundary)
+                        {
+                            deltaPos.Y = deltaPos.Y + collisionDelta.Y;
+                        }
+                    }
+                }
+
+                if (!((AreSame (deltaPos.X, 0) && AreSame (deltaPos.Y, 0))))
+                {
+                    m_LastAngle = ToPositiveAngle (RadiansToDegrees (std::atan2 (deltaPos.Y, deltaPos.X)));
+                    m_Actor->ChooseWalkAnimation (m_LastAngle);
+
+                    m_Actor->Move (deltaPos);
+
+                    if (m_ScriptMoveCallback)
+                    {
+                        CallScriptMoveCallback (m_Actor->GetPosition ());
+                    }
                 }
             }
             else
             {
-                ComputerTargetPos ();
+                ComputeTargetPos ();
             }
         }
 
@@ -137,7 +182,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void MovementComponent::ComputerTargetPos ()
+    void MovementComponent::ComputeTargetPos ()
     {
         Point ownerPos = m_Actor->Bounds.Pos;
         m_TargetPos = ownerPos;
@@ -147,33 +192,33 @@ namespace aga
 
         switch (m_MoveType)
         {
-            case MoveHorizontal:
-            {
-                m_TargetPos.X = m_InitialPos.X + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.X : 
-                              randValue * m_MaxExtent.X);
-                break;
-            }
+        case MoveHorizontal:
+        {
+            m_TargetPos.X
+                = m_InitialPos.X + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.X : randValue * m_MaxExtent.X);
+            break;
+        }
 
-            case MoveVertical:
-            {
-                m_TargetPos.Y = m_InitialPos.Y + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.Y : 
-                              randValue * m_MaxExtent.Y);
-                break;
-            }
+        case MoveVertical:
+        {
+            m_TargetPos.Y
+                = m_InitialPos.Y + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.Y : randValue * m_MaxExtent.Y);
+            break;
+        }
 
-            case MovePoints:
-            {
-                ComputeMovePoints ();
+        case MovePoints:
+        {
+            ComputeMovePoints ();
 
-                break;
-            }
+            break;
+        }
 
-            case MoveWander:
-            {
-                ComputeMoveWander ();
+        case MoveWander:
+        {
+            ComputeMoveWander ();
 
-                break;
-            }
+            break;
+        }
         }
 
         m_TargetPos -= m_Actor->Bounds.GetHalfSize ();
@@ -227,13 +272,60 @@ namespace aga
 
         if (RandBool ())
         {
-            m_TargetPos.X = m_InitialPos.X + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.X : 
-                    randValue * m_MaxExtent.X);
+            m_TargetPos.X
+                = m_InitialPos.X + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.X : randValue * m_MaxExtent.X);
         }
         else
         {
-            m_TargetPos.Y = m_InitialPos.Y + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.Y : 
-                    randValue * m_MaxExtent.Y);
+            m_TargetPos.Y
+                = m_InitialPos.Y + (randValue < 0.f ? std::abs (randValue) * m_MinExtent.Y : randValue * m_MaxExtent.Y);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void MovementComponent::SetWalkPoints (FlagPoint* flagPoint)
+    {
+        if (flagPoint)
+        {
+            m_Points.clear ();
+
+            std::vector<std::string> visited;
+
+            m_Points.push_back (flagPoint->Pos);
+            visited.push_back (flagPoint->Name);
+
+            FlagPoint* next = flagPoint->Connections[0];
+
+            while (next != nullptr)
+            {
+                m_Points.push_back (next->Pos);
+                visited.push_back (next->Name);
+
+                if (!next->Connections.empty ())
+                {
+                    bool found = false;
+
+                    for (int i = 0; i < next->Connections.size (); ++i)
+                    {
+                        if (std::find (visited.begin (), visited.end (), next->Connections[i]->Name) == visited.end ())
+                        {
+                            next = next->Connections[i];
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
         }
     }
 
@@ -251,5 +343,3 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 }
-
-

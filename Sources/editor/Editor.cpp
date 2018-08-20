@@ -448,8 +448,9 @@ namespace aga
 
     bool Editor::IsEditorCanvasNotCovered ()
     {
-        return ((m_CursorMode == CursorMode::ActorSelectMode || m_CursorMode == CursorMode::EditPhysBodyMode
-                    || m_CursorMode == CursorMode::EditSpriteSheetMode)
+        return (
+            (m_CursorMode == CursorMode::ActorSelectMode || m_CursorMode == CursorMode::EditPhysBodyMode
+                || m_CursorMode == CursorMode::EditSpriteSheetMode || m_CursorMode == CursorMode::EditFlagPointsMode)
             && !m_EditorSceneWindow->GetSceneWindow ()->Visible () && !m_SpeechWindow->GetSceneWindow ()->Visible ()
             && !m_TriggerAreaWindow->GetSceneWindow ()->Visible () && !m_FlagPointWindow->GetSceneWindow ()->Visible ()
             && !m_ActorWindow->GetSceneWindow ()->Visible ());
@@ -1359,13 +1360,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::ProcessMouseButtonDoubleClick (ALLEGRO_MOUSE_EVENT& event)
-    {
-        if (event.button == 2 && m_CursorMode != EditPhysBodyMode)
-        {
-            OnActorSelected ();
-        }
-    }
+    void Editor::ProcessMouseButtonDoubleClick (ALLEGRO_MOUSE_EVENT& event) {}
 
     //--------------------------------------------------------------------------------------------------
 
@@ -1494,6 +1489,10 @@ namespace aga
             if (m_CursorMode == CursorMode::EditPhysBodyMode)
             {
                 physPointRemoved = m_EditorPhysMode.RemovePhysPointUnderCursor (event.x, event.y);
+            }
+            else if (m_CursorMode != EditPhysBodyMode)
+            {
+                OnActorSelected ();
             }
             else if (!flagPointRemoved && !triggerPointRemoved)
             {

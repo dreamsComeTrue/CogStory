@@ -4,15 +4,15 @@
 #include "ActorFactory.h"
 #include "Atlas.h"
 #include "AtlasManager.h"
+#include "Component.h"
 #include "Editor.h"
-#include "EditorScriptWindow.h"
 #include "EditorComponentWindow.h"
+#include "EditorScriptWindow.h"
 #include "EditorWindows.h"
 #include "MainLoop.h"
 #include "Screen.h"
-#include "Component.h"
-#include "actors/NPCActor.h"
 #include "actors/EnemyActor.h"
+#include "actors/NPCActor.h"
 #include "actors/TileActor.h"
 
 namespace aga
@@ -27,6 +27,7 @@ namespace aga
     Gwk::Controls::Property::Text* zOrderProperty;
     Gwk::Controls::Property::ComboBox* imageProperty;
     Gwk::Controls::Property::ComboBox* imagePathProperty;
+    Gwk::Controls::Property::ComboBox* collisionProperty;
 
     EditorActorWindow::EditorActorWindow (Editor* editor, Gwk::Controls::Canvas* canvas)
         : m_Editor (editor)
@@ -106,6 +107,15 @@ namespace aga
             m_ImagePathComboBox->GetComboBox ()->onSelection.Add (this, &EditorActorWindow::OnImagePathSelected);
             OnImagePathSelected (m_ImagePathComboBox);
 
+            m_OthersSection = m_ActorProperties->Add ("Others");
+
+            m_CollisionComboBox = new Gwk::Controls::Property::ComboBox (m_OthersSection);
+            m_CollisionComboBox->GetComboBox ()->AddItem ("true", "true");
+            m_CollisionComboBox->GetComboBox ()->AddItem ("false", "false");
+            m_CollisionComboBox->GetComboBox ()->onSelection.Add (this, &EditorActorWindow::OnCollisionSelected);
+
+            m_OthersSection->Add ("Collision", m_CollisionComboBox);
+
             m_ScriptSection = m_ActorProperties->Add ("Scripts");
             m_ComponentSection = m_ActorProperties->Add ("Components");
 
@@ -128,6 +138,8 @@ namespace aga
                 static_cast<Gwk::Controls::PropertyRow*> (m_ApperanceSection->Find ("Image"))->GetProperty ());
             imagePathProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
                 static_cast<Gwk::Controls::PropertyRow*> (m_ApperanceSection->Find ("Path"))->GetProperty ());
+            collisionProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
+                static_cast<Gwk::Controls::PropertyRow*> (m_OthersSection->Find ("Collision"))->GetProperty ());
         }
 
         m_ActorProperties->ExpandAll ();
@@ -182,6 +194,7 @@ namespace aga
         zOrderProperty->SetPropertyValue ("", false);
         imagePathProperty->SetPropertyValue ("", false);
         imageProperty->SetPropertyValue ("", false);
+        collisionProperty->SetPropertyValue ("false", false);
 
         m_SceneWindow->SetPosition (Gwk::Position::Center);
         m_SceneWindow->SetHidden (false);
@@ -233,8 +246,8 @@ namespace aga
             sscanf (rotationProperty->GetPropertyValue ().c_str (), "%f", &m_Rotation);
             sscanf (zOrderProperty->GetPropertyValue ().c_str (), "%d", &m_ZOrder);
 
-            Actor* retActor = m_Editor->GetEditorActorMode ().AddOrUpdateActor (id, actorName, typePropertyTxt,
-                                                                                m_Position, m_Rotation, m_ZOrder);
+            Actor* retActor = m_Editor->GetEditorActorMode ().AddOrUpdateActor (
+                id, actorName, typePropertyTxt, m_Position, m_Rotation, m_ZOrder);
 
             if (m_SelectedAtlas && m_SelectedAtlasRegion != "")
             {
@@ -276,6 +289,15 @@ namespace aga
         {
             node->SetSelected (true);
         }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::OnCollisionSelected (Gwk::Controls::Base* control)
+    {
+        Gwk::String collisionSelection = m_CollisionComboBox->GetPropertyValue ();
+
+        m_SelectedActor->SetCollisionEnabled (collisionSelection == "true" ? true : false);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -415,17 +437,19 @@ namespace aga
         idProperty->SetPropertyValue (selectedActor != nullptr ? ToString (selectedActor->ID) : "", false);
         nameProperty->SetPropertyValue (selectedActor != nullptr ? selectedActor->Name : "", false);
         typeProperty->SetPropertyValue (selectedActor != nullptr ? selectedActor->GetTypeName () : "", false);
-        positionProperty->SetPropertyValue (
-            selectedActor != nullptr
+        positionProperty->SetPropertyValue (selectedActor != nullptr
                 ? Gwk::Utility::Format ("%f,%f", selectedActor->Bounds.Pos.X, selectedActor->Bounds.Pos.Y)
                 : Gwk::Utility::Format ("%f,%f", 0.f, 0.f),
             false);
         rotationProperty->SetPropertyValue (selectedActor != nullptr
-                                                ? Gwk::Utility::Format ("%f", selectedActor->Rotation)
-                                                : Gwk::Utility::Format ("%f", 0.f),
-                                            false);
+                ? Gwk::Utility::Format ("%f", selectedActor->Rotation)
+                : Gwk::Utility::Format ("%f", 0.f),
+            false);
         zOrderProperty->SetPropertyValue (selectedActor != nullptr ? ToString (selectedActor->ZOrder) : "0", false);
-        imagePathProperty->SetPropertyValue (selectedActor != nullptr ? selectedActor->GetAtlas ()->GetName () : "", false);
+        imagePathProperty->SetPropertyValue (
+            selectedActor != nullptr ? selectedActor->GetAtlas ()->GetName () : "", false);
+        collisionProperty->SetPropertyValue (
+            selectedActor != nullptr ? (selectedActor->IsCollisionEnabled () ? "true" : "false") : "false", false);
 
         m_ScriptSection->Clear ();
         m_ComponentSection->Clear ();
@@ -441,7 +465,7 @@ namespace aga
 
             for (std::map<std::string, Component*>::iterator it = components.begin (); it != components.end (); ++it)
             {
-                AddComponentEntry (it->first, it->second->GetTypeName ()); 
+                AddComponentEntry (it->first, it->second->GetTypeName ());
             }
         }
 
@@ -605,7 +629,6 @@ namespace aga
         }
     }
 
-
     //--------------------------------------------------------------------------------------------------
 
     void EditorActorWindow::OnAccept () { m_SceneWindow->CloseButtonPressed (); }
@@ -624,18 +647,17 @@ namespace aga
         const int previewSize = 96;
 
         al_draw_filled_rectangle (winSize.Width - previewSize - margin, winSize.Height - previewSize - margin,
-                                  winSize.Width - margin, winSize.Height - margin, COLOR_BLACK);
+            winSize.Width - margin, winSize.Height - margin, COLOR_BLACK);
         al_draw_rectangle (winSize.Width - previewSize - margin, winSize.Height - previewSize - margin,
-                           winSize.Width - margin, winSize.Height - margin, COLOR_GREEN, 2);
+            winSize.Width - margin, winSize.Height - margin, COLOR_GREEN, 2);
 
         if (m_SelectedAtlas && m_SelectedAtlasRegion != "")
         {
             AtlasRegion& region = m_SelectedAtlas->GetRegion (m_SelectedAtlasRegion);
 
             al_draw_scaled_bitmap (m_SelectedAtlas->GetImage (), region.Bounds.GetPos ().X, region.Bounds.GetPos ().Y,
-                                   region.Bounds.GetSize ().Width, region.Bounds.GetSize ().Height,
-                                   winSize.Width - previewSize - margin, winSize.Height - previewSize - margin,
-                                   previewSize, previewSize, 0);
+                region.Bounds.GetSize ().Width, region.Bounds.GetSize ().Height, winSize.Width - previewSize - margin,
+                winSize.Height - previewSize - margin, previewSize, previewSize, 0);
         }
     }
 

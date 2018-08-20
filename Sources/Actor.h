@@ -60,6 +60,8 @@ namespace aga
         std::map<std::string, Component*>& GetComponents () { return m_Components; }
 
         void OrientTo (Actor* actor);
+        void ChooseWalkAnimation (float angleDeg);
+        void ChooseStandAnimation (float angleDeg);
 
         virtual void DrawBounds ();
         virtual void DrawName ();
@@ -70,9 +72,6 @@ namespace aga
 
     protected:
         void ProcessTriggerAreas (float dx, float dy);
-
-        void ChooseWalkAnimation (float angleDeg);
-        void ChooseStandAnimation (float angleDeg);
 
         void FireMoveCallback ();
 

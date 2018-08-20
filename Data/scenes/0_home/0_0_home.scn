@@ -15,6 +15,7 @@
     "speeches": [
         {
             "abs_pos": "0 0",
+            "action": "",
             "id": 0,
             "max_chars": 27,
             "max_lines": 3,
@@ -55,6 +56,7 @@
         },
         {
             "abs_pos": "0 0",
+            "action": "",
             "id": 1,
             "max_chars": 22,
             "max_lines": 3,

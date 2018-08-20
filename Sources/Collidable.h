@@ -28,8 +28,8 @@ namespace aga
         size_t GetPhysPolygonsCount () const;
         void UpdatePhysPolygon ();
 
-        void SetCollisionEnabled (bool enabled);
-        bool IsCollisionEnabled () const;
+        void SetCollisionEnabled (bool enabled) { m_CollisionEnabled = enabled; }
+        bool IsCollisionEnabled () const { return m_CollisionEnabled; }
 
         bool IsCollidingWith (Collidable* other, Point velocity, Point&& offset);
 

@@ -117,14 +117,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Collidable::SetCollisionEnabled (bool enabled) { m_CollisionEnabled = enabled; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool Collidable::IsCollisionEnabled () const { return m_CollisionEnabled; }
-
-    //--------------------------------------------------------------------------------------------------
-
     void Collidable::BuildEdges ()
     {
         for (Polygon& poly : m_PhysPolygons)
@@ -149,7 +141,7 @@ namespace aga
                 {
                     for (int j = 0; j < other->GetPhysPolygonsCount (); ++j)
                     {
-                        if (!other->GetPhysPolygon (j).Points.empty ())
+                        if (other->m_CollisionEnabled && !other->GetPhysPolygon (j).Points.empty ())
                         {
                             PolygonCollisionResult r = m_PhysicsManager->PolygonCollision (
                                 myPolygon, other->GetPhysPolygon (j), {velocity.X, velocity.Y});
@@ -197,7 +189,7 @@ namespace aga
                 }
             }
 
-            if (combinedOffset != Point::ZERO_POINT)
+            if (!AreSame (combinedOffset, Point::ZERO_POINT))
             {
                 offset = combinedOffset;
 

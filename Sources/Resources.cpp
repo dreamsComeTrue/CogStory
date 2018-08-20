@@ -27,14 +27,15 @@ namespace aga
         //  Graphics
         {GFX_DEFAULT_SKIN, GFX, "UISkin.png"}, {GFX_TEXT_FRAME, GFX_UI, "text_frame.9.png"},
 
-        {PACK_MENU_UI, GFX_UI, "menu_ui.pack"}, {PACK_ACTORS_UI, GFX_UI, "actors_ui.pack"},
+        {__PACKS__MARKER__}, {PACK_MENU_UI, GFX_UI, "menu_ui.pack"}, {PACK_ACTORS_UI, GFX_UI, "actors_ui.pack"},
         {PACK_PLAYER, GFX_ACTORS, "player.pack"}, {PACK_PARTICLES, GFX_EFFECTS, "particles.pack"},
-        {PACK_NPC_1, GFX_NPC, "npc_1.pack"}, {PACK_0_0_HOME, GFX_0_HOME, "0_0_home.pack"},
+        {PACK_NPC_1, GFX_NPC, "npc_1.pack"}, {PACK_NPC_2, GFX_NPC, "npc_2.pack"}, {PACK_NPC_3, GFX_NPC, "npc_3.pack"},
+        {PACK_NPC_4, GFX_NPC, "npc_4.pack"}, {PACK_0_0_HOME, GFX_0_HOME, "0_0_home.pack"},
         {PACK_1_0_FACTORY, GFX_1_FACTORY, "1_0_factory.pack"}, {PACK_2_0_CITY, GFX_2_CITY, "2_0_city.pack"},
         {PACK_2_1_CITY, GFX_2_CITY, "2_1_city.pack"}, {PACK_ENV_5, GFX_ENV, "env_5.pack"},
 
         //  Fonts
-        {FONT_SMALL, FONTS, "coders_crux.ttf"}, {FONT_MEDIUM, FONTS, "coders_crux.ttf"},
+        {__FONTS__MARKER__}, {FONT_SMALL, FONTS, "coders_crux.ttf"}, {FONT_MEDIUM, FONTS, "coders_crux.ttf"},
         {FONT_NORMAL, FONTS, "coders_crux.ttf"}, {FONT_MENU_TITLE, FONTS, "coders_crux.ttf"},
         {FONT_MENU_ITEM_NORMAL, FONTS, "coders_crux.ttf"}, {FONT_MENU_ITEM_SMALL, FONTS, "coders_crux.ttf"},
         {FONT_SPEECH_FRAME, FONTS, "coders_crux.ttf"}, {FONT_EDITOR, FONTS, "OpenSans.ttf"},
@@ -78,8 +79,14 @@ namespace aga
 
     std::vector<ResourceID> GetGfxPacks ()
     {
-        return {PACK_MENU_UI, PACK_ACTORS_UI, PACK_PLAYER, PACK_NPC_1, PACK_PARTICLES, PACK_0_0_HOME, PACK_1_0_FACTORY,
-            PACK_2_0_CITY, PACK_2_1_CITY, PACK_ENV_5};
+        std::vector<ResourceID> packs;
+
+        for (int i = ResourceID::__PACKS__MARKER__ + 1; i < ResourceID::__FONTS__MARKER__; ++i)
+        {
+            packs.push_back (static_cast<ResourceID> (i));
+        }
+
+        return packs;
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -808,7 +808,7 @@ namespace aga
     {
         for (Actor* actor : m_Actors)
         {
-            actor->Bounds = actor->TemplateBounds;
+            actor->SetPosition (actor->TemplateBounds.Pos);
             actor->SetPhysOffset (actor->Bounds.GetPos () + actor->Bounds.GetHalfSize ());
         }
     }

@@ -27,19 +27,24 @@ namespace aga
 
         virtual bool Render (float deltaTime) override;
 
-        void SetMovementType (MovementType type); 
+        void SetMovementType (MovementType type);
         MovementType GetMovementType () const { return m_MoveType; }
 
         void SetMoveExtents (Point min, Point max);
 
-        void SetWaitTimeBounds (float minWaitSeconds, float maxWaitSeconds) 
-        { m_WaitTimeBounds = {minWaitSeconds, maxWaitSeconds};}
+        void SetWaitTimeBounds (float minWaitSeconds, float maxWaitSeconds)
+        {
+            m_WaitTimeBounds = {minWaitSeconds, maxWaitSeconds};
+        }
+
+        void SetStartPos (Point pos);
 
         void SetWaitLikelihood (float percentage) { m_WaitLikelihood = percentage; }
 
         void SetSpeed (float speed) { m_Speed = speed; }
         float GetSpeed () const { return m_Speed; }
 
+        void SetWalkPoints (struct FlagPoint* flagPoint);
         void SetWalkPoints (CScriptArray* array);
         void SetWalkPoints (std::vector<Point> points) { m_Points = points; }
 
@@ -48,7 +53,7 @@ namespace aga
         virtual std::string GetTypeName () override { return TypeName; }
 
     private:
-        void ComputerTargetPos ();
+        void ComputeTargetPos ();
         void ComputeMovePoints ();
         void ComputeMoveWander ();
 
@@ -56,8 +61,8 @@ namespace aga
 
     private:
         MovementType m_MoveType;
-        Point m_MinExtent; 
-        Point m_MaxExtent; 
+        Point m_MinExtent;
+        Point m_MaxExtent;
         Point m_InitialPos;
         Point m_StartPos;
         Point m_TargetPos;
@@ -74,9 +79,10 @@ namespace aga
         float m_WaitTimeElapsed;
         float m_MaxWaitTime;
 
+        float m_LastAngle;
+
         asIScriptFunction* m_ScriptMoveCallback;
     };
 }
 
 #endif //   __MOVEMENT_COMPONENT_H__
-

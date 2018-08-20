@@ -30,6 +30,13 @@ void BeforeEnterScene ()
     {
         camera.SetFollowActor (GetActor ("PLAYER"));
     }
+
+    Actor@ npc_x = GetActor ("npc_x");
+    MovementComponent@ moveComp = npc_x.GetMovementComponent ("MOVEMENT_COMPONENT");
+    moveComp.SetMovementType (MovePoints);
+
+    FlagPoint@ flagPoint = GetFlagPoint ("A");
+    moveComp.SetWalkPoints (flagPoint);
 }
 
 void PlayerActionFunc ()

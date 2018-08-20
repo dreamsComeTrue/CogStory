@@ -147,6 +147,7 @@ namespace aga
            float GetSpeed ()
            void SetWaitLikelihood (float percentage)
            void SetWalkPoints (array<Point>@+ points)
+           void SetWalkPoints (FlagPoint@ points)
                = void MovementCallback (Point)
            void SetMovementCallback (MovementCallback @+ mc)
 
@@ -1010,6 +1011,9 @@ namespace aga
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetWalkPoints (array<Point>@+ points)",
             asMETHODPR (MovementComponent, SetWalkPoints, (CScriptArray*), void), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetWalkPoints (FlagPoint@ points)",
+            asMETHODPR (MovementComponent, SetWalkPoints, (FlagPoint*), void), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterFuncdef ("void MovementCallback (Point)");
         assert (r >= 0);

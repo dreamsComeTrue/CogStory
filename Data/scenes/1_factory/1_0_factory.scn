@@ -3,6 +3,7 @@
         {
             "atlas": "0_0_home",
             "atlas-region": "bed",
+            "collision": "0",
             "components": [],
             "id": "1",
             "name": "bed",
@@ -17,6 +18,7 @@
         {
             "atlas": "1_0_factory",
             "atlas-region": "factory_main",
+            "collision": "0",
             "components": [],
             "id": "4",
             "name": "factory_main",
@@ -43,6 +45,7 @@
     "speeches": [
         {
             "abs_pos": "0 0",
+            "action": "",
             "id": -1,
             "max_chars": 20,
             "max_lines": 3,

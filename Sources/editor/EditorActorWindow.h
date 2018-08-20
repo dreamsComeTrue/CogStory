@@ -41,6 +41,8 @@ namespace aga
         void OnImagePathSelected (Gwk::Controls::Base* control);
         void OnImageSelected (Gwk::Controls::Base* control);
 
+        void OnCollisionSelected (Gwk::Controls::Base* control);
+
         void UpdateActorsTree ();
         void OnActorSelect (Gwk::Controls::Base* control);
 
@@ -65,10 +67,13 @@ namespace aga
         Gwk::Controls::Property::ComboBox* m_ImageComboBox;
         Gwk::Controls::Property::ComboBox* m_ImagePathComboBox;
 
+        Gwk::Controls::Property::ComboBox* m_CollisionComboBox;
+
         Gwk::Controls::PropertyTree* m_ActorProperties;
         Gwk::Controls::Properties* m_GeneralSection;
         Gwk::Controls::Properties* m_TransformSection;
         Gwk::Controls::Properties* m_ApperanceSection;
+        Gwk::Controls::Properties* m_OthersSection;
         Gwk::Controls::Properties* m_ScriptSection;
         Gwk::Controls::Properties* m_ComponentSection;
 
