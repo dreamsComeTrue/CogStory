@@ -3,6 +3,8 @@ bool g_IntroPlayed = false;
 Point playerSize = player.GetSize ();
 Point screenSize = screen.GetWindowSize ();
 
+Actor@ lastActionActor = null;
+
 string ChoiceFunction1 ()
 {
     Log ("OK");
@@ -13,6 +15,8 @@ string ChoiceFunction1 ()
 void BeforeEnterScene ()
 {
     SetSuppressSceneInfo (true);
+    AudioStream@ stream = SetSceneAudioStream ("music/Caketown 1.ogg");
+    stream.Play ();
 
     player.SetActionHandler (PlayerActionFunc);
 
@@ -38,7 +42,7 @@ void BeforeEnterScene ()
     FlagPoint@ flagPoint = GetFlagPoint ("A");
     moveComp.SetWalkPoints (flagPoint);
 
-    RegisterSpeechFinishedHandler (SpeechFinished);
+    RegisterSpeechesFinishedHandler (SpeechesFinished);
 }
 
 void PlayerActionFunc ()
@@ -49,6 +53,8 @@ void PlayerActionFunc ()
     {
         if (npc.GetTypeName () == "NPC")
         {
+            @lastActionActor = @npc;
+
             npc.OrientTo (player);
             npc.SuspendUpdate ();
             SpeechFrame@ frame = AddSpeechFrame ("GREET_1", true);
@@ -77,10 +83,12 @@ void CollisionFunc (Actor@ other)
     }
 }
 
-void SpeechFinished ()
+void SpeechesFinished ()
 {
-    Actor@ npc = GetActor ("npc1");
-    npc.ResumeUpdate ();
+    if (!(lastActionActor is null))
+    {
+        lastActionActor.ResumeUpdate ();
+    }
 }
 
 void SpeechHandle ()

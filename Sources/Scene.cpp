@@ -920,13 +920,13 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    AudioSample* Scene::SetSceneAudioStream (const std::string& path)
+    AudioStream* Scene::SetSceneAudioStream (const std::string& path)
     {
         CleanUpSceneAudio ();
 
         AudioManager& audioManager = m_SceneManager->GetMainLoop ()->GetAudioManager ();
         std::string sampleName = this->GetName () + "_SCENE_SAMPLE";
-        m_SceneAudioStream = audioManager.LoadSampleFromFile (sampleName, path);
+        m_SceneAudioStream = audioManager.LoadStreamFromFile (sampleName, path);
 
         return m_SceneAudioStream;
     }

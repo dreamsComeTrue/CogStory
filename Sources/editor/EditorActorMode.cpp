@@ -389,21 +389,28 @@ namespace aga
 
     void EditorActorMode::CopySelectedActor ()
     {
+        ALLEGRO_MOUSE_STATE state;
+        al_get_mouse_state (&state);
+
+        Point movePoint = m_Editor->CalculateWorldPoint (state.x, state.y);
+        Point deltaPoint = {0, 0};
+
+        if (m_PrimarySelectedActor)
+        {
+            deltaPoint = movePoint - m_PrimarySelectedActor->Bounds.Pos;
+        }
+
         for (Actor* selectedActor : m_SelectedActors)
         {
             m_SelectedAtlasRegion = m_Atlas->GetRegion (selectedActor->Name);
 
-            ALLEGRO_MOUSE_STATE state;
-            al_get_mouse_state (&state);
-
-            Point point = m_Editor->CalculateWorldPoint (state.x, state.y);
             Point regionSize = selectedActor->Bounds.GetSize ();
 
             Actor* newActor
                 = ActorFactory::GetActor (&m_Editor->GetMainLoop ()->GetSceneManager (), selectedActor->GetTypeName ());
             newActor->Name = selectedActor->GetAtlasRegionName ();
-            newActor->Bounds = Rect (point.X - regionSize.Width * 0.5f, point.Y - regionSize.Height * 0.5f,
-                regionSize.Width, regionSize.Height);
+            newActor->Bounds.Pos = selectedActor->Bounds.Pos + deltaPoint;
+            newActor->Bounds.Size = regionSize;
             newActor->TemplateBounds = newActor->Bounds;
             newActor->Rotation = selectedActor->Rotation;
             newActor->ZOrder = selectedActor->ZOrder;

@@ -134,6 +134,7 @@ namespace aga
         float m_LineHeight;
         size_t m_CurrentIndex;
         size_t m_CurrentLine;
+        size_t m_OverallIndex;
 
         float m_CurrentFlashTime;
         float m_ArrowDrawSpeed;

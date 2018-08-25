@@ -18,10 +18,10 @@ namespace aga
     std::string GFX_1_FACTORY = "gfx/scenes/1_factory";
     std::string GFX_2_CITY = "gfx/scenes/2_city";
 
-    std::string FONTS = "fonts";
-    std::string SCENES_HOME = "scenes/0_home";
-    std::string SCRIPTS_HOME = "scripts/0_home";
-    std::string SOUNDS = "sounds";
+    std::string FONTS = "fonts/";
+    std::string SCENES_HOME = "scenes/0_home/";
+    std::string SCRIPTS_HOME = "scripts/0_home/";
+    std::string SOUNDS = "sounds/";
 
     Resource g_Resources[] = {
         //  Graphics
@@ -48,7 +48,8 @@ namespace aga
 
         //  Sounds
         {SOUND_FOOT_STEP, SOUNDS, "38874__swuing__footstep-grass.wav"},
-        {SOUND_MENU_SELECT, SOUNDS, "sfx_movement_ladder2a.wav"}};
+
+        {SOUND_SPEECH_SELECT, SOUNDS, "select.wav"}, {SOUND_SPEECH_TYPE, SOUNDS, "type.wav"}};
 
     //--------------------------------------------------------------------------------------------------
 

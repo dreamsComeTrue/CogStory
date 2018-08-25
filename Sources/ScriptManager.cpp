@@ -3,6 +3,7 @@
 #include "ScriptManager.h"
 #include "AudioManager.h"
 #include "AudioSample.h"
+#include "AudioStream.h"
 #include "MainLoop.h"
 #include "Scene.h"
 #include "SceneManager.h"
@@ -81,10 +82,24 @@ namespace aga
            AudioSample@ LoadSampleFromFile (const std::string& sampleName, const std::string& path);
            AudioSample@ GetSample (const std::string& sampleName);
            void RemoveSample (const std::string& sampleName);
+           AudioStream@ LoadStreamFromFile (const std::string& streamName, const std::string& path);
+           AudioStream@ GetStream (const std::string& streamName);
+           void RemoveStream (const std::string& streamName);
            void SetEnabled (bool enabled);
            bool IsEnabled ();
 
        AudioSample
+           void Play ()
+           void Stop ()
+           void Pause ()
+           void Resume ()
+           void SetVolume (float volume)
+           void SetLooping (bool loop)
+           bool IsLooping () const
+           void SetFadeIn (float milliseconds)
+           void SetFadeOut (float milliseconds, bool pauseOnFinish)
+
+       AudioStream
            void Play ()
            void Stop ()
            void Pause ()
@@ -117,7 +132,7 @@ namespace aga
            SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Point, int, int, bool = true, const string
        &in="")
                = void SpeechHandler ()
-           void RegisterSpeechFinishedHandler (SpeechHandler @+ hd)
+           void RegisterSpeechesFinishedHandler (SpeechHandler @+ hd)
 
        Actor
            Rect Bounds
@@ -518,6 +533,9 @@ namespace aga
         //  Audio Sample
         RegisterAudioSampleAPI ();
 
+        //  Audio Sample
+        RegisterAudioStreamAPI ();
+
         //  Audio Manager
         RegisterAudioManagerAPI ();
 
@@ -829,6 +847,43 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void ScriptManager::RegisterAudioStreamAPI ()
+    {
+        int r = m_ScriptEngine->RegisterObjectType ("AudioStream", 0, asOBJ_REF | asOBJ_NOCOUNT);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "AudioStream", "void Stop ()", asMETHOD (AudioStream, Stop), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "AudioStream", "void Play ()", asMETHOD (AudioStream, Play), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "AudioStream", "void Pause ()", asMETHOD (AudioStream, Pause), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "AudioStream", "void Resume ()", asMETHOD (AudioStream, Resume), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "AudioStream", "void SetVolume (float volume = 1.0f)", asMETHOD (AudioStream, SetVolume), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "AudioStream", "void SetLooping (bool loop)", asMETHOD (AudioStream, SetLooping), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "AudioStream", "bool IsLooping () const", asMETHOD (AudioStream, IsLooping), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "AudioStream", "void SetFadeIn (float milliseconds)", asMETHOD (AudioStream, SetFadeIn), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("AudioStream",
+            "void SetFadeOut (float milliseconds,"
+            "bool pauseOnFinish = true)",
+            asMETHOD (AudioStream, SetFadeOut), asCALL_THISCALL);
+        assert (r >= 0);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void ScriptManager::RegisterAudioManagerAPI ()
     {
         int r = m_ScriptEngine->RegisterObjectType ("AudioManager", sizeof (AudioManager), asOBJ_VALUE | asOBJ_POD);
@@ -841,6 +896,12 @@ namespace aga
             "AudioSample@ LoadSampleFromFile "
             "(const string &in sampleName, const string &in path)",
             asMETHOD (AudioManager, LoadSampleFromFile), asCALL_THISCALL);
+        assert (r >= 0);
+
+        r = m_ScriptEngine->RegisterObjectMethod ("AudioManager",
+            "AudioStream@ LoadStreamFromFile "
+            "(const string &in streamName, const string &in path)",
+            asMETHOD (AudioManager, LoadStreamFromFile), asCALL_THISCALL);
         assert (r >= 0);
 
         r = m_ScriptEngine->RegisterObjectMethod (
@@ -935,8 +996,8 @@ namespace aga
         assert (r >= 0);
         r = m_ScriptEngine->RegisterFuncdef ("void SpeechHandler ()");
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("void RegisterSpeechFinishedHandler (SpeechHandler @+ hd)",
-            asMETHOD (SpeechFrameManager, RegisterSpeechFinishedHandler), asCALL_THISCALL_ASGLOBAL,
+        r = m_ScriptEngine->RegisterGlobalFunction ("void RegisterSpeechesFinishedHandler (SpeechHandler @+ hd)",
+            asMETHOD (SpeechFrameManager, RegisterSpeechesFinishedHandler), asCALL_THISCALL_ASGLOBAL,
             &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);
     }
@@ -1071,10 +1132,10 @@ namespace aga
         r = m_ScriptEngine->RegisterGlobalFunction ("void RegisterChoiceFunction (string, ChoiceFunction @+ func)",
             asMETHOD (SceneManager, RegisterChoiceFunction), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("AudioSample@ SetSceneAudioStream (const string &in path)",
+        r = m_ScriptEngine->RegisterGlobalFunction ("AudioStream@ SetSceneAudioStream (const string &in path)",
             asMETHOD (SceneManager, SetSceneAudioStream), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("AudioSample@ GetSceneAudioStream ()",
+        r = m_ScriptEngine->RegisterGlobalFunction ("AudioStream@ GetSceneAudioStream ()",
             asMETHOD (SceneManager, GetSceneAudioStream), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
     }

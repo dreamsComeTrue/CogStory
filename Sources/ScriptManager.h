@@ -57,6 +57,7 @@ namespace aga
         void RegisterPlayerAPI ();
         void RegisterScreenAPI ();
         void RegisterAudioSampleAPI ();
+        void RegisterAudioStreamAPI ();
         void RegisterAudioManagerAPI ();
         void RegisterTriggerAreaAPI ();
         void RegisterSpeechFrameAPI ();

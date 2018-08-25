@@ -60,7 +60,8 @@ namespace aga
 
         //  Sounds
         SOUND_FOOT_STEP,
-        SOUND_MENU_SELECT
+        SOUND_SPEECH_SELECT,
+        SOUND_SPEECH_TYPE
     };
 
     struct Resource

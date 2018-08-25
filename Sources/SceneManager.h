@@ -13,6 +13,7 @@ namespace aga
     class Scene;
     class MainLoop;
     class AtlasManager;
+    class AudioStream;
     struct TweenData;
     struct FlagPoint;
 
@@ -75,8 +76,8 @@ namespace aga
         void SetSuppressSceneInfo (bool suppress);
         bool IsSuppressSceneInfo () const;
 
-        AudioSample* SetSceneAudioStream (const std::string& path);
-        AudioSample* GetSceneAudioStream ();
+        AudioStream* SetSceneAudioStream (const std::string& path);
+        AudioStream* GetSceneAudioStream ();
 
         void SetOverlayText (const std::string& text, float duration = 2000.f, float charTimeDelay = 5.f,
             ScreenRelativePosition pos = BottomRight);

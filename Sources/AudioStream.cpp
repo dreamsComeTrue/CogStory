@@ -1,17 +1,17 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
-#include "AudioSample.h"
+#include "AudioStream.h"
 #include "AudioManager.h"
 
 namespace aga
 {
     //---------------------------------------------------------------------------
 
-    AudioSample::AudioSample (AudioManager* manager, const std::string& name, const std::string& path)
+    AudioStream::AudioStream (AudioManager* manager, const std::string& name, const std::string& path)
         : m_AudioManager (manager)
         , m_Name (name)
         , m_FilePath (path)
-        , m_Sample (nullptr)
+        , m_Stream (nullptr)
         , m_Gain (1.0f)
         , m_Looping (false)
         , m_FadeInCurrent (-1.f)
@@ -25,7 +25,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    AudioSample::~AudioSample ()
+    AudioStream::~AudioStream ()
     {
         if (!IsDestroyed ())
         {
@@ -35,13 +35,13 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool AudioSample::Initialize ()
+    bool AudioStream::Initialize ()
     {
         Lifecycle::Initialize ();
 
         if (al_filename_exists (m_FilePath.c_str ()))
         {
-            m_Sample = al_load_sample (m_FilePath.c_str ());
+            m_Stream = al_load_audio_stream (m_FilePath.c_str (), 4, 1024);
         }
 
         return true;
@@ -49,17 +49,12 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool AudioSample::Destroy ()
+    bool AudioStream::Destroy ()
     {
-        for (int i = 0; i < m_SampleInstances.size (); ++i)
+        if (m_Stream)
         {
-            al_destroy_sample_instance (m_SampleInstances[i]);
-            m_SampleInstances.erase (m_SampleInstances.begin () + i);
-        }
-
-        if (m_Sample)
-        {
-            al_destroy_sample (m_Sample);
+            al_drain_audio_stream (m_Stream);
+            al_destroy_audio_stream (m_Stream);
         }
 
         return Lifecycle::Destroy ();
@@ -67,12 +62,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void AudioSample::Play ()
+    void AudioStream::Play ()
     {
-        if (m_Sample && m_AudioManager->IsEnabled ())
+        if (m_Stream && m_AudioManager->IsEnabled ())
         {
-            CleanUpInstances ();
-
             float volume = m_Gain;
             float masterVolume = m_AudioManager->GetMasterVolume ();
 
@@ -81,73 +74,49 @@ namespace aga
                 volume = masterVolume;
             }
 
-            ALLEGRO_SAMPLE_INSTANCE* instance = al_create_sample_instance (m_Sample);
-            m_SampleInstances.push_back (instance);
+            al_attach_audio_stream_to_mixer (m_Stream, al_get_default_mixer ());
 
-            al_attach_sample_instance_to_mixer (instance, al_get_default_mixer ());
-            al_set_sample_instance_playmode (instance, m_Looping ? ALLEGRO_PLAYMODE_LOOP : ALLEGRO_PLAYMODE_ONCE);
-            al_set_sample_instance_gain (instance, volume);
-            al_play_sample_instance (instance);
+            al_seek_audio_stream_secs (m_Stream, 0.0);
+            al_set_audio_stream_playing (m_Stream, true);
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void AudioSample::Stop ()
+    void AudioStream::Stop ()
     {
-        if (m_Sample)
+        if (m_Stream)
         {
-            CleanUpInstances ();
-
-            for (ALLEGRO_SAMPLE_INSTANCE* instance : m_SampleInstances)
-            {
-                if (al_get_sample_instance_playing (instance))
-                {
-                    al_stop_sample_instance (instance);
-                }
-            }
+            al_seek_audio_stream_secs (m_Stream, 0.0);
+            al_set_audio_stream_playing (m_Stream, false);
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void AudioSample::Pause ()
+    void AudioStream::Pause ()
     {
-        if (m_AudioManager->IsEnabled ())
+        if (m_Stream && m_AudioManager->IsEnabled ())
         {
             m_CurrentPos = 0;
 
-            for (int i = 0; i < m_SampleInstances.size (); ++i)
-            {
-                unsigned pos = al_get_sample_instance_position (m_SampleInstances[i]);
-
-                if (pos > m_CurrentPos)
-                {
-                    m_CurrentPos = pos;
-                }
-
-                al_set_sample_instance_playing (m_SampleInstances[i], false);
-            }
+            al_set_audio_stream_playing (m_Stream, false);
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void AudioSample::Resume ()
+    void AudioStream::Resume ()
     {
-        if (m_AudioManager->IsEnabled ())
+        if (m_Stream && m_AudioManager->IsEnabled ())
         {
-            for (int i = 0; i < m_SampleInstances.size (); ++i)
-            {
-                al_set_sample_instance_position (m_SampleInstances[i], m_CurrentPos);
-                al_set_sample_instance_playing (m_SampleInstances[i], true);
-            }
+            al_set_audio_stream_playing (m_Stream, true);
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void AudioSample::Update (float deltaTime)
+    void AudioStream::Update (float deltaTime)
     {
         if (!m_AudioManager->IsEnabled ())
         {
@@ -189,65 +158,41 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void AudioSample::SetLooping (bool looping)
+    void AudioStream::SetLooping (bool looping)
     {
-        if (m_AudioManager->IsEnabled ())
+        if (m_Stream && m_AudioManager->IsEnabled ())
         {
             m_Looping = looping;
 
-            for (int i = 0; i < m_SampleInstances.size (); ++i)
-            {
-                al_set_sample_instance_playmode (
-                    m_SampleInstances[i], m_Looping ? ALLEGRO_PLAYMODE_LOOP : ALLEGRO_PLAYMODE_ONCE);
-            }
+            al_set_audio_stream_playmode (m_Stream, m_Looping ? ALLEGRO_PLAYMODE_LOOP : ALLEGRO_PLAYMODE_ONCE);
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void AudioSample::SetVolume (float volume)
+    void AudioStream::SetVolume (float volume)
     {
-        if (m_AudioManager->IsEnabled ())
+        if (m_Stream && m_AudioManager->IsEnabled ())
         {
             m_Gain = volume;
 
-            for (int i = 0; i < m_SampleInstances.size (); ++i)
-            {
-                al_set_sample_instance_gain (m_SampleInstances[i], m_Gain);
-            }
+            al_set_audio_stream_gain (m_Stream, m_Gain);
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void AudioSample::SetSpeed (float speed)
+    void AudioStream::SetSpeed (float speed)
     {
-        if (m_AudioManager->IsEnabled ())
+        if (m_Stream && m_AudioManager->IsEnabled ())
         {
-            for (int i = 0; i < m_SampleInstances.size (); ++i)
-            {
-                al_set_sample_instance_speed (m_SampleInstances[i], speed);
-            }
+            al_set_audio_stream_speed (m_Stream, speed);
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void AudioSample::CleanUpInstances ()
-    {
-        for (int i = 0; i < m_SampleInstances.size (); ++i)
-        {
-            if (!al_get_sample_instance_playing (m_SampleInstances[i]))
-            {
-                al_destroy_sample_instance (m_SampleInstances[i]);
-                m_SampleInstances.erase (m_SampleInstances.begin () + i);
-            }
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void AudioSample::SetFadeIn (float milliSeconds)
+    void AudioStream::SetFadeIn (float milliSeconds)
     {
         m_FadeInMax = milliSeconds;
         m_FadeInCurrent = 0.f;
@@ -258,7 +203,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void AudioSample::SetFadeOut (float milliSeconds, bool pauseOnFinish)
+    void AudioStream::SetFadeOut (float milliSeconds, bool pauseOnFinish)
     {
         m_FadeOutMax = milliSeconds;
         m_FadeOutCurrent = milliSeconds;

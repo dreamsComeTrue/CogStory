@@ -21,6 +21,8 @@ namespace aga
     SpeechFrameManager::SpeechFrameManager (SceneManager* sceneManager)
         : m_SceneManager (sceneManager)
         , m_SpeechesFinished (nullptr)
+        , m_SelectSample (nullptr)
+        , m_TypeSample (nullptr)
     {
     }
 
@@ -41,7 +43,9 @@ namespace aga
         Lifecycle::Initialize ();
 
         m_SelectSample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
-            "SELECT_MENU", GetResource (SOUND_MENU_SELECT).Name);
+            "SPEECH_SELECT", GetResource (SOUND_SPEECH_SELECT).Dir + GetResource (SOUND_SPEECH_SELECT).Name);
+        m_TypeSample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
+            "SPEECH_TYPE", GetResource (SOUND_SPEECH_TYPE).Dir + GetResource (SOUND_SPEECH_TYPE).Name);
 
         return true;
     }
@@ -89,6 +93,10 @@ namespace aga
 
                         nextSpeeches.push_back (frame);
                         m_Speeches.insert (std::make_pair (outcomeAction, frame));
+                    }
+                    else
+                    {
+                        m_SelectSample->Play ();
                     }
 
                     continue;
@@ -178,7 +186,6 @@ namespace aga
             frame->ScrollUpFunction = [&]() { m_SelectSample->Play (); };
             frame->ChoiceUpFunction = [&]() { m_SelectSample->Play (); };
             frame->ChoiceDownFunction = [&]() { m_SelectSample->Play (); };
-            frame->HandledFunction = [&]() { m_SelectSample->Play (); };
         }
 
         return m_Speeches[id];

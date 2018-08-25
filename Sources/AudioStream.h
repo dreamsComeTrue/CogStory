@@ -1,7 +1,7 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
-#ifndef __AUDIO_SAMPLE_H__
-#define __AUDIO_SAMPLE_H__
+#ifndef __AUDIO_STREAM_H__
+#define __AUDIO_STREAM_H__
 
 #include "Common.h"
 
@@ -9,11 +9,11 @@ namespace aga
 {
     class AudioManager;
 
-    class AudioSample : public Lifecycle
+    class AudioStream : public Lifecycle
     {
     public:
-        AudioSample (AudioManager* manager, const std::string& name, const std::string& path);
-        virtual ~AudioSample ();
+        AudioStream (AudioManager* manager, const std::string& name, const std::string& path);
+        virtual ~AudioStream ();
 
         bool Initialize ();
         bool Destroy ();
@@ -36,14 +36,10 @@ namespace aga
         void SetFadeOut (float milliSeconds, bool pauseOnFinish = true);
 
     private:
-        void CleanUpInstances ();
-
-    private:
         AudioManager* m_AudioManager;
         std::string m_Name;
         std::string m_FilePath;
-        ALLEGRO_SAMPLE* m_Sample;
-        std::vector<ALLEGRO_SAMPLE_INSTANCE*> m_SampleInstances;
+        ALLEGRO_AUDIO_STREAM* m_Stream;
 
         float m_Gain;
         bool m_Looping;
@@ -56,4 +52,4 @@ namespace aga
     };
 }
 
-#endif //   __AUDIO_SAMPLE_H__
+#endif //   __AUDIO_STREAM_H__

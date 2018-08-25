@@ -3,6 +3,7 @@
 #include "SpeechFrame.h"
 #include "Atlas.h"
 #include "AtlasManager.h"
+#include "AudioSample.h"
 #include "Font.h"
 #include "MainLoop.h"
 #include "Scene.h"
@@ -30,7 +31,7 @@ namespace aga
         , m_DrawRect (rect)
         , m_Visible (true)
         , m_DrawTextCenter (false)
-        , m_DrawSpeed (10)
+        , m_DrawSpeed (15)
         , m_ArrowDrawSpeed (300)
         , m_DrawLightArrow (true)
         , m_CurrentDrawTime (0)
@@ -51,6 +52,7 @@ namespace aga
         , m_AttrDelayIndex (0)
         , m_Action (actionName)
         , m_ScriptHandleFunction (nullptr)
+        , m_OverallIndex (0)
     {
         Atlas* atlas = m_Manager->GetSceneManager ()->GetMainLoop ()->GetAtlasManager ().GetAtlas (
             GetBaseName (GetResourcePath (PACK_MENU_UI)));
@@ -207,6 +209,13 @@ namespace aga
 
             if (m_CurrentDrawTime >= m_DrawSpeed)
             {
+                if (m_OverallIndex % 7 == 0)
+                {
+                    m_Manager->GetTypeSample ()->Play ();
+                }
+
+                ++m_OverallIndex;
+
                 m_CurrentDrawTime = 0.0f;
 
                 if (!m_IsDelayed)
@@ -226,6 +235,7 @@ namespace aga
                     m_StillUpdating = false;
                     m_CurrentLine = m_TextLines.size () - 1;
                     m_CurrentIndex = m_TextLines[m_CurrentLine].size ();
+                    m_OverallIndex = 0;
                 }
             }
         }

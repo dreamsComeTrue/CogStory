@@ -402,7 +402,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    AudioSample* SceneManager::SetSceneAudioStream (const std::string& path)
+    AudioStream* SceneManager::SetSceneAudioStream (const std::string& path)
     {
         if (m_ActiveScene)
         {
@@ -414,7 +414,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    AudioSample* SceneManager::GetSceneAudioStream ()
+    AudioStream* SceneManager::GetSceneAudioStream ()
     {
         if (m_ActiveScene)
         {

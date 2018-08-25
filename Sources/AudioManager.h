@@ -9,6 +9,7 @@ namespace aga
 {
     class MainLoop;
     class AudioSample;
+    class AudioStream;
 
     class AudioManager : public Lifecycle
     {
@@ -19,8 +20,12 @@ namespace aga
         bool Destroy ();
 
         AudioSample* LoadSampleFromFile (const std::string& sampleName, const std::string& path);
+        AudioStream* LoadStreamFromFile (const std::string& streamName, const std::string& path);
         AudioSample* GetSample (const std::string& sampleName);
         void RemoveSample (const std::string& sampleName);
+
+        AudioStream* GetStream (const std::string& streamName);
+        void RemoveStream (const std::string& streamName);
 
         MainLoop* GetMainLoop () { return m_MainLoop; }
 
@@ -37,6 +42,7 @@ namespace aga
         float m_MasterVolume;
         bool m_Enabled;
         std::map<std::string, AudioSample*> m_Samples;
+        std::map<std::string, AudioStream*> m_Streams;
     };
 }
 

@@ -24,7 +24,7 @@ namespace aga
     class Triangulator;
     class SceneLoader;
     class TileActor;
-    class AudioSample;
+    class AudioStream;
 
     struct SpeechOutcome
     {
@@ -153,8 +153,8 @@ namespace aga
         void SetPlayerStartLocation (Point location) { m_PlayerStartLocation = location; }
         Point GetPlayerStartLocation () { return m_PlayerStartLocation; }
 
-        AudioSample* SetSceneAudioStream (const std::string& path);
-        AudioSample* GetSceneAudioStream () { return m_SceneAudioStream; }
+        AudioStream* SetSceneAudioStream (const std::string& path);
+        AudioStream* GetSceneAudioStream () { return m_SceneAudioStream; }
 
         void SetSuppressSceneInfo (bool suppress) { m_SuppressSceneInfo = suppress; }
         bool IsSuppressSceneInfo () const { return m_SuppressSceneInfo; }
@@ -191,7 +191,7 @@ namespace aga
         bool m_ActorsTreeChanged;
 
         Point m_PlayerStartLocation;
-        AudioSample* m_SceneAudioStream;
+        AudioStream* m_SceneAudioStream;
 
         bool m_SuppressSceneInfo;
     };
