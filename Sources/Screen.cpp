@@ -44,7 +44,7 @@ namespace aga
         Lifecycle::Initialize ();
 
         // use current time as seed for random generator
-        std::srand (std::time (0)); 
+        std::srand (std::time (0));
 
         if (!al_init ())
         {
@@ -160,7 +160,7 @@ namespace aga
 
         al_set_new_bitmap_flags (ALLEGRO_VIDEO_BITMAP);
 
-        ALLEGRO_BITMAP *windowIcon = al_load_bitmap ((GetDataPath () + "/gfx/icon.png").c_str ());  
+        ALLEGRO_BITMAP* windowIcon = al_load_bitmap ((GetDataPath () + "/gfx/icon.png").c_str ());
         al_set_display_icon (m_Display, windowIcon);
 
         return true;
@@ -219,7 +219,7 @@ namespace aga
         }
         else if (ev.type == ALLEGRO_EVENT_DISPLAY_RESIZE)
         {
-            m_RealSize = { ev.display.width, ev.display.height };
+            m_RealSize = {ev.display.width, ev.display.height};
 
             al_acknowledge_resize (m_Display);
 
@@ -229,8 +229,8 @@ namespace aga
             }
         }
         else if ((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) || (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
-                 || (ev.type == ALLEGRO_EVENT_MOUSE_AXES) || (ev.type == ALLEGRO_EVENT_KEY_DOWN)
-                 || (ev.type == ALLEGRO_EVENT_KEY_UP) || (ev.type == ALLEGRO_EVENT_KEY_CHAR))
+            || (ev.type == ALLEGRO_EVENT_MOUSE_AXES) || (ev.type == ALLEGRO_EVENT_KEY_DOWN)
+            || (ev.type == ALLEGRO_EVENT_KEY_UP) || (ev.type == ALLEGRO_EVENT_KEY_CHAR))
         {
             if (ProcessEventFunction != nullptr)
             {

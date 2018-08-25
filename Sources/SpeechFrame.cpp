@@ -6,6 +6,7 @@
 #include "AudioSample.h"
 #include "Font.h"
 #include "MainLoop.h"
+#include "Resources.h"
 #include "Scene.h"
 #include "SceneManager.h"
 #include "Screen.h"

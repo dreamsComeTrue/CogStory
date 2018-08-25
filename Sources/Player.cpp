@@ -4,6 +4,7 @@
 #include "AudioSample.h"
 #include "MainLoop.h"
 #include "PhysicsManager.h"
+#include "Resources.h"
 #include "Scene.h"
 #include "SceneManager.h"
 #include "Screen.h"

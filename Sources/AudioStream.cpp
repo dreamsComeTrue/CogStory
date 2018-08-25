@@ -75,8 +75,6 @@ namespace aga
             }
 
             al_attach_audio_stream_to_mixer (m_Stream, al_get_default_mixer ());
-
-            al_seek_audio_stream_secs (m_Stream, 0.0);
             al_set_audio_stream_playing (m_Stream, true);
         }
     }
@@ -87,7 +85,9 @@ namespace aga
     {
         if (m_Stream)
         {
-            al_seek_audio_stream_secs (m_Stream, 0.0);
+            m_CurrentPos = 0.f;
+
+            al_seek_audio_stream_secs (m_Stream, m_CurrentPos);
             al_set_audio_stream_playing (m_Stream, false);
         }
     }
@@ -98,8 +98,6 @@ namespace aga
     {
         if (m_Stream && m_AudioManager->IsEnabled ())
         {
-            m_CurrentPos = 0;
-
             al_set_audio_stream_playing (m_Stream, false);
         }
     }

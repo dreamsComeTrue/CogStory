@@ -9,8 +9,8 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    EditorSaveSceneWindow::EditorSaveSceneWindow (Editor* editor, Gwk::Controls::Canvas* canvas,
-                                                  const std::string& fileName)
+    EditorSaveSceneWindow::EditorSaveSceneWindow (
+        Editor* editor, Gwk::Controls::Canvas* canvas, const std::string& fileName)
         : m_Editor (editor)
         , m_FileName (fileName)
     {

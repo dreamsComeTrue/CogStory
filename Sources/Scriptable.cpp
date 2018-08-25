@@ -28,7 +28,7 @@ namespace aga
             std::string realPath = GetDataPath () + "/scripts/" + path;
             Script* script = m_ScriptManager->LoadScriptFromFile (realPath, name);
 
-            ScriptMetaData meta = { name, path, script };
+            ScriptMetaData meta = {name, path, script};
             m_Scripts.push_back (meta);
         }
     }
@@ -46,7 +46,7 @@ namespace aga
 
         if (!found)
         {
-            ScriptMetaData meta = { script->GetName (), path, script };
+            ScriptMetaData meta = {script->GetName (), path, script};
             m_Scripts.push_back (meta);
         }
     }

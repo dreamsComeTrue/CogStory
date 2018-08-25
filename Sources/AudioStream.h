@@ -47,7 +47,7 @@ namespace aga
         float m_FadeInCurrent, m_FadeInMax;
         float m_FadeOutCurrent, m_FadeOutMax;
 
-        unsigned m_CurrentPos;
+        float m_CurrentPos;
         bool m_PauseOnFinish;
     };
 }

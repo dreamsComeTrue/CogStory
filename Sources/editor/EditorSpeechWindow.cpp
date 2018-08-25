@@ -14,6 +14,11 @@ namespace aga
     Point letterSize;
 
     //--------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
+
+    std::vector<std::string> g_SpeechFrames = {"player_head"};
+
+    //--------------------------------------------------------------------------------------------------
 
     EditorSpeechWindow::EditorSpeechWindow (Editor* editor, Gwk::Controls::Canvas* canvas)
         : m_Editor (editor)

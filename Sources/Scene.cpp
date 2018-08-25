@@ -4,7 +4,7 @@
 #include "Atlas.h"
 #include "AtlasManager.h"
 #include "AudioManager.h"
-#include "AudioSample.h"
+#include "AudioStream.h"
 #include "MainLoop.h"
 #include "SceneManager.h"
 #include "Screen.h"
@@ -181,6 +181,11 @@ namespace aga
 
         m_VisibleEntities.clear ();
         m_VisibleLastCameraPos = Point::MIN_POINT;
+
+        if (m_SceneAudioStream)
+        {
+            m_SceneAudioStream->Pause ();
+        }
 
         CleanUpTriggerAreas ();
     }

@@ -9,7 +9,6 @@
 #include "Point.h"
 #include "Polygon.h"
 #include "Rect.h"
-#include "Resources.h"
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_acodec.h>
@@ -137,6 +136,8 @@ namespace aga
     float RandInRange (float min, float max);
 
     int ToInteger (const std::string& str);
+
+    const std::string GetDataPath ();
 
     std::string GetDirectory (const std::string& fullPath);
 

@@ -1,8 +1,6 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
-#include "Common.h"
 #include "MainLoop.h"
-#include "Resources.h"
 #include "Screen.h"
 
 using namespace aga;

@@ -30,9 +30,19 @@ namespace aga
         {__PACKS__MARKER__}, {PACK_MENU_UI, GFX_UI, "menu_ui.pack"}, {PACK_ACTORS_UI, GFX_UI, "actors_ui.pack"},
         {PACK_PLAYER, GFX_ACTORS, "player.pack"}, {PACK_PARTICLES, GFX_EFFECTS, "particles.pack"},
         {PACK_NPC_1, GFX_NPC, "npc_1.pack"}, {PACK_NPC_2, GFX_NPC, "npc_2.pack"}, {PACK_NPC_3, GFX_NPC, "npc_3.pack"},
-        {PACK_NPC_4, GFX_NPC, "npc_4.pack"}, {PACK_0_0_HOME, GFX_0_HOME, "0_0_home.pack"},
-        {PACK_1_0_FACTORY, GFX_1_FACTORY, "1_0_factory.pack"}, {PACK_2_0_CITY, GFX_2_CITY, "2_0_city.pack"},
-        {PACK_2_1_CITY, GFX_2_CITY, "2_1_city.pack"}, {PACK_ENV_5, GFX_ENV, "env_5.pack"},
+        {PACK_NPC_4, GFX_NPC, "npc_4.pack"},
+
+        //  Home
+        {PACK_0_0_HOME, GFX_0_HOME, "0_0_home.pack"},
+
+        //  Factory
+        {PACK_1_0_FACTORY, GFX_1_FACTORY, "1_0_factory.pack"}, {PACK_1_1_FACTORY, GFX_1_FACTORY, "1_1_factory.pack"},
+
+        //  City
+        {PACK_2_0_CITY, GFX_2_CITY, "2_0_city.pack"}, {PACK_2_1_CITY, GFX_2_CITY, "2_1_city.pack"},
+
+        //  Env
+        {PACK_ENV_5, GFX_ENV, "env_5.pack"},
 
         //  Fonts
         {__FONTS__MARKER__}, {FONT_SMALL, FONTS, "coders_crux.ttf"}, {FONT_MEDIUM, FONTS, "coders_crux.ttf"},
@@ -52,14 +62,6 @@ namespace aga
         {SOUND_SPEECH_SELECT, SOUNDS, "select.wav"}, {SOUND_SPEECH_TYPE, SOUNDS, "type.wav"}};
 
     //--------------------------------------------------------------------------------------------------
-
-    std::vector<std::string> g_SpeechFrames = {"player_head"};
-
-    //--------------------------------------------------------------------------------------------------
-    //--------------------------------------------------------------------------------------------------
-
-    const std::string GetDataPath () { return GetCurrentDir () + "/../../Data/"; }
-
     //--------------------------------------------------------------------------------------------------
 
     const std::string GetResourcePath (ResourceID id)

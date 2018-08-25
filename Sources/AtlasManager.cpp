@@ -2,6 +2,7 @@
 
 #include "AtlasManager.h"
 #include "Atlas.h"
+#include "Resources.h"
 
 namespace aga
 {

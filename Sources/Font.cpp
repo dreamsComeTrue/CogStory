@@ -1,6 +1,7 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Font.h"
+#include "Resources.h"
 #include "Screen.h"
 
 namespace aga
@@ -72,8 +73,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Font::DrawText (const std::string& fontName, ALLEGRO_COLOR color, float x, float y, const std::string& text,
-                         int flags)
+    void Font::DrawText (
+        const std::string& fontName, ALLEGRO_COLOR color, float x, float y, const std::string& text, int flags)
     {
         ALLEGRO_FONT* font = m_Fonts[fontName];
 
@@ -83,7 +84,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Font::DrawMultilineText (const std::string& fontName, ALLEGRO_COLOR color, float x, float y, float max_width,
-                                  float line_height, int flags, const char* text, ...)
+        float line_height, int flags, const char* text, ...)
     {
         ALLEGRO_FONT* font = m_Fonts[fontName];
 
@@ -104,7 +105,7 @@ namespace aga
 
         al_get_text_dimensions (font, text.c_str (), &x, &y, &width, &height);
 
-        return Point{ width, height };
+        return Point{width, height};
     }
 
     //--------------------------------------------------------------------------------------------------

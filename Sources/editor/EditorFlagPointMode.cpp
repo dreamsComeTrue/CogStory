@@ -80,7 +80,7 @@ namespace aga
             m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
                 FONT_NAME_SMALL, al_map_rgb (0, 255, 0), xPoint, yPoint - 15, it->first, ALLEGRO_ALIGN_CENTER);
 
-            Point p = { fp.Pos.X, fp.Pos.Y };
+            Point p = {fp.Pos.X, fp.Pos.Y};
 
             for (std::vector<FlagPoint*>::iterator it2 = it->second.Connections.begin ();
                  it2 != it->second.Connections.end (); ++it2)
@@ -163,7 +163,7 @@ namespace aga
 
         for (std::map<std::string, FlagPoint>::iterator it = flagPoints.begin (); it != flagPoints.end (); ++it)
         {
-            Point p = { it->second.Pos.X, it->second.Pos.Y };
+            Point p = {it->second.Pos.X, it->second.Pos.Y};
 
             if (m_Editor->IsMouseWithinPointRect (mouseX, mouseY, p, outsets))
             {

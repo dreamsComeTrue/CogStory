@@ -1,7 +1,6 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "GamePlayState.h"
-#include "Common.h"
 #include "MainLoop.h"
 #include "MainMenuState.h"
 #include "Scene.h"

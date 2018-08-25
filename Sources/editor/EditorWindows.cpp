@@ -81,8 +81,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorQuestionWindow::Show (const std::string& text, std::function<void(void)> OnYesFunc,
-                                     std::function<void(void)> OnNoFunc)
+    void EditorQuestionWindow::Show (
+        const std::string& text, std::function<void(void)> OnYesFunc, std::function<void(void)> OnNoFunc)
     {
         m_Text = text;
         m_OnYesFunc = OnYesFunc;
@@ -160,7 +160,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void EditorInputWindow::Show (const std::string& labelText, const std::string& inputText,
-                                  std::function<void(void)> OnYesFunc, std::function<void(void)> OnNoFunc)
+        std::function<void(void)> OnYesFunc, std::function<void(void)> OnNoFunc)
     {
         m_OnYesFunc = OnYesFunc;
         m_OnNoFunc = OnNoFunc;

@@ -2,7 +2,6 @@
 
 #include "SceneManager.h"
 #include "ActorFactory.h"
-#include "Common.h"
 #include "MainLoop.h"
 #include "Scene.h"
 #include "SceneLoader.h"

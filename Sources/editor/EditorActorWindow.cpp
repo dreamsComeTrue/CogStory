@@ -10,6 +10,7 @@
 #include "EditorScriptWindow.h"
 #include "EditorWindows.h"
 #include "MainLoop.h"
+#include "Resources.h"
 #include "Screen.h"
 #include "actors/EnemyActor.h"
 #include "actors/NPCActor.h"

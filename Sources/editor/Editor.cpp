@@ -13,6 +13,7 @@
 #include "EditorTriggerAreaWindow.h"
 #include "EditorWindows.h"
 #include "MainLoop.h"
+#include "Resources.h"
 #include "SceneLoader.h"
 #include "Screen.h"
 #include "Script.h"
@@ -448,10 +449,7 @@ namespace aga
 
     bool Editor::IsEditorCanvasNotCovered ()
     {
-        return (
-            (m_CursorMode == CursorMode::ActorSelectMode || m_CursorMode == CursorMode::EditPhysBodyMode
-                || m_CursorMode == CursorMode::EditSpriteSheetMode || m_CursorMode == CursorMode::EditFlagPointsMode)
-            && !m_EditorSceneWindow->GetSceneWindow ()->Visible () && !m_SpeechWindow->GetSceneWindow ()->Visible ()
+        return (!m_EditorSceneWindow->GetSceneWindow ()->Visible () && !m_SpeechWindow->GetSceneWindow ()->Visible ()
             && !m_TriggerAreaWindow->GetSceneWindow ()->Visible () && !m_FlagPointWindow->GetSceneWindow ()->Visible ()
             && !m_ActorWindow->GetSceneWindow ()->Visible ());
     }

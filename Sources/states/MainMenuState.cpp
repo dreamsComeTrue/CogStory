@@ -4,9 +4,9 @@
 #include "Atlas.h"
 #include "AtlasManager.h"
 #include "AudioSample.h"
-#include "Common.h"
 #include "GamePlayState.h"
 #include "MainLoop.h"
+#include "Resources.h"
 #include "Screen.h"
 #include "StateManager.h"
 
