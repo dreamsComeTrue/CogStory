@@ -410,7 +410,7 @@ namespace aga
     {
         Gwk::Controls::TreeNode* node = (Gwk::Controls::TreeNode*)control;
 
-        Actor* selectedActor = nullptr;
+        m_SelectedActor = nullptr;
 
         if (node != nullptr && node->IsSelected ())
         {
@@ -422,60 +422,70 @@ namespace aga
 
                 if (name == node->GetText ())
                 {
-                    selectedActor = actor;
+                    m_SelectedActor = actor;
 
                     break;
                 }
             }
         }
 
-        m_SelectedActor = selectedActor;
+        m_Editor->GetEditorActorMode ().SetSelectedActor (m_SelectedActor);
+        m_Editor->GetEditorActorMode ().SetActor (m_SelectedActor);
 
-        m_Editor->GetEditorActorMode ().SetSelectedActor (selectedActor);
-        m_Editor->GetEditorActorMode ().SetActor (selectedActor);
-
-        idProperty->SetPropertyValue (selectedActor != nullptr ? ToString (selectedActor->ID) : "", false);
-        nameProperty->SetPropertyValue (selectedActor != nullptr ? selectedActor->Name : "", false);
-        typeProperty->SetPropertyValue (selectedActor != nullptr ? selectedActor->GetTypeName () : "", false);
-        positionProperty->SetPropertyValue (selectedActor != nullptr
-                ? Gwk::Utility::Format ("%f,%f", selectedActor->Bounds.Pos.X, selectedActor->Bounds.Pos.Y)
+        idProperty->SetPropertyValue (m_SelectedActor != nullptr ? ToString (m_SelectedActor->ID) : "", false);
+        nameProperty->SetPropertyValue (m_SelectedActor != nullptr ? m_SelectedActor->Name : "", false);
+        typeProperty->SetPropertyValue (m_SelectedActor != nullptr ? m_SelectedActor->GetTypeName () : "", false);
+        positionProperty->SetPropertyValue (m_SelectedActor != nullptr
+                ? Gwk::Utility::Format ("%f,%f", m_SelectedActor->Bounds.Pos.X, m_SelectedActor->Bounds.Pos.Y)
                 : Gwk::Utility::Format ("%f,%f", 0.f, 0.f),
             false);
-        rotationProperty->SetPropertyValue (selectedActor != nullptr
-                ? Gwk::Utility::Format ("%f", selectedActor->Rotation)
+        rotationProperty->SetPropertyValue (m_SelectedActor != nullptr
+                ? Gwk::Utility::Format ("%f", m_SelectedActor->Rotation)
                 : Gwk::Utility::Format ("%f", 0.f),
             false);
-        zOrderProperty->SetPropertyValue (selectedActor != nullptr ? ToString (selectedActor->ZOrder) : "0", false);
+        zOrderProperty->SetPropertyValue (m_SelectedActor != nullptr ? ToString (m_SelectedActor->ZOrder) : "0", false);
         imagePathProperty->SetPropertyValue (
-            selectedActor != nullptr ? selectedActor->GetAtlas ()->GetName () : "", false);
+            m_SelectedActor != nullptr ? m_SelectedActor->GetAtlas ()->GetName () : "", false);
         collisionProperty->SetPropertyValue (
-            selectedActor != nullptr ? (selectedActor->IsCollisionEnabled () ? "true" : "false") : "false", false);
+            m_SelectedActor != nullptr ? (m_SelectedActor->IsCollisionEnabled () ? "true" : "false") : "false", false);
 
         m_ScriptSection->Clear ();
-        m_ComponentSection->Clear ();
 
-        if (selectedActor)
+        if (m_SelectedActor)
         {
-            for (ScriptMetaData& scriptData : selectedActor->GetScripts ())
+            for (ScriptMetaData& scriptData : m_SelectedActor->GetScripts ())
             {
                 AddScriptEntry (scriptData.Name, scriptData.Path);
             }
+        }
 
-            std::map<std::string, Component*>& components = selectedActor->GetComponents ();
+        FillComponentsList ();
+
+        OnImagePathSelected (m_ImagePathComboBox);
+
+        imageProperty->SetPropertyValue (
+            m_SelectedActor != nullptr ? m_SelectedActor->GetAtlasRegionName () : "", false);
+
+        m_SelectedAtlas
+            = m_Editor->GetMainLoop ()->GetAtlasManager ().GetAtlas (imagePathProperty->GetPropertyValue ());
+        m_SelectedAtlasRegion = imageProperty->GetPropertyValue ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::FillComponentsList ()
+    {
+        if (m_SelectedActor)
+        {
+            m_ComponentSection->Clear ();
+
+            std::map<std::string, Component*>& components = m_SelectedActor->GetComponents ();
 
             for (std::map<std::string, Component*>::iterator it = components.begin (); it != components.end (); ++it)
             {
                 AddComponentEntry (it->first, it->second->GetTypeName ());
             }
         }
-
-        OnImagePathSelected (m_ImagePathComboBox);
-
-        imageProperty->SetPropertyValue (selectedActor != nullptr ? selectedActor->GetAtlasRegionName () : "", false);
-
-        m_SelectedAtlas
-            = m_Editor->GetMainLoop ()->GetAtlasManager ().GetAtlas (imagePathProperty->GetPropertyValue ());
-        m_SelectedAtlasRegion = imageProperty->GetPropertyValue ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -623,6 +633,7 @@ namespace aga
                 }
 
                 m_ScriptSection->GetChildren ().remove (control);
+                FillComponentsList ();
 
                 break;
             }

@@ -77,7 +77,7 @@ namespace aga
         friend class SceneLoader;
 
     public:
-        Scene (SceneManager* sceneManager);
+        Scene (SceneManager* sceneManager, Rect size);
 
         virtual ~Scene ();
         bool Initialize ();

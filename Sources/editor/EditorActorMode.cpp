@@ -389,28 +389,28 @@ namespace aga
 
     void EditorActorMode::CopySelectedActor ()
     {
-        if (!m_SelectedActors.empty ())
+        for (Actor* selectedActor : m_SelectedActors)
         {
-            m_SelectedAtlasRegion = m_Atlas->GetRegion (m_SelectedActors[0]->Name);
+            m_SelectedAtlasRegion = m_Atlas->GetRegion (selectedActor->Name);
 
             ALLEGRO_MOUSE_STATE state;
             al_get_mouse_state (&state);
 
             Point point = m_Editor->CalculateWorldPoint (state.x, state.y);
-            Point regionSize = m_SelectedActors[0]->Bounds.GetSize ();
+            Point regionSize = selectedActor->Bounds.GetSize ();
 
-            Actor* newActor = ActorFactory::GetActor (
-                &m_Editor->GetMainLoop ()->GetSceneManager (), m_SelectedActors[0]->GetTypeName ());
-            newActor->Name = m_SelectedActors[0]->GetAtlasRegionName ();
+            Actor* newActor
+                = ActorFactory::GetActor (&m_Editor->GetMainLoop ()->GetSceneManager (), selectedActor->GetTypeName ());
+            newActor->Name = selectedActor->GetAtlasRegionName ();
             newActor->Bounds = Rect (point.X - regionSize.Width * 0.5f, point.Y - regionSize.Height * 0.5f,
                 regionSize.Width, regionSize.Height);
-            newActor->TemplateBounds.Pos = m_SelectedActors[0]->Bounds.Pos;
-            newActor->Rotation = m_SelectedActors[0]->Rotation;
-            newActor->ZOrder = m_SelectedActors[0]->ZOrder;
-            newActor->SetAtlas (m_SelectedActors[0]->GetAtlas ());
-            newActor->SetAtlasRegionName (m_SelectedActors[0]->GetAtlasRegionName ());
-
-            newActor->PhysPoints = m_SelectedActors[0]->PhysPoints;
+            newActor->TemplateBounds = newActor->Bounds;
+            newActor->Rotation = selectedActor->Rotation;
+            newActor->ZOrder = selectedActor->ZOrder;
+            newActor->SetAtlas (selectedActor->GetAtlas ());
+            newActor->SetAtlasRegionName (selectedActor->GetAtlasRegionName ());
+            newActor->PhysPoints = selectedActor->PhysPoints;
+            newActor->SetPhysOffset (newActor->Bounds.GetPos () + newActor->Bounds.GetHalfSize ());
 
             newActor->Initialize ();
 

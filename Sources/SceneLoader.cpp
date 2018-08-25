@@ -145,31 +145,31 @@ namespace aga
     {
         try
         {
-            Scene* scene = new Scene (sceneManager);
             std::ifstream file ((GetDataPath () + "scenes/" + filePath).c_str ());
             json j;
             file >> j;
             file.close ();
 
+            Rect size;
+
+            if (loadBounds)
+            {
+                size = Rect (StringToPoint (j["min_size"]), StringToPoint (j["max_size"]));
+            }
+            else
+            {
+                size = Rect ({-SCENE_INFINITE_BOUND_SIZE, -SCENE_INFINITE_BOUND_SIZE},
+                    {SCENE_INFINITE_BOUND_SIZE, SCENE_INFINITE_BOUND_SIZE});
+            }
+
+            Scene* scene = new Scene (sceneManager, size);
+            scene->m_Size = size;
             scene->m_Name = j["name"];
             scene->m_Path = filePath;
             scene->m_PlayerStartLocation = StringToPoint (j["player_start"]);
 
             std::vector<int> ints = StringToInts (j["color"]);
             scene->m_BackgroundColor = al_map_rgba (ints[0], ints[1], ints[2], ints[3]);
-
-            scene->m_Size = Rect (StringToPoint (j["min_size"]), StringToPoint (j["max_size"]));
-            scene->m_Size = Rect (Point (-1000, -1000), Point (1000, 1000));
-
-            if (loadBounds)
-            {
-                scene->m_QuadTree = QuadTreeNode (scene->m_Size);
-            }
-            else
-            {
-                scene->m_QuadTree = QuadTreeNode (Rect ({-SCENE_INFINITE_BOUND_SIZE, -SCENE_INFINITE_BOUND_SIZE},
-                    {SCENE_INFINITE_BOUND_SIZE, SCENE_INFINITE_BOUND_SIZE}));
-            }
 
             auto& flag_points = j["flag_points"];
 

@@ -62,7 +62,14 @@ namespace aga
         m_Components.insert (std::make_pair ("FOOT_STEP_COMPONENT", m_FootStepComponent));
 
         PhysPoints.clear ();
-        PhysPoints.push_back ({{20, 30}, {25, 20}, {39, 20}, {44, 30}, {44, 64}, {20, 64}});
+        PhysPoints.push_back ({
+            {23, 35}, //  Left arm
+            {25, 25}, //  Left head
+            {37, 25}, //  Right head
+            {39, 35}, //  Right arm
+            {39, 64}, //  Right leg
+            {23, 64} //  Left leg
+        });
 
         return true;
     }

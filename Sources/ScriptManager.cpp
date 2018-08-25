@@ -116,6 +116,8 @@ namespace aga
            SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Rect, bool = true, const string &in = "")
            SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Point, int, int, bool = true, const string
        &in="")
+               = void SpeechHandler ()
+           void RegisterSpeechFinishedHandler (SpeechHandler @+ hd)
 
        Actor
            Rect Bounds
@@ -130,6 +132,8 @@ namespace aga
            void AddCollisionCallback (Actor@ actor)
            bool IsOverlaping (Actor* actor)
            void OrientTo (Actor@)
+           void SuspendUpdate ()
+           void ResumeUpdate ()
 
        MovementComponent
            MovementType
@@ -929,6 +933,12 @@ namespace aga
             asMETHODPR (SpeechFrameManager, AddSpeechFrame, (const std::string&, bool), SpeechFrame*),
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);
+        r = m_ScriptEngine->RegisterFuncdef ("void SpeechHandler ()");
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction ("void RegisterSpeechFinishedHandler (SpeechHandler @+ hd)",
+            asMETHOD (SpeechFrameManager, RegisterSpeechFinishedHandler), asCALL_THISCALL_ASGLOBAL,
+            &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
+        assert (r >= 0);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -974,6 +984,12 @@ namespace aga
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
             "Actor", "void OrientTo (Actor@)", asMETHOD (Actor, OrientTo), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "Actor", "void SuspendUpdate ()", asMETHOD (Actor, SuspendUpdate), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "Actor", "void ResumeUpdate ()", asMETHOD (Actor, ResumeUpdate), asCALL_THISCALL);
         assert (r >= 0);
     }
 

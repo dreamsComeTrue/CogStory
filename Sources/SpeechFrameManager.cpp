@@ -20,6 +20,7 @@ namespace aga
 
     SpeechFrameManager::SpeechFrameManager (SceneManager* sceneManager)
         : m_SceneManager (sceneManager)
+        , m_SpeechesFinished (nullptr)
     {
     }
 
@@ -84,7 +85,10 @@ namespace aga
 
                     if (outcomeAction != "")
                     {
-                        nextSpeeches.push_back (AddSpeechFrame (outcomeAction));
+                        SpeechFrame* frame = AddSpeechFrame (outcomeAction);
+
+                        nextSpeeches.push_back (frame);
+                        m_Speeches.insert (std::make_pair (outcomeAction, frame));
                     }
 
                     continue;
@@ -97,6 +101,15 @@ namespace aga
         for (SpeechFrame* nextSpeech : nextSpeeches)
         {
             nextSpeech->Show ();
+        }
+
+        if (m_SpeechesFinished && m_Speeches.empty ())
+        {
+            asIScriptContext* ctx = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetContext ();
+            ctx->Prepare (m_SpeechesFinished);
+            ctx->Execute ();
+            ctx->Unprepare ();
+            ctx->GetEngine ()->ReturnContext (ctx);
         }
 
         return false;

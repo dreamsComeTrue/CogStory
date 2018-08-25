@@ -75,11 +75,10 @@ namespace aga
 
     const float SCENE_INFINITE_BOUND_SIZE = 10000.f;
 
-    Scene::Scene (SceneManager* sceneManager)
+    Scene::Scene (SceneManager* sceneManager, Rect size)
         : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
         , m_SceneManager (sceneManager)
-        , m_QuadTree (Rect ({-SCENE_INFINITE_BOUND_SIZE, -SCENE_INFINITE_BOUND_SIZE},
-              {SCENE_INFINITE_BOUND_SIZE, SCENE_INFINITE_BOUND_SIZE}))
+        , m_QuadTree (size)
         , m_CurrentActor (nullptr)
         , m_BackgroundColor (al_map_rgb (60, 60, 70))
         , m_ActorsTreeChanged (false)
@@ -299,7 +298,7 @@ namespace aga
             Point cameraScale = m_SceneManager->GetCamera ().GetScale ();
             Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
 
-            float visibleScale = 0.5f;
+            float visibleScale = 0.7f;
             Point moveBy (
                 screenSize.Width * visibleScale / cameraScale.X, screenSize.Height * visibleScale / cameraScale.Y);
             Rect targetRect = Rect (cameraCenter - moveBy, cameraCenter + moveBy);

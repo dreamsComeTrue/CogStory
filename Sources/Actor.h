@@ -66,6 +66,9 @@ namespace aga
         virtual void DrawBounds ();
         virtual void DrawName ();
 
+        void SuspendUpdate () { m_IsUpdating = false; }
+        void ResumeUpdate () { m_IsUpdating = true; }
+
         std::function<void(float dx, float dy)> MoveCallback;
 
         virtual std::string GetTypeName () = 0;
@@ -76,6 +79,7 @@ namespace aga
         void FireMoveCallback ();
 
     protected:
+        bool m_IsUpdating;
         Point m_OldPosition;
         std::map<std::string, Component*> m_Components;
 

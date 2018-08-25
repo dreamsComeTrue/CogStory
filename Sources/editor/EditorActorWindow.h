@@ -49,6 +49,8 @@ namespace aga
         void AddScriptEntry (const std::string& name, const std::string& path);
         void AddComponentEntry (const std::string& name, const std::string& type);
 
+        void FillComponentsList ();
+
         Gwk::Controls::TreeNode* FindNode (Gwk::Controls::TreeNode* node, const std::string& name);
 
     private:

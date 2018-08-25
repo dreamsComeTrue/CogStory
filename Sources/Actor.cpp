@@ -18,6 +18,7 @@ namespace aga
         , Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
         , Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
         , Entity (sceneManager)
+        , m_IsUpdating (true)
     {
         ID = Entity::GetNextID ();
     }
@@ -122,6 +123,11 @@ namespace aga
     bool Actor::Update (float deltaTime)
     {
         Animable::Update (deltaTime);
+
+        if (!m_IsUpdating)
+        {
+            return true;
+        }
 
         UpdateScripts (deltaTime);
 

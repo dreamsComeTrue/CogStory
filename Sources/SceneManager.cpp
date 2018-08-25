@@ -159,7 +159,7 @@ namespace aga
 
         if (!scene)
         {
-            bool loadBounds = m_MainLoop->GetStateManager ().GetActiveStateName () == GAMEPLAY_STATE_NAME;
+            bool loadBounds = false; // m_MainLoop->GetStateManager ().GetActiveStateName () == GAMEPLAY_STATE_NAME;
 
             scene = SceneLoader::LoadScene (this, scenePath, loadBounds);
             AddScene (scene);

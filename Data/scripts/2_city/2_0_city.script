@@ -37,6 +37,8 @@ void BeforeEnterScene ()
 
     FlagPoint@ flagPoint = GetFlagPoint ("A");
     moveComp.SetWalkPoints (flagPoint);
+
+    RegisterSpeechFinishedHandler (SpeechFinished);
 }
 
 void PlayerActionFunc ()
@@ -48,6 +50,7 @@ void PlayerActionFunc ()
         if (npc.GetTypeName () == "NPC")
         {
             npc.OrientTo (player);
+            npc.SuspendUpdate ();
             SpeechFrame@ frame = AddSpeechFrame ("GREET_1", true);
             frame.SetHandleFunction (SpeechHandle);
         }
@@ -72,6 +75,12 @@ void CollisionFunc (Actor@ other)
             Log ("Hello");
         }
     }
+}
+
+void SpeechFinished ()
+{
+    Actor@ npc = GetActor ("npc1");
+    npc.ResumeUpdate ();
 }
 
 void SpeechHandle ()
