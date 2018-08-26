@@ -7,6 +7,7 @@
 #include "MainLoop.h"
 #include "SceneManager.h"
 #include "Screen.h"
+#include "actors/components/MovementComponent.h"
 
 namespace aga
 {
@@ -20,6 +21,7 @@ namespace aga
     TileActor::TileActor (SceneManager* sceneManager)
         : Actor (sceneManager)
     {
+        m_MovementComponent->SetEnabled (false);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -28,11 +30,11 @@ namespace aga
     {
         Actor::Initialize ();
 
-        if (Tileset != "" && m_AtlasRegionName != "")
+        if (m_AtlasName != "" && m_AtlasRegionName != "")
         {
             Bounds.Size = m_SceneManager->GetMainLoop ()
                               ->GetAtlasManager ()
-                              .GetAtlas (Tileset)
+                              .GetAtlas (m_AtlasName)
                               ->GetRegion (m_AtlasRegionName)
                               .Bounds.GetSize ();
         }
@@ -48,12 +50,10 @@ namespace aga
 
     void TileActor::Render (float deltaTime)
     {
-        Atlas* atlas = m_SceneManager->GetMainLoop ()->GetAtlasManager ().GetAtlas (Tileset);
-
-        if (atlas)
+        if (m_Atlas)
         {
             Point pos = Bounds.GetPos ();
-            atlas->DrawRegion (m_AtlasRegionName, pos.X, pos.Y, 1.0f, 1.0f, DegressToRadians (Rotation));
+            m_Atlas->DrawRegion (m_AtlasRegionName, pos.X, pos.Y, 1.0f, 1.0f, DegressToRadians (Rotation));
         }
     }
 
@@ -61,11 +61,9 @@ namespace aga
 
     void TileActor::DrawName ()
     {
-        Atlas* atlas = m_SceneManager->GetMainLoop ()->GetAtlasManager ().GetAtlas (Tileset);
-
-        if (atlas)
+        if (m_Atlas)
         {
-            Rect regionBounds = atlas->GetRegion (m_AtlasRegionName).Bounds;
+            Rect regionBounds = m_Atlas->GetRegion (m_AtlasRegionName).Bounds;
 
             Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
             Point pos = {Bounds.GetPos ().X + regionBounds.GetHalfSize ().Width,
@@ -73,18 +71,6 @@ namespace aga
             std::string str = Name + "[" + ToString (ID) + "]";
             font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), pos.X, pos.Y, str, ALLEGRO_ALIGN_CENTER);
         }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void TileActor::SetAtlasRegionName (const std::string& name) { m_AtlasRegionName = name; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void TileActor::SetAtlas (Atlas* atlas)
-    {
-        m_Atlas = atlas;
-        Tileset = atlas != nullptr ? atlas->GetName () : "";
     }
 
     //--------------------------------------------------------------------------------------------------

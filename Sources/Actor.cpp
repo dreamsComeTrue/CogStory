@@ -18,9 +18,11 @@ namespace aga
         , Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
         , Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
         , Entity (sceneManager)
+        , m_MovementComponent (new MovementComponent (this))
         , m_IsUpdating (true)
     {
         ID = Entity::GetNextID ();
+        m_Components.insert (std::make_pair ("MOVEMENT_COMPONENT", m_MovementComponent));
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -277,6 +279,11 @@ namespace aga
         FireMoveCallback ();
 
         SetPhysOffset (Bounds.GetPos ().X, Bounds.GetPos ().Y);
+
+        if (m_MovementComponent)
+        {
+            m_MovementComponent->SetStartPos ({x, y});
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -400,6 +407,20 @@ namespace aga
         if (angleDeg <= 45 || angleDeg >= 315)
         {
             SetCurrentAnimation (ANIM_STAND_LEFT_NAME);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Actor::AssignFlagPointsToWalk (const std::string& flagPointName)
+    {
+        m_MovementComponent->SetMovementType (MovementType::MovePoints);
+
+        FlagPoint* flagPoint = m_SceneManager->GetFlagPoint (flagPointName);
+
+        if (flagPoint)
+        {
+            m_MovementComponent->SetWalkPoints (flagPoint);
         }
     }
 

@@ -94,6 +94,8 @@ namespace aga
         bool IsSnapToGrid () { return m_IsSnapToGrid; }
         float GetGridSize () { return m_GridSize; }
 
+        Rect GetSelectionRect () { return m_SelectionRect; }
+
     private:
         void LoadConfig ();
         void SaveConfig ();
@@ -155,6 +157,12 @@ namespace aga
         void ProcessMouseAxes (ALLEGRO_MOUSE_EVENT& event);
 
         void TryToCloseWindows ();
+
+        void AddActorsFromSpritesheet (float x, float y);
+        void SelectActorsWithinSelectionRect ();
+
+        void SelectPhysPoint ();
+        void SelectTriggerAreaPoint ();
 
     private:
         MainLoop* m_MainLoop;

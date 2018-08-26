@@ -73,6 +73,9 @@ namespace aga
 
         virtual std::string GetTypeName () = 0;
 
+        //  Helper functions
+        void AssignFlagPointsToWalk (const std::string& flagPointName);
+
     protected:
         void ProcessTriggerAreas (float dx, float dy);
 
@@ -82,6 +85,7 @@ namespace aga
         bool m_IsUpdating;
         Point m_OldPosition;
         std::map<std::string, Component*> m_Components;
+        class MovementComponent* m_MovementComponent;
 
     public:
         Rect TemplateBounds;

@@ -21,14 +21,9 @@ namespace aga
 
         virtual std::string GetTypeName () override { return TypeName; }
 
-        virtual void SetPosition (float x, float y) override;
-
     private:
         virtual void BeginOverlap (Entity* entity) override;
         virtual void CollisionEvent (Collidable* other) override;
-
-    private:
-        class MovementComponent* m_MovementComponent;
     };
 }
 

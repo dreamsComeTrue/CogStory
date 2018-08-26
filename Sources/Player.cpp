@@ -9,6 +9,7 @@
 #include "SceneManager.h"
 #include "Screen.h"
 #include "actors/components/AudioSampleComponent.h"
+#include "actors/components/MovementComponent.h"
 #include "actors/components/ParticleEmitterComponent.h"
 
 namespace aga
@@ -26,6 +27,7 @@ namespace aga
         , m_ActionHandling (false)
         , m_ActionHandler (nullptr)
     {
+        m_MovementComponent->SetEnabled (false);
     }
 
     //--------------------------------------------------------------------------------------------------

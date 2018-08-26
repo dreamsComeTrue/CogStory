@@ -20,7 +20,7 @@ void BeforeEnterScene ()
 
     player.SetActionHandler (PlayerActionFunc);
 
-    Actor@ npc = GetActor ("npc1");
+    Actor@ npc = GetActor ("npc_girl");
 
     if (!g_IntroPlayed)
     {
@@ -35,19 +35,15 @@ void BeforeEnterScene ()
         camera.SetFollowActor (GetActor ("PLAYER"));
     }
 
-    Actor@ npc_x = GetActor ("npc_x");
-    MovementComponent@ moveComp = npc_x.GetMovementComponent ("MOVEMENT_COMPONENT");
-    moveComp.SetMovementType (MovePoints);
-
-    FlagPoint@ flagPoint = GetFlagPoint ("A");
-    moveComp.SetWalkPoints (flagPoint);
+    GetActor ("npc_x").AssignFlagPointsToWalk ("A");
+    GetActor ("npc_girl").AssignFlagPointsToWalk ("NPC_1_A");
 
     RegisterSpeechesFinishedHandler (SpeechesFinished);
 }
 
 void PlayerActionFunc ()
 {
-    Actor@ npc = GetActor ("npc1");
+    Actor@ npc = GetActor ("npc_girl");
 
     if (npc.IsOverlaping (player))
     {

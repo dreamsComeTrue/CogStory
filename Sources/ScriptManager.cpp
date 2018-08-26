@@ -149,6 +149,7 @@ namespace aga
            void OrientTo (Actor@)
            void SuspendUpdate ()
            void ResumeUpdate ()
+           void AssignFlagPointsToWalk (const string in& flagPointName);
 
        MovementComponent
            MovementType
@@ -1051,6 +1052,10 @@ namespace aga
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
             "Actor", "void ResumeUpdate ()", asMETHOD (Actor, ResumeUpdate), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Actor",
+            "void AssignFlagPointsToWalk (const string &in flagPointName)", asMETHOD (Actor, AssignFlagPointsToWalk),
+            asCALL_THISCALL);
         assert (r >= 0);
     }
 

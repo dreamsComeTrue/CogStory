@@ -4,7 +4,6 @@
 #include "ActorFactory.h"
 #include "Player.h"
 #include "SceneManager.h"
-#include "components/MovementComponent.h"
 
 namespace aga
 {
@@ -17,9 +16,7 @@ namespace aga
 
     NPCActor::NPCActor (SceneManager* sceneManager)
         : Actor (sceneManager)
-        , m_MovementComponent (new MovementComponent (this))
     {
-        m_Components.insert (std::make_pair ("MOVEMENT_COMPONENT", m_MovementComponent));
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -36,26 +33,7 @@ namespace aga
         return true;
     }
 
-    //--------------------------------------------------------------------------------------------------
-
-    bool NPCActor::Update (float deltaTime)
-    {
-        Actor::Update (deltaTime);
-
-        return true;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void NPCActor::SetPosition (float x, float y)
-    {
-        Actor::SetPosition (x, y);
-
-        if (m_MovementComponent)
-        {
-            m_MovementComponent->SetStartPos ({x, y});
-        }
-    }
+    bool NPCActor::Update (float deltaTime) { return Actor::Update (deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
 

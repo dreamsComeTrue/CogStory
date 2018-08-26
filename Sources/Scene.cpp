@@ -403,21 +403,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::AddTile (TileActor* tile)
-    {
-        m_Actors.push_back (tile);
-        m_QuadTree.Insert (tile);
-        m_QuadTree.UpdateStructures ();
-
-        m_ActorsTreeChanged = true;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Scene::RemoveTile (TileActor* tile) { RemoveActor (tile); }
-
-    //--------------------------------------------------------------------------------------------------
-
     void Scene::SortActors () { std::sort (m_Actors.begin (), m_Actors.end (), Entity::CompareByZOrder); }
 
     //--------------------------------------------------------------------------------------------------
@@ -776,7 +761,7 @@ namespace aga
         float maxX = std::max (pointA.X, std::max (pointB.X, std::max (pointC.X, pointD.X)));
         float maxY = std::max (pointA.Y, std::max (pointB.Y, std::max (pointC.Y, pointD.Y)));
 
-        return {{minX, minY}, {maxX, maxY}};
+        return OrientRect (minX, minY, maxX, maxY);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -794,12 +779,7 @@ namespace aga
         float x2 = (b.GetPos ().X - translate.X * (1.0f / scale.X) + 2 * halfWidth) * (scale.X);
         float y2 = (b.GetPos ().Y - translate.Y * (1.0f / scale.Y) + 2 * halfHeight) * (scale.Y);
 
-        float minX = std::min (x1, x2);
-        float minY = std::min (y1, y2);
-        float maxX = std::max (x1, x2);
-        float maxY = std::max (y1, y2);
-
-        return {{minX, minY}, {maxX, maxY}};
+        return OrientRect (x1, y1, x2, y2);
     }
 
     //--------------------------------------------------------------------------------------------------

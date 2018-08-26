@@ -299,7 +299,7 @@ namespace aga
                         std::string name = actorIt["name"];
                         name += "_";
                         name += actorIt["id"];
-                        scene->AddTile (dynamic_cast<TileActor*> (newActor));
+                        scene->AddActor (dynamic_cast<TileActor*> (newActor));
                     }
                     else
                     {

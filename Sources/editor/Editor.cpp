@@ -107,6 +107,7 @@ namespace aga
     Gwk::Controls::Label* gridLabel;
     Gwk::Controls::Label* tilesLabel;
     Gwk::Controls::Label* actorsLabel;
+    Gwk::Controls::Label* cursorLabel;
 
     bool Editor::Initialize ()
     {
@@ -339,6 +340,9 @@ namespace aga
 
         actorsLabel = new Gwk::Controls::Label (m_MainCanvas);
         actorsLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
+
+        cursorLabel = new Gwk::Controls::Label (m_MainCanvas);
+        cursorLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
 
         LoadConfig ();
         ScreenResize ();
@@ -739,6 +743,8 @@ namespace aga
 
     void Editor::Render (float deltaTime)
     {
+        Rect realSelectionRect;
+
         if (m_CursorMode == CursorMode::EditPhysBodyMode)
         {
             RenderPhysBodyMode (deltaTime);
@@ -747,6 +753,8 @@ namespace aga
         {
             m_MainLoop->GetSceneManager ().GetCamera ().Update (deltaTime);
             m_EditorActorMode.RenderSpriteSheet ();
+
+            realSelectionRect = m_SelectionRect;
         }
         else
         {
@@ -805,13 +813,14 @@ namespace aga
             frameManager.Update (deltaTime);
             frameManager.Render (deltaTime);
 
-            //  Prevent drawing selection rect with 1-pixel size (click-down-up)
-            if (m_SelectionRect.GetSize ().Width > 2 || m_SelectionRect.GetSize ().Height > 2)
-            {
-                Rect r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_SelectionRect);
-                al_draw_rectangle (
-                    r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y, COLOR_WHITE, 2);
-            }
+            realSelectionRect = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_SelectionRect);
+        }
+
+        //  Prevent drawing selection rect with 1-pixel size (click-down-up)
+        if (realSelectionRect.GetSize ().Width > 2 || realSelectionRect.GetSize ().Height > 2)
+        {
+            al_draw_rectangle (realSelectionRect.GetTopLeft ().X, realSelectionRect.GetTopLeft ().Y,
+                realSelectionRect.GetBottomRight ().X, realSelectionRect.GetBottomRight ().Y, COLOR_WHITE, 2);
         }
     }
 
@@ -1151,11 +1160,11 @@ namespace aga
             Rect bounds = m_EditorActorMode.GetSelectedActors ()[0]->Bounds;
             camera.SetCenter (-bounds.GetCenter ().X, -bounds.GetCenter ().Y);
 
-            m_CursorMode = CursorMode::EditPhysBodyMode;
+            SetCursorMode (CursorMode::EditPhysBodyMode);
         }
         else
         {
-            m_CursorMode = CursorMode::ActorSelectMode;
+            SetCursorMode (CursorMode::ActorSelectMode);
         }
 
         SetDrawUITiles (m_CursorMode == CursorMode::ActorSelectMode);
@@ -1215,12 +1224,13 @@ namespace aga
 
     void Editor::OnActorSelected ()
     {
+        m_ActorWindow->Show ();
+
         if (!m_EditorActorMode.GetSelectedActors ().empty ())
         {
             Actor* actor = m_EditorActorMode.GetSelectedActors ()[0];
             std::string name = actor->Name + std::string (" [") + ToString (actor->ID) + std::string ("]");
 
-            m_ActorWindow->Show ();
             m_ActorWindow->SelectActor (name);
         }
     }
@@ -1254,10 +1264,11 @@ namespace aga
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
 
-        avgFPSLabel->SetText (Gwk::Utility::Format ("    AVG: %.2f ms", 1000.0f / m_MainLoop->GetScreen ()->GetFPS ()));
+        avgFPSLabel->SetText (
+            Gwk::Utility::Format ("        AVG: %.2f ms", 1000.0f / m_MainLoop->GetScreen ()->GetFPS ()));
         avgFPSLabel->SizeToContents ();
 
-        fpsLabel->SetText (Gwk::Utility::Format ("    FPS: %.1f", m_MainLoop->GetScreen ()->GetFPS ()));
+        fpsLabel->SetText (Gwk::Utility::Format ("         FPS: %.1f", m_MainLoop->GetScreen ()->GetFPS ()));
         fpsLabel->SizeToContents ();
 
         Entity* selectedEntity = nullptr;
@@ -1267,46 +1278,70 @@ namespace aga
             selectedEntity = m_EditorActorMode.GetSelectedActors ()[0];
         }
 
-        idLabel->SetText (std::string ("       ID: " + (selectedEntity ? ToString (selectedEntity->ID) : "-")));
+        idLabel->SetText (std::string ("            ID: " + (selectedEntity ? ToString (selectedEntity->ID) : "-")));
         idLabel->SizeToContents ();
 
-        xPosLabel->SetText (std::string ("        X: " + ToString ((translate.X + state.x) * (1 / scale.X))));
+        xPosLabel->SetText (std::string ("             X: " + ToString ((translate.X + state.x) * (1 / scale.X))));
         xPosLabel->SizeToContents ();
 
-        yPosLabel->SetText (std::string ("        Y: " + ToString ((translate.Y + state.y) * (1 / scale.Y))));
+        yPosLabel->SetText (std::string ("             Y: " + ToString ((translate.Y + state.y) * (1 / scale.Y))));
         yPosLabel->SizeToContents ();
 
         widthLabel->SetText (std::string (
-            "       W: " + ToString (m_EditorActorMode.GetSelectedAtlasRegion ().Bounds.GetSize ().Width)));
+            "            W: " + ToString (m_EditorActorMode.GetSelectedAtlasRegion ().Bounds.GetSize ().Width)));
         widthLabel->SizeToContents ();
 
         heightLabel->SetText (std::string (
-            "        H: " + ToString (m_EditorActorMode.GetSelectedAtlasRegion ().Bounds.GetSize ().Height)));
+            "             H: " + ToString (m_EditorActorMode.GetSelectedAtlasRegion ().Bounds.GetSize ().Height)));
         heightLabel->SizeToContents ();
 
         angleLabel->SetText (
-            std::string ("        A: " + (selectedEntity ? ToString (selectedEntity->Rotation) : "-")));
+            std::string ("             A: " + (selectedEntity ? ToString (selectedEntity->Rotation) : "-")));
         angleLabel->SizeToContents ();
 
-        zOrderLabel->SetText (std::string ("ZORD: " + (selectedEntity ? ToString (selectedEntity->ZOrder) : "-")));
+        zOrderLabel->SetText (std::string ("     ZORD: " + (selectedEntity ? ToString (selectedEntity->ZOrder) : "-")));
         zOrderLabel->SizeToContents ();
 
-        scaleLabel->SetText (std::string ("         S: " + ToString (scale.X)));
+        scaleLabel->SetText (std::string ("             S: " + ToString (scale.X)));
         scaleLabel->SizeToContents ();
 
-        snapLabel->SetText (std::string ("SNAP: " + ToString (m_IsSnapToGrid ? "YES" : "NO")));
+        snapLabel->SetText (std::string ("     SNAP: " + ToString (m_IsSnapToGrid ? "YES" : "NO")));
         snapLabel->SizeToContents ();
 
-        gridLabel->SetText (std::string (" GRID: " + ToString (m_BaseGridSize)));
+        gridLabel->SetText (std::string ("      GRID: " + ToString (m_BaseGridSize)));
         gridLabel->SizeToContents ();
 
         Scene* activeScene = m_MainLoop->GetSceneManager ().GetActiveScene ();
 
-        tilesLabel->SetText (std::string (" TILES: " + ToString (activeScene->GetTiles ().size ())));
+        tilesLabel->SetText (std::string ("     TILES: " + ToString (activeScene->GetTiles ().size ())));
         tilesLabel->SizeToContents ();
 
         actorsLabel->SetText (std::string ("ACTORS: " + ToString (activeScene->GetActors ().size ())));
         actorsLabel->SizeToContents ();
+
+        std::string cursorMode = "";
+
+        switch (m_CursorMode)
+        {
+        case ActorSelectMode:
+            cursorMode = "ACTOR";
+            break;
+        case EditPhysBodyMode:
+            cursorMode = "PHYS";
+            break;
+        case EditFlagPointsMode:
+            cursorMode = "FLAG";
+            break;
+        case EditTriggerAreaMode:
+            cursorMode = "TRIGGER";
+            break;
+        case EditSpriteSheetMode:
+            cursorMode = "SPRITE";
+            break;
+        };
+
+        cursorLabel->SetText (std::string ("CURSOR: " + cursorMode));
+        cursorLabel->SizeToContents ();
 
         m_MainCanvas->RenderCanvas ();
     }
@@ -1345,6 +1380,7 @@ namespace aga
         gridLabel->SetPos (m_MainCanvas->Width () - 120.0f, snapLabel->Bottom () + 5);
         tilesLabel->SetPos (m_MainCanvas->Width () - 120.0f, gridLabel->Bottom () + 5);
         actorsLabel->SetPos (m_MainCanvas->Width () - 120.0f, tilesLabel->Bottom () + 5);
+        cursorLabel->SetPos (m_MainCanvas->Width () - 120.0f, actorsLabel->Bottom () + 5);
 
         float beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
 
@@ -1358,7 +1394,13 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::ProcessMouseButtonDoubleClick (ALLEGRO_MOUSE_EVENT& event) {}
+    void Editor::ProcessMouseButtonDoubleClick (ALLEGRO_MOUSE_EVENT& event)
+    {
+        if (event.button == 1)
+        {
+            OnActorSelected ();
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -1366,17 +1408,22 @@ namespace aga
     {
         m_IsMousePan = event.button == 3;
 
-        if (event.button == 1 && m_EditorActorMode.IsDrawTiles ())
-        {
-            if (m_EditorActorMode.ChooseTile (event.x, event.y))
-            {
-                OnCloseSpriteSheetEdit ();
-                m_EditorActorMode.AddActor (event.x, event.y);
-            }
-        }
-
         if (event.button == 1)
         {
+            if (m_EditorActorMode.IsDrawTiles ())
+            {
+                if (m_EditorActorMode.ChooseTile (event.x, event.y))
+                {
+                    OnCloseSpriteSheetEdit ();
+                    m_EditorActorMode.AddActor (event.x, event.y);
+                }
+            }
+
+            if (m_EditorActorMode.IsSpriteSheetChoosen ())
+            {
+                m_EditorActorMode.SetSpriteSheetChoosen (false);
+            }
+
             ALLEGRO_KEYBOARD_STATE state;
             al_get_keyboard_state (&state);
 
@@ -1402,6 +1449,11 @@ namespace aga
                     m_EditorActorMode.ClearSelectedActors ();
                     selectModeButton->Hide ();
                 }
+            }
+            else if (m_CursorMode == CursorMode::EditSpriteSheetMode)
+            {
+                m_IsRectSelection = true;
+                m_SelectionRect.Pos = CalculateWorldPoint (event.x, event.y);
             }
             else if (m_CursorMode == CursorMode::ActorSelectMode)
             {
@@ -1472,7 +1524,7 @@ namespace aga
 
             if (m_EditorTriggerAreaMode.GetTriggerPoint () && m_EditorTriggerAreaMode.GetTriggerArea ())
             {
-                m_CursorMode = CursorMode::EditTriggerAreaMode;
+                SetCursorMode (CursorMode::EditTriggerAreaMode);
             }
         }
 
@@ -1488,13 +1540,9 @@ namespace aga
             {
                 physPointRemoved = m_EditorPhysMode.RemovePhysPointUnderCursor (event.x, event.y);
             }
-            else if (m_CursorMode != EditPhysBodyMode)
-            {
-                OnActorSelected ();
-            }
             else if (!flagPointRemoved && !triggerPointRemoved)
             {
-                m_CursorMode = CursorMode::ActorSelectMode;
+                SetCursorMode (CursorMode::ActorSelectMode);
             }
         }
     }
@@ -1503,44 +1551,27 @@ namespace aga
 
     void Editor::ProcessMouseButtonUp (ALLEGRO_MOUSE_EVENT& event)
     {
-        std::vector<Actor*>& actors = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActors ();
-        Rect selectionWorld = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_SelectionRect);
-
-        for (Actor* actorIt : actors)
+        if (m_CursorMode == CursorMode::EditSpriteSheetMode && event.button == 1 && m_EditorActorMode.IsDrawTiles ())
         {
-            Rect r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (actorIt);
-
-            if (Intersect (r, selectionWorld))
-            {
-                m_EditorActorMode.AddActorToSelection (actorIt);
-            }
+            AddActorsFromSpritesheet (event.x, event.y);
+        }
+        else
+        {
+            SelectActorsWithinSelectionRect ();
         }
 
         m_IsMousePan = false;
         m_IsRectSelection = false;
         m_SelectionRect = {};
 
-        if (m_EditorPhysMode.GetPhysPoint () && !m_EditorActorMode.GetSelectedActors ().empty () && event.button == 1)
+        if (m_CursorMode == CursorMode::EditPhysBodyMode && event.button == 1)
         {
-            m_EditorActorMode.GetSelectedActors ()[0]->UpdatePhysPolygon ();
-
-            if (!m_EditorPhysMode.GetPhysPoint () && m_EditorPhysMode.GetPhysPoly ()
-                && !(*m_EditorPhysMode.GetPhysPoly ()).empty ())
-            {
-                m_EditorPhysMode.SetPhysPoint (&(*m_EditorPhysMode.GetPhysPoly ())[0]);
-            }
+            SelectPhysPoint ();
         }
 
-        if (m_EditorTriggerAreaMode.GetTriggerArea () && event.button == 1)
+        if (m_CursorMode == CursorMode::EditTriggerAreaMode && event.button == 1)
         {
-            m_EditorTriggerAreaMode.GetTriggerArea ()->UpdatePolygons (
-                &m_MainLoop->GetPhysicsManager ().GetTriangulator ());
-
-            if (!m_EditorTriggerAreaMode.GetTriggerPoint () && m_EditorTriggerAreaMode.GetTriggerArea ()
-                && !m_EditorTriggerAreaMode.GetTriggerArea ()->Points.empty ())
-            {
-                m_EditorTriggerAreaMode.SetTriggerPoint (&m_EditorTriggerAreaMode.GetTriggerArea ()->Points[0]);
-            }
+            SelectTriggerAreaPoint ();
         }
     }
 
@@ -1556,7 +1587,13 @@ namespace aga
             }
             else
             {
-                m_EditorActorMode.MoveSelectedActors ();
+                ALLEGRO_MOUSE_STATE state;
+                al_get_mouse_state (&state);
+
+                if (state.buttons == 1 || m_EditorActorMode.IsSpriteSheetChoosen ())
+                {
+                    m_EditorActorMode.MoveSelectedActors (state.x, state.y);
+                }
 
                 if (m_IsRectSelection)
                 {
@@ -1571,6 +1608,70 @@ namespace aga
         }
 
         m_LastMousePos = {event.x, event.y};
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::AddActorsFromSpritesheet (float x, float y)
+    {
+        if (m_EditorActorMode.ChooseTilesFromSpriteSheet (x, y))
+        {
+            m_EditorActorMode.ClearSelectedActors ();
+
+            OnCloseSpriteSheetEdit ();
+            m_EditorActorMode.AddActor (x, y);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::SelectActorsWithinSelectionRect ()
+    {
+        std::vector<Actor*>& actors = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActors ();
+        Rect selectionWorld = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_SelectionRect);
+
+        for (Actor* actorIt : actors)
+        {
+            Rect r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (actorIt);
+
+            if (Intersect (r, selectionWorld))
+            {
+                m_EditorActorMode.AddActorToSelection (actorIt);
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::SelectPhysPoint ()
+    {
+        if (m_EditorPhysMode.GetPhysPoint () && !m_EditorActorMode.GetSelectedActors ().empty ())
+        {
+            m_EditorActorMode.GetSelectedActors ()[0]->UpdatePhysPolygon ();
+
+            if (!m_EditorPhysMode.GetPhysPoint () && m_EditorPhysMode.GetPhysPoly ()
+                && !(*m_EditorPhysMode.GetPhysPoly ()).empty ())
+            {
+                m_EditorPhysMode.SetPhysPoint (&(*m_EditorPhysMode.GetPhysPoly ())[0]);
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::SelectTriggerAreaPoint ()
+    {
+        if (m_EditorTriggerAreaMode.GetTriggerArea ())
+        {
+            m_EditorTriggerAreaMode.GetTriggerArea ()->UpdatePolygons (
+                &m_MainLoop->GetPhysicsManager ().GetTriangulator ());
+
+            if (!m_EditorTriggerAreaMode.GetTriggerPoint () && m_EditorTriggerAreaMode.GetTriggerArea ()
+                && !m_EditorTriggerAreaMode.GetTriggerArea ()->Points.empty ())
+            {
+                m_EditorTriggerAreaMode.SetTriggerPoint (&m_EditorTriggerAreaMode.GetTriggerArea ()->Points[0]);
+            }
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

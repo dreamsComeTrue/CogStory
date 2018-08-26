@@ -2,7 +2,6 @@
 
 #include "EditorActorMode.h"
 #include "ActorFactory.h"
-#include "AtlasManager.h"
 #include "Editor.h"
 #include "MainLoop.h"
 #include "SceneManager.h"
@@ -25,6 +24,7 @@ namespace aga
         , m_Atlas (nullptr)
         , m_CurrentTileBegin (0)
         , m_PrimarySelectedActor (nullptr)
+        , m_SpriteSheetChoosen (false)
     {
     }
 
@@ -102,48 +102,42 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool EditorActorMode::MoveSelectedActors ()
+    bool EditorActorMode::MoveSelectedActors (float moveX, float moveY)
     {
-        ALLEGRO_MOUSE_STATE state;
-        al_get_mouse_state (&state);
+        Point movePoint
+            = m_Editor->CalculateWorldPoint (moveX + m_TileSelectionOffset.X, moveY + m_TileSelectionOffset.Y);
+        Point deltaPoint = {0, 0};
 
-        if (state.buttons == 1)
+        if (m_PrimarySelectedActor)
         {
-            Point movePoint
-                = m_Editor->CalculateWorldPoint (state.x + m_TileSelectionOffset.X, state.y + m_TileSelectionOffset.Y);
-            Point deltaPoint = {0, 0};
+            deltaPoint = movePoint - m_PrimarySelectedActor->Bounds.Pos;
 
-            if (m_PrimarySelectedActor)
+            m_PrimarySelectedActor->Bounds.SetPos (movePoint);
+        }
+
+        for (Actor* actor : m_SelectedActors)
+        {
+            if (m_SelectedActors.size () == 1)
             {
-                deltaPoint = movePoint - m_PrimarySelectedActor->Bounds.Pos;
-
-                m_PrimarySelectedActor->Bounds.SetPos (movePoint);
+                actor->Bounds.SetPos (movePoint);
+            }
+            else
+            {
+                if (actor != m_PrimarySelectedActor)
+                {
+                    actor->Bounds.Offset (deltaPoint);
+                }
             }
 
-            for (Actor* actor : m_SelectedActors)
-            {
-                if (m_SelectedActors.size () == 1)
-                {
-                    actor->Bounds.SetPos (movePoint);
-                }
-                else
-                {
-                    if (actor != m_PrimarySelectedActor)
-                    {
-                        actor->Bounds.Offset (deltaPoint);
-                    }
-                }
+            actor->TemplateBounds = actor->Bounds;
 
-                actor->TemplateBounds = actor->Bounds;
+            actor->SetPhysOffset (actor->Bounds.GetPos () + actor->Bounds.GetHalfSize ());
 
-                actor->SetPhysOffset (actor->Bounds.GetPos () + actor->Bounds.GetHalfSize ());
-
-                QuadTreeNode& quadTree = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetQuadTree ();
-                quadTree.Remove (actor);
-                quadTree.UpdateStructures ();
-                quadTree.Insert (actor);
-                quadTree.UpdateStructures ();
-            }
+            QuadTreeNode& quadTree = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetQuadTree ();
+            quadTree.Remove (actor);
+            quadTree.UpdateStructures ();
+            quadTree.Insert (actor);
+            quadTree.UpdateStructures ();
         }
 
         return true;
@@ -242,13 +236,13 @@ namespace aga
             return;
         }
 
-        TileActor* tile = new TileActor (&m_Editor->GetMainLoop ()->GetSceneManager ());
+        Actor* tile = new TileActor (&m_Editor->GetMainLoop ()->GetSceneManager ());
         Point regionSize = m_Atlas->GetRegion (m_SelectedAtlasRegion.Name).Bounds.GetSize ();
         Point point = m_Editor->CalculateWorldPoint (mouseX, mouseY);
 
         tile->ID = Entity::GetNextID ();
-        tile->Tileset = m_Atlas->GetName ();
         tile->SetAtlas (m_Atlas);
+        tile->SetAtlasName (m_Atlas->GetName ());
         tile->SetAtlasRegionName (m_SelectedAtlasRegion.Name);
         tile->Name = tile->GetAtlasRegionName ();
 
@@ -256,7 +250,7 @@ namespace aga
             point.X - regionSize.Width * 0.5f, point.Y - regionSize.Height * 0.5f, regionSize.Width, regionSize.Height);
         tile->Rotation = m_Rotation;
 
-        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddTile (tile);
+        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddActor (tile);
         m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->SortActors ();
 
         SetSelectedActor (tile);
@@ -280,11 +274,6 @@ namespace aga
         if (!m_Atlas)
         {
             return false;
-        }
-
-        if (m_Editor->GetCursorMode () == CursorMode::EditSpriteSheetMode && ChooseTileFromSpriteSheet (mouseX, mouseY))
-        {
-            return true;
         }
 
         const Point screenSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
@@ -314,7 +303,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool EditorActorMode::ChooseTileFromSpriteSheet (int mouseX, int mouseY)
+    bool EditorActorMode::ChooseTilesFromSpriteSheet (int mouseX, int mouseY)
     {
         std::vector<AtlasRegion>& regions = m_Atlas->GetRegions ();
         Point mouseCursor = m_Editor->CalculateWorldPoint (mouseX, mouseY);
@@ -324,6 +313,7 @@ namespace aga
             if (InsideRect (mouseCursor.X, mouseCursor.Y, region.Bounds))
             {
                 m_SelectedAtlasRegion = region;
+                m_SpriteSheetChoosen = true;
 
                 return true;
             }
@@ -348,12 +338,15 @@ namespace aga
         al_get_mouse_state (&state);
 
         Point mouseCursor = m_Editor->CalculateWorldPoint (state.x, state.y);
+        Rect r = m_Editor->GetSelectionRect ();
+        Rect selectionRect
+            = OrientRect (r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y);
 
         for (AtlasRegion& region : regions)
         {
             Rect bounds = region.Bounds;
 
-            if (InsideRect (mouseCursor.X, mouseCursor.Y, bounds))
+            if (InsideRect (mouseCursor.X, mouseCursor.Y, bounds) || Intersect (selectionRect, bounds))
             {
                 ALLEGRO_COLOR selectColor = COLOR_YELLOW;
                 selectColor.a = 0.5f;

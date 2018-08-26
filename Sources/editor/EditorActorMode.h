@@ -30,7 +30,7 @@ namespace aga
 
         void ChangeRotation (bool clockwise);
         void ChangeZOrder (bool clockwise);
-        bool MoveSelectedActors ();
+        bool MoveSelectedActors (float moveX, float moveY);
         Actor* GetActorUnderCursor (int mouseX, int mouseY, bool selecting, Rect&& outRect);
 
         void RemoveSelectedActors ();
@@ -42,6 +42,7 @@ namespace aga
         Atlas* GetAtlas () { return m_Atlas; }
         void ChangeAtlas (const std::string& newAtlasName);
         bool ChooseTile (int mouseX, int mouseY);
+        bool ChooseTilesFromSpriteSheet (int mouseX, int mouseY);
 
         void ResetSettings ();
 
@@ -73,8 +74,8 @@ namespace aga
 
         void RenderSpriteSheet ();
 
-    private:
-        bool ChooseTileFromSpriteSheet (int mouseX, int mouseY);
+        bool IsSpriteSheetChoosen () { return m_SpriteSheetChoosen; }
+        void SetSpriteSheetChoosen (bool choosen) { m_SpriteSheetChoosen = choosen; }
 
     private:
         Atlas* m_Atlas;
@@ -93,6 +94,8 @@ namespace aga
         TileActor* m_TileUnderCursor;
 
         int m_CurrentTileBegin;
+
+        bool m_SpriteSheetChoosen;
     };
 }
 

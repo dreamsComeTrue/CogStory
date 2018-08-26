@@ -23,8 +23,9 @@ namespace aga
 
     bool Animable::Initialize (const std::string& atlasName, const std::string& atlasRegionName)
     {
-        m_Atlas = m_AtlasManager->GetAtlas (atlasName);
+        m_AtlasName = atlasName;
         m_AtlasRegionName = atlasRegionName;
+        m_Atlas = m_AtlasManager->GetAtlas (atlasName);
 
         return true;
     }
@@ -97,6 +98,14 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     std::map<std::string, AnimationFrames>& Animable::GetAnimations () { return m_Animation.GetAnimations (); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Animable::SetAtlas (Atlas* atlas)
+    {
+        m_Atlas = atlas;
+        m_AtlasRegionName = atlas != nullptr ? atlas->GetName () : "";
+    }
 
     //--------------------------------------------------------------------------------------------------
 }

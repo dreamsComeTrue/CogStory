@@ -96,8 +96,6 @@ namespace aga
         Actor* GetActor (int id);
         std::vector<Actor*>& GetActors ();
 
-        void AddTile (TileActor* tile);
-        void RemoveTile (TileActor* tile);
         std::vector<TileActor*> GetTiles ();
         std::vector<Entity*> RecomputeVisibleEntities (bool force);
 
