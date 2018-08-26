@@ -5,30 +5,23 @@ Point screenSize = screen.GetWindowSize ();
 
 Actor@ lastActionActor = null;
 
-string ChoiceFunction1 ()
-{
-    Log ("OK");
-
-    return "SPCH_2";
-}
-
 void BeforeEnterScene ()
 {
     SetSuppressSceneInfo (true);
     AudioStream@ stream = SetSceneAudioStream ("music/Caketown 1.ogg");
     stream.Play ();
 
-    player.SetActionHandler (PlayerActionFunc);
+    RegisterChoiceFunction ("choice1", function ()
+    {
+        return "SPCH_2";
+    });
 
-    Actor@ npc = GetActor ("npc_girl");
-
+    player.SetActionHandler (PlayerActionHandler);
+    
     if (!g_IntroPlayed)
     {
-        RegisterChoiceFunction ("choice1", ChoiceFunction1);
-
         g_IntroPlayed = true;
         IntroAnimation ();        
-        npc.AddCollisionCallback (CollisionFunc);
     }
     else
     {
@@ -38,58 +31,24 @@ void BeforeEnterScene ()
     GetActor ("npc_x").AssignFlagPointsToWalk ("A");
     GetActor ("npc_girl").AssignFlagPointsToWalk ("NPC_1_A");
 
-    RegisterSpeechesFinishedHandler (SpeechesFinished);
-}
-
-void PlayerActionFunc ()
-{
-    Actor@ npc = GetActor ("npc_girl");
-
-    if (npc.IsOverlaping (player))
+    RegisterSpeechesFinishedHandler (function ()
     {
-        if (npc.GetTypeName () == "NPC")
+        if (!(lastActionActor is null))
         {
-            @lastActionActor = @npc;
-
-            npc.OrientTo (player);
-            npc.SuspendUpdate ();
-            SpeechFrame@ frame = AddSpeechFrame ("GREET_1", true);
-            frame.SetHandleFunction (SpeechHandle);
+            lastActionActor.ResumeUpdate ();
         }
-        else
-        {
-            Log ("Hello");
-        }
-    }
+    });
 }
 
-void CollisionFunc (Actor@ other)
+void PlayerActionHandler ()
 {
-    if (player.IsAction ())
+    @lastActionActor = @player.RegisterActorAction ("my_action", "npc_girl", function (actor)
     {
-        if (other.GetTypeName () == "Player")
-        {
-            SpeechFrame@ frame = AddSpeechFrame ("GREET_1", true);
-            frame.SetHandleFunction (SpeechHandle);
-        }
-        else
-        {
-            Log ("Hello");
-        }
-    }
-}
-
-void SpeechesFinished ()
-{
-    if (!(lastActionActor is null))
-    {
-        lastActionActor.ResumeUpdate ();
-    }
-}
-
-void SpeechHandle ()
-{
-    Log ("OK");
+        player.TalkTo (actor, "GREET_1").SetHandleFunction (function () 
+        { 
+            Log ("OK!!!"); 
+        });
+    });
 }
 
 void IntroAnimation ()
@@ -101,16 +60,14 @@ void IntroAnimation ()
 
     camera.SetTranslate (screenSize.Width * 0.5f - player.Bounds.GetSize ().Width, -200);
 	camera.SetFollowActor (null);
-    camera.TweenToPoint (player.GetPosition () + player.Bounds.GetHalfSize (), IntroAnimationFinish, 5000, true);
+    camera.TweenToPoint (player.GetPosition () + player.Bounds.GetHalfSize (), function (id)
+    {
+        player.SetPreventInput (false);
+    }, 5000, true);
 
     player.SetCurrentAnimation ("ANIM_MOVE_UP_LOOK");
 
     SetOverlayText ("-- Chapter I --\nNo ordinary day", 3000.f, 100.f, Center);    
-}
-
-void IntroAnimationFinish (int id)
-{
-    player.SetPreventInput (false);
 }
 
 void OnCityExitEnter (Point p)

@@ -327,6 +327,8 @@ namespace aga
                 }
             }
         }
+
+        ComputeClosestWalkPoint ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -339,6 +341,30 @@ namespace aga
         {
             m_Points.push_back (*((Point*)points->At (i)));
         }
+
+        ComputeClosestWalkPoint ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void MovementComponent::ComputeClosestWalkPoint ()
+    {
+        float minDistance = MAXFLOAT;
+        int closestIndex = 0;
+        Point actorPos = m_Actor->GetPosition ();
+
+        for (int i = 0; i < m_Points.size (); ++i)
+        {
+            float distance = Distance (actorPos, m_Points[i]);
+
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closestIndex = i;
+            }
+        }
+
+        m_CurrentPointIndex = closestIndex;
     }
 
     //--------------------------------------------------------------------------------------------------

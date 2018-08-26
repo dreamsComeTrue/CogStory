@@ -16,6 +16,13 @@ namespace aga
     class AudioSampleComponent;
     class ParticleEmitterComponent;
 
+    struct ActorAction
+    {
+        Actor* AnActor = nullptr;
+        asIScriptFunction* Func = nullptr;
+        bool Handled = false;
+    };
+
     class Player : public Actor
     {
     public:
@@ -49,10 +56,15 @@ namespace aga
         void SetCurrentAnimation (const std::string& name) { Animable::SetCurrentAnimation (name); }
 
         void SetActionHandler (asIScriptFunction* func) { m_ActionHandler = func; }
+        Actor* RegisterActorAction (
+            const std::string& actionName, const std::string& actorName, asIScriptFunction* func);
+        class SpeechFrame* TalkTo (Actor* actor, const std::string& speechID);
 
     private:
         void CreateParticleEmitters ();
         void UpdateParticleEmitters ();
+
+        void HandleAction ();
 
         void CollisionEvent (Collidable* other) override;
 
@@ -65,6 +77,8 @@ namespace aga
         ParticleEmitterComponent* m_FootParticleComponent;
 
         asIScriptFunction* m_ActionHandler;
+
+        std::map<std::string, ActorAction> m_ActorActions;
     };
 }
 

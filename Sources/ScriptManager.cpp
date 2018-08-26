@@ -73,20 +73,24 @@ namespace aga
            bool IsAction ()
             = void ActionHandler ()
            void SetActionHandler (ActionHandler @+ callback)
+            = void ActorActionHandler (Actor@ actor)
+           Actor@ RegisterActorAction (const string &in actionName, string &in actorName,
+                                       ActorActionHandler @+ callback)
+           SpeechFrame@ TalkTo (Actor@ actor, const string in& speechID)
 
        Screen
            Screen screen
            const Point& GetWindowSize ()
 
        AudioManager
-           AudioSample@ LoadSampleFromFile (const std::string& sampleName, const std::string& path);
-           AudioSample@ GetSample (const std::string& sampleName);
-           void RemoveSample (const std::string& sampleName);
-           AudioStream@ LoadStreamFromFile (const std::string& streamName, const std::string& path);
-           AudioStream@ GetStream (const std::string& streamName);
-           void RemoveStream (const std::string& streamName);
-           void SetEnabled (bool enabled);
-           bool IsEnabled ();
+           AudioSample@ LoadSampleFromFile (const std::string& sampleName, const std::string& path)
+           AudioSample@ GetSample (const std::string& sampleName)
+           void RemoveSample (const std::string& sampleName)
+           AudioStream@ LoadStreamFromFile (const std::string& streamName, const std::string& path)
+           AudioStream@ GetStream (const std::string& streamName)
+           void RemoveStream (const std::string& streamName)
+           void SetEnabled (bool enabled)
+           bool IsEnabled ()
 
        AudioSample
            void Play ()
@@ -522,6 +526,12 @@ namespace aga
         // FlagPoint
         RegisterFlagPointAPI ();
 
+        //  Speech Frame
+        RegisterSpeechFrameAPI ();
+
+        //  Speech Frame Manager
+        RegisterSpeechFrameManagerAPI ();
+
         //  Actor
         RegisterActorAPI ();
 
@@ -542,12 +552,6 @@ namespace aga
 
         //  Trigger Area
         RegisterTriggerAreaAPI ();
-
-        //  Speech Frame
-        RegisterSpeechFrameAPI ();
-
-        //  Speech Frame Manager
-        RegisterSpeechFrameManagerAPI ();
 
         //  MovementComponent
         RegisterMovementComponentAPI ();
@@ -793,6 +797,17 @@ namespace aga
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("Player", "void SetActionHandler (ActionHandler @+ callback)",
             asMETHOD (Player, SetActionHandler), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterFuncdef ("void ActorActionHandler (Actor@ actor)");
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Player",
+            "Actor@ RegisterActorAction (const string &in actionName, const string &in actorName, ActorActionHandler "
+            "@+ callback)",
+            asMETHOD (Player, RegisterActorAction), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Player",
+            "SpeechFrame@ TalkTo (Actor@ actor, const string &in speechID)", asMETHOD (Player, TalkTo),
+            asCALL_THISCALL);
         assert (r >= 0);
     }
 

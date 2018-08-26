@@ -57,6 +57,8 @@ namespace aga
         void ComputeMovePoints ();
         void ComputeMoveWander ();
 
+        void ComputeClosestWalkPoint ();
+
         void CallScriptMoveCallback (Point newPos);
 
     private:

@@ -146,16 +146,7 @@ namespace aga
         {
             if (event->keyboard.keycode == ALLEGRO_KEY_SPACE || event->keyboard.keycode == ALLEGRO_KEY_ENTER)
             {
-                m_ActionHandling = true;
-
-                if (m_ActionHandler)
-                {
-                    asIScriptContext* ctx = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetContext ();
-                    ctx->Prepare (m_ActionHandler);
-                    ctx->Execute ();
-                    ctx->Unprepare ();
-                    ctx->GetEngine ()->ReturnContext (ctx);
-                }
+                HandleAction ();
 
                 return true;
             }
@@ -336,6 +327,71 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Player::CollisionEvent (Collidable* other) {}
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::HandleAction ()
+    {
+        m_ActionHandling = true;
+
+        if (m_ActionHandler)
+        {
+            asIScriptContext* ctx = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetContext ();
+            ctx->Prepare (m_ActionHandler);
+            ctx->Execute ();
+            ctx->Unprepare ();
+            ctx->GetEngine ()->ReturnContext (ctx);
+        }
+
+        for (std::map<std::string, ActorAction>::iterator it = m_ActorActions.begin (); it != m_ActorActions.end ();
+             ++it)
+        {
+            ActorAction& action = it->second;
+
+            bool overlaping = this->IsOverlaping (action.AnActor);
+
+            if (overlaping)
+            {
+                asIScriptContext* ctx = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetContext ();
+                ctx->Prepare (action.Func);
+                ctx->SetArgObject (0, action.AnActor);
+                ctx->Execute ();
+                ctx->Unprepare ();
+                ctx->GetEngine ()->ReturnContext (ctx);
+
+                action.Handled = true;
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Actor* Player::RegisterActorAction (
+        const std::string& actionName, const std::string& actorName, asIScriptFunction* func)
+    {
+        if (m_ActorActions.find (actionName) == m_ActorActions.end ())
+        {
+            ActorAction action;
+            action.AnActor = m_SceneManager->GetActor (actorName);
+            action.Func = func;
+
+            m_ActorActions.insert (std::make_pair (actionName, action));
+        }
+
+        return m_ActorActions[actionName].AnActor;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    SpeechFrame* Player::TalkTo (Actor* actor, const std::string& speechID)
+    {
+        actor->OrientTo (this);
+        actor->SuspendUpdate ();
+
+        SpeechFrame* frame = m_SceneManager->GetSpeechFrameManager ().AddSpeechFrame (speechID, true);
+
+        return frame;
+    }
 
     //--------------------------------------------------------------------------------------------------
 }
