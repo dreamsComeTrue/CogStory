@@ -46,7 +46,7 @@ namespace aga
 
         void SetWalkPoints (struct FlagPoint* flagPoint);
         void SetWalkPoints (CScriptArray* array);
-        void SetWalkPoints (std::vector<Point> points) { m_Points = points; }
+        void SetWalkPoints (std::vector<Point> points);
 
         void SetMovementCallback (asIScriptFunction* callback) { m_ScriptMoveCallback = callback; }
 

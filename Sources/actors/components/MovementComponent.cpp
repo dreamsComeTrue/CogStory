@@ -231,6 +231,11 @@ namespace aga
 
     void MovementComponent::ComputeMovePoints ()
     {
+        if (m_CurrentPointIndex >= 0 && m_CurrentPointIndex < m_Points.size ())
+        {
+            m_TargetPos = m_Points[m_CurrentPointIndex];
+        }
+
         int index = m_CurrentPointIndex;
 
         if (m_PointsMovingForward)
@@ -256,11 +261,6 @@ namespace aga
             {
                 --m_CurrentPointIndex;
             }
-        }
-
-        if (m_CurrentPointIndex >= 0 && m_CurrentPointIndex < m_Points.size ())
-        {
-            m_TargetPos = m_Points[m_CurrentPointIndex];
         }
     }
 
@@ -347,6 +347,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void MovementComponent::SetWalkPoints (std::vector<Point> points)
+    {
+        m_Points = points;
+
+        ComputeClosestWalkPoint ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void MovementComponent::ComputeClosestWalkPoint ()
     {
         float minDistance = MAXFLOAT;
@@ -365,6 +374,8 @@ namespace aga
         }
 
         m_CurrentPointIndex = closestIndex;
+
+        ComputeTargetPos ();
     }
 
     //--------------------------------------------------------------------------------------------------
