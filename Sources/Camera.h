@@ -22,6 +22,7 @@ namespace aga
         void UseIdentityTransform ();
         void ClearTransformations ();
 
+        void SetTranslate (Point point) { SetTranslate (point.X, point.Y); }
         void SetTranslate (float dx, float dy);
         Point GetTranslate ();
 
@@ -37,7 +38,12 @@ namespace aga
         void SetFollowActor (Actor* actor, Point followOffset = {0.f, 0.f});
         void TweenToPoint (Point endPoint, float timeMs = 1000, bool centerScreen = true);
         void TweenToPoint (
-            Point endPoint, asIScriptFunction* finishFunc, float timeMs = 1000, bool centerScreen = true);
+            Point endPoint, float timeMs = 1000, bool centerScreen = true, asIScriptFunction* finishFunc = nullptr);
+
+        void Shake (float timeMs = 500, float rangePixels = 5.f);
+
+    private:
+        void ShakeFunction ();
 
     private:
         ALLEGRO_TRANSFORM m_Transform;
@@ -47,6 +53,12 @@ namespace aga
         Point m_FollowOffset;
 
         TweenData* m_TweenToPoint;
+
+        float m_ShakeRangePixels;
+        float m_ShakePercentage;
+        Point m_ShakeCurrentPos;
+        Point m_ShakeComputedPos;
+        bool m_ShakeComputed;
     };
 }
 

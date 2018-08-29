@@ -25,7 +25,7 @@ void BeforeEnterScene ()
     }
     else
     {
-        camera.SetFollowActor (GetActor ("PLAYER"));
+        camera.SetFollowActor (player);
     }
 
     GetActor ("npc_x").AssignFlagPointsToWalk ("A");
@@ -54,20 +54,36 @@ void PlayerActionHandler ()
 void IntroAnimation ()
 {
     Point screenSize = screen.GetWindowSize ();
+    camera.SetTranslate (screenSize.Width * 0.5f - player.Bounds.GetSize ().Width, -200);
+	camera.SetFollowActor (null);
 
     player.SetPreventInput (true);
     player.SetPosition (0, 0);
-
-    camera.SetTranslate (screenSize.Width * 0.5f - player.Bounds.GetSize ().Width, -200);
-	camera.SetFollowActor (null);
-    camera.TweenToPoint (player.GetPosition () + player.Bounds.GetHalfSize (), function (id)
-    {
-        player.SetPreventInput (false);
-    }, 5000, true);
-
     player.SetCurrentAnimation ("ANIM_MOVE_UP_LOOK");
 
     SetOverlayText ("-- Chapter I --\nNo ordinary day", 3000.f, 100.f, Center);    
+
+    Timeline@ timeline = CreateTimeline (0);
+    timeline
+    .Once (2000, function (id)
+    {
+        camera.TweenToPoint (player.GetPosition () + player.Bounds.GetHalfSize (), 2000, true, function (id)
+        {
+            camera.Shake (2000.f, 10.f);
+            player.SetPreventInput (false);
+            camera.SetFollowActor (player);
+        });
+    });
+    // .Once (0, function (id)
+    // {
+    //     Point pos = player.GetPosition () + player.Bounds.GetHalfSize ();
+    //     pos.X -= 200;
+
+    //     camera.TweenToPoint (pos, 5000, true, function (id)
+    //     {
+    //         player.SetPreventInput (false);
+    //     });
+    // });
 }
 
 void OnCityExitEnter (Point p)

@@ -11,6 +11,7 @@
 #include "Script.h"
 #include "SpeechFrame.h"
 #include "SpeechFrameManager.h"
+#include "Timeline.h"
 #include "actors/components/MovementComponent.h"
 
 #include <chrono>
@@ -53,6 +54,16 @@ namespace aga
            void AddTween (int, Point, Point, int, TweenFuncPoint @+ tf, TweenFuncPointFinish @+ te)
            void PauseTween (int)
            void ResumeTween (int)
+
+       Timeline
+              = void TimelineEmptyFunc (int id)
+              = void TimelineSingleFunc (int id, float progress, float value)
+              = void TimelinePointFunc (int id, float progress, Point value)
+         Timeline@ CreateTimeline (int id)
+         Timeline@ Once (TimelineEmptyFunc @+ func)
+         Timeline@ During (float from, float to, int duringMS, TimelineSingleFunc @+ func)
+         Timeline@ During (Point from, Point to, int duringMS, TimelinePointFunc @+ func)
+
 
        FlagPoint
            Point Pos
@@ -190,12 +201,14 @@ namespace aga
 
        Camera
            Camera camera
+           Point GetTranslate ()
            void SetTranslate (float dx, float dy)
            Point GetScale ()
            void SetCenter (float, float)
            void SetFollowActor (Actor@, Point followOffset = Point(0.f, 0.f))
            void TweenToPoint (Point point, float timeMs = 1000, bool centerScreen = true)
            void TweenToPoint (Point point, TweenFuncPointFinish @+ te, float timeMs = 1000, bool centerScreen = true)
+           void Shake (float timeMs = 500, float rangePixels = 5.f)
 
        Global
            void Log(const string &in)
@@ -523,6 +536,9 @@ namespace aga
         //  Tween
         RegisterTweenAPI ();
 
+        //  Timeline
+        RegisterTimelineAPI ();
+
         // FlagPoint
         RegisterFlagPointAPI ();
 
@@ -624,6 +640,8 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectBehaviour (
             "Point", asBEHAVE_CONSTRUCT, "void f(float, float)", asFUNCTION (ConstructPointXY), asCALL_CDECL_OBJLAST);
         assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalProperty ("Point POINT_ZERO", &Point::ZERO_POINT);
+        assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectProperty ("Point", "float X", asOFFSET (Point, X));
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectProperty ("Point", "float Y", asOFFSET (Point, Y));
@@ -715,6 +733,36 @@ namespace aga
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction ("void ResumeTween (int)", asMETHOD (TweenManager, ResumeTween),
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
+        assert (r >= 0);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void ScriptManager::RegisterTimelineAPI ()
+    {
+        int r = m_ScriptEngine->RegisterObjectType ("Timeline", 0, asOBJ_REF | asOBJ_NOCOUNT);
+        assert (r >= 0);
+
+        r = m_ScriptEngine->RegisterFuncdef ("void TimelineEmptyFunc (int id)");
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterFuncdef ("bool TimelineSingleFunc (int id, float progress, float value)");
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterFuncdef ("bool TimelinePointFunc (int id, float progress, Point value)");
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction ("Timeline@ CreateTimeline (int id)",
+            asMETHOD (TweenManager, CreateTimeline), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Timeline",
+            "Timeline@ Once (int duringMS, TimelineEmptyFunc @+ func)",
+            asMETHODPR (Timeline, Once, (int, asIScriptFunction*), Timeline*), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Timeline",
+            "Timeline@ During (float from, float to, int duringMS, TimelineSingleFunc @+ func)",
+            asMETHODPR (Timeline, During, (float, float, int, asIScriptFunction*), Timeline*), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Timeline",
+            "Timeline@ During (Point from, Point to, int duringMS, TimelinePointFunc @+ func)",
+            asMETHODPR (Timeline, During, (Point, Point, int, asIScriptFunction*), Timeline*), asCALL_THISCALL);
         assert (r >= 0);
     }
 
@@ -1173,7 +1221,13 @@ namespace aga
         r = m_ScriptEngine->RegisterGlobalProperty ("Camera camera", &m_MainLoop->GetSceneManager ().GetCamera ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-            "Camera", "void SetTranslate (float dx, float dy)", asMETHOD (Camera, SetTranslate), asCALL_THISCALL);
+            "Camera", "Point GetTranslate ()", asMETHOD (Camera, GetTranslate), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Camera", "void SetTranslate (Point point)",
+            asMETHODPR (Camera, SetTranslate, (Point), void), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Camera", "void SetTranslate (float dx, float dy)",
+            asMETHODPR (Camera, SetTranslate, (float, float), void), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
             "Camera", "Point GetScale ()", asMETHOD (Camera, GetScale), asCALL_THISCALL);
@@ -1189,11 +1243,13 @@ namespace aga
             "void TweenToPoint (Point point, float timeMs = 1000, bool centerScreen = true)",
             asMETHODPR (Camera, TweenToPoint, (Point, float, bool), void), asCALL_THISCALL);
         assert (r >= 0);
-
         r = m_ScriptEngine->RegisterObjectMethod ("Camera",
-            "void TweenToPoint (Point point, TweenFuncPointFinish @+ te, float timeMs = 1000, bool centerScreen = "
-            "true)",
-            asMETHODPR (Camera, TweenToPoint, (Point, asIScriptFunction*, float, bool), void), asCALL_THISCALL);
+            "void TweenToPoint (Point point, float timeMs = 1000, bool centerScreen = "
+            "true, TweenFuncPointFinish @+ te = null)",
+            asMETHODPR (Camera, TweenToPoint, (Point, float, bool, asIScriptFunction*), void), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Camera", "void Shake (float timeMs = 500, float rangePixels = 5.f)",
+            asMETHOD (Camera, Shake), asCALL_THISCALL);
         assert (r >= 0);
     }
 

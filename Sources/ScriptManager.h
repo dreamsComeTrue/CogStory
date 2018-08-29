@@ -53,6 +53,7 @@ namespace aga
         void RegisterColorAPI ();
         void RegisterRectAPI ();
         void RegisterTweenAPI ();
+        void RegisterTimelineAPI ();
         void RegisterFlagPointAPI ();
         void RegisterPlayerAPI ();
         void RegisterScreenAPI ();

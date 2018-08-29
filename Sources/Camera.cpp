@@ -135,12 +135,12 @@ namespace aga
 
     void Camera::TweenToPoint (Point endPoint, float timeMs, bool centerScreen)
     {
-        TweenToPoint (endPoint, nullptr, timeMs, centerScreen);
+        TweenToPoint (endPoint, timeMs, centerScreen, nullptr);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::TweenToPoint (Point endPoint, asIScriptFunction* finishFunc, float timeMs, bool centerScreen)
+    void Camera::TweenToPoint (Point endPoint, float timeMs, bool centerScreen, asIScriptFunction* finishFunc)
     {
         if (m_CameraFollowActor)
         {
@@ -154,9 +154,7 @@ namespace aga
             return false;
         };
 
-        Point startPoint = GetTranslate ();
-        startPoint.X = -startPoint.X;
-        startPoint.Y = -startPoint.Y;
+        Point startPoint = -GetTranslate ();
 
         if (centerScreen)
         {
@@ -180,6 +178,61 @@ namespace aga
             m_TweenToPoint = &m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (
                 CAMERA_TWEEN_ID++, startPoint, endPoint, timeMs, tweenFunc);
         }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Camera::ShakeFunction ()
+    {
+        if (!m_ShakeComputed)
+        {
+            float newX = RandInRange (-m_ShakeRangePixels, m_ShakeRangePixels);
+            float newY = RandInRange (-m_ShakeRangePixels, m_ShakeRangePixels);
+
+            m_ShakeComputedPos = GetTranslate () + Point (newX, newY);
+            m_ShakeComputed = true;
+            m_ShakePercentage = 0.f;
+        }
+
+        Point newPos = -Lerp (GetTranslate (), m_ShakeComputedPos, m_ShakePercentage);
+        m_ShakePercentage += 0.3f;
+
+        if (m_ShakePercentage >= 1.0f)
+        {
+            m_ShakePercentage = 1.0f;
+        }
+
+        SetTranslate (newPos);
+
+        if (AreSame (-newPos, m_ShakeComputedPos))
+        {
+            m_ShakeComputed = false;
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Camera::Shake (float timeMs, float rangePixels)
+    {
+        m_ShakeRangePixels = rangePixels;
+        m_ShakeCurrentPos = -GetTranslate ();
+        m_ShakeComputed = false;
+        m_ShakePercentage = 0.f;
+
+        std::function<bool(float)> tweenFunc = [&](float progress) {
+            if (progress < 1.0f)
+            {
+                ShakeFunction ();
+            }
+            else
+            {
+                SetTranslate (m_ShakeCurrentPos);
+            }
+
+            return false;
+        };
+
+        &m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (CAMERA_TWEEN_ID++, 0.f, 1.0f, timeMs, tweenFunc);
     }
 
     //--------------------------------------------------------------------------------------------------

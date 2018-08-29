@@ -16,6 +16,7 @@ namespace aga
         tweeny::tween<float> TweenF;
         tweeny::tween<float, float> TweenFF;
         asIScriptFunction* CallbackScriptFunc = nullptr;
+        asIScriptFunction* BeginScriptFunc = nullptr;
         asIScriptFunction* FinishScriptFunc = nullptr;
         std::function<void(int)> FinishFunc = nullptr;
 
@@ -24,6 +25,7 @@ namespace aga
     };
 
     class MainLoop;
+    class Timeline;
 
     class TweenManager : public Lifecycle
     {
@@ -34,27 +36,28 @@ namespace aga
         bool Destroy ();
 
         TweenData& AddTween (int id, float from, float to, int during, std::function<bool(float)> callbackFunction,
-                             std::function<void(int)> finishFunction = nullptr);
+            std::function<void(int)> finishFunction = nullptr);
         TweenData& AddTween (int id, tweeny::tween<float>& func, std::function<void(int)> finishFunction = nullptr);
         TweenData& AddTween (int id, Point from, Point to, int during,
-                             std::function<bool(float, float)> callbackFunction,
-                             std::function<void(int)> finishFunction = nullptr);
+            std::function<bool(float, float)> callbackFunction, std::function<void(int)> finishFunction = nullptr);
         TweenData& AddTween (int id, Point from, Point to, int during,
-                             std::function<bool(float, float)> callbackFunction, asIScriptFunction* finishFunc);
+            std::function<bool(float, float)> callbackFunction, asIScriptFunction* finishFunc);
         void RemoveTween (int id);
 
         bool Update (float deltaTime);
-        MainLoop* GetMainLoop ();
+        MainLoop* GetMainLoop () { return m_MainLoop; }
 
         // void AddTween (int id, float from, float to, int during, asIScriptFunction* func);
-        void AddTween (int id, Point from, Point to, int during, asIScriptFunction* func,
-                       asIScriptFunction* finishFunc);
+        void AddTween (
+            int id, Point from, Point to, int during, asIScriptFunction* func, asIScriptFunction* finishFunc);
         TweenData* GetTween (int id);
 
         void PauseTween (int id);
         void ResumeTween (int id);
 
         void Clear ();
+
+        Timeline* CreateTimeline (int id);
 
     private:
         void CleanupFinishedTweens ();
@@ -63,6 +66,7 @@ namespace aga
     private:
         MainLoop* m_MainLoop;
         std::vector<TweenData> m_Tweens;
+        std::vector<Timeline*> m_Timelines;
     };
 }
 

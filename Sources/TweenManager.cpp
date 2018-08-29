@@ -4,6 +4,7 @@
 #include "Common.h"
 #include "MainLoop.h"
 #include "Screen.h"
+#include "Timeline.h"
 
 namespace aga
 {
@@ -36,8 +37,6 @@ namespace aga
 
     bool TweenManager::Update (float deltaTime)
     {
-        CleanupFinishedTweens ();
-
         for (int i = 0; i < m_Tweens.size (); ++i)
         {
             TweenData& tween = m_Tweens[i];
@@ -46,15 +45,42 @@ namespace aga
             {
                 if (tween.TweenMask & TWEEN_F)
                 {
+                    if (tween.BeginScriptFunc && tween.TweenF.progress () <= 0.0f)
+                    {
+                        asIScriptContext* ctx = m_MainLoop->GetScriptManager ().GetContext ();
+                        ctx->Prepare (tween.BeginScriptFunc);
+                        ctx->SetArgDWord (0, tween.ID);
+                        ctx->Execute ();
+                        ctx->Unprepare ();
+                        ctx->GetEngine ()->ReturnContext (ctx);
+                    }
+
                     tween.TweenF.step ((int)(deltaTime * 1000));
                 }
 
                 if (tween.TweenMask & TWEEN_FF)
                 {
+                    if (tween.BeginScriptFunc && tween.TweenFF.progress () <= 0.0f)
+                    {
+                        asIScriptContext* ctx = m_MainLoop->GetScriptManager ().GetContext ();
+                        ctx->Prepare (tween.BeginScriptFunc);
+                        ctx->SetArgDWord (0, tween.ID);
+                        ctx->Execute ();
+                        ctx->Unprepare ();
+                        ctx->GetEngine ()->ReturnContext (ctx);
+                    }
+
                     tween.TweenFF.step ((int)(deltaTime * 1000));
                 }
             }
         }
+
+        for (int i = 0; i < m_Timelines.size (); ++i)
+        {
+            m_Timelines[i]->Update (deltaTime);
+        }
+
+        CleanupFinishedTweens ();
 
         return true;
     }
@@ -89,10 +115,6 @@ namespace aga
             }
         }
     }
-
-    //--------------------------------------------------------------------------------------------------
-
-    MainLoop* TweenManager::GetMainLoop () { return m_MainLoop; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -373,6 +395,17 @@ namespace aga
         {
             tween->IsPaused = false;
         }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Timeline* TweenManager::CreateTimeline (int id)
+    {
+        Timeline* timeLine = new Timeline (id, this);
+
+        m_Timelines.push_back (timeLine);
+
+        return timeLine;
     }
 
     //--------------------------------------------------------------------------------------------------
