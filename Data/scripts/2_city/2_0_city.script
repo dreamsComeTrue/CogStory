@@ -69,7 +69,7 @@ void IntroAnimation ()
     {
         camera.TweenToPoint (player.GetPosition () + player.Bounds.GetHalfSize (), 2000, true, function (id)
         {
-            camera.Shake (2000.f, 10.f);
+            camera.Shake (2000.f, 0.4f, 15.f);
             player.SetPreventInput (false);
             camera.SetFollowActor (player);
         });

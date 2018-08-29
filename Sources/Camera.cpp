@@ -182,51 +182,56 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::ShakeFunction ()
+    void Camera::ShakeFunction (float progress)
     {
         if (!m_ShakeComputed)
         {
-            float newX = RandInRange (-m_ShakeRangePixels, m_ShakeRangePixels);
-            float newY = RandInRange (-m_ShakeRangePixels, m_ShakeRangePixels);
+            if (progress < 0.8)
+            {
+                float newX = RandInRange (-m_ShakeRangePixels, m_ShakeRangePixels);
+                float newY = RandInRange (-m_ShakeRangePixels, m_ShakeRangePixels);
 
-            m_ShakeComputedPos = GetTranslate () + Point (newX, newY);
+                m_ShakeComputedPos = GetTranslate () + Point (newX, newY);
+            }
+            else
+            {
+                m_ShakeComputedPos = -m_ShakeStartPos;
+            }
+
             m_ShakeComputed = true;
             m_ShakePercentage = 0.f;
         }
 
-        Point newPos = -Lerp (GetTranslate (), m_ShakeComputedPos, m_ShakePercentage);
-        m_ShakePercentage += 0.3f;
+        Point newPos = Lerp (GetTranslate (), m_ShakeComputedPos, m_ShakePercentage);
+        m_ShakePercentage += m_ShakeOscilatingTime;
 
-        if (m_ShakePercentage >= 1.0f)
+        if (m_ShakePercentage >= 1.0f || AreSame (newPos, m_ShakeComputedPos))
         {
             m_ShakePercentage = 1.0f;
-        }
-
-        SetTranslate (newPos);
-
-        if (AreSame (-newPos, m_ShakeComputedPos))
-        {
             m_ShakeComputed = false;
         }
+
+        SetTranslate (-newPos);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::Shake (float timeMs, float rangePixels)
+    void Camera::Shake (float timeMs, float oscilatingTime, float rangePixels)
     {
         m_ShakeRangePixels = rangePixels;
-        m_ShakeCurrentPos = -GetTranslate ();
+        m_ShakeStartPos = -GetTranslate ();
         m_ShakeComputed = false;
         m_ShakePercentage = 0.f;
+        m_ShakeOscilatingTime = oscilatingTime;
 
         std::function<bool(float)> tweenFunc = [&](float progress) {
             if (progress < 1.0f)
             {
-                ShakeFunction ();
+                ShakeFunction (progress);
             }
             else
             {
-                SetTranslate (m_ShakeCurrentPos);
+                SetTranslate (m_ShakeStartPos);
             }
 
             return false;

@@ -46,7 +46,17 @@ namespace aga
 
         void ResetSettings ();
 
-        AtlasRegion& GetSelectedAtlasRegion () { return m_SelectedAtlasRegion; }
+        AtlasRegion* GetSelectedAtlasRegion ()
+        {
+            if (!m_SelectedAtlasRegions.empty ())
+            {
+                return &m_SelectedAtlasRegions[0];
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
 
         std::vector<Actor*> GetSelectedActors () { return m_SelectedActors; }
         void ClearSelectedActors ();
@@ -79,7 +89,7 @@ namespace aga
 
     private:
         Atlas* m_Atlas;
-        AtlasRegion m_SelectedAtlasRegion;
+        std::vector<AtlasRegion> m_SelectedAtlasRegions;
 
         Editor* m_Editor;
         Actor* m_Actor;

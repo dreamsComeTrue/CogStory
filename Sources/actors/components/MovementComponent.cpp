@@ -3,7 +3,6 @@
 #include "MovementComponent.h"
 #include "MainLoop.h"
 #include "Scene.h"
-#include "SceneManager.h"
 
 namespace aga
 {

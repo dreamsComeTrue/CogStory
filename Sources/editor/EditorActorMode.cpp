@@ -236,34 +236,53 @@ namespace aga
             return;
         }
 
-        Actor* tile = new TileActor (&m_Editor->GetMainLoop ()->GetSceneManager ());
-        Point regionSize = m_Atlas->GetRegion (m_SelectedAtlasRegion.Name).Bounds.GetSize ();
-        Point point = m_Editor->CalculateWorldPoint (mouseX, mouseY);
+        ClearSelectedActors ();
 
-        tile->ID = Entity::GetNextID ();
-        tile->SetAtlas (m_Atlas);
-        tile->SetAtlasName (m_Atlas->GetName ());
-        tile->SetAtlasRegionName (m_SelectedAtlasRegion.Name);
-        tile->Name = tile->GetAtlasRegionName ();
+        Point primaryPos;
 
-        tile->Bounds = Rect (
-            point.X - regionSize.Width * 0.5f, point.Y - regionSize.Height * 0.5f, regionSize.Width, regionSize.Height);
-        tile->Rotation = m_Rotation;
-
-        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddActor (tile);
-        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->SortActors ();
-
-        SetSelectedActor (tile);
-
-        m_Rotation = tile->Rotation;
-
-        //  Orient mouse cursor in middle of tile regarding camera scaling
-        m_TileSelectionOffset
-            = -tile->Bounds.GetHalfSize () * m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
-
-        if (!tile->PhysPoints.empty ())
+        for (AtlasRegion& region : m_SelectedAtlasRegions)
         {
-            m_Editor->GetEditorPhysMode ().SetPhysPoly (&tile->PhysPoints[0]);
+            Actor* tile = new TileActor (&m_Editor->GetMainLoop ()->GetSceneManager ());
+            Point regionSize = m_Atlas->GetRegion (region.Name).Bounds.GetSize ();
+            Point point = m_Editor->CalculateWorldPoint (mouseX, mouseY);
+
+            tile->ID = Entity::GetNextID ();
+            tile->SetAtlas (m_Atlas);
+            tile->SetAtlasName (m_Atlas->GetName ());
+            tile->SetAtlasRegionName (region.Name);
+            tile->Name = tile->GetAtlasRegionName ();
+            tile->Rotation = m_Rotation;
+
+            Point newPos;
+
+            if (!m_PrimarySelectedActor)
+            {
+                m_PrimarySelectedActor = tile;
+                primaryPos = region.Bounds.Pos;
+                newPos = point;
+            }
+            else
+            {
+                newPos = m_PrimarySelectedActor->Bounds.Pos + (region.Bounds.Pos - primaryPos);
+            }
+
+            tile->Bounds = Rect (newPos.X, newPos.Y, regionSize.Width, regionSize.Height);
+
+            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddActor (tile);
+            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->SortActors ();
+
+            m_SelectedActors.push_back (tile);
+
+            m_Rotation = tile->Rotation;
+
+            //  Orient mouse cursor in middle of tile regarding camera scaling
+            m_TileSelectionOffset
+                = -tile->Bounds.GetHalfSize () * m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
+
+            if (!tile->PhysPoints.empty ())
+            {
+                m_Editor->GetEditorPhysMode ().SetPhysPoly (&tile->PhysPoints[0]);
+            }
         }
     }
 
@@ -275,6 +294,8 @@ namespace aga
         {
             return false;
         }
+
+        m_SelectedAtlasRegions.clear ();
 
         const Point screenSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
         float beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
@@ -292,7 +313,7 @@ namespace aga
 
                 if (InsideRect (mouseX, mouseY, r))
                 {
-                    m_SelectedAtlasRegion = regions[m_CurrentTileBegin + i];
+                    m_SelectedAtlasRegions.push_back (regions[m_CurrentTileBegin + i]);
                     return true;
                 }
             }
@@ -306,20 +327,23 @@ namespace aga
     bool EditorActorMode::ChooseTilesFromSpriteSheet (int mouseX, int mouseY)
     {
         std::vector<AtlasRegion>& regions = m_Atlas->GetRegions ();
-        Point mouseCursor = m_Editor->CalculateWorldPoint (mouseX, mouseY);
+
+        m_SelectedAtlasRegions.clear ();
+
+        Rect r = m_Editor->GetSelectionRect ();
+        Rect selectionRect
+            = OrientRect (r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y);
 
         for (AtlasRegion& region : regions)
         {
-            if (InsideRect (mouseCursor.X, mouseCursor.Y, region.Bounds))
+            if (Intersect (selectionRect, region.Bounds))
             {
-                m_SelectedAtlasRegion = region;
+                m_SelectedAtlasRegions.push_back (region);
                 m_SpriteSheetChoosen = true;
-
-                return true;
             }
         }
 
-        return false;
+        return !m_SelectedAtlasRegions.empty ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -393,9 +417,11 @@ namespace aga
             deltaPoint = movePoint - m_PrimarySelectedActor->Bounds.Pos;
         }
 
+        m_SelectedAtlasRegions.clear ();
+
         for (Actor* selectedActor : m_SelectedActors)
         {
-            m_SelectedAtlasRegion = m_Atlas->GetRegion (selectedActor->Name);
+            m_SelectedAtlasRegions.push_back (m_Atlas->GetRegion (selectedActor->Name));
 
             Point regionSize = selectedActor->Bounds.GetSize ();
 

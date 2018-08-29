@@ -40,10 +40,10 @@ namespace aga
         void TweenToPoint (
             Point endPoint, float timeMs = 1000, bool centerScreen = true, asIScriptFunction* finishFunc = nullptr);
 
-        void Shake (float timeMs = 500, float rangePixels = 5.f);
+        void Shake (float timeMs = 500, float oscilatingTime = 0.2f, float rangePixels = 5.f);
 
     private:
-        void ShakeFunction ();
+        void ShakeFunction (float progress);
 
     private:
         ALLEGRO_TRANSFORM m_Transform;
@@ -56,7 +56,8 @@ namespace aga
 
         float m_ShakeRangePixels;
         float m_ShakePercentage;
-        Point m_ShakeCurrentPos;
+        float m_ShakeOscilatingTime;
+        Point m_ShakeStartPos;
         Point m_ShakeComputedPos;
         bool m_ShakeComputed;
     };

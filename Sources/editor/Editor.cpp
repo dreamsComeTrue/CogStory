@@ -1287,12 +1287,18 @@ namespace aga
         yPosLabel->SetText (std::string ("             Y: " + ToString ((translate.Y + state.y) * (1 / scale.Y))));
         yPosLabel->SizeToContents ();
 
-        widthLabel->SetText (std::string (
-            "            W: " + ToString (m_EditorActorMode.GetSelectedAtlasRegion ().Bounds.GetSize ().Width)));
+        AtlasRegion* atlasRegion = m_EditorActorMode.GetSelectedAtlasRegion ();
+        Point size = Point::ZERO_POINT;
+
+        if (atlasRegion)
+        {
+            size = atlasRegion->Bounds.GetSize ();
+        }
+
+        widthLabel->SetText (std::string ("            W: " + ToString (size.Width)));
         widthLabel->SizeToContents ();
 
-        heightLabel->SetText (std::string (
-            "             H: " + ToString (m_EditorActorMode.GetSelectedAtlasRegion ().Bounds.GetSize ().Height)));
+        heightLabel->SetText (std::string ("             H: " + ToString (size.Height)));
         heightLabel->SizeToContents ();
 
         angleLabel->SetText (

@@ -208,7 +208,7 @@ namespace aga
            void SetFollowActor (Actor@, Point followOffset = Point(0.f, 0.f))
            void TweenToPoint (Point point, float timeMs = 1000, bool centerScreen = true)
            void TweenToPoint (Point point, TweenFuncPointFinish @+ te, float timeMs = 1000, bool centerScreen = true)
-           void Shake (float timeMs = 500, float rangePixels = 5.f)
+           void Shake (float timeMs = 500, float oscilatingTime = 0.2f, float rangePixels = 5.f)
 
        Global
            void Log(const string &in)
@@ -1248,7 +1248,8 @@ namespace aga
             "true, TweenFuncPointFinish @+ te = null)",
             asMETHODPR (Camera, TweenToPoint, (Point, float, bool, asIScriptFunction*), void), asCALL_THISCALL);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("Camera", "void Shake (float timeMs = 500, float rangePixels = 5.f)",
+        r = m_ScriptEngine->RegisterObjectMethod ("Camera",
+            "void Shake (float timeMs = 500, float oscilatingTime = 0.2f, float rangePixels = 5.f)",
             asMETHOD (Camera, Shake), asCALL_THISCALL);
         assert (r >= 0);
     }
