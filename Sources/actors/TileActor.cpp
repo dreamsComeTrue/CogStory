@@ -21,7 +21,6 @@ namespace aga
     TileActor::TileActor (SceneManager* sceneManager)
         : Actor (sceneManager)
     {
-        m_MovementComponent->SetEnabled (false);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -29,15 +28,7 @@ namespace aga
     bool TileActor::Initialize ()
     {
         Actor::Initialize ();
-
-        if (m_AtlasName != "" && m_AtlasRegionName != "")
-        {
-            Bounds.Size = m_SceneManager->GetMainLoop ()
-                              ->GetAtlasManager ()
-                              .GetAtlas (m_AtlasName)
-                              ->GetRegion (m_AtlasRegionName)
-                              .Bounds.GetSize ();
-        }
+        RemoveComponent (m_MovementComponent);
 
         return true;
     }

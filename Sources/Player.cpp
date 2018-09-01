@@ -27,7 +27,7 @@ namespace aga
         , m_ActionHandling (false)
         , m_ActionHandler (nullptr)
     {
-        m_MovementComponent->SetEnabled (false);
+        RemoveComponent (m_MovementComponent);
     }
 
     //--------------------------------------------------------------------------------------------------

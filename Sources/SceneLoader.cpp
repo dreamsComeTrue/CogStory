@@ -247,6 +247,7 @@ namespace aga
                         Atlas* atlas = sceneManager->GetMainLoop ()->GetAtlasManager ().GetAtlas (actorIt["atlas"]);
 
                         newActor->SetAtlas (atlas);
+                        newActor->SetAtlasName (actorIt["atlas"]);
                         newActor->SetAtlasRegionName (actorIt["atlas-region"]);
                     }
 

@@ -3,373 +3,8 @@
         {
             "atlas": "2_1_city",
             "atlas-region": "tile038",
-            "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "102",
-            "name": "tile038",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -224",
-            "rot": "-90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile038",
             "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "55",
-            "name": "tile038",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-224 96",
-            "rot": "180",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile038",
-            "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "101",
-            "name": "tile038",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -128",
-            "rot": "-90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile038",
-            "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "100",
-            "name": "tile038",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -96",
-            "rot": "-90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile038",
-            "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "99",
-            "name": "tile038",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -64",
-            "rot": "-90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile038",
-            "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "97",
-            "name": "tile038",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 0",
-            "rot": "-90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile038",
-            "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "98",
-            "name": "tile038",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 32",
-            "rot": "-90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile038",
-            "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "67",
-            "name": "tile038",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "96 160",
-            "rot": "-90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile038",
-            "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "58",
-            "name": "tile038",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-192 160",
-            "rot": "-90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile038",
-            "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "68",
-            "name": "tile038",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "128 160",
-            "rot": "-90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile038",
-            "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "96",
-            "name": "tile038",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -32",
-            "rot": "-90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile038",
-            "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "95",
-            "name": "tile038",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 64",
-            "rot": "-90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile038",
-            "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "94",
-            "name": "tile038",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 96",
-            "rot": "-90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile038",
-            "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "93",
-            "name": "tile038",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 128",
-            "rot": "-90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile038",
-            "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "64",
-            "name": "tile038",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 160",
-            "rot": "-90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile038",
-            "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
+            "components": [],
             "id": "65",
             "name": "tile038",
             "phys": [
@@ -388,20 +23,34 @@
             "atlas": "2_1_city",
             "atlas-region": "tile038",
             "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "59",
+            "components": [],
+            "id": "70",
             "name": "tile038",
             "phys": [
                 {
                     "poly": ""
                 }
             ],
-            "pos": "-160 160",
+            "pos": "192 160",
+            "rot": "-90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile038",
+            "collision": "1",
+            "components": [],
+            "id": "104",
+            "name": "tile038",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "0 -160",
             "rot": "-90",
             "scripts": [],
             "size": "32 32",
@@ -412,12 +61,26 @@
             "atlas": "2_1_city",
             "atlas-region": "tile038",
             "collision": "0",
-            "components": [
+            "components": [],
+            "id": "67",
+            "name": "tile038",
+            "phys": [
                 {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
+                    "poly": ""
                 }
             ],
+            "pos": "96 160",
+            "rot": "-90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile038",
+            "collision": "0",
+            "components": [],
             "id": "66",
             "name": "tile038",
             "phys": [
@@ -436,12 +99,7 @@
             "atlas": "2_1_city",
             "atlas-region": "tile038",
             "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
+            "components": [],
             "id": "61",
             "name": "tile038",
             "phys": [
@@ -457,39 +115,10 @@
             "z-order": "-2"
         },
         {
-            "atlas": "env_5",
-            "atlas-region": "tile007",
-            "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "34",
-            "name": "tile007",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-152 86",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
             "atlas": "2_1_city",
             "atlas-region": "tile038",
             "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
+            "components": [],
             "id": "56",
             "name": "tile038",
             "phys": [
@@ -508,12 +137,7 @@
             "atlas": "2_1_city",
             "atlas-region": "tile038",
             "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
+            "components": [],
             "id": "71",
             "name": "tile038",
             "phys": [
@@ -531,85 +155,8 @@
         {
             "atlas": "2_1_city",
             "atlas-region": "tile038",
-            "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "104",
-            "name": "tile038",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -160",
-            "rot": "-90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile038",
-            "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "103",
-            "name": "tile038",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -192",
-            "rot": "-90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile038",
             "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "70",
-            "name": "tile038",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "192 160",
-            "rot": "-90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile038",
-            "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
+            "components": [],
             "id": "57",
             "name": "tile038",
             "phys": [
@@ -628,12 +175,7 @@
             "atlas": "2_1_city",
             "atlas-region": "tile038",
             "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
+            "components": [],
             "id": "69",
             "name": "tile038",
             "phys": [
@@ -652,12 +194,7 @@
             "atlas": "2_1_city",
             "atlas-region": "tile038",
             "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
+            "components": [],
             "id": "60",
             "name": "tile038",
             "phys": [
@@ -676,12 +213,7 @@
             "atlas": "2_1_city",
             "atlas-region": "tile038",
             "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
+            "components": [],
             "id": "63",
             "name": "tile038",
             "phys": [
@@ -700,12 +232,64 @@
             "atlas": "2_1_city",
             "atlas-region": "tile038",
             "collision": "0",
-            "components": [
+            "components": [],
+            "id": "55",
+            "name": "tile038",
+            "phys": [
                 {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
+                    "poly": ""
                 }
             ],
+            "pos": "-224 96",
+            "rot": "180",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile038",
+            "collision": "0",
+            "components": [],
+            "id": "58",
+            "name": "tile038",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "-192 160",
+            "rot": "-90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile038",
+            "collision": "0",
+            "components": [],
+            "id": "64",
+            "name": "tile038",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "0 160",
+            "rot": "-90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile038",
+            "collision": "0",
+            "components": [],
             "id": "62",
             "name": "tile038",
             "phys": [
@@ -721,15 +305,257 @@
             "z-order": "-2"
         },
         {
+            "atlas": "2_1_city",
+            "atlas-region": "tile038",
+            "collision": "0",
+            "components": [],
+            "id": "59",
+            "name": "tile038",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "-160 160",
+            "rot": "-90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile038",
+            "collision": "1",
+            "components": [],
+            "id": "103",
+            "name": "tile038",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "0 -192",
+            "rot": "-90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile038",
+            "collision": "1",
+            "components": [],
+            "id": "102",
+            "name": "tile038",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "0 -224",
+            "rot": "-90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile038",
+            "collision": "1",
+            "components": [],
+            "id": "101",
+            "name": "tile038",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "0 -128",
+            "rot": "-90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile038",
+            "collision": "1",
+            "components": [],
+            "id": "100",
+            "name": "tile038",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "0 -96",
+            "rot": "-90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile038",
+            "collision": "1",
+            "components": [],
+            "id": "99",
+            "name": "tile038",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "0 -64",
+            "rot": "-90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile038",
+            "collision": "1",
+            "components": [],
+            "id": "97",
+            "name": "tile038",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "0 0",
+            "rot": "-90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile038",
+            "collision": "0",
+            "components": [],
+            "id": "68",
+            "name": "tile038",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "128 160",
+            "rot": "-90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile038",
+            "collision": "1",
+            "components": [],
+            "id": "96",
+            "name": "tile038",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "0 -32",
+            "rot": "-90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile038",
+            "collision": "1",
+            "components": [],
+            "id": "95",
+            "name": "tile038",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "0 64",
+            "rot": "-90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile038",
+            "collision": "1",
+            "components": [],
+            "id": "94",
+            "name": "tile038",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "0 96",
+            "rot": "-90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile038",
+            "collision": "1",
+            "components": [],
+            "id": "93",
+            "name": "tile038",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "0 128",
+            "rot": "-90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile038",
+            "collision": "1",
+            "components": [],
+            "id": "98",
+            "name": "tile038",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "0 32",
+            "rot": "-90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
             "atlas": "env_5",
             "atlas-region": "tile002",
             "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
+            "components": [],
             "id": "29",
             "name": "tile002",
             "phys": [
@@ -745,247 +571,18 @@
             "z-order": "-1"
         },
         {
-            "atlas": "1_1_factory",
-            "atlas-region": "tile115",
-            "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "121",
-            "name": "tile115",
-            "phys": [],
-            "pos": "624 -656",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "1_1_factory",
-            "atlas-region": "tile098",
-            "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "117",
-            "name": "tile098",
-            "phys": [],
-            "pos": "593.28 -686.72",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile093",
-            "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "49",
-            "name": "tile093",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-192 -160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile086",
-            "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "45",
-            "name": "tile086",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-160 -192",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
             "atlas": "env_5",
-            "atlas-region": "tile007",
+            "atlas-region": "tile005",
             "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "27",
-            "name": "tile007",
+            "components": [],
+            "id": "23",
+            "name": "tile005",
             "phys": [
                 {
                     "poly": ""
                 }
             ],
-            "pos": "-64 115",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "env_5",
-            "atlas-region": "tile003",
-            "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "31",
-            "name": "tile003",
-            "phys": [],
-            "pos": "132 -34",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile078",
-            "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "39",
-            "name": "tile078",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-160 -224",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "env_5",
-            "atlas-region": "tile130",
-            "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "33",
-            "name": "tile130",
-            "phys": [
-                {
-                    "poly": "-0.030014 -13.8397 -14.0809 2.30838 0.179703 12.5844 15.0695 2.09866 "
-                }
-            ],
-            "pos": "192 107",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile094",
-            "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "51",
-            "name": "tile094",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-160 -160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "1_1_factory",
-            "atlas-region": "tile131",
-            "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "125",
-            "name": "tile131",
-            "phys": [],
-            "pos": "624 -625.28",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile085",
-            "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "43",
-            "name": "tile085",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-192 -192",
+            "pos": "151 194",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -996,12 +593,7 @@
             "atlas": "1_1_factory",
             "atlas-region": "tile099",
             "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
+            "components": [],
             "id": "119",
             "name": "tile099",
             "phys": [],
@@ -1016,12 +608,7 @@
             "atlas": "2_1_city",
             "atlas-region": "tile087",
             "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
+            "components": [],
             "id": "47",
             "name": "tile087",
             "phys": [
@@ -1040,12 +627,7 @@
             "atlas": "1_1_factory",
             "atlas-region": "tile114",
             "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
+            "components": [],
             "id": "113",
             "name": "tile114",
             "phys": [],
@@ -1060,12 +642,7 @@
             "atlas": "2_1_city",
             "atlas-region": "tile095",
             "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
+            "components": [],
             "id": "53",
             "name": "tile095",
             "phys": [
@@ -1081,15 +658,25 @@
             "z-order": "0"
         },
         {
+            "atlas": "env_5",
+            "atlas-region": "tile003",
+            "collision": "0",
+            "components": [],
+            "id": "31",
+            "name": "tile003",
+            "phys": [],
+            "pos": "132 -34",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
             "atlas": "2_0_city",
             "atlas-region": "single_house",
             "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
+            "components": [],
             "id": "16",
             "name": "single_house",
             "phys": [
@@ -1105,47 +692,18 @@
             "z-order": "0"
         },
         {
-            "atlas": "2_0_city",
-            "atlas-region": "single_house",
-            "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "18",
-            "name": "single_house",
-            "phys": [
-                {
-                    "poly": "-71 46 70 48 70 -61 0 -73 -73 -58 "
-                }
-            ],
-            "pos": "191 -226",
-            "rot": "0",
-            "scripts": [],
-            "size": "144 145",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "env_5",
-            "atlas-region": "tile005",
+            "atlas": "2_1_city",
+            "atlas-region": "tile085",
             "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "23",
-            "name": "tile005",
+            "components": [],
+            "id": "43",
+            "name": "tile085",
             "phys": [
                 {
                     "poly": ""
                 }
             ],
-            "pos": "151 194",
+            "pos": "-192 -192",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -1156,12 +714,7 @@
             "atlas": "2_1_city",
             "atlas-region": "tile077",
             "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
+            "components": [],
             "id": "37",
             "name": "tile077",
             "phys": [
@@ -1180,12 +733,7 @@
             "atlas": "2_1_city",
             "atlas-region": "tile079",
             "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
+            "components": [],
             "id": "41",
             "name": "tile079",
             "phys": [
@@ -1201,15 +749,63 @@
             "z-order": "0"
         },
         {
+            "atlas": "env_5",
+            "atlas-region": "tile130",
+            "collision": "1",
+            "components": [],
+            "id": "33",
+            "name": "tile130",
+            "phys": [
+                {
+                    "poly": "-0.030014 -13.8397 -14.0809 2.30838 0.179703 12.5844 15.0695 2.09866 "
+                }
+            ],
+            "pos": "192 107",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "1_1_factory",
+            "atlas-region": "tile131",
+            "collision": "1",
+            "components": [],
+            "id": "125",
+            "name": "tile131",
+            "phys": [],
+            "pos": "624 -625.28",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile094",
+            "collision": "0",
+            "components": [],
+            "id": "51",
+            "name": "tile094",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "-160 -160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
             "atlas": "1_1_factory",
             "atlas-region": "tile130",
             "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
+            "components": [],
             "id": "123",
             "name": "tile130",
             "phys": [],
@@ -1219,6 +815,150 @@
             "size": "32 32",
             "type": "Tile",
             "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "single_house",
+            "collision": "1",
+            "components": [],
+            "id": "18",
+            "name": "single_house",
+            "phys": [
+                {
+                    "poly": "-71 46 70 48 70 -61 0 -73 -73 -58 "
+                }
+            ],
+            "pos": "191 -226",
+            "rot": "0",
+            "scripts": [],
+            "size": "144 145",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile078",
+            "collision": "0",
+            "components": [],
+            "id": "39",
+            "name": "tile078",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "-160 -224",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "env_5",
+            "atlas-region": "tile007",
+            "collision": "0",
+            "components": [],
+            "id": "27",
+            "name": "tile007",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "-64 115",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile086",
+            "collision": "0",
+            "components": [],
+            "id": "45",
+            "name": "tile086",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "-160 -192",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile093",
+            "collision": "0",
+            "components": [],
+            "id": "49",
+            "name": "tile093",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "-192 -160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "1_1_factory",
+            "atlas-region": "tile098",
+            "collision": "1",
+            "components": [],
+            "id": "117",
+            "name": "tile098",
+            "phys": [],
+            "pos": "593.28 -686.72",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "1_1_factory",
+            "atlas-region": "tile115",
+            "collision": "1",
+            "components": [],
+            "id": "121",
+            "name": "tile115",
+            "phys": [],
+            "pos": "624 -656",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "env_5",
+            "atlas-region": "tile007",
+            "collision": "0",
+            "components": [],
+            "id": "34",
+            "name": "tile007",
+            "phys": [
+                {
+                    "poly": ""
+                }
+            ],
+            "pos": "-152.641 81.5882",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "1"
         },
         {
             "atlas": "npc_1",
@@ -1240,7 +980,7 @@
             "pos": "265 136",
             "rot": "0",
             "scripts": [],
-            "size": "32 32",
+            "size": "48 48",
             "type": "NPC",
             "z-order": "3"
         },
@@ -1264,7 +1004,7 @@
             "pos": "120 -216",
             "rot": "0",
             "scripts": [],
-            "size": "32 32",
+            "size": "48 48",
             "type": "NPC",
             "z-order": "3"
         },
@@ -1288,7 +1028,7 @@
             "pos": "-213 150",
             "rot": "0",
             "scripts": [],
-            "size": "32 32",
+            "size": "48 48",
             "type": "NPC",
             "z-order": "3"
         },
@@ -1312,7 +1052,7 @@
             "pos": "-240 -96",
             "rot": "0",
             "scripts": [],
-            "size": "32 32",
+            "size": "48 48",
             "type": "NPC",
             "z-order": "3"
         },
@@ -1336,7 +1076,7 @@
             "pos": "105 -21",
             "rot": "0",
             "scripts": [],
-            "size": "32 32",
+            "size": "48 48",
             "type": "Enemy",
             "z-order": "3"
         }
@@ -1351,12 +1091,12 @@
         {
             "connections": "A C ",
             "name": "B",
-            "pos": "-207.449 169.487"
+            "pos": "-208 160"
         },
         {
             "connections": "B ",
             "name": "C",
-            "pos": "206.739 170.798"
+            "pos": "208 160"
         },
         {
             "connections": "NPC_1_B NPC_1_D ",
