@@ -1158,7 +1158,7 @@ namespace aga
             OnResetScale ();
 
             Rect bounds = m_EditorActorMode.GetSelectedActors ()[0]->Bounds;
-            camera.SetCenter (-bounds.GetCenter ().X, -bounds.GetCenter ().Y);
+            camera.SetCenter (bounds.GetCenter ().X, bounds.GetCenter ().Y);
 
             SetCursorMode (CursorMode::EditPhysBodyMode);
         }

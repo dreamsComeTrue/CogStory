@@ -205,6 +205,7 @@ namespace aga
            void SetTranslate (float dx, float dy)
            Point GetScale ()
            void SetCenter (float, float)
+           void SetCenter (Point point)
            void SetFollowActor (Actor@, Point followOffset = Point(0.f, 0.f))
            void TweenToPoint (Point point, float timeMs = 1000, bool centerScreen = true)
            void TweenToPoint (Point point, TweenFuncPointFinish @+ te, float timeMs = 1000, bool centerScreen = true)
@@ -1233,7 +1234,10 @@ namespace aga
             "Camera", "Point GetScale ()", asMETHOD (Camera, GetScale), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-            "Camera", "void SetCenter (float, float)", asMETHOD (Camera, SetCenter), asCALL_THISCALL);
+            "Camera", "void SetCenter (float, float)", asMETHODPR (Camera, SetCenter, (float, float), void), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "Camera", "void SetCenter (Point)", asMETHODPR (Camera, SetCenter, (Point), void), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("Camera",
             "void SetFollowActor (Actor@, Point followOffset = Point(0.f, 0.f))", asMETHOD (Camera, SetFollowActor),

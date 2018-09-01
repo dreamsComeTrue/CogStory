@@ -28,6 +28,7 @@ namespace aga
     Gwk::Controls::Property::Text* zOrderProperty;
     Gwk::Controls::Property::ComboBox* imageProperty;
     Gwk::Controls::Property::ComboBox* imagePathProperty;
+    Gwk::Controls::Property::ComboBox* animationProperty;
     Gwk::Controls::Property::ComboBox* collisionProperty;
 
     EditorActorWindow::EditorActorWindow (Editor* editor, Gwk::Controls::Canvas* canvas)
@@ -108,6 +109,18 @@ namespace aga
             m_ImagePathComboBox->GetComboBox ()->onSelection.Add (this, &EditorActorWindow::OnImagePathSelected);
             OnImagePathSelected (m_ImagePathComboBox);
 
+            m_AnimationComboBox = new Gwk::Controls::Property::ComboBox (m_ApperanceSection);
+            m_AnimationComboBox->GetComboBox ()->onSelection.Add (this, &EditorActorWindow::OnImageSelected);
+
+            m_AnimationComboBox->GetComboBox ()->AddItem ("", "");
+            for (AnimationData& data : g_AnimationData)
+            {
+                std::string name = data.Name;
+                m_AnimationComboBox->GetComboBox ()->AddItem (name, name);
+            }
+
+            m_ApperanceSection->Add ("Animation", m_AnimationComboBox);
+
             m_OthersSection = m_ActorProperties->Add ("Others");
 
             m_CollisionComboBox = new Gwk::Controls::Property::ComboBox (m_OthersSection);
@@ -139,6 +152,8 @@ namespace aga
                 static_cast<Gwk::Controls::PropertyRow*> (m_ApperanceSection->Find ("Image"))->GetProperty ());
             imagePathProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
                 static_cast<Gwk::Controls::PropertyRow*> (m_ApperanceSection->Find ("Path"))->GetProperty ());
+            animationProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
+                static_cast<Gwk::Controls::PropertyRow*> (m_ApperanceSection->Find ("Animation"))->GetProperty ());
             collisionProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
                 static_cast<Gwk::Controls::PropertyRow*> (m_OthersSection->Find ("Collision"))->GetProperty ());
         }

@@ -68,6 +68,7 @@ namespace aga
 
         Gwk::Controls::Property::ComboBox* m_ImageComboBox;
         Gwk::Controls::Property::ComboBox* m_ImagePathComboBox;
+        Gwk::Controls::Property::ComboBox* m_AnimationComboBox;
 
         Gwk::Controls::Property::ComboBox* m_CollisionComboBox;
 

@@ -21,9 +21,7 @@ namespace aga
     bool EnemyActor::Initialize ()
     {
         Actor::Initialize ();
-        Animable::Initialize ("menu_ui", "cog");
 
-        Bounds.SetSize ({ 64, 64 });
         SetCheckOverlap (true);
 
         return true;
@@ -31,12 +29,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool EnemyActor::Update (float deltaTime)
-    {
-        Actor::Update (deltaTime);
-
-        return true;
-    }
+    bool EnemyActor::Update (float deltaTime) { return Actor::Update (deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
 }

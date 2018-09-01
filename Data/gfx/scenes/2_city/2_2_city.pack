@@ -1,0 +1,251 @@
+
+2_2_city.png
+size: 1174,1174
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Sprite-0001
+  rotate: false
+  xy: 570, 160
+  size: 198, 160
+  orig: 198, 160
+  offset: 0, 0
+  index: -1
+Sprite-0003
+  rotate: false
+  xy: 544, 716
+  size: 288, 192
+  orig: 288, 192
+  offset: 0, 0
+  index: -1
+Sprite-0004
+  rotate: false
+  xy: 210, 542
+  size: 184, 258
+  orig: 184, 258
+  offset: 0, 0
+  index: -1
+Sprite-0005
+  rotate: false
+  xy: 394, 544
+  size: 108, 104
+  orig: 108, 104
+  offset: 0, 0
+  index: -1
+Sprite-0006
+  rotate: false
+  xy: 394, 2
+  size: 168, 148
+  orig: 168, 148
+  offset: 0, 0
+  index: -1
+Sprite-0007
+  rotate: false
+  xy: 682, 4
+  size: 128, 140
+  orig: 128, 140
+  offset: 0, 0
+  index: -1
+Sprite-0008
+  rotate: false
+  xy: 832, 788
+  size: 288, 174
+  orig: 288, 174
+  offset: 0, 0
+  index: -1
+Sprite-0009
+  rotate: false
+  xy: 0, 418
+  size: 210, 382
+  orig: 210, 382
+  offset: 0, 0
+  index: -1
+Sprite-0010
+  rotate: false
+  xy: 210, 388
+  size: 224, 154
+  orig: 224, 154
+  offset: 0, 0
+  index: -1
+Sprite-0011
+  rotate: false
+  xy: 936, 20
+  size: 120, 110
+  orig: 120, 110
+  offset: 0, 0
+  index: -1
+Sprite-0012
+  rotate: false
+  xy: 510, 518
+  size: 212, 198
+  orig: 212, 198
+  offset: 0, 0
+  index: -1
+Sprite-0013
+  rotate: false
+  xy: 802, 430
+  size: 212, 198
+  orig: 212, 198
+  offset: 0, 0
+  index: -1
+Sprite-0014
+  rotate: false
+  xy: 570, 320
+  size: 212, 198
+  orig: 212, 198
+  offset: 0, 0
+  index: -1
+Sprite-0015
+  rotate: false
+  xy: 1014, 438
+  size: 160, 190
+  orig: 160, 190
+  offset: 0, 0
+  index: -1
+Sprite-0016
+  rotate: false
+  xy: 186, 26
+  size: 208, 136
+  orig: 208, 136
+  offset: 0, 0
+  index: -1
+Sprite-0017
+  rotate: false
+  xy: 410, 150
+  size: 160, 238
+  orig: 160, 238
+  offset: 0, 0
+  index: -1
+Sprite-0018
+  rotate: false
+  xy: 1044, 286
+  size: 128, 152
+  orig: 128, 152
+  offset: 0, 0
+  index: -1
+Sprite-0019
+  rotate: false
+  xy: 832, 628
+  size: 254, 160
+  orig: 254, 160
+  offset: 0, 0
+  index: -1
+Sprite-0022
+  rotate: false
+  xy: 832, 628
+  size: 254, 160
+  orig: 254, 160
+  offset: 0, 0
+  index: -1
+Sprite-0020
+  rotate: false
+  xy: 320, 842
+  size: 224, 332
+  orig: 224, 332
+  offset: 0, 0
+  index: -1
+Sprite-0021
+  rotate: false
+  xy: 810, 8
+  size: 126, 132
+  orig: 126, 132
+  offset: 0, 0
+  index: -1
+Sprite-0023
+  rotate: false
+  xy: 394, 648
+  size: 116, 194
+  orig: 116, 194
+  offset: 0, 0
+  index: -1
+Sprite-0024
+  rotate: false
+  xy: 0, 92
+  size: 186, 326
+  orig: 186, 326
+  offset: 0, 0
+  index: -1
+Sprite-0025
+  rotate: false
+  xy: 832, 962
+  size: 298, 212
+  orig: 298, 212
+  offset: 0, 0
+  index: -1
+Sprite-0026
+  rotate: false
+  xy: 186, 162
+  size: 224, 226
+  orig: 224, 226
+  offset: 0, 0
+  index: -1
+Sprite-0027
+  rotate: false
+  xy: 896, 140
+  size: 128, 142
+  orig: 128, 142
+  offset: 0, 0
+  index: -1
+Sprite-0028
+  rotate: false
+  xy: 544, 908
+  size: 288, 266
+  orig: 288, 266
+  offset: 0, 0
+  index: -1
+Sprite-0029
+  rotate: false
+  xy: 0, 800
+  size: 320, 374
+  orig: 320, 374
+  offset: 0, 0
+  index: -1
+Sprite-0030
+  rotate: false
+  xy: 916, 282
+  size: 128, 148
+  orig: 128, 148
+  offset: 0, 0
+  index: -1
+Sprite-0031
+  rotate: false
+  xy: 434, 392
+  size: 120, 126
+  orig: 120, 126
+  offset: 0, 0
+  index: -1
+Sprite-0032
+  rotate: false
+  xy: 562, 6
+  size: 120, 144
+  orig: 120, 144
+  offset: 0, 0
+  index: -1
+Sprite-0033
+  rotate: false
+  xy: 782, 286
+  size: 134, 144
+  orig: 134, 144
+  offset: 0, 0
+  index: -1
+Sprite-0034
+  rotate: false
+  xy: 722, 566
+  size: 80, 150
+  orig: 80, 150
+  offset: 0, 0
+  index: -1
+Sprite-0035
+  rotate: false
+  xy: 1024, 130
+  size: 128, 152
+  orig: 128, 152
+  offset: 0, 0
+  index: -1
+Sprite-0037
+  rotate: false
+  xy: 768, 144
+  size: 128, 142
+  orig: 128, 142
+  offset: 0, 0
+  index: -1

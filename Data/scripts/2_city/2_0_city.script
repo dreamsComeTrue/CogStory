@@ -52,9 +52,9 @@ void PlayerActionHandler ()
 }
 
 void IntroAnimation ()
-{
-    Point screenSize = screen.GetWindowSize ();
-    camera.SetTranslate (screenSize.Width * 0.5f - player.Bounds.GetSize ().Width, -200);
+{ 
+    FlagPoint@ startPoint = GetFlagPoint ("START_POINT");
+    camera.SetCenter (startPoint.Pos);
 	camera.SetFollowActor (null);
 
     player.SetPreventInput (true);
@@ -69,7 +69,6 @@ void IntroAnimation ()
     {
         camera.TweenToPoint (player.GetPosition () + player.Bounds.GetHalfSize (), 2000, true, function (id)
         {
-            camera.Shake (2000.f, 0.4f, 15.f);
             player.SetPreventInput (false);
             camera.SetFollowActor (player);
         });

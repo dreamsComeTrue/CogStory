@@ -33,6 +33,7 @@ namespace aga
         Point GetScale ();
 
         void SetCenter (float x, float y);
+        void SetCenter (Point point) { SetCenter (point.X, point.Y); }
         Point GetCenter ();
 
         void SetFollowActor (Actor* actor, Point followOffset = {0.f, 0.f});

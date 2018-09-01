@@ -6,18 +6,18 @@ alias=true
 alphaThreshold=0
 debug=false
 duplicatePadding=false
-edgePadding=true
+edgePadding=false
 fast=false
 filterMag=Nearest
 filterMin=Nearest
 ignoreBlankImages=true
-maxHeight=2048
-maxWidth=512
+maxHeight=66
+maxWidth=2176
 minHeight=16
 minWidth=16
 paddingX=0
 paddingY=0
-pot=true
+pot=false
 rotation=false
 stripWhitespaceX=false
 stripWhitespaceY=false
@@ -26,7 +26,7 @@ wrapY=ClampToEdge
 premultiplyAlpha=false
 grid=false
 square=false
-bleed=true
+bleed=false
 limitMemory=true
 useIndexes=true
 
@@ -36,7 +36,7 @@ inputFiles=[{path:actors/npc/npc-1/tile000.png,type:Input,regionName:null},{path
 
 -PROJ-
 
-version=4.7.1
+version=4.7.3
 fileTypeType=png
 fileTypeData={encoding:RGBA8888}
 previewBackgroundColor=ffffffff

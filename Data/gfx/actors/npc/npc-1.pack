@@ -1,0 +1,13 @@
+
+npc-1.png
+size: 64,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+npc-1
+  rotate: false
+  xy: 2, 2
+  size: 20, 41
+  orig: 64, 64
+  offset: 22, 18
+  index: -1

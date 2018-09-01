@@ -64,8 +64,8 @@ list(APPEND LIBRARIES_LIST
     allegro_font
     allegro_ttf
     allegro_primitives
-    allegro_dialog
-    allegro_audio
+	allegro_dialog
+	allegro_audio
     allegro_acodec
     pthread
 )

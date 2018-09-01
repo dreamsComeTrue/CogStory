@@ -27,21 +27,13 @@ namespace aga
 
         SetCheckOverlap (true);
 
-        SetAnimation (ActorFactory::GetAnimation (ANIMATION_NPC_1));
+        SetAnimation (ActorFactory::GetAnimation ("ANIMATION_NPC_1"));
         SetCurrentAnimation (ANIM_STAND_LEFT_NAME);
 
         return true;
     }
 
     bool NPCActor::Update (float deltaTime) { return Actor::Update (deltaTime); }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void NPCActor::BeginOverlap (Entity* entity) {}
-
-    //--------------------------------------------------------------------------------------------------
-
-    void NPCActor::CollisionEvent (Collidable* other) {}
 
     //--------------------------------------------------------------------------------------------------
 }

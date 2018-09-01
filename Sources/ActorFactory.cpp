@@ -12,6 +12,12 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
+    std::vector<AnimationData> g_AnimationData
+        = {{"ANIMATION_PLAYER", "player.anim"}, {"ANIMATION_NPC_1", "npc_1.anim"}};
+
+    //--------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
+
     std::vector<std::string> ActorFactory::s_ActorTypes;
     std::vector<std::string> ActorFactory::s_ActorComponents;
     std::map<std::string, Animation> ActorFactory::s_Animations;
@@ -44,8 +50,10 @@ namespace aga
     {
         const std::string animPath = GetDataPath () + "/animations/";
 
-        s_Animations[ANIMATION_PLAYER] = LoadAnimationFromFile (animPath + "/player.anim");
-        s_Animations[ANIMATION_NPC_1] = LoadAnimationFromFile (animPath + "/npc_1.anim");
+        for (AnimationData& data : g_AnimationData)
+        {
+            s_Animations[data.Name] = LoadAnimationFromFile (animPath + "/" + data.FilePath);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

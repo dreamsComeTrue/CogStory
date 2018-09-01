@@ -7,8 +7,13 @@
 
 namespace aga
 {
-    const std::string ANIMATION_PLAYER = "ANIMATION_PLAYER";
-    const std::string ANIMATION_NPC_1 = "NPC_1";
+    struct AnimationData
+    {
+        std::string Name;
+        std::string FilePath;
+    };
+
+    extern std::vector<AnimationData> g_AnimationData;
 
     class ActorFactory
     {

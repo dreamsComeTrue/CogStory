@@ -87,7 +87,7 @@ namespace aga
     {
         const Point winSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
 
-        SetTranslate (x + winSize.Width * 0.5f, y + winSize.Height * 0.5f);
+        SetTranslate (-x * 2 + winSize.Width * 0.5f, -y * 2 + winSize.Height * 0.5f);
     }
 
     //--------------------------------------------------------------------------------------------------

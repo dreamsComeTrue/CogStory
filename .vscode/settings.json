@@ -11,5 +11,6 @@
     },
 
     "cmake.buildDirectory": "${workspaceRoot}/Binaries/Linux/Out",
-    "cmake.buildBeforeRun": true
+    "cmake.buildBeforeRun": true,
+    "cmake.configureOnOpen": true
 }
