@@ -41,7 +41,6 @@ namespace aga
     private:
         AudioManager* m_AudioManager;
         std::string m_Name;
-        std::string m_FilePath;
         ALLEGRO_SAMPLE* m_Sample;
         std::vector<ALLEGRO_SAMPLE_INSTANCE*> m_SampleInstances;
 

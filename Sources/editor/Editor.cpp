@@ -584,7 +584,7 @@ namespace aga
 
             case ALLEGRO_KEY_C:
             {
-                m_EditorActorMode.CopySelectedActor ();
+                m_EditorActorMode.CopySelectedActors ();
                 break;
             }
 

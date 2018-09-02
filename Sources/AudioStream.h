@@ -38,7 +38,6 @@ namespace aga
     private:
         AudioManager* m_AudioManager;
         std::string m_Name;
-        std::string m_FilePath;
         ALLEGRO_AUDIO_STREAM* m_Stream;
 
         float m_Gain;

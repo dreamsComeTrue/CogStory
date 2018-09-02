@@ -10,7 +10,6 @@ namespace aga
     AudioStream::AudioStream (AudioManager* manager, const std::string& name, const std::string& path)
         : m_AudioManager (manager)
         , m_Name (name)
-        , m_FilePath (path)
         , m_Stream (nullptr)
         , m_Gain (1.0f)
         , m_Looping (false)
@@ -21,6 +20,10 @@ namespace aga
         , m_CurrentPos (0)
         , m_PauseOnFinish (false)
     {
+        if (al_filename_exists (path.c_str ()))
+        {
+            m_Stream = al_load_audio_stream (path.c_str (), 4, 1024);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -35,17 +38,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool AudioStream::Initialize ()
-    {
-        Lifecycle::Initialize ();
-
-        if (al_filename_exists (m_FilePath.c_str ()))
-        {
-            m_Stream = al_load_audio_stream (m_FilePath.c_str (), 4, 1024);
-        }
-
-        return true;
-    }
+    bool AudioStream::Initialize () { return Lifecycle::Initialize (); }
 
     //--------------------------------------------------------------------------------------------------
 

@@ -34,7 +34,7 @@ namespace aga
         Actor* GetActorUnderCursor (int mouseX, int mouseY, bool selecting, Rect&& outRect);
 
         void RemoveSelectedActors ();
-        void CopySelectedActor ();
+        void CopySelectedActors ();
         void DrawTiles ();
 
         void AddActor (int mouseX, int mouseY);

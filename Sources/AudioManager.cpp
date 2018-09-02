@@ -28,25 +28,22 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool AudioManager::Initialize ()
-    {
-        Lifecycle::Initialize ();
-
-        return true;
-    }
+    bool AudioManager::Initialize () { return Lifecycle::Initialize (); }
 
     //--------------------------------------------------------------------------------------------------
 
     bool AudioManager::Destroy ()
     {
-        for (std::map<std::string, AudioSample*>::iterator it = m_Samples.begin (); it != m_Samples.end (); ++it)
+        for (std::map<std::string, AudioSample*>::iterator it = m_Samples.begin (); it != m_Samples.end ();)
         {
             SAFE_DELETE (it->second);
+            m_Samples.erase (it++);
         }
 
-        for (std::map<std::string, AudioStream*>::iterator it = m_Streams.begin (); it != m_Streams.end (); ++it)
+        for (std::map<std::string, AudioStream*>::iterator it = m_Streams.begin (); it != m_Streams.end ();)
         {
             SAFE_DELETE (it->second);
+            m_Streams.erase (it++);
         }
 
         return Lifecycle::Destroy ();

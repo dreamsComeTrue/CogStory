@@ -10,7 +10,6 @@ namespace aga
     AudioSample::AudioSample (AudioManager* manager, const std::string& name, const std::string& path)
         : m_AudioManager (manager)
         , m_Name (name)
-        , m_FilePath (path)
         , m_Sample (nullptr)
         , m_Gain (1.0f)
         , m_Looping (false)
@@ -21,6 +20,10 @@ namespace aga
         , m_CurrentPos (0)
         , m_PauseOnFinish (false)
     {
+        if (al_filename_exists (path.c_str ()))
+        {
+            m_Sample = al_load_sample (path.c_str ());
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -35,17 +38,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool AudioSample::Initialize ()
-    {
-        Lifecycle::Initialize ();
-
-        if (al_filename_exists (m_FilePath.c_str ()))
-        {
-            m_Sample = al_load_sample (m_FilePath.c_str ());
-        }
-
-        return true;
-    }
+    bool AudioSample::Initialize () { return Lifecycle::Initialize (); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -57,9 +50,12 @@ namespace aga
             m_SampleInstances.erase (m_SampleInstances.begin () + i);
         }
 
+        m_SampleInstances.clear ();
+
         if (m_Sample)
         {
             al_destroy_sample (m_Sample);
+            m_Sample = nullptr;
         }
 
         return Lifecycle::Destroy ();
