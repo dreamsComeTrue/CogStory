@@ -5,9 +5,22 @@ void Start ()
 
 }
 
+void SceneChanged (const string &in previousSceneName)
+{
+    player.SetCenterPosition (GetFlagPoint ("MARKER_CITY_HOME").Pos);
+    camera.SetFollowActor (player);
+}
+
 void BeforeEnterScene ()
 {
     SetSuppressSceneInfo (false);
+
+    AddOnEnterCallback ("ENTRY_CITY", function (pt)
+    {
+    	Color color = COLOR_BLACK;
+	    SceneFadeInOut (400, 400, color);
+	    SetActiveScene ("2_city/2_0_city.scn", true);
+    });    
 }
 
 void AfterLeaveScene ()

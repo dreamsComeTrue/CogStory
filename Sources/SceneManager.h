@@ -7,6 +7,7 @@
 #include "Common.h"
 #include "Player.h"
 #include "SpeechFrameManager.h"
+#include <stack>
 
 namespace aga
 {
@@ -62,16 +63,16 @@ namespace aga
 
         void Reset ();
         void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, ALLEGRO_COLOR color = COLOR_BLACK);
-        bool IsTransitioning () const;
+        bool IsTransitioning () const { return m_Transitioning; }
 
-        void SetDrawPhysData (bool enable);
-        bool IsDrawPhysData ();
+        void SetDrawPhysData (bool enable) { m_DrawPhysData = enable; }
+        bool IsDrawPhysData () { return m_DrawPhysData; }
 
-        void SetDrawBoundingBox (bool enable);
-        bool IsDrawBoundingBox ();
+        void SetDrawBoundingBox (bool enable) { m_DrawBoundingBox = enable; }
+        bool IsDrawBoundingBox () { return m_DrawBoundingBox; }
 
-        void SetDrawActorsNames (bool enable);
-        bool IsDrawActorsNames ();
+        void SetDrawActorsNames (bool enable) { m_DrawActorsNames = enable; }
+        bool IsDrawActorsNames () { return m_DrawActorsNames; }
 
         void SetSuppressSceneInfo (bool suppress);
         bool IsSuppressSceneInfo () const;
@@ -82,6 +83,9 @@ namespace aga
         void SetOverlayText (const std::string& text, float duration = 2000.f, float charTimeDelay = 5.f,
             ScreenRelativePosition pos = BottomRight);
         void SetOverlayActive (bool active) { m_OverlayActive = active; }
+
+        void PushPoint (Point p) { m_SavedPoints.push (p); }
+        Point PopPoint ();
 
     private:
         void SceneIntro (float duration = 1000.f);
@@ -115,6 +119,8 @@ namespace aga
         float m_OverlayDuration;
         float m_OverlayCharMaxDuration;
         bool m_OverlayActive;
+
+        std::stack<Point> m_SavedPoints;
     };
 }
 

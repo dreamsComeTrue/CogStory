@@ -68,12 +68,12 @@ namespace aga
 
         PhysPoints.clear ();
         PhysPoints.push_back ({
-            {23, 35}, //  Left arm
-            {25, 25}, //  Left head
-            {37, 25}, //  Right head
-            {39, 35}, //  Right arm
-            {39, 64}, //  Right leg
-            {23, 64} //  Left leg
+            {23.f, 35.f}, //  Left arm
+            {25.f, 25.f}, //  Left head
+            {37.f, 25.f}, //  Right head
+            {39.f, 35.f}, //  Right arm
+            {39.f, 64.f}, //  Right leg
+            {23.f, 64.f} //  Left leg
         });
 
         return true;
@@ -87,7 +87,7 @@ namespace aga
 
     void Player::BeforeEnter ()
     {
-        SetPhysOffset (Bounds.GetPos ().X, Bounds.GetPos ().Y);
+        SetPhysOffset (Bounds.GetPos ());
 
         m_HeadParticleComponent->GetEmitter ()->Reset ();
         m_FootParticleComponent->GetEmitter ()->Reset ();

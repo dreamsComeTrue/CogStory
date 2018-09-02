@@ -47,6 +47,8 @@ namespace aga
            SetSize (Point)
            Point GetSize ()
            Point GetHalfSize ()
+           SetCenter (Point)
+           Point GetCenter ()
 
        Tween
                = bool TweenFuncPoint (int id, float progress, Point value)
@@ -154,6 +156,8 @@ namespace aga
            void Move (float, float)
            void SetPosition (float, float)
            void SetPosition (Point)
+           void SetCenterPosition (float, float)
+           void SetCenterPosition (Point)
            Point GetPosition ()
            Point GetSize ()
            string GetTypeName ()
@@ -199,6 +203,8 @@ namespace aga
            void RegisterChoiceFunction (string, ChoiceFunction @+ func)
            AudioSample@ SetSceneAudioStream (const string &in path)
            AudioSample@ GetSceneAudioStream ()
+           void PushPoint (Point p)
+           Point PopPoint ()
 
        Camera
            Camera camera
@@ -714,6 +720,12 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod (
             "Rect", "Point GetHalfSize ()", asMETHOD (Rect, GetHalfSize), asCALL_THISCALL);
         assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "Rect", "void SetCenter (Point)", asMETHOD (Rect, SetCenter), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "Rect", "Point GetCenter ()", asMETHOD (Rect, GetCenter), asCALL_THISCALL);
+        assert (r >= 0);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -800,39 +812,19 @@ namespace aga
         assert (r >= 0);
 
         r = m_ScriptEngine->RegisterObjectMethod (
+            "Actor", "Player@ opCast()", asFUNCTION ((RefCast<Actor, Player>)), asCALL_CDECL_OBJLAST);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
             "Player", "Actor@ opImplCast()", asFUNCTION ((RefCast<Player, Actor>)), asCALL_CDECL_OBJLAST);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-            "Player", "Actor@ opCast()", asFUNCTION ((RefCast<Player, Actor>)), asCALL_CDECL_OBJLAST);
+            "Actor", "const Player@ opCast()", asFUNCTION ((RefCast<Actor, Player>)), asCALL_CDECL_OBJLAST);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-            "Actor", "Player@ opImplCast()", asFUNCTION ((RefCast<Actor, Player>)), asCALL_CDECL_OBJLAST);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-            "Actor", "Player@ opCast()", asFUNCTION ((RefCast<Actor, Player>)), asCALL_CDECL_OBJLAST);
+            "Player", "const Actor@ opImplCast()", asFUNCTION ((RefCast<Player, Actor>)), asCALL_CDECL_OBJLAST);
         assert (r >= 0);
 
         r = m_ScriptEngine->RegisterGlobalProperty ("Player player", m_MainLoop->GetSceneManager ().GetPlayer ());
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectProperty ("Player", "Rect Bounds", asOFFSET (Player, Bounds));
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-            "Player", "void SetPosition (Point)", asMETHODPR (Player, SetPosition, (Point), void), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("Player", "void SetPosition (float, float)",
-            asMETHODPR (Player, SetPosition, (float, float), void), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-            "Player", "Point GetPosition ()", asMETHOD (Player, GetPosition), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-            "Player", "Point GetSize ()", asMETHOD (Player, GetSize), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-            "Player", "void Move (float, float)", asMETHODPR (Player, Move, (float, float), void), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("Player", "void SetCurrentAnimation (const string &in)",
-            asMETHOD (Player, SetCurrentAnimation), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
             "Player", "void SetPreventInput (bool)", asMETHOD (Player, SetPreventInput), asCALL_THISCALL);
@@ -859,6 +851,8 @@ namespace aga
             "SpeechFrame@ TalkTo (Actor@ actor, const string &in speechID)", asMETHOD (Player, TalkTo),
             asCALL_THISCALL);
         assert (r >= 0);
+
+        RegisterBaseActorAPI<Player> ("Player");
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1070,29 +1064,58 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    template <class T> void ScriptManager::RegisterBaseActorAPI (const char* type)
+    {
+        int r = m_ScriptEngine->RegisterObjectProperty (type, "Rect Bounds", asOFFSET (T, Bounds));
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            type, "void Move (float, float)", asMETHODPR (T, Move, (float, float), void), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (type, "void SetPosition (float, float)",
+            asMETHODPR (T, SetPosition, (float, float), void), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            type, "void SetPosition (Point)", asMETHODPR (T, SetPosition, (Point), void), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (type, "void SetCenterPosition (float, float)",
+            asMETHODPR (T, SetCenterPosition, (float, float), void), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            type, "void SetCenterPosition (Point)", asMETHODPR (T, SetCenterPosition, (Point), void), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            type, "Point GetPosition ()", asMETHOD (T, GetPosition), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (type, "Point GetSize ()", asMETHOD (T, GetSize), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            type, "void SetCurrentAnimation (const string &in)", asMETHOD (T, SetCurrentAnimation), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            type, "bool IsOverlaping (Actor@)", asMETHOD (T, IsOverlaping), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            type, "string GetTypeName ()", asMETHOD (T, GetTypeName), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            type, "void OrientTo (Actor@)", asMETHOD (T, OrientTo), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            type, "void SuspendUpdate ()", asMETHOD (T, SuspendUpdate), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            type, "void ResumeUpdate ()", asMETHOD (T, ResumeUpdate), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (type, "void AssignFlagPointsToWalk (const string &in flagPointName)",
+            asMETHOD (T, AssignFlagPointsToWalk), asCALL_THISCALL);
+        assert (r >= 0);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void ScriptManager::RegisterActorAPI ()
     {
         int r = m_ScriptEngine->RegisterObjectType ("Actor", 0, asOBJ_REF | asOBJ_NOCOUNT);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectProperty ("Actor", "Rect Bounds", asOFFSET (Actor, Bounds));
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-            "Actor", "void Move (float, float)", asMETHODPR (Actor, Move, (float, float), void), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("Actor", "void SetPosition (float, float)",
-            asMETHODPR (Actor, SetPosition, (float, float), void), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-            "Actor", "void SetPosition (Point)", asMETHODPR (Actor, SetPosition, (Point), void), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-            "Actor", "Point GetPosition ()", asMETHOD (Actor, GetPosition), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-            "Actor", "Point GetSize ()", asMETHOD (Actor, GetSize), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("Actor", "void SetCurrentAnimation (const string &in)",
-            asMETHOD (Actor, SetCurrentAnimation), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction ("Actor@ GetCurrentActor ()",
             asMETHOD (SceneManager, GetCurrentlyProcessedActor), asCALL_THISCALL_ASGLOBAL,
@@ -1102,26 +1125,8 @@ namespace aga
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("Actor", "void AddCollisionCallback (CollisionCbk @+ callback)",
             asMETHODPR (Actor, AddCollisionCallback, (asIScriptFunction*), void), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-            "Actor", "bool IsOverlaping (Actor@)", asMETHOD (Actor, IsOverlaping), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-            "Actor", "string GetTypeName ()", asMETHOD (Actor, GetTypeName), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-            "Actor", "void OrientTo (Actor@)", asMETHOD (Actor, OrientTo), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-            "Actor", "void SuspendUpdate ()", asMETHOD (Actor, SuspendUpdate), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-            "Actor", "void ResumeUpdate ()", asMETHOD (Actor, ResumeUpdate), asCALL_THISCALL);
-        assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod ("Actor",
-            "void AssignFlagPointsToWalk (const string &in flagPointName)", asMETHOD (Actor, AssignFlagPointsToWalk),
-            asCALL_THISCALL);
-        assert (r >= 0);
+
+        RegisterBaseActorAPI<Actor> ("Actor");
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1210,6 +1215,12 @@ namespace aga
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction ("AudioStream@ GetSceneAudioStream ()",
             asMETHOD (SceneManager, GetSceneAudioStream), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction ("void PushPoint (Point p)", asMETHOD (SceneManager, PushPoint),
+            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction ("Point PopPoint ()", asMETHOD (SceneManager, PopPoint),
+            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
     }
 

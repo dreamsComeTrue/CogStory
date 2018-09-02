@@ -291,12 +291,21 @@ namespace aga
 
         FireMoveCallback ();
 
-        SetPhysOffset (Bounds.GetPos ().X, Bounds.GetPos ().Y);
+        SetPhysOffset (Bounds.GetPos ());
 
         if (m_MovementComponent)
         {
             m_MovementComponent->SetStartPos ({x, y});
         }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Actor::SetCenterPosition (float x, float y)
+    {
+        Point halfSize = Bounds.GetHalfSize ();
+
+        SetPosition (x - halfSize.Width, y - halfSize.Height);
     }
 
     //--------------------------------------------------------------------------------------------------

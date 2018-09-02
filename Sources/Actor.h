@@ -49,6 +49,10 @@ namespace aga
         virtual void Move (Point deltaPos);
         virtual void SetPosition (float x, float y);
         virtual void SetPosition (Point pos) { SetPosition (pos.X, pos.Y); }
+
+        virtual void SetCenterPosition (float x, float y);
+        virtual void SetCenterPosition (Point pos) { SetCenterPosition (pos.X, pos.Y); }
+
         Point GetPosition ();
         Point GetSize ();
 

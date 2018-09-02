@@ -111,6 +111,19 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Scriptable::RunAllScripts (const std::string& functionName, void* obj)
+    {
+        for (ScriptMetaData& script : m_Scripts)
+        {
+            if (script.ScriptObj)
+            {
+                script.ScriptObj->Run (functionName, obj);
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     ScriptMetaData* Scriptable::GetScript (const std::string& name)
     {
         for (ScriptMetaData& sc : m_Scripts)

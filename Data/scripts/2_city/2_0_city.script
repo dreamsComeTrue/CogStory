@@ -7,6 +7,11 @@ Point screenSize = screen.GetWindowSize ();
 
 Actor@ lastActionActor = null;
 
+void SceneChanged (const string &in previousSceneName)
+{
+    player.Bounds.SetCenter (GetFlagPoint ("MARKER_HOME_CITY").Pos);
+}
+
 void BeforeEnterScene ()
 {
     SetSuppressSceneInfo (true);
@@ -47,12 +52,10 @@ void PlayerActionHandler ()
 
 void IntroAnimation ()
 { 
-    FlagPoint@ startPoint = GetFlagPoint ("START_POINT");
-    camera.SetCenter (startPoint.Pos);
+    camera.SetCenter (GetFlagPoint ("START_POINT").Pos);
 	camera.SetFollowActor (null);
 
     player.SetPreventInput (true);
-    player.SetPosition (0, 0);
     player.SetCurrentAnimation ("ANIM_MOVE_UP_LOOK");
 
     SetOverlayText ("-- Chapter I --\nNo ordinary day", 3000.f, 100.f, Center);    
@@ -85,10 +88,9 @@ void RegisterFunctions ()
 
     AddOnEnterCallback ("ENTRY_HOME", function (pt)
     {
-        Log ("asd");
     	Color color = COLOR_BLACK;
 	    SceneFadeInOut (400, 400, color);
-	    SetActiveScene ("0_home/0_0_home.scn", true);
+	    SetActiveScene ("0_home/0_0_home.scn", true);        
     });
 
     RegisterChoiceFunction ("choice1", function ()

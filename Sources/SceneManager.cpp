@@ -135,13 +135,17 @@ namespace aga
     {
         if (scene)
         {
+            std::string currentSceneName = "";
+
             if (m_ActiveScene != nullptr)
             {
                 m_ActiveScene->AfterLeave ();
+                currentSceneName = m_ActiveScene->GetName ();
             }
 
             m_ActiveScene = scene;
             m_ActiveScene->BeforeEnter ();
+            m_ActiveScene->RunAllScripts ("void SceneChanged (const string &in str)", &currentSceneName);
 
             if (!scene->IsSuppressSceneInfo ())
             {
@@ -613,31 +617,13 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool SceneManager::IsTransitioning () const { return m_Transitioning; }
+    Point SceneManager::PopPoint ()
+    {
+        Point point = m_SavedPoints.top ();
+        m_SavedPoints.pop ();
 
-    //--------------------------------------------------------------------------------------------------
-
-    void SceneManager::SetDrawPhysData (bool enable) { m_DrawPhysData = enable; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool SceneManager::IsDrawPhysData () { return m_DrawPhysData; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void SceneManager::SetDrawBoundingBox (bool enable) { m_DrawBoundingBox = enable; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool SceneManager::IsDrawBoundingBox () { return m_DrawBoundingBox; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void SceneManager::SetDrawActorsNames (bool enable) { m_DrawActorsNames = enable; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool SceneManager::IsDrawActorsNames () { return m_DrawActorsNames; }
+        return point;
+    }
 
     //--------------------------------------------------------------------------------------------------
 }

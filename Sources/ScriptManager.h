@@ -72,6 +72,9 @@ namespace aga
         void RegisterCameraAPI ();
         void RegisterGlobalAPI ();
 
+        template <class T> void RegisterBaseActorAPI (const char* typeName);
+        template <class T> void RegisterDerivedPlayerAPI (const char* typeName);
+
     private:
         MainLoop* m_MainLoop;
         asIScriptEngine* m_ScriptEngine;

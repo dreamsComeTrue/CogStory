@@ -40,6 +40,7 @@ namespace aga
         void Offset (Point p) { Offset (p.X, p.Y); }
         void Offset (float x, float y) { SetPos (Pos.X + x, Pos.Y + y); }
 
+        void SetCenter (Point p) { return SetPos (p.X - Size.Width * 0.5f, p.Y - Size.Height * 0.5f); }
         Point GetCenter () { return Point{Pos.X + Size.Width * 0.5f, Pos.Y + Size.Height * 0.5f}; }
         Point GetHalfSize () { return Point{Size.Width * 0.5f, Size.Height * 0.5f}; }
 
