@@ -246,4 +246,18 @@ namespace aga
     }
 
     //--------------------------------------------------------------------------------------------------
+
+    void Collidable::RemoveCollisionCallback (std::function<void(Collidable* other)>* func)
+    {
+        for (std::vector<CollisionCallback>::iterator it = m_Callbacks.begin (); it != m_Callbacks.end (); ++it)
+        {
+            if (&(*it).Func == func)
+            {
+                m_Callbacks.erase (it);
+                break;
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
 }

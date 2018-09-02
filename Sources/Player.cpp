@@ -28,6 +28,7 @@ namespace aga
         , m_ActionHandler (nullptr)
     {
         RemoveComponent (m_MovementComponent);
+        ClearCollisionCallbacks ();
         m_MovementComponent = nullptr;
     }
 

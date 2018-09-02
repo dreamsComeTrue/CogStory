@@ -21,19 +21,14 @@ namespace aga
     TileActor::TileActor (SceneManager* sceneManager)
         : Actor (sceneManager)
     {
+        RemoveComponent (m_MovementComponent);
+        ClearCollisionCallbacks ();
+        m_MovementComponent = nullptr;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool TileActor::Initialize ()
-    {
-        Actor::Initialize ();
-
-        RemoveComponent (m_MovementComponent);
-        m_MovementComponent = nullptr;
-
-        return true;
-    }
+    bool TileActor::Initialize () { return Actor::Initialize (); }
 
     //--------------------------------------------------------------------------------------------------
 

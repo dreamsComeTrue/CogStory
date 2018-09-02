@@ -156,7 +156,7 @@ namespace aga
             for (std::map<std::string, Component*>::iterator it = m_Components.begin (); it != m_Components.end ();
                  ++it)
             {
-                it->second->Update (deltaTime);
+                //      it->second->Update (deltaTime);
             }
         }
 

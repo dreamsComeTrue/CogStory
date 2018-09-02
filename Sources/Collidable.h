@@ -35,6 +35,8 @@ namespace aga
 
         void AddCollisionCallback (std::function<void(Collidable* other)> func);
         virtual void AddCollisionCallback (asIScriptFunction* func);
+        void RemoveCollisionCallback (std::function<void(Collidable* other)>* func);
+        void ClearCollisionCallbacks () { m_Callbacks.clear (); }
 
     protected:
         virtual void CollisionEvent (Collidable* other) {}
