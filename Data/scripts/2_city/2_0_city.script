@@ -27,6 +27,7 @@ void BeforeEnterScene ()
     }
     else
     {
+        SetSuppressSceneInfo (false);
         camera.SetFollowActor (player);
     }
 

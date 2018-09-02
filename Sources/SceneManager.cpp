@@ -147,7 +147,7 @@ namespace aga
             m_ActiveScene->BeforeEnter ();
             m_ActiveScene->RunAllScripts ("void SceneChanged (const string &in str)", &currentSceneName);
 
-            if (!scene->IsSuppressSceneInfo ())
+            if (!m_ActiveScene->IsSuppressSceneInfo ())
             {
                 SceneIntro (2500.0f);
             }
@@ -244,7 +244,7 @@ namespace aga
             al_draw_filled_rectangle (0, 0, size.Width, size.Height, m_FadeColor);
         }
 
-        if (m_ActiveScene != nullptr && m_SceneIntro)
+        if (m_ActiveScene && m_SceneIntro)
         {
             int blendOp, blendSrc, blendDst;
             al_get_blender (&blendOp, &blendSrc, &blendDst);

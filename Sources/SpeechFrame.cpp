@@ -127,7 +127,7 @@ namespace aga
 
     void SpeechFrame::HandleKeyUp ()
     {
-        //  if (!IsTextFitWithoutScroll ())
+        if (!IsTextFitWithoutScroll ())
         {
             //  We can only scroll, when there are no choices
             if (!m_Choices.empty () && !m_StillUpdating)
@@ -153,7 +153,7 @@ namespace aga
 
     void SpeechFrame::HandleKeyDown ()
     {
-        //    if (!IsTextFitWithoutScroll ())
+        if (!IsTextFitWithoutScroll ())
         {
             if (!m_Choices.empty () && !m_StillUpdating)
             {
