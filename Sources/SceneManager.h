@@ -81,6 +81,7 @@ namespace aga
 
         void SetOverlayText (const std::string& text, float duration = 2000.f, float charTimeDelay = 5.f,
             ScreenRelativePosition pos = BottomRight);
+        void SetOverlayActive (bool active) { m_OverlayActive = active; }
 
     private:
         void SceneIntro (float duration = 1000.f);

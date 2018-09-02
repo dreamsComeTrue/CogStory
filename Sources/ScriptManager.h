@@ -43,6 +43,8 @@ namespace aga
         void RemoveScript (const std::string& name);
         void RemoveScript (Script* script);
 
+        void RunScriptFunction (asIScriptFunction* func, void* obj);
+
         Script* GetScriptByModuleName (const std::string& moduleName);
 
     private:

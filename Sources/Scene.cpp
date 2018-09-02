@@ -218,8 +218,6 @@ namespace aga
 
         Player* player = m_SceneManager->GetPlayer ();
 
-        bool isPlayerDrawn = false;
-
         RecomputeVisibleEntities (false);
 
         if (m_SceneManager->IsDrawBoundingBox ())
@@ -227,11 +225,18 @@ namespace aga
             DrawQuadTree (&m_QuadTree);
         }
 
+        bool isPlayerDrawn = false;
+
         for (int i = 0; i < m_VisibleEntities.size (); ++i)
         {
             Actor* actor = (Actor*)m_VisibleEntities[i];
 
-            if (!isPlayerDrawn && actor->ZOrder >= PLAYER_Z_ORDER)
+            float heightPercentage = 0.9f;
+            float maxHeight = actor->Bounds.Pos.Y + actor->Bounds.Size.Height * heightPercentage;
+            float playerMidPoint = player->Bounds.Pos.Y + player->Bounds.Size.Height;
+
+            if (Intersect (actor->Bounds, player->Bounds) && !isPlayerDrawn && actor->ZOrder >= PLAYER_Z_ORDER
+                && playerMidPoint < maxHeight)
             {
                 player->Render (deltaTime);
                 isPlayerDrawn = true;
@@ -239,6 +244,12 @@ namespace aga
 
             actor->RenderID = i;
             actor->Render (deltaTime);
+
+            if (!isPlayerDrawn && actor->ZOrder >= PLAYER_Z_ORDER && maxHeight < playerMidPoint)
+            {
+                //     player->Render (deltaTime);
+                //       isPlayerDrawn = true;
+            }
 
             if (m_SceneManager->IsDrawBoundingBox ())
             {

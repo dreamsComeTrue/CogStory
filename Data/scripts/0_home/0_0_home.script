@@ -1,13 +1,4 @@
-const float SPEED = 15.0;
-const int TWEEN_1 = 1;
-const int TWEEN_2 = 2;
-const int TWEEN_3 = 3;
-SpeechFrame@ topFrame;
-SpeechFrame@ mainFrame;
-MovementComponent@ moveCP;
-
-Point lastPoint;
-AudioSample@ sceneMusic = null;
+AudioStream@ audioStream;
 
 void Start ()
 {
@@ -16,175 +7,17 @@ void Start ()
 
 void BeforeEnterScene ()
 {
-    Point screenSize = screen.GetWindowSize ();
-    
- //   Point frameSize1 (350, 100);
-//	Point framePos1 (screenSize.Width / 2 - frameSize1.Width / 2, screenSize.Height - frameSize1.Height - 10);
-//	Rect rect (framePos1, Point (framePos1.X + frameSize1.Width, framePos1.Y + frameSize1.Height));    
-    // string txt = "[color=RED]Hello[/color] !!!\n I've found [color=YELLOW]think[/color] take.\n[color=GREEN]But the most[/color] part of [color=LIGHTBLUE]this, is to[/color] be [color=RED]happy[/color] !!!\n   \n Oh, wait...";
-	
-	// @mainFrame = AddSpeechFrame ("MAIN_SPEECH", txt, rect, true, "player_head");
-	// mainFrame.Hide ();
-
-	Point frameSize2 (350, 60);
-	Point framePos2 (screenSize.Width / 2 - frameSize2.Width / 2, 10);
-	Rect r (framePos2, Point (framePos2.X + frameSize2.Width, framePos2.Y + frameSize2.Height));
-    @topFrame = AddSpeechFrame ("SPEECH", "PTR4617[WAIT=300]???[/WAIT]", r, false);
-	topFrame.Hide ();
-	topFrame.SetDrawTextCenter (true);
-
-	lastPoint = GetFlagPoint ("A").Pos;
-   // player.SetPosition (lastPoint.X, lastPoint.Y);	
-	
-	 //  player.SetPreventInput (true);
-
-    //SceneFadeInOut ();
-
-	AddOnEnterCallback ("TOP", TopOnEnter);
-	AddOnLeaveCallback ("TOP", TopOnLeave);
-
-	AddOnEnterCallback ("CITY_EXIT", OnCityExitEnter);
-
-  	Point flag1 = lastPoint;
-	Point flag2 = GetFlagPoint ("B").Pos;
-
-	//camera.SetFollowActor (null);
-	//camera.SetCenter (0, 0);
-	
-	//player.SetPreventInput (true);
-
-	Point playerSize = player.GetSize ();
-	Point playerPos = player.GetPosition();
-
-//camera.TweenToPoint (Point (playerPos.X + playerSize.Width * 0.5f, playerPos.Y + playerSize.Height * 0.5f), AfterCameraTween1, 1000);
-	
-    //AddTween (TWEEN_1, flag1, flag2, 800, PlayerTween, NextTween1);
-
-    RegisterChoiceFunction ("CHOICE_1", Choice1);
-
-    Actor@ npc = GetActor ("cog1");
-    @moveCP = npc.GetMovementComponent ("MOVE");
-    moveCP.SetEnabled (true);
-    moveCP.SetMovementType (MovePoints);
-    moveCP.SetSpeed (300);
-    moveCP.SetWaitLikelihood (0.0f);
-
-    array<Point> walkPoints = { GetFlagPoint ("A").Pos,
-                                GetFlagPoint ("B").Pos,
-                                GetFlagPoint ("C").Pos,
-                                GetFlagPoint ("D").Pos
-                              };
-    moveCP.SetWalkPoints (walkPoints);
-    moveCP.SetMovementCallback (MoveCallback);
-
-    if (sceneMusic is null)
-    {
-        @sceneMusic = SetSceneAudioStream ("output.ogg");
-        sceneMusic.SetLooping (true);
-        sceneMusic.Play ();
-    }
-    else
-    {
-        sceneMusic.Resume ();
-    }
-
-    sceneMusic.SetFadeIn (2000.f);
-
-    audioManager.SetEnabled (false);
-}
-
-void MoveCallback (Point pos)
-{
-    if (pos.X > -2)
-    {
-        moveCP.SetEnabled (false);
-    }
-}
-
-void AfterCameraTween1 (int tweenID)
-{
-	player.SetPreventInput (false);
-	camera.SetFollowActor (GetActor ("PLAYER"));
+    SetSuppressSceneInfo (false);
 }
 
 void AfterLeaveScene ()
 {
-    if (sceneMusic !is null)
+    if (audioStream !is null)
     {
-        sceneMusic.SetFadeOut (2000.f, true);
+        audioStream.SetFadeOut (2000.f, true);
     }
-
-	RemoveOnEnterCallback ("TOP");
-	RemoveOnEnterCallback ("CITY_EXIT");
-
-	RemoveOnLeaveCallback ("TOP");
-}
-
-void TopOnEnter (Point p)
-{
-	topFrame.Show ();	
-}
-
-void TopOnLeave (Point p)
-{
-	topFrame.Hide ();	
-}
-
-string Choice1 ()
-{
-    Log ("Works!!!");
-
-    return "GREET_1";
-}
-
-void OnCityExitEnter (Point p)
-{
-//	Color color = COLOR_BLACK;
-//	SceneFadeInOut (400, 400, color);
-	//SetActiveScene ("2_city/2_0_city.scn", true);
-	SetActiveScene ("1_factory/1_0_factory.scn", true);
-}
-
-bool PlayerTween (int id, float progress, Point value)
-{	
-    if (id == TWEEN_2 && progress > 0.7)
-    {
-        PauseTween (TWEEN_2);
-        player.SetPreventInput (false);
-    }
-
-	Point delta = Point (value.X - lastPoint.X, value.Y - lastPoint.Y);
-	
-	player.Move (delta.X, delta.Y);
-	
-	lastPoint = value;
-
-    return false; 
-}
-
-void NextTween1 (int tweenID)
-{
-	Point flag1 = GetFlagPoint ("B").Pos;
-	Point flag2 = GetFlagPoint ("C").Pos;
-
-    AddTween (TWEEN_2, flag1, flag2, 700, PlayerTween, NextTween2);
-}
-
-void NextTween2 (int tweenID)
-{
-	Point flag1 = GetFlagPoint ("C").Pos;
-	Point flag2 = GetFlagPoint ("D").Pos;
-
-    AddTween (TWEEN_3, flag1, flag2, 1000, PlayerTween, FinishFunc);
-}
-
-void FinishFunc (int id)
-{
-    player.SetCurrentAnimation ("ANIM_IDLE");
-    mainFrame.Show ();
 }
 
 void Update (float deltaTime)
 {
-	//Log ("A");
 }

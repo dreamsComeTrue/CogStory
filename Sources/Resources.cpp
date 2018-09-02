@@ -39,12 +39,11 @@ namespace aga
         {PACK_1_0_FACTORY, GFX_1_FACTORY, "1_0_factory.pack"}, {PACK_1_1_FACTORY, GFX_1_FACTORY, "1_1_factory.pack"},
 
         //  City
-        {PACK_2_0_CITY, GFX_2_CITY, "2_0_city.pack"}, 
-        {PACK_2_1_CITY, GFX_2_CITY, "2_1_city.pack"},
-        {PACK_2_2_CITY, GFX_2_CITY, "2_2_city.pack"},
+        {PACK_2_0_CITY, GFX_2_CITY, "2_0_city.pack"}, {PACK_2_1_CITY, GFX_2_CITY, "2_1_city.pack"},
+        {PACK_2_2_CITY, GFX_2_CITY, "2_2_city.pack"}, {PACK_2_3_CITY, GFX_2_CITY, "2_3_city.pack"},
 
         //  Env
-        {PACK_ENV_5, GFX_ENV, "env_5.pack"},
+        {PACK_ENV_0, GFX_ENV, "env_0.pack"}, {PACK_ENV_1, GFX_ENV, "env_1.pack"}, {PACK_ENV_5, GFX_ENV, "env_5.pack"},
 
         //  Fonts
         {__FONTS__MARKER__}, {FONT_SMALL, FONTS, "coders_crux.ttf"}, {FONT_MEDIUM, FONTS, "coders_crux.ttf"},

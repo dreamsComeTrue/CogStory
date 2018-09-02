@@ -31,6 +31,9 @@ namespace aga
         PACK_2_0_CITY,
         PACK_2_1_CITY,
         PACK_2_2_CITY,
+        PACK_2_3_CITY,
+        PACK_ENV_0,
+        PACK_ENV_1,
         PACK_ENV_5,
 
         __FONTS__MARKER__,

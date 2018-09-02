@@ -1,3 +1,5 @@
+AudioStream@ audioStream;
+
 bool g_IntroPlayed = false;
 
 Point playerSize = player.GetSize ();
@@ -8,20 +10,15 @@ Actor@ lastActionActor = null;
 void BeforeEnterScene ()
 {
     SetSuppressSceneInfo (true);
-    AudioStream@ stream = SetSceneAudioStream ("music/Caketown 1.ogg");
-    stream.Play ();
+    @audioStream = SetSceneAudioStream ("music/Caketown 1.ogg");
+    //audioStream.Play ();
 
-    RegisterChoiceFunction ("choice1", function ()
-    {
-        return "SPCH_2";
-    });
+    RegisterFunctions ();    
 
-    player.SetActionHandler (PlayerActionHandler);
-    
     if (!g_IntroPlayed)
     {
         g_IntroPlayed = true;
-        IntroAnimation ();        
+        IntroAnimation ();    
     }
     else
     {
@@ -30,14 +27,11 @@ void BeforeEnterScene ()
 
     GetActor ("npc_x").AssignFlagPointsToWalk ("A");
     GetActor ("npc_girl").AssignFlagPointsToWalk ("NPC_1_A");
+}
 
-    RegisterSpeechesFinishedHandler (function ()
-    {
-        if (!(lastActionActor is null))
-        {
-            lastActionActor.ResumeUpdate ();
-        }
-    });
+void AfterLeaveScene ()
+{
+    SetOverlayActive (false);
 }
 
 void PlayerActionHandler ()
@@ -85,11 +79,30 @@ void IntroAnimation ()
     // });
 }
 
-void OnCityExitEnter (Point p)
+void RegisterFunctions ()
 {
-//	Color color = COLOR_BLACK;
-//	SceneFadeInOut (400, 400, color);
-	SetActiveScene ("0_home/0_0_home.scn", true);
+    player.SetActionHandler (PlayerActionHandler);
+
+    AddOnEnterCallback ("ENTRY_HOME", function (pt)
+    {
+        Log ("asd");
+    	Color color = COLOR_BLACK;
+	    SceneFadeInOut (400, 400, color);
+	    SetActiveScene ("0_home/0_0_home.scn", true);
+    });
+
+    RegisterChoiceFunction ("choice1", function ()
+    {
+        return "SPCH_2";
+    });
+
+    RegisterSpeechesFinishedHandler (function ()
+    {
+        if (!(lastActionActor is null))
+        {
+            lastActionActor.ResumeUpdate ();
+        }
+    });
 }
 
 void Update (float deltaTime)

@@ -66,11 +66,10 @@ namespace aga
                 origin = actors[0]->Bounds.GetPos () + actors[0]->Bounds.GetHalfSize ();
             }
 
-            const Point windowSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
-            al_draw_line (
-                -1000.f, m_PhysPoint->Y + origin.Y, windowSize.Width, m_PhysPoint->Y + origin.Y, COLOR_WHITE, 1);
-            al_draw_line (
-                m_PhysPoint->X + origin.X, -1000.f, m_PhysPoint->X + origin.X, windowSize.Height, COLOR_WHITE, 1);
+            al_draw_line (origin.X - 1000.f, m_PhysPoint->Y + origin.Y, origin.X + 1000.f, m_PhysPoint->Y + origin.Y,
+                COLOR_WHITE, 1);
+            al_draw_line (m_PhysPoint->X + origin.X, origin.Y - 1000.f, m_PhysPoint->X + origin.X, origin.Y + 1000.f,
+                COLOR_WHITE, 1);
         }
     }
 

@@ -28,7 +28,9 @@ namespace aga
     bool TileActor::Initialize ()
     {
         Actor::Initialize ();
+
         RemoveComponent (m_MovementComponent);
+        m_MovementComponent = nullptr;
 
         return true;
     }

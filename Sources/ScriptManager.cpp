@@ -193,8 +193,9 @@ namespace aga
            bool IsSuppressSceneInfo () const
            void SetOverlayText (const string& in, float duration = 2000.f, float charTimeDelay = 5.f,
                 ScreenRelativePosition pos = BottomRight)
+           void SetOverlayActive (bool active)
            Actor@ GetActor (const string &in)
-           string ChoiceFunction (void)
+                = string ChoiceFunction (void)
            void RegisterChoiceFunction (string, ChoiceFunction @+ func)
            AudioSample@ SetSceneAudioStream (const string &in path)
            AudioSample@ GetSceneAudioStream ()
@@ -982,7 +983,7 @@ namespace aga
 
     void ScriptManager::RegisterTriggerAreaAPI ()
     {
-        int r = m_ScriptEngine->RegisterFuncdef ("void TriggerFunc (Point)");
+        int r = m_ScriptEngine->RegisterFuncdef ("void TriggerFunc (Point point)");
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction ("void AddOnEnterCallback (const string &in, TriggerFunc @+ tf)",
             asMETHODPR (SceneManager, AddOnEnterCallback, (const std::string&, asIScriptFunction*), void),
@@ -1193,6 +1194,9 @@ namespace aga
             "ScreenRelativePosition pos = BottomRight)",
             asMETHOD (SceneManager, SetOverlayText), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction ("void SetOverlayActive (bool active)",
+            asMETHOD (SceneManager, SetOverlayActive), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction ("Actor@ GetActor (const string &in)",
             asMETHOD (SceneManager, GetActor), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
@@ -1233,8 +1237,8 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod (
             "Camera", "Point GetScale ()", asMETHOD (Camera, GetScale), asCALL_THISCALL);
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterObjectMethod (
-            "Camera", "void SetCenter (float, float)", asMETHODPR (Camera, SetCenter, (float, float), void), asCALL_THISCALL);
+        r = m_ScriptEngine->RegisterObjectMethod ("Camera", "void SetCenter (float, float)",
+            asMETHODPR (Camera, SetCenter, (float, float), void), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
             "Camera", "void SetCenter (Point)", asMETHODPR (Camera, SetCenter, (Point), void), asCALL_THISCALL);
@@ -1296,6 +1300,19 @@ namespace aga
         ctx->SetExceptionCallback (asFUNCTION (ExceptionCallback), this, asCALL_THISCALL);
 
         return ctx;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void ScriptManager::RunScriptFunction (asIScriptFunction* func, void* obj)
+    {
+        asIScriptContext* ctx = GetContext ();
+        ctx->Prepare (func);
+        ctx->SetArgObject (0, obj);
+
+        ctx->Execute ();
+        ctx->Unprepare ();
+        ctx->GetEngine ()->ReturnContext (ctx);
     }
 
     //--------------------------------------------------------------------------------------------------

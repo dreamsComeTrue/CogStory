@@ -1145,22 +1145,22 @@ namespace aga
 
     void Editor::SwitchCursorMode ()
     {
-        if (m_EditorActorMode.GetSelectedActors ().empty ())
-        {
-            return;
-        }
-
         if (m_CursorMode != CursorMode::EditPhysBodyMode)
         {
-            Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
+            if (!m_EditorActorMode.GetSelectedActors ().empty ())
+            {
+                Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
 
-            //  In case of messed up scaling...
-            OnResetScale ();
+                //  In case of messed up scaling...
+                OnResetScale ();
 
-            Rect bounds = m_EditorActorMode.GetSelectedActors ()[0]->Bounds;
-            camera.SetCenter (bounds.GetCenter ().X, bounds.GetCenter ().Y);
+                Point center = m_EditorActorMode.GetSelectedActors ()[0]->Bounds.GetCenter ();
 
-            SetCursorMode (CursorMode::EditPhysBodyMode);
+                //  Ok, it works, but this strange division?
+                camera.SetCenter (center * 0.5f);
+
+                SetCursorMode (CursorMode::EditPhysBodyMode);
+            }
         }
         else
         {

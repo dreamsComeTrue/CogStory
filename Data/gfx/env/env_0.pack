@@ -1,0 +1,90 @@
+
+env_0.png
+size: 1864,169
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Sprite-0001
+  rotate: false
+  xy: 513, 0
+  size: 160, 169
+  orig: 160, 169
+  offset: 0, 0
+  index: -1
+Sprite-0002
+  rotate: false
+  xy: 991, 0
+  size: 147, 169
+  orig: 147, 169
+  offset: 0, 0
+  index: -1
+Sprite-0003
+  rotate: false
+  xy: 0, 9
+  size: 172, 160
+  orig: 172, 160
+  offset: 0, 0
+  index: -1
+Sprite-0004
+  rotate: false
+  xy: 673, 0
+  size: 158, 169
+  orig: 158, 169
+  offset: 0, 0
+  index: -1
+Sprite-0005
+  rotate: false
+  xy: 831, 9
+  size: 160, 160
+  orig: 160, 160
+  offset: 0, 0
+  index: -1
+Sprite-0006
+  rotate: false
+  xy: 345, 10
+  size: 168, 159
+  orig: 168, 159
+  offset: 0, 0
+  index: -1
+Sprite-0007
+  rotate: false
+  xy: 172, 14
+  size: 173, 155
+  orig: 173, 155
+  offset: 0, 0
+  index: -1
+Sprite-0008
+  rotate: false
+  xy: 1138, 14
+  size: 152, 155
+  orig: 152, 155
+  offset: 0, 0
+  index: -1
+Sprite-0009
+  rotate: false
+  xy: 1290, 22
+  size: 157, 147
+  orig: 157, 147
+  offset: 0, 0
+  index: -1
+Sprite-0010
+  rotate: false
+  xy: 1601, 38
+  size: 151, 131
+  orig: 151, 131
+  offset: 0, 0
+  index: -1
+Sprite-0011
+  rotate: false
+  xy: 1752, 39
+  size: 112, 130
+  orig: 112, 130
+  offset: 0, 0
+  index: -1
+Sprite-0012
+  rotate: false
+  xy: 1447, 29
+  size: 154, 140
+  orig: 154, 140
+  offset: 0, 0
+  index: -1

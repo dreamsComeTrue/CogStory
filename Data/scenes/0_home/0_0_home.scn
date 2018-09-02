@@ -1,95 +1,33 @@
 {
-    "actors": [],
-    "color": "0 0 31 255",
+    "actors": [
+        {
+            "atlas": "0_0_home",
+            "atlas-region": "main_room",
+            "collision": "1",
+            "components": [],
+            "id": "478",
+            "name": "main_room",
+            "phys": [],
+            "pos": "-245 -203",
+            "rot": "0",
+            "scripts": [],
+            "size": "512 382",
+            "type": "Tile",
+            "z-order": "0"
+        }
+    ],
+    "color": "35 31 54 255",
     "flag_points": [],
-    "max_size": "1.17549e-38 1.17549e-38",
-    "min_size": "3.40282e+38 3.40282e+38",
-    "name": "Intro",
-    "player_start": "3 260",
+    "max_size": "267 179",
+    "min_size": "-245 -203",
+    "name": "Home",
+    "player_start": "18.7178 145.932",
     "scripts": [
         {
             "name": "main",
-            "path": "special/0_intro.script"
+            "path": "0_home/0_0_home.script"
         }
     ],
-    "speeches": [
-        {
-            "abs_pos": "0 0",
-            "action": "",
-            "id": 0,
-            "max_chars": 27,
-            "max_lines": 3,
-            "name": "GREET_1",
-            "outcomes": [
-                {
-                    "langID": "EN",
-                    "texts": [
-                        {
-                            "action": "asd",
-                            "data": "OK",
-                            "name": ""
-                        },
-                        {
-                            "action": "",
-                            "data": "No, no, no!!!",
-                            "name": ""
-                        }
-                    ]
-                },
-                {
-                    "langID": "PL",
-                    "texts": []
-                }
-            ],
-            "region_name": "player_head",
-            "rel_pos": 5,
-            "texts": [
-                {
-                    "data": "So, what you think?? Mister...",
-                    "langID": "EN"
-                },
-                {
-                    "data": "",
-                    "langID": "PL"
-                }
-            ]
-        },
-        {
-            "abs_pos": "0 0",
-            "action": "",
-            "id": 1,
-            "max_chars": 22,
-            "max_lines": 3,
-            "name": "asd",
-            "outcomes": [
-                {
-                    "langID": "EN",
-                    "texts": [
-                        {
-                            "action": "",
-                            "data": "Bye bye",
-                            "name": ""
-                        }
-                    ]
-                },
-                {
-                    "langID": "PL",
-                    "texts": []
-                }
-            ],
-            "region_name": "player_head",
-            "rel_pos": 5,
-            "texts": [
-                {
-                    "data": "[WAIT=200]Really[/WAIT], [COLOR=YELLOW]didn't[/COLOR] know... [COLOR=GREEN]Nice to meet[/COLOR] [WAIT=300]you![/WAIT]",
-                    "langID": "EN"
-                },
-                {
-                    "data": "",
-                    "langID": "PL"
-                }
-            ]
-        }
-    ],
+    "speeches": [],
     "trigger_areas": []
 }
