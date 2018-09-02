@@ -9,7 +9,7 @@ Actor@ lastActionActor = null;
 
 void SceneChanged (const string &in previousSceneName)
 {
-    player.Bounds.SetCenter (GetFlagPoint ("MARKER_HOME_CITY").Pos);
+    player.SetCenterPosition (GetFlagPoint ("MARKER_HOME_CITY").Pos);
 }
 
 void BeforeEnterScene ()

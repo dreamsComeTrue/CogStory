@@ -135,6 +135,7 @@ namespace aga
         void OnFlagPoint ();
         void OnTriggerArea ();
 
+        void OutlineBody ();
         void OnRemoveBody ();
         void OnNewPoly ();
 

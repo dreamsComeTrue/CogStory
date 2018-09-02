@@ -24,12 +24,11 @@ namespace aga
     const std::string ANIM_STAND_RIGHT_NAME = "ANIM_STAND_RIGHT";
 
     //  Pixels Per Second
-    const float MOVE_SPEED = 80.0;
+    const float MOVE_SPEED = 100.0;
 
     class SceneManager;
     class Scene;
     class Component;
-    class MovementComponent;
 
     class Actor : public Entity, public Lifecycle, public Animable, public Scriptable, public Collidable
     {
@@ -60,7 +59,7 @@ namespace aga
         void RemoveComponent (const std::string& name);
         void RemoveComponent (Component* component);
         Component* FindComponent (const std::string& name, const std::string& typeName);
-        MovementComponent* GetMovementComponent (const std::string& name);
+        class MovementComponent* GetMovementComponent (const std::string& name);
         std::map<std::string, Component*>& GetComponents () { return m_Components; }
 
         void OrientTo (Actor* actor);
@@ -89,7 +88,6 @@ namespace aga
         bool m_IsUpdating;
         Point m_OldPosition;
         std::map<std::string, Component*> m_Components;
-        class MovementComponent* m_MovementComponent;
 
     public:
         Rect TemplateBounds;

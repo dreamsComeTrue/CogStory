@@ -226,9 +226,9 @@ namespace aga
         selectModeButton->Hide ();
 
         saveBodyButton = new Gwk::Controls::Button (m_MainCanvas);
-        saveBodyButton->SetText ("SAVE BODY");
+        saveBodyButton->SetText ("OUTLINE BODY");
         saveBodyButton->SetPos (20, selectModeButton->Bottom () + 5);
-        saveBodyButton->onPress.Add (this, &Editor::SwitchCursorMode);
+        saveBodyButton->onPress.Add (this, &Editor::OutlineBody);
         saveBodyButton->Hide ();
 
         removeBodyButton = new Gwk::Controls::Button (m_MainCanvas);
@@ -1193,6 +1193,30 @@ namespace aga
             }
 
             m_EditorPhysMode.SetPhysPoint (nullptr);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::OutlineBody ()
+    {
+        if (!m_EditorActorMode.GetSelectedActors ().empty ())
+        {
+            Actor* actor = m_EditorActorMode.GetSelectedActors ()[0];
+            Rect rect = actor->Bounds;
+            Point halfSize = rect.GetHalfSize ();
+
+            std::vector<Point> points;
+
+            points.push_back ({-halfSize.Width, -halfSize.Height});
+            points.push_back ({halfSize.Width, -halfSize.Height});
+            points.push_back ({halfSize.Width, halfSize.Height});
+            points.push_back ({-halfSize.Width, halfSize.Height});
+
+            actor->PhysPoints.push_back (points);
+            actor->UpdatePhysPolygon ();
+
+            m_EditorPhysMode.SetPhysPoint (&points[0]);
         }
     }
 

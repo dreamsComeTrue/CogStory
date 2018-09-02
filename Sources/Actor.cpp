@@ -19,11 +19,9 @@ namespace aga
         , Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
         , Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
         , Entity (sceneManager)
-        , m_MovementComponent (new MovementComponent (this))
         , m_IsUpdating (true)
     {
         ID = Entity::GetNextID ();
-        m_Components.insert (std::make_pair ("MOVEMENT_COMPONENT", m_MovementComponent));
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -224,7 +222,7 @@ namespace aga
 
     Component* Actor::FindComponent (const std::string& name, const std::string& typeName)
     {
-        for (std::map<std::string, Component*>::iterator it = m_Components.begin (); it != m_Components.end ();)
+        for (std::map<std::string, Component*>::iterator it = m_Components.begin (); it != m_Components.end (); ++it)
         {
             if (it->first == name && it->second->GetTypeName () == typeName)
             {
@@ -293,9 +291,10 @@ namespace aga
 
         SetPhysOffset (Bounds.GetPos ());
 
-        if (m_MovementComponent)
+        MovementComponent* movementComponent = GetMovementComponent ("MOVEMENT_COMPONENT");
+        if (movementComponent)
         {
-            m_MovementComponent->SetStartPos ({x, y});
+            movementComponent->SetStartPos ({x, y});
         }
     }
 
@@ -424,15 +423,16 @@ namespace aga
 
     void Actor::AssignFlagPointsToWalk (const std::string& flagPointName)
     {
-        if (m_MovementComponent)
+        MovementComponent* movementComponent = GetMovementComponent ("MOVEMENT_COMPONENT");
+        if (movementComponent)
         {
-            m_MovementComponent->SetMovementType (MovementType::MovePoints);
+            movementComponent->SetMovementType (MovementType::MovePoints);
 
             FlagPoint* flagPoint = m_SceneManager->GetFlagPoint (flagPointName);
 
             if (flagPoint)
             {
-                m_MovementComponent->SetWalkPoints (flagPoint);
+                movementComponent->SetWalkPoints (flagPoint);
             }
         }
     }

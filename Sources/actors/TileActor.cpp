@@ -7,7 +7,6 @@
 #include "MainLoop.h"
 #include "SceneManager.h"
 #include "Screen.h"
-#include "actors/components/MovementComponent.h"
 
 namespace aga
 {
@@ -21,9 +20,6 @@ namespace aga
     TileActor::TileActor (SceneManager* sceneManager)
         : Actor (sceneManager)
     {
-        RemoveComponent (m_MovementComponent);
-        ClearCollisionCallbacks ();
-        m_MovementComponent = nullptr;
     }
 
     //--------------------------------------------------------------------------------------------------

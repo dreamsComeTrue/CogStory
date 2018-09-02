@@ -453,13 +453,16 @@ namespace aga
 
                 actorObj["phys"] = json::array ({});
 
-                for (int i = 0; i < actor->PhysPoints.size (); ++i)
+                if (!actor->PhysPoints.empty () && !actor->PhysPoints[0].empty ())
                 {
-                    json physObj = json::object ({});
+                    for (int i = 0; i < actor->PhysPoints.size (); ++i)
+                    {
+                        json physObj = json::object ({});
 
-                    physObj["poly"] = VectorPointsToString (actor->PhysPoints[i]);
+                        physObj["poly"] = VectorPointsToString (actor->PhysPoints[i]);
 
-                    actorObj["phys"].push_back (physObj);
+                        actorObj["phys"].push_back (physObj);
+                    }
                 }
 
                 actorObj["scripts"] = json::array ({});

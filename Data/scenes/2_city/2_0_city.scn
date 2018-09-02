@@ -7,11 +7,7 @@
             "components": [],
             "id": "340",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
             "pos": "-1022.37 960",
             "rot": "0",
             "scripts": [],
@@ -20,36 +16,13 @@
             "z-order": "-5"
         },
         {
-            "atlas": "env_0",
-            "atlas-region": "Sprite-0005",
-            "collision": "1",
-            "components": [],
-            "id": "357",
-            "name": "Sprite-0005",
-            "phys": [
-                {
-                    "poly": "16.2832 25.192 5.14208 65.8243 32.9949 67.7904 "
-                }
-            ],
-            "pos": "0 -112",
-            "rot": "0",
-            "scripts": [],
-            "size": "160 160",
-            "type": "Tile",
-            "z-order": "-3"
-        },
-        {
             "atlas": "2_1_city",
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
             "id": "146",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
             "pos": "-224 96",
             "rot": "0",
             "scripts": [],
@@ -64,50 +37,8 @@
             "components": [],
             "id": "167",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
             "pos": "160 -112",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "339",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1022.37 992",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "162",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "192 128",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -121,11 +52,7 @@
             "components": [],
             "id": "212",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
             "pos": "192 -112",
             "rot": "0",
             "scripts": [],
@@ -138,71 +65,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "165",
+            "id": "162",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "96 -112",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "213",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "224 -112",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "347",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-702.366 768",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "163",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "32 -112",
+            "phys": [],
+            "pos": "192 128",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -216,31 +82,8 @@
             "components": [],
             "id": "166",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
             "pos": "128 -112",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "-2"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "210",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "640 -608",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -254,12 +97,38 @@
             "components": [],
             "id": "164",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
             "pos": "64 -112",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "163",
+            "name": "tile050",
+            "phys": [],
+            "pos": "32 -112",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "347",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-702.366 768",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -273,12 +142,38 @@
             "components": [],
             "id": "338",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
             "pos": "-1182.37 960",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "213",
+            "name": "tile050",
+            "phys": [],
+            "pos": "224 -112",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "165",
+            "name": "tile050",
+            "phys": [],
+            "pos": "96 -112",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -292,12 +187,38 @@
             "components": [],
             "id": "214",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
             "pos": "256 -112",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "210",
+            "name": "tile050",
+            "phys": [],
+            "pos": "544 -544",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "-2"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "339",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-1022.37 992",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -311,11 +232,7 @@
             "components": [],
             "id": "29",
             "name": "tile002",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
             "pos": "168.889 115.118",
             "rot": "0",
             "scripts": [],
@@ -328,14 +245,25 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "135",
+            "id": "265",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -192",
+            "phys": [],
+            "pos": "-862.366 1024",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile011",
+            "collision": "1",
+            "components": [],
+            "id": "373",
+            "name": "tile011",
+            "phys": [],
+            "pos": "256 0",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -347,14 +275,70 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "262",
+            "id": "198",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-958.366 1024",
+            "phys": [],
+            "pos": "352 -448",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile350",
+            "collision": "1",
+            "components": [],
+            "id": "411",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-544 288",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile350",
+            "collision": "1",
+            "components": [],
+            "id": "423",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-352 384",
+            "rot": "90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "352",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-1182.37 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "env_5",
+            "atlas-region": "tile007",
+            "collision": "0",
+            "components": [],
+            "id": "27",
+            "name": "tile007",
+            "phys": [],
+            "pos": "-64 115",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -366,14 +350,25 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "194",
+            "id": "320",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "224 -512",
+            "phys": [],
+            "pos": "-448 288",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "env_5",
+            "atlas-region": "tile005",
+            "collision": "0",
+            "components": [],
+            "id": "23",
+            "name": "tile005",
+            "phys": [],
+            "pos": "151 194",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -385,14 +380,29 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "241",
+            "id": "269",
             "name": "tile050",
+            "phys": [],
+            "pos": "-798.366 928",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile412",
+            "collision": "1",
+            "components": [],
+            "id": "494",
+            "name": "tile412",
             "phys": [
                 {
-                    "poly": ""
+                    "poly": "-16 -16 16 -16 16.5934 1.44698 -16.3922 1.29063 "
                 }
             ],
-            "pos": "-670.366 576",
+            "pos": "-272 64",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -404,14 +414,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "258",
+            "id": "313",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1086.37 1024",
+            "phys": [],
+            "pos": "-448 480",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -423,14 +429,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "279",
+            "id": "310",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 672",
+            "phys": [],
+            "pos": "-448 480",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -442,14 +444,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "297",
+            "id": "205",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 576",
+            "phys": [],
+            "pos": "512 -448",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -461,14 +459,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "324",
+            "id": "247",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 160",
+            "phys": [],
+            "pos": "-1054.37 800",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -480,14 +474,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "226",
+            "id": "354",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1150.37 576",
+            "phys": [],
+            "pos": "-1182.37 1024",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -499,14 +489,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "278",
+            "id": "236",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 704",
+            "phys": [],
+            "pos": "-798.366 576",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -518,14 +504,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "342",
+            "id": "341",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1182.37 768",
+            "phys": [],
+            "pos": "-1022.37 768",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -537,14 +519,235 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "255",
+            "id": "208",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1022.37 1024",
+            "phys": [],
+            "pos": "544 -480",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "286",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-574.366 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "270",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-798.366 896",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "183",
+            "name": "tile050",
+            "phys": [],
+            "pos": "64 -448",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "349",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-1022.37 544",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "261",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-830.366 1024",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile350",
+            "collision": "1",
+            "components": [],
+            "id": "412",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-544 224",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "227",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-1118.37 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile350",
+            "collision": "1",
+            "components": [],
+            "id": "424",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-320 384",
+            "rot": "90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile350",
+            "collision": "1",
+            "components": [],
+            "id": "388",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-544 96",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "345",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-702.366 800",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "env_5",
+            "atlas-region": "tile084",
+            "collision": "1",
+            "components": [],
+            "id": "516",
+            "name": "tile084",
+            "phys": [],
+            "pos": "-829.082 770.355",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile365",
+            "collision": "1",
+            "components": [],
+            "id": "502",
+            "name": "tile365",
+            "phys": [],
+            "pos": "-240 0",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "309",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-448 512",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "350",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-862.366 544",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "260",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-990.366 1024",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -558,12 +761,278 @@
             "components": [],
             "id": "344",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
             "pos": "-734.366 800",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "150",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-160 160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "235",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-862.366 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "316",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-448 384",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "266",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-798.366 1024",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "274",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-798.366 864",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "233",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-926.366 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "232",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-958.366 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "155",
+            "name": "tile050",
+            "phys": [],
+            "pos": "0 160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "171",
+            "name": "tile050",
+            "phys": [],
+            "pos": "0 -352",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "253",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-862.366 800",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile364",
+            "collision": "1",
+            "components": [],
+            "id": "478",
+            "name": "tile364",
+            "phys": [],
+            "pos": "-272 0",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile035",
+            "collision": "1",
+            "components": [],
+            "id": "379",
+            "name": "tile035",
+            "phys": [],
+            "pos": "256 32",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "249",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-830.366 800",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile389",
+            "collision": "1",
+            "components": [],
+            "id": "506",
+            "name": "tile389",
+            "phys": [],
+            "pos": "-240 32",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "229",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-1054.37 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "176",
+            "name": "tile050",
+            "phys": [],
+            "pos": "0 -448",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "267",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-798.366 992",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile388",
+            "collision": "1",
+            "components": [],
+            "id": "486",
+            "name": "tile388",
+            "phys": [],
+            "pos": "-272 32",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -575,36 +1044,13 @@
             "atlas-region": "tile350",
             "collision": "1",
             "components": [],
-            "id": "389",
+            "id": "422",
             "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-544 64",
-            "rot": "0",
+            "phys": [],
+            "pos": "-384 384",
+            "rot": "90",
             "scripts": [],
             "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_0_city",
-            "atlas-region": "single_house",
-            "collision": "1",
-            "components": [],
-            "id": "18",
-            "name": "single_house",
-            "phys": [
-                {
-                    "poly": "-71 46 70 48 70 -61 0 -73 -73 -58 "
-                }
-            ],
-            "pos": "208 -256",
-            "rot": "0",
-            "scripts": [],
-            "size": "144 145",
             "type": "Tile",
             "z-order": "0"
         },
@@ -613,14 +1059,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "314",
+            "id": "206",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 448",
+            "phys": [],
+            "pos": "480 -448",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -632,14 +1074,910 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "351",
+            "id": "337",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-702.366 544",
+            "phys": [],
+            "pos": "-1182.37 992",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "243",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-1022.37 800",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "143",
+            "name": "tile050",
+            "phys": [],
+            "pos": "0 64",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "185",
+            "name": "tile050",
+            "phys": [],
+            "pos": "160 -448",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile350",
+            "collision": "1",
+            "components": [],
+            "id": "409",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-544 320",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile415",
+            "collision": "1",
+            "components": [],
+            "id": "500",
+            "name": "tile415",
+            "phys": [],
+            "pos": "-176 64",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "147",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-224 128",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "283",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-798.366 640",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "245",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-1118.37 800",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "202",
+            "name": "tile050",
+            "phys": [],
+            "pos": "416 -448",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "332",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-384 160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "230",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-990.366 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "264",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-894.366 1024",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "145",
+            "name": "tile050",
+            "phys": [],
+            "pos": "0 128",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile350",
+            "collision": "1",
+            "components": [],
+            "id": "408",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-544 -32",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "287",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-542.366 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile350",
+            "collision": "1",
+            "components": [],
+            "id": "426",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-256 384",
+            "rot": "90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "142",
+            "name": "tile050",
+            "phys": [],
+            "pos": "0 32",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "333",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-352 160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "195",
+            "name": "tile050",
+            "phys": [],
+            "pos": "192 -448",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "184",
+            "name": "tile050",
+            "phys": [],
+            "pos": "32 -448",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "273",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-798.366 896",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile350",
+            "collision": "1",
+            "components": [],
+            "id": "418",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-480 384",
+            "rot": "90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "140",
+            "name": "tile050",
+            "phys": [],
+            "pos": "0 -32",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "197",
+            "name": "tile050",
+            "phys": [],
+            "pos": "288 -448",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "238",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-766.366 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "193",
+            "name": "tile050",
+            "phys": [],
+            "pos": "256 -448",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "288",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-510.366 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "182",
+            "name": "tile050",
+            "phys": [],
+            "pos": "96 -448",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile057",
+            "collision": "1",
+            "components": [],
+            "id": "381",
+            "name": "tile057",
+            "phys": [],
+            "pos": "128 96",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "237",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-638.366 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "144",
+            "name": "tile050",
+            "phys": [],
+            "pos": "0 96",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "275",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-798.366 832",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "153",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-64 160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "149",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-192 160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile350",
+            "collision": "1",
+            "components": [],
+            "id": "410",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-544 256",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile350",
+            "collision": "1",
+            "components": [],
+            "id": "427",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-224 384",
+            "rot": "90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "323",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-448 192",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "151",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-128 160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile350",
+            "collision": "1",
+            "components": [],
+            "id": "406",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-544 32",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile350",
+            "collision": "1",
+            "components": [],
+            "id": "413",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-544 192",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "196",
+            "name": "tile050",
+            "phys": [],
+            "pos": "320 -448",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "152",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-96 160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "209",
+            "name": "tile050",
+            "phys": [],
+            "pos": "544 -512",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "226",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-1150.37 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile350",
+            "collision": "1",
+            "components": [],
+            "id": "417",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-512 384",
+            "rot": "90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "158",
+            "name": "tile050",
+            "phys": [],
+            "pos": "96 160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "268",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-798.366 960",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "207",
+            "name": "tile050",
+            "phys": [],
+            "pos": "544 -448",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "204",
+            "name": "tile050",
+            "phys": [],
+            "pos": "448 -448",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "187",
+            "name": "tile050",
+            "phys": [],
+            "pos": "128 -448",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "335",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-288 160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "228",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-1086.37 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "168",
+            "name": "tile050",
+            "phys": [],
+            "pos": "0 -256",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "278",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-798.366 704",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile390",
+            "collision": "1",
+            "components": [],
+            "id": "508",
+            "name": "tile390",
+            "phys": [],
+            "pos": "-208 32",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "342",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-1182.37 768",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "154",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-32 160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "env_5",
+            "atlas-region": "tile003",
+            "collision": "1",
+            "components": [],
+            "id": "511",
+            "name": "tile003",
+            "phys": [],
+            "pos": "-1114.27 753.971",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "255",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-1022.37 1024",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "327",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-448 160",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -670,337 +2008,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "136",
+            "id": "262",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "206",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "576 -512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile350",
-            "collision": "1",
-            "components": [],
-            "id": "421",
-            "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-416 384",
-            "rot": "90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "239",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-734.366 576",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile350",
-            "collision": "1",
-            "components": [],
-            "id": "387",
-            "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-544 128",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "277",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 736",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "318",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 320",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "336",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-256 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "319",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 320",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile350",
-            "collision": "1",
-            "components": [],
-            "id": "425",
-            "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-288 384",
-            "rot": "90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "134",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -224",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "266",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 1024",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile350",
-            "collision": "1",
-            "components": [],
-            "id": "428",
-            "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-192 384",
-            "rot": "90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "169",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -288",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "225",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1022.37 576",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile034",
-            "collision": "1",
-            "components": [],
-            "id": "475",
-            "name": "tile034",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "160 64",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile350",
-            "collision": "1",
-            "components": [],
-            "id": "416",
-            "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-544 384",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "265",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-862.366 1024",
+            "phys": [],
+            "pos": "-958.366 1024",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -1014,11 +2025,7 @@
             "components": [],
             "id": "137",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
             "pos": "0 -128",
             "rot": "0",
             "scripts": [],
@@ -1027,18 +2034,14 @@
             "z-order": "0"
         },
         {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
+            "atlas": "env_5",
+            "atlas-region": "tile017",
             "collision": "1",
             "components": [],
-            "id": "276",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 768",
+            "id": "520",
+            "name": "tile017",
+            "phys": [],
+            "pos": "-872.602 606.003",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -1050,14 +2053,25 @@
             "atlas-region": "tile350",
             "collision": "1",
             "components": [],
-            "id": "407",
+            "id": "416",
             "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-544 0",
+            "phys": [],
+            "pos": "-544 384",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "282",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-798.366 672",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -1069,33 +2083,10 @@
             "atlas-region": "tile350",
             "collision": "1",
             "components": [],
-            "id": "408",
+            "id": "415",
             "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-544 -32",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "348",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1182.37 544",
+            "phys": [],
+            "pos": "-544 352",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -1107,661 +2098,11 @@
             "atlas-region": "tile350",
             "collision": "1",
             "components": [],
-            "id": "414",
+            "id": "428",
             "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-544 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile033",
-            "collision": "1",
-            "components": [],
-            "id": "375",
-            "name": "tile033",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "128 64",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "322",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 224",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "334",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-320 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "229",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1054.37 576",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "285",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-480 576",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "203",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "480 -512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "331",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-416 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "335",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-288 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "309",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "161",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "192 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "271",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 864",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "281",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 704",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "259",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1054.37 1024",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "256",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1150.37 1024",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "175",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -480",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "252",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-894.366 800",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "157",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "64 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "251",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-926.366 800",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "298",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 544",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "312",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 416",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "257",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1118.37 1024",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "138",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -96",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "272",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 928",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile058",
-            "collision": "1",
-            "components": [],
-            "id": "469",
-            "name": "tile058",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "160 96",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile058",
-            "collision": "1",
-            "components": [],
-            "id": "470",
-            "name": "tile058",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "224 96",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile034",
-            "collision": "1",
-            "components": [],
-            "id": "471",
-            "name": "tile034",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "160 32",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile034",
-            "collision": "1",
-            "components": [],
-            "id": "472",
-            "name": "tile034",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "192 32",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "284",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 608",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "248",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-990.366 800",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "280",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 736",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "316",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 384",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "317",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 352",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile033",
-            "collision": "1",
-            "components": [],
-            "id": "465",
-            "name": "tile033",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "128 32",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile010",
-            "collision": "1",
-            "components": [],
-            "id": "466",
-            "name": "tile010",
-            "phys": [
-                {
-                    "poly": "-12.5392 -16.5424 16.5424 -16.952 -1.0704 -2.616 "
-                }
-            ],
-            "pos": "192 0",
-            "rot": "0",
+            "phys": [],
+            "pos": "-192 384",
+            "rot": "90",
             "scripts": [],
             "size": "32 32",
             "type": "Tile",
@@ -1788,17 +2129,28 @@
         },
         {
             "atlas": "2_3_city",
-            "atlas-region": "tile035",
+            "atlas-region": "tile350",
             "collision": "1",
             "components": [],
-            "id": "468",
-            "name": "tile035",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "256 64",
+            "id": "421",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-416 384",
+            "rot": "90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "276",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-798.366 768",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -1810,14 +2162,74 @@
             "atlas-region": "tile034",
             "collision": "1",
             "components": [],
-            "id": "473",
+            "id": "475",
             "name": "tile034",
+            "phys": [],
+            "pos": "160 64",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile034",
+            "collision": "1",
+            "components": [],
+            "id": "377",
+            "name": "tile034",
+            "phys": [],
+            "pos": "192 64",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile350",
+            "collision": "1",
+            "components": [],
+            "id": "425",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-288 384",
+            "rot": "90",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "single_house",
+            "collision": "1",
+            "components": [],
+            "id": "18",
+            "name": "single_house",
             "phys": [
                 {
-                    "poly": ""
+                    "poly": "-71 46 70 48 70 -61 0 -73 -73 -58 "
                 }
             ],
-            "pos": "224 32",
+            "pos": "208 -256",
+            "rot": "0",
+            "scripts": [],
+            "size": "144 145",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "322",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-448 224",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -1829,14 +2241,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "148",
+            "id": "351",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-224 160",
+            "phys": [],
+            "pos": "-702.366 544",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -1848,14 +2256,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "139",
+            "id": "251",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -64",
+            "phys": [],
+            "pos": "-926.366 800",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -1867,14 +2271,25 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "250",
+            "id": "314",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-958.366 800",
+            "phys": [],
+            "pos": "-448 448",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile391",
+            "collision": "1",
+            "components": [],
+            "id": "492",
+            "name": "tile391",
+            "phys": [],
+            "pos": "-176 32",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -1886,33 +2301,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "326",
+            "id": "336",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 192",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "240",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-702.366 576",
+            "phys": [],
+            "pos": "-256 160",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -1943,14 +2335,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "154",
+            "id": "246",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-32 160",
+            "phys": [],
+            "pos": "-1086.37 800",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -1962,14 +2350,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "254",
+            "id": "324",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 800",
+            "phys": [],
+            "pos": "-448 160",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -1983,11 +2367,7 @@
             "components": [],
             "id": "231",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
             "pos": "-830.366 576",
             "rot": "0",
             "scripts": [],
@@ -2000,14 +2380,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "170",
+            "id": "138",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -320",
+            "phys": [],
+            "pos": "0 -96",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -2019,14 +2395,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "244",
+            "id": "240",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1182.37 800",
+            "phys": [],
+            "pos": "-702.366 576",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -2034,37 +2406,14 @@
             "z-order": "0"
         },
         {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
+            "atlas": "2_3_city",
+            "atlas-region": "tile034",
             "collision": "1",
             "components": [],
-            "id": "321",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 256",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "315",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 416",
+            "id": "472",
+            "name": "tile034",
+            "phys": [],
+            "pos": "192 32",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -2078,924 +2427,8 @@
             "components": [],
             "id": "159",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
             "pos": "128 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile034",
-            "collision": "1",
-            "components": [],
-            "id": "474",
-            "name": "tile034",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "224 64",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile350",
-            "collision": "1",
-            "components": [],
-            "id": "415",
-            "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-544 352",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "263",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-926.366 1024",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "242",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-606.366 576",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "353",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1150.37 800",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "246",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1086.37 800",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "156",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "32 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "160",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "160 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "311",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 448",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "234",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-894.366 576",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile058",
-            "collision": "1",
-            "components": [],
-            "id": "383",
-            "name": "tile058",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "192 96",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "172",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -384",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "243",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1022.37 800",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile350",
-            "collision": "1",
-            "components": [],
-            "id": "412",
-            "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-544 224",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "238",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-766.366 576",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "337",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1182.37 992",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "176",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile034",
-            "collision": "1",
-            "components": [],
-            "id": "377",
-            "name": "tile034",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "192 64",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile011",
-            "collision": "1",
-            "components": [],
-            "id": "373",
-            "name": "tile011",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "256 0",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "345",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-702.366 800",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_0_city",
-            "atlas-region": "single_house",
-            "collision": "1",
-            "components": [],
-            "id": "16",
-            "name": "single_house",
-            "phys": [
-                {
-                    "poly": "-71 -58 -72 53 72 53 73 -59 2 -71 "
-                }
-            ],
-            "pos": "-278.996 -42.7056",
-            "rot": "0",
-            "scripts": [],
-            "size": "144 145",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "270",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 896",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "185",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "160 -512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "152",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-96 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "158",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "96 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "150",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-160 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile057",
-            "collision": "1",
-            "components": [],
-            "id": "381",
-            "name": "tile057",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "128 96",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "184",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "32 -512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "245",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1118.37 800",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile035",
-            "collision": "1",
-            "components": [],
-            "id": "379",
-            "name": "tile035",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "256 32",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile350",
-            "collision": "1",
-            "components": [],
-            "id": "422",
-            "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-384 384",
-            "rot": "90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "354",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1182.37 1024",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile350",
-            "collision": "1",
-            "components": [],
-            "id": "417",
-            "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-512 384",
-            "rot": "90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "332",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-384 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "140",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -32",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "141",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 0",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "200",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "416 -512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "288",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-510.366 576",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "343",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-766.366 800",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "155",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "269",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 928",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "313",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 480",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "149",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-192 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "232",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-958.366 576",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "171",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -352",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "202",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "512 -512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "350",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-862.366 544",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "233",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-926.366 576",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -3026,14 +2459,374 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "209",
+            "id": "312",
             "name": "tile050",
+            "phys": [],
+            "pos": "-448 416",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "160",
+            "name": "tile050",
+            "phys": [],
+            "pos": "160 160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "298",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-448 544",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "157",
+            "name": "tile050",
+            "phys": [],
+            "pos": "64 160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile366",
+            "collision": "1",
+            "components": [],
+            "id": "504",
+            "name": "tile366",
+            "phys": [],
+            "pos": "-208 0",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "239",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-734.366 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "172",
+            "name": "tile050",
+            "phys": [],
+            "pos": "0 -384",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "135",
+            "name": "tile050",
+            "phys": [],
+            "pos": "0 -192",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "134",
+            "name": "tile050",
+            "phys": [],
+            "pos": "0 -224",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "318",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-448 320",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile010",
+            "collision": "1",
+            "components": [],
+            "id": "466",
+            "name": "tile010",
             "phys": [
                 {
-                    "poly": ""
+                    "poly": "-12.5392 -16.5424 16.5424 -16.952 -1.0704 -2.616 "
                 }
             ],
-            "pos": "640 -576",
+            "pos": "192 0",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "297",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-448 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "311",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-448 448",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "285",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-480 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "280",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-798.366 736",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "244",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-1182.37 800",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile058",
+            "collision": "1",
+            "components": [],
+            "id": "383",
+            "name": "tile058",
+            "phys": [],
+            "pos": "192 96",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile033",
+            "collision": "1",
+            "components": [],
+            "id": "465",
+            "name": "tile033",
+            "phys": [],
+            "pos": "128 32",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "277",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-798.366 736",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "353",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-1150.37 800",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "161",
+            "name": "tile050",
+            "phys": [],
+            "pos": "192 160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "156",
+            "name": "tile050",
+            "phys": [],
+            "pos": "32 160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "348",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-1182.37 544",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "141",
+            "name": "tile050",
+            "phys": [],
+            "pos": "0 0",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile414",
+            "collision": "1",
+            "components": [],
+            "id": "498",
+            "name": "tile414",
+            "phys": [],
+            "pos": "-208 64",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -3045,33 +2838,25 @@
             "atlas-region": "tile350",
             "collision": "1",
             "components": [],
-            "id": "427",
+            "id": "389",
             "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-224 384",
-            "rot": "90",
+            "phys": [],
+            "pos": "-544 64",
+            "rot": "0",
             "scripts": [],
             "size": "32 32",
             "type": "Tile",
             "z-order": "0"
         },
         {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
+            "atlas": "2_3_city",
+            "atlas-region": "tile367",
             "collision": "1",
             "components": [],
-            "id": "253",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-862.366 800",
+            "id": "484",
+            "name": "tile367",
+            "phys": [],
+            "pos": "-176 0",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -3083,13 +2868,114 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "282",
+            "id": "148",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
+            "pos": "-224 160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "257",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-1118.37 1024",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "272",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-798.366 928",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "259",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-1054.37 1024",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "254",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-798.366 800",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "234",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-894.366 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile035",
+            "collision": "1",
+            "components": [],
+            "id": "468",
+            "name": "tile035",
+            "phys": [],
+            "pos": "256 64",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "279",
+            "name": "tile050",
+            "phys": [],
             "pos": "-798.366 672",
             "rot": "0",
             "scripts": [],
@@ -3098,189 +2984,14 @@
             "z-order": "0"
         },
         {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "236",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 576",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "267",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 992",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "320",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 288",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "187",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "128 -512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "env_5",
-            "atlas-region": "tile007",
-            "collision": "0",
-            "components": [],
-            "id": "27",
-            "name": "tile007",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-64 115",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "199",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "448 -512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "273",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 896",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "147",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-224 128",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
             "atlas": "2_3_city",
-            "atlas-region": "tile350",
+            "atlas-region": "tile058",
             "collision": "1",
             "components": [],
-            "id": "426",
-            "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-256 384",
-            "rot": "90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "168",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -256",
+            "id": "469",
+            "name": "tile058",
+            "phys": [],
+            "pos": "160 96",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -3292,14 +3003,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "195",
+            "id": "139",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "192 -512",
+            "phys": [],
+            "pos": "0 -64",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -3311,14 +3018,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "261",
+            "id": "334",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-830.366 1024",
+            "phys": [],
+            "pos": "-320 160",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -3330,14 +3033,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "286",
+            "id": "170",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-574.366 576",
+            "phys": [],
+            "pos": "0 -320",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -3349,14 +3048,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "208",
+            "id": "281",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "640 -544",
+            "phys": [],
+            "pos": "-798.366 704",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -3368,14 +3063,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "264",
+            "id": "258",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-894.366 1024",
+            "phys": [],
+            "pos": "-1086.37 1024",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -3387,298 +3078,9 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "349",
+            "id": "271",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1022.37 544",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile350",
-            "collision": "1",
-            "components": [],
-            "id": "418",
-            "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-480 384",
-            "rot": "90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "327",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "193",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "256 -512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "310",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 480",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "env_5",
-            "atlas-region": "tile005",
-            "collision": "0",
-            "components": [],
-            "id": "23",
-            "name": "tile005",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "151 194",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "235",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-862.366 576",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "352",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1182.37 576",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile350",
-            "collision": "1",
-            "components": [],
-            "id": "406",
-            "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-544 32",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "182",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "96 -512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "153",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-64 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "260",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-990.366 1024",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "247",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1054.37 800",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile350",
-            "collision": "1",
-            "components": [],
-            "id": "424",
-            "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-320 384",
-            "rot": "90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "145",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 128",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "274",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
             "pos": "-798.366 864",
             "rot": "0",
             "scripts": [],
@@ -3687,33 +3089,14 @@
             "z-order": "0"
         },
         {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "198",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "352 -512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
             "atlas": "2_3_city",
-            "atlas-region": "tile350",
+            "atlas-region": "tile034",
             "collision": "1",
             "components": [],
-            "id": "411",
-            "name": "tile350",
+            "id": "474",
+            "name": "tile034",
             "phys": [],
-            "pos": "-544 288",
+            "pos": "224 64",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -3725,465 +3108,9 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "174",
+            "id": "175",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 -448",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "143",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 64",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "341",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1022.37 768",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "268",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 960",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile350",
-            "collision": "1",
-            "components": [],
-            "id": "423",
-            "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-352 384",
-            "rot": "90",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile350",
-            "collision": "1",
-            "components": [],
-            "id": "388",
-            "name": "tile350",
             "phys": [],
-            "pos": "-544 96",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile350",
-            "collision": "1",
-            "components": [],
-            "id": "413",
-            "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-544 192",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "237",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-638.366 576",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "201",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "384 -512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "333",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-352 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "323",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-448 192",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "205",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "608 -512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "183",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "64 -512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "275",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 832",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "227",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1118.37 576",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "207",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "640 -512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "230",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-990.366 576",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "142",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 32",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "249",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-830.366 800",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "151",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-128 160",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "204",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "544 -512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "287",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-542.366 576",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "228",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-1086.37 576",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "144",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "0 96",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_1_city",
-            "atlas-region": "tile050",
-            "collision": "1",
-            "components": [],
-            "id": "173",
-            "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
             "pos": "0 -416",
             "rot": "0",
             "scripts": [],
@@ -4196,33 +3123,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "197",
+            "id": "263",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "288 -512",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile350",
-            "collision": "1",
-            "components": [],
-            "id": "410",
-            "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-544 256",
+            "phys": [],
+            "pos": "-926.366 1024",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -4234,33 +3138,10 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "283",
+            "id": "284",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-798.366 640",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_3_city",
-            "atlas-region": "tile350",
-            "collision": "1",
-            "components": [],
-            "id": "409",
-            "name": "tile350",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-544 320",
+            "phys": [],
+            "pos": "-798.366 608",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -4272,14 +3153,385 @@
             "atlas-region": "tile050",
             "collision": "1",
             "components": [],
-            "id": "196",
+            "id": "256",
             "name": "tile050",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "320 -512",
+            "phys": [],
+            "pos": "-1150.37 1024",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "252",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-894.366 800",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "315",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-448 416",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "225",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-1022.37 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "331",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-416 160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "326",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-448 192",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile034",
+            "collision": "1",
+            "components": [],
+            "id": "471",
+            "name": "tile034",
+            "phys": [],
+            "pos": "160 32",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "319",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-448 320",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile350",
+            "collision": "1",
+            "components": [],
+            "id": "414",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-544 160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "248",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-990.366 800",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "250",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-958.366 800",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "242",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-606.366 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "317",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-448 352",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile033",
+            "collision": "1",
+            "components": [],
+            "id": "375",
+            "name": "tile033",
+            "phys": [],
+            "pos": "128 64",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "136",
+            "name": "tile050",
+            "phys": [],
+            "pos": "0 -160",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "321",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-448 256",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile350",
+            "collision": "1",
+            "components": [],
+            "id": "407",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-544 0",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile413",
+            "collision": "1",
+            "components": [],
+            "id": "496",
+            "name": "tile413",
+            "phys": [],
+            "pos": "-240 64",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "203",
+            "name": "tile050",
+            "phys": [],
+            "pos": "384 -448",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "343",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-766.366 800",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "169",
+            "name": "tile050",
+            "phys": [],
+            "pos": "0 -288",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile350",
+            "collision": "1",
+            "components": [],
+            "id": "387",
+            "name": "tile350",
+            "phys": [],
+            "pos": "-544 128",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "194",
+            "name": "tile050",
+            "phys": [],
+            "pos": "224 -448",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_1_city",
+            "atlas-region": "tile050",
+            "collision": "1",
+            "components": [],
+            "id": "241",
+            "name": "tile050",
+            "phys": [],
+            "pos": "-670.366 576",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile034",
+            "collision": "1",
+            "components": [],
+            "id": "473",
+            "name": "tile034",
+            "phys": [],
+            "pos": "224 32",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_3_city",
+            "atlas-region": "tile058",
+            "collision": "1",
+            "components": [],
+            "id": "470",
+            "name": "tile058",
+            "phys": [],
+            "pos": "224 96",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -4293,12 +3545,42 @@
             "components": [],
             "id": "34",
             "name": "tile007",
+            "phys": [],
+            "pos": "-152.641 81.5882",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "1"
+        },
+        {
+            "atlas": "npc_1",
+            "atlas-region": "tile000",
+            "collision": "1",
+            "components": [],
+            "id": "76",
+            "name": "shopkeeper",
             "phys": [
                 {
-                    "poly": ""
+                    "poly": "-10 15 12 15 12 -11 -10 -11 "
                 }
             ],
-            "pos": "-152.641 81.5882",
+            "pos": "-233.304 6.94563",
+            "rot": "0",
+            "scripts": [],
+            "size": "48 48",
+            "type": "NPC",
+            "z-order": "1"
+        },
+        {
+            "atlas": "env_5",
+            "atlas-region": "tile017",
+            "collision": "1",
+            "components": [],
+            "id": "521",
+            "name": "tile017",
+            "phys": [],
+            "pos": "-859.585 610.669",
             "rot": "0",
             "scripts": [],
             "size": "32 32",
@@ -4312,11 +3594,7 @@
             "components": [],
             "id": "464",
             "name": "tile005",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
             "pos": "-134.856 -156.79",
             "rot": "0",
             "scripts": [],
@@ -4326,35 +3604,12 @@
         },
         {
             "atlas": "env_5",
-            "atlas-region": "tile005",
-            "collision": "1",
-            "components": [],
-            "id": "463",
-            "name": "tile005",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-149.192 -146.96",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "2"
-        },
-        {
-            "atlas": "env_5",
             "atlas-region": "tile129",
             "collision": "1",
             "components": [],
             "id": "364",
             "name": "tile129",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
             "pos": "-318.337 94.8912",
             "rot": "180",
             "scripts": [],
@@ -4367,13 +3622,24 @@
             "atlas-region": "tile005",
             "collision": "1",
             "components": [],
+            "id": "463",
+            "name": "tile005",
+            "phys": [],
+            "pos": "-149.192 -146.96",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "2"
+        },
+        {
+            "atlas": "env_5",
+            "atlas-region": "tile005",
+            "collision": "1",
+            "components": [],
             "id": "462",
             "name": "tile005",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
             "pos": "-168.443 -151.056",
             "rot": "0",
             "scripts": [],
@@ -4382,28 +3648,19 @@
             "z-order": "2"
         },
         {
-            "atlas": "npc_1",
-            "atlas-region": "tile000",
+            "atlas": "env_5",
+            "atlas-region": "tile003",
             "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "127",
-            "name": "tile000",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "208 -64",
+            "components": [],
+            "id": "512",
+            "name": "tile003",
+            "phys": [],
+            "pos": "-1000.09 959.795",
             "rot": "0",
             "scripts": [],
-            "size": "48 48",
-            "type": "Enemy",
-            "z-order": "3"
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "2"
         },
         {
             "atlas": "npc_1",
@@ -4423,30 +3680,6 @@
                 }
             ],
             "pos": "120 -216",
-            "rot": "0",
-            "scripts": [],
-            "size": "48 48",
-            "type": "NPC",
-            "z-order": "3"
-        },
-        {
-            "atlas": "npc_1",
-            "atlas-region": "tile000",
-            "collision": "1",
-            "components": [
-                {
-                    "name": "MOVEMENT_COMPONENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "id": "76",
-            "name": "tile000",
-            "phys": [
-                {
-                    "poly": "-10 15 12 15 12 -11 -10 -11 "
-                }
-            ],
-            "pos": "265 136",
             "rot": "0",
             "scripts": [],
             "size": "48 48",
@@ -4487,6 +3720,26 @@
                     "type": "MovementComponent"
                 }
             ],
+            "id": "127",
+            "name": "tile000",
+            "phys": [],
+            "pos": "208 -64",
+            "rot": "0",
+            "scripts": [],
+            "size": "48 48",
+            "type": "Enemy",
+            "z-order": "3"
+        },
+        {
+            "atlas": "npc_1",
+            "atlas-region": "tile000",
+            "collision": "1",
+            "components": [
+                {
+                    "name": "MOVEMENT_COMPONENT",
+                    "type": "MovementComponent"
+                }
+            ],
             "id": "73",
             "name": "npc_x",
             "phys": [
@@ -4504,72 +3757,11 @@
         {
             "atlas": "env_5",
             "atlas-region": "tile003",
-            "collision": "1",
-            "components": [],
-            "id": "476",
-            "name": "tile003",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "214.385 115.482",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "5"
-        },
-        {
-            "atlas": "env_5",
-            "atlas-region": "tile129",
-            "collision": "1",
-            "components": [],
-            "id": "366",
-            "name": "tile129",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-315.075 115.047",
-            "rot": "180",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "5"
-        },
-        {
-            "atlas": "env_5",
-            "atlas-region": "tile129",
-            "collision": "1",
-            "components": [],
-            "id": "365",
-            "name": "tile129",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
-            "pos": "-345.034 113.869",
-            "rot": "0",
-            "scripts": [],
-            "size": "32 32",
-            "type": "Tile",
-            "z-order": "5"
-        },
-        {
-            "atlas": "env_5",
-            "atlas-region": "tile003",
             "collision": "0",
             "components": [],
             "id": "31",
             "name": "tile003",
-            "phys": [
-                {
-                    "poly": ""
-                }
-            ],
+            "phys": [],
             "pos": "69.4071 11.8418",
             "rot": "0",
             "scripts": [],
@@ -4591,6 +3783,51 @@
             ],
             "pos": "128 0",
             "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "5"
+        },
+        {
+            "atlas": "env_5",
+            "atlas-region": "tile003",
+            "collision": "1",
+            "components": [],
+            "id": "476",
+            "name": "tile003",
+            "phys": [],
+            "pos": "214.385 115.482",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "5"
+        },
+        {
+            "atlas": "env_5",
+            "atlas-region": "tile129",
+            "collision": "1",
+            "components": [],
+            "id": "365",
+            "name": "tile129",
+            "phys": [],
+            "pos": "-345.034 113.869",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "5"
+        },
+        {
+            "atlas": "env_5",
+            "atlas-region": "tile129",
+            "collision": "1",
+            "components": [],
+            "id": "366",
+            "name": "tile129",
+            "phys": [],
+            "pos": "-315.075 115.047",
+            "rot": "180",
             "scripts": [],
             "size": "32 32",
             "type": "Tile",
@@ -4620,14 +3857,14 @@
             "atlas-region": "Sprite-0019",
             "collision": "1",
             "components": [],
-            "id": "448",
+            "id": "450",
             "name": "Sprite-0019",
             "phys": [
                 {
                     "poly": "-0.712906 28.5103 5.75232 47.3795 -7.07965 47.7596 "
                 }
             ],
-            "pos": "-232.837 130.761",
+            "pos": "-468.814 223.636",
             "rot": "0",
             "scripts": [],
             "size": "18 96",
@@ -4639,14 +3876,14 @@
             "atlas-region": "Sprite-0019",
             "collision": "1",
             "components": [],
-            "id": "450",
+            "id": "448",
             "name": "Sprite-0019",
             "phys": [
                 {
                     "poly": "-0.712906 28.5103 5.75232 47.3795 -7.07965 47.7596 "
                 }
             ],
-            "pos": "-468.814 223.636",
+            "pos": "-232.837 130.761",
             "rot": "0",
             "scripts": [],
             "size": "18 96",
@@ -4690,6 +3927,25 @@
             "size": "18 96",
             "type": "Tile",
             "z-order": "11"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "Sprite-0007",
+            "collision": "1",
+            "components": [],
+            "id": "526",
+            "name": "Sprite-0007",
+            "phys": [
+                {
+                    "poly": "-17.1184 59.4656 7.78531 59.4656 -4.66653 32.2682 "
+                }
+            ],
+            "pos": "-484.596 494.809",
+            "rot": "0",
+            "scripts": [],
+            "size": "173 155",
+            "type": "Tile",
+            "z-order": "12"
         },
         {
             "atlas": "2_2_city",
@@ -4863,6 +4119,25 @@
             "z-order": "12"
         },
         {
+            "atlas": "env_0",
+            "atlas-region": "Sprite-0005",
+            "collision": "1",
+            "components": [],
+            "id": "357",
+            "name": "Sprite-0005",
+            "phys": [
+                {
+                    "poly": "16.2832 25.192 5.14208 65.8243 32.9949 67.7904 "
+                }
+            ],
+            "pos": "0 -112",
+            "rot": "0",
+            "scripts": [],
+            "size": "160 160",
+            "type": "Tile",
+            "z-order": "13"
+        },
+        {
             "atlas": "2_2_city",
             "atlas-region": "Sprite-0020",
             "collision": "1",
@@ -4871,15 +4146,49 @@
             "name": "Sprite-0020",
             "phys": [
                 {
-                    "poly": "-98.32 -62.56 -98.32 130.72 102 128.16 101.36 -60.64 -1.03998 -151.52 "
+                    "poly": "-108.373 -63.4223 -108.653 132.312 106.558 132.522 105.33 -62.0384 -1.0304 -110.243 "
                 }
             ],
-            "pos": "544 -928",
+            "pos": "448 -880",
             "rot": "0",
             "scripts": [],
             "size": "224 332",
             "type": "Tile",
             "z-order": "13"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "Sprite-0002",
+            "collision": "1",
+            "components": [],
+            "id": "524",
+            "name": "Sprite-0002",
+            "phys": [
+                {
+                    "poly": "10.8256 71.3871 35.8112 74.2543 22.2944 43.5344 "
+                }
+            ],
+            "pos": "-765.104 807.294",
+            "rot": "0",
+            "scripts": [],
+            "size": "147 169",
+            "type": "Tile",
+            "z-order": "14"
+        },
+        {
+            "atlas": "env_5",
+            "atlas-region": "tile017",
+            "collision": "1",
+            "components": [],
+            "id": "522",
+            "name": "tile017",
+            "phys": [],
+            "pos": "-1133.46 521.626",
+            "rot": "0",
+            "scripts": [],
+            "size": "32 32",
+            "type": "Tile",
+            "z-order": "22"
         }
     ],
     "color": "35 31 54 255",
@@ -4907,12 +4216,12 @@
         {
             "connections": "NPC_1_B NPC_1_D ",
             "name": "NPC_1_A",
-            "pos": "-304 -80"
+            "pos": "-304 -48"
         },
         {
             "connections": "NPC_1_A NPC_1_C ",
             "name": "NPC_1_B",
-            "pos": "-96 -80"
+            "pos": "-96 -48"
         },
         {
             "connections": "NPC_1_B NPC_1_D ",
@@ -4930,10 +4239,10 @@
             "pos": "-157 407"
         }
     ],
-    "max_size": "768 1056",
-    "min_size": "-1200 -928",
+    "max_size": "672 1056",
+    "min_size": "-1200 -880",
     "name": "City",
-    "player_start": "-1005.02 801.371",
+    "player_start": "-203.61 109.419",
     "scripts": [
         {
             "name": "main",
@@ -5020,7 +4329,7 @@
         },
         {
             "name": "ENTRY_HOME",
-            "poly": "-1032.82 743.304 -1032.21 767.652 -978.523 767.652 -979.056 744.84 "
+            "poly": "-1024.76 761.065 -987.278 761.851 -1004.32 734.588 "
         },
         {
             "name": "FACTORIES_AREA",
