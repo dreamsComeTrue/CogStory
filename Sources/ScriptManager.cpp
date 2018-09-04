@@ -90,6 +90,7 @@ namespace aga
            Actor@ RegisterActorAction (const string &in actionName, string &in actorName,
                                        ActorActionHandler @+ callback)
            SpeechFrame@ TalkTo (Actor@ actor, const string in& speechID)
+           Actor@ GetLastActionActor ()
 
        Screen
            Screen screen
@@ -857,6 +858,9 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod ("Player",
             "SpeechFrame@ TalkTo (Actor@ actor, const string &in speechID)", asMETHOD (Player, TalkTo),
             asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "Player", "Actor@ GetLastActionActor ()", asMETHOD (Player, GetLastActionActor), asCALL_THISCALL);
         assert (r >= 0);
 
         RegisterBaseActorAPI<Player> ("Player");

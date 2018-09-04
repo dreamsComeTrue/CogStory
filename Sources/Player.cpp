@@ -25,6 +25,7 @@ namespace aga
         , m_PreventInput (false)
         , m_ActionHandling (false)
         , m_ActionHandler (nullptr)
+        , m_LastActionActor (nullptr)
     {
     }
 
@@ -341,6 +342,8 @@ namespace aga
             ctx->GetEngine ()->ReturnContext (ctx);
         }
 
+        m_LastActionActor = nullptr;
+
         for (std::map<std::string, ActorAction>::iterator it = m_ActorActions.begin (); it != m_ActorActions.end ();
              ++it)
         {
@@ -358,6 +361,8 @@ namespace aga
                 ctx->GetEngine ()->ReturnContext (ctx);
 
                 action.Handled = true;
+
+                m_LastActionActor = action.AnActor;
             }
         }
     }

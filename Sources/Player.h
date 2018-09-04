@@ -59,6 +59,7 @@ namespace aga
         Actor* RegisterActorAction (
             const std::string& actionName, const std::string& actorName, asIScriptFunction* func);
         class SpeechFrame* TalkTo (Actor* actor, const std::string& speechID);
+        Actor* GetLastActionActor () { return m_LastActionActor; }
 
     private:
         void CreateParticleEmitters ();
@@ -79,6 +80,7 @@ namespace aga
         asIScriptFunction* m_ActionHandler;
 
         std::map<std::string, ActorAction> m_ActorActions;
+        Actor* m_LastActionActor;
     };
 }
 

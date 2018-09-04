@@ -88,7 +88,7 @@ namespace aga
 
                     m_SceneManager->GetPlayer ()->SetPreventInput (false);
 
-                    if (outcomeAction != "")
+                    if (outcomeAction != "" && outcomeAction != "[CLOSE]")
                     {
                         SpeechFrame* frame = AddSpeechFrame (outcomeAction);
 

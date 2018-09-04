@@ -5,8 +5,6 @@ bool g_IntroPlayed = false;
 Point playerSize = player.GetSize ();
 Point screenSize = screen.GetWindowSize ();
 
-Actor@ lastActionActor = null;
-
 void SceneChanged (const string &in previousSceneName)
 {
     Point pos;
@@ -53,11 +51,18 @@ void AfterLeaveScene ()
 
 void PlayerActionHandler ()
 {
-    @lastActionActor = @player.RegisterActorAction ("my_action", "npc_girl", function (actor)
+    player.RegisterActorAction ("my_action", "npc_girl", function (actor)
     {
         player.TalkTo (actor, "GREET_1").SetHandleFunction (function () 
         { 
             Log ("OK!!!"); 
+        });
+    });
+
+    player.RegisterActorAction ("my_action2", "SHOPKEEPER", function (actor)
+    {
+        player.TalkTo (actor, "SHOPKEEPER_GREET").SetHandleFunction (function () 
+        { 
         });
     });
 }
@@ -112,9 +117,11 @@ void RegisterFunctions ()
 
     RegisterSpeechesFinishedHandler (function ()
     {
-        if (!(lastActionActor is null))
+        Actor@ lastActor = player.GetLastActionActor ();
+
+        if (lastActor !is null)
         {
-            lastActionActor.ResumeUpdate ();
+            lastActor.ResumeUpdate ();
         }
     });
 
