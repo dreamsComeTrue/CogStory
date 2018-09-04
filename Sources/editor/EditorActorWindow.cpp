@@ -29,6 +29,7 @@ namespace aga
     Gwk::Controls::Property::ComboBox* imageProperty;
     Gwk::Controls::Property::ComboBox* imagePathProperty;
     Gwk::Controls::Property::ComboBox* animationProperty;
+    Gwk::Controls::Property::ComboBox* overlapProperty;
     Gwk::Controls::Property::ComboBox* collisionProperty;
 
     EditorActorWindow::EditorActorWindow (Editor* editor, Gwk::Controls::Canvas* canvas)
@@ -130,6 +131,13 @@ namespace aga
 
             m_OthersSection->Add ("Collision", m_CollisionComboBox);
 
+            m_OverlapComboBox = new Gwk::Controls::Property::ComboBox (m_OthersSection);
+            m_OverlapComboBox->GetComboBox ()->AddItem ("true", "true");
+            m_OverlapComboBox->GetComboBox ()->AddItem ("false", "false");
+            m_OverlapComboBox->GetComboBox ()->onSelection.Add (this, &EditorActorWindow::OnOverlapSelected);
+
+            m_OthersSection->Add ("Overlap", m_OverlapComboBox);
+
             m_ScriptSection = m_ActorProperties->Add ("Scripts");
             m_ComponentSection = m_ActorProperties->Add ("Components");
 
@@ -154,6 +162,8 @@ namespace aga
                 static_cast<Gwk::Controls::PropertyRow*> (m_ApperanceSection->Find ("Path"))->GetProperty ());
             animationProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
                 static_cast<Gwk::Controls::PropertyRow*> (m_ApperanceSection->Find ("Animation"))->GetProperty ());
+            overlapProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
+                static_cast<Gwk::Controls::PropertyRow*> (m_OthersSection->Find ("Overlap"))->GetProperty ());
             collisionProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
                 static_cast<Gwk::Controls::PropertyRow*> (m_OthersSection->Find ("Collision"))->GetProperty ());
         }
@@ -210,6 +220,7 @@ namespace aga
         zOrderProperty->SetPropertyValue ("", false);
         imagePathProperty->SetPropertyValue ("", false);
         imageProperty->SetPropertyValue ("", false);
+        overlapProperty->SetPropertyValue ("false", false);
         collisionProperty->SetPropertyValue ("false", false);
 
         m_SceneWindow->SetPosition (Gwk::Position::Center);
@@ -305,6 +316,15 @@ namespace aga
         {
             node->SetSelected (true);
         }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::OnOverlapSelected (Gwk::Controls::Base* control)
+    {
+        Gwk::String overlap = m_OverlapComboBox->GetPropertyValue ();
+
+        m_SelectedActor->SetCheckOverlap (overlap == "true" ? true : false);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -462,6 +482,8 @@ namespace aga
         zOrderProperty->SetPropertyValue (m_SelectedActor != nullptr ? ToString (m_SelectedActor->ZOrder) : "0", false);
         imagePathProperty->SetPropertyValue (
             m_SelectedActor != nullptr ? m_SelectedActor->GetAtlas ()->GetName () : "", false);
+        overlapProperty->SetPropertyValue (
+            m_SelectedActor != nullptr ? (m_SelectedActor->IsCheckOverlap () ? "true" : "false") : "false", false);
         collisionProperty->SetPropertyValue (
             m_SelectedActor != nullptr ? (m_SelectedActor->IsCollisionEnabled () ? "true" : "false") : "false", false);
 

@@ -86,7 +86,9 @@ namespace aga
 
     int SpeechFrame::GetMaxLinesCanFit ()
     {
-        return (m_DrawRect.GetSize ().Height - 2 * SPEECH_FRAME_TEXT_INSETS) / m_LineHeight;
+        float areaWithoutInsets = (m_DrawRect.GetSize ().Height - 2 * SPEECH_FRAME_TEXT_INSETS);
+
+        return areaWithoutInsets / (m_LineHeight);
     }
 
     //--------------------------------------------------------------------------------------------------

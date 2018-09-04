@@ -292,6 +292,9 @@ namespace aga
                     std::string collisionStr = actorIt["collision"];
                     newActor->SetCollisionEnabled (atoi (collisionStr.c_str ()));
 
+                    std::string overlapStr = actorIt["overlap"];
+                    newActor->SetCheckOverlap (atoi (overlapStr.c_str ()));
+
                     newActor->Initialize ();
                     newActor->TemplateBounds = newActor->Bounds;
 
@@ -450,16 +453,19 @@ namespace aga
                 actorObj["atlas"] = actor != nullptr ? actor->GetAtlas ()->GetName () : "";
                 actorObj["atlas-region"] = actor->GetAtlasRegionName ();
                 actorObj["collision"] = ToString (actor->IsCollisionEnabled ());
+                actorObj["overlap"] = ToString (actor->IsCheckOverlap ());
 
                 actorObj["phys"] = json::array ({});
 
-                if (!actor->PhysPoints.empty () && !actor->PhysPoints[0].empty ())
+                for (int i = 0; i < actor->PhysPoints.size (); ++i)
                 {
-                    for (int i = 0; i < actor->PhysPoints.size (); ++i)
+                    std::vector<Point>& points = actor->PhysPoints[i];
+
+                    if (!points.empty ())
                     {
                         json physObj = json::object ({});
 
-                        physObj["poly"] = VectorPointsToString (actor->PhysPoints[i]);
+                        physObj["poly"] = VectorPointsToString (points);
 
                         actorObj["phys"].push_back (physObj);
                     }

@@ -9,7 +9,18 @@ Actor@ lastActionActor = null;
 
 void SceneChanged (const string &in previousSceneName)
 {
-    player.SetCenterPosition (GetFlagPoint ("MARKER_HOME_CITY").Pos);
+    Point pos;
+
+    if (previousSceneName == "Home")
+    {
+        pos = GetFlagPoint ("MARKER_HOME_CITY").Pos;
+    }
+    else 
+    {
+        pos = GetFlagPoint ("MARKER_HOME_CITY").Pos;
+    }
+
+    player.SetCenterPosition (pos);
 }
 
 void BeforeEnterScene ()
@@ -104,6 +115,20 @@ void RegisterFunctions ()
         if (!(lastActionActor is null))
         {
             lastActionActor.ResumeUpdate ();
+        }
+    });
+
+    GetActor ("HOME_SIGN").AddOverlapCallbacks (function (other)
+    {
+        if (other.GetTypeName () == "Player")
+        {
+            AddSpeechFrame ("HOME_SIGN", false);
+        }
+    }, null, function (other)
+    {
+        if (other.GetTypeName () == "Player")
+        {
+            RemoveSpeechFrame ("HOME_SIGN");
         }
     });
 }

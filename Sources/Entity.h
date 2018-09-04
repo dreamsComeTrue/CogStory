@@ -3,11 +3,19 @@
 #ifndef __ENTITY_H__
 #define __ENTITY_H__
 
+#include "Common.h"
 #include "Transformable.h"
 
 namespace aga
 {
     class SceneManager;
+
+    struct OverlapCallback
+    {
+        asIScriptFunction* BeginFunc = nullptr;
+        asIScriptFunction* OverlappingFunc = nullptr;
+        asIScriptFunction* EndFunc = nullptr;
+    };
 
     class Entity : public Transformable
     {
@@ -29,6 +37,11 @@ namespace aga
 
         virtual std::string GetTypeName () = 0;
 
+        void AddBeginOverlapCallback (asIScriptFunction* func);
+        void AddOverlappingCallback (asIScriptFunction* func);
+        void AddEndOverlapCallback (asIScriptFunction* func);
+        void AddOverlapCallbacks (asIScriptFunction* begin, asIScriptFunction* update, asIScriptFunction* end);
+
         static int GetNextID () { return ++GlobalID; }
 
         static bool CompareByZOrder (const Entity* a, const Entity* b) { return a->ZOrder < b->ZOrder; }
@@ -44,6 +57,7 @@ namespace aga
         SceneManager* m_SceneManager;
         bool m_CheckOverlap;
         std::vector<Entity*> m_OverlapedEntities;
+        std::vector<OverlapCallback> m_OverlapCallbacks;
     };
 }
 

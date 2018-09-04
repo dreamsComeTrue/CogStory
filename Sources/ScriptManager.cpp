@@ -148,6 +148,8 @@ namespace aga
            SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Rect, bool = true, const string &in = "")
            SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Point, int, int, bool = true, const string
        &in="")
+           SpeechFrame@ AddSpeechFrame (const string &in id, bool shouldBeHandled = true)
+           void RemoveSpeechFrame (const string &in id)
                = void SpeechHandler ()
            void RegisterSpeechesFinishedHandler (SpeechHandler @+ hd)
 
@@ -168,7 +170,12 @@ namespace aga
            void OrientTo (Actor@)
            void SuspendUpdate ()
            void ResumeUpdate ()
-           void AssignFlagPointsToWalk (const string in& flagPointName);
+           void AssignFlagPointsToWalk (const string in& flagPointName)
+                = void OverlapHandler (Actor@)
+           void AddBeginOverlapCallback (OverlapHandler @+ func)
+           void AddOverlappingCallback (OverlapHandler @+ func)
+           void AddEndOverlapCallback (OverlapHandler @+ func)
+           void AddOverlapCallbacks (OverlapHandler @+ begin, OverlapHandler @+ update, OverlapHandler @+ end)
 
        MovementComponent
            MovementType
@@ -1050,10 +1057,17 @@ namespace aga
                 SpeechFrame*),
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);
-        r = m_ScriptEngine->RegisterGlobalFunction ("SpeechFrame@ AddSpeechFrame (const string &in, bool = true)",
-            asMETHODPR (SpeechFrameManager, AddSpeechFrame, (const std::string&, bool), SpeechFrame*),
+        r = m_ScriptEngine->RegisterGlobalFunction (
+            "SpeechFrame@ AddSpeechFrame (const string &in id, bool shouldBeHandled = true)",
+            asMETHODPR (
+                SpeechFrameManager, AddSpeechFrame, (const std::string& id, bool shouldBeHandled), SpeechFrame*),
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction ("void RemoveSpeechFrame (const string &in id)",
+            asMETHOD (SpeechFrameManager, RemoveSpeechFrame), asCALL_THISCALL_ASGLOBAL,
+            &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
+        assert (r >= 0);
+
         r = m_ScriptEngine->RegisterFuncdef ("void SpeechHandler ()");
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction ("void RegisterSpeechesFinishedHandler (SpeechHandler @+ hd)",
@@ -1067,6 +1081,8 @@ namespace aga
     template <class T> void ScriptManager::RegisterBaseActorAPI (const char* type)
     {
         int r = m_ScriptEngine->RegisterObjectProperty (type, "Rect Bounds", asOFFSET (T, Bounds));
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectProperty (type, "string Name", asOFFSET (T, Name));
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
             type, "void Move (float, float)", asMETHODPR (T, Move, (float, float), void), asCALL_THISCALL);
@@ -1109,6 +1125,19 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod (type, "void AssignFlagPointsToWalk (const string &in flagPointName)",
             asMETHOD (T, AssignFlagPointsToWalk), asCALL_THISCALL);
         assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (type, "void AddBeginOverlapCallback (OverlapHandler @+ func)",
+            asMETHOD (T, AddBeginOverlapCallback), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (type, "void AddOverlappingCallback (OverlapHandler @+ func)",
+            asMETHOD (T, AddOverlappingCallback), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (type, "void AddEndOverlapCallback (OverlapHandler @+ func)",
+            asMETHOD (T, AddEndOverlapCallback), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (type,
+            "void AddOverlapCallbacks (OverlapHandler @+ begin, OverlapHandler @+ update, OverlapHandler @+ end)",
+            asMETHOD (T, AddOverlapCallbacks), asCALL_THISCALL);
+        assert (r >= 0);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1125,6 +1154,9 @@ namespace aga
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("Actor", "void AddCollisionCallback (CollisionCbk @+ callback)",
             asMETHODPR (Actor, AddCollisionCallback, (asIScriptFunction*), void), asCALL_THISCALL);
+
+        r = m_ScriptEngine->RegisterFuncdef ("void OverlapHandler (Actor@)");
+        assert (r >= 0);
 
         RegisterBaseActorAPI<Actor> ("Actor");
     }

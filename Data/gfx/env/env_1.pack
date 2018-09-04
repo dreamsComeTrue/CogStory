@@ -6,7 +6,7 @@ filter: Nearest,Nearest
 repeat: none
 Sprite-0013
   rotate: false
-  xy: 80, 58
+  xy: 30, 18
   size: 32, 29
   orig: 32, 29
   offset: 0, 0
@@ -27,7 +27,7 @@ Sprite-0015
   index: -1
 Sprite-0016
   rotate: false
-  xy: 80, 35
+  xy: 62, 22
   size: 25, 23
   orig: 25, 23
   offset: 0, 0
@@ -51,5 +51,12 @@ Sprite-0019
   xy: 0, 32
   size: 18, 96
   orig: 18, 96
+  offset: 0, 0
+  index: -1
+Sprite-0020
+  rotate: false
+  xy: 80, 45
+  size: 30, 42
+  orig: 30, 42
   offset: 0, 0
   index: -1

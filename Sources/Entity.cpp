@@ -1,8 +1,10 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Entity.h"
+#include "MainLoop.h"
 #include "Scene.h"
 #include "SceneManager.h"
+#include "ScriptManager.h"
 
 namespace aga
 {
@@ -58,11 +60,29 @@ namespace aga
                         }
                     }
 
+                    for (OverlapCallback& callback : m_OverlapCallbacks)
+                    {
+                        if (callback.OverlappingFunc)
+                        {
+                            m_SceneManager->GetMainLoop ()->GetScriptManager ().RunScriptFunction (
+                                callback.OverlappingFunc, ent);
+                        }
+                    }
+
                     if (!found)
                     {
                         m_OverlapedEntities.push_back (ent);
 
                         BeginOverlap (ent);
+
+                        for (OverlapCallback& callback : m_OverlapCallbacks)
+                        {
+                            if (callback.BeginFunc)
+                            {
+                                m_SceneManager->GetMainLoop ()->GetScriptManager ().RunScriptFunction (
+                                    callback.BeginFunc, ent);
+                            }
+                        }
                     }
                 }
                 else
@@ -73,6 +93,15 @@ namespace aga
                         if (*it == ent)
                         {
                             EndOverlap (ent);
+
+                            for (OverlapCallback& callback : m_OverlapCallbacks)
+                            {
+                                if (callback.EndFunc)
+                                {
+                                    m_SceneManager->GetMainLoop ()->GetScriptManager ().RunScriptFunction (
+                                        callback.EndFunc, ent);
+                                }
+                            }
 
                             m_OverlapedEntities.erase (it);
                             break;
@@ -108,6 +137,48 @@ namespace aga
         float dy = (this->Bounds.Pos.Y + thisHalf.Height) - (ent->Bounds.Pos.Y + entHalf.Height);
 
         return ToPositiveAngle (RadiansToDegrees (std::atan2 (dy, dx)));
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Entity::AddBeginOverlapCallback (asIScriptFunction* func)
+    {
+        OverlapCallback callback;
+        callback.BeginFunc = func;
+
+        m_OverlapCallbacks.push_back (callback);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Entity::AddOverlappingCallback (asIScriptFunction* func)
+    {
+        OverlapCallback callback;
+        callback.OverlappingFunc = func;
+
+        m_OverlapCallbacks.push_back (callback);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Entity::AddEndOverlapCallback (asIScriptFunction* func)
+    {
+        OverlapCallback callback;
+        callback.EndFunc = func;
+
+        m_OverlapCallbacks.push_back (callback);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Entity::AddOverlapCallbacks (asIScriptFunction* begin, asIScriptFunction* update, asIScriptFunction* end)
+    {
+        OverlapCallback callback;
+        callback.BeginFunc = begin;
+        callback.OverlappingFunc = update;
+        callback.EndFunc = end;
+
+        m_OverlapCallbacks.push_back (callback);
     }
 
     //--------------------------------------------------------------------------------------------------

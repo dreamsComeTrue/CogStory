@@ -41,6 +41,7 @@ namespace aga
         void OnImagePathSelected (Gwk::Controls::Base* control);
         void OnImageSelected (Gwk::Controls::Base* control);
 
+        void OnOverlapSelected (Gwk::Controls::Base* control);
         void OnCollisionSelected (Gwk::Controls::Base* control);
 
         void UpdateActorsTree ();
@@ -70,6 +71,7 @@ namespace aga
         Gwk::Controls::Property::ComboBox* m_ImagePathComboBox;
         Gwk::Controls::Property::ComboBox* m_AnimationComboBox;
 
+        Gwk::Controls::Property::ComboBox* m_OverlapComboBox;
         Gwk::Controls::Property::ComboBox* m_CollisionComboBox;
 
         Gwk::Controls::PropertyTree* m_ActorProperties;
