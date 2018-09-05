@@ -25,8 +25,6 @@ namespace aga
     {
         Actor::Initialize ();
 
-        SetCheckOverlap (true);
-
         SetAnimation (ActorFactory::GetAnimation ("ANIMATION_NPC_1"));
         SetCurrentAnimation (ANIM_STAND_LEFT_NAME);
 

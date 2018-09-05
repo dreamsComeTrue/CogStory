@@ -1,3 +1,5 @@
+#include "../../Data/scripts/Common.script"
+
 AudioStream@ audioStream;
 
 bool g_IntroPlayed = false;
@@ -125,20 +127,16 @@ void RegisterFunctions ()
         }
     });
 
-    GetActor ("HOME_SIGN").AddOverlapCallbacks (function (other)
+    player.AddOverlapCallbacks (function (other)
     {
-        if (other.GetTypeName () == "Player")
-        {
-            AddSpeechFrame ("HOME_SIGN", false);
-        }
+        ShowSpeechWhenOverlap (other, "HOME_SIGN", "HOME_SIGN");
     }, null, function (other)
     {
-        if (other.GetTypeName () == "Player")
-        {
-            RemoveSpeechFrame ("HOME_SIGN");
-        }
+        HideSpeechWhenOverlap (other, "HOME_SIGN", "HOME_SIGN");
     });
 }
+
+
 
 void Update (float deltaTime)
 {

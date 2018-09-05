@@ -53,6 +53,10 @@ namespace aga
         virtual void BeginOverlap (Entity* entity) {}
         virtual void EndOverlap (Entity* entity) {}
 
+        void CallBeginOverlapCallbacks (Entity* whom, Entity* target);
+        void CallOverlappingCallbacks (Entity* whom, Entity* target);
+        void CallEndOverlapCallbacks (Entity* whom, Entity* target);
+
     protected:
         SceneManager* m_SceneManager;
         bool m_CheckOverlap;

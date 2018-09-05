@@ -18,14 +18,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool EnemyActor::Initialize ()
-    {
-        Actor::Initialize ();
-
-        SetCheckOverlap (true);
-
-        return true;
-    }
+    bool EnemyActor::Initialize () { return Actor::Initialize (); }
 
     //--------------------------------------------------------------------------------------------------
 

@@ -60,14 +60,8 @@ namespace aga
                         }
                     }
 
-                    for (OverlapCallback& callback : m_OverlapCallbacks)
-                    {
-                        if (callback.OverlappingFunc)
-                        {
-                            m_SceneManager->GetMainLoop ()->GetScriptManager ().RunScriptFunction (
-                                callback.OverlappingFunc, ent);
-                        }
-                    }
+                    CallOverlappingCallbacks (this, ent);
+                    CallOverlappingCallbacks (ent, this);
 
                     if (!found)
                     {
@@ -75,14 +69,8 @@ namespace aga
 
                         BeginOverlap (ent);
 
-                        for (OverlapCallback& callback : m_OverlapCallbacks)
-                        {
-                            if (callback.BeginFunc)
-                            {
-                                m_SceneManager->GetMainLoop ()->GetScriptManager ().RunScriptFunction (
-                                    callback.BeginFunc, ent);
-                            }
-                        }
+                        CallBeginOverlapCallbacks (this, ent);
+                        CallBeginOverlapCallbacks (ent, this);
                     }
                 }
                 else
@@ -94,14 +82,8 @@ namespace aga
                         {
                             EndOverlap (ent);
 
-                            for (OverlapCallback& callback : m_OverlapCallbacks)
-                            {
-                                if (callback.EndFunc)
-                                {
-                                    m_SceneManager->GetMainLoop ()->GetScriptManager ().RunScriptFunction (
-                                        callback.EndFunc, ent);
-                                }
-                            }
+                            CallEndOverlapCallbacks (this, ent);
+                            CallEndOverlapCallbacks (ent, this);
 
                             m_OverlapedEntities.erase (it);
                             break;
@@ -179,6 +161,46 @@ namespace aga
         callback.EndFunc = end;
 
         m_OverlapCallbacks.push_back (callback);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Entity::CallBeginOverlapCallbacks (Entity* whom, Entity* target)
+    {
+        for (OverlapCallback& callback : whom->m_OverlapCallbacks)
+        {
+            if (callback.BeginFunc)
+            {
+                m_SceneManager->GetMainLoop ()->GetScriptManager ().RunScriptFunction (callback.BeginFunc, target);
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Entity::CallOverlappingCallbacks (Entity* whom, Entity* target)
+    {
+        for (OverlapCallback& callback : whom->m_OverlapCallbacks)
+        {
+            if (callback.OverlappingFunc)
+            {
+                m_SceneManager->GetMainLoop ()->GetScriptManager ().RunScriptFunction (
+                    callback.OverlappingFunc, target);
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Entity::CallEndOverlapCallbacks (Entity* whom, Entity* target)
+    {
+        for (OverlapCallback& callback : whom->m_OverlapCallbacks)
+        {
+            if (callback.EndFunc)
+            {
+                m_SceneManager->GetMainLoop ()->GetScriptManager ().RunScriptFunction (callback.EndFunc, target);
+            }
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
