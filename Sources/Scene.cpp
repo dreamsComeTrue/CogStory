@@ -587,6 +587,7 @@ namespace aga
 
         m_FlagPoints.clear ();
         m_TriggerAreas.clear ();
+        m_Speeches.clear ();
 
         m_QuadTree = QuadTreeNode (Rect ({-SCENE_INFINITE_BOUND_SIZE, -SCENE_INFINITE_BOUND_SIZE},
             {SCENE_INFINITE_BOUND_SIZE, SCENE_INFINITE_BOUND_SIZE}));

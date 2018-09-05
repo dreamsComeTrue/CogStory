@@ -1657,16 +1657,19 @@ namespace aga
 
     void Editor::SelectActorsWithinSelectionRect ()
     {
-        std::vector<Actor*>& actors = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActors ();
-        Rect selectionWorld = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_SelectionRect);
-
-        for (Actor* actorIt : actors)
+        if (m_SelectionRect.GetSize ().Width > 2 || m_SelectionRect.GetSize ().Height > 2)
         {
-            Rect r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (actorIt);
+            std::vector<Actor*>& actors = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActors ();
+            Rect selectionWorld = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_SelectionRect);
 
-            if (Intersect (r, selectionWorld))
+            for (Actor* actorIt : actors)
             {
-                m_EditorActorMode.AddActorToSelection (actorIt);
+                Rect r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (actorIt);
+
+                if (Intersect (r, selectionWorld))
+                {
+                    m_EditorActorMode.AddActorToSelection (actorIt);
+                }
             }
         }
     }

@@ -14,7 +14,7 @@ void HideSpeechWhenOverlap (Actor@ other, string objectName, string speechID)
 {
     if (other.Name == objectName)
     {
-        AddSpeechFrame (speechID, false);
+        RemoveSpeechFrame (speechID);
     } 
 } 
 

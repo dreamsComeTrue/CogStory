@@ -1,61 +1,89 @@
 
 env_1.png
-size: 128,128
+size: 256,128
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+Sprite-0001
+  rotate: false
+  xy: 0, 64
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+Sprite-0002
+  rotate: false
+  xy: 0, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+Sprite-0003
+  rotate: false
+  xy: 64, 64
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+Sprite-0004
+  rotate: false
+  xy: 64, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 Sprite-0013
   rotate: false
-  xy: 30, 18
+  xy: 158, 18
   size: 32, 29
   orig: 32, 29
   offset: 0, 0
   index: -1
 Sprite-0014
   rotate: false
-  xy: 0, 0
+  xy: 128, 0
   size: 30, 32
   orig: 30, 32
   offset: 0, 0
   index: -1
 Sprite-0015
   rotate: false
-  xy: 79, 87
+  xy: 207, 87
   size: 31, 41
   orig: 31, 41
   offset: 0, 0
   index: -1
 Sprite-0016
   rotate: false
-  xy: 62, 22
+  xy: 190, 22
   size: 25, 23
   orig: 25, 23
   offset: 0, 0
   index: -1
 Sprite-0017
   rotate: false
-  xy: 18, 83
+  xy: 146, 83
   size: 61, 45
   orig: 61, 45
   offset: 0, 0
   index: -1
 Sprite-0018
   rotate: false
-  xy: 18, 47
+  xy: 146, 47
   size: 62, 36
   orig: 62, 36
   offset: 0, 0
   index: -1
 Sprite-0019
   rotate: false
-  xy: 0, 32
+  xy: 128, 32
   size: 18, 96
   orig: 18, 96
   offset: 0, 0
   index: -1
 Sprite-0020
   rotate: false
-  xy: 80, 45
+  xy: 208, 45
   size: 30, 42
   orig: 30, 42
   offset: 0, 0
