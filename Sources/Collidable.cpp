@@ -12,7 +12,8 @@ namespace aga
 
     Collidable::Collidable (PhysicsManager* physicsManager)
         : m_PhysicsManager (physicsManager)
-        , m_CollisionEnabled (true)
+        , m_CollisionEnabled (false)
+        , m_Collidable (true)
     {
     }
 
@@ -141,7 +142,7 @@ namespace aga
                 {
                     for (int j = 0; j < other->GetPhysPolygonsCount (); ++j)
                     {
-                        if (other->m_CollisionEnabled && !other->GetPhysPolygon (j).Points.empty ())
+                        if (other->m_Collidable && !other->GetPhysPolygon (j).Points.empty ())
                         {
                             PolygonCollisionResult r = m_PhysicsManager->PolygonCollision (
                                 myPolygon, other->GetPhysPolygon (j), {velocity.X, velocity.Y});

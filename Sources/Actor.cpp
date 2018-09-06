@@ -20,6 +20,7 @@ namespace aga
         , Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
         , Entity (sceneManager)
         , m_IsUpdating (true)
+        , m_FocusHeight (100.0f) //  We set it way down for small tiles grid layout
     {
         ID = Entity::GetNextID ();
     }

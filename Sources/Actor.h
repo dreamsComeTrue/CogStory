@@ -79,6 +79,9 @@ namespace aga
         //  Helper functions
         void AssignFlagPointsToWalk (const std::string& flagPointName);
 
+        float GetFocusHeight () const { return m_FocusHeight; }
+        void SetFocusHeight (float focusHeight) { m_FocusHeight = focusHeight; }
+
     protected:
         void ProcessTriggerAreas (float dx, float dy);
 
@@ -88,6 +91,9 @@ namespace aga
         bool m_IsUpdating;
         Point m_OldPosition;
         std::map<std::string, Component*> m_Components;
+
+        //  At which percent [0..1] Player should be rendered OVER this actor
+        float m_FocusHeight;
 
     public:
         Rect TemplateBounds;

@@ -3,8 +3,10 @@
         {
             "atlas": "0_0_home",
             "atlas-region": "main_room",
-            "collision": "1",
+            "collidable": "1",
+            "collision": "0",
             "components": [],
+            "focus-height": "100",
             "id": "1",
             "name": "main_room",
             "overlap": "0",

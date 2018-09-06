@@ -231,7 +231,7 @@ namespace aga
         {
             Actor* actor = (Actor*)m_VisibleEntities[i];
 
-            float heightPercentage = 0.9f;
+            float heightPercentage = actor->GetFocusHeight ();
             float maxHeight = actor->Bounds.Pos.Y + actor->Bounds.Size.Height * heightPercentage;
             float playerMidPoint = player->Bounds.Pos.Y + player->Bounds.Size.Height;
 

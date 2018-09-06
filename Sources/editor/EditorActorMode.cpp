@@ -34,8 +34,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Actor* EditorActorMode::AddOrUpdateActor (
-        int id, const std::string& name, const std::string& actorType, Point pos, float rotation, int zOrder)
+    Actor* EditorActorMode::AddOrUpdateActor (int id, const std::string& name, const std::string& actorType, Point pos,
+        float rotation, int zOrder, float focusHeight)
     {
         Scene* activeScene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
         Actor* actor = activeScene->GetActor (id);
@@ -47,6 +47,7 @@ namespace aga
             actor->TemplateBounds.Pos = pos;
             actor->Rotation = rotation;
             actor->ZOrder = zOrder;
+            actor->SetFocusHeight (focusHeight);
         }
         else
         {
@@ -64,6 +65,7 @@ namespace aga
             actor->TemplateBounds.Pos = pos;
             actor->Rotation = rotation;
             actor->ZOrder = zOrder;
+            actor->SetFocusHeight (focusHeight);
 
             actor->Initialize ();
 

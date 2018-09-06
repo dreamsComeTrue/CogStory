@@ -23,8 +23,8 @@ namespace aga
         EditorActorMode (Editor* editor);
         virtual ~EditorActorMode ();
 
-        Actor* AddOrUpdateActor (
-            int id, const std::string& name, const std::string& actorType, Point pos, float rotation, int zOrder);
+        Actor* AddOrUpdateActor (int id, const std::string& name, const std::string& actorType, Point pos,
+            float rotation, int zOrder, float focusHeight);
         void RemoveActor (const std::string& name);
         void Clear ();
 

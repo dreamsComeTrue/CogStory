@@ -29,8 +29,11 @@ namespace aga
     Gwk::Controls::Property::ComboBox* imageProperty;
     Gwk::Controls::Property::ComboBox* imagePathProperty;
     Gwk::Controls::Property::ComboBox* animationProperty;
+
+    Gwk::Controls::Property::Text* focusHeightProperty;
     Gwk::Controls::Property::ComboBox* overlapProperty;
     Gwk::Controls::Property::ComboBox* collisionProperty;
+    Gwk::Controls::Property::ComboBox* collidableProperty;
 
     EditorActorWindow::EditorActorWindow (Editor* editor, Gwk::Controls::Canvas* canvas)
         : m_Editor (editor)
@@ -124,12 +127,20 @@ namespace aga
 
             m_OthersSection = m_ActorProperties->Add ("Others");
 
+            m_OthersSection->Add ("Focus Height");
             m_CollisionComboBox = new Gwk::Controls::Property::ComboBox (m_OthersSection);
             m_CollisionComboBox->GetComboBox ()->AddItem ("true", "true");
             m_CollisionComboBox->GetComboBox ()->AddItem ("false", "false");
             m_CollisionComboBox->GetComboBox ()->onSelection.Add (this, &EditorActorWindow::OnCollisionSelected);
 
             m_OthersSection->Add ("Collision", m_CollisionComboBox);
+
+            m_CollidableComboBox = new Gwk::Controls::Property::ComboBox (m_OthersSection);
+            m_CollidableComboBox->GetComboBox ()->AddItem ("true", "true");
+            m_CollidableComboBox->GetComboBox ()->AddItem ("false", "false");
+            m_CollidableComboBox->GetComboBox ()->onSelection.Add (this, &EditorActorWindow::OnCollidableSelected);
+
+            m_OthersSection->Add ("Collidable", m_CollidableComboBox);
 
             m_OverlapComboBox = new Gwk::Controls::Property::ComboBox (m_OthersSection);
             m_OverlapComboBox->GetComboBox ()->AddItem ("true", "true");
@@ -162,10 +173,15 @@ namespace aga
                 static_cast<Gwk::Controls::PropertyRow*> (m_ApperanceSection->Find ("Path"))->GetProperty ());
             animationProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
                 static_cast<Gwk::Controls::PropertyRow*> (m_ApperanceSection->Find ("Animation"))->GetProperty ());
+
+            focusHeightProperty = static_cast<Gwk::Controls::Property::Text*> (
+                static_cast<Gwk::Controls::PropertyRow*> (m_OthersSection->Find ("Focus Height"))->GetProperty ());
             overlapProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
                 static_cast<Gwk::Controls::PropertyRow*> (m_OthersSection->Find ("Overlap"))->GetProperty ());
             collisionProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
                 static_cast<Gwk::Controls::PropertyRow*> (m_OthersSection->Find ("Collision"))->GetProperty ());
+            collidableProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
+                static_cast<Gwk::Controls::PropertyRow*> (m_OthersSection->Find ("Collidable"))->GetProperty ());
         }
 
         m_ActorProperties->ExpandAll ();
@@ -220,8 +236,11 @@ namespace aga
         zOrderProperty->SetPropertyValue ("", false);
         imagePathProperty->SetPropertyValue ("", false);
         imageProperty->SetPropertyValue ("", false);
+
+        focusHeightProperty->SetPropertyValue ("", false);
         overlapProperty->SetPropertyValue ("false", false);
         collisionProperty->SetPropertyValue ("false", false);
+        collidableProperty->SetPropertyValue ("true", false);
 
         m_SceneWindow->SetPosition (Gwk::Position::Center);
         m_SceneWindow->SetHidden (false);
@@ -269,12 +288,18 @@ namespace aga
                 id = ToInteger (idStr);
             }
 
-            sscanf (positionProperty->GetPropertyValue ().c_str (), "%f,%f", &m_Position.X, &m_Position.Y);
-            sscanf (rotationProperty->GetPropertyValue ().c_str (), "%f", &m_Rotation);
-            sscanf (zOrderProperty->GetPropertyValue ().c_str (), "%d", &m_ZOrder);
+            float rotation;
+            int zOrder;
+            float focusHeight;
+            Point position;
+
+            sscanf (positionProperty->GetPropertyValue ().c_str (), "%f,%f", &position.X, &position.Y);
+            sscanf (rotationProperty->GetPropertyValue ().c_str (), "%f", &rotation);
+            sscanf (zOrderProperty->GetPropertyValue ().c_str (), "%d", &zOrder);
+            sscanf (focusHeightProperty->GetPropertyValue ().c_str (), "%f", &focusHeight);
 
             Actor* retActor = m_Editor->GetEditorActorMode ().AddOrUpdateActor (
-                id, actorName, typePropertyTxt, m_Position, m_Rotation, m_ZOrder);
+                id, actorName, typePropertyTxt, position, rotation, zOrder, focusHeight);
 
             if (m_SelectedAtlas && m_SelectedAtlasRegion != "")
             {
@@ -334,6 +359,15 @@ namespace aga
         Gwk::String collisionSelection = m_CollisionComboBox->GetPropertyValue ();
 
         m_SelectedActor->SetCollisionEnabled (collisionSelection == "true" ? true : false);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::OnCollidableSelected (Gwk::Controls::Base* control)
+    {
+        Gwk::String collidable = m_CollidableComboBox->GetPropertyValue ();
+
+        m_SelectedActor->SetCollidable (collidable == "true" ? true : false);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -482,10 +516,17 @@ namespace aga
         zOrderProperty->SetPropertyValue (m_SelectedActor != nullptr ? ToString (m_SelectedActor->ZOrder) : "0", false);
         imagePathProperty->SetPropertyValue (
             m_SelectedActor != nullptr ? m_SelectedActor->GetAtlas ()->GetName () : "", false);
+
+        focusHeightProperty->SetPropertyValue (m_SelectedActor != nullptr
+                ? Gwk::Utility::Format ("%f", m_SelectedActor->GetFocusHeight ())
+                : Gwk::Utility::Format ("%f", 0.f),
+            false);
         overlapProperty->SetPropertyValue (
             m_SelectedActor != nullptr ? (m_SelectedActor->IsCheckOverlap () ? "true" : "false") : "false", false);
         collisionProperty->SetPropertyValue (
             m_SelectedActor != nullptr ? (m_SelectedActor->IsCollisionEnabled () ? "true" : "false") : "false", false);
+        collidableProperty->SetPropertyValue (
+            m_SelectedActor != nullptr ? (m_SelectedActor->IsCollidable () ? "true" : "false") : "false", false);
 
         m_ScriptSection->Clear ();
 

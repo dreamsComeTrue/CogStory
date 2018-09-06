@@ -31,6 +31,9 @@ namespace aga
         void SetCollisionEnabled (bool enabled) { m_CollisionEnabled = enabled; }
         bool IsCollisionEnabled () const { return m_CollisionEnabled; }
 
+        void SetCollidable (bool enabled) { m_Collidable = enabled; }
+        bool IsCollidable () const { return m_Collidable; }
+
         bool IsCollidingWith (Collidable* other, Point velocity, Point&& offset);
 
         void AddCollisionCallback (std::function<void(Collidable* other)> func);
@@ -56,6 +59,7 @@ namespace aga
         std::vector<Polygon> m_PhysPolygons;
         Point m_Offset;
         bool m_CollisionEnabled;
+        bool m_Collidable;
     };
 }
 

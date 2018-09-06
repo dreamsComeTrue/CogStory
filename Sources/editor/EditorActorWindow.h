@@ -43,6 +43,7 @@ namespace aga
 
         void OnOverlapSelected (Gwk::Controls::Base* control);
         void OnCollisionSelected (Gwk::Controls::Base* control);
+        void OnCollidableSelected (Gwk::Controls::Base* control);
 
         void UpdateActorsTree ();
         void OnActorSelect (Gwk::Controls::Base* control);
@@ -58,9 +59,6 @@ namespace aga
         Editor* m_Editor;
 
         int m_SelectedType;
-        float m_Rotation;
-        int m_ZOrder;
-        Point m_Position;
 
         class Actor* m_SelectedActor;
 
@@ -73,6 +71,7 @@ namespace aga
 
         Gwk::Controls::Property::ComboBox* m_OverlapComboBox;
         Gwk::Controls::Property::ComboBox* m_CollisionComboBox;
+        Gwk::Controls::Property::ComboBox* m_CollidableComboBox;
 
         Gwk::Controls::PropertyTree* m_ActorProperties;
         Gwk::Controls::Properties* m_GeneralSection;

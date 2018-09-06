@@ -241,6 +241,8 @@ namespace aga
                     newActor->ZOrder = atoi (zOrder.c_str ());
                     std::string rot = actorIt["rot"];
                     newActor->Rotation = atof (rot.c_str ());
+                    std::string focusHeight = actorIt["focus-height"];
+                    newActor->SetFocusHeight (atof (focusHeight.c_str ()));
 
                     if (!actorIt["atlas"].is_null ())
                     {
@@ -291,6 +293,9 @@ namespace aga
 
                     std::string collisionStr = actorIt["collision"];
                     newActor->SetCollisionEnabled (atoi (collisionStr.c_str ()));
+
+                    std::string collidableStr = actorIt["collidable"];
+                    newActor->SetCollidable (atoi (collidableStr.c_str ()));
 
                     std::string overlapStr = actorIt["overlap"];
                     newActor->SetCheckOverlap (atoi (overlapStr.c_str ()));
@@ -453,7 +458,9 @@ namespace aga
                 actorObj["atlas"] = actor != nullptr ? actor->GetAtlas ()->GetName () : "";
                 actorObj["atlas-region"] = actor->GetAtlasRegionName ();
                 actorObj["collision"] = ToString (actor->IsCollisionEnabled ());
+                actorObj["collidable"] = ToString (actor->IsCollidable ());
                 actorObj["overlap"] = ToString (actor->IsCheckOverlap ());
+                actorObj["focus-height"] = ToString (actor->GetFocusHeight ());
 
                 actorObj["phys"] = json::array ({});
 
