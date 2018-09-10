@@ -37,6 +37,13 @@ namespace aga
         Point GetCenter ();
 
         void SetFollowActor (Actor* actor, Point followOffset = {0.f, 0.f});
+        Actor* GetFollowActor () { return m_CameraFollowActor; }
+
+        void SetFollowOffset (Point offset) { m_FollowOffset = offset; }
+
+        void SetFollowingXAxis (bool enabled) { m_FollowingEnabledXAxis = enabled;}
+        void SetFollowingYAxis (bool enabled) { m_FollowingEnabledYAxis = enabled;}
+
         void TweenToPoint (Point endPoint, float timeMs = 1000, bool centerScreen = true);
         void TweenToPoint (
             Point endPoint, float timeMs = 1000, bool centerScreen = true, asIScriptFunction* finishFunc = nullptr);
@@ -61,6 +68,10 @@ namespace aga
         Point m_ShakeStartPos;
         Point m_ShakeComputedPos;
         bool m_ShakeComputed;
+
+        Point m_SavedFollowPoint;
+        bool m_FollowingEnabledXAxis;
+        bool m_FollowingEnabledYAxis;
     };
 }
 

@@ -67,8 +67,6 @@ namespace aga
 
         void HandleAction ();
 
-        void CollisionEvent (Collidable* other) override;
-
     private:
         bool m_PreventInput;
         bool m_ActionHandling;

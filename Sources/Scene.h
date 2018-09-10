@@ -70,6 +70,33 @@ namespace aga
         void UpdatePolygons (Triangulator* triangulator);
 
         bool WasEntered = false;
+
+        Rect GetBounds ()
+        {
+            Rect out = {Point::MAX_POINT, Point::MIN_POINT};
+
+            for (Point& point : Points)
+            {
+                if (point.X < out.GetTopLeft ().X)
+                {
+                    out.SetTopLeft ({point.X, out.GetTopLeft ().Y});
+                }
+                if (point.Y < out.GetTopLeft ().Y)
+                {
+                    out.SetTopLeft ({out.GetTopLeft ().X, point.Y});
+                }
+                if (point.X > out.GetBottomRight ().X)
+                {
+                    out.SetBottomRight ({point.X, out.GetBottomRight ().Y});
+                }
+                if (point.Y > out.GetBottomRight ().Y)
+                {
+                    out.SetBottomRight ({out.GetBottomRight ().X, point.Y});
+                }
+            }
+
+            return out;
+        }
     };
 
     class Scene : public Lifecycle, public Scriptable
@@ -105,7 +132,7 @@ namespace aga
 
         void AddTriggerArea (const std::string& name, std::vector<Point> points);
         std::map<std::string, TriggerArea>& GetTriggerAreas ();
-        TriggerArea& GetTriggerArea (const std::string& name);
+        TriggerArea* GetTriggerArea (const std::string& name);
         void RemoveTriggerArea (const std::string& name);
 
         bool AddSpeech (SpeechData data);
@@ -166,6 +193,8 @@ namespace aga
         void DrawQuadTree (QuadTreeNode* node);
         void CleanUpTriggerAreas ();
         void CleanUpSceneAudio ();
+
+        void UpdateCameraBounds ();
 
     private:
         std::string m_Name;

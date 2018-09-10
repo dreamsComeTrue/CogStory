@@ -197,6 +197,8 @@ namespace aga
     {
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () == GAMEPLAY_STATE_NAME)
         {
+            UpdateCameraBounds ();
+
             m_SceneManager->GetPlayer ()->Update (deltaTime);
             UpdateScripts (deltaTime);
 
@@ -207,6 +209,35 @@ namespace aga
             }
 
             m_CurrentActor = nullptr;
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::UpdateCameraBounds ()
+    {
+        TriggerArea* boundsArea = GetTriggerArea ("SCENE_BOUNDS");
+
+        if (boundsArea)
+        {
+            Camera& camera = m_SceneManager->GetCamera ();
+            float scaleX = camera.GetScale ().X;
+            float scaleY = camera.GetScale ().Y;
+            Rect playerBounds = m_SceneManager->GetPlayer ()->Bounds;
+            const Point halfScreen = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize () * 0.5f;
+            Rect worldBounds = boundsArea->GetBounds ();
+
+            float playerXPos = playerBounds.Pos.X + playerBounds.GetHalfSize ().Width;
+            float playerYPos = playerBounds.Pos.Y + playerBounds.GetHalfSize ().Height;
+
+            bool leftBounds = (playerXPos * scaleX - halfScreen.Width) < worldBounds.GetTopLeft ().X * scaleX;
+            bool rightBounds = (playerXPos * scaleX + halfScreen.Width) > worldBounds.GetBottomRight ().X * scaleX;
+
+            bool topBounds = (playerYPos * scaleY - halfScreen.Height) < worldBounds.GetTopLeft ().Y * scaleY;
+            bool bottomBounds = (playerYPos * scaleY + halfScreen.Height) > worldBounds.GetBottomRight ().Y * scaleY;
+
+            camera.SetFollowingXAxis (!(leftBounds || rightBounds));
+            camera.SetFollowingYAxis (!(topBounds || bottomBounds));
         }
     }
 
@@ -487,7 +518,17 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    TriggerArea& Scene::GetTriggerArea (const std::string& name) { return m_TriggerAreas[name]; }
+    TriggerArea* Scene::GetTriggerArea (const std::string& name)
+    {
+        if (m_TriggerAreas.find (name) != m_TriggerAreas.end ())
+        {
+            return &m_TriggerAreas[name];
+        }
+        else
+        {
+            return nullptr;
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -747,8 +788,8 @@ namespace aga
         Point scale = m_SceneManager->GetCamera ().GetScale ();
 
         Rect b = entity->Bounds;
-        int halfWidth = b.GetHalfSize ().Width;
-        int halfHeight = b.GetHalfSize ().Height;
+        float halfWidth = b.GetHalfSize ().Width;
+        float halfHeight = b.GetHalfSize ().Height;
 
         float x1 = (b.GetPos ().X - translate.X * (1.0f / scale.X)) * (scale.X);
         float y1 = (b.GetPos ().Y - translate.Y * (1.0f / scale.Y)) * (scale.Y);
@@ -783,8 +824,8 @@ namespace aga
         Point translate = m_SceneManager->GetCamera ().GetTranslate ();
         Point scale = m_SceneManager->GetCamera ().GetScale ();
 
-        int halfWidth = b.GetHalfSize ().Width;
-        int halfHeight = b.GetHalfSize ().Height;
+        float halfWidth = b.GetHalfSize ().Width;
+        float halfHeight = b.GetHalfSize ().Height;
 
         float x1 = (b.GetPos ().X - translate.X * (1.0f / scale.X)) * (scale.X);
         float y1 = (b.GetPos ().Y - translate.Y * (1.0f / scale.Y)) * (scale.Y);
@@ -899,8 +940,9 @@ namespace aga
                 }
 
                 m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_SMALL,
-                    al_map_rgb (0, 255, 0), min.X + (max.X - min.X) * 0.5, min.Y + (max.Y - min.Y) * 0.5,
-                    ToString (it->second.Name), ALLEGRO_ALIGN_CENTER);
+                    al_map_rgb (0, 255, 0), static_cast<float> (min.X + (max.X - min.X) * 0.5),
+                    static_cast<float> (min.Y + (max.Y - min.Y) * 0.5), ToString (it->second.Name),
+                    ALLEGRO_ALIGN_CENTER);
             }
         }
     }

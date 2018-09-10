@@ -165,7 +165,7 @@ namespace aga
         if (!m_TriggerArea)
         {
             m_TriggerArea
-                = &m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetTriggerArea (m_TriggerAreaName);
+                = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetTriggerArea (m_TriggerAreaName);
         }
 
         Point pointToInsert = m_Editor->CalculateWorldPoint (mouseX, mouseY);
@@ -250,7 +250,7 @@ namespace aga
         Scene* scene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
 
         scene->AddTriggerArea (m_TriggerAreaName, {});
-        m_TriggerArea = &scene->GetTriggerArea (m_TriggerAreaName);
+        m_TriggerArea = scene->GetTriggerArea (m_TriggerAreaName);
         m_TriggerPoint = nullptr;
     }
 

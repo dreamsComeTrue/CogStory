@@ -22,10 +22,10 @@ namespace aga
         bool Initialize (const std::string& atlasName, const std::string& atlasRegionName);
         bool Destroy ();
 
-        bool Update (float deltaTime);
+        virtual bool Update (float deltaTime);
         void Render (Transformable* transformable);
 
-        void SetCurrentAnimation (const std::string& name);
+        virtual void SetCurrentAnimation (const std::string& name);
 
         Animation& GetAnimation () { return m_Animation; }
         void SetAnimation (Animation animation) { m_Animation = animation; }

@@ -118,7 +118,6 @@ namespace aga
         void OnSaveScene (Gwk::Controls::Base* control);
 
         void OnPlay ();
-        void OnExit ();
 
         void OnScrollPrevTiles ();
         void OnScrollNextTiles ();

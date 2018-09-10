@@ -236,6 +236,7 @@ namespace aga
                     newActor->Name = actorIt["name"];
                     newActor->Bounds.Pos = StringToPoint (actorIt["pos"]);
                     newActor->Bounds.Size = StringToPoint (actorIt["size"]);
+                    newActor->TemplateBounds = newActor->Bounds;
 
                     std::string zOrder = actorIt["z-order"];
                     newActor->ZOrder = atoi (zOrder.c_str ());
@@ -301,19 +302,8 @@ namespace aga
                     newActor->SetCheckOverlap (atoi (overlapStr.c_str ()));
 
                     newActor->Initialize ();
-                    newActor->TemplateBounds = newActor->Bounds;
 
-                    if (newActor->GetTypeName () == TileActor::TypeName)
-                    {
-                        std::string name = actorIt["name"];
-                        name += "_";
-                        name += actorIt["id"];
-                        scene->AddActor (newActor);
-                    }
-                    else
-                    {
-                        scene->AddActor (newActor);
-                    }
+                    scene->AddActor (newActor);
                 }
             }
 

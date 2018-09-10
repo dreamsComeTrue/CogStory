@@ -27,6 +27,8 @@ namespace aga
         , m_ActionHandler (nullptr)
         , m_LastActionActor (nullptr)
     {
+        SetCollidable (true);
+        SetCollisionEnabled (true);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -134,7 +136,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Player::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
+    bool Player::ProcessEvent (ALLEGRO_EVENT* event, float)
     {
         if (m_PreventInput)
         {
@@ -322,10 +324,6 @@ namespace aga
         UpdateParticleEmitters ();
         SetCurrentAnimation (ANIM_IDLE_NAME);
     }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Player::CollisionEvent (Collidable* other) {}
 
     //--------------------------------------------------------------------------------------------------
 
