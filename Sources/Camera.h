@@ -41,9 +41,9 @@ namespace aga
 
         void SetFollowOffset (Point offset) { m_FollowOffset = offset; }
 
-        void SetFollowingXAxis (bool enabled) { m_FollowingEnabledXAxis = enabled; }
+        void SetFollowingXAxis (bool enabled);
         bool IsFollowingXAxis () { return m_FollowingEnabledXAxis; }
-        void SetFollowingYAxis (bool enabled) { m_FollowingEnabledYAxis = enabled; }
+        void SetFollowingYAxis (bool enabled);
         bool IsFollowingYAxis () { return m_FollowingEnabledYAxis; }
         void SetSavedFollowPoint (Point p) { m_SavedFollowPoint = p; }
         Point GetSavedFollowPoint () const { return m_SavedFollowPoint; }

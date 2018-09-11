@@ -16,22 +16,24 @@ namespace aga
 
     ALLEGRO_TRANSFORM IdentityTransform;
 
-    Camera::Camera (SceneManager *sceneManager)
-            : m_SceneManager (sceneManager), m_CameraFollowActor (nullptr), m_TweenToPoint (nullptr),
-              m_FollowingEnabledXAxis (false), m_FollowingEnabledYAxis (false), m_SavedFollowPoint (Point::ZERO_POINT)
+    Camera::Camera (SceneManager* sceneManager)
+        : m_SceneManager (sceneManager)
+        , m_CameraFollowActor (nullptr)
+        , m_TweenToPoint (nullptr)
+        , m_FollowingEnabledXAxis (false)
+        , m_FollowingEnabledYAxis (false)
+        , m_SavedFollowPoint (Point::ZERO_POINT)
     {
         al_identity_transform (&IdentityTransform);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    Camera::~Camera ()
-    {}
+    Camera::~Camera () {}
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::Update (float deltaTime)
-    { al_use_transform (&m_Transform); }
+    void Camera::Update (float deltaTime) { al_use_transform (&m_Transform); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -43,8 +45,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::Move (float dx, float dy)
-    { al_translate_transform (&m_Transform, dx, dy); }
+    void Camera::Move (float dx, float dy) { al_translate_transform (&m_Transform, dx, dy); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -65,8 +66,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::UseIdentityTransform ()
-    { al_use_transform (&IdentityTransform); }
+    void Camera::UseIdentityTransform () { al_use_transform (&IdentityTransform); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -78,13 +78,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Point Camera::GetTranslate ()
-    { return {-m_Transform.m[3][0], -m_Transform.m[3][1]}; }
+    Point Camera::GetTranslate () { return {-m_Transform.m[3][0], -m_Transform.m[3][1]}; }
 
     //--------------------------------------------------------------------------------------------------
 
-    Point Camera::GetScale ()
-    { return {m_Transform.m[0][0], m_Transform.m[1][1]}; }
+    Point Camera::GetScale () { return {m_Transform.m[0][0], m_Transform.m[1][1]}; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -104,13 +102,12 @@ namespace aga
         const Point winSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
 
         return {
-                (trans.X + winSize.Width * 0.5f) * (1.0f / scale.X),
-                (trans.Y + winSize.Height * 0.5f) * (1.0f / scale.Y)};
+            (trans.X + winSize.Width * 0.5f) * (1.0f / scale.X), (trans.Y + winSize.Height * 0.5f) * (1.0f / scale.Y)};
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::SetFollowActor (Actor *actor, Point followOffset)
+    void Camera::SetFollowActor (Actor* actor, Point followOffset)
     {
         if (m_CameraFollowActor)
         {
@@ -124,8 +121,7 @@ namespace aga
 
         if (m_CameraFollowActor)
         {
-            m_CameraFollowActor->MoveCallback = [&] (float dx, float dy)
-            {
+            m_CameraFollowActor->MoveCallback = [&](float dx, float dy) {
                 Point scale = GetScale ();
                 Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
                 Point actorHalfSize = m_CameraFollowActor->Bounds.GetHalfSize ();
@@ -133,12 +129,14 @@ namespace aga
 
                 if (m_FollowingEnabledXAxis)
                 {
-                    m_SavedFollowPoint.X = screenSize.Width * 0.5 - (pos.X + actorHalfSize.Width) * scale.X - m_FollowOffset.X;
+                    m_SavedFollowPoint.X
+                        = screenSize.Width * 0.5 - (pos.X + actorHalfSize.Width) * scale.X - m_FollowOffset.X;
                 }
 
                 if (m_FollowingEnabledYAxis)
                 {
-                    m_SavedFollowPoint.Y = screenSize.Height * 0.5 - (pos.Y + actorHalfSize.Height) * scale.Y - m_FollowOffset.Y;
+                    m_SavedFollowPoint.Y
+                        = screenSize.Height * 0.5 - (pos.Y + actorHalfSize.Height) * scale.Y - m_FollowOffset.Y;
                 }
 
                 SetTranslate (m_SavedFollowPoint);
@@ -151,6 +149,24 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Camera::SetFollowingXAxis (bool enabled)
+    {
+        m_FollowingEnabledXAxis = enabled;
+
+        m_CameraFollowActor->MoveCallback (0, 0);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Camera::SetFollowingYAxis (bool enabled)
+    {
+        m_FollowingEnabledYAxis = enabled;
+
+        m_CameraFollowActor->MoveCallback (0, 0);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Camera::TweenToPoint (Point endPoint, float timeMs, bool centerScreen)
     {
         TweenToPoint (endPoint, timeMs, centerScreen, nullptr);
@@ -158,7 +174,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::TweenToPoint (Point endPoint, float timeMs, bool centerScreen, asIScriptFunction *finishFunc)
+    void Camera::TweenToPoint (Point endPoint, float timeMs, bool centerScreen, asIScriptFunction* finishFunc)
     {
         if (m_CameraFollowActor)
         {
@@ -166,8 +182,7 @@ namespace aga
             m_CameraFollowActor = nullptr;
         }
 
-        auto tweenFunc = [&] (float x, float y)
-        {
+        auto tweenFunc = [&](float x, float y) {
             SetTranslate (x, y);
 
             return false;
@@ -190,12 +205,12 @@ namespace aga
         if (finishFunc)
         {
             m_TweenToPoint = &m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (
-                    CAMERA_TWEEN_ID++, startPoint, endPoint, timeMs, tweenFunc, finishFunc);
+                CAMERA_TWEEN_ID++, startPoint, endPoint, timeMs, tweenFunc, finishFunc);
         }
         else
         {
             m_TweenToPoint = &m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (
-                    CAMERA_TWEEN_ID++, startPoint, endPoint, timeMs, tweenFunc);
+                CAMERA_TWEEN_ID++, startPoint, endPoint, timeMs, tweenFunc);
         }
     }
 
@@ -243,8 +258,7 @@ namespace aga
         m_ShakePercentage = 0.f;
         m_ShakeOscilatingTime = oscilatingTime;
 
-        std::function<bool (float)> tweenFunc = [&] (float progress)
-        {
+        std::function<bool(float)> tweenFunc = [&](float progress) {
             if (progress < 1.0f)
             {
                 ShakeFunction (progress);
