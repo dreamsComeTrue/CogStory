@@ -230,14 +230,64 @@ namespace aga
             float playerXPos = playerBounds.Pos.X + playerBounds.GetHalfSize ().Width;
             float playerYPos = playerBounds.Pos.Y + playerBounds.GetHalfSize ().Height;
 
-            bool leftBounds = (playerXPos * scaleX - halfScreen.Width) < worldBounds.GetTopLeft ().X * scaleX;
-            bool rightBounds = (playerXPos * scaleX + halfScreen.Width) > worldBounds.GetBottomRight ().X * scaleX;
+            Point followPoint = camera.GetSavedFollowPoint ();
 
-            bool topBounds = (playerYPos * scaleY - halfScreen.Height) < worldBounds.GetTopLeft ().Y * scaleY;
-            bool bottomBounds = (playerYPos * scaleY + halfScreen.Height) > worldBounds.GetBottomRight ().Y * scaleY;
+            float leftPos = playerXPos * scaleX - halfScreen.Width;
+            float rightPos = playerXPos * scaleX + halfScreen.Width;
+            float topPos = playerYPos * scaleY - halfScreen.Height;
+            float bottomPos = playerYPos * scaleY + halfScreen.Height;
 
-            camera.SetFollowingXAxis (!(leftBounds || rightBounds));
-            camera.SetFollowingYAxis (!(topBounds || bottomBounds));
+            if (camera.IsFollowingXAxis ())
+            {
+                //  Left
+                if (leftPos < worldBounds.GetTopLeft ().X * scaleX)
+                {
+                    camera.SetSavedFollowPoint (Point (-worldBounds.GetTopLeft ().X * scaleX, followPoint.Y));
+                    camera.SetFollowingXAxis (false);
+                }
+
+                //  Right
+                if (rightPos > worldBounds.GetBottomRight ().X * scaleX)
+                {
+                    camera.SetSavedFollowPoint (
+                        Point (-worldBounds.GetBottomRight ().X * scaleX + halfScreen.Width * 2.f, followPoint.Y));
+                    camera.SetFollowingXAxis (false);
+                }
+            }
+            else
+            {
+                if (leftPos > worldBounds.GetTopLeft ().X * scaleX
+                    && rightPos < worldBounds.GetBottomRight ().X * scaleX)
+                {
+                    camera.SetFollowingXAxis (true);
+                }
+            }
+
+            if (camera.IsFollowingYAxis ())
+            {
+                //  Top
+                if (topPos < worldBounds.GetTopLeft ().Y * scaleY && camera.IsFollowingYAxis ())
+                {
+                    camera.SetSavedFollowPoint (Point (followPoint.X, -worldBounds.GetTopLeft ().Y * scaleY));
+                    camera.SetFollowingYAxis (false);
+                }
+
+                //  Bottom
+                if (bottomPos > worldBounds.GetBottomRight ().Y * scaleY && camera.IsFollowingYAxis ())
+                {
+                    camera.SetSavedFollowPoint (
+                        Point (followPoint.X, -worldBounds.GetBottomRight ().Y * scaleY + halfScreen.Height * 2.f));
+                    camera.SetFollowingYAxis (false);
+                }
+            }
+            else
+            {
+                if (topPos > worldBounds.GetTopLeft ().Y * scaleY
+                    && bottomPos < worldBounds.GetBottomRight ().Y * scaleY)
+                {
+                    camera.SetFollowingYAxis (true);
+                }
+            }
         }
     }
 
