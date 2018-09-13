@@ -182,6 +182,8 @@ namespace aga
         m_VisibleEntities.clear ();
         m_VisibleLastCameraPos = Point::MIN_POINT;
 
+        m_SceneManager->GetSpeechFrameManager ().Clear ();
+
         if (m_SceneAudioStream)
         {
             m_SceneAudioStream->Pause ();
@@ -308,43 +310,86 @@ namespace aga
 
         bool isPlayerDrawn = false;
 
+        int minZOrder = 1000000;
+        int maxZOrder = -1000000;
         for (int i = 0; i < m_VisibleEntities.size (); ++i)
         {
-            Actor* actor = (Actor*)m_VisibleEntities[i];
+            int zOrder = m_VisibleEntities[i]->ZOrder;
 
-            float heightPercentage = actor->GetFocusHeight ();
-            float maxHeight = actor->Bounds.Pos.Y + actor->Bounds.Size.Height * heightPercentage;
-            float playerMidPoint = player->Bounds.Pos.Y + player->Bounds.Size.Height;
-
-            if (Intersect (actor->Bounds, player->Bounds) && !isPlayerDrawn && actor->ZOrder >= PLAYER_Z_ORDER
-                && playerMidPoint < maxHeight)
+            if (zOrder < minZOrder)
             {
-                player->Render (deltaTime);
-                isPlayerDrawn = true;
+                minZOrder = zOrder;
             }
 
-            actor->RenderID = i;
-            actor->Render (deltaTime);
-
-            if (!isPlayerDrawn && actor->ZOrder >= PLAYER_Z_ORDER && maxHeight < playerMidPoint)
+            if (zOrder > maxZOrder)
             {
-                //     player->Render (deltaTime);
-                //       isPlayerDrawn = true;
+                maxZOrder = zOrder;
+            }
+        }
+
+        std::vector<std::vector<Entity*>> sortedEntities;
+
+        for (int currZOrder = minZOrder; currZOrder <= maxZOrder; ++currZOrder)
+        {
+            std::vector<Entity*> entitiesPack;
+
+            for (int i = 0; i < m_VisibleEntities.size (); ++i)
+            {
+                Actor* actor = (Actor*)m_VisibleEntities[i];
+
+                if (actor->ZOrder == currZOrder)
+                {
+                    entitiesPack.push_back (actor);
+                }
             }
 
-            if (m_SceneManager->IsDrawBoundingBox ())
+            if (!entitiesPack.empty ())
             {
-                actor->DrawBounds ();
+                sortedEntities.push_back (entitiesPack);
             }
+        }
 
-            if (m_SceneManager->IsDrawPhysData ())
+        int renderID = 0;
+        for (std::vector<Entity*> pack : sortedEntities)
+        {
+            for (Entity* ent : pack)
             {
-                actor->DrawPhysBody ();
-            }
+                Actor* actor = (Actor*)ent;
 
-            if (m_SceneManager->IsDrawActorsNames ())
-            {
-                actor->DrawName ();
+                float heightPercentage = actor->GetFocusHeight ();
+                float maxHeight = actor->Bounds.Pos.Y + actor->Bounds.Size.Height * heightPercentage;
+                float playerMidPoint = player->Bounds.Pos.Y + player->Bounds.Size.Height;
+
+                if (Intersect (actor->Bounds, player->Bounds) && !isPlayerDrawn && actor->ZOrder >= PLAYER_Z_ORDER
+                    && playerMidPoint < maxHeight)
+                {
+                    player->Render (deltaTime);
+                    isPlayerDrawn = true;
+                }
+
+                actor->RenderID = renderID++;
+                actor->Render (deltaTime);
+
+                if (!isPlayerDrawn && actor->ZOrder >= PLAYER_Z_ORDER && maxHeight < playerMidPoint)
+                {
+                    //      player->Render (deltaTime);
+                    //       isPlayerDrawn = true;
+                }
+
+                if (m_SceneManager->IsDrawBoundingBox ())
+                {
+                    actor->DrawBounds ();
+                }
+
+                if (m_SceneManager->IsDrawPhysData ())
+                {
+                    actor->DrawPhysBody ();
+                }
+
+                if (m_SceneManager->IsDrawActorsNames ())
+                {
+                    actor->DrawName ();
+                }
             }
         }
 

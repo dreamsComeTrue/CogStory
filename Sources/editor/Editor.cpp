@@ -989,7 +989,8 @@ namespace aga
             UpdateSceneNameLabel (
                 std::string ("SCENE: " + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ()));
 
-            m_LastScenePath = m_OpenSceneWindow->GetFileName ();
+            m_LastScenePath = openFileName;
+            m_SaveSceneWindow->SetFileName (m_LastScenePath);
 
             Log ("Scene loaded: %s\n", openFileName.c_str ());
         }
@@ -1006,7 +1007,8 @@ namespace aga
         std::string path = GetDataPath () + "scenes/" + filePath;
         SceneLoader::SaveScene (m_MainLoop->GetSceneManager ().GetActiveScene (), path);
 
-        m_LastScenePath = m_SaveSceneWindow->GetFileName ();
+        m_LastScenePath = filePath;
+        m_OpenSceneWindow->SetFileName (m_LastScenePath);
 
         Log ("Scene saved: %s\n", filePath.c_str ());
     }

@@ -44,10 +44,7 @@ namespace aga
 
         static int GetNextID () { return ++GlobalID; }
 
-        static bool CompareByZOrder (const Entity* a, const Entity* b)
-        {
-            return a->ZOrder < b->ZOrder && a->Bounds.Pos.Y < b->Bounds.Pos.Y;
-        }
+        static bool CompareByZOrder (const Entity* a, const Entity* b) { return a->ZOrder < b->ZOrder; }
 
         static int GlobalID;
 

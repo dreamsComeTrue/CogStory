@@ -76,7 +76,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    auto PointToString = [](Point in) -> std::string { return ToString (in.X) + " " + ToString (in.Y); };
+    auto PointToString = [](Point in) -> std::string { return std::to_string (in.X) + " " + std::to_string (in.Y); };
 
     //--------------------------------------------------------------------------------------------------
 
@@ -85,7 +85,7 @@ namespace aga
 
         for (int i = 0; i < data.size (); ++i)
         {
-            result += ToString (data[i]);
+            result += std::to_string (data[i]);
 
             if (i < data.size () - 1)
             {
@@ -438,19 +438,19 @@ namespace aga
 
                 json actorObj = json::object ({});
 
-                actorObj["id"] = ToString (actor->ID);
+                actorObj["id"] = std::to_string (actor->ID);
                 actorObj["type"] = actor->GetTypeName ();
                 actorObj["name"] = actor->Name;
                 actorObj["pos"] = PointToString (actor->Bounds.GetPos ());
                 actorObj["size"] = PointToString (actor->Bounds.GetSize ());
-                actorObj["z-order"] = ToString (actor->ZOrder);
-                actorObj["rot"] = ToString (actor->Rotation);
+                actorObj["z-order"] = std::to_string (actor->ZOrder);
+                actorObj["rot"] = std::to_string (actor->Rotation);
                 actorObj["atlas"] = actor != nullptr ? actor->GetAtlas ()->GetName () : "";
                 actorObj["atlas-region"] = actor->GetAtlasRegionName ();
-                actorObj["collision"] = ToString (actor->IsCollisionEnabled ());
-                actorObj["collidable"] = ToString (actor->IsCollidable ());
-                actorObj["overlap"] = ToString (actor->IsCheckOverlap ());
-                actorObj["focus-height"] = ToString (actor->GetFocusHeight ());
+                actorObj["collision"] = std::to_string (actor->IsCollisionEnabled ());
+                actorObj["collidable"] = std::to_string (actor->IsCollidable ());
+                actorObj["overlap"] = std::to_string (actor->IsCheckOverlap ());
+                actorObj["focus-height"] = std::to_string (actor->GetFocusHeight ());
 
                 actorObj["phys"] = json::array ({});
 
