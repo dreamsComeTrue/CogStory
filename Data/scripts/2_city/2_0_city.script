@@ -85,9 +85,9 @@ void IntroAnimation ()
 
     Timeline@ timeline = CreateTimeline (0);
     timeline
-    .Once (2000, function (id)
+    .Once (500, function (id)
     {
-        camera.TweenToPoint (player.GetPosition () + player.Bounds.GetHalfSize (), 2000, true, function (id)
+        camera.TweenToPoint (player.GetPosition () + player.Bounds.GetHalfSize (), 500, true, function (id)
         {
             player.SetPreventInput (false);
             camera.SetFollowActor (player);

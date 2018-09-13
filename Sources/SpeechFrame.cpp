@@ -54,6 +54,9 @@ namespace aga
         , m_Action (actionName)
         , m_ScriptHandleFunction (nullptr)
         , m_OverallIndex (0)
+        , m_IsSuspended (false)
+        , m_OverrideSuspension (false)
+        , m_CurrentLineBreakOffset (0)
     {
         Atlas* atlas = m_Manager->GetSceneManager ()->GetMainLoop ()->GetAtlasManager ().GetAtlas (
             GetBaseName (GetResourcePath (PACK_MENU_UI)));
@@ -88,7 +91,25 @@ namespace aga
     {
         float areaWithoutInsets = (m_DrawRect.GetSize ().Height - 2 * SPEECH_FRAME_TEXT_INSETS);
 
-        return areaWithoutInsets / (m_LineHeight);
+        float currentHeight = 0.f;
+        int maxLines = 0;
+        for (int i = 0;; ++i)
+        {
+            currentHeight += m_LineAscent;
+
+            if (currentHeight <= areaWithoutInsets)
+            {
+                maxLines++;
+            }
+            else
+            {
+                break;
+            }
+
+            currentHeight += m_LineDescent;
+        }
+
+        return maxLines;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -193,9 +214,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    bool changedLastIndex = false;
     void SpeechFrame::UpdateTextPosition (float deltaTime)
     {
-        if (m_StillUpdating)
+        if (m_StillUpdating && !m_IsSuspended)
         {
             if (m_IsDelayed)
             {
@@ -218,6 +240,7 @@ namespace aga
                 }
 
                 ++m_OverallIndex;
+                changedLastIndex = true;
 
                 m_CurrentDrawTime = 0.0f;
 
@@ -229,8 +252,17 @@ namespace aga
 
                 if (m_CurrentIndex > m_TextLines[m_CurrentLine].size () - 1)
                 {
-                    ++m_CurrentLine;
-                    m_CurrentIndex = 0;
+                    if (!m_OverrideSuspension && m_CurrentLine > 0 && (m_CurrentLine + 1) % GetMaxLinesCanFit () == 0)
+                    {
+                        m_IsSuspended = true;
+                        m_OverrideSuspension = false;
+                    }
+
+                    if (!m_IsSuspended)
+                    {
+                        ++m_CurrentLine;
+                        m_CurrentIndex = 0;
+                    }
                 }
 
                 if (m_CurrentLine >= m_TextLines.size ())
@@ -241,6 +273,22 @@ namespace aga
                     m_OverallIndex = 0;
                 }
             }
+        }
+
+        if (changedLastIndex)
+        {
+            for (int breakPoint : m_BreakPoints)
+            {
+                if (m_OverallIndex == breakPoint)
+                {
+                    m_IsSuspended = true;
+                    m_OverrideSuspension = false;
+
+                    break;
+                }
+            }
+
+            changedLastIndex = false;
         }
     }
 
@@ -312,7 +360,13 @@ namespace aga
             case ALLEGRO_KEY_ENTER:
             case ALLEGRO_KEY_SPACE:
             {
-                if (m_ShouldBeHandled)
+                if (m_IsSuspended)
+                {
+                    m_IsSuspended = false;
+                    m_OverrideSuspension = true;
+                    m_CurrentLineBreakOffset = m_CurrentLine;
+                }
+                else if (m_ShouldBeHandled && !m_StillUpdating)
                 {
                     if (!m_Choices.empty ())
                     {
@@ -388,14 +442,14 @@ namespace aga
 
     int SpeechFrame::GetCurrentDrawingLine ()
     {
-        int maxLines = GetMaxLinesCanFit ();
+        int maxLinesCanFit = GetMaxLinesCanFit ();
         int currentDrawingLine = 0;
 
         //  How many lines are hidden
-        int diff = (int)m_CurrentLine + 1 - maxLines;
+        int diff = (int)m_CurrentLine + 1 - maxLinesCanFit - m_CurrentLineBreakOffset;
 
         //  Offset current drawing start position by hidden lines
-        if (m_CurrentLine + 1 > maxLines)
+        if (m_CurrentLine + 1 - m_CurrentLineBreakOffset > maxLinesCanFit)
         {
             currentDrawingLine = diff;
         }
@@ -417,7 +471,7 @@ namespace aga
             m_ChosenLineDelta = 0;
         }
 
-        return currentDrawingLine;
+        return currentDrawingLine + m_CurrentLineBreakOffset;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -432,10 +486,10 @@ namespace aga
         PreprocessText (m_Text);
 
         Font& font = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetFont ();
-        unsigned ascent = font.GetFontAscent (FONT_NAME_SPEECH_FRAME);
-        unsigned descent = font.GetFontDescent (FONT_NAME_SPEECH_FRAME);
+        m_LineAscent = font.GetFontAscent (FONT_NAME_SPEECH_FRAME);
+        m_LineDescent = font.GetFontDescent (FONT_NAME_SPEECH_FRAME);
 
-        m_LineHeight = ascent + descent;
+        m_LineHeight = m_LineAscent + m_LineDescent;
         m_TextLines = BreakLine (m_Text, m_DrawRect.GetSize ().Width - 2 * SPEECH_FRAME_TEXT_INSETS);
         m_AttrColorIndex = 0;
         m_AttrDelayIndex = 0;
@@ -457,7 +511,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SpeechFrame::Render (float deltaTime)
+    void SpeechFrame::Render (float)
     {
         if (!m_Visible)
         {
@@ -660,11 +714,11 @@ namespace aga
     {
         float xPoint;
         float yPoint;
-        Font& font = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetFont ();
-        std::string text = m_Text.substr (0, m_CurrentIndex);
 
         if (m_DrawTextCenter)
         {
+            Font& font = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetFont ();
+            std::string text = m_Text.substr (0, m_CurrentIndex);
             Point textDimensions = font.GetTextDimensions (FONT_NAME_SPEECH_FRAME, text);
 
             xPoint = m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width * 0.5;
@@ -791,6 +845,8 @@ namespace aga
         m_DelayCounter = 0.0f;
         m_IsDelayed = false;
         m_ActualChoiceIndex = 0;
+        m_IsSuspended = false;
+        m_OverrideSuspension = false;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -826,6 +882,12 @@ namespace aga
             if (text[currIndex] == '\n')
             {
                 ++newLinesCount;
+            }
+            else if (text[currIndex] == '@')
+            {
+                m_BreakPoints.push_back (currIndex - newLinesCount);
+                text.erase (currIndex, 1);
+                --currIndex;
             }
             else if (text[currIndex] == '[')
             {

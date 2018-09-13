@@ -773,6 +773,11 @@ namespace aga
 
         if (m_CursorMode == CursorMode::EditPhysBodyMode)
         {
+            if (m_IsSnapToGrid)
+            {
+                DrawGrid ();
+            }
+
             RenderPhysBodyMode (deltaTime);
         }
         else if (m_CursorMode == CursorMode::EditSpriteSheetMode)

@@ -370,7 +370,7 @@ namespace aga
 
         float width = maxLineCharsCount * letterDim.Width + 2 * SPEECH_FRAME_TEXT_INSETS
             + (maxLineCharsCount - 1) * SPEECH_FRAME_ADVANCE_LETTERS;
-        float height = linesCount * (ascent + descent) + 2 * SPEECH_FRAME_TEXT_INSETS;
+        float height = linesCount * (ascent + descent) - descent + 2 * SPEECH_FRAME_TEXT_INSETS;
         height += (linesCount - 1) * SPEECH_FRAME_LINE_OFFSET;
 
         return {width, height};

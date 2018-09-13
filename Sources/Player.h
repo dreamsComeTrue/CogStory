@@ -6,7 +6,7 @@
 #include "Actor.h"
 #include "ParticleEmitter.h"
 
-#define PLAYER_Z_ORDER 10
+#define PLAYER_Z_ORDER 5
 
 namespace aga
 {

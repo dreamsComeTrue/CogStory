@@ -32,25 +32,6 @@ void AfterLeaveScene ()
 {
 }
 
-Point screenSize = screen.GetWindowSize ();
-
 void Update (float deltaTime)
 {
-    Point playerPos = player.GetPosition ();
-    Point playerSize = player.Bounds.GetSize ();
-    Point scale = camera.GetScale ();
-
-    int bounds = 100;
-
-    // if (playerPos.X < bounds)
-    // {
-    //     camera.SetTranslate (
-    //        screenSize.Width * 0.5f - ( bounds + playerSize.Width * 0.5f) * scale.Width, 
-    //         screenSize.Height * 0.5f - (playerPos.Y + playerSize.Height * 0.5f) * scale.Height);
-    //     camera.SetFollowActor (null);
-    // }
-    // else
-    // {
-    //     camera.SetFollowActor (player);
-    // }
 }

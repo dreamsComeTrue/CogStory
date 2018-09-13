@@ -122,6 +122,7 @@ namespace aga
         std::string m_OriginalText;
         std::vector<std::string> m_TextLines;
         std::vector<SpeechTextAttribute> m_Attributes;
+        std::vector<int> m_BreakPoints;
         Rect m_DrawRect;
         bool m_Visible;
         bool m_DrawTextCenter;
@@ -132,6 +133,9 @@ namespace aga
         float m_CurrentDrawTime;
 
         float m_LineHeight;
+        unsigned m_LineAscent;
+        unsigned m_LineDescent;
+
         size_t m_CurrentIndex;
         size_t m_CurrentLine;
         size_t m_OverallIndex;
@@ -159,6 +163,10 @@ namespace aga
         std::string m_OutcomeAction;
 
         asIScriptFunction* m_ScriptHandleFunction;
+
+        bool m_IsSuspended;
+        bool m_OverrideSuspension;
+        int m_CurrentLineBreakOffset;
     };
 }
 
