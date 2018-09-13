@@ -15,6 +15,10 @@ void SceneChanged (const string &in previousSceneName)
     {
         pos = GetFlagPoint ("MARKER_HOME_CITY").Pos;
     }
+    else if (previousSceneName == "Factory")
+    {
+        pos = GetFlagPoint ("MARKER_FACTORY_CITY").Pos;
+    }
     else 
     {
         pos = GetFlagPoint ("MARKER_HOME_CITY").Pos;
@@ -112,6 +116,13 @@ void RegisterFunctions ()
 	    SetActiveScene ("0_home/0_0_home.scn", true);        
     });
 
+    AddOnEnterCallback ("ENTRY_FACTORY", function (pt)
+    {
+    	Color color = COLOR_BLACK;
+	    SceneFadeInOut (400, 400, color);
+	    SetActiveScene ("1_factory/1_0_factory.scn", true);
+    });    
+
     RegisterChoiceFunction ("choice1", function ()
     {
         return "SPCH_2";
@@ -129,10 +140,12 @@ void RegisterFunctions ()
 
     player.AddOverlapCallbacks (function (other)
     {
-        ShowSpeechWhenOverlap (other, "HOME_SIGN", "HOME_SIGN");
+        ShowSpeechWhenOverlap (other, "HOME_SIGN", "HOME_SIGN_SPEECH");
+        ShowSpeechWhenOverlap (other, "FACTORY_SIGN", "FACTORY_SIGN_SPEECH");
     }, null, function (other)
     {
-        HideSpeechWhenOverlap (other, "HOME_SIGN", "HOME_SIGN");
+        HideSpeechWhenOverlap (other, "HOME_SIGN", "HOME_SIGN_SPEECH");
+        HideSpeechWhenOverlap (other, "FACTORY_SIGN", "FACTORY_SIGN_SPEECH");
     });
 }
 

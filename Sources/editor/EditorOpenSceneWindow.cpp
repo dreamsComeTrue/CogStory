@@ -57,6 +57,10 @@ namespace aga
         {
             m_PathTextBox->SetText (path);
         }
+        else
+        {
+            m_PathTextBox->SetText (m_FileName);
+        }
 
         m_SceneWindow->SetPosition (Gwk::Position::Center);
         m_SceneWindow->SetHidden (false);
