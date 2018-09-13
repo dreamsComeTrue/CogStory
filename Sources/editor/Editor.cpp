@@ -392,6 +392,13 @@ namespace aga
             m_MainLoop->GetSceneManager ().SetDrawPhysData (j["show_physics"]);
             m_MainLoop->GetSceneManager ().SetDrawBoundingBox (j["show_bounds"]);
             m_MainLoop->GetSceneManager ().SetDrawActorsNames (j["show_names"]);
+
+            auto& recentFiles = j["recent_files"];
+
+            for (auto& file : recentFiles)
+            {
+                m_OpenSceneWindow->AddRecentFileName (file);
+            }
         }
         catch (const std::exception&)
         {
@@ -410,6 +417,15 @@ namespace aga
             j["show_physics"] = m_MainLoop->GetSceneManager ().IsDrawPhysData ();
             j["show_bounds"] = m_MainLoop->GetSceneManager ().IsDrawBoundingBox ();
             j["show_names"] = m_MainLoop->GetSceneManager ().IsDrawActorsNames ();
+
+            j["recent_files"] = json::array ({});
+
+            std::vector<std::string> recentFiles = m_OpenSceneWindow->GetRecentFileNames ();
+
+            for (int i = 0; i < recentFiles.size (); ++i)
+            {
+                j["recent_files"].push_back (recentFiles[i]);
+            }
 
             // write prettified JSON to another file
             std::ofstream out ((GetDataPath () + configFileName).c_str ());
@@ -623,6 +639,18 @@ namespace aga
             {
                 MarkPlayerPosition ();
 
+                break;
+            }
+
+            case ALLEGRO_KEY_Q:
+            {
+                OnOpenScene ();
+                break;
+            }
+
+            case ALLEGRO_KEY_W:
+            {
+                OnSaveScene ();
                 break;
             }
             }
@@ -967,11 +995,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnOpenScene (Gwk::Controls::Base*) { m_OpenSceneWindow->Show (); }
+    void Editor::OnOpenScene () { m_OpenSceneWindow->Show (); }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnSaveScene (Gwk::Controls::Base*) { m_SaveSceneWindow->Show (); }
+    void Editor::OnSaveScene () { m_SaveSceneWindow->Show (); }
 
     //--------------------------------------------------------------------------------------------------
 

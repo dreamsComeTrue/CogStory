@@ -114,8 +114,8 @@ namespace aga
         void SetDrawUITiles (bool draw);
 
         void OnNewScene (Gwk::Controls::Base* control);
-        void OnOpenScene (Gwk::Controls::Base* control);
-        void OnSaveScene (Gwk::Controls::Base* control);
+        void OnOpenScene ();
+        void OnSaveScene ();
 
         void OnPlay ();
 

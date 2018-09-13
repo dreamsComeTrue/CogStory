@@ -5,6 +5,15 @@ void Start ()
 
 void SceneChanged (const string &in previousSceneName)
 {
+    Point pos;
+
+    if (previousSceneName == "City")
+    {
+        pos = GetFlagPoint ("MARKER_FACTORY_CITY").Pos;
+    }
+
+    player.SetCenterPosition (pos);
+
     // player.SetCenterPosition (GetFlagPoint ("MARKER_CITY_HOME").Pos);
     camera.SetFollowActor (player);
 }

@@ -31,7 +31,7 @@ void BeforeEnterScene ()
 {
     SetSuppressSceneInfo (true);
     @audioStream = SetSceneAudioStream ("music/Caketown 1.ogg");
-    //audioStream.Play ();
+    audioStream.Play ();
 
     RegisterFunctions ();    
 

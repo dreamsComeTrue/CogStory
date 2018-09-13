@@ -16,13 +16,18 @@ namespace aga
     {
         m_SceneWindow = new Gwk::Controls::WindowControl (canvas);
         m_SceneWindow->SetTitle ("Open Scene");
-        m_SceneWindow->SetSize (450, 120);
+        m_SceneWindow->SetSize (450, 420);
         m_SceneWindow->CloseButtonPressed ();
+
+        m_RecentFiles = new Gwk::Controls::ListBox (m_SceneWindow);
+        m_RecentFiles->SetSize (400, 270);
+        m_RecentFiles->SetPos (20, 10);
+        m_RecentFiles->onRowSelected.Add (this, &EditorOpenSceneWindow::OnRecentFile);
 
         //   EditorOpenSceneWindow->SetDeleteOnClose (true);
 
         Gwk::Controls::Label* pathLabel = new Gwk::Controls::Label (m_SceneWindow);
-        pathLabel->SetPos (20, 10);
+        pathLabel->SetPos (20, 300);
         pathLabel->SetText ("File path:");
         pathLabel->SizeToContents ();
 
@@ -30,22 +35,22 @@ namespace aga
         m_PathTextBox->SetText (m_FileName);
         m_PathTextBox->SetTextColor (Gwk::Colors::White);
         m_PathTextBox->SetWidth (300);
-        m_PathTextBox->SetPos (20, 30);
+        m_PathTextBox->SetPos (20, pathLabel->Y () + 20);
         m_PathTextBox->onTextChanged.Add (this, &EditorOpenSceneWindow::OnEdit);
 
         Gwk::Controls::Button* browseButton = new Gwk::Controls::Button (m_SceneWindow);
         browseButton->SetText ("BROWSE");
-        browseButton->SetPos (330, 30);
+        browseButton->SetPos (330, pathLabel->Y () + 20);
         browseButton->onPress.Add (this, &EditorOpenSceneWindow::OnBrowse);
 
         Gwk::Controls::Button* okButton = new Gwk::Controls::Button (m_SceneWindow);
         okButton->SetText ("OPEN");
-        okButton->SetPos (120, 60);
+        okButton->SetPos (120, m_PathTextBox->Y () + 30);
         okButton->onPress.Add (this, &EditorOpenSceneWindow::OnOpen);
 
         Gwk::Controls::Button* cancelButton = new Gwk::Controls::Button (m_SceneWindow);
         cancelButton->SetText ("CANCEL");
-        cancelButton->SetPos (okButton->GetPos ().x + okButton->GetSize ().x + 10, 60);
+        cancelButton->SetPos (okButton->GetPos ().x + okButton->GetSize ().x + 10, m_PathTextBox->Y () + 30);
         cancelButton->onPress.Add (this, &EditorOpenSceneWindow::OnCancel);
     }
 
@@ -69,10 +74,20 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorOpenSceneWindow::OnOpen (Gwk::Controls::Base*)
+    void EditorOpenSceneWindow::OnOpen ()
     {
+        AddRecentFileName (m_FileName);
+
         m_Editor->LoadScene (m_FileName);
         m_SceneWindow->CloseButtonPressed ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorOpenSceneWindow::OnRecentFile ()
+    {
+        m_FileName = m_RecentFiles->GetSelectedRowName ();
+        OnOpen ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -118,6 +133,47 @@ namespace aga
         }
 
         al_destroy_native_file_dialog (fileOpenDialog);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::vector<std::string> EditorOpenSceneWindow::GetRecentFileNames ()
+    {
+        std::vector<std::string> names;
+
+        for (int i = 0; i < m_RecentFiles->GetTable ()->NumChildren (); ++i)
+        {
+            Gwk::Controls::Layout::TableRow* row = m_RecentFiles->GetTable ()->GetRow (i);
+            std::string currentName = row->GetName ();
+
+            names.push_back (currentName);
+        }
+
+        return names;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorOpenSceneWindow::AddRecentFileName (const std::string& name)
+    {
+        bool found = false;
+
+        for (int i = 0; i < m_RecentFiles->GetTable ()->NumChildren (); ++i)
+        {
+            Gwk::Controls::Layout::TableRow* row = m_RecentFiles->GetTable ()->GetRow (i);
+            std::string currentName = row->GetName ();
+
+            if (currentName == name)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+        {
+            m_RecentFiles->AddItem (name, name);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

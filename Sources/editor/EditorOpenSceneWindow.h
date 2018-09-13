@@ -17,20 +17,26 @@ namespace aga
         EditorOpenSceneWindow (Editor* editor, Gwk::Controls::Canvas* canvas, const std::string& fileName);
 
         void Show (const std::string& filePath = "");
-        void OnOpen (Gwk::Controls::Base*);
-        void OnCancel ();
-        void OnEdit (Gwk::Controls::Base* control);
-        void OnBrowse ();
 
         void SetFileName (const std::string& fileName) { m_FileName = fileName; }
         std::string GetFileName () const { return m_FileName; }
 
         Gwk::Controls::WindowControl* GetSceneWindow () { return m_SceneWindow; }
+        std::vector<std::string> GetRecentFileNames ();
+        void AddRecentFileName (const std::string& name);
+
+    private:
+        void OnOpen ();
+        void OnCancel ();
+        void OnEdit (Gwk::Controls::Base* control);
+        void OnBrowse ();
+        void OnRecentFile ();
 
     private:
         Editor* m_Editor;
         Gwk::Controls::WindowControl* m_SceneWindow;
         Gwk::Controls::TextBox* m_PathTextBox;
+        Gwk::Controls::ListBox* m_RecentFiles;
         std::string m_FileName;
     };
 }
