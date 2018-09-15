@@ -23,6 +23,7 @@ namespace aga
     Gwk::Controls::Property::Text* idProperty;
     Gwk::Controls::Property::Text* nameProperty;
     Gwk::Controls::Property::ComboBox* typeProperty;
+    Gwk::Controls::Property::ComboBox* blueprintProperty;
     Gwk::Controls::Property::Text* positionProperty;
     Gwk::Controls::Property::Text* rotationProperty;
     Gwk::Controls::Property::Text* zOrderProperty;
@@ -86,6 +87,9 @@ namespace aga
             }
 
             m_GeneralSection->Add ("Type", typeComboBox);
+
+            m_BlueprintComboBox = new Gwk::Controls::Property::ComboBox (m_GeneralSection);
+            m_GeneralSection->Add ("Blueprint", m_BlueprintComboBox);
 
             m_TransformSection = m_ActorProperties->Add ("Transform");
 
@@ -161,6 +165,8 @@ namespace aga
                 static_cast<Gwk::Controls::PropertyRow*> (m_GeneralSection->Find ("Name"))->GetProperty ());
             typeProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
                 static_cast<Gwk::Controls::PropertyRow*> (m_GeneralSection->Find ("Type"))->GetProperty ());
+            blueprintProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
+                static_cast<Gwk::Controls::PropertyRow*> (m_GeneralSection->Find ("Blueprint"))->GetProperty ());
             positionProperty = static_cast<Gwk::Controls::Property::Text*> (
                 static_cast<Gwk::Controls::PropertyRow*> (m_TransformSection->Find ("Position"))->GetProperty ());
             rotationProperty = static_cast<Gwk::Controls::Property::Text*> (
@@ -215,8 +221,6 @@ namespace aga
         cacncelButton->SetText ("CANCEL");
         cacncelButton->SetPos (m_ActorProperties->Right () + 10, acceptButton->Bottom () + 5);
         cacncelButton->onPress.Add (this, &EditorActorWindow::OnCancel);
-
-        UpdateActorsTree ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -227,10 +231,12 @@ namespace aga
 
     void EditorActorWindow::Show ()
     {
+        UpdateBlueprintsComboBox ();
         UpdateActorsTree ();
 
         idProperty->SetPropertyValue ("", false);
         nameProperty->SetPropertyValue ("", false);
+        blueprintProperty->SetPropertyValue ("-1", false);
         positionProperty->SetPropertyValue ("", false);
         rotationProperty->SetPropertyValue ("", false);
         zOrderProperty->SetPropertyValue ("", false);
@@ -288,6 +294,14 @@ namespace aga
                 id = ToInteger (idStr);
             }
 
+            Gwk::String blueprintStr = blueprintProperty->GetPropertyValue ();
+            int blueprintID = -1;
+
+            if (blueprintStr != "")
+            {
+                blueprintID = ToInteger (blueprintStr);
+            }
+
             float rotation;
             int zOrder;
             float focusHeight;
@@ -299,7 +313,7 @@ namespace aga
             sscanf (focusHeightProperty->GetPropertyValue ().c_str (), "%f", &focusHeight);
 
             Actor* retActor = m_Editor->GetEditorActorMode ().AddOrUpdateActor (
-                id, actorName, typePropertyTxt, position, rotation, zOrder, focusHeight);
+                id, actorName, typePropertyTxt, blueprintID, position, rotation, zOrder, focusHeight);
 
             if (m_SelectedAtlas && m_SelectedAtlasRegion != "")
             {
@@ -313,6 +327,7 @@ namespace aga
                 m_Editor->GetEditorActorMode ().Clear ();
 
                 UpdateActorsTree ();
+                UpdateBlueprintsComboBox ();
                 SelectActor (selectedNodeName);
             }
         }
@@ -448,7 +463,7 @@ namespace aga
         {
             Gwk::Controls::TreeNode* node;
 
-            std::string name = actor->Name + std::string (" [") + ToString (actor->ID) + std::string ("]");
+            std::string name = actor->Name + std::string (" [") + std::to_string (actor->ID) + std::string ("]");
 
             if (actor->GetTypeName () == NPCActor::TypeName)
             {
@@ -476,6 +491,22 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void EditorActorWindow::UpdateBlueprintsComboBox ()
+    {
+        m_BlueprintComboBox->GetComboBox ()->ClearItems ();
+        m_BlueprintComboBox->GetComboBox ()->AddItem ("[NONE]", "-1");
+
+        std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
+
+        for (Actor* actor : actors)
+        {
+            std::string id = std::to_string (actor->ID);
+            m_BlueprintComboBox->GetComboBox ()->AddItem (actor->Name + " [" + id + "]", id);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void EditorActorWindow::OnActorSelect (Gwk::Controls::Base* control)
     {
         Gwk::Controls::TreeNode* node = (Gwk::Controls::TreeNode*)control;
@@ -488,7 +519,7 @@ namespace aga
 
             for (Actor* actor : actors)
             {
-                std::string name = actor->Name + std::string (" [") + ToString (actor->ID) + std::string ("]");
+                std::string name = actor->Name + std::string (" [") + std::to_string (actor->ID) + std::string ("]");
 
                 if (name == node->GetText ())
                 {
@@ -502,9 +533,11 @@ namespace aga
         m_Editor->GetEditorActorMode ().SetSelectedActor (m_SelectedActor);
         m_Editor->GetEditorActorMode ().SetActor (m_SelectedActor);
 
-        idProperty->SetPropertyValue (m_SelectedActor != nullptr ? ToString (m_SelectedActor->ID) : "", false);
+        idProperty->SetPropertyValue (m_SelectedActor != nullptr ? std::to_string (m_SelectedActor->ID) : "", false);
         nameProperty->SetPropertyValue (m_SelectedActor != nullptr ? m_SelectedActor->Name : "", false);
         typeProperty->SetPropertyValue (m_SelectedActor != nullptr ? m_SelectedActor->GetTypeName () : "", false);
+        blueprintProperty->SetPropertyValue (
+            m_SelectedActor != nullptr ? std::to_string (m_SelectedActor->BlueprintID) : "", false);
         positionProperty->SetPropertyValue (m_SelectedActor != nullptr
                 ? Gwk::Utility::Format ("%f,%f", m_SelectedActor->Bounds.Pos.X, m_SelectedActor->Bounds.Pos.Y)
                 : Gwk::Utility::Format ("%f,%f", 0.f, 0.f),
@@ -513,7 +546,8 @@ namespace aga
                 ? Gwk::Utility::Format ("%f", m_SelectedActor->Rotation)
                 : Gwk::Utility::Format ("%f", 0.f),
             false);
-        zOrderProperty->SetPropertyValue (m_SelectedActor != nullptr ? ToString (m_SelectedActor->ZOrder) : "0", false);
+        zOrderProperty->SetPropertyValue (
+            m_SelectedActor != nullptr ? std::to_string (m_SelectedActor->ZOrder) : "0", false);
         imagePathProperty->SetPropertyValue (
             m_SelectedActor != nullptr ? m_SelectedActor->GetAtlas ()->GetName () : "", false);
 

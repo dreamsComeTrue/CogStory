@@ -233,6 +233,9 @@ namespace aga
                 {
                     std::string id = actorIt["id"];
                     newActor->ID = atoi (id.c_str ());
+
+                    std::string blueprintID = actorIt["blueprint"];
+                    newActor->BlueprintID = atoi (blueprintID.c_str ());
                     newActor->Name = actorIt["name"];
                     newActor->Bounds.Pos = StringToPoint (actorIt["pos"]);
                     newActor->Bounds.Size = StringToPoint (actorIt["size"]);
@@ -441,6 +444,7 @@ namespace aga
                 actorObj["id"] = std::to_string (actor->ID);
                 actorObj["type"] = actor->GetTypeName ();
                 actorObj["name"] = actor->Name;
+                actorObj["blueprint"] = std::to_string (actor->BlueprintID);
                 actorObj["pos"] = PointToString (actor->Bounds.GetPos ());
                 actorObj["size"] = PointToString (actor->Bounds.GetSize ());
                 actorObj["z-order"] = std::to_string (actor->ZOrder);

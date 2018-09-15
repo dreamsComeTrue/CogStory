@@ -34,6 +34,7 @@ namespace aga
         std::string Name;
         int ZOrder = 0;
         int RenderID = 0;
+        int BlueprintID = -1;
 
         virtual std::string GetTypeName () = 0;
 
@@ -41,6 +42,8 @@ namespace aga
         void AddOverlappingCallback (asIScriptFunction* func);
         void AddEndOverlapCallback (asIScriptFunction* func);
         void AddOverlapCallbacks (asIScriptFunction* begin, asIScriptFunction* update, asIScriptFunction* end);
+
+        std::vector<Entity*> GetBluprintChildren ();
 
         static int GetNextID () { return ++GlobalID; }
 

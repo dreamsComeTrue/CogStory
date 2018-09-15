@@ -101,6 +101,7 @@ namespace aga
         void SaveConfig ();
 
         void DrawGrid ();
+        void DrawSelectionRect (Rect rect);
 
         void ChangeGridSize (bool clockwise);
         bool IsEditorCanvasNotCovered ();
@@ -146,6 +147,7 @@ namespace aga
         void OnTilesetSelected (Gwk::Controls::Base* control);
 
         void RenderUI ();
+        void RenderActorMode (float deltaTime);
         void RenderPhysBodyMode (float deltaTime);
 
         void ResetSettings ();

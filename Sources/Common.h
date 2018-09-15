@@ -119,14 +119,6 @@ namespace aga
 
     std::string& TrimString (std::string& str);
 
-    template <typename T> std::string ToString (T t)
-    {
-        std::stringstream strStream;
-        strStream << t;
-
-        return strStream.str ();
-    }
-
     bool EndsWith (const std::string& str, const std::string& suffix);
 
     bool StartsWith (const std::string& str, const std::string& prefix);
@@ -134,6 +126,14 @@ namespace aga
     float RandZeroToOne ();
     bool RandBool ();
     float RandInRange (float min, float max);
+
+    template <typename T> std::string ToString (T t)
+    {
+        std::stringstream strStream;
+        strStream << t;
+
+        return strStream.str ();
+    }
 
     int ToInteger (const std::string& str);
 

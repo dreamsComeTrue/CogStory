@@ -482,7 +482,7 @@ namespace aga
             idTextBox->SetText (outcomes[i].Name);
             idTextBox->SetWidth (65);
             idTextBox->SetPos (0, currentY);
-            idTextBox->SetName ("IDTxt_" + ToString (i));
+            idTextBox->SetName ("IDTxt_" + std::to_string (i));
             idTextBox->onTextChanged.Add (this, &EditorSpeechWindow::OnOutcomeIDTextChanged);
 
             Gwk::Controls::TextBox* dataTextBox = new Gwk::Controls::TextBox (m_OutcomesContainer);
@@ -490,7 +490,7 @@ namespace aga
             dataTextBox->SetText (outcomes[i].Text);
             dataTextBox->SetWidth (240);
             dataTextBox->SetPos (idTextBox->Right () + 5, currentY);
-            dataTextBox->SetName ("DataTxt_" + ToString (i));
+            dataTextBox->SetName ("DataTxt_" + std::to_string (i));
             dataTextBox->onTextChanged.Add (this, &EditorSpeechWindow::OnOutcomeDataTextChanged);
 
             Gwk::Controls::ComboBox* actionCombo = new Gwk::Controls::ComboBox (m_OutcomesContainer);
@@ -511,27 +511,27 @@ namespace aga
             }
 
             actionCombo->SelectItemByName (outcomes[i].Action, false);
-            actionCombo->SetName ("ActionTxt_" + ToString (i));
+            actionCombo->SetName ("ActionTxt_" + std::to_string (i));
             actionCombo->onSelection.Add (this, &EditorSpeechWindow::OnOutcomeActionChanged);
 
             Gwk::Controls::Button* upButton = new Gwk::Controls::Button (m_OutcomesContainer);
             upButton->SetText (" ^");
             upButton->SetWidth (20);
-            upButton->SetName (ToString (i));
+            upButton->SetName (std::to_string (i));
             upButton->SetPos (actionCombo->Right () + 5, currentY);
             upButton->onPress.Add (this, &EditorSpeechWindow::OnUpOutcome);
 
             Gwk::Controls::Button* downButton = new Gwk::Controls::Button (m_OutcomesContainer);
             downButton->SetText (" v");
             downButton->SetWidth (20);
-            downButton->SetName (ToString (i));
+            downButton->SetName (std::to_string (i));
             downButton->SetPos (upButton->Right () + 5, currentY);
             downButton->onPress.Add (this, &EditorSpeechWindow::OnDownOutcome);
 
             Gwk::Controls::Button* removeButton = new Gwk::Controls::Button (m_OutcomesContainer);
             removeButton->SetText ("REMOVE");
             removeButton->SetWidth (60);
-            removeButton->SetName (ToString (i));
+            removeButton->SetName (std::to_string (i));
             removeButton->SetPos (downButton->Right () + 5, currentY);
             removeButton->onPress.Add (this, &EditorSpeechWindow::OnRemoveOutcome);
 
@@ -551,7 +551,7 @@ namespace aga
         for (std::map<int, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
         {
             Gwk::Controls::TreeNode* node = m_SpeechesTree->AddNode ((*it).second.Name);
-            node->SetName (ToString ((*it).first));
+            node->SetName (std::to_string ((*it).first));
             node->onSelect.Add (this, &EditorSpeechWindow::OnSpeechSelect);
         }
 
@@ -566,7 +566,7 @@ namespace aga
 
         for (int i = 0; i < outcomes.size (); ++i)
         {
-            Gwk::Controls::Base* child = m_OutcomesContainer->FindChildByName ("IDTxt_" + ToString (i), true);
+            Gwk::Controls::Base* child = m_OutcomesContainer->FindChildByName ("IDTxt_" + std::to_string (i), true);
 
             if (control == child)
             {
@@ -584,7 +584,7 @@ namespace aga
 
         for (int i = 0; i < outcomes.size (); ++i)
         {
-            Gwk::Controls::Base* child = m_OutcomesContainer->FindChildByName ("DataTxt_" + ToString (i), true);
+            Gwk::Controls::Base* child = m_OutcomesContainer->FindChildByName ("DataTxt_" + std::to_string (i), true);
 
             if (control == child)
             {
@@ -602,7 +602,7 @@ namespace aga
 
         for (int i = 0; i < outcomes.size (); ++i)
         {
-            Gwk::Controls::Base* child = m_OutcomesContainer->FindChildByName ("ActionTxt_" + ToString (i), true);
+            Gwk::Controls::Base* child = m_OutcomesContainer->FindChildByName ("ActionTxt_" + std::to_string (i), true);
 
             if (control == child)
             {
@@ -625,7 +625,7 @@ namespace aga
 
         for (int i = 0; i < outcomes.size (); ++i)
         {
-            if (control->GetName () == ToString (i))
+            if (control->GetName () == std::to_string (i))
             {
                 if (i == 0)
                 {
@@ -651,7 +651,7 @@ namespace aga
 
         for (int i = 0; i < outcomes.size (); ++i)
         {
-            if (control->GetName () == ToString (i))
+            if (control->GetName () == std::to_string (i))
             {
                 if (i == outcomes.size () - 1)
                 {
@@ -683,7 +683,7 @@ namespace aga
 
             for (int i = 0; i < outcomes.size (); ++i)
             {
-                if (outcomeControlToRemove == ToString (i))
+                if (outcomeControlToRemove == std::to_string (i))
                 {
                     outcomes.erase (outcomes.begin () + i);
                     break;
@@ -731,7 +731,7 @@ namespace aga
         SpeechData& speech = speeches[id];
         m_Editor->GetEditorSpeechMode ().SetSpeechData (speech);
 
-        m_IDTextBox->SetText (ToString (speech.ID));
+        m_IDTextBox->SetText (std::to_string (speech.ID));
         m_NameTextBox->SetText (speech.Name);
         m_RegionCombo->SelectItemByName (speech.ActorRegionName);
         m_TextData->SetText (speech.Text[m_LangIndex]);

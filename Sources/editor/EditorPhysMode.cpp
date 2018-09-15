@@ -139,7 +139,7 @@ namespace aga
                     if (m_Editor->GetMainLoop ()->GetSceneManager ().IsDrawPhysData () && false)
                     {
                         m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_SMALL,
-                            al_map_rgb (0, 255, 0), xPoint, yPoint, ToString (i), ALLEGRO_ALIGN_CENTER);
+                            al_map_rgb (0, 255, 0), xPoint, yPoint, std::to_string (i), ALLEGRO_ALIGN_CENTER);
                     }
 
                     ++i;

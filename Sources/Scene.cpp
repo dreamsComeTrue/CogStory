@@ -425,8 +425,8 @@ namespace aga
         }
 
         Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
-        font.DrawText (
-            FONT_NAME_SMALL, al_map_rgb (0, 255, 0), 10, 10, ToString (m_VisibleEntities.size ()), ALLEGRO_ALIGN_LEFT);
+        font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), 10, 10, std::to_string (m_VisibleEntities.size ()),
+            ALLEGRO_ALIGN_LEFT);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -769,7 +769,7 @@ namespace aga
 
         Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
         font.DrawText (FONT_NAME_SMALL, al_map_rgb (255, 255, 0), bounds.GetCenter ().X, bounds.GetCenter ().Y,
-            ToString (node->GetData ().size ()), ALLEGRO_ALIGN_CENTER);
+            std::to_string (node->GetData ().size ()), ALLEGRO_ALIGN_CENTER);
 
         if (node->GetTopLeftTree ())
         {
@@ -1036,8 +1036,7 @@ namespace aga
 
                 m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_SMALL,
                     al_map_rgb (0, 255, 0), static_cast<float> (min.X + (max.X - min.X) * 0.5),
-                    static_cast<float> (min.Y + (max.Y - min.Y) * 0.5), ToString (it->second.Name),
-                    ALLEGRO_ALIGN_CENTER);
+                    static_cast<float> (min.Y + (max.Y - min.Y) * 0.5), it->second.Name, ALLEGRO_ALIGN_CENTER);
             }
         }
     }

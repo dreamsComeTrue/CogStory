@@ -46,6 +46,7 @@ namespace aga
         void OnCollidableSelected (Gwk::Controls::Base* control);
 
         void UpdateActorsTree ();
+        void UpdateBlueprintsComboBox ();
         void OnActorSelect (Gwk::Controls::Base* control);
 
         void AddScriptEntry (const std::string& name, const std::string& path);
@@ -64,6 +65,8 @@ namespace aga
 
         Gwk::Controls::WindowControl* m_SceneWindow;
         Gwk::Controls::TreeControl* m_ActorsTree;
+
+        Gwk::Controls::Property::ComboBox* m_BlueprintComboBox;
 
         Gwk::Controls::Property::ComboBox* m_ImageComboBox;
         Gwk::Controls::Property::ComboBox* m_ImagePathComboBox;

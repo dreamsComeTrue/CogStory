@@ -364,7 +364,7 @@ namespace aga
                 {
                     m_IsSuspended = false;
                     m_OverrideSuspension = true;
-                    m_CurrentLineBreakOffset = m_CurrentLine;
+                    m_CurrentLineBreakOffset = m_CurrentLine + 1;
                 }
                 else if (m_ShouldBeHandled && !m_StillUpdating)
                 {

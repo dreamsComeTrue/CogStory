@@ -21,10 +21,10 @@ void SceneChanged (const string &in previousSceneName)
     }
     else 
     {
-        pos = GetFlagPoint ("MARKER_HOME_CITY").Pos;
+    //    pos = GetFlagPoint ("MARKER_HOME_CITY").Pos;
     }
 
-    player.SetCenterPosition (pos);
+  //  player.SetCenterPosition (pos);
 }
 
 void BeforeEnterScene ()
@@ -35,12 +35,12 @@ void BeforeEnterScene ()
 
     RegisterFunctions ();    
 
-    if (!g_IntroPlayed)
+//    if (!g_IntroPlayed)
     {
         g_IntroPlayed = true;
-        IntroAnimation ();    
+       // IntroAnimation ();    
     }
-    else
+  //  else
     {
         SetSuppressSceneInfo (false);
         camera.SetFollowActor (player);
@@ -85,9 +85,9 @@ void IntroAnimation ()
 
     Timeline@ timeline = CreateTimeline (0);
     timeline
-    .Once (500, function (id)
+    .Once (5000, function (id)
     {
-        camera.TweenToPoint (player.GetPosition () + player.Bounds.GetHalfSize (), 500, true, function (id)
+        camera.TweenToPoint (player.GetPosition () + player.Bounds.GetHalfSize (), 5000, true, function (id)
         {
             player.SetPreventInput (false);
             camera.SetFollowActor (player);

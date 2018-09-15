@@ -115,8 +115,6 @@ namespace aga
             Y /= p.Y;
         }
 
-        std::string ToString () { return "{X: " + std::to_string (X) + ", Y: " + std::to_string (Y) + "}"; }
-
         static Point MIN_POINT;
         static Point MAX_POINT;
         static Point ZERO_POINT;

@@ -204,4 +204,22 @@ namespace aga
     }
 
     //--------------------------------------------------------------------------------------------------
+
+    std::vector<Entity*> Entity::GetBluprintChildren ()
+    {
+        std::vector<Actor*>& actors = m_SceneManager->GetActiveScene ()->GetActors ();
+        std::vector<Entity*> entities;
+
+        for (Actor* actor : actors)
+        {
+            if (actor->BlueprintID == this->ID)
+            {
+                entities.push_back (actor);
+            }
+        }
+
+        return entities;
+    }
+
+    //--------------------------------------------------------------------------------------------------
 }

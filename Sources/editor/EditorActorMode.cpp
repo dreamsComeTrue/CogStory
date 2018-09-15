@@ -34,8 +34,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Actor* EditorActorMode::AddOrUpdateActor (int id, const std::string& name, const std::string& actorType, Point pos,
-        float rotation, int zOrder, float focusHeight)
+    Actor* EditorActorMode::AddOrUpdateActor (int id, const std::string& name, const std::string& actorType,
+        int blueprintID, Point pos, float rotation, int zOrder, float focusHeight)
     {
         Scene* activeScene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
         Actor* actor = activeScene->GetActor (id);
@@ -43,6 +43,7 @@ namespace aga
         if (actor && actor->GetTypeName () == actorType)
         {
             actor->Name = name;
+            actor->BlueprintID = blueprintID;
             actor->Bounds.Pos = pos;
             actor->TemplateBounds.Pos = pos;
             actor->Rotation = rotation;
@@ -61,6 +62,7 @@ namespace aga
 
             actor = ActorFactory::GetActor (&m_Editor->GetMainLoop ()->GetSceneManager (), actorType);
             actor->Name = name;
+            actor->BlueprintID = blueprintID;
             actor->Bounds.Pos = pos;
             actor->TemplateBounds.Pos = pos;
             actor->Rotation = rotation;
@@ -193,6 +195,13 @@ namespace aga
         for (Actor* actor : m_SelectedActors)
         {
             actor->Rotation = m_Rotation;
+
+            std::vector<Entity*> children = actor->GetBluprintChildren ();
+
+            for (Entity* child : children)
+            {
+                child->Rotation = actor->Rotation;
+            }
         }
     }
 
@@ -200,15 +209,22 @@ namespace aga
 
     void EditorActorMode::ChangeZOrder (bool clockwise)
     {
+        Scene* activeScene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
+
         std::vector<int> selectedIDs;
 
         for (Actor* actor : m_SelectedActors)
         {
             actor->ZOrder += clockwise ? -1 : 1;
             selectedIDs.push_back (actor->ID);
-        }
 
-        Scene* activeScene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
+            std::vector<Entity*> children = actor->GetBluprintChildren ();
+
+            for (Entity* child : children)
+            {
+                child->ZOrder = actor->ZOrder;
+            }
+        }
 
         activeScene->SortActors ();
         activeScene->RecomputeVisibleEntities (true);
@@ -248,7 +264,6 @@ namespace aga
             Point regionSize = m_Atlas->GetRegion (region.Name).Bounds.GetSize ();
             Point point = m_Editor->CalculateWorldPoint (mouseX, mouseY);
 
-            tile->ID = Entity::GetNextID ();
             tile->SetAtlas (m_Atlas);
             tile->SetAtlasName (m_Atlas->GetName ());
             tile->SetAtlasRegionName (region.Name);
@@ -408,7 +423,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorActorMode::CopySelectedActors ()
+    void EditorActorMode::CopySelectedActors (bool changeSelection, bool linkWithParent)
     {
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
@@ -434,6 +449,12 @@ namespace aga
             Actor* newActor
                 = ActorFactory::GetActor (&m_Editor->GetMainLoop ()->GetSceneManager (), selectedActor->GetTypeName ());
             newActor->Name = selectedActor->GetAtlasRegionName ();
+
+            if (linkWithParent)
+            {
+                newActor->BlueprintID = selectedActor->ID;
+            }
+
             newActor->Bounds.Pos = selectedActor->Bounds.Pos + deltaPoint;
             newActor->Bounds.Size = regionSize;
             newActor->TemplateBounds = newActor->Bounds;
@@ -452,8 +473,10 @@ namespace aga
             actorsToSelect.push_back (newActor);
         }
 
-        m_SelectedActors.clear ();
-        m_SelectedActors = actorsToSelect;
+        if (changeSelection)
+        {
+            m_SelectedActors = actorsToSelect;
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

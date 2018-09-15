@@ -258,7 +258,7 @@ namespace aga
     {
         Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
         Point pos = {Bounds.GetCenter ().X, Bounds.GetBottomRight ().Y};
-        std::string str = Name + "[" + ToString (ID) + "]";
+        std::string str = Name + "[" + std::to_string (ID) + "]";
         font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), pos.X, pos.Y, str, ALLEGRO_ALIGN_CENTER);
     }
 

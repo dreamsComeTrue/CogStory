@@ -23,8 +23,8 @@ namespace aga
         EditorActorMode (Editor* editor);
         virtual ~EditorActorMode ();
 
-        Actor* AddOrUpdateActor (int id, const std::string& name, const std::string& actorType, Point pos,
-            float rotation, int zOrder, float focusHeight);
+        Actor* AddOrUpdateActor (int id, const std::string& name, const std::string& actorType, int blueprintID,
+            Point pos, float rotation, int zOrder, float focusHeight);
         void RemoveActor (const std::string& name);
         void Clear ();
 
@@ -34,7 +34,7 @@ namespace aga
         Actor* GetActorUnderCursor (int mouseX, int mouseY, bool selecting, Rect&& outRect);
 
         void RemoveSelectedActors ();
-        void CopySelectedActors ();
+        void CopySelectedActors (bool changeSelection, bool linkWithParent);
         void DrawTiles ();
 
         void AddActor (int mouseX, int mouseY);

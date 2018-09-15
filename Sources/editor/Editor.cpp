@@ -94,6 +94,7 @@ namespace aga
     Gwk::Controls::Label* avgFPSLabel;
     Gwk::Controls::Label* fpsLabel;
     Gwk::Controls::Label* idLabel;
+    Gwk::Controls::Label* parentLabel;
     Gwk::Controls::Label* xPosLabel;
     Gwk::Controls::Label* yPosLabel;
     Gwk::Controls::Label* widthLabel;
@@ -305,6 +306,9 @@ namespace aga
 
         idLabel = new Gwk::Controls::Label (m_MainCanvas);
         idLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
+
+        parentLabel = new Gwk::Controls::Label (m_MainCanvas);
+        parentLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
 
         xPosLabel = new Gwk::Controls::Label (m_MainCanvas);
         xPosLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
@@ -598,7 +602,11 @@ namespace aga
 
             case ALLEGRO_KEY_C:
             {
-                m_EditorActorMode.CopySelectedActors ();
+                bool changeSelection = event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT;
+                bool linkWithParent = event->keyboard.modifiers == ALLEGRO_KEYMOD_CTRL;
+
+                m_EditorActorMode.CopySelectedActors (changeSelection, linkWithParent);
+
                 break;
             }
 
@@ -769,8 +777,6 @@ namespace aga
 
     void Editor::Render (float deltaTime)
     {
-        Rect realSelectionRect;
-
         if (m_CursorMode == CursorMode::EditPhysBodyMode)
         {
             if (m_IsSnapToGrid)
@@ -785,74 +791,94 @@ namespace aga
             m_MainLoop->GetSceneManager ().GetCamera ().Update (deltaTime);
             m_EditorActorMode.RenderSpriteSheet ();
 
-            realSelectionRect = m_SelectionRect;
+            DrawSelectionRect (m_SelectionRect);
         }
         else
         {
-            if (m_IsSnapToGrid)
-            {
-                DrawGrid ();
-            }
-
-            m_MainLoop->GetSceneManager ().Render (deltaTime);
-            m_MainLoop->GetSceneManager ().GetCamera ().UseIdentityTransform ();
-
-            if (IsEditorCanvasNotCovered ())
-            {
-                ALLEGRO_MOUSE_STATE state;
-                al_get_mouse_state (&state);
-
-                Rect r;
-                Actor* actorUnderCursor
-                    = m_EditorActorMode.GetActorUnderCursor (state.x, state.y, false, std::move (r));
-
-                if (actorUnderCursor)
-                {
-                    al_draw_rectangle (r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X,
-                        r.GetBottomRight ().Y, COLOR_YELLOW, 2);
-                }
-
-                for (Actor* actor : m_EditorActorMode.GetSelectedActors ())
-                {
-                    Rect r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (actor, true);
-
-                    al_draw_rectangle (r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X,
-                        r.GetBottomRight ().Y, COLOR_RED, 2);
-                }
-
-                if (m_CursorMode == CursorMode::ActorSelectMode)
-                {
-                    m_EditorActorMode.SetActorUnderCursor (actorUnderCursor);
-                }
-            }
-
-            m_EditorFlagPointMode.DrawFlagPoints ();
-            m_EditorTriggerAreaMode.MarkSelectedTriggerAreas ();
-
-            if (m_EditorActorMode.IsDrawTiles ())
-            {
-                m_EditorActorMode.DrawTiles ();
-                RenderUI ();
-            }
-
-            if (m_ActorWindow->GetSceneWindow ()->Visible ())
-            {
-                m_ActorWindow->RenderActorImage ();
-            }
-
-            SpeechFrameManager& frameManager = m_MainLoop->GetSceneManager ().GetSpeechFrameManager ();
-            frameManager.Update (deltaTime);
-            frameManager.Render (deltaTime);
-
-            realSelectionRect = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_SelectionRect);
+            RenderActorMode (deltaTime);
         }
+    }
 
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::DrawSelectionRect (Rect rect)
+    {
         //  Prevent drawing selection rect with 1-pixel size (click-down-up)
-        if (realSelectionRect.GetSize ().Width > 2 || realSelectionRect.GetSize ().Height > 2)
+        if (rect.GetSize ().Width > 2 || rect.GetSize ().Height > 2)
         {
-            al_draw_rectangle (realSelectionRect.GetTopLeft ().X, realSelectionRect.GetTopLeft ().Y,
-                realSelectionRect.GetBottomRight ().X, realSelectionRect.GetBottomRight ().Y, COLOR_WHITE, 2);
+            al_draw_rectangle (rect.GetTopLeft ().X, rect.GetTopLeft ().Y, rect.GetBottomRight ().X,
+                rect.GetBottomRight ().Y, COLOR_WHITE, 2);
         }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::RenderActorMode (float deltaTime)
+    {
+        if (m_IsSnapToGrid)
+        {
+            DrawGrid ();
+        }
+
+        m_MainLoop->GetSceneManager ().Render (deltaTime);
+        m_MainLoop->GetSceneManager ().GetCamera ().UseIdentityTransform ();
+
+        if (IsEditorCanvasNotCovered ())
+        {
+            ALLEGRO_MOUSE_STATE state;
+            al_get_mouse_state (&state);
+
+            Rect r;
+            Actor* actorUnderCursor = m_EditorActorMode.GetActorUnderCursor (state.x, state.y, false, std::move (r));
+
+            if (actorUnderCursor)
+            {
+                al_draw_rectangle (r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y,
+                    COLOR_YELLOW, 2);
+            }
+
+            for (Actor* actor : m_EditorActorMode.GetSelectedActors ())
+            {
+                Rect r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (actor, true);
+
+                al_draw_rectangle (
+                    r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y, COLOR_RED, 2);
+
+                if (actor->BlueprintID > -1)
+                {
+                    Actor* parent = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActor (actor->BlueprintID);
+                    Rect r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (parent, true);
+
+                    al_draw_rectangle (r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X,
+                        r.GetBottomRight ().Y, COLOR_BLUE, 2);
+                }
+            }
+
+            if (m_CursorMode == CursorMode::ActorSelectMode)
+            {
+                m_EditorActorMode.SetActorUnderCursor (actorUnderCursor);
+            }
+        }
+
+        m_EditorFlagPointMode.DrawFlagPoints ();
+        m_EditorTriggerAreaMode.MarkSelectedTriggerAreas ();
+
+        if (m_EditorActorMode.IsDrawTiles ())
+        {
+            m_EditorActorMode.DrawTiles ();
+            RenderUI ();
+        }
+
+        if (m_ActorWindow->GetSceneWindow ()->Visible ())
+        {
+            m_ActorWindow->RenderActorImage ();
+        }
+
+        SpeechFrameManager& frameManager = m_MainLoop->GetSceneManager ().GetSpeechFrameManager ();
+        frameManager.Update (deltaTime);
+        frameManager.Render (deltaTime);
+
+        DrawSelectionRect (m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_SelectionRect));
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1277,7 +1303,7 @@ namespace aga
         if (!m_EditorActorMode.GetSelectedActors ().empty ())
         {
             Actor* actor = m_EditorActorMode.GetSelectedActors ()[0];
-            std::string name = actor->Name + std::string (" [") + ToString (actor->ID) + std::string ("]");
+            std::string name = actor->Name + std::string (" [") + std::to_string (actor->ID) + std::string ("]");
 
             m_ActorWindow->SelectActor (name);
         }
@@ -1329,6 +1355,10 @@ namespace aga
         idLabel->SetText (std::string ("            ID: " + (selectedEntity ? ToString (selectedEntity->ID) : "-")));
         idLabel->SizeToContents ();
 
+        parentLabel->SetText (
+            std::string ("         PARENT: " + (selectedEntity ? ToString (selectedEntity->BlueprintID) : "-")));
+        parentLabel->SizeToContents ();
+
         xPosLabel->SetText (std::string ("             X: " + ToString ((translate.X + state.x) * (1 / scale.X))));
         xPosLabel->SizeToContents ();
 
@@ -1359,7 +1389,7 @@ namespace aga
         scaleLabel->SetText (std::string ("             S: " + ToString (scale.X)));
         scaleLabel->SizeToContents ();
 
-        snapLabel->SetText (std::string ("     SNAP: " + ToString (m_IsSnapToGrid ? "YES" : "NO")));
+        snapLabel->SetText (std::string ("     SNAP: " + std::string (m_IsSnapToGrid ? "YES" : "NO")));
         snapLabel->SizeToContents ();
 
         gridLabel->SetText (std::string ("      GRID: " + ToString (m_BaseGridSize)));
@@ -1423,7 +1453,8 @@ namespace aga
         avgFPSLabel->SetPos (m_MainCanvas->Width () - 120.0f, 10);
         fpsLabel->SetPos (m_MainCanvas->Width () - 120.0f, avgFPSLabel->Bottom () + 5);
         idLabel->SetPos (m_MainCanvas->Width () - 120.0f, fpsLabel->Bottom () + 10);
-        xPosLabel->SetPos (m_MainCanvas->Width () - 120.0f, idLabel->Bottom () + 5);
+        parentLabel->SetPos (m_MainCanvas->Width () - 120.0f, idLabel->Bottom () + 10);
+        xPosLabel->SetPos (m_MainCanvas->Width () - 120.0f, parentLabel->Bottom () + 5);
         yPosLabel->SetPos (m_MainCanvas->Width () - 120.0f, xPosLabel->Bottom () + 5);
         widthLabel->SetPos (m_MainCanvas->Width () - 120.0f, yPosLabel->Bottom () + 5);
         heightLabel->SetPos (m_MainCanvas->Width () - 120.0f, widthLabel->Bottom () + 5);
