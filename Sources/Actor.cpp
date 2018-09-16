@@ -9,6 +9,7 @@
 #include "Screen.h"
 #include "Script.h"
 #include "actors/components/MovementComponent.h"
+#include "actors/components/ParticleEmitterComponent.h"
 
 namespace aga
 {
@@ -168,14 +169,7 @@ namespace aga
     {
         Animable::Render (this);
 
-        if (!m_Components.empty ())
-        {
-            for (std::map<std::string, Component*>::iterator it = m_Components.begin (); it != m_Components.end ();
-                 ++it)
-            {
-                it->second->Render (deltaTime);
-            }
-        }
+        RenderComponents (deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -236,9 +230,30 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Actor::RenderComponents (float deltaTime)
+    {
+        if (!m_Components.empty ())
+        {
+            for (std::map<std::string, Component*>::iterator it = m_Components.begin (); it != m_Components.end ();
+                 ++it)
+            {
+                it->second->Render (deltaTime);
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     MovementComponent* Actor::GetMovementComponent (const std::string& name)
     {
         return static_cast<MovementComponent*> (FindComponent (name, MovementComponent::TypeName));
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    ParticleEmitterComponent* Actor::GetParticleEmitterComponent (const std::string& name)
+    {
+        return static_cast<ParticleEmitterComponent*> (FindComponent (name, ParticleEmitterComponent::TypeName));
     }
 
     //--------------------------------------------------------------------------------------------------

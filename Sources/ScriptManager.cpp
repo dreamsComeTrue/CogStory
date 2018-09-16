@@ -13,6 +13,7 @@
 #include "SpeechFrameManager.h"
 #include "Timeline.h"
 #include "actors/components/MovementComponent.h"
+#include "actors/components/ParticleEmitterComponent.h"
 
 #include <chrono>
 
@@ -154,6 +155,18 @@ namespace aga
                = void SpeechHandler ()
            void RegisterSpeechesFinishedHandler (SpeechHandler @+ hd)
 
+        ParticleEmitter
+            void Initialize ()
+            void Reset ()
+            void SetCanEmit (bool canEmit)
+            bool IsCanEmit ()
+            void SetPosition (Point position)
+            void SetPosition (float x, float y)
+            Point GetPosition ()
+            void SetParticleLifeVariance (float minLife, float maxLife)
+            void SetVelocityVariance (Point minVariance, Point maxVariance)
+            void SetColorTransition (Color beginColor, Color endColor)
+
        Actor
            Rect Bounds
            void Move (float, float)
@@ -198,6 +211,11 @@ namespace aga
                = void MovementCallback (Point)
            void SetMovementCallback (MovementCallback @+ mc)
 
+       ParticleEmitterComponent
+            void CreateEmitter (const string &in atlasName, const string &in atlasRegionName,
+                            unsigned maxParticles, float emitLifeSpan)
+            ParticleEmitter@ GetEmitter ()
+
        SceneManager
            void SetActiveScene (const string &in, bool fadeAnim = true)
            void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, Color color = COLOR_BLACK)
@@ -207,6 +225,7 @@ namespace aga
                 ScreenRelativePosition pos = BottomRight)
            void SetOverlayActive (bool active)
            Actor@ GetActor (const string &in)
+           Actor@ GetActor (int id)
                 = string ChoiceFunction (void)
            void RegisterChoiceFunction (string, ChoiceFunction @+ func)
            AudioSample@ SetSceneAudioStream (const string &in path)
@@ -521,6 +540,13 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    static void ConstructColorRGBA (float r, float g, float b, float a, ALLEGRO_COLOR* ptr)
+    {
+        new (ptr) ALLEGRO_COLOR{r, g, b, a};
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     static void Log (const std::string& data) { Log ("%s\n", data.c_str ()); }
 
     //--------------------------------------------------------------------------------------------------
@@ -534,6 +560,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     ALLEGRO_COLOR COLOR_BLACK_REF = COLOR_BLACK;
+    ALLEGRO_COLOR COLOR_WHITE_REF = COLOR_WHITE;
 
     void ScriptManager::RegisterAPI ()
     {
@@ -564,6 +591,9 @@ namespace aga
         //  Speech Frame Manager
         RegisterSpeechFrameManagerAPI ();
 
+        //  Particle Emitter
+        RegisterParticleEmitterAPI ();
+
         //  Actor
         RegisterActorAPI ();
 
@@ -587,6 +617,9 @@ namespace aga
 
         //  MovementComponent
         RegisterMovementComponentAPI ();
+
+        //  ParticleEmitterComponent
+        RegisterParticleEmitterComponentAPI ();
 
         // Scene Manager
         RegisterSceneManagerAPI ();
@@ -685,6 +718,9 @@ namespace aga
         int r = m_ScriptEngine->RegisterObjectType (
             "Color", sizeof (ALLEGRO_COLOR), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_FLOAT);
         assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectBehaviour ("Color", asBEHAVE_CONSTRUCT, "void f(float, float, float, float)",
+            asFUNCTION (ConstructColorRGBA), asCALL_CDECL_OBJLAST);
+        assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectProperty ("Color", "float r", asOFFSET (ALLEGRO_COLOR, r));
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectProperty ("Color", "float g", asOFFSET (ALLEGRO_COLOR, g));
@@ -695,6 +731,8 @@ namespace aga
         assert (r >= 0);
 
         r = m_ScriptEngine->RegisterGlobalProperty ("Color COLOR_BLACK", &COLOR_BLACK_REF);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalProperty ("Color COLOR_WHITE", &COLOR_WHITE_REF);
         assert (r >= 0);
     }
 
@@ -1082,6 +1120,44 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void ScriptManager::RegisterParticleEmitterAPI ()
+    {
+        int r = m_ScriptEngine->RegisterObjectType ("ParticleEmitter", 0, asOBJ_REF | asOBJ_NOCOUNT);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "ParticleEmitter", "void Initialize ()", asMETHOD (ParticleEmitter, Initialize), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("ParticleEmitter", "void SetCanEmit (bool canEmit)",
+            asMETHOD (ParticleEmitter, SetCanEmit), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "ParticleEmitter", "bool IsCanEmit ()", asMETHOD (ParticleEmitter, IsCanEmit), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("ParticleEmitter", "void SetPosition (Point position)",
+            asMETHODPR (ParticleEmitter, SetPosition, (Point), void), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("ParticleEmitter", "void SetPosition (float x, float y)",
+            asMETHODPR (ParticleEmitter, SetPosition, (float, float), void), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod (
+            "ParticleEmitter", "Point GetPosition ()", asMETHOD (ParticleEmitter, GetPosition), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("ParticleEmitter",
+            "void SetParticleLifeVariance (float minLife, float maxLife)",
+            asMETHOD (ParticleEmitter, SetParticleLifeVariance), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("ParticleEmitter",
+            "void SetVelocityVariance (Point minVariance, Point maxVariance)",
+            asMETHOD (ParticleEmitter, SetVelocityVariance), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("ParticleEmitter",
+            "void SetColorTransition (Color beginColor, Color endColor)",
+            asMETHOD (ParticleEmitter, SetColorTransition), asCALL_THISCALL);
+        assert (r >= 0);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     template <class T> void ScriptManager::RegisterBaseActorAPI (const char* type)
     {
         int r = m_ScriptEngine->RegisterObjectProperty (type, "Rect Bounds", asOFFSET (T, Bounds));
@@ -1213,6 +1289,31 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void ScriptManager::RegisterParticleEmitterComponentAPI ()
+    {
+        int r = m_ScriptEngine->RegisterObjectType ("ParticleEmitterComponent", 0, asOBJ_REF | asOBJ_NOCOUNT);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Actor",
+            "ParticleEmitterComponent@ GetParticleEmitterComponent (const string &in)",
+            asMETHOD (Actor, GetParticleEmitterComponent), asCALL_THISCALL);
+        r = m_ScriptEngine->RegisterObjectMethod ("ParticleEmitterComponent", "void SetEnabled (bool enabled)",
+            asMETHOD (ParticleEmitterComponent, SetEnabled), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("ParticleEmitterComponent", "bool IsEnabled () const",
+            asMETHOD (ParticleEmitterComponent, IsEnabled), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("ParticleEmitterComponent",
+            "void CreateEmitter (const string &in atlasName, const string &in atlasRegionName, int maxParticles, "
+            "float emitLifeSpan)",
+            asMETHOD (ParticleEmitterComponent, CreateEmitter), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("ParticleEmitterComponent", "ParticleEmitter@ GetEmitter ()",
+            asMETHOD (ParticleEmitterComponent, GetEmitter), asCALL_THISCALL);
+        assert (r >= 0);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void ScriptManager::RegisterSceneManagerAPI ()
     {
         int r = m_ScriptEngine->RegisterGlobalFunction ("void SetActiveScene (const string &in, bool fadeAnim = true)",
@@ -1239,7 +1340,12 @@ namespace aga
             asMETHOD (SceneManager, SetOverlayActive), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction ("Actor@ GetActor (const string &in)",
-            asMETHOD (SceneManager, GetActor), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+            asMETHODPR (SceneManager, GetActor, (const std::string&), Actor*), asCALL_THISCALL_ASGLOBAL,
+            &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction ("Actor@ GetActor (int id)",
+            asMETHODPR (SceneManager, GetActor, (int), Actor*), asCALL_THISCALL_ASGLOBAL,
+            &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterFuncdef ("string ChoiceFunction (void)");
         assert (r >= 0);

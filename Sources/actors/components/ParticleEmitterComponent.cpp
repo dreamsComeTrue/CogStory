@@ -69,6 +69,7 @@ namespace aga
     {
         m_Emitter = new ParticleEmitter (&m_Actor->GetSceneManager ()->GetMainLoop ()->GetAtlasManager (), atlasName,
             atlasRegionName, maxParticles, emitLifeSpan);
+        m_Emitter->SetPosition (m_Actor->Bounds.GetPos () + m_Actor->Bounds.GetHalfSize ());
     }
 
     //--------------------------------------------------------------------------------------------------

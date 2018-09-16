@@ -381,6 +381,18 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    Actor* SceneManager::GetActor (int id)
+    {
+        if (m_ActiveScene)
+        {
+            return m_ActiveScene->GetActor (id);
+        }
+
+        return nullptr;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     FlagPoint* SceneManager::GetFlagPoint (const std::string& name)
     {
         if (m_ActiveScene)

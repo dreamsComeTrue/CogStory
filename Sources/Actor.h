@@ -60,6 +60,7 @@ namespace aga
         void RemoveComponent (Component* component);
         Component* FindComponent (const std::string& name, const std::string& typeName);
         class MovementComponent* GetMovementComponent (const std::string& name);
+        class ParticleEmitterComponent* GetParticleEmitterComponent (const std::string& name);
         std::map<std::string, Component*>& GetComponents () { return m_Components; }
 
         void OrientTo (Actor* actor);
@@ -84,6 +85,7 @@ namespace aga
 
     protected:
         void ProcessTriggerAreas (float dx, float dy, Point&& offset);
+        void RenderComponents (float deltaTime);
 
         void FireMoveCallback ();
 

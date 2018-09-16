@@ -284,8 +284,6 @@ namespace aga
 
         //  We can only emit where new position is different than last one
         m_FootParticleComponent->GetEmitter ()->SetCanEmit (!AreSame (m_OldPosition, Bounds.Pos));
-        m_HeadParticleComponent->Update (deltaTime);
-        m_FootParticleComponent->Update (deltaTime);
 
         m_OldPosition = Bounds.GetPos ();
 
@@ -294,13 +292,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Player::Render (float deltaTime)
-    {
-        m_HeadParticleComponent->Render (deltaTime);
-        m_FootParticleComponent->Render (deltaTime);
-
-        return Actor::Render (deltaTime);
-    }
+    void Player::Render (float deltaTime) { return Actor::Render (deltaTime); }
 
     //--------------------------------------------------------------------------------------------------
 

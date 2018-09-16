@@ -21,7 +21,7 @@ namespace aga
     {
     public:
         ParticleEmitter (class AtlasManager* atlasManager, const std::string& atlasName,
-                         const std::string& atlasRegionName, unsigned maxParticles, unsigned emitLifeSpan);
+            const std::string& atlasRegionName, unsigned maxParticles, float emitLifeSpan);
         virtual ~ParticleEmitter ();
         bool Initialize ();
         bool Destroy ();
@@ -35,6 +35,7 @@ namespace aga
         bool IsCanEmit ();
         void SetPosition (Point position);
         void SetPosition (float x, float y);
+        Point GetPosition () { return m_Position; }
         void SetParticleLifeVariance (float minLife, float maxLife);
         void SetVelocityVariance (Point minVariance, Point maxVariance);
         void SetColorTransition (ALLEGRO_COLOR beginColor, ALLEGRO_COLOR endColor);

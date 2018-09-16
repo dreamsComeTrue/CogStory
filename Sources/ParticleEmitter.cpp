@@ -9,7 +9,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     ParticleEmitter::ParticleEmitter (AtlasManager* atlasManager, const std::string& atlasName,
-                                      const std::string& atlasRegionName, unsigned maxParticles, unsigned emitLifeSpan)
+        const std::string& atlasRegionName, unsigned maxParticles, float emitLifeSpan)
         : m_CanEmit (true)
         , m_MaxParticles (maxParticles)
         , m_EmitLifeSpan (emitLifeSpan)
@@ -100,7 +100,7 @@ namespace aga
         for (Particle& particle : m_Particles)
         {
             m_Atlas->DrawRegion (m_AtlasRegionName, particle.Position.X, particle.Position.Y, 1.f, 1.f,
-                                 particle.Rotation, false, particle.Color);
+                particle.Rotation, false, particle.Color);
         }
 
         al_set_blender (blendOp, blendSrc, blendDst);

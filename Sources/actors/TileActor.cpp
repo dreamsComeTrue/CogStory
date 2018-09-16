@@ -39,6 +39,8 @@ namespace aga
             Point pos = Bounds.GetPos ();
             m_Atlas->DrawRegion (m_AtlasRegionName, pos.X, pos.Y, 1.0f, 1.0f, DegressToRadians (Rotation));
         }
+
+        RenderComponents (deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------

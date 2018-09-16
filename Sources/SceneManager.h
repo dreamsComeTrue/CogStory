@@ -55,6 +55,7 @@ namespace aga
         void RegisterChoiceFunction (const std::string& name, asIScriptFunction* func);
 
         Actor* GetActor (const std::string& name);
+        Actor* GetActor (int id);
         FlagPoint* GetFlagPoint (const std::string& name);
 
         Actor* GetCurrentlyProcessedActor ();

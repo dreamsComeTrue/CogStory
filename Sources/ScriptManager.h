@@ -65,8 +65,10 @@ namespace aga
         void RegisterTriggerAreaAPI ();
         void RegisterSpeechFrameAPI ();
         void RegisterSpeechFrameManagerAPI ();
+        void RegisterParticleEmitterAPI ();
         void RegisterActorAPI ();
         void RegisterMovementComponentAPI ();
+        void RegisterParticleEmitterComponentAPI ();
         void RegisterSceneManagerAPI ();
         void RegisterSceneAPI ();
         void RegisterCameraAPI ();
