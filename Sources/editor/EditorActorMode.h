@@ -42,7 +42,7 @@ namespace aga
         Atlas* GetAtlas () { return m_Atlas; }
         void ChangeAtlas (const std::string& newAtlasName);
         bool ChooseTile (int mouseX, int mouseY);
-        bool ChooseTilesFromSpriteSheet (int mouseX, int mouseY);
+        bool ChooseTilesFromSpriteSheet ();
 
         void ResetSettings ();
 

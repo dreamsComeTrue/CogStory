@@ -343,7 +343,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool EditorActorMode::ChooseTilesFromSpriteSheet (int mouseX, int mouseY)
+    bool EditorActorMode::ChooseTilesFromSpriteSheet ()
     {
         std::vector<AtlasRegion>& regions = m_Atlas->GetRegions ();
 

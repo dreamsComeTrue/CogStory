@@ -1356,7 +1356,7 @@ namespace aga
         idLabel->SizeToContents ();
 
         parentLabel->SetText (
-            std::string ("         PARENT: " + (selectedEntity ? ToString (selectedEntity->BlueprintID) : "-")));
+            std::string (" PARENT: " + (selectedEntity ? ToString (selectedEntity->BlueprintID) : "-")));
         parentLabel->SizeToContents ();
 
         xPosLabel->SetText (std::string ("             X: " + ToString ((translate.X + state.x) * (1 / scale.X))));
@@ -1690,7 +1690,7 @@ namespace aga
 
     void Editor::AddActorsFromSpritesheet (float x, float y)
     {
-        if (m_EditorActorMode.ChooseTilesFromSpriteSheet (x, y))
+        if (m_EditorActorMode.ChooseTilesFromSpriteSheet ())
         {
             m_EditorActorMode.ClearSelectedActors ();
 
@@ -1703,16 +1703,17 @@ namespace aga
 
     void Editor::SelectActorsWithinSelectionRect ()
     {
-        if (m_SelectionRect.GetSize ().Width > 2 || m_SelectionRect.GetSize ().Height > 2)
+        Rect selectionWorld = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_SelectionRect);
+
+        if (selectionWorld.GetSize ().Width > 2 || selectionWorld.GetSize ().Height > 2)
         {
             std::vector<Actor*>& actors = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActors ();
-            Rect selectionWorld = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_SelectionRect);
 
             for (Actor* actorIt : actors)
             {
-                Rect r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (actorIt);
+                Rect rect = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (actorIt);
 
-                if (Intersect (r, selectionWorld))
+                if (Intersect (rect, selectionWorld))
                 {
                     m_EditorActorMode.AddActorToSelection (actorIt);
                 }
