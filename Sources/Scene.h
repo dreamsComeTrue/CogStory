@@ -70,6 +70,7 @@ namespace aga
         void UpdatePolygons (Triangulator* triangulator);
 
         bool WasEntered = false;
+        bool Collidable = false;
 
         Rect GetBounds ()
         {
@@ -130,7 +131,7 @@ namespace aga
         FlagPoint* GetFlagPoint (const std::string& name);
         std::map<std::string, FlagPoint>& GetFlagPoints ();
 
-        void AddTriggerArea (const std::string& name, std::vector<Point> points);
+        TriggerArea* AddTriggerArea (const std::string& name, std::vector<Point> points, bool collidable);
         std::map<std::string, TriggerArea>& GetTriggerAreas ();
         TriggerArea* GetTriggerArea (const std::string& name);
         void RemoveTriggerArea (const std::string& name);

@@ -83,7 +83,7 @@ namespace aga
         void SetFocusHeight (float focusHeight) { m_FocusHeight = focusHeight; }
 
     protected:
-        void ProcessTriggerAreas (float dx, float dy);
+        void ProcessTriggerAreas (float dx, float dy, Point&& offset);
 
         void FireMoveCallback ();
 

@@ -219,8 +219,9 @@ namespace aga
             {
                 std::string name = triggerArea["name"];
                 std::vector<Point> poly = StringToVectorPoints (triggerArea["poly"]);
+                std::string collidableStr = triggerArea["collidable"];
 
-                scene->AddTriggerArea (name, poly);
+                scene->AddTriggerArea (name, poly, atoi (collidableStr.c_str ()));
             }
 
             auto& actors = j["actors"];
@@ -533,6 +534,7 @@ namespace aga
                 json triggerObj = json::object ({});
 
                 triggerObj["name"] = it->second.Name;
+                triggerObj["collidable"] = std::to_string (it->second.Collidable);
                 triggerObj["poly"] = VectorPointsToString (it->second.Points);
 
                 j["trigger_areas"].push_back (triggerObj);

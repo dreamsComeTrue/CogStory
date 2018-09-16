@@ -14,6 +14,7 @@ namespace aga
         , m_TriggerArea (nullptr)
         , m_TriggerPoint (nullptr)
         , m_TriggerAreaName ("")
+        , m_Collidable (false)
     {
     }
 
@@ -249,8 +250,7 @@ namespace aga
     {
         Scene* scene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
 
-        scene->AddTriggerArea (m_TriggerAreaName, {});
-        m_TriggerArea = scene->GetTriggerArea (m_TriggerAreaName);
+        m_TriggerArea = scene->AddTriggerArea (m_TriggerAreaName, {}, m_Collidable);
         m_TriggerPoint = nullptr;
     }
 

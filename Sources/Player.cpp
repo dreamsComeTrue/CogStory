@@ -231,7 +231,25 @@ namespace aga
             SetCurrentAnimation (ANIM_MOVE_LEFT_NAME);
         }
 
-        ProcessTriggerAreas (dx, dy);
+        auto updatePos = [&](Point point) {
+            float positiveMoveBoundary = 1.5f;
+            float negativeMoveBoundary = -0.5f;
+
+            if (point.X < negativeMoveBoundary || point.X > positiveMoveBoundary)
+            {
+                dx = dx + point.X;
+            }
+
+            if (point.Y < negativeMoveBoundary || point.Y > positiveMoveBoundary)
+            {
+                dy = dy + point.Y;
+            }
+        };
+
+        Point triggerAreaDelta;
+
+        ProcessTriggerAreas (dx, dy, std::move (triggerAreaDelta));
+        updatePos (triggerAreaDelta);
 
         if (al_key_down (&state, ALLEGRO_KEY_LSHIFT))
         {
@@ -248,18 +266,7 @@ namespace aga
 
             if (IsCollidingWith (collidable, Point (dx, dy), std::move (collisionDelta)))
             {
-                float positiveMoveBoundary = 1.5f;
-                float negativeMoveBoundary = -0.5f;
-
-                if (collisionDelta.X < negativeMoveBoundary || collisionDelta.X > positiveMoveBoundary)
-                {
-                    dx = dx + collisionDelta.X;
-                }
-
-                if (collisionDelta.Y < negativeMoveBoundary || collisionDelta.Y > positiveMoveBoundary)
-                {
-                    dy = dy + collisionDelta.Y;
-                }
+                updatePos (collisionDelta);
             }
         }
 

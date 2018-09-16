@@ -21,13 +21,17 @@ void BeforeEnterScene ()
 	    SceneFadeInOut (400, 400, color);
 	    SetActiveScene ("2_city/2_0_city.scn", true);
     });    
+
+    AudioStream@ sceneAudioStream = SetSceneAudioStream ("music/Meadow Thoughts.ogg");
+    sceneAudioStream.Play ();
+    sceneAudioStream.SetFadeIn (500.f);    
 }
 
 void AfterLeaveScene ()
 {
-    if (audioStream !is null)
+    if (GetSceneAudioStream () !is null)
     {
-        audioStream.SetFadeOut (2000.f, true);
+        GetSceneAudioStream ().SetFadeOut (500.f, true);
     }
 }
 

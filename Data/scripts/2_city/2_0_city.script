@@ -1,7 +1,5 @@
 #include "../../Data/scripts/Common.script"
 
-AudioStream@ audioStream;
-
 bool g_IntroPlayed = false;
 
 Point playerSize = player.GetSize ();
@@ -30,8 +28,9 @@ void SceneChanged (const string &in previousSceneName)
 void BeforeEnterScene ()
 {
     SetSuppressSceneInfo (true);
-    @audioStream = SetSceneAudioStream ("music/Caketown 1.ogg");
-    audioStream.Play ();
+    AudioStream@ sceneAudioStream = SetSceneAudioStream ("music/Caketown 1.ogg");
+    sceneAudioStream.Play ();
+    sceneAudioStream.SetFadeIn (500.f);    
 
     RegisterFunctions ();    
 
@@ -52,6 +51,11 @@ void BeforeEnterScene ()
 
 void AfterLeaveScene ()
 {
+    if (GetSceneAudioStream () !is null)
+    {
+        GetSceneAudioStream ().SetFadeOut (500.f, true);
+    }
+
     SetOverlayActive (false);
 }
 

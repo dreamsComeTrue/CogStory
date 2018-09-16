@@ -26,10 +26,18 @@ void BeforeEnterScene ()
 	    SceneFadeInOut (400, 400, color);
 	    SetActiveScene ("2_city/2_0_city.scn", true);
     });      
+
+    AudioStream@ sceneAudioStream = SetSceneAudioStream ("music/Little People At Work.ogg");
+    sceneAudioStream.Play ();
+    sceneAudioStream.SetFadeIn (500.f);
 }
 
 void AfterLeaveScene ()
 {
+    if (GetSceneAudioStream () !is null)
+    {
+        GetSceneAudioStream ().SetFadeOut (500.f, true);
+    }
 }
 
 void Update (float deltaTime)

@@ -184,11 +184,6 @@ namespace aga
 
         m_SceneManager->GetSpeechFrameManager ().Clear ();
 
-        if (m_SceneAudioStream)
-        {
-            m_SceneAudioStream->Pause ();
-        }
-
         CleanUpTriggerAreas ();
     }
 
@@ -596,15 +591,19 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::AddTriggerArea (const std::string& name, std::vector<Point> points)
+    TriggerArea* Scene::AddTriggerArea (const std::string& name, std::vector<Point> points, bool collidable)
     {
         if (m_TriggerAreas.find (name) == m_TriggerAreas.end ())
         {
             TriggerArea area{name, points};
+            area.Collidable = collidable;
+
             area.UpdatePolygons (&m_SceneManager->GetMainLoop ()->GetPhysicsManager ().GetTriangulator ());
 
             m_TriggerAreas.insert (std::make_pair (name, area));
         }
+
+        return &m_TriggerAreas[name];
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -988,7 +987,8 @@ namespace aga
                     out.push_back (yPoint);
                 }
 
-                al_draw_polygon (out.data (), (int)it->second.Points.size (), 0, COLOR_LIGHTBLUE, 2, 0);
+                al_draw_polygon (out.data (), (int)it->second.Points.size (), 0,
+                    it->second.Collidable ? COLOR_GREEN : COLOR_LIGHTBLUE, 2, 0);
 
                 Point min{std::numeric_limits<int>::max (), std::numeric_limits<int>::max ()};
                 Point max{std::numeric_limits<int>::min (), std::numeric_limits<int>::min ()};

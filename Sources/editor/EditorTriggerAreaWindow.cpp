@@ -12,7 +12,7 @@ namespace aga
     {
         m_SceneWindow = new Gwk::Controls::WindowControl (canvas);
         m_SceneWindow->SetTitle ("Trigger Area");
-        m_SceneWindow->SetSize (450, 120);
+        m_SceneWindow->SetSize (420, 150);
         m_SceneWindow->CloseButtonPressed ();
 
         Gwk::Controls::Label* pathLabel = new Gwk::Controls::Label (m_SceneWindow);
@@ -24,17 +24,22 @@ namespace aga
         pathTextBox->SetText (m_Editor->GetEditorTriggerAreaMode ().GetTriggerAreaName ());
         pathTextBox->SetTextColor (Gwk::Colors::White);
         pathTextBox->SetWidth (350);
-        pathTextBox->SetPos (20, 30);
+        pathTextBox->SetPos (20, pathLabel->Y () + 20);
         pathTextBox->onTextChanged.Add (this, &EditorTriggerAreaWindow::OnEdit);
+
+        m_CollidableCheckBox = new Gwk::Controls::CheckBoxWithLabel (m_SceneWindow);
+        m_CollidableCheckBox->SetPos (20, pathTextBox->Y () + 25);
+        m_CollidableCheckBox->Label ()->SetText ("Collidable?");
+        m_CollidableCheckBox->Checkbox ()->onCheckChanged.Add (this, &EditorTriggerAreaWindow::OnCheckChanged);
 
         Gwk::Controls::Button* okButton = new Gwk::Controls::Button (m_SceneWindow);
         okButton->SetText ("ACCEPT");
-        okButton->SetPos (120, 60);
+        okButton->SetPos (100, m_CollidableCheckBox->Y () + 30);
         okButton->onPress.Add (this, &EditorTriggerAreaWindow::OnAccept);
 
         Gwk::Controls::Button* cancelButton = new Gwk::Controls::Button (m_SceneWindow);
         cancelButton->SetText ("CANCEL");
-        cancelButton->SetPos (okButton->GetPos ().x + okButton->GetSize ().x + 10, 60);
+        cancelButton->SetPos (okButton->GetPos ().x + okButton->GetSize ().x + 10, m_CollidableCheckBox->Y () + 30);
         cancelButton->onPress.Add (this, &EditorTriggerAreaWindow::OnCancel);
     }
 
@@ -73,6 +78,14 @@ namespace aga
     {
         Gwk::Controls::TextBox* textbox = (Gwk::Controls::TextBox*)(control);
         m_Editor->GetEditorTriggerAreaMode ().SetTriggerAreaName (textbox->GetText ());
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorTriggerAreaWindow::OnCheckChanged ()
+    {
+        m_Editor->GetEditorTriggerAreaMode ().SetTriggerAreaCollidable (
+            m_CollidableCheckBox->Checkbox ()->IsChecked ());
     }
 
     //--------------------------------------------------------------------------------------------------

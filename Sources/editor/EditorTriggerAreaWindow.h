@@ -20,12 +20,14 @@ namespace aga
         void OnAccept (Gwk::Controls::Base*);
         void OnCancel ();
         void OnEdit (Gwk::Controls::Base* control);
+        void OnCheckChanged ();
 
         Gwk::Controls::WindowControl* GetSceneWindow () { return m_SceneWindow; }
 
     private:
         Editor* m_Editor;
         Gwk::Controls::WindowControl* m_SceneWindow;
+        Gwk::Controls::CheckBoxWithLabel* m_CollidableCheckBox;
     };
 }
 

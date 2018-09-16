@@ -318,7 +318,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Actor::ProcessTriggerAreas (float dx, float dy)
+    void Actor::ProcessTriggerAreas (float dx, float dy, Point&& offset)
     {
         std::map<std::string, TriggerArea>& triggerAreas = m_SceneManager->GetActiveScene ()->GetTriggerAreas ();
 
@@ -330,13 +330,21 @@ namespace aga
             {
                 if (GetPhysPolygonsCount () > 0
                     && (area.OnEnterCallback || area.ScriptOnEnterCallback || area.OnLeaveCallback
-                           || area.ScriptOnLeaveCallback))
+                           || area.ScriptOnLeaveCallback || area.Collidable))
                 {
                     PolygonCollisionResult r = m_SceneManager->GetMainLoop ()->GetPhysicsManager ().PolygonCollision (
                         GetPhysPolygon (0), polygon, {dx, dy});
 
                     if (r.WillIntersect || r.Intersect)
                     {
+                        if (area.Collidable)
+                        {
+                            if (!AreSame (r.MinimumTranslationVector, Point::ZERO_POINT))
+                            {
+                                offset = r.MinimumTranslationVector;
+                            }
+                        }
+
                         if (!area.WasEntered)
                         {
                             if (area.OnEnterCallback)

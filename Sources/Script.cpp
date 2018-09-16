@@ -151,8 +151,12 @@ namespace aga
             if (r == asEXECUTION_EXCEPTION)
             {
                 // An exception occurred, let the script writer know what happened so it can be corrected.
-                Log ("An exception '%s' occurred. Please correct the code and try again.\n",
-                     ctx->GetExceptionString ());
+                Log (std::string (
+                         std::string (
+                             "An exception '%s' occurred. Please correct the code and try again.\nScript name: ")
+                         + m_Name + "\n")
+                         .c_str (),
+                    ctx->GetExceptionString ());
             }
 
             return false;

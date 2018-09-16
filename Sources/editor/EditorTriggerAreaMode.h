@@ -35,12 +35,16 @@ namespace aga
         std::string GetTriggerAreaName () { return m_TriggerAreaName; }
         void SetTriggerAreaName (const std::string& name) { m_TriggerAreaName = name; }
 
+        void SetTriggerAreaCollidable (bool collidable) { m_Collidable = collidable; }
+        bool IsTriggerAreaCollidable () const { return m_Collidable; }
+
     private:
         Editor* m_Editor;
 
         TriggerArea* m_TriggerArea;
         Point* m_TriggerPoint;
         std::string m_TriggerAreaName;
+        bool m_Collidable;
     };
 }
 
