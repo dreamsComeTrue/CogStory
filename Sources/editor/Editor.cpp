@@ -18,6 +18,9 @@
 #include "Screen.h"
 #include "actors/TileActor.h"
 
+#include "imgui.h"
+#include "imgui_impl_allegro5.h"
+
 using json = nlohmann::json;
 
 namespace aga
@@ -90,23 +93,6 @@ namespace aga
     Gwk::Controls::Button* rightPrevTileButton;
     Gwk::Controls::Button* rightNextTileButton;
     Gwk::Controls::Button* spriteSheetButton;
-
-    Gwk::Controls::Label* avgFPSLabel;
-    Gwk::Controls::Label* fpsLabel;
-    Gwk::Controls::Label* idLabel;
-    Gwk::Controls::Label* parentLabel;
-    Gwk::Controls::Label* xPosLabel;
-    Gwk::Controls::Label* yPosLabel;
-    Gwk::Controls::Label* widthLabel;
-    Gwk::Controls::Label* heightLabel;
-    Gwk::Controls::Label* angleLabel;
-    Gwk::Controls::Label* zOrderLabel;
-    Gwk::Controls::Label* scaleLabel;
-    Gwk::Controls::Label* snapLabel;
-    Gwk::Controls::Label* gridLabel;
-    Gwk::Controls::Label* tilesLabel;
-    Gwk::Controls::Label* actorsLabel;
-    Gwk::Controls::Label* cursorLabel;
 
     bool Editor::Initialize ()
     {
@@ -298,58 +284,21 @@ namespace aga
         spriteSheetButton->SetText ("# [`]");
         spriteSheetButton->onPress.Add (this, &Editor::OnSpriteSheetEdit);
 
-        avgFPSLabel = new Gwk::Controls::Label (m_MainCanvas);
-        avgFPSLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-
-        fpsLabel = new Gwk::Controls::Label (m_MainCanvas);
-        fpsLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-
-        idLabel = new Gwk::Controls::Label (m_MainCanvas);
-        idLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-
-        parentLabel = new Gwk::Controls::Label (m_MainCanvas);
-        parentLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-
-        xPosLabel = new Gwk::Controls::Label (m_MainCanvas);
-        xPosLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-
-        yPosLabel = new Gwk::Controls::Label (m_MainCanvas);
-        yPosLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-
-        widthLabel = new Gwk::Controls::Label (m_MainCanvas);
-        widthLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-
-        heightLabel = new Gwk::Controls::Label (m_MainCanvas);
-        heightLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-
-        angleLabel = new Gwk::Controls::Label (m_MainCanvas);
-        angleLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-
-        zOrderLabel = new Gwk::Controls::Label (m_MainCanvas);
-        zOrderLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-
-        scaleLabel = new Gwk::Controls::Label (m_MainCanvas);
-        scaleLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-
-        snapLabel = new Gwk::Controls::Label (m_MainCanvas);
-        snapLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-
-        gridLabel = new Gwk::Controls::Label (m_MainCanvas);
-        gridLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-
-        tilesLabel = new Gwk::Controls::Label (m_MainCanvas);
-        tilesLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-
-        actorsLabel = new Gwk::Controls::Label (m_MainCanvas);
-        actorsLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-
-        cursorLabel = new Gwk::Controls::Label (m_MainCanvas);
-        cursorLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-
         LoadConfig ();
         ScreenResize ();
 
         al_identity_transform (&m_NewTransform);
+
+        // Setup Dear ImGui binding
+        IMGUI_CHECKVERSION ();
+        ImGui::CreateContext ();
+        //      ImGuiIO& io = ImGui::GetIO ();
+        //        (void)io;
+        // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
+        ImGui_ImplAllegro5_Init (m_MainLoop->GetScreen ()->GetDisplay ());
+
+        // Setup style
+        ImGui::StyleColorsDark ();
 
         return true;
     }
@@ -377,6 +326,10 @@ namespace aga
         SAFE_DELETE (m_MainCanvas);
         //     SAFE_DELETE (m_GuiSkin);
         SAFE_DELETE (m_GUIRenderer);
+
+        // Cleanup
+        ImGui_ImplAllegro5_Shutdown ();
+        ImGui::DestroyContext ();
 
         return Lifecycle::Destroy ();
     }
@@ -559,6 +512,29 @@ namespace aga
 
     void Editor::ProcessEvent (ALLEGRO_EVENT* event, float)
     {
+        // Poll and handle events (inputs, window resize, etc.)
+        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use
+        // your inputs.
+        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
+        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
+        // Generally you may always pass all inputs to dear imgui, and hide them from your application based on
+        // those two flags.
+
+        ImGui_ImplAllegro5_ProcessEvent (event);
+        if (event->type == ALLEGRO_EVENT_DISPLAY_RESIZE)
+        {
+            ImGui_ImplAllegro5_InvalidateDeviceObjects ();
+            al_acknowledge_resize (m_MainLoop->GetScreen ()->GetDisplay ());
+            ImGui_ImplAllegro5_CreateDeviceObjects ();
+        }
+
+        ImGuiIO& io = ImGui::GetIO ();
+
+        if (io.WantCaptureKeyboard || io.WantCaptureMouse)
+        {
+            return;
+        }
+
         if (event->type == ALLEGRO_EVENT_KEY_CHAR)
         {
             if (event->keyboard.keycode == ALLEGRO_KEY_ESCAPE)
@@ -777,6 +753,10 @@ namespace aga
 
     void Editor::Render (float deltaTime)
     {
+        // Start the Dear ImGui frame
+        ImGui_ImplAllegro5_NewFrame ();
+        ImGui::NewFrame ();
+
         if (m_CursorMode == CursorMode::EditPhysBodyMode)
         {
             if (m_IsSnapToGrid)
@@ -797,6 +777,14 @@ namespace aga
         {
             RenderActorMode (deltaTime);
         }
+
+        bool show_demo_window;
+
+        //      ImGui::ShowDemoWindow (&show_demo_window);
+
+        //  Draw GUI
+        ImGui::Render ();
+        ImGui_ImplAllegro5_RenderDrawData (ImGui::GetDrawData ());
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1338,94 +1326,83 @@ namespace aga
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
 
-        avgFPSLabel->SetText (
-            Gwk::Utility::Format ("        AVG: %.2f ms", 1000.0f / m_MainLoop->GetScreen ()->GetFPS ()));
-        avgFPSLabel->SizeToContents ();
+        ImGui::SetNextWindowPos (ImVec2 (m_MainLoop->GetScreen ()->GetWindowSize ().Width - 110, 5), ImGuiCond_Always);
 
-        fpsLabel->SetText (Gwk::Utility::Format ("         FPS: %.1f", m_MainLoop->GetScreen ()->GetFPS ()));
-        fpsLabel->SizeToContents ();
-
-        Entity* selectedEntity = nullptr;
-
-        if (!m_EditorActorMode.GetSelectedActors ().empty ())
+        ImGui::PushStyleColor (ImGuiCol_WindowBg, ImVec4 (0, 0, 0, 0.3f));
+        if (ImGui::Begin ("Info", nullptr,
+                ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
+                    | ImGuiWindowFlags_NoCollapse))
         {
-            selectedEntity = m_EditorActorMode.GetSelectedActors ()[0];
+            char buf[50];
+            sprintf (buf, "AVG: %.2f ms", 1000.0f / m_MainLoop->GetScreen ()->GetFPS ());
+            ImGui::Text (buf);
+
+            sprintf (buf, "FPS: %.1f", m_MainLoop->GetScreen ()->GetFPS ());
+            ImGui::Text (buf);
+
+            Entity* selectedEntity = nullptr;
+
+            if (!m_EditorActorMode.GetSelectedActors ().empty ())
+            {
+                selectedEntity = m_EditorActorMode.GetSelectedActors ()[0];
+            }
+
+            ImGui::Text (std::string ("    ID: " + (selectedEntity ? ToString (selectedEntity->ID) : "-")).c_str ());
+
+            ImGui::Text (
+                std::string ("PARENT: " + (selectedEntity ? ToString (selectedEntity->BlueprintID) : "-")).c_str ());
+            ImGui::Text (std::string ("     X: " + ToString ((translate.X + state.x) * (1 / scale.X))).c_str ());
+            ImGui::Text (std::string ("     Y: " + ToString ((translate.Y + state.y) * (1 / scale.Y))).c_str ());
+
+            AtlasRegion* atlasRegion = m_EditorActorMode.GetSelectedAtlasRegion ();
+            Point size = Point::ZERO_POINT;
+
+            if (atlasRegion)
+            {
+                size = atlasRegion->Bounds.GetSize ();
+            }
+
+            ImGui::Text (std::string ("     W: " + ToString (size.Width)).c_str ());
+            ImGui::Text (std::string ("     H: " + ToString (size.Height)).c_str ());
+            ImGui::Text (
+                std::string ("     A: " + (selectedEntity ? ToString (selectedEntity->Rotation) : "-")).c_str ());
+            ImGui::Text (
+                std::string ("  ZORD: " + (selectedEntity ? ToString (selectedEntity->ZOrder) : "-")).c_str ());
+            ImGui::Text (std::string (" SCALE: " + ToString (scale.X)).c_str ());
+            ImGui::Text (std::string ("  SNAP: " + ToString (m_IsSnapToGrid ? "YES" : "NO")).c_str ());
+            ImGui::Text (std::string ("  GRID: " + ToString (m_BaseGridSize)).c_str ());
+
+            Scene* activeScene = m_MainLoop->GetSceneManager ().GetActiveScene ();
+
+            ImGui::Text (std::string (" TILES: " + ToString (activeScene->GetTiles ().size ())).c_str ());
+            ImGui::Text (std::string ("ACTORS: " + ToString (activeScene->GetActors ().size ())).c_str ());
+
+            std::string cursorMode = "";
+
+            switch (m_CursorMode)
+            {
+            case ActorSelectMode:
+                cursorMode = "ACTOR";
+                break;
+            case EditPhysBodyMode:
+                cursorMode = "PHYS";
+                break;
+            case EditFlagPointsMode:
+                cursorMode = "FLAG";
+                break;
+            case EditTriggerAreaMode:
+                cursorMode = "TRIGGER";
+                break;
+            case EditSpriteSheetMode:
+                cursorMode = "SPRITE";
+                break;
+            };
+
+            ImGui::Text (std::string ("CURSOR: " + ToString (cursorMode)).c_str ());
+
+            ImGui::End ();
         }
-
-        idLabel->SetText (std::string ("            ID: " + (selectedEntity ? ToString (selectedEntity->ID) : "-")));
-        idLabel->SizeToContents ();
-
-        parentLabel->SetText (
-            std::string (" PARENT: " + (selectedEntity ? ToString (selectedEntity->BlueprintID) : "-")));
-        parentLabel->SizeToContents ();
-
-        xPosLabel->SetText (std::string ("             X: " + ToString ((translate.X + state.x) * (1 / scale.X))));
-        xPosLabel->SizeToContents ();
-
-        yPosLabel->SetText (std::string ("             Y: " + ToString ((translate.Y + state.y) * (1 / scale.Y))));
-        yPosLabel->SizeToContents ();
-
-        AtlasRegion* atlasRegion = m_EditorActorMode.GetSelectedAtlasRegion ();
-        Point size = Point::ZERO_POINT;
-
-        if (atlasRegion)
-        {
-            size = atlasRegion->Bounds.GetSize ();
-        }
-
-        widthLabel->SetText (std::string ("            W: " + ToString (size.Width)));
-        widthLabel->SizeToContents ();
-
-        heightLabel->SetText (std::string ("             H: " + ToString (size.Height)));
-        heightLabel->SizeToContents ();
-
-        angleLabel->SetText (
-            std::string ("             A: " + (selectedEntity ? ToString (selectedEntity->Rotation) : "-")));
-        angleLabel->SizeToContents ();
-
-        zOrderLabel->SetText (std::string ("     ZORD: " + (selectedEntity ? ToString (selectedEntity->ZOrder) : "-")));
-        zOrderLabel->SizeToContents ();
-
-        scaleLabel->SetText (std::string ("             S: " + ToString (scale.X)));
-        scaleLabel->SizeToContents ();
-
-        snapLabel->SetText (std::string ("     SNAP: " + std::string (m_IsSnapToGrid ? "YES" : "NO")));
-        snapLabel->SizeToContents ();
-
-        gridLabel->SetText (std::string ("      GRID: " + ToString (m_BaseGridSize)));
-        gridLabel->SizeToContents ();
-
-        Scene* activeScene = m_MainLoop->GetSceneManager ().GetActiveScene ();
-
-        tilesLabel->SetText (std::string ("     TILES: " + ToString (activeScene->GetTiles ().size ())));
-        tilesLabel->SizeToContents ();
-
-        actorsLabel->SetText (std::string ("ACTORS: " + ToString (activeScene->GetActors ().size ())));
-        actorsLabel->SizeToContents ();
-
-        std::string cursorMode = "";
-
-        switch (m_CursorMode)
-        {
-        case ActorSelectMode:
-            cursorMode = "ACTOR";
-            break;
-        case EditPhysBodyMode:
-            cursorMode = "PHYS";
-            break;
-        case EditFlagPointsMode:
-            cursorMode = "FLAG";
-            break;
-        case EditTriggerAreaMode:
-            cursorMode = "TRIGGER";
-            break;
-        case EditSpriteSheetMode:
-            cursorMode = "SPRITE";
-            break;
-        };
-
-        cursorLabel->SetText (std::string ("CURSOR: " + cursorMode));
-        cursorLabel->SizeToContents ();
+        ImGui::PopStyleColor ();
 
         m_MainCanvas->RenderCanvas ();
     }
@@ -1449,23 +1426,6 @@ namespace aga
     {
         const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
         m_MainCanvas->SetSize (screenSize.Width, screenSize.Height);
-
-        avgFPSLabel->SetPos (m_MainCanvas->Width () - 120.0f, 10);
-        fpsLabel->SetPos (m_MainCanvas->Width () - 120.0f, avgFPSLabel->Bottom () + 5);
-        idLabel->SetPos (m_MainCanvas->Width () - 120.0f, fpsLabel->Bottom () + 10);
-        parentLabel->SetPos (m_MainCanvas->Width () - 120.0f, idLabel->Bottom () + 10);
-        xPosLabel->SetPos (m_MainCanvas->Width () - 120.0f, parentLabel->Bottom () + 5);
-        yPosLabel->SetPos (m_MainCanvas->Width () - 120.0f, xPosLabel->Bottom () + 5);
-        widthLabel->SetPos (m_MainCanvas->Width () - 120.0f, yPosLabel->Bottom () + 5);
-        heightLabel->SetPos (m_MainCanvas->Width () - 120.0f, widthLabel->Bottom () + 5);
-        angleLabel->SetPos (m_MainCanvas->Width () - 120.0f, heightLabel->Bottom () + 5);
-        zOrderLabel->SetPos (m_MainCanvas->Width () - 120.0f, angleLabel->Bottom () + 5);
-        scaleLabel->SetPos (m_MainCanvas->Width () - 120.0f, zOrderLabel->Bottom () + 5);
-        snapLabel->SetPos (m_MainCanvas->Width () - 120.0f, scaleLabel->Bottom () + 5);
-        gridLabel->SetPos (m_MainCanvas->Width () - 120.0f, snapLabel->Bottom () + 5);
-        tilesLabel->SetPos (m_MainCanvas->Width () - 120.0f, gridLabel->Bottom () + 5);
-        actorsLabel->SetPos (m_MainCanvas->Width () - 120.0f, tilesLabel->Bottom () + 5);
-        cursorLabel->SetPos (m_MainCanvas->Width () - 120.0f, actorsLabel->Bottom () + 5);
 
         float beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
 

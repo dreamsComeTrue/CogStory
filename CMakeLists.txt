@@ -16,7 +16,12 @@ link_directories(   ${ROOT_THIRD_PARTY_DIR}/angelscript/angelscript/lib/
                     ./External/allegro_deps/lib/
                  )
 
-file(GLOB_RECURSE SRC_LIST  Sources/*)
+file(GLOB_RECURSE SRC_LIST  Sources/*
+	                        ThirdParty/imgui/imgui.cpp
+							ThirdParty/imgui/imgui_draw.cpp
+							ThirdParty/imgui/imgui_widgets.cpp
+							ThirdParty/imgui/imgui_demo.cpp
+							ThirdParty/imgui/examples/imgui_impl_allegro5.cpp)
 
 list(APPEND INCLUDE_DIRS
         Sources/
@@ -30,6 +35,8 @@ list(APPEND INCLUDE_DIRS
         ThirdParty/GWork/source/platform/include/
         ThirdParty/angelscript/angelscript/include
         ThirdParty/angelscript/add_on
+		ThirdParty/imgui/
+		ThirdParty/imgui/examples/
     )
 
 if (WIN32)
