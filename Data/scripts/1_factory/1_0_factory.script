@@ -1,6 +1,6 @@
 void Start ()
 {
-
+    SetSceneAudioStream ("music/Little People At Work.ogg");
 }
 
 void SceneChanged (const string &in previousSceneName)
@@ -27,9 +27,8 @@ void BeforeEnterScene ()
 	    SetActiveScene ("2_city/2_0_city.scn", true);
     });      
 
-    AudioStream@ sceneAudioStream = SetSceneAudioStream ("music/Little People At Work.ogg");
-    sceneAudioStream.Play ();
-    sceneAudioStream.SetFadeIn (500.f);
+    GetSceneAudioStream ().Play ();
+    GetSceneAudioStream ().SetFadeIn (500.f);
 
     AddParticles (26);
     AddParticles (41);
@@ -37,10 +36,7 @@ void BeforeEnterScene ()
 
 void AfterLeaveScene ()
 {
-    if (GetSceneAudioStream () !is null)
-    {
-        GetSceneAudioStream ().SetFadeOut (500.f, true);
-    }
+    GetSceneAudioStream ().SetFadeOut (500.f, true);
 }
 
 void Update (float deltaTime)

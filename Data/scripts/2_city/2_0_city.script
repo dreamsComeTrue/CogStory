@@ -5,6 +5,11 @@ bool g_IntroPlayed = false;
 Point playerSize = player.GetSize ();
 Point screenSize = screen.GetWindowSize ();
 
+void Start ()
+{
+    SetSceneAudioStream ("music/Caketown 1.ogg");
+}
+
 void SceneChanged (const string &in previousSceneName)
 {
     Point pos;
@@ -28,9 +33,8 @@ void SceneChanged (const string &in previousSceneName)
 void BeforeEnterScene ()
 {
     SetSuppressSceneInfo (true);
-    AudioStream@ sceneAudioStream = SetSceneAudioStream ("music/Caketown 1.ogg");
-    sceneAudioStream.Play ();
-    sceneAudioStream.SetFadeIn (500.f);    
+    GetSceneAudioStream ().Play ();
+    GetSceneAudioStream ().SetFadeIn (500.f);    
 
     RegisterFunctions ();    
 
@@ -51,10 +55,7 @@ void BeforeEnterScene ()
 
 void AfterLeaveScene ()
 {
-    if (GetSceneAudioStream () !is null)
-    {
-        GetSceneAudioStream ().SetFadeOut (500.f, true);
-    }
+    GetSceneAudioStream ().SetFadeOut (500.f, true);
 
     SetOverlayActive (false);
 }

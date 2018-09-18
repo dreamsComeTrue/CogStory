@@ -6,6 +6,7 @@
 #include "Scene.h"
 #include "SceneLoader.h"
 #include "Screen.h"
+#include "Script.h"
 #include "states/GamePlayState.h"
 #include "states/MainMenuState.h"
 
@@ -98,6 +99,19 @@ namespace aga
 
         if (!foundScene)
         {
+            //  Save current scene as active, only for script's "Start" method purposes
+            Scene* savedScene = m_ActiveScene;
+            m_ActiveScene = scene;
+
+            std::vector<ScriptMetaData>& scripts = scene->GetScripts ();
+
+            for (ScriptMetaData& obj : scripts)
+            {
+                obj.ScriptObj->Run ("void Start ()");
+            }
+
+            m_ActiveScene = savedScene;
+
             m_Scenes.insert (std::make_pair (scene->GetPath (), scene));
         }
     }
