@@ -63,37 +63,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Gwk::Controls::Label* sceneNameLabel;
-    Gwk::Controls::Button* newSceneButton;
-    Gwk::Controls::Button* openSceneButton;
-    Gwk::Controls::Button* saveSceneButton;
-
-    Gwk::Controls::Button* resetMoveButton;
-    Gwk::Controls::Button* resetScaleButton;
-    Gwk::Controls::Button* showGridButton;
-    Gwk::Controls::Button* increaseGridButton;
-    Gwk::Controls::Button* decreaseGridButton;
-
-    Gwk::Controls::Button* sceneButton;
-    Gwk::Controls::Button* flagPointButton;
-    Gwk::Controls::Button* triggerAreaButton;
-
-    Gwk::Controls::Button* selectModeButton;
-    Gwk::Controls::Button* newPolyButton;
-    Gwk::Controls::Button* saveBodyButton;
-    Gwk::Controls::Button* removeBodyButton;
-
-    Gwk::Controls::Button* speechButton;
-    Gwk::Controls::Button* actorButton;
-
-    Gwk::Controls::Button* playButton;
-    Gwk::Controls::ComboBox* tilesetCombo;
-    Gwk::Controls::Button* leftPrevTileButton;
-    Gwk::Controls::Button* leftNextTileButton;
-    Gwk::Controls::Button* rightPrevTileButton;
-    Gwk::Controls::Button* rightNextTileButton;
-    Gwk::Controls::Button* spriteSheetButton;
-
     bool Editor::Initialize ()
     {
         Lifecycle::Initialize ();
@@ -123,28 +92,6 @@ namespace aga
 
         m_GUIInput.Initialize (m_MainCanvas);
 
-        //  Add GUI Controls
-        sceneNameLabel = new Gwk::Controls::Label (m_MainCanvas);
-        sceneNameLabel->SetTextColor (Gwk::Color (0, 255, 0, 255));
-        sceneNameLabel->SetPos (20, 10);
-        sceneNameLabel->SetText ("SCENE: " + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ());
-        sceneNameLabel->SizeToContents ();
-
-        newSceneButton = new Gwk::Controls::Button (m_MainCanvas);
-        newSceneButton->SetText ("NEW SCENE");
-        newSceneButton->SetPos (20, 30);
-        newSceneButton->onPress.Add (this, &Editor::OnNewScene);
-
-        openSceneButton = new Gwk::Controls::Button (m_MainCanvas);
-        openSceneButton->SetText ("OPEN SCENE");
-        openSceneButton->SetPos (20, newSceneButton->Bottom () + 5);
-        openSceneButton->onPress.Add (this, &Editor::OnOpenScene);
-
-        saveSceneButton = new Gwk::Controls::Button (m_MainCanvas);
-        saveSceneButton->SetText ("SAVE SCENE");
-        saveSceneButton->SetPos (20, openSceneButton->Bottom () + 5);
-        saveSceneButton->onPress.Add (this, &Editor::OnSaveScene);
-
         //  Diaglos & windows
         {
             m_EditorSceneWindow = new EditorSceneWindow (this, m_MainCanvas);
@@ -161,128 +108,8 @@ namespace aga
             m_ComponentWindow = new EditorComponentWindow (this, m_MainCanvas);
         }
 
-        resetMoveButton = new Gwk::Controls::Button (m_MainCanvas);
-        resetMoveButton->SetText ("RESET MOVE");
-        resetMoveButton->SetPos (20, saveSceneButton->Bottom () + 40);
-        resetMoveButton->onPress.Add (this, &Editor::OnResetTranslate);
-
-        resetScaleButton = new Gwk::Controls::Button (m_MainCanvas);
-        resetScaleButton->SetText ("RESET SCALE");
-        resetScaleButton->SetPos (20, resetMoveButton->Bottom () + 5);
-        resetScaleButton->onPress.Add (this, &Editor::OnResetScale);
-
-        showGridButton = new Gwk::Controls::Button (m_MainCanvas);
-        showGridButton->SetText ("SHOW GRID");
-        showGridButton->SetPos (20, resetScaleButton->Bottom () + 5);
-        showGridButton->onPress.Add (this, &Editor::OnShowGrid);
-
-        increaseGridButton = new Gwk::Controls::Button (m_MainCanvas);
-        increaseGridButton->SetText ("+++");
-        increaseGridButton->SetWidth (45);
-        increaseGridButton->SetPos (20, showGridButton->Bottom () + 5);
-        increaseGridButton->onPress.Add (this, &Editor::OnGridIncrease);
-
-        decreaseGridButton = new Gwk::Controls::Button (m_MainCanvas);
-        decreaseGridButton->SetText ("---");
-        decreaseGridButton->SetWidth (45);
-        decreaseGridButton->SetPos (
-            increaseGridButton->GetPos ().x + increaseGridButton->GetSize ().x + 10, showGridButton->Bottom () + 5);
-        decreaseGridButton->onPress.Add (this, &Editor::OnGridDecrease);
-
-        sceneButton = new Gwk::Controls::Button (m_MainCanvas);
-        sceneButton->SetText ("SCENE EDIT");
-        sceneButton->SetPos (20, decreaseGridButton->Bottom () + 40);
-        sceneButton->onPress.Add (this, &Editor::OnSceneEdit);
-
-        flagPointButton = new Gwk::Controls::Button (m_MainCanvas);
-        flagPointButton->SetText ("FLAG POINT");
-        flagPointButton->SetPos (20, sceneButton->Bottom () + 5);
-        flagPointButton->onPress.Add (this, &Editor::OnFlagPoint);
-
-        triggerAreaButton = new Gwk::Controls::Button (m_MainCanvas);
-        triggerAreaButton->SetText ("TRIGGER AREA");
-        triggerAreaButton->SetPos (20, flagPointButton->Bottom () + 5);
-        triggerAreaButton->onPress.Add (this, &Editor::OnTriggerArea);
-
-        selectModeButton = new Gwk::Controls::Button (m_MainCanvas);
-        selectModeButton->SetText (m_CursorMode != CursorMode::EditPhysBodyMode ? "PHYS MODE" : "EXIT PHYS");
-        selectModeButton->SetPos (20, triggerAreaButton->Bottom () + 40);
-        selectModeButton->onPress.Add (this, &Editor::SwitchCursorMode);
-        selectModeButton->Hide ();
-
-        saveBodyButton = new Gwk::Controls::Button (m_MainCanvas);
-        saveBodyButton->SetText ("OUTLINE BODY");
-        saveBodyButton->SetPos (20, selectModeButton->Bottom () + 5);
-        saveBodyButton->onPress.Add (this, &Editor::OutlineBody);
-        saveBodyButton->Hide ();
-
-        removeBodyButton = new Gwk::Controls::Button (m_MainCanvas);
-        removeBodyButton->SetText ("REMOVE BODY");
-        removeBodyButton->SetPos (20, saveBodyButton->Bottom () + 5);
-        removeBodyButton->onPress.Add (this, &Editor::OnRemoveBody);
-        removeBodyButton->Hide ();
-
-        newPolyButton = new Gwk::Controls::Button (m_MainCanvas);
-        newPolyButton->SetText ("NEW POLY");
-        newPolyButton->SetPos (20, removeBodyButton->Bottom () + 5);
-        newPolyButton->onPress.Add (this, &Editor::OnNewPoly);
-        newPolyButton->Hide ();
-
-        actorButton = new Gwk::Controls::Button (m_MainCanvas);
-        actorButton->SetText ("ACTOR [F2]");
-        actorButton->SetPos (20, selectModeButton->Bottom () + 5);
-        actorButton->onPress.Add (this, &Editor::OnActorSelected);
-
-        speechButton = new Gwk::Controls::Button (m_MainCanvas);
-        speechButton->SetText ("SPEECH [F3]");
-        speechButton->SetPos (20, actorButton->Bottom () + 5);
-        speechButton->onPress.Add (this, &Editor::OnSpeech);
-
-        playButton = new Gwk::Controls::Button (m_MainCanvas);
-        playButton->SetText ("PLAY [F1]");
-        playButton->SetPos (20, newPolyButton->Bottom () + 20);
-        playButton->onPress.Add (this, &Editor::OnPlay);
-
-        tilesetCombo = new Gwk::Controls::ComboBox (m_MainCanvas);
-        tilesetCombo->SetWidth (90);
-        tilesetCombo->SetKeyboardInputEnabled (false);
-
         std::map<std::string, Atlas*>& atlases = m_MainLoop->GetAtlasManager ().GetAtlases ();
-
-        for (const auto& atlas : atlases)
-        {
-            tilesetCombo->AddItem (atlas.first, atlas.second->GetPath ());
-        }
-
-        tilesetCombo->onSelection.Add (this, &Editor::OnTilesetSelected);
-
         m_EditorActorMode.ChangeAtlas ((*atlases.begin ()).first);
-
-        leftNextTileButton = new Gwk::Controls::Button (m_MainCanvas);
-        leftNextTileButton->SetWidth (30);
-        leftNextTileButton->SetText (">");
-        leftNextTileButton->onPress.Add (this, &Editor::OnScrollNextTiles);
-
-        leftPrevTileButton = new Gwk::Controls::Button (m_MainCanvas);
-        leftPrevTileButton->SetWidth (30);
-        leftPrevTileButton->SetText ("<");
-        leftPrevTileButton->onPress.Add (this, &Editor::OnScrollPrevTiles);
-
-        rightNextTileButton = new Gwk::Controls::Button (m_MainCanvas);
-        rightNextTileButton->SetWidth (30);
-        rightNextTileButton->SetText (">>");
-        rightNextTileButton->onPress.Add (this, &Editor::OnBigScrollNextTiles);
-
-        rightPrevTileButton = new Gwk::Controls::Button (m_MainCanvas);
-        rightPrevTileButton->SetWidth (30);
-        rightPrevTileButton->SetText ("<<");
-        rightPrevTileButton->onPress.Add (this, &Editor::OnBigScrollPrevTiles);
-
-        spriteSheetButton = new Gwk::Controls::Button (m_MainCanvas);
-        spriteSheetButton->SetWidth (50);
-        spriteSheetButton->SetHeight (42);
-        spriteSheetButton->SetText ("# [`]");
-        spriteSheetButton->onPress.Add (this, &Editor::OnSpriteSheetEdit);
 
         LoadConfig ();
         ScreenResize ();
@@ -997,16 +824,13 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnNewScene (Gwk::Controls::Base*)
+    void Editor::OnNewScene ()
     {
         std::function<void(void)> YesFunc = [&] {
             m_MainLoop->GetSceneManager ().GetActiveScene ()->Reset ();
             m_MainLoop->GetSceneManager ().GetActiveScene ()->SetName (m_InputWindow->GetText ());
 
             ResetSettings ();
-
-            UpdateSceneNameLabel (
-                std::string ("SCENE: ") + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ());
         };
 
         m_InputWindow->Show ("Are you sure clearing current scene?", "", YesFunc, nullptr);
@@ -1032,9 +856,6 @@ namespace aga
             m_MainLoop->GetSceneManager ().SetActiveScene (openFileName, false);
 
             ResetSettings ();
-
-            UpdateSceneNameLabel (
-                std::string ("SCENE: " + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ()));
 
             m_LastScenePath = openFileName;
             m_SaveSceneWindow->SetFileName (m_LastScenePath);
@@ -1141,11 +962,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnShowGrid ()
-    {
-        m_IsSnapToGrid = !m_IsSnapToGrid;
-        showGridButton->SetText (m_IsSnapToGrid ? "HIDE GRID" : "SHOW GRID");
-    }
+    void Editor::OnShowGrid () { m_IsSnapToGrid = !m_IsSnapToGrid; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -1206,15 +1023,6 @@ namespace aga
         }
 
         SetDrawUITiles (m_CursorMode == CursorMode::ActorSelectMode);
-        flagPointButton->SetHidden (m_CursorMode == CursorMode::EditPhysBodyMode);
-        triggerAreaButton->SetHidden (m_CursorMode == CursorMode::EditPhysBodyMode);
-        speechButton->SetHidden (m_CursorMode == CursorMode::EditPhysBodyMode);
-        actorButton->SetHidden (m_CursorMode == CursorMode::EditPhysBodyMode);
-        newPolyButton->SetHidden (m_CursorMode != CursorMode::EditPhysBodyMode);
-        saveBodyButton->SetHidden (m_CursorMode != CursorMode::EditPhysBodyMode);
-        removeBodyButton->SetHidden (m_CursorMode != CursorMode::EditPhysBodyMode);
-
-        selectModeButton->SetText (m_CursorMode != CursorMode::EditPhysBodyMode ? "PHYS MODE" : "EXIT PHYS");
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1320,6 +1128,214 @@ namespace aga
 
     void Editor::RenderUI ()
     {
+        ImGui::SetNextWindowPos (ImVec2 (5, 5), ImGuiCond_Always);
+        ImGui::PushStyleColor (ImGuiCol_WindowBg, ImVec4 (0, 0, 0, 0.3f));
+        if (ImGui::Begin ("Tools", nullptr,
+                ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
+                    | ImGuiWindowFlags_NoCollapse))
+        {
+            ImGui::Text (
+                (ToString ("SCENE: ") + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ()).c_str ());
+
+            ImGui::Separator ();
+
+            ImVec2 buttonSize = ImVec2 (100.f, 18.f);
+
+            if (ImGui::Button ("NEW SCENE", buttonSize))
+            {
+                OnNewScene ();
+            }
+            if (ImGui::Button ("OPEN SCENE", buttonSize))
+            {
+                OnOpenScene ();
+            }
+            if (ImGui::Button ("SAVE SCENE", buttonSize))
+            {
+                OnSaveScene ();
+            }
+
+            if (ImGui::Button ("SCENE EDIT", buttonSize))
+            {
+                OnSceneEdit ();
+            }
+
+            ImGui::Separator ();
+            ImGui::Separator ();
+
+            if (ImGui::Button ("RESET MOVE", buttonSize))
+            {
+                OnResetTranslate ();
+            }
+
+            if (ImGui::Button ("RESET SCALE", buttonSize))
+            {
+                OnResetScale ();
+            }
+
+            if (ImGui::Button (m_IsSnapToGrid ? "HIDE GRID" : "SHOW GRID", buttonSize))
+            {
+                OnShowGrid ();
+            }
+
+            if (ImGui::Button ("+++", buttonSize))
+            {
+                OnGridIncrease ();
+            }
+
+            if (ImGui::Button ("---", buttonSize))
+            {
+                OnGridDecrease ();
+            }
+
+            if (m_CursorMode != CursorMode::EditPhysBodyMode)
+            {
+                ImGui::Separator ();
+                ImGui::Separator ();
+
+                if (ImGui::Button ("FLAG POINT", buttonSize))
+                {
+                    OnFlagPoint ();
+                }
+
+                if (ImGui::Button ("TRIGGER AREA", buttonSize))
+                {
+                    OnTriggerArea ();
+                }
+            }
+
+            ImGui::Separator ();
+            ImGui::Separator ();
+
+            if (ImGui::Button (m_CursorMode != CursorMode::EditPhysBodyMode ? "PHYS MODE" : "EXIT PHYS", buttonSize))
+            {
+                SwitchCursorMode ();
+            }
+
+            if (m_CursorMode == CursorMode::EditPhysBodyMode)
+            {
+                if (ImGui::Button ("OUTLINE BODY", buttonSize))
+                {
+                    OutlineBody ();
+                }
+
+                if (ImGui::Button ("REMOVE BODY", buttonSize))
+                {
+                    OnRemoveBody ();
+                }
+
+                if (ImGui::Button ("NEW POLY", buttonSize))
+                {
+                    OnNewPoly ();
+                }
+            }
+            else
+            {
+                ImGui::Separator ();
+                ImGui::Separator ();
+
+                if (ImGui::Button ("ACTOR [F2]", buttonSize))
+                {
+                    OnActorSelected ();
+                }
+
+                if (ImGui::Button ("SPEECH [F3]", buttonSize))
+                {
+                    OnSpeech ();
+                }
+
+                if (ImGui::Button ("PLAY [F1]", buttonSize))
+                {
+                    OnPlay ();
+                }
+            }
+
+            ImGui::End ();
+        }
+        ImGui::PopStyleColor ();
+
+        const Point windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+        float beginning = windowSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
+        float end = beginning + TILES_COUNT * TILE_SIZE;
+
+        ImGui::SetNextWindowPos (ImVec2 (beginning - 130, windowSize.Height - 58), ImGuiCond_Always);
+        ImGui::PushStyleColor (ImGuiCol_WindowBg, ImVec4 (0, 0, 0, 0.0f));
+        ImGui::PushStyleColor (ImGuiCol_Border, ImVec4 (0, 0, 0, 0.0f));
+
+        if (ImGui::Begin ("Sprites", nullptr,
+                ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
+                    | ImGuiWindowFlags_NoCollapse))
+        {
+            std::map<std::string, Atlas*>& atlases = m_MainLoop->GetAtlasManager ().GetAtlases ();
+            static const char* selectedTileset = (*atlases.begin ()).first.c_str ();
+
+            ImGui::PushItemWidth (110);
+            if (ImGui::BeginCombo ("", selectedTileset, 0))
+            {
+                for (const auto& atlas : atlases)
+                {
+                    bool is_selected = (selectedTileset == atlas.first.c_str ());
+
+                    if (ImGui::Selectable (atlas.first.c_str (), is_selected))
+                    {
+                        selectedTileset = atlas.first.c_str ();
+                        OnTilesetSelected (selectedTileset);
+                    }
+                    if (is_selected)
+                    {
+                        ImGui::SetItemDefaultFocus ();
+                    }
+                }
+                ImGui::EndCombo ();
+            }
+            ImGui::PopItemWidth ();
+
+            if (ImGui::Button ("# [`]", ImVec2 (110.f, 18.f)))
+            {
+                OnSpriteSheetEdit ();
+            }
+
+            ImGui::End ();
+        }
+        ImGui::PopStyleColor (2);
+
+        ImGui::SetNextWindowPos (ImVec2 (end + 5, windowSize.Height - 58), ImGuiCond_Always);
+        ImGui::PushStyleColor (ImGuiCol_WindowBg, ImVec4 (0, 0, 0, 0.0f));
+        ImGui::PushStyleColor (ImGuiCol_Border, ImVec4 (0, 0, 0, 0.0f));
+
+        if (ImGui::Begin ("SpritesControls", nullptr,
+                ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
+                    | ImGuiWindowFlags_NoCollapse))
+        {
+            ImVec2 buttonSize = ImVec2 (40.f, 18.f);
+
+            if (ImGui::Button ("<", buttonSize))
+            {
+                OnScrollPrevTiles ();
+            }
+
+            ImGui::SameLine ();
+
+            if (ImGui::Button (">", buttonSize))
+            {
+                OnScrollNextTiles ();
+            }
+
+            if (ImGui::Button ("<<", buttonSize))
+            {
+                OnBigScrollPrevTiles ();
+            }
+
+            ImGui::SameLine ();
+
+            if (ImGui::Button (">>", buttonSize))
+            {
+                OnBigScrollNextTiles ();
+            }
+
+            ImGui::End ();
+        }
+        ImGui::PopStyleColor (2);
+
         Point translate = m_MainLoop->GetSceneManager ().GetCamera ().GetTranslate ();
         Point scale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
 
@@ -1409,16 +1425,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::SetDrawUITiles (bool draw)
-    {
-        m_EditorActorMode.SetDrawTiles (draw);
-        tilesetCombo->SetHidden (!m_EditorActorMode.IsDrawTiles ());
-        leftPrevTileButton->SetHidden (!m_EditorActorMode.IsDrawTiles ());
-        leftNextTileButton->SetHidden (!m_EditorActorMode.IsDrawTiles ());
-        rightPrevTileButton->SetHidden (!m_EditorActorMode.IsDrawTiles ());
-        rightNextTileButton->SetHidden (!m_EditorActorMode.IsDrawTiles ());
-        spriteSheetButton->SetHidden (!m_EditorActorMode.IsDrawTiles ());
-    }
+    void Editor::SetDrawUITiles (bool draw) { m_EditorActorMode.SetDrawTiles (draw); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -1426,15 +1433,6 @@ namespace aga
     {
         const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
         m_MainCanvas->SetSize (screenSize.Width, screenSize.Height);
-
-        float beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
-
-        tilesetCombo->SetPos (beginning - 140, m_MainCanvas->Bottom () - 35);
-        leftNextTileButton->SetPos (beginning - 35, m_MainCanvas->Bottom () - TILE_SIZE + 5);
-        leftPrevTileButton->SetPos (beginning - 35, leftNextTileButton->Bottom () + 2);
-        rightNextTileButton->SetPos (beginning + TILES_COUNT * TILE_SIZE + 5, m_MainCanvas->Bottom () - TILE_SIZE + 5);
-        rightPrevTileButton->SetPos (beginning + TILES_COUNT * TILE_SIZE + 5, rightNextTileButton->Bottom () + 2);
-        spriteSheetButton->SetPos (rightNextTileButton->Right () + 5, rightNextTileButton->Y ());
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1486,13 +1484,11 @@ namespace aga
                     else
                     {
                         m_EditorActorMode.AddActorToSelection (actorUnderCursor);
-                        selectModeButton->Show ();
                     }
                 }
                 else
                 {
                     m_EditorActorMode.ClearSelectedActors ();
-                    selectModeButton->Hide ();
                 }
             }
             else if (m_CursorMode == CursorMode::EditSpriteSheetMode)
@@ -1518,7 +1514,6 @@ namespace aga
                     {
                         m_EditorActorMode.ClearSelectedActors ();
                         m_EditorActorMode.AddActorToSelection (actorUnderCursor);
-                        selectModeButton->Show ();
 
                         if (!m_EditorActorMode.GetSelectedActors ().empty ())
                         {
@@ -1716,20 +1711,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnTilesetSelected (Gwk::Controls::Base*)
-    {
-        Gwk::Controls::Label* selItem = tilesetCombo->GetSelectedItem ();
-
-        m_EditorActorMode.ChangeAtlas (selItem->GetText ());
-    }
+    void Editor::OnTilesetSelected (const std::string& path) { m_EditorActorMode.ChangeAtlas (path); }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::UpdateSceneNameLabel (const std::string& name)
-    {
-        sceneNameLabel->SetText (name);
-        sceneNameLabel->SizeToContents ();
-    }
-
-    //--------------------------------------------------------------------------------------------------
 } // namespace aga

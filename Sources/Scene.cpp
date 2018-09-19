@@ -420,8 +420,9 @@ namespace aga
         }
 
         Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
-        font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), 10, 10, std::to_string (m_VisibleEntities.size ()),
-            ALLEGRO_ALIGN_LEFT);
+        font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), 10,
+            m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ().Height - 12,
+            std::to_string (m_VisibleEntities.size ()), ALLEGRO_ALIGN_LEFT);
     }
 
     //--------------------------------------------------------------------------------------------------

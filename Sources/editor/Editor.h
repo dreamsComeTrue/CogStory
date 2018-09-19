@@ -85,8 +85,6 @@ namespace aga
         EditorInfoWindow* GetEditorInfoWindow () { return m_InfoWindow; }
         EditorQuestionWindow* GetEditorQuestionWindow () { return m_QuestionWindow; }
 
-        void UpdateSceneNameLabel (const std::string& name);
-
         ALLEGRO_TRANSFORM& GetWorldTransform () { return m_WorldTransform; }
 
         Point GetLastMousePos () { return m_LastMousePos; }
@@ -114,7 +112,7 @@ namespace aga
 
         void SetDrawUITiles (bool draw);
 
-        void OnNewScene (Gwk::Controls::Base* control);
+        void OnNewScene ();
         void OnOpenScene ();
         void OnSaveScene ();
 
@@ -144,7 +142,7 @@ namespace aga
 
         void MarkPlayerPosition ();
 
-        void OnTilesetSelected (Gwk::Controls::Base* control);
+        void OnTilesetSelected (const std::string& path);
 
         void RenderUI ();
         void RenderActorMode (float deltaTime);
