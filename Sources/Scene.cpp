@@ -717,6 +717,7 @@ namespace aga
         }
 
         m_Actors.clear ();
+        m_VisibleEntities.clear ();
 
         m_SceneManager->GetSpeechFrameManager ().Clear ();
         m_SceneManager->GetMainLoop ()->GetTweenManager ().Clear ();

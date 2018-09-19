@@ -605,9 +605,9 @@ namespace aga
             RenderActorMode (deltaTime);
         }
 
-        bool show_demo_window;
+        bool showMe;
 
-        //      ImGui::ShowDemoWindow (&show_demo_window);
+        //    ImGui::ShowDemoWindow (&showMe);
 
         //  Draw GUI
         ImGui::Render ();
@@ -824,17 +824,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnNewScene ()
-    {
-        std::function<void(void)> YesFunc = [&] {
-            m_MainLoop->GetSceneManager ().GetActiveScene ()->Reset ();
-            m_MainLoop->GetSceneManager ().GetActiveScene ()->SetName (m_InputWindow->GetText ());
-
-            ResetSettings ();
-        };
-
-        m_InputWindow->Show ("Are you sure clearing current scene?", "", YesFunc, nullptr);
-    }
+    void Editor::OnNewScene () { ImGui::OpenPopup ("New Scene"); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -1145,6 +1135,9 @@ namespace aga
             {
                 OnNewScene ();
             }
+
+            RenderUINewScene ();
+
             if (ImGui::Button ("OPEN SCENE", buttonSize))
             {
                 OnOpenScene ();
@@ -1421,6 +1414,42 @@ namespace aga
         ImGui::PopStyleColor ();
 
         m_MainCanvas->RenderCanvas ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::RenderUINewScene ()
+    {
+        if (ImGui::BeginPopupModal ("New Scene", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Text ("Are you sure clearing current scene?");
+
+            static char sceneName[100] = {};
+            ImGui::InputText ("", sceneName, IM_ARRAYSIZE (sceneName));
+            ImGui::SetItemDefaultFocus ();
+
+            ImGui::Separator ();
+            ImGui::BeginGroup ();
+
+            if (ImGui::Button ("YES", ImVec2 (50.f, 18.f)))
+            {
+                ImGui::CloseCurrentPopup ();
+
+                ResetSettings ();
+                m_MainLoop->GetSceneManager ().GetActiveScene ()->Reset ();
+                m_MainLoop->GetSceneManager ().GetActiveScene ()->SetName (sceneName);
+            }
+
+            ImGui::SameLine ();
+
+            if (ImGui::Button ("NO", ImVec2 (50.f, 18.f)))
+            {
+                ImGui::CloseCurrentPopup ();
+            }
+            ImGui::EndGroup ();
+
+            ImGui::EndPopup ();
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

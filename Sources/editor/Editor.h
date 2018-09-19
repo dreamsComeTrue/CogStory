@@ -148,6 +148,8 @@ namespace aga
         void RenderActorMode (float deltaTime);
         void RenderPhysBodyMode (float deltaTime);
 
+        void RenderUINewScene ();
+
         void ResetSettings ();
         void ScreenResize ();
 
