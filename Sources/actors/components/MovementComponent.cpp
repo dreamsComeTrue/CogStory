@@ -29,7 +29,7 @@ namespace aga
     {
         m_InitialPos = owner->Bounds.Pos;
 
-        SetMoveExtents ({-50.f, -50.f}, {50.f, 50.f});
+        SetMoveExtents ({ -50.f, -50.f }, { 50.f, 50.f });
 
         m_Actor->AddCollisionCallback ([&](Collidable* other) { ComputeTargetPos (); });
     }
@@ -357,7 +357,7 @@ namespace aga
 
     void MovementComponent::ComputeClosestWalkPoint ()
     {
-        float minDistance = MAXFLOAT;
+        float minDistance = 1e100;
         int closestIndex = 0;
         Point actorPos = m_Actor->GetPosition ();
 

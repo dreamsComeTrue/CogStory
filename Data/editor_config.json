@@ -5,7 +5,7 @@
         "2_city/2_0_city.scn"
     ],
     "show_bounds": false,
-    "show_grid": false,
+    "show_grid": true,
     "show_names": false,
     "show_physics": false
 }

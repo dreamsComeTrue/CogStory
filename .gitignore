@@ -20,9 +20,10 @@ tags
 Data/__RAW/__RAW music/
 
 Projects/
-ThirdParty/anglescript/angelscript/projects/cmake/CMakeLists.txt.user.b0cde4a
-ThirdParty/anglescript/angelscript/lib/libangelscript_W64.a
-ThirdParty/anglescript/angelscript/lib/libangelscript_LINUX.a
+ThirdParty/angelscript/angelscript/lib/CMakeFiles/
+ThirdParty/angelscript/angelscript/projects/cmake/CMakeLists.txt.user.b0cde4a
+ThirdParty/angelscript/angelscript/lib/libangelscript_W64.a
+ThirdParty/angelscript/angelscript/lib/libangelscript_LINUX.a
 Data/gfx/Thumbs.db
 CMakeLists.txt.user.c61345d
 CMakeLists.txt.user.b0cde4a
