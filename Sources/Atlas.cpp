@@ -46,37 +46,34 @@ namespace aga
         getline (packFile, line); //  skip - filter
         getline (packFile, line); //  skip - repeat
 
-        std::string name;
-        std::string xy;
-        std::string size;
-
         while (packFile)
         {
             getline (packFile, line);
 
             //  We can parse - we have a name
-            if (!StartsWith (line, "  "))
+            if (line.size () > 0 && !isspace (line[0]))
             {
-                name = line;
+                std::string name = line;
+                std::string xy;
+                std::string size;
 
-                std::streampos oldpos;
-
-                do
+                //  Each tile entry has 6 components: rotate, xy, size, orig, offset, index
+                for (int i = 0; i < 6; ++i)
                 {
-                    oldpos = packFile.tellg ();
                     getline (packFile, line);
 
-                    if (StartsWith (line, "  xy:"))
-                    {
-                        xy = line;
-                    }
-                    else if (StartsWith (line, "  size:"))
-                    {
-                        size = line;
-                    }
-                } while (StartsWith (line, "  "));
+                    std::string workingLine = line;
+                    TrimString (workingLine);
 
-                packFile.seekg (oldpos);
+                    if (StartsWith (workingLine, "xy:"))
+                    {
+                        xy = workingLine;
+                    }
+                    else if (StartsWith (workingLine, "size:"))
+                    {
+                        size = workingLine;
+                    }
+                }
 
                 std::vector<std::string> xyData = SplitString (xy.substr (xy.find (":") + 1), ',');
                 int x = atoi (xyData[0].c_str ());
