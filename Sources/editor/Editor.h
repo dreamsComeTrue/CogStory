@@ -124,7 +124,6 @@ namespace aga
         void OnGridDecrease ();
 
         void OnSceneEdit ();
-        void OnFlagPoint ();
         void OnTriggerArea ();
 
         void OutlineBody ();
@@ -145,6 +144,7 @@ namespace aga
         void RenderUINewScene ();
         void RenderUIOpenScene ();
         void RenderUISaveScene ();
+        void RenderFlagPointWindow ();
 
         void ResetSettings ();
         void ScreenResize ();

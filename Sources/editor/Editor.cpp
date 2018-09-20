@@ -958,10 +958,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnFlagPoint () { m_FlagPointWindow->Show (); }
-
-    //--------------------------------------------------------------------------------------------------
-
     void Editor::OnTriggerArea () { m_TriggerAreaWindow->Show (); }
 
     //--------------------------------------------------------------------------------------------------
@@ -1172,8 +1168,10 @@ namespace aga
 
                 if (ImGui::Button ("FLAG POINT", buttonSize))
                 {
-                    OnFlagPoint ();
+                    ImGui::OpenPopup ("Flag Point");
                 }
+
+                RenderFlagPointWindow ();
 
                 if (ImGui::Button ("TRIGGER AREA", buttonSize))
                 {
@@ -1507,7 +1505,7 @@ namespace aga
             ImGui::Separator ();
             ImGui::BeginGroup ();
 
-            if (ImGui::Button ("Open", ImVec2 (50.f, 18.f)))
+            if (ImGui::Button ("OPEN", ImVec2 (50.f, 18.f)))
             {
                 ImGui::CloseCurrentPopup ();
 
@@ -1590,6 +1588,46 @@ namespace aga
 
             if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_CloseCurrentPopup)
             {
+                ImGui::CloseCurrentPopup ();
+                m_CloseCurrentPopup = false;
+            }
+            ImGui::EndGroup ();
+
+            ImGui::EndPopup ();
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::RenderFlagPointWindow ()
+    {
+        if (ImGui::BeginPopupModal ("Flag Point", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            m_EditorFlagPointMode.SetAskFlagPoint (false);
+
+            static char flagPointName[100] = {0};
+
+            ImGui::InputText ("", flagPointName, IM_ARRAYSIZE (flagPointName));
+            ImGui::SetItemDefaultFocus ();
+
+            ImGui::Separator ();
+            ImGui::BeginGroup ();
+
+            if (ImGui::Button ("ACCEPT", ImVec2 (50.f, 18.f)))
+            {
+                ImGui::CloseCurrentPopup ();
+
+                m_EditorFlagPointMode.SetFlagPointName (flagPointName);
+                SetCursorMode (CursorMode::EditFlagPointsMode);
+            }
+
+            ImGui::SameLine ();
+
+            if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_CloseCurrentPopup)
+            {
+                SetCursorMode (CursorMode::ActorSelectMode);
+                m_EditorFlagPointMode.SetFlagPointName ("");
+
                 ImGui::CloseCurrentPopup ();
                 m_CloseCurrentPopup = false;
             }
