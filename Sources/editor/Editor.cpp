@@ -4,11 +4,9 @@
 #include "AtlasManager.h"
 #include "EditorActorWindow.h"
 #include "EditorComponentWindow.h"
-#include "EditorFlagPointWindow.h"
 #include "EditorSceneWindow.h"
 #include "EditorScriptWindow.h"
 #include "EditorSpeechWindow.h"
-#include "EditorTriggerAreaWindow.h"
 #include "EditorWindows.h"
 #include "MainLoop.h"
 #include "Resources.h"
@@ -96,8 +94,6 @@ namespace aga
         //  Diaglos & windows
         {
             m_EditorSceneWindow = new EditorSceneWindow (this, m_MainCanvas);
-            m_FlagPointWindow = new EditorFlagPointWindow (this, m_MainCanvas);
-            m_TriggerAreaWindow = new EditorTriggerAreaWindow (this, m_MainCanvas);
             m_SpeechWindow = new EditorSpeechWindow (this, m_MainCanvas);
             m_ActorWindow = new EditorActorWindow (this, m_MainCanvas);
             m_InfoWindow = new EditorInfoWindow (this, m_MainCanvas);
@@ -135,8 +131,6 @@ namespace aga
     {
         SaveConfig ();
 
-        SAFE_DELETE (m_FlagPointWindow);
-        SAFE_DELETE (m_TriggerAreaWindow);
         SAFE_DELETE (m_SpeechWindow);
         SAFE_DELETE (m_ActorWindow);
         SAFE_DELETE (m_InfoWindow);
@@ -246,7 +240,6 @@ namespace aga
     bool Editor::IsEditorCanvasNotCovered ()
     {
         return (!m_EditorSceneWindow->GetSceneWindow ()->Visible () && !m_SpeechWindow->GetSceneWindow ()->Visible ()
-            && !m_TriggerAreaWindow->GetSceneWindow ()->Visible () && !m_FlagPointWindow->GetSceneWindow ()->Visible ()
             && !m_ActorWindow->GetSceneWindow ()->Visible ());
     }
 
@@ -304,16 +297,6 @@ namespace aga
         if (m_SpeechWindow->GetSceneWindow ()->Visible ())
         {
             m_SpeechWindow->GetSceneWindow ()->CloseButtonPressed ();
-        }
-
-        if (m_FlagPointWindow->GetSceneWindow ()->Visible ())
-        {
-            m_FlagPointWindow->GetSceneWindow ()->CloseButtonPressed ();
-        }
-
-        if (m_TriggerAreaWindow->GetSceneWindow ()->Visible ())
-        {
-            m_TriggerAreaWindow->GetSceneWindow ()->CloseButtonPressed ();
         }
 
         OnCloseSpriteSheetEdit ();
@@ -958,10 +941,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnTriggerArea () { m_TriggerAreaWindow->Show (); }
-
-    //--------------------------------------------------------------------------------------------------
-
     void Editor::SwitchCursorMode ()
     {
         if (m_CursorMode != CursorMode::EditPhysBodyMode)
@@ -1175,8 +1154,10 @@ namespace aga
 
                 if (ImGui::Button ("TRIGGER AREA", buttonSize))
                 {
-                    OnTriggerArea ();
+                    ImGui::OpenPopup ("Trigger Area");
                 }
+
+                RenderTriggerAreaWindow ();
             }
 
             ImGui::Separator ();
@@ -1627,6 +1608,49 @@ namespace aga
             {
                 SetCursorMode (CursorMode::ActorSelectMode);
                 m_EditorFlagPointMode.SetFlagPointName ("");
+
+                ImGui::CloseCurrentPopup ();
+                m_CloseCurrentPopup = false;
+            }
+            ImGui::EndGroup ();
+
+            ImGui::EndPopup ();
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::RenderTriggerAreaWindow ()
+    {
+        if (ImGui::BeginPopupModal ("Trigger Area", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            static char triggerAreaName[100] = {0};
+
+            ImGui::InputText ("", triggerAreaName, IM_ARRAYSIZE (triggerAreaName));
+            ImGui::SetItemDefaultFocus ();
+
+            static bool triggerAreaCollidable;
+            ImGui::Checkbox ("Collidable?", &triggerAreaCollidable);
+
+            ImGui::Separator ();
+            ImGui::BeginGroup ();
+
+            if (ImGui::Button ("ACCEPT", ImVec2 (50.f, 18.f)))
+            {
+                ImGui::CloseCurrentPopup ();
+
+                m_EditorTriggerAreaMode.SetTriggerAreaName (triggerAreaName);
+                m_EditorTriggerAreaMode.SetTriggerAreaCollidable (triggerAreaCollidable);
+                m_EditorTriggerAreaMode.NewTriggerArea ();
+                SetCursorMode (CursorMode::EditTriggerAreaMode);
+            }
+
+            ImGui::SameLine ();
+
+            if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_CloseCurrentPopup)
+            {
+                SetCursorMode (CursorMode::ActorSelectMode);
+                m_EditorTriggerAreaMode.SetTriggerAreaName ("");
 
                 ImGui::CloseCurrentPopup ();
                 m_CloseCurrentPopup = false;

@@ -21,8 +21,6 @@ namespace aga
 {
     extern const int TILES_COUNT;
 
-    class EditorFlagPointWindow;
-    class EditorTriggerAreaWindow;
     class EditorSpeechWindow;
     class EditorActorWindow;
     class EditorActorScriptWindow;
@@ -145,6 +143,7 @@ namespace aga
         void RenderUIOpenScene ();
         void RenderUISaveScene ();
         void RenderFlagPointWindow ();
+        void RenderTriggerAreaWindow ();
 
         void ResetSettings ();
         void ScreenResize ();
@@ -182,8 +181,6 @@ namespace aga
         long m_LastTimeClicked;
 
         EditorSceneWindow* m_EditorSceneWindow;
-        EditorFlagPointWindow* m_FlagPointWindow;
-        EditorTriggerAreaWindow* m_TriggerAreaWindow;
         EditorSpeechWindow* m_SpeechWindow;
         EditorActorWindow* m_ActorWindow;
         EditorInfoWindow* m_InfoWindow;
