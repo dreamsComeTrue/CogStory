@@ -6,7 +6,6 @@
 #include "EditorComponentWindow.h"
 #include "EditorFlagPointWindow.h"
 #include "EditorOpenSceneWindow.h"
-#include "EditorSaveSceneWindow.h"
 #include "EditorSceneWindow.h"
 #include "EditorScriptWindow.h"
 #include "EditorSpeechWindow.h"
@@ -48,6 +47,7 @@ namespace aga
         , m_CursorMode (CursorMode::ActorSelectMode)
         , m_LastTimeClicked (0.0f)
         , m_IsRectSelection (false)
+        , m_OpenPopupSaveScene (false)
     {
     }
 
@@ -96,7 +96,6 @@ namespace aga
         {
             m_EditorSceneWindow = new EditorSceneWindow (this, m_MainCanvas);
             m_OpenSceneWindow = new EditorOpenSceneWindow (this, m_MainCanvas, "");
-            m_SaveSceneWindow = new EditorSaveSceneWindow (this, m_MainCanvas, "");
             m_FlagPointWindow = new EditorFlagPointWindow (this, m_MainCanvas);
             m_TriggerAreaWindow = new EditorTriggerAreaWindow (this, m_MainCanvas);
             m_SpeechWindow = new EditorSpeechWindow (this, m_MainCanvas);
@@ -137,7 +136,6 @@ namespace aga
         SaveConfig ();
 
         SAFE_DELETE (m_OpenSceneWindow);
-        SAFE_DELETE (m_SaveSceneWindow);
         SAFE_DELETE (m_FlagPointWindow);
         SAFE_DELETE (m_TriggerAreaWindow);
         SAFE_DELETE (m_SpeechWindow);
@@ -234,7 +232,6 @@ namespace aga
         }
 
         m_OpenSceneWindow->SetFileName (m_LastScenePath);
-        m_SaveSceneWindow->SetFileName (m_LastScenePath);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -300,11 +297,6 @@ namespace aga
         if (m_OpenSceneWindow->GetSceneWindow ()->Visible ())
         {
             m_OpenSceneWindow->GetSceneWindow ()->CloseButtonPressed ();
-        }
-
-        if (m_SaveSceneWindow->GetSceneWindow ()->Visible ())
-        {
-            m_SaveSceneWindow->GetSceneWindow ()->CloseButtonPressed ();
         }
 
         if (m_EditorSceneWindow->GetSceneWindow ()->Visible ())
@@ -461,7 +453,7 @@ namespace aga
 
             case ALLEGRO_KEY_W:
             {
-                OnSaveScene ();
+                m_OpenPopupSaveScene = true;
                 break;
             }
             }
@@ -824,15 +816,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnNewScene () { ImGui::OpenPopup ("New Scene"); }
-
-    //--------------------------------------------------------------------------------------------------
-
     void Editor::OnOpenScene () { m_OpenSceneWindow->Show (); }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Editor::OnSaveScene () { m_SaveSceneWindow->Show (); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -848,7 +832,6 @@ namespace aga
             ResetSettings ();
 
             m_LastScenePath = openFileName;
-            m_SaveSceneWindow->SetFileName (m_LastScenePath);
 
             Log ("Scene loaded: %s\n", openFileName.c_str ());
         }
@@ -1133,7 +1116,7 @@ namespace aga
 
             if (ImGui::Button ("NEW SCENE", buttonSize))
             {
-                OnNewScene ();
+                ImGui::OpenPopup ("New Scene");
             }
 
             RenderUINewScene ();
@@ -1142,10 +1125,13 @@ namespace aga
             {
                 OnOpenScene ();
             }
-            if (ImGui::Button ("SAVE SCENE", buttonSize))
+            if (ImGui::Button ("SAVE SCENE", buttonSize) || m_OpenPopupSaveScene)
             {
-                OnSaveScene ();
+                ImGui::OpenPopup ("Save Scene");
+                m_OpenPopupSaveScene = false;
             }
+
+            RenderUISaveScene ();
 
             if (ImGui::Button ("SCENE EDIT", buttonSize))
             {
@@ -1443,6 +1429,77 @@ namespace aga
             ImGui::SameLine ();
 
             if (ImGui::Button ("NO", ImVec2 (50.f, 18.f)))
+            {
+                ImGui::CloseCurrentPopup ();
+            }
+            ImGui::EndGroup ();
+
+            ImGui::EndPopup ();
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::RenderUISaveScene ()
+    {
+        if (ImGui::BeginPopupModal ("Save Scene", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            static char sceneName[100] = {0};
+
+            if (sceneName[0] == '\0')
+            {
+                strcpy (sceneName, m_LastScenePath.c_str ());
+            }
+
+            ImGui::InputText ("", sceneName, IM_ARRAYSIZE (sceneName));
+            ImGui::SetItemDefaultFocus ();
+            ImGui::SameLine ();
+
+            if (ImGui::Button ("BROWSE", ImVec2 (50.f, 18.f)))
+            {
+                std::string path = GetDataPath () + "scenes/x/";
+
+                ALLEGRO_FILECHOOSER* fileSaveDialog = al_create_native_file_dialog (
+                    path.c_str (), "Save scene file", "*.scn", ALLEGRO_FILECHOOSER_SAVE);
+
+                if (al_show_native_file_dialog (m_MainLoop->GetScreen ()->GetDisplay (), fileSaveDialog)
+                    && al_get_native_file_dialog_count (fileSaveDialog) > 0)
+                {
+                    std::string fileName = al_get_native_file_dialog_path (fileSaveDialog, 0);
+                    std::replace (fileName.begin (), fileName.end (), '\\', '/');
+
+                    if (!EndsWith (fileName, ".scn"))
+                    {
+                        fileName += ".scn";
+                    }
+
+                    std::string dataPath = "Data/scenes/";
+                    size_t index = fileName.find (dataPath);
+
+                    if (index != std::string::npos)
+                    {
+                        fileName = fileName.substr (index + dataPath.length ());
+                    }
+
+                    strcpy (sceneName, fileName.c_str ());
+                }
+
+                al_destroy_native_file_dialog (fileSaveDialog);
+            }
+
+            ImGui::Separator ();
+            ImGui::BeginGroup ();
+
+            if (ImGui::Button ("SAVE", ImVec2 (50.f, 18.f)))
+            {
+                ImGui::CloseCurrentPopup ();
+
+                SaveScene (sceneName);
+            }
+
+            ImGui::SameLine ();
+
+            if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)))
             {
                 ImGui::CloseCurrentPopup ();
             }

@@ -22,7 +22,6 @@ namespace aga
     extern const int TILES_COUNT;
 
     class EditorOpenSceneWindow;
-    class EditorSaveSceneWindow;
     class EditorFlagPointWindow;
     class EditorTriggerAreaWindow;
     class EditorSpeechWindow;
@@ -112,9 +111,7 @@ namespace aga
 
         void SetDrawUITiles (bool draw);
 
-        void OnNewScene ();
         void OnOpenScene ();
-        void OnSaveScene ();
 
         void OnPlay ();
 
@@ -149,6 +146,7 @@ namespace aga
         void RenderPhysBodyMode (float deltaTime);
 
         void RenderUINewScene ();
+        void RenderUISaveScene ();
 
         void ResetSettings ();
         void ScreenResize ();
@@ -187,7 +185,6 @@ namespace aga
 
         EditorSceneWindow* m_EditorSceneWindow;
         EditorOpenSceneWindow* m_OpenSceneWindow;
-        EditorSaveSceneWindow* m_SaveSceneWindow;
         EditorFlagPointWindow* m_FlagPointWindow;
         EditorTriggerAreaWindow* m_TriggerAreaWindow;
         EditorSpeechWindow* m_SpeechWindow;
@@ -213,6 +210,8 @@ namespace aga
 
         Rect m_SelectionRect;
         bool m_IsRectSelection;
+
+        bool m_OpenPopupSaveScene;
     };
 }
 
