@@ -5,7 +5,6 @@
 #include "EditorActorWindow.h"
 #include "EditorComponentWindow.h"
 #include "EditorFlagPointWindow.h"
-#include "EditorOpenSceneWindow.h"
 #include "EditorSceneWindow.h"
 #include "EditorScriptWindow.h"
 #include "EditorSpeechWindow.h"
@@ -47,6 +46,8 @@ namespace aga
         , m_CursorMode (CursorMode::ActorSelectMode)
         , m_LastTimeClicked (0.0f)
         , m_IsRectSelection (false)
+        , m_CloseCurrentPopup (false)
+        , m_OpenPopupOpenScene (false)
         , m_OpenPopupSaveScene (false)
     {
     }
@@ -95,7 +96,6 @@ namespace aga
         //  Diaglos & windows
         {
             m_EditorSceneWindow = new EditorSceneWindow (this, m_MainCanvas);
-            m_OpenSceneWindow = new EditorOpenSceneWindow (this, m_MainCanvas, "");
             m_FlagPointWindow = new EditorFlagPointWindow (this, m_MainCanvas);
             m_TriggerAreaWindow = new EditorTriggerAreaWindow (this, m_MainCanvas);
             m_SpeechWindow = new EditorSpeechWindow (this, m_MainCanvas);
@@ -135,7 +135,6 @@ namespace aga
     {
         SaveConfig ();
 
-        SAFE_DELETE (m_OpenSceneWindow);
         SAFE_DELETE (m_FlagPointWindow);
         SAFE_DELETE (m_TriggerAreaWindow);
         SAFE_DELETE (m_SpeechWindow);
@@ -179,7 +178,7 @@ namespace aga
 
             for (auto& file : recentFiles)
             {
-                m_OpenSceneWindow->AddRecentFileName (file);
+                m_RecentFileNames.push_back (file);
             }
         }
         catch (const std::exception&)
@@ -202,11 +201,9 @@ namespace aga
 
             j["recent_files"] = json::array ({});
 
-            std::vector<std::string> recentFiles = m_OpenSceneWindow->GetRecentFileNames ();
-
-            for (int i = 0; i < recentFiles.size (); ++i)
+            for (std::string recentFile : m_RecentFileNames)
             {
-                j["recent_files"].push_back (recentFiles[i]);
+                j["recent_files"].push_back (recentFile);
             }
 
             // write prettified JSON to another file
@@ -230,8 +227,6 @@ namespace aga
         {
             m_LastScenePath = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetPath ();
         }
-
-        m_OpenSceneWindow->SetFileName (m_LastScenePath);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -294,10 +289,7 @@ namespace aga
 
     void Editor::TryToCloseWindows ()
     {
-        if (m_OpenSceneWindow->GetSceneWindow ()->Visible ())
-        {
-            m_OpenSceneWindow->GetSceneWindow ()->CloseButtonPressed ();
-        }
+        ImGui::CloseCurrentPopup ();
 
         if (m_EditorSceneWindow->GetSceneWindow ()->Visible ())
         {
@@ -331,13 +323,14 @@ namespace aga
 
     void Editor::ProcessEvent (ALLEGRO_EVENT* event, float)
     {
-        // Poll and handle events (inputs, window resize, etc.)
-        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use
-        // your inputs.
-        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
-        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
-        // Generally you may always pass all inputs to dear imgui, and hide them from your application based on
-        // those two flags.
+        if (event->type == ALLEGRO_EVENT_KEY_CHAR)
+        {
+            if (event->keyboard.keycode == ALLEGRO_KEY_ESCAPE)
+            {
+                m_CloseCurrentPopup = true;
+                TryToCloseWindows ();
+            }
+        }
 
         ImGui_ImplAllegro5_ProcessEvent (event);
         if (event->type == ALLEGRO_EVENT_DISPLAY_RESIZE)
@@ -352,14 +345,6 @@ namespace aga
         if (io.WantCaptureKeyboard || io.WantCaptureMouse)
         {
             return;
-        }
-
-        if (event->type == ALLEGRO_EVENT_KEY_CHAR)
-        {
-            if (event->keyboard.keycode == ALLEGRO_KEY_ESCAPE)
-            {
-                TryToCloseWindows ();
-            }
         }
 
         if (m_CursorMode != CursorMode::EditSpriteSheetMode && m_GUIInput.ProcessMessage (*event))
@@ -447,7 +432,7 @@ namespace aga
 
             case ALLEGRO_KEY_Q:
             {
-                OnOpenScene ();
+                m_OpenPopupOpenScene = true;
                 break;
             }
 
@@ -816,10 +801,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnOpenScene () { m_OpenSceneWindow->Show (); }
-
-    //--------------------------------------------------------------------------------------------------
-
     void Editor::LoadScene (const std::string& openFileName)
     {
         std::string path = GetDataPath () + "scenes/" + openFileName;
@@ -832,6 +813,21 @@ namespace aga
             ResetSettings ();
 
             m_LastScenePath = openFileName;
+
+            bool found = false;
+            for (std::string fileName : m_RecentFileNames)
+            {
+                if (fileName == openFileName)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                m_RecentFileNames.push_back (openFileName);
+            }
 
             Log ("Scene loaded: %s\n", openFileName.c_str ());
         }
@@ -849,7 +845,6 @@ namespace aga
         SceneLoader::SaveScene (m_MainLoop->GetSceneManager ().GetActiveScene (), path);
 
         m_LastScenePath = filePath;
-        m_OpenSceneWindow->SetFileName (m_LastScenePath);
 
         Log ("Scene saved: %s\n", filePath.c_str ());
     }
@@ -1121,10 +1116,14 @@ namespace aga
 
             RenderUINewScene ();
 
-            if (ImGui::Button ("OPEN SCENE", buttonSize))
+            if (ImGui::Button ("OPEN SCENE", buttonSize) || m_OpenPopupOpenScene)
             {
-                OnOpenScene ();
+                ImGui::OpenPopup ("Open Scene");
+                m_OpenPopupOpenScene = false;
             }
+
+            RenderUIOpenScene ();
+
             if (ImGui::Button ("SAVE SCENE", buttonSize) || m_OpenPopupSaveScene)
             {
                 ImGui::OpenPopup ("Save Scene");
@@ -1428,9 +1427,99 @@ namespace aga
 
             ImGui::SameLine ();
 
-            if (ImGui::Button ("NO", ImVec2 (50.f, 18.f)))
+            if (ImGui::Button ("NO", ImVec2 (50.f, 18.f)) || m_CloseCurrentPopup)
             {
                 ImGui::CloseCurrentPopup ();
+                m_CloseCurrentPopup = false;
+            }
+            ImGui::EndGroup ();
+
+            ImGui::EndPopup ();
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::RenderUIOpenScene ()
+    {
+        if (ImGui::BeginPopupModal ("Open Scene", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            static char sceneName[100] = {0};
+
+            char* items[m_RecentFileNames.size ()];
+
+            for (int i = 0; i < m_RecentFileNames.size (); ++i)
+            {
+                char* fileName = const_cast<char*> (m_RecentFileNames[i].c_str ());
+                items[i] = fileName;
+            }
+
+            static int itemCurrent = 1;
+            if (ImGui::ListBox ("", &itemCurrent, items, IM_ARRAYSIZE (items), 10))
+            {
+                strcpy (sceneName, items[itemCurrent]);
+                ImGui::CloseCurrentPopup ();
+
+                LoadScene (sceneName);
+            }
+
+            if (sceneName[0] == '\0')
+            {
+                strcpy (sceneName, m_LastScenePath.c_str ());
+            }
+
+            ImGui::InputText ("", sceneName, IM_ARRAYSIZE (sceneName));
+            ImGui::SetItemDefaultFocus ();
+            ImGui::SameLine ();
+
+            if (ImGui::Button ("BROWSE", ImVec2 (50.f, 18.f)))
+            {
+                std::string path = GetDataPath () + "scenes/x/";
+
+                ALLEGRO_FILECHOOSER* fileOpenDialog
+                    = al_create_native_file_dialog (path.c_str (), "Save scene file", "*.scn", 0);
+
+                if (al_show_native_file_dialog (m_MainLoop->GetScreen ()->GetDisplay (), fileOpenDialog)
+                    && al_get_native_file_dialog_count (fileOpenDialog) > 0)
+                {
+                    std::string fileName = al_get_native_file_dialog_path (fileOpenDialog, 0);
+                    std::replace (fileName.begin (), fileName.end (), '\\', '/');
+
+                    if (!EndsWith (fileName, ".scn"))
+                    {
+                        fileName += ".scn";
+                    }
+
+                    std::string dataPath = "Data/scenes/";
+                    size_t index = fileName.find (dataPath);
+
+                    if (index != std::string::npos)
+                    {
+                        fileName = fileName.substr (index + dataPath.length ());
+                    }
+
+                    strcpy (sceneName, fileName.c_str ());
+                }
+
+                al_destroy_native_file_dialog (fileOpenDialog);
+            }
+
+            ImGui::Separator ();
+            ImGui::BeginGroup ();
+
+            if (ImGui::Button ("Open", ImVec2 (50.f, 18.f)))
+            {
+                ImGui::CloseCurrentPopup ();
+
+                LoadScene (sceneName);
+            }
+
+            ImGui::SameLine ();
+
+            if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_CloseCurrentPopup)
+            {
+                ImGui::CloseCurrentPopup ();
+                m_CloseCurrentPopup = false;
             }
             ImGui::EndGroup ();
 
@@ -1499,9 +1588,10 @@ namespace aga
 
             ImGui::SameLine ();
 
-            if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)))
+            if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_CloseCurrentPopup)
             {
                 ImGui::CloseCurrentPopup ();
+                m_CloseCurrentPopup = false;
             }
             ImGui::EndGroup ();
 

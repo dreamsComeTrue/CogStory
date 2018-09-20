@@ -21,7 +21,6 @@ namespace aga
 {
     extern const int TILES_COUNT;
 
-    class EditorOpenSceneWindow;
     class EditorFlagPointWindow;
     class EditorTriggerAreaWindow;
     class EditorSpeechWindow;
@@ -111,8 +110,6 @@ namespace aga
 
         void SetDrawUITiles (bool draw);
 
-        void OnOpenScene ();
-
         void OnPlay ();
 
         void OnScrollPrevTiles ();
@@ -146,6 +143,7 @@ namespace aga
         void RenderPhysBodyMode (float deltaTime);
 
         void RenderUINewScene ();
+        void RenderUIOpenScene ();
         void RenderUISaveScene ();
 
         void ResetSettings ();
@@ -184,7 +182,6 @@ namespace aga
         long m_LastTimeClicked;
 
         EditorSceneWindow* m_EditorSceneWindow;
-        EditorOpenSceneWindow* m_OpenSceneWindow;
         EditorFlagPointWindow* m_FlagPointWindow;
         EditorTriggerAreaWindow* m_TriggerAreaWindow;
         EditorSpeechWindow* m_SpeechWindow;
@@ -211,7 +208,11 @@ namespace aga
         Rect m_SelectionRect;
         bool m_IsRectSelection;
 
+        bool m_CloseCurrentPopup;
+        bool m_OpenPopupOpenScene;
         bool m_OpenPopupSaveScene;
+
+        std::vector<std::string> m_RecentFileNames;
     };
 }
 
