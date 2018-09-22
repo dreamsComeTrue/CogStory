@@ -567,7 +567,7 @@ namespace aga
 
         bool showMe;
 
-        //    ImGui::ShowDemoWindow (&showMe);
+        ImGui::ShowDemoWindow (&showMe);
 
         //  Draw GUI
         ImGui::Render ();
@@ -937,10 +937,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::OnSceneEdit () { m_EditorSceneWindow->Show (); }
-
-    //--------------------------------------------------------------------------------------------------
-
     void Editor::SwitchCursorMode ()
     {
         if (m_CursorMode != CursorMode::EditPhysBodyMode)
@@ -1109,8 +1105,11 @@ namespace aga
 
             if (ImGui::Button ("SCENE EDIT", buttonSize))
             {
-                OnSceneEdit ();
+                ImGui::OpenPopup ("Scene Settings");
+                m_EditorSceneWindow->Show ();
             }
+
+            m_EditorSceneWindow->RenderUI ();
 
             ImGui::Separator ();
             ImGui::Separator ();

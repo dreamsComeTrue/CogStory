@@ -15,9 +15,17 @@ void BeforeEnterScene ()
 
     AddOnEnterCallback ("ENTRY_CITY", function (pt)
     {
-    	Color color = COLOR_BLACK;
-	    SceneFadeInOut (400, 400, color);
-	    SetActiveScene ("2_city/2_0_city.scn", true);
+        Timeline@ timeline = CreateTimeline (0);
+        timeline
+        .After (400, function (id)
+        {
+            SetActiveScene ("2_city/2_0_city.scn", false);
+        })
+        .Once (800, function (id)
+        {
+        	Color color = COLOR_BLACK;
+	        SceneFadeInOut (400, 400, color);
+        });
     });    
 
     GetSceneAudioStream ().Play ();

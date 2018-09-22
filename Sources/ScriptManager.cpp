@@ -63,7 +63,8 @@ namespace aga
               = void TimelineSingleFunc (int id, float progress, float value)
               = void TimelinePointFunc (int id, float progress, Point value)
          Timeline@ CreateTimeline (int id)
-         Timeline@ Once (TimelineEmptyFunc @+ func)
+         Timeline@ Once (int duringMS, TimelineEmptyFunc @+ func)
+         Timeline@ After (int duringMS, TimelineEmptyFunc @+ func)
          Timeline@ During (float from, float to, int duringMS, TimelineSingleFunc @+ func)
          Timeline@ During (Point from, Point to, int duringMS, TimelinePointFunc @+ func)
 
@@ -815,6 +816,10 @@ namespace aga
         r = m_ScriptEngine->RegisterObjectMethod ("Timeline",
             "Timeline@ Once (int duringMS, TimelineEmptyFunc @+ func)",
             asMETHODPR (Timeline, Once, (int, asIScriptFunction*), Timeline*), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Timeline",
+            "Timeline@ After (int duringMS, TimelineEmptyFunc @+ func)",
+            asMETHODPR (Timeline, After, (int, asIScriptFunction*), Timeline*), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("Timeline",
             "Timeline@ During (float from, float to, int duringMS, TimelineSingleFunc @+ func)",

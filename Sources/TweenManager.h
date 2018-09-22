@@ -22,6 +22,10 @@ namespace aga
 
         char TweenMask = 0;
         bool IsPaused = false;
+
+    private:
+        float AfterCounter = 0.f;
+        bool AfterDone = false;
     };
 
     class MainLoop;

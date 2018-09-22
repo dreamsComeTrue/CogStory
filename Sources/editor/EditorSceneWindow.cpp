@@ -16,6 +16,8 @@ namespace aga
         : m_Editor (editor)
         , m_SelectedNode (nullptr)
     {
+        memset (m_SceneName, 0, ARRAY_SIZE (m_SceneName));
+
         m_SceneWindow = new Gwk::Controls::WindowControl (canvas);
         m_SceneWindow->SetTitle ("Scene Settings");
         m_SceneWindow->SetSize (630, 330);
@@ -40,7 +42,6 @@ namespace aga
 
         m_ColorPicker = new Gwk::Controls::ColorPicker (m_SceneWindow);
         m_ColorPicker->SetPos (colorLabel->X () - 10, colorLabel->Bottom () + 5);
-        m_ColorPicker->onColorChanged.Add (this, &EditorSceneWindow::OnColorChanged);
 
         m_ScriptsBox = new Gwk::Controls::PropertyTree (m_SceneWindow);
         m_ScriptsBox->SetBounds (20, m_NameTextBox->Bottom () + 5, 350, 150);
@@ -63,12 +64,10 @@ namespace aga
         Gwk::Controls::Button* acceptButton = new Gwk::Controls::Button (m_SceneWindow);
         acceptButton->SetText ("ACCEPT");
         acceptButton->SetPos (m_SceneWindow->Width () - 130, m_SceneWindow->Height () - 90);
-        acceptButton->onPress.Add (this, &EditorSceneWindow::OnAccept);
 
         Gwk::Controls::Button* cancelButton = new Gwk::Controls::Button (m_SceneWindow);
         cancelButton->SetText ("CANCEL");
         cancelButton->SetPos (acceptButton->X (), acceptButton->Bottom () + 5);
-        cancelButton->onPress.Add (this, &EditorSceneWindow::OnCancel);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -79,6 +78,10 @@ namespace aga
 
     void EditorSceneWindow::Show ()
     {
+        strcpy (m_SceneName, m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetName ().c_str ());
+        ALLEGRO_COLOR color = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetBackgroundColor ();
+
+        m_BackColor = ImVec4 (color.r, color.g, color.b, color.a);
         m_SelectedNode = nullptr;
 
         m_SceneWindow->SetPosition (Gwk::Position::Center);
@@ -87,7 +90,6 @@ namespace aga
 
         m_NameTextBox->SetText (m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetName ());
 
-        ALLEGRO_COLOR color = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetBackgroundColor ();
         m_ColorPicker->SetColor (Gwk::Color (color.r * 255.f, color.g * 255.f, color.b * 255.f, color.a * 255.f));
 
         UpdateScriptsBox ();
@@ -198,15 +200,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorSceneWindow::OnColorChanged ()
-    {
-        Gwk::Color color = m_ColorPicker->GetColor ();
-        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->SetBackgroundColor (
-            color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f);
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
     void EditorSceneWindow::OnScriptSelected (Gwk::Controls::Base* control)
     {
         Gwk::Controls::TreeNode* node = (Gwk::Controls::TreeNode*)control;
@@ -241,16 +234,53 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorSceneWindow::OnAccept ()
+    void EditorSceneWindow::RenderUI ()
     {
-        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->SetName (m_NameTextBox->GetText ());
+        if (ImGui::BeginPopupModal ("Scene Settings", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            if (m_SceneName[0] == '\0')
+            {
+                strcpy (
+                    m_SceneName, m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetName ().c_str ());
+            }
 
-        m_SceneWindow->CloseButtonPressed ();
+            ImGui::InputText ("Scene Name", m_SceneName, IM_ARRAYSIZE (m_SceneName));
+            ImGui::SetItemDefaultFocus ();
+
+            static ImVec4 color = m_BackColor;
+
+            ImGui::ColorEdit4 ("Scene color", (float*)&color, 0);
+
+            if ((color.x != m_BackColor.x) || (color.y != m_BackColor.y) || (color.z != m_BackColor.z)
+                || (color.w != m_BackColor.w))
+            {
+                m_BackColor = color;
+                m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->SetBackgroundColor (
+                    m_BackColor.x, m_BackColor.y, m_BackColor.z, m_BackColor.w);
+            }
+
+            ImGui::Separator ();
+            ImGui::BeginGroup ();
+
+            if (ImGui::Button ("ACCEPT", ImVec2 (50.f, 18.f)))
+            {
+                ImGui::CloseCurrentPopup ();
+
+                m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->SetName (m_SceneName);
+            }
+
+            ImGui::SameLine ();
+
+            if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
+            {
+                ImGui::CloseCurrentPopup ();
+                m_Editor->SetCloseCurrentPopup (false);
+            }
+            ImGui::EndGroup ();
+
+            ImGui::EndPopup ();
+        }
     }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void EditorSceneWindow::OnCancel () { m_SceneWindow->CloseButtonPressed (); }
 
     //--------------------------------------------------------------------------------------------------
 }

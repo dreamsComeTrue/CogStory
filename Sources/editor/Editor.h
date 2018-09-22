@@ -90,6 +90,9 @@ namespace aga
 
         Rect GetSelectionRect () { return m_SelectionRect; }
 
+        bool IsCloseCurrentPopup () { return m_CloseCurrentPopup; }
+        void SetCloseCurrentPopup (bool close) { m_CloseCurrentPopup = close; }
+
     private:
         void LoadConfig ();
         void SaveConfig ();
@@ -120,9 +123,6 @@ namespace aga
         void OnShowGrid ();
         void OnGridIncrease ();
         void OnGridDecrease ();
-
-        void OnSceneEdit ();
-        void OnTriggerArea ();
 
         void OutlineBody ();
         void OnRemoveBody ();

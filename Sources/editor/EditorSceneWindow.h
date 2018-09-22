@@ -8,6 +8,8 @@
 
 #include <Gwork/Controls.h>
 
+#include "imgui.h"
+
 namespace aga
 {
     class Editor;
@@ -21,18 +23,16 @@ namespace aga
         void Show ();
         void UpdateScriptsBox ();
 
+        void RenderUI ();
+
         Gwk::Controls::WindowControl* GetSceneWindow () { return m_SceneWindow; }
 
     private:
-        void OnAccept ();
-        void OnCancel ();
-
         void OnAddScript ();
         void OnReloadScript (Gwk::Controls::Base* control);
         void OnRemoveScript (Gwk::Controls::Base* control);
 
         void OnNameEdit ();
-        void OnColorChanged ();
         void OnScriptSelected (Gwk::Controls::Base* control);
 
         Gwk::Controls::Property::LabelTwoButton* GetScriptEntryByControl (Gwk::Controls::Base* control);
@@ -47,6 +47,9 @@ namespace aga
 
         Gwk::Controls::Properties* m_ScriptSection;
         Gwk::Controls::TreeNode* m_SelectedNode;
+
+        char m_SceneName[100];
+        ImVec4 m_BackColor;
     };
 }
 
