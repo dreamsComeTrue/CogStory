@@ -93,13 +93,13 @@ namespace aga
 
         //  Diaglos & windows
         {
-            m_EditorSceneWindow = new EditorSceneWindow (this, m_MainCanvas);
+            m_EditorSceneWindow = new EditorSceneWindow (this);
             m_SpeechWindow = new EditorSpeechWindow (this, m_MainCanvas);
             m_ActorWindow = new EditorActorWindow (this, m_MainCanvas);
             m_InfoWindow = new EditorInfoWindow (this, m_MainCanvas);
             m_QuestionWindow = new EditorQuestionWindow (this, m_MainCanvas);
             m_InputWindow = new EditorInputWindow (this, m_MainCanvas);
-            m_ScriptWindow = new EditorScriptWindow (this, m_MainCanvas);
+            m_ScriptWindow = new EditorScriptWindow (this);
             m_ComponentWindow = new EditorComponentWindow (this, m_MainCanvas);
         }
 
@@ -239,7 +239,7 @@ namespace aga
 
     bool Editor::IsEditorCanvasNotCovered ()
     {
-        return (!m_EditorSceneWindow->GetSceneWindow ()->Visible () && !m_SpeechWindow->GetSceneWindow ()->Visible ()
+        return (!m_EditorSceneWindow->IsVisible () && !m_SpeechWindow->GetSceneWindow ()->Visible ()
             && !m_ActorWindow->GetSceneWindow ()->Visible ());
     }
 
@@ -283,11 +283,6 @@ namespace aga
     void Editor::TryToCloseWindows ()
     {
         ImGui::CloseCurrentPopup ();
-
-        if (m_EditorSceneWindow->GetSceneWindow ()->Visible ())
-        {
-            m_EditorSceneWindow->GetSceneWindow ()->CloseButtonPressed ();
-        }
 
         if (m_ActorWindow->GetSceneWindow ()->Visible ())
         {
@@ -1455,7 +1450,7 @@ namespace aga
                 std::string path = GetDataPath () + "scenes/x/";
 
                 ALLEGRO_FILECHOOSER* fileOpenDialog
-                    = al_create_native_file_dialog (path.c_str (), "Save scene file", "*.scn", 0);
+                    = al_create_native_file_dialog (path.c_str (), "Open scene file", "*.scn", 0);
 
                 if (al_show_native_file_dialog (m_MainLoop->GetScreen ()->GetDisplay (), fileOpenDialog)
                     && al_get_native_file_dialog_count (fileOpenDialog) > 0)

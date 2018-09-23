@@ -638,7 +638,7 @@ namespace aga
 
         if (nameProperty != nullptr && nameProperty->GetPropertyValue () != "")
         {
-            scriptWindow->Show (AcceptFunc, nullptr);
+            // scriptWindow->Show (AcceptFunc, nullptr);
         }
         else
         {

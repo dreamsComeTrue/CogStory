@@ -6,47 +6,31 @@
 #include "Common.h"
 #include "Entity.h"
 
-#include <Gwork/Controls.h>
-
 #include "imgui.h"
 
 namespace aga
 {
     class Editor;
 
-    class EditorSceneWindow : public Gwk::Event::Handler
+    class EditorSceneWindow
     {
     public:
-        EditorSceneWindow (Editor* editor, Gwk::Controls::Canvas* canvas);
+        EditorSceneWindow (Editor* editor);
         virtual ~EditorSceneWindow ();
 
         void Show ();
-        void UpdateScriptsBox ();
-
         void RenderUI ();
 
-        Gwk::Controls::WindowControl* GetSceneWindow () { return m_SceneWindow; }
+        bool IsVisible () const { return m_IsVisible; }
 
     private:
-        void OnAddScript ();
-        void OnReloadScript (Gwk::Controls::Base* control);
-        void OnRemoveScript (Gwk::Controls::Base* control);
+        void OnReloadScript (const std::string& scriptName);
 
         void OnNameEdit ();
-        void OnScriptSelected (Gwk::Controls::Base* control);
-
-        Gwk::Controls::Property::LabelTwoButton* GetScriptEntryByControl (Gwk::Controls::Base* control);
 
     private:
         Editor* m_Editor;
-
-        Gwk::Controls::WindowControl* m_SceneWindow;
-        Gwk::Controls::TextBox* m_NameTextBox;
-        Gwk::Controls::PropertyTree* m_ScriptsBox;
-        Gwk::Controls::ColorPicker* m_ColorPicker;
-
-        Gwk::Controls::Properties* m_ScriptSection;
-        Gwk::Controls::TreeNode* m_SelectedNode;
+        bool m_IsVisible;
 
         char m_SceneName[100];
         ImVec4 m_BackColor;

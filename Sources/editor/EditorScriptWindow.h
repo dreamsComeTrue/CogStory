@@ -6,45 +6,31 @@
 #include "Common.h"
 #include "Entity.h"
 
-#include <Gwork/Controls.h>
+#include "imgui.h"
 
 namespace aga
 {
     class Editor;
 
-    class EditorScriptWindow : public Gwk::Event::Handler
+    class EditorScriptWindow
     {
     public:
-        EditorScriptWindow (Editor* editor, Gwk::Controls::Canvas* canvas);
+        EditorScriptWindow (Editor* editor);
         virtual ~EditorScriptWindow ();
 
-        void Show (std::function<bool(void)> OnAcceptFunc, std::function<bool(void)> OnCancelFunc);
-        bool GetResult ();
+        void Render ();
 
         std::string GetName () const { return m_Name; }
         std::string GetPath () const { return m_Path; }
 
     private:
         void OnBrowse ();
-        void OnAccept ();
-        void OnCancel ();
-
-        void OnNameEdit (Gwk::Controls::Base* control);
-        void OnPathEdit (Gwk::Controls::Base* control);
 
     private:
         Editor* m_Editor;
-        Gwk::Controls::WindowControl* m_SceneWindow;
-        Gwk::Controls::TextBox* m_PathTextBox;
 
-        std::string m_Name;
-        std::string m_Path;
-
-        std::string m_FileName;
-        bool m_Result;
-
-        std::function<bool(void)> m_OnAcceptFunc;
-        std::function<bool(void)> m_OnCancelFunc;
+        char m_Name[100];
+        char m_Path[100];
     };
 }
 
