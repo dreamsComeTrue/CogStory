@@ -11,7 +11,6 @@ include(cotire)
 
 cmake_policy(SET CMP0015 NEW)
 link_directories(   ${ROOT_THIRD_PARTY_DIR}/angelscript/angelscript/lib/
-                    ${ROOT_THIRD_PARTY_DIR}/GWork/lib/
                     ./External/allegro/lib/
                     ./External/allegro_deps/lib/
                  )
@@ -31,8 +30,6 @@ list(APPEND INCLUDE_DIRS
         Sources/addons/tweeny/
         Sources/addons/json/
         Sources/addons/file-watcher/
-        ThirdParty/GWork/source/gwork/include/
-        ThirdParty/GWork/source/platform/include/
         ThirdParty/angelscript/angelscript/include
         ThirdParty/angelscript/add_on
 		ThirdParty/imgui/
@@ -52,15 +49,11 @@ add_executable(${PROJECT_NAME} ${SRC_LIST})
 
 if (WIN32)
 list(APPEND LIBRARIES_LIST
-                        libGwork.a
-                        libGworkAllegro5.a
                         libangelscript.dll.a
                         freetype
     )
 else()
 list(APPEND LIBRARIES_LIST
-                        libGwork_LINUX.a
-                        libGworkAllegro5_LINUX.a
                         libangelscript_LINUX.a
     )
 endif (WIN32)

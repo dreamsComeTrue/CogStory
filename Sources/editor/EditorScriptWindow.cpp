@@ -2,7 +2,6 @@
 
 #include "EditorScriptWindow.h"
 #include "Editor.h"
-#include "EditorWindows.h"
 #include "MainLoop.h"
 #include "Screen.h"
 

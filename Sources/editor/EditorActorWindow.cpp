@@ -8,7 +8,6 @@
 #include "Editor.h"
 #include "EditorComponentWindow.h"
 #include "EditorScriptWindow.h"
-#include "EditorWindows.h"
 #include "MainLoop.h"
 #include "Resources.h"
 #include "Screen.h"

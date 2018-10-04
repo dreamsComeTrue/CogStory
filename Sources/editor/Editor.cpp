@@ -7,7 +7,6 @@
 #include "EditorSceneWindow.h"
 #include "EditorScriptWindow.h"
 #include "EditorSpeechWindow.h"
-#include "EditorWindows.h"
 #include "MainLoop.h"
 #include "Resources.h"
 #include "SceneLoader.h"
@@ -75,6 +74,7 @@ namespace aga
         , m_OpenPopupOpenScene (false)
         , m_OpenPopupSaveScene (false)
         , m_OpenPopupActorEditor (false)
+        , m_OpenPopupSpeechEditor (false)
     {
     }
 
@@ -96,35 +96,11 @@ namespace aga
 
         al_init_native_dialog_addon ();
 
-        Gwk::Platform::SetPlatformWindow (m_MainLoop->GetScreen ()->GetDisplay ());
-
-        Gwk::Platform::RelativeToExecutablePaths paths ("../../Data/");
-        m_ResourceLoader = new Gwk::Renderer::AllegroResourceLoader (paths);
-
-        m_GUIRenderer = new Gwk::Renderer::Allegro (*m_ResourceLoader);
-
-        m_GuiSkin = new Gwk::Skin::TexturedBase (m_GUIRenderer);
-        m_GuiSkin->Init ("gfx/" + GetResource (GFX_DEFAULT_SKIN).Name);
-
-        // The fonts work differently in Allegro - it can't use
-        // system fonts. So force the skin to use a local one.
-        m_GuiSkin->SetDefaultFont ("fonts/" + GetResource (FONT_EDITOR).Name, 12);
-
-        // Create a Canvas (it's root, on which all other Gwork panels are created)
-        const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-
-        m_MainCanvas = new Gwk::Controls::Canvas (m_GuiSkin);
-        m_MainCanvas->SetSize (screenSize.Width, screenSize.Height);
-        m_MainCanvas->SetDrawBackground (false);
-
-        m_GUIInput.Initialize (m_MainCanvas);
-
         //  Diaglos & windows
         {
             m_EditorSceneWindow = new EditorSceneWindow (this);
-            m_SpeechWindow = new EditorSpeechWindow (this, m_MainCanvas);
+            m_SpeechWindow = new EditorSpeechWindow (this);
             m_ActorWindow = new EditorActorWindow (this);
-            m_QuestionWindow = new EditorQuestionWindow (this, m_MainCanvas);
             m_ScriptWindow = new EditorScriptWindow (this);
             m_ComponentWindow = new EditorComponentWindow (this);
         }
@@ -159,15 +135,9 @@ namespace aga
 
         SAFE_DELETE (m_SpeechWindow);
         SAFE_DELETE (m_ActorWindow);
-        SAFE_DELETE (m_QuestionWindow);
         SAFE_DELETE (m_EditorSceneWindow);
         SAFE_DELETE (m_ScriptWindow);
         SAFE_DELETE (m_ComponentWindow);
-
-        SAFE_DELETE (m_ResourceLoader);
-        SAFE_DELETE (m_MainCanvas);
-        //     SAFE_DELETE (m_GuiSkin);
-        SAFE_DELETE (m_GUIRenderer);
 
         // Cleanup
         ImGui_ImplAllegro5_Shutdown ();
@@ -263,8 +233,7 @@ namespace aga
 
     bool Editor::IsEditorCanvasNotCovered ()
     {
-        return (!m_EditorSceneWindow->IsVisible () && !m_SpeechWindow->GetSceneWindow ()->Visible ()
-            && !m_ActorWindow->IsVisible ());
+        return (!m_EditorSceneWindow->IsVisible () && !m_SpeechWindow->IsVisible () && !m_ActorWindow->IsVisible ());
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -308,11 +277,6 @@ namespace aga
     {
         ImGui::CloseCurrentPopup ();
 
-        if (m_SpeechWindow->GetSceneWindow ()->Visible ())
-        {
-            m_SpeechWindow->GetSceneWindow ()->CloseButtonPressed ();
-        }
-
         OnCloseSpriteSheetEdit ();
     }
 
@@ -344,7 +308,7 @@ namespace aga
             return;
         }
 
-        if (m_CursorMode != CursorMode::EditSpriteSheetMode && m_GUIInput.ProcessMessage (*event))
+        if (m_CursorMode != CursorMode::EditSpriteSheetMode)
         {
             return;
         }
@@ -1034,7 +998,8 @@ namespace aga
 
     void Editor::OnSpeech ()
     {
-        m_SpeechWindow->UpdateSpeechesTree ();
+        m_OpenPopupSpeechEditor = true;
+
         m_SpeechWindow->Show ();
     }
 
@@ -1211,10 +1176,19 @@ namespace aga
 
                 m_ActorWindow->RenderUI ();
 
-                if (ImGui::Button ("SPEECH [F3]", buttonSize))
+                if (ImGui::Button ("SPEECH [F3]", buttonSize) || m_OpenPopupSpeechEditor)
                 {
-                    OnSpeech ();
+                    if (!m_OpenPopupSpeechEditor)
+                    {
+                        OnSpeech ();
+                    }
+
+                    ImGui::OpenPopup ("Speech Editor");
+
+                    m_OpenPopupSpeechEditor = false;
                 }
+
+                m_SpeechWindow->RenderUI ();
 
                 if (ImGui::Button ("PLAY [F1]", buttonSize))
                 {
@@ -1392,8 +1366,6 @@ namespace aga
             ImGui::End ();
         }
         ImGui::PopStyleColor ();
-
-        m_MainCanvas->RenderCanvas ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1683,11 +1655,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::ScreenResize ()
-    {
-        const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-        m_MainCanvas->SetSize (screenSize.Width, screenSize.Height);
-    }
+    void Editor::ScreenResize () {}
 
     //--------------------------------------------------------------------------------------------------
 

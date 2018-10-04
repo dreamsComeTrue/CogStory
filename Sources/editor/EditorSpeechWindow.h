@@ -5,21 +5,27 @@
 
 #include "Common.h"
 
-#include <Gwork/Controls.h>
-#include <Gwork/Controls/NumericUpDown.h>
-
 namespace aga
 {
     class Editor;
 
-    class EditorSpeechWindow : public Gwk::Event::Handler
+    struct EditorSpeechOutcome
+    {
+        char Name[50] = {0};
+        char Text[50] = {0};
+        char Action[50] = {0};
+        int ActionIndex = 0;
+    };
+
+    class EditorSpeechWindow
     {
     public:
-        EditorSpeechWindow (Editor* editor, Gwk::Controls::Canvas* canvas);
+        EditorSpeechWindow (Editor* editor);
 
         void Show ();
-        void UpdateSpeechesTree ();
-        Gwk::Controls::WindowControl* GetSceneWindow () { return m_SceneWindow; }
+        void RenderUI ();
+
+        bool IsVisible () const { return m_IsVisible; }
 
     private:
         void OnSave ();
@@ -30,50 +36,46 @@ namespace aga
         void SelectSpeech (int id);
 
         void OnWindoClosed ();
-        void OnAccept ();
-        void OnCancel ();
-        void OnSpeechSelect (Gwk::Controls::Base*);
-        void OnNameEdit ();
-        void OnLangSelected ();
-        void OnRegionNameSelected ();
-        void OnTextChanged ();
 
         void OnPositionTypeChanged ();
-        void OnPositionXChanged ();
-        void OnPositionYChanged ();
 
         void UpdateOutcomes ();
 
-        void OnOutcomeIDTextChanged (Gwk::Controls::Base* control);
-        void OnOutcomeDataTextChanged (Gwk::Controls::Base* control);
-        void OnOutcomeActionChanged (Gwk::Controls::Base* control);
-        void OnUpOutcome (Gwk::Controls::Base* control);
-        void OnDownOutcome (Gwk::Controls::Base* control);
-        void OnRemoveOutcome (Gwk::Controls::Base* control);
-
-        void OnActionChanged (Gwk::Controls::Base* control);
+        void OnOutcomeDataTextChanged ();
+        void OnOutcomeActionChanged ();
+        void OnUpOutcome ();
+        void OnDownOutcome ();
 
         void ClearControls ();
 
     private:
         Editor* m_Editor;
+        bool m_IsVisible;
+
+        char m_SpeechID[10];
+        char m_SpeechName[100];
 
         int m_LangIndex;
+        std::vector<std::string> m_Languages;
 
-        Gwk::Controls::WindowControl* m_SceneWindow;
-        Gwk::Controls::TreeControl* m_SpeechesTree;
-        Gwk::Controls::TextBox* m_IDTextBox;
-        Gwk::Controls::TextBox* m_NameTextBox;
-        Gwk::Controls::ComboBox* m_LanguageCombo;
-        Gwk::Controls::ComboBox* m_RegionCombo;
-        Gwk::Controls::NumericUpDown* m_MaxCharsInLineNumeric;
-        Gwk::Controls::NumericUpDown* m_MaxLinesNumeric;
-        Gwk::Controls::ComboBox* m_RelPositionCombo;
-        Gwk::Controls::NumericUpDown* m_AbsPositionXNumeric;
-        Gwk::Controls::NumericUpDown* m_AbsPositionYNumeric;
-        Gwk::Controls::ComboBox* m_ActionCombo;
-        Gwk::Controls::TextBoxMultiline* m_TextData;
-        Gwk::Controls::ScrollControl* m_OutcomesContainer;
+        int m_SelectedRegion;
+        std::vector<std::string> m_Regions;
+
+        int m_MaxChars;
+        int m_MaxLines;
+
+        int m_AbsPosX;
+        int m_AbsPosY;
+
+        int m_RelPosition;
+        std::vector<std::string> m_Positions;
+
+        int m_Action;
+        std::vector<std::string> m_Actions;
+
+        char m_Text[2000];
+
+        std::vector<EditorSpeechOutcome> m_SpeechOutcomes;
     };
 }
 

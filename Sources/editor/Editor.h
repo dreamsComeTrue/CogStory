@@ -11,12 +11,6 @@
 #include "EditorTriggerAreaMode.h"
 #include "Scene.h"
 
-#include "Gwork/Controls.h"
-#include "Gwork/Input/Allegro5.h"
-#include "Gwork/Platform.h"
-#include "Gwork/Renderers/Allegro5.h"
-#include "Gwork/Skins/TexturedBase.h"
-
 //--------------------------------------------------------------------------------------------------
 
 namespace ImGui
@@ -33,7 +27,6 @@ namespace aga
     class EditorSpeechWindow;
     class EditorActorWindow;
     class EditorActorScriptWindow;
-    class EditorQuestionWindow;
     class EditorSceneWindow;
     class EditorScriptWindow;
     class EditorComponentWindow;
@@ -50,7 +43,7 @@ namespace aga
         EditSpriteSheetMode
     };
 
-    class Editor : public Lifecycle, public Gwk::Event::Handler
+    class Editor : public Lifecycle
     {
     public:
         Editor (MainLoop* mainLoop);
@@ -85,7 +78,6 @@ namespace aga
 
         EditorScriptWindow* GetScriptWindow () { return m_ScriptWindow; }
         EditorComponentWindow* GetComponentWindow () { return m_ComponentWindow; }
-        EditorQuestionWindow* GetEditorQuestionWindow () { return m_QuestionWindow; }
 
         ALLEGRO_TRANSFORM& GetWorldTransform () { return m_WorldTransform; }
 
@@ -189,16 +181,8 @@ namespace aga
         EditorSceneWindow* m_EditorSceneWindow;
         EditorSpeechWindow* m_SpeechWindow;
         EditorActorWindow* m_ActorWindow;
-        EditorQuestionWindow* m_QuestionWindow;
         EditorScriptWindow* m_ScriptWindow;
         EditorComponentWindow* m_ComponentWindow;
-
-        Gwk::Renderer::AllegroResourceLoader* m_ResourceLoader;
-        Gwk::Renderer::Allegro* m_GUIRenderer;
-        Gwk::Controls::Canvas* m_MainCanvas;
-        Gwk::Skin::TexturedBase* m_GuiSkin;
-
-        Gwk::Input::Allegro m_GUIInput;
 
         std::string m_LastScenePath;
 
@@ -213,6 +197,7 @@ namespace aga
         bool m_OpenPopupOpenScene;
         bool m_OpenPopupSaveScene;
         bool m_OpenPopupActorEditor;
+        bool m_OpenPopupSpeechEditor;
 
         std::vector<std::string> m_RecentFileNames;
     };
