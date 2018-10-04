@@ -19,6 +19,33 @@
 
 using json = nlohmann::json;
 
+//--------------------------------------------------------------------------------------------------
+
+namespace ImGui
+{
+    static auto vector_getter = [](void* vec, int idx, const char** out_text) {
+        auto& vector = *static_cast<std::vector<std::string>*> (vec);
+        if (idx < 0 || idx >= static_cast<int> (vector.size ()))
+        {
+            return false;
+        }
+        *out_text = vector.at (idx).c_str ();
+        return true;
+    };
+
+    bool Combo (const char* label, int* currIndex, std::vector<std::string>& values)
+    {
+        if (values.empty ())
+        {
+            return false;
+        }
+        return Combo (label, currIndex, vector_getter, static_cast<void*> (&values), values.size ());
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
+
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
@@ -47,6 +74,7 @@ namespace aga
         , m_CloseCurrentPopup (false)
         , m_OpenPopupOpenScene (false)
         , m_OpenPopupSaveScene (false)
+        , m_OpenPopupActorEditor (false)
     {
     }
 
@@ -95,12 +123,10 @@ namespace aga
         {
             m_EditorSceneWindow = new EditorSceneWindow (this);
             m_SpeechWindow = new EditorSpeechWindow (this, m_MainCanvas);
-            m_ActorWindow = new EditorActorWindow (this, m_MainCanvas);
-            m_InfoWindow = new EditorInfoWindow (this, m_MainCanvas);
+            m_ActorWindow = new EditorActorWindow (this);
             m_QuestionWindow = new EditorQuestionWindow (this, m_MainCanvas);
-            m_InputWindow = new EditorInputWindow (this, m_MainCanvas);
             m_ScriptWindow = new EditorScriptWindow (this);
-            m_ComponentWindow = new EditorComponentWindow (this, m_MainCanvas);
+            m_ComponentWindow = new EditorComponentWindow (this);
         }
 
         std::map<std::string, Atlas*>& atlases = m_MainLoop->GetAtlasManager ().GetAtlases ();
@@ -133,9 +159,7 @@ namespace aga
 
         SAFE_DELETE (m_SpeechWindow);
         SAFE_DELETE (m_ActorWindow);
-        SAFE_DELETE (m_InfoWindow);
         SAFE_DELETE (m_QuestionWindow);
-        SAFE_DELETE (m_InputWindow);
         SAFE_DELETE (m_EditorSceneWindow);
         SAFE_DELETE (m_ScriptWindow);
         SAFE_DELETE (m_ComponentWindow);
@@ -240,7 +264,7 @@ namespace aga
     bool Editor::IsEditorCanvasNotCovered ()
     {
         return (!m_EditorSceneWindow->IsVisible () && !m_SpeechWindow->GetSceneWindow ()->Visible ()
-            && !m_ActorWindow->GetSceneWindow ()->Visible ());
+            && !m_ActorWindow->IsVisible ());
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -283,11 +307,6 @@ namespace aga
     void Editor::TryToCloseWindows ()
     {
         ImGui::CloseCurrentPopup ();
-
-        if (m_ActorWindow->GetSceneWindow ()->Visible ())
-        {
-            m_ActorWindow->GetSceneWindow ()->CloseButtonPressed ();
-        }
 
         if (m_SpeechWindow->GetSceneWindow ()->Visible ())
         {
@@ -637,11 +656,6 @@ namespace aga
         {
             m_EditorActorMode.DrawTiles ();
             RenderUI ();
-        }
-
-        if (m_ActorWindow->GetSceneWindow ()->Visible ())
-        {
-            m_ActorWindow->RenderActorImage ();
         }
 
         SpeechFrameManager& frameManager = m_MainLoop->GetSceneManager ().GetSpeechFrameManager ();
@@ -1028,15 +1042,14 @@ namespace aga
 
     void Editor::OnActorSelected ()
     {
-        m_ActorWindow->Show ();
+        m_OpenPopupActorEditor = true;
 
         if (!m_EditorActorMode.GetSelectedActors ().empty ())
         {
-            Actor* actor = m_EditorActorMode.GetSelectedActors ()[0];
-            std::string name = actor->Name + std::string (" [") + std::to_string (actor->ID) + std::string ("]");
-
-            m_ActorWindow->SelectActor (name);
+            m_ActorWindow->SelectActor (m_EditorActorMode.GetSelectedActors ()[0]);
         }
+
+        m_ActorWindow->Show ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1184,10 +1197,19 @@ namespace aga
                 ImGui::Separator ();
                 ImGui::Separator ();
 
-                if (ImGui::Button ("ACTOR [F2]", buttonSize))
+                if (ImGui::Button ("ACTOR [F2]", buttonSize) || m_OpenPopupActorEditor)
                 {
-                    OnActorSelected ();
+                    if (!m_OpenPopupActorEditor)
+                    {
+                        OnActorSelected ();
+                    }
+
+                    ImGui::OpenPopup ("Actor Editor");
+
+                    m_OpenPopupActorEditor = false;
                 }
+
+                m_ActorWindow->RenderUI ();
 
                 if (ImGui::Button ("SPEECH [F3]", buttonSize))
                 {

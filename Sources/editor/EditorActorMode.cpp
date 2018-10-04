@@ -92,11 +92,11 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorActorMode::RemoveActor (const std::string& name)
+    void EditorActorMode::RemoveActor (int id)
     {
         Scene* activeScene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
 
-        activeScene->RemoveActor (name);
+        activeScene->RemoveActor (id);
         activeScene->SortActors ();
     }
 

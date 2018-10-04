@@ -16,304 +16,97 @@
 #include "actors/NPCActor.h"
 #include "actors/TileActor.h"
 
+#include "imgui.h"
+
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    Gwk::Controls::Property::Text* idProperty;
-    Gwk::Controls::Property::Text* nameProperty;
-    Gwk::Controls::Property::ComboBox* typeProperty;
-    Gwk::Controls::Property::ComboBox* blueprintProperty;
-    Gwk::Controls::Property::Text* positionProperty;
-    Gwk::Controls::Property::Text* rotationProperty;
-    Gwk::Controls::Property::Text* zOrderProperty;
-    Gwk::Controls::Property::ComboBox* imageProperty;
-    Gwk::Controls::Property::ComboBox* imagePathProperty;
-    Gwk::Controls::Property::ComboBox* animationProperty;
-
-    Gwk::Controls::Property::Text* focusHeightProperty;
-    Gwk::Controls::Property::ComboBox* overlapProperty;
-    Gwk::Controls::Property::ComboBox* collisionProperty;
-    Gwk::Controls::Property::ComboBox* collidableProperty;
-
-    EditorActorWindow::EditorActorWindow (Editor* editor, Gwk::Controls::Canvas* canvas)
+    EditorActorWindow::EditorActorWindow (Editor* editor)
         : m_Editor (editor)
         , m_SelectedAtlas (nullptr)
         , m_SelectedAtlasRegion ("")
-        , m_SelectedType (0)
+        , m_SelectedActor (nullptr)
+        , m_IsVisible (false)
+        , m_SelectedImage (0)
+        , m_SelectedImagePath (0)
+        , m_SelectedAnimation (0)
     {
-        m_SceneWindow = new Gwk::Controls::WindowControl (canvas);
-        m_SceneWindow->SetTitle ("Actor Editor");
-        m_SceneWindow->SetSize (680, canvas->Height () - 150);
-        m_SceneWindow->CloseButtonPressed ();
-
-        Gwk::Controls::DockBase* dock = new Gwk::Controls::DockBase (m_SceneWindow);
-        dock->Dock (Gwk::Position::Fill);
-
-        m_ActorsTree = new Gwk::Controls::TreeControl (dock);
-        m_ActorsTree->SetBounds (10, 10, 300, dock->Height ());
-        m_ActorsTree->ExpandAll ();
-        m_ActorsTree->Dock (Gwk::Position::Fill);
-        m_ActorsTree->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
-
-        dock->GetLeft ()->GetTabControl ()->AddPage ("Actors", m_ActorsTree);
-        m_ActorsTree->SetMargin (Gwk::Margin ());
-        dock->GetLeft ()->GetTabControl ()->GetTab (0)->Hide ();
-
-        int xOffset = 10;
-
-        Gwk::Controls::Base* center = new Gwk::Controls::Base (dock);
-        center->Dock (Gwk::Position::Fill);
-
-        Gwk::Controls::Label* nameLabel = new Gwk::Controls::Label (center);
-        nameLabel->SetPos (xOffset, 10);
-        nameLabel->SetText ("Name:");
-        nameLabel->SizeToContents ();
-
-        m_ActorProperties = new Gwk::Controls::PropertyTree (center);
-        m_ActorProperties->SetBounds (10, nameLabel->Y (), 340, 400);
-        {
-            m_GeneralSection = m_ActorProperties->Add ("General");
-            m_GeneralSection->Add ("ID");
-            m_GeneralSection->Add ("Name");
-
-            Gwk::Controls::Property::ComboBox* typeComboBox = new Gwk::Controls::Property::ComboBox (m_GeneralSection);
-
-            std::vector<std::string>& actorTypes = ActorFactory::GetActorTypes ();
-
-            for (const std::string& type : actorTypes)
-            {
-                typeComboBox->GetComboBox ()->AddItem (type, type);
-            }
-
-            m_GeneralSection->Add ("Type", typeComboBox);
-
-            m_BlueprintComboBox = new Gwk::Controls::Property::ComboBox (m_GeneralSection);
-            m_GeneralSection->Add ("Blueprint", m_BlueprintComboBox);
-
-            m_TransformSection = m_ActorProperties->Add ("Transform");
-
-            m_TransformSection->Add ("Position");
-            m_TransformSection->Add ("Rotation");
-            m_TransformSection->Add ("ZOrder");
-
-            m_ApperanceSection = m_ActorProperties->Add ("Apperance");
-
-            m_ImagePathComboBox = new Gwk::Controls::Property::ComboBox (m_ApperanceSection);
-
-            for (ResourceID resID : GetGfxPacks ())
-            {
-                std::string name = GetBaseName (GetResource (resID).Name);
-                m_ImagePathComboBox->GetComboBox ()->AddItem (name, name);
-            }
-
-            m_ApperanceSection->Add ("Path", m_ImagePathComboBox);
-
-            m_ImageComboBox = new Gwk::Controls::Property::ComboBox (m_ApperanceSection);
-            m_ImageComboBox->GetComboBox ()->onSelection.Add (this, &EditorActorWindow::OnImageSelected);
-
-            m_ApperanceSection->Add ("Image", m_ImageComboBox);
-
-            m_ImagePathComboBox->GetComboBox ()->onSelection.Add (this, &EditorActorWindow::OnImagePathSelected);
-            OnImagePathSelected (m_ImagePathComboBox);
-
-            m_AnimationComboBox = new Gwk::Controls::Property::ComboBox (m_ApperanceSection);
-            m_AnimationComboBox->GetComboBox ()->onSelection.Add (this, &EditorActorWindow::OnImageSelected);
-
-            m_AnimationComboBox->GetComboBox ()->AddItem ("", "");
-            for (AnimationData& data : g_AnimationData)
-            {
-                std::string name = data.Name;
-                m_AnimationComboBox->GetComboBox ()->AddItem (name, name);
-            }
-
-            m_ApperanceSection->Add ("Animation", m_AnimationComboBox);
-
-            m_OthersSection = m_ActorProperties->Add ("Others");
-
-            m_OthersSection->Add ("Focus Height");
-            m_CollisionComboBox = new Gwk::Controls::Property::ComboBox (m_OthersSection);
-            m_CollisionComboBox->GetComboBox ()->AddItem ("true", "true");
-            m_CollisionComboBox->GetComboBox ()->AddItem ("false", "false");
-            m_CollisionComboBox->GetComboBox ()->onSelection.Add (this, &EditorActorWindow::OnCollisionSelected);
-
-            m_OthersSection->Add ("Collision", m_CollisionComboBox);
-
-            m_CollidableComboBox = new Gwk::Controls::Property::ComboBox (m_OthersSection);
-            m_CollidableComboBox->GetComboBox ()->AddItem ("true", "true");
-            m_CollidableComboBox->GetComboBox ()->AddItem ("false", "false");
-            m_CollidableComboBox->GetComboBox ()->onSelection.Add (this, &EditorActorWindow::OnCollidableSelected);
-
-            m_OthersSection->Add ("Collidable", m_CollidableComboBox);
-
-            m_OverlapComboBox = new Gwk::Controls::Property::ComboBox (m_OthersSection);
-            m_OverlapComboBox->GetComboBox ()->AddItem ("true", "true");
-            m_OverlapComboBox->GetComboBox ()->AddItem ("false", "false");
-            m_OverlapComboBox->GetComboBox ()->onSelection.Add (this, &EditorActorWindow::OnOverlapSelected);
-
-            m_OthersSection->Add ("Overlap", m_OverlapComboBox);
-
-            m_ScriptSection = m_ActorProperties->Add ("Scripts");
-            m_ComponentSection = m_ActorProperties->Add ("Components");
-
-            idProperty = static_cast<Gwk::Controls::Property::Text*> (
-                static_cast<Gwk::Controls::PropertyRow*> (m_GeneralSection->Find ("ID"))->GetProperty ());
-            idProperty->m_textBox->SetKeyboardInputEnabled (false);
-            idProperty->m_textBox->SetMouseInputEnabled (false);
-
-            nameProperty = static_cast<Gwk::Controls::Property::Text*> (
-                static_cast<Gwk::Controls::PropertyRow*> (m_GeneralSection->Find ("Name"))->GetProperty ());
-            typeProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
-                static_cast<Gwk::Controls::PropertyRow*> (m_GeneralSection->Find ("Type"))->GetProperty ());
-            blueprintProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
-                static_cast<Gwk::Controls::PropertyRow*> (m_GeneralSection->Find ("Blueprint"))->GetProperty ());
-            positionProperty = static_cast<Gwk::Controls::Property::Text*> (
-                static_cast<Gwk::Controls::PropertyRow*> (m_TransformSection->Find ("Position"))->GetProperty ());
-            rotationProperty = static_cast<Gwk::Controls::Property::Text*> (
-                static_cast<Gwk::Controls::PropertyRow*> (m_TransformSection->Find ("Rotation"))->GetProperty ());
-            zOrderProperty = static_cast<Gwk::Controls::Property::Text*> (
-                static_cast<Gwk::Controls::PropertyRow*> (m_TransformSection->Find ("ZOrder"))->GetProperty ());
-            imageProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
-                static_cast<Gwk::Controls::PropertyRow*> (m_ApperanceSection->Find ("Image"))->GetProperty ());
-            imagePathProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
-                static_cast<Gwk::Controls::PropertyRow*> (m_ApperanceSection->Find ("Path"))->GetProperty ());
-            animationProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
-                static_cast<Gwk::Controls::PropertyRow*> (m_ApperanceSection->Find ("Animation"))->GetProperty ());
-
-            focusHeightProperty = static_cast<Gwk::Controls::Property::Text*> (
-                static_cast<Gwk::Controls::PropertyRow*> (m_OthersSection->Find ("Focus Height"))->GetProperty ());
-            overlapProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
-                static_cast<Gwk::Controls::PropertyRow*> (m_OthersSection->Find ("Overlap"))->GetProperty ());
-            collisionProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
-                static_cast<Gwk::Controls::PropertyRow*> (m_OthersSection->Find ("Collision"))->GetProperty ());
-            collidableProperty = static_cast<Gwk::Controls::Property::ComboBox*> (
-                static_cast<Gwk::Controls::PropertyRow*> (m_OthersSection->Find ("Collidable"))->GetProperty ());
-        }
-
-        m_ActorProperties->ExpandAll ();
-
-        Gwk::Controls::Button* saveButton = new Gwk::Controls::Button (center);
-        saveButton->SetText ("SAVE");
-        saveButton->SetPos (m_ActorProperties->Right () + 10, m_ActorProperties->Y ());
-        saveButton->onPress.Add (this, &EditorActorWindow::OnSave);
-
-        Gwk::Controls::Button* removeButton = new Gwk::Controls::Button (center);
-        removeButton->SetText ("REMOVE");
-        removeButton->SetPos (m_ActorProperties->Right () + 10, saveButton->Bottom () + 5);
-        removeButton->onPress.Add (this, &EditorActorWindow::OnRemove);
-
-        Gwk::Controls::Button* addScriptButton = new Gwk::Controls::Button (center);
-        addScriptButton->SetText ("ADD SCRIPT");
-        addScriptButton->SetPos (m_ActorProperties->Right () + 10, removeButton->Bottom () + 50);
-        addScriptButton->onPress.Add (this, &EditorActorWindow::OnAddScript);
-
-        Gwk::Controls::Button* addComponentButton = new Gwk::Controls::Button (center);
-        addComponentButton->SetText ("COMPONENTS");
-        addComponentButton->SetPos (m_ActorProperties->Right () + 10, addScriptButton->Bottom () + 5);
-        addComponentButton->onPress.Add (this, &EditorActorWindow::OnAddComponent);
-
-        Gwk::Controls::Button* acceptButton = new Gwk::Controls::Button (center);
-        acceptButton->SetText ("ACCEPT");
-        acceptButton->SetPos (m_ActorProperties->Right () + 10, m_SceneWindow->Height () - 85);
-        acceptButton->onPress.Add (this, &EditorActorWindow::OnAccept);
-
-        Gwk::Controls::Button* cacncelButton = new Gwk::Controls::Button (center);
-        cacncelButton->SetText ("CANCEL");
-        cacncelButton->SetPos (m_ActorProperties->Right () + 10, acceptButton->Bottom () + 5);
-        cacncelButton->onPress.Add (this, &EditorActorWindow::OnCancel);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    EditorActorWindow::~EditorActorWindow () { SAFE_DELETE (m_SceneWindow); }
+    EditorActorWindow::~EditorActorWindow () {}
 
     //--------------------------------------------------------------------------------------------------
 
     void EditorActorWindow::Show ()
     {
-        UpdateBlueprintsComboBox ();
-        UpdateActorsTree ();
+        m_IsVisible = true;
 
-        idProperty->SetPropertyValue ("", false);
-        nameProperty->SetPropertyValue ("", false);
-        blueprintProperty->SetPropertyValue ("-1", false);
-        positionProperty->SetPropertyValue ("", false);
-        rotationProperty->SetPropertyValue ("", false);
-        zOrderProperty->SetPropertyValue ("", false);
-        imagePathProperty->SetPropertyValue ("", false);
-        imageProperty->SetPropertyValue ("", false);
+        memset (m_ActorID, 0, ARRAY_SIZE (m_ActorID));
+        memset (m_ActorName, 0, ARRAY_SIZE (m_ActorName));
 
-        focusHeightProperty->SetPropertyValue ("", false);
-        overlapProperty->SetPropertyValue ("false", false);
-        collisionProperty->SetPropertyValue ("false", false);
-        collidableProperty->SetPropertyValue ("true", false);
+        memset (m_ActorPosition, 0, ARRAY_SIZE (m_ActorPosition));
+        m_ActorRotation = 0.f;
+        m_ActorZOrder = 0;
 
-        m_SceneWindow->SetPosition (Gwk::Position::Center);
-        m_SceneWindow->SetHidden (false);
-        m_SceneWindow->MakeModal (true);
+        memset (m_ActorAnimation, 0, ARRAY_SIZE (m_ActorAnimation));
+
+        m_ActorCollidable = false;
+        m_ActorCollision = false;
+        m_ActorOverlap = false;
+        m_ActorFocusHeight = -1;
+
+        UpdateComboBoxes ();
 
         m_SelectedAtlas = nullptr;
         m_SelectedAtlasRegion = "";
+
+        m_SelectedImage = 0;
+        m_SelectedImagePath = 0;
+        m_SelectedAnimation = 0;
+
+        if (m_SelectedActor)
+        {
+            OnActorSelect (m_SelectedActor->ID);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void EditorActorWindow::OnSave ()
     {
-        Gwk::String namePropertyTxt = nameProperty->GetPropertyValue ();
-        Gwk::String typePropertyTxt = typeProperty->GetPropertyValue ();
-
-        if (namePropertyTxt != "" && typePropertyTxt != "")
+        if (m_ActorName[0] != '\0')
         {
-            Gwk::Controls::Base::List& childNodes = m_ActorsTree->GetChildNodes ();
             std::string actorName;
-            std::string selectedNodeName;
 
-            for (Gwk::Controls::Base* control : childNodes)
+            if (m_ActorName[0] != '\0')
             {
-                Gwk::Controls::TreeNode* node = (Gwk::Controls::TreeNode*)control;
-
-                if (node->IsSelected ())
-                {
-                    actorName = node->GetText ();
-                    selectedNodeName = node->GetText ();
-                    break;
-                }
+                actorName = m_ActorName;
             }
 
-            if (namePropertyTxt != "")
-            {
-                actorName = namePropertyTxt;
-            }
-
-            Gwk::String idStr = idProperty->GetPropertyValue ();
             int id = -1;
 
-            if (idStr != "")
+            if (m_ActorID[0] != '\0')
             {
-                id = ToInteger (idStr);
+                id = ToInteger (m_ActorID);
             }
 
-            Gwk::String blueprintStr = blueprintProperty->GetPropertyValue ();
             int blueprintID = -1;
 
-            if (blueprintStr != "")
+            if (m_SelectedBlueprint > 0)
             {
-                blueprintID = ToInteger (blueprintStr);
+                blueprintID = ToInteger (m_Blueprints[m_SelectedBlueprint]);
             }
 
-            float rotation;
-            int zOrder;
-            float focusHeight;
             Point position;
 
-            sscanf (positionProperty->GetPropertyValue ().c_str (), "%f,%f", &position.X, &position.Y);
-            sscanf (rotationProperty->GetPropertyValue ().c_str (), "%f", &rotation);
-            sscanf (zOrderProperty->GetPropertyValue ().c_str (), "%d", &zOrder);
-            sscanf (focusHeightProperty->GetPropertyValue ().c_str (), "%f", &focusHeight);
+            sscanf (m_ActorPosition, "%.2f %.2f", &position.X, &position.Y);
 
-            Actor* retActor = m_Editor->GetEditorActorMode ().AddOrUpdateActor (
-                id, actorName, typePropertyTxt, blueprintID, position, rotation, zOrder, focusHeight);
+            Actor* retActor
+                = m_Editor->GetEditorActorMode ().AddOrUpdateActor (id, actorName, m_ActorTypes[m_SelectedActorType],
+                    blueprintID, position, m_ActorRotation, m_ActorZOrder, m_ActorFocusHeight);
 
             if (m_SelectedAtlas && m_SelectedAtlasRegion != "")
             {
@@ -326,262 +119,178 @@ namespace aga
             {
                 m_Editor->GetEditorActorMode ().Clear ();
 
-                UpdateActorsTree ();
-                UpdateBlueprintsComboBox ();
-                SelectActor (selectedNodeName);
+                UpdateComboBoxes ();
             }
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorActorWindow::OnRemove ()
+    void EditorActorWindow::SelectActor (Actor* actor)
     {
-        if (nameProperty->GetPropertyValue () != "")
+        m_SelectedActor = actor;
+        OnActorSelect (m_SelectedActor->ID);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::UpdateImageCombos ()
+    {
+        //  Paths
+
+        m_ImagePaths.clear ();
+
+        for (ResourceID resID : GetGfxPacks ())
         {
-            m_Editor->GetEditorActorMode ().RemoveActor (nameProperty->GetPropertyValue ());
-            nameProperty->SetPropertyValue ("", false);
-
-            UpdateActorsTree ();
+            std::string name = GetBaseName (GetResource (resID).Name);
+            m_ImagePaths.push_back (name);
         }
-    }
 
-    //--------------------------------------------------------------------------------------------------
+        m_SelectedAtlas = m_Editor->GetMainLoop ()->GetAtlasManager ().GetAtlas (m_ImagePaths[m_SelectedImagePath]);
 
-    void EditorActorWindow::SelectActor (const std::string& name)
-    {
-        Gwk::Controls::TreeNode* node = FindNode (m_ActorsTree, name);
+        //  Images
 
-        if (node)
-        {
-            node->SetSelected (true);
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void EditorActorWindow::OnOverlapSelected (Gwk::Controls::Base* control)
-    {
-        Gwk::String overlap = m_OverlapComboBox->GetPropertyValue ();
-
-        m_SelectedActor->SetCheckOverlap (overlap == "true" ? true : false);
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void EditorActorWindow::OnCollisionSelected (Gwk::Controls::Base* control)
-    {
-        Gwk::String collisionSelection = m_CollisionComboBox->GetPropertyValue ();
-
-        m_SelectedActor->SetCollisionEnabled (collisionSelection == "true" ? true : false);
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void EditorActorWindow::OnCollidableSelected (Gwk::Controls::Base* control)
-    {
-        Gwk::String collidable = m_CollidableComboBox->GetPropertyValue ();
-
-        m_SelectedActor->SetCollidable (collidable == "true" ? true : false);
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void EditorActorWindow::OnImagePathSelected (Gwk::Controls::Base* control)
-    {
-        Gwk::String packName = m_ImagePathComboBox->GetPropertyValue ();
-
-        m_SelectedAtlas = m_Editor->GetMainLoop ()->GetAtlasManager ().GetAtlas (packName);
-        m_SelectedAtlasRegion = "";
+        m_Images.clear ();
+        m_Images.push_back ("");
 
         std::vector<AtlasRegion> regions = m_SelectedAtlas->GetRegions ();
-
-        m_ImageComboBox->GetComboBox ()->ClearItems ();
-        m_ImageComboBox->GetComboBox ()->AddItem ("", "");
-
         for (AtlasRegion region : regions)
         {
-            m_ImageComboBox->GetComboBox ()->AddItem (region.Name, region.Name);
+            m_Images.push_back (region.Name);
         }
 
-        m_ImageComboBox->GetComboBox ()->SelectItemByName ("", false);
-    }
+        m_SelectedAtlasRegion = m_Images[m_SelectedImage];
 
-    //--------------------------------------------------------------------------------------------------
+        //  Animations
 
-    void EditorActorWindow::OnImageSelected (Gwk::Controls::Base* control)
-    {
-        m_SelectedAtlasRegion = m_ImageComboBox->GetPropertyValue ();
-    }
+        m_Animations.clear ();
 
-    //--------------------------------------------------------------------------------------------------
+        m_Animations.push_back ("");
 
-    Gwk::Controls::TreeNode* EditorActorWindow::FindNode (Gwk::Controls::TreeNode* node, const std::string& name)
-    {
-        Gwk::Controls::Base::List children = node->GetChildNodes ();
-        for (Gwk::Controls::Base* n : children)
+        for (AnimationData& data : g_AnimationData)
         {
-            Gwk::Controls::TreeNode* childNode = static_cast<Gwk::Controls::TreeNode*> (n);
-
-            if (childNode->GetText () == name)
-            {
-                return childNode;
-            }
-
-            Gwk::Controls::TreeNode* foundNode = FindNode (childNode, name);
-
-            if (foundNode)
-            {
-                return foundNode;
-            }
+            m_Animations.push_back (data.Name);
         }
-
-        return nullptr;
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorActorWindow::UpdateActorsTree ()
+    void EditorActorWindow::UpdateComboBoxes ()
     {
-        m_ActorsTree->Clear ();
+        m_Blueprints.clear ();
+        m_SelectedBlueprint = 0;
 
-        Gwk::Controls::TreeNode* actorsNode = m_ActorsTree->AddNode ("Actors");
-        actorsNode->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
+        std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
+        m_Blueprints.push_back ("[NONE]");
 
-        Gwk::Controls::TreeNode* npcNode = actorsNode->AddNode ("NPC");
-        npcNode->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
+        for (Actor* actor : actors)
+        {
+            m_Blueprints.push_back (std::to_string (actor->ID));
+        }
 
-        Gwk::Controls::TreeNode* enemyNode = actorsNode->AddNode ("Enemy");
-        enemyNode->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
+        m_ActorTypes.clear ();
+        m_SelectedActorType = 0;
 
-        Gwk::Controls::TreeNode* tilesNode = m_ActorsTree->AddNode ("Tiles");
-        tilesNode->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
+        std::vector<std::string>& actorTypes = ActorFactory::GetActorTypes ();
+
+        for (const std::string& type : actorTypes)
+        {
+            m_ActorTypes.push_back (type);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::OnActorSelect (int id)
+    {
+        m_SelectedActor = nullptr;
+
+        memset (m_ActorID, 0, ARRAY_SIZE (m_ActorID));
+        memset (m_ActorName, 0, ARRAY_SIZE (m_ActorName));
 
         std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
 
         for (Actor* actor : actors)
         {
-            Gwk::Controls::TreeNode* node;
+            if (actor->ID == id)
+            {
+                m_SelectedActor = actor;
 
-            std::string name = actor->Name + std::string (" [") + std::to_string (actor->ID) + std::string ("]");
-
-            if (actor->GetTypeName () == NPCActor::TypeName)
-            {
-                node = npcNode->AddNode (name);
-            }
-            else if (actor->GetTypeName () == EnemyActor::TypeName)
-            {
-                node = enemyNode->AddNode (name);
-            }
-            else if (actor->GetTypeName () == TileActor::TypeName)
-            {
-                node = tilesNode->AddNode (name);
-            }
-
-            if (node)
-            {
-                node->onSelect.Add (this, &EditorActorWindow::OnActorSelect);
+                break;
             }
         }
 
-        m_ActorsTree->ExpandAll ();
+        strcpy (m_ActorID, ToString (m_SelectedActor->ID).c_str ());
+        strcpy (m_ActorName, m_SelectedActor->Name.c_str ());
 
-        m_SelectedActor = nullptr;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void EditorActorWindow::UpdateBlueprintsComboBox ()
-    {
-        m_BlueprintComboBox->GetComboBox ()->ClearItems ();
-        m_BlueprintComboBox->GetComboBox ()->AddItem ("[NONE]", "-1");
-
-        std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
-
-        for (Actor* actor : actors)
+        std::vector<std::string>& actorTypes = ActorFactory::GetActorTypes ();
+        for (int i = 0; i < actorTypes.size (); ++i)
         {
-            std::string id = std::to_string (actor->ID);
-            m_BlueprintComboBox->GetComboBox ()->AddItem (actor->Name + " [" + id + "]", id);
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void EditorActorWindow::OnActorSelect (Gwk::Controls::Base* control)
-    {
-        Gwk::Controls::TreeNode* node = (Gwk::Controls::TreeNode*)control;
-
-        m_SelectedActor = nullptr;
-
-        if (node != nullptr && node->IsSelected ())
-        {
-            std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
-
-            for (Actor* actor : actors)
+            if (m_SelectedActor->GetTypeName () == actorTypes[i])
             {
-                std::string name = actor->Name + std::string (" [") + std::to_string (actor->ID) + std::string ("]");
+                m_SelectedActorType = i;
+                break;
+            }
+        }
 
-                if (name == node->GetText ())
+        m_SelectedBlueprint = 0;
+        for (int i = 1; i < actors.size (); ++i)
+        {
+            if (m_SelectedActor->BlueprintID == actors[i]->ID)
+            {
+                m_SelectedBlueprint = i;
+                break;
+            }
+        }
+
+        sprintf (m_ActorPosition, "%.2f %.2f", m_SelectedActor->Bounds.Pos.X, m_SelectedActor->Bounds.Pos.Y);
+        m_ActorRotation = m_SelectedActor->Rotation;
+        m_ActorZOrder = m_SelectedActor->ZOrder;
+
+        m_ActorFocusHeight = m_SelectedActor->GetFocusHeight ();
+        m_ActorCollision = m_SelectedActor->IsCollisionEnabled ();
+        m_ActorCollidable = m_SelectedActor->IsCollidable ();
+        m_ActorOverlap = m_SelectedActor->IsCheckOverlap ();
+
+        m_Editor->GetEditorActorMode ().SetSelectedActor (m_SelectedActor);
+        m_Editor->GetEditorActorMode ().SetActor (m_SelectedActor);
+
+        FillComponentsList ();
+
+        m_SelectedAtlas
+            = m_Editor->GetMainLoop ()->GetAtlasManager ().GetAtlas (m_SelectedActor->GetAtlas ()->GetName ());
+        m_SelectedAtlasRegion = m_SelectedActor->GetAtlasRegionName ();
+
+        std::vector<ResourceID> packs = GetGfxPacks ();
+        for (int i = 0; i < packs.size (); ++i)
+        {
+            std::string name = GetBaseName (GetResource (packs[i]).Name);
+            std::string path = m_SelectedActor->GetAtlas ()->GetName ();
+
+            if (TrimString (path) == name)
+            {
+                m_SelectedImagePath = i;
+                break;
+            }
+        }
+
+        if (m_SelectedAtlas)
+        {
+            std::vector<AtlasRegion>& regions = m_SelectedAtlas->GetRegions ();
+            for (int i = 0; i < regions.size (); ++i)
+            {
+                std::string name = regions[i].Name;
+
+                if (m_SelectedAtlasRegion == name)
                 {
-                    m_SelectedActor = actor;
-
+                    //  First element is blank!
+                    m_SelectedImage = i + 1;
                     break;
                 }
             }
         }
 
-        m_Editor->GetEditorActorMode ().SetSelectedActor (m_SelectedActor);
-        m_Editor->GetEditorActorMode ().SetActor (m_SelectedActor);
-
-        idProperty->SetPropertyValue (m_SelectedActor != nullptr ? std::to_string (m_SelectedActor->ID) : "", false);
-        nameProperty->SetPropertyValue (m_SelectedActor != nullptr ? m_SelectedActor->Name : "", false);
-        typeProperty->SetPropertyValue (m_SelectedActor != nullptr ? m_SelectedActor->GetTypeName () : "", false);
-        blueprintProperty->SetPropertyValue (
-            m_SelectedActor != nullptr ? std::to_string (m_SelectedActor->BlueprintID) : "", false);
-        positionProperty->SetPropertyValue (m_SelectedActor != nullptr
-                ? Gwk::Utility::Format ("%f,%f", m_SelectedActor->Bounds.Pos.X, m_SelectedActor->Bounds.Pos.Y)
-                : Gwk::Utility::Format ("%f,%f", 0.f, 0.f),
-            false);
-        rotationProperty->SetPropertyValue (m_SelectedActor != nullptr
-                ? Gwk::Utility::Format ("%f", m_SelectedActor->Rotation)
-                : Gwk::Utility::Format ("%f", 0.f),
-            false);
-        zOrderProperty->SetPropertyValue (
-            m_SelectedActor != nullptr ? std::to_string (m_SelectedActor->ZOrder) : "0", false);
-        imagePathProperty->SetPropertyValue (
-            m_SelectedActor != nullptr ? m_SelectedActor->GetAtlas ()->GetName () : "", false);
-
-        focusHeightProperty->SetPropertyValue (m_SelectedActor != nullptr
-                ? Gwk::Utility::Format ("%f", m_SelectedActor->GetFocusHeight ())
-                : Gwk::Utility::Format ("%f", 0.f),
-            false);
-        overlapProperty->SetPropertyValue (
-            m_SelectedActor != nullptr ? (m_SelectedActor->IsCheckOverlap () ? "true" : "false") : "false", false);
-        collisionProperty->SetPropertyValue (
-            m_SelectedActor != nullptr ? (m_SelectedActor->IsCollisionEnabled () ? "true" : "false") : "false", false);
-        collidableProperty->SetPropertyValue (
-            m_SelectedActor != nullptr ? (m_SelectedActor->IsCollidable () ? "true" : "false") : "false", false);
-
-        m_ScriptSection->Clear ();
-
-        if (m_SelectedActor)
-        {
-            for (ScriptMetaData& scriptData : m_SelectedActor->GetScripts ())
-            {
-                AddScriptEntry (scriptData.Name, scriptData.Path);
-            }
-        }
-
-        FillComponentsList ();
-
-        OnImagePathSelected (m_ImagePathComboBox);
-
-        imageProperty->SetPropertyValue (
-            m_SelectedActor != nullptr ? m_SelectedActor->GetAtlasRegionName () : "", false);
-
-        m_SelectedAtlas
-            = m_Editor->GetMainLoop ()->GetAtlasManager ().GetAtlas (imagePathProperty->GetPropertyValue ());
-        m_SelectedAtlasRegion = imageProperty->GetPropertyValue ();
+        UpdateImageCombos ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -590,7 +299,10 @@ namespace aga
     {
         if (m_SelectedActor)
         {
-            m_ComponentSection->Clear ();
+            for (ScriptMetaData& scriptData : m_SelectedActor->GetScripts ())
+            {
+                AddScriptEntry (scriptData.Name, scriptData.Path);
+            }
 
             std::map<std::string, Component*>& components = m_SelectedActor->GetComponents ();
 
@@ -605,12 +317,6 @@ namespace aga
 
     void EditorActorWindow::AddScriptEntry (const std::string& name, const std::string& path)
     {
-        Gwk::Controls::Property::LabelButton* node
-            = new Gwk::Controls::Property::LabelButton (m_ScriptSection, path, "X");
-        node->FuncButton->onPress.Add (this, &EditorActorWindow::OnRemoveScript);
-
-        m_ScriptSection->Add (name, node);
-
         if (m_SelectedActor)
         {
             m_SelectedActor->AttachScript (name, path);
@@ -621,55 +327,14 @@ namespace aga
 
     void EditorActorWindow::OnAddScript ()
     {
-        EditorScriptWindow* scriptWindow = m_Editor->GetScriptWindow ();
-
-        std::function<bool(void)> AcceptFunc = [&] {
-            EditorScriptWindow* scriptWindow = m_Editor->GetScriptWindow ();
-
-            if (scriptWindow->GetName () != "" && scriptWindow->GetPath () != "")
-            {
-                AddScriptEntry (scriptWindow->GetName (), scriptWindow->GetPath ());
-
-                return true;
-            }
-
-            return false;
-        };
-
-        if (nameProperty != nullptr && nameProperty->GetPropertyValue () != "")
+        if (m_ActorName[0] != '\0')
         {
-            // scriptWindow->Show (AcceptFunc, nullptr);
+            m_Editor->GetScriptWindow ()->Show (
+                [&](std::string name, std::string path) { AddScriptEntry (name, path); }, nullptr);
         }
         else
         {
-            m_Editor->GetEditorInfoWindow ()->Show ("Select Actor first!");
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void EditorActorWindow::OnRemoveScript (Gwk::Controls::Base* control)
-    {
-        Gwk::Controls::Button* button = (Gwk::Controls::Button*)control;
-        Gwk::Controls::Base::List& childNodes = m_ScriptSection->GetChildren ();
-
-        for (Gwk::Controls::Base* control : childNodes)
-        {
-            Gwk::Controls::PropertyRow* node = (Gwk::Controls::PropertyRow*)control;
-            Gwk::Controls::Property::LabelButton* property
-                = (Gwk::Controls::Property::LabelButton*)node->GetProperty ();
-
-            if (property->FuncButton == button)
-            {
-                if (m_SelectedActor)
-                {
-                    m_SelectedActor->RemoveScript (node->GetLabel ()->GetText ());
-                }
-
-                m_ScriptSection->GetChildren ().remove (control);
-
-                break;
-            }
+            ImGui::OpenPopup ("Actor Window Alert");
         }
     }
 
@@ -677,14 +342,6 @@ namespace aga
 
     void EditorActorWindow::AddComponentEntry (const std::string& name, const std::string& typeName)
     {
-        Gwk::Controls::Property::LabelButton* node
-            = new Gwk::Controls::Property::LabelButton (m_ComponentSection, typeName, "X");
-        node->TextLabel->SetMouseInputEnabled (false);
-        node->TextLabel->SetKeyboardInputEnabled (false);
-        node->FuncButton->onPress.Add (this, &EditorActorWindow::OnRemoveComponent);
-
-        m_ComponentSection->Add (name, node);
-
         if (m_SelectedActor)
         {
             Component* component = ActorFactory::GetActorComponent (m_SelectedActor, typeName);
@@ -700,66 +357,367 @@ namespace aga
 
     void EditorActorWindow::OnAddComponent ()
     {
-        EditorComponentWindow* componentWindow = m_Editor->GetComponentWindow ();
-
-        std::function<bool(void)> AcceptFunc = [&] {
-            EditorComponentWindow* componentWindow = m_Editor->GetComponentWindow ();
-
-            if (componentWindow->GetName () != "" && componentWindow->GetTypeName () != "")
-            {
-                AddComponentEntry (componentWindow->GetName (), componentWindow->GetTypeName ());
-
-                return true;
-            }
-
-            return false;
-        };
-
-        if (nameProperty != nullptr && nameProperty->GetPropertyValue () != "")
+        if (m_ActorName[0] != '\0')
         {
-            componentWindow->Show (AcceptFunc, nullptr);
+            m_Editor->GetComponentWindow ()->Show (
+                [&](std::string name, std::string typeName) { AddComponentEntry (name, typeName); }, nullptr);
         }
         else
         {
-            m_Editor->GetEditorInfoWindow ()->Show ("Select Actor first!");
+            ImGui::OpenPopup ("Actor Window Alert");
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorActorWindow::OnRemoveComponent (Gwk::Controls::Base* control)
+    void EditorActorWindow::RenderUI ()
     {
-        Gwk::Controls::Button* button = (Gwk::Controls::Button*)control;
-        Gwk::Controls::Base::List& childNodes = m_ComponentSection->GetChildren ();
+        ImGui::SetNextWindowSize (ImVec2 (600, 550), ImGuiCond_Always);
 
-        for (Gwk::Controls::Base* control : childNodes)
+        if (ImGui::BeginPopupModal ("Actor Editor", NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
-            Gwk::Controls::PropertyRow* node = (Gwk::Controls::PropertyRow*)control;
-            Gwk::Controls::Property::LabelButton* property
-                = (Gwk::Controls::Property::LabelButton*)node->GetProperty ();
+            std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
 
-            if (property->FuncButton == button)
+            ImGui::BeginChild (
+                "Child1", ImVec2 (200, ImGui::GetWindowSize ().y - 50), false, ImGuiWindowFlags_HorizontalScrollbar);
+            ImGui::BeginGroup ();
             {
-                if (m_SelectedActor)
+                if (ImGui::TreeNodeEx ("NPC", ImGuiTreeNodeFlags_DefaultOpen))
                 {
-                    m_SelectedActor->RemoveComponent (node->GetLabel ()->GetText ());
+                    for (Actor* actor : actors)
+                    {
+                        if (actor->GetTypeName () == NPCActor::TypeName)
+                        {
+                            std::string name
+                                = actor->Name + std::string (" [") + std::to_string (actor->ID) + std::string ("]");
+
+                            if (ImGui::Selectable (name.c_str (), false))
+                            {
+                                OnActorSelect (actor->ID);
+                            }
+                        }
+                    }
+
+                    ImGui::TreePop ();
                 }
 
-                m_ScriptSection->GetChildren ().remove (control);
-                FillComponentsList ();
+                if (ImGui::TreeNodeEx ("Enemy", ImGuiTreeNodeFlags_DefaultOpen))
+                {
+                    for (Actor* actor : actors)
+                    {
+                        if (actor->GetTypeName () == EnemyActor::TypeName)
+                        {
+                            std::string name
+                                = actor->Name + std::string (" [") + std::to_string (actor->ID) + std::string ("]");
 
-                break;
+                            if (ImGui::Selectable (name.c_str (), false))
+                            {
+                                OnActorSelect (actor->ID);
+                            }
+                        }
+                    }
+
+                    ImGui::TreePop ();
+                }
+
+                if (ImGui::TreeNodeEx ("Tiles", ImGuiTreeNodeFlags_DefaultOpen))
+                {
+                    for (Actor* actor : actors)
+                    {
+                        if (actor->GetTypeName () == TileActor::TypeName)
+                        {
+                            std::string name
+                                = actor->Name + std::string (" [") + std::to_string (actor->ID) + std::string ("]");
+
+                            if (ImGui::Selectable (name.c_str (), false))
+                            {
+                                OnActorSelect (actor->ID);
+                            }
+                        }
+                    }
+
+                    ImGui::TreePop ();
+                }
             }
+            ImGui::EndGroup ();
+            ImGui::EndChild ();
+
+            ImGui::SameLine ();
+
+            ImGui::BeginChild (
+                "Child2", ImVec2 (250, ImGui::GetWindowSize ().y - 50), false, ImGuiWindowFlags_HorizontalScrollbar);
+            ImGui::BeginGroup ();
+            {
+                int headerStyle = ImGuiTreeNodeFlags_Bullet | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_DefaultOpen;
+
+                if (ImGui::CollapsingHeader ("General", headerStyle))
+                {
+                    ImGui::Columns (2, "mycolumns1");
+
+                    ImGui::Text ("ID");
+                    ImGui::NextColumn ();
+                    ImGui::PushItemWidth (120.f);
+                    ImGui::Text (m_ActorID);
+                    ImGui::PopItemWidth ();
+                    ImGui::NextColumn ();
+
+                    ImGui::Text ("Name");
+                    ImGui::NextColumn ();
+                    ImGui::PushItemWidth (120.f);
+                    ImGui::InputText ("##actorName", m_ActorName, IM_ARRAYSIZE (m_ActorName));
+                    ImGui::PopItemWidth ();
+                    ImGui::NextColumn ();
+
+                    ImGui::Text ("Type");
+                    ImGui::NextColumn ();
+                    ImGui::PushItemWidth (120.f);
+                    ImGui::Combo ("##actorType", &m_SelectedActorType, m_ActorTypes);
+                    ImGui::PopItemWidth ();
+                    ImGui::NextColumn ();
+
+                    ImGui::Text ("Blueprint");
+                    ImGui::NextColumn ();
+                    ImGui::PushItemWidth (120.f);
+                    ImGui::Combo ("##actorBlueprint", &m_SelectedBlueprint, m_Blueprints);
+                    ImGui::PopItemWidth ();
+
+                    ImGui::Columns (1);
+                }
+
+                if (ImGui::CollapsingHeader ("Transform", headerStyle))
+                {
+                    ImGui::Columns (2, "mycolumns2");
+
+                    ImGui::Text ("Position");
+                    ImGui::NextColumn ();
+                    ImGui::PushItemWidth (120.f);
+                    ImGui::InputText ("##actorPosition", m_ActorPosition, IM_ARRAYSIZE (m_ActorPosition));
+                    ImGui::PopItemWidth ();
+                    ImGui::NextColumn ();
+
+                    ImGui::Text ("Rotation");
+                    ImGui::NextColumn ();
+                    ImGui::PushItemWidth (120.f);
+                    ImGui::InputFloat ("##actorRotation", &m_ActorRotation);
+                    ImGui::PopItemWidth ();
+                    ImGui::NextColumn ();
+
+                    ImGui::Text ("ZOrder");
+                    ImGui::NextColumn ();
+                    ImGui::PushItemWidth (120.f);
+                    ImGui::InputInt ("##actorZOrder", &m_ActorZOrder);
+                    ImGui::PopItemWidth ();
+
+                    ImGui::Columns (1);
+                }
+
+                if (ImGui::CollapsingHeader ("Apperance", headerStyle))
+                {
+                    ImGui::Columns (2, "mycolumns3");
+
+                    ImGui::Text ("Path");
+                    ImGui::NextColumn ();
+                    ImGui::PushItemWidth (120.f);
+                    if (ImGui::Combo ("##actorPath", &m_SelectedImagePath, m_ImagePaths))
+                    {
+                        UpdateImageCombos ();
+                        m_SelectedImage = 0;
+                    }
+                    ImGui::PopItemWidth ();
+                    ImGui::NextColumn ();
+
+                    ImGui::Text ("Image");
+                    ImGui::NextColumn ();
+                    ImGui::PushItemWidth (120.f);
+                    if (ImGui::Combo ("##actorImage", &m_SelectedImage, m_Images))
+                    {
+                        UpdateImageCombos ();
+                    }
+                    ImGui::PopItemWidth ();
+                    ImGui::NextColumn ();
+
+                    ImGui::Text ("Animation");
+                    ImGui::NextColumn ();
+                    ImGui::PushItemWidth (120.f);
+                    ImGui::Combo ("##actorAnimation", &m_SelectedAnimation, m_Animations);
+                    ImGui::PopItemWidth ();
+
+                    ImGui::Columns (1);
+                }
+
+                if (ImGui::CollapsingHeader ("Others", headerStyle))
+                {
+                    ImGui::Columns (2, "mycolumns4");
+
+                    ImGui::Text ("Focus Height");
+                    ImGui::NextColumn ();
+                    ImGui::PushItemWidth (120.f);
+                    if (ImGui::InputFloat ("##actorFocusHeight", &m_ActorFocusHeight))
+                    {
+                        m_SelectedActor->SetFocusHeight (m_ActorFocusHeight);
+                    }
+                    ImGui::PopItemWidth ();
+                    ImGui::NextColumn ();
+
+                    ImGui::Text ("Collision");
+                    ImGui::NextColumn ();
+                    ImGui::PushItemWidth (120.f);
+                    if (ImGui::Checkbox ("##actorCollision", &m_ActorCollision))
+                    {
+                        m_SelectedActor->SetCollisionEnabled (m_ActorCollision);
+                    }
+                    ImGui::PopItemWidth ();
+                    ImGui::NextColumn ();
+
+                    ImGui::Text ("Collidable");
+                    ImGui::NextColumn ();
+                    ImGui::PushItemWidth (120.f);
+                    if (ImGui::Checkbox ("##actorCollidable", &m_ActorCollidable))
+                    {
+                        m_SelectedActor->SetCollidable (m_ActorCollidable);
+                    }
+                    ImGui::PopItemWidth ();
+                    ImGui::NextColumn ();
+
+                    ImGui::Text ("Overlap");
+                    ImGui::NextColumn ();
+                    ImGui::PushItemWidth (120.f);
+                    if (ImGui::Checkbox ("##actorOverlap", &m_ActorOverlap))
+                    {
+                        m_SelectedActor->SetCheckOverlap (m_ActorOverlap);
+                    }
+                    ImGui::PopItemWidth ();
+                }
+
+                ImGui::Columns (1);
+
+                if (ImGui::CollapsingHeader ("Scripts", headerStyle))
+                {
+                    ImGui::Columns (2, "mycolumns5");
+
+                    if (m_SelectedActor)
+                    {
+                        std::vector<ScriptMetaData>& scripts = m_SelectedActor->GetScripts ();
+
+                        for (ScriptMetaData& scriptData : scripts)
+                        {
+                            ImGui::Text (scriptData.Name.c_str ());
+                            ImGui::NextColumn ();
+                            ImGui::Text (scriptData.Path.c_str ());
+                            ImGui::SameLine ();
+
+                            if (ImGui::Button ("X"))
+                            {
+                                m_SelectedActor->RemoveScript (scriptData.Name);
+                            }
+
+                            ImGui::NextColumn ();
+                        }
+                    }
+                }
+
+                ImGui::Columns (1);
+
+                if (ImGui::CollapsingHeader ("Components", headerStyle))
+                {
+                    ImGui::Columns (2, "mycolumns6");
+
+                    if (m_SelectedActor)
+                    {
+                        std::map<std::string, Component*>& components = m_SelectedActor->GetComponents ();
+
+                        for (std::map<std::string, Component*>::iterator it = components.begin ();
+                             it != components.end (); ++it)
+                        {
+                            ImGui::Text (it->first.c_str ());
+                            ImGui::NextColumn ();
+                            ImGui::Text (it->second->GetTypeName ().c_str ());
+                            ImGui::SameLine ();
+
+                            if (ImGui::Button ("X"))
+                            {
+                                m_SelectedActor->RemoveComponent (it->first);
+                            }
+
+                            ImGui::NextColumn ();
+                        }
+                    }
+                }
+            }
+            ImGui::EndGroup ();
+            ImGui::EndChild ();
+
+            ImGui::Columns (1);
+
+            ImGui::SameLine ();
+
+            ImGui::BeginGroup ();
+            {
+                ImVec2 buttonSize = ImVec2 (100.f, 18.f);
+
+                if (ImGui::Button ("SAVE", buttonSize))
+                {
+                    OnSave ();
+                }
+
+                if (ImGui::Button ("REMOVE", buttonSize))
+                {
+                    m_Editor->GetEditorActorMode ().RemoveActor (atoi (m_ActorID));
+                }
+
+                ImGui::Separator ();
+
+                if (ImGui::Button ("SCRIPTS", buttonSize))
+                {
+                    OnAddScript ();
+                }
+
+                m_Editor->GetScriptWindow ()->Render ();
+
+                if (ImGui::Button ("COMPONENTS", buttonSize))
+                {
+                    OnAddComponent ();
+                }
+
+                m_Editor->GetComponentWindow ()->Render ();
+
+                //  Alert window
+                bool open = true;
+                if (ImGui::BeginPopupModal ("Actor Window Alert", &open))
+                {
+                    ImGui::Text ("Select actor first!");
+                    if (ImGui::Button ("OK", ImVec2 (130, 18)))
+                    {
+                        ImGui::CloseCurrentPopup ();
+                    }
+
+                    ImGui::EndPopup ();
+                }
+                //  Alert window
+
+                ImGui::Separator ();
+
+                if (ImGui::Button ("ACCEPT", buttonSize))
+                {
+                    ImGui::CloseCurrentPopup ();
+                    m_IsVisible = false;
+                }
+
+                if (ImGui::Button ("CANCEL", buttonSize) || m_Editor->IsCloseCurrentPopup ())
+                {
+                    ImGui::CloseCurrentPopup ();
+                    m_IsVisible = false;
+
+                    m_Editor->SetCloseCurrentPopup (false);
+                }
+            }
+            ImGui::EndGroup ();
+
+            ImGui::EndPopup ();
+
+            RenderActorImage ();
         }
     }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void EditorActorWindow::OnAccept () { m_SceneWindow->CloseButtonPressed (); }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void EditorActorWindow::OnCancel () { m_SceneWindow->CloseButtonPressed (); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -770,10 +728,10 @@ namespace aga
         const int margin = 10;
         const int previewSize = 96;
 
-        al_draw_filled_rectangle (winSize.Width - previewSize - margin, winSize.Height - previewSize - margin,
-            winSize.Width - margin, winSize.Height - margin, COLOR_BLACK);
-        al_draw_rectangle (winSize.Width - previewSize - margin, winSize.Height - previewSize - margin,
-            winSize.Width - margin, winSize.Height - margin, COLOR_GREEN, 2);
+        al_draw_filled_rectangle (winSize.Width - previewSize - margin, winSize.Height - previewSize - margin * 6,
+            winSize.Width - margin, winSize.Height - margin * 6, COLOR_BLACK);
+        al_draw_rectangle (winSize.Width - previewSize - margin, winSize.Height - previewSize - margin * 6,
+            winSize.Width - margin, winSize.Height - margin * 6, COLOR_GREEN, 2);
 
         if (m_SelectedAtlas && m_SelectedAtlasRegion != "")
         {
@@ -781,7 +739,7 @@ namespace aga
 
             al_draw_scaled_bitmap (m_SelectedAtlas->GetImage (), region.Bounds.GetPos ().X, region.Bounds.GetPos ().Y,
                 region.Bounds.GetSize ().Width, region.Bounds.GetSize ().Height, winSize.Width - previewSize - margin,
-                winSize.Height - previewSize - margin, previewSize, previewSize, 0);
+                winSize.Height - previewSize - margin * 6, previewSize, previewSize, 0);
         }
     }
 

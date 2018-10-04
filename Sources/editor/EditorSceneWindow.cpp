@@ -49,8 +49,7 @@ namespace aga
 
                 if (strlen (g_ScriptErrorBuffer) != 0)
                 {
-                    m_Editor->GetEditorInfoWindow ()->Show (g_ScriptErrorBuffer);
-                    memset (g_ScriptErrorBuffer, 0, sizeof (g_ScriptErrorBuffer));
+                    ImGui::OpenPopup ("Scene Window Alert");
                 }
                 else
                 {
@@ -102,7 +101,11 @@ namespace aga
 
             if (ImGui::Button ("ADD SCRIPT", ImVec2 (480, 18)))
             {
-                ImGui::OpenPopup ("Script");
+                m_Editor->GetScriptWindow ()->Show (
+                    [&](std::string name, std::string path) {
+                        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AttachScript (name, path);
+                    },
+                    nullptr);
             }
 
             m_Editor->GetScriptWindow ()->Render ();
@@ -169,6 +172,21 @@ namespace aga
                 m_Editor->SetCloseCurrentPopup (false);
             }
             ImGui::EndGroup ();
+
+            //  Alert window
+            bool open = true;
+            if (ImGui::BeginPopupModal ("Scene Window Alert", &open))
+            {
+                ImGui::Text (g_ScriptErrorBuffer);
+                if (ImGui::Button ("OK", ImVec2 (100, 18)))
+                {
+                    memset (g_ScriptErrorBuffer, 0, sizeof (g_ScriptErrorBuffer));
+                    ImGui::CloseCurrentPopup ();
+                }
+
+                ImGui::EndPopup ();
+            }
+            //  Alert window
 
             ImGui::EndPopup ();
         }

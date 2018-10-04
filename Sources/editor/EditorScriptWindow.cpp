@@ -6,18 +6,57 @@
 #include "MainLoop.h"
 #include "Screen.h"
 
+#include "imgui.h"
+
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
     EditorScriptWindow::EditorScriptWindow (Editor* editor)
         : m_Editor (editor)
+        , m_IsVisible (false)
     {
     }
 
     //--------------------------------------------------------------------------------------------------
 
     EditorScriptWindow ::~EditorScriptWindow () {}
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorScriptWindow ::Show (std::function<void(std::string, std::string)> OnAcceptFunc,
+        std::function<void(std::string, std::string)> OnCancelFunc)
+    {
+        m_OnAcceptFunc = OnAcceptFunc;
+        m_OnCancelFunc = OnCancelFunc;
+
+        memset (m_Name, 0, ARRAY_SIZE (m_Name));
+        memset (m_Path, 0, ARRAY_SIZE (m_Path));
+
+        m_IsVisible = true;
+
+        ImGui::OpenPopup ("Script");
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorScriptWindow::OnAccept ()
+    {
+        if (m_OnAcceptFunc)
+        {
+            m_OnAcceptFunc (GetName (), GetPath ());
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorScriptWindow::OnCancel ()
+    {
+        if (m_OnCancelFunc)
+        {
+            m_OnCancelFunc (GetName (), GetPath ());
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -80,11 +119,11 @@ namespace aga
             if (ImGui::Button ("ACCEPT", ImVec2 (50.f, 18.f)))
             {
                 ImGui::CloseCurrentPopup ();
+                m_IsVisible = false;
 
                 if (GetName () != "" && GetPath () != "")
                 {
-                    m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AttachScript (
-                        GetName (), GetPath ());
+                    OnAccept ();
                 }
             }
 
@@ -93,6 +132,7 @@ namespace aga
             if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
             {
                 ImGui::CloseCurrentPopup ();
+                m_IsVisible = false;
 
                 m_Editor->SetCloseCurrentPopup (false);
             }

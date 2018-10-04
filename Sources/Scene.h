@@ -119,6 +119,7 @@ namespace aga
 
         void AddActor (Actor* actor);
         void RemoveActor (Actor* actor);
+        void RemoveActor (int id);
         void RemoveActor (const std::string& name);
         Actor* GetActor (const std::string& name);
         Actor* GetActor (int id);

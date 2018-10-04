@@ -17,6 +17,15 @@
 #include "Gwork/Renderers/Allegro5.h"
 #include "Gwork/Skins/TexturedBase.h"
 
+//--------------------------------------------------------------------------------------------------
+
+namespace ImGui
+{
+    bool Combo (const char* label, int* currIndex, std::vector<std::string>& values);
+}
+
+//--------------------------------------------------------------------------------------------------
+
 namespace aga
 {
     extern const int TILES_COUNT;
@@ -24,9 +33,7 @@ namespace aga
     class EditorSpeechWindow;
     class EditorActorWindow;
     class EditorActorScriptWindow;
-    class EditorInfoWindow;
     class EditorQuestionWindow;
-    class EditorInputWindow;
     class EditorSceneWindow;
     class EditorScriptWindow;
     class EditorComponentWindow;
@@ -78,7 +85,6 @@ namespace aga
 
         EditorScriptWindow* GetScriptWindow () { return m_ScriptWindow; }
         EditorComponentWindow* GetComponentWindow () { return m_ComponentWindow; }
-        EditorInfoWindow* GetEditorInfoWindow () { return m_InfoWindow; }
         EditorQuestionWindow* GetEditorQuestionWindow () { return m_QuestionWindow; }
 
         ALLEGRO_TRANSFORM& GetWorldTransform () { return m_WorldTransform; }
@@ -183,9 +189,7 @@ namespace aga
         EditorSceneWindow* m_EditorSceneWindow;
         EditorSpeechWindow* m_SpeechWindow;
         EditorActorWindow* m_ActorWindow;
-        EditorInfoWindow* m_InfoWindow;
         EditorQuestionWindow* m_QuestionWindow;
-        EditorInputWindow* m_InputWindow;
         EditorScriptWindow* m_ScriptWindow;
         EditorComponentWindow* m_ComponentWindow;
 
@@ -208,6 +212,7 @@ namespace aga
         bool m_CloseCurrentPopup;
         bool m_OpenPopupOpenScene;
         bool m_OpenPopupSaveScene;
+        bool m_OpenPopupActorEditor;
 
         std::vector<std::string> m_RecentFileNames;
     };

@@ -502,6 +502,18 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Scene::RemoveActor (int id)
+    {
+        Actor* actor = GetActor (id);
+
+        if (actor)
+        {
+            RemoveActor (actor);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     Actor* Scene::GetActor (const std::string& name)
     {
         for (Actor* actor : m_Actors)
