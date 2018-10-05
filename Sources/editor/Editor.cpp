@@ -116,13 +116,18 @@ namespace aga
         // Setup Dear ImGui binding
         IMGUI_CHECKVERSION ();
         ImGui::CreateContext ();
+        ImGui::GetIO ().IniFilename = nullptr;
         //      ImGuiIO& io = ImGui::GetIO ();
         //        (void)io;
         // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
         ImGui_ImplAllegro5_Init (m_MainLoop->GetScreen ()->GetDisplay ());
 
         // Setup style
-        ImGui::StyleColorsDark ();
+        ImGui::StyleColorsClassic ();
+        ImGui::GetStyle ().FrameRounding = 12.0f;
+        ImGui::GetStyle ().ItemSpacing.y = 3.f;
+        ImGui::GetStyle ().WindowTitleAlign.x = 0.5f;
+        ImGui::GetStyle ().WindowBorderSize = 0.f;
 
         return true;
     }
@@ -304,11 +309,6 @@ namespace aga
         ImGuiIO& io = ImGui::GetIO ();
 
         if (io.WantCaptureKeyboard || io.WantCaptureMouse)
-        {
-            return;
-        }
-
-        if (m_CursorMode != CursorMode::EditSpriteSheetMode)
         {
             return;
         }
@@ -545,11 +545,23 @@ namespace aga
 
         bool showMe;
 
-        ImGui::ShowDemoWindow (&showMe);
+        // ImGui::ShowDemoWindow (&showMe);
 
         //  Draw GUI
         ImGui::Render ();
         ImGui_ImplAllegro5_RenderDrawData (ImGui::GetDrawData ());
+
+        if (m_ActorWindow->IsVisible ())
+        {
+            m_ActorWindow->RenderActorImage ();
+        }
+
+        if (m_SpeechWindow->IsVisible ())
+        {
+            SpeechFrameManager& frameManager = m_MainLoop->GetSceneManager ().GetSpeechFrameManager ();
+            frameManager.Update (deltaTime);
+            frameManager.Render (deltaTime);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -621,10 +633,6 @@ namespace aga
             m_EditorActorMode.DrawTiles ();
             RenderUI ();
         }
-
-        SpeechFrameManager& frameManager = m_MainLoop->GetSceneManager ().GetSpeechFrameManager ();
-        frameManager.Update (deltaTime);
-        frameManager.Render (deltaTime);
 
         DrawSelectionRect (m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_SelectionRect));
     }
@@ -1041,7 +1049,7 @@ namespace aga
     void Editor::RenderUI ()
     {
         ImGui::SetNextWindowPos (ImVec2 (5, 5), ImGuiCond_Always);
-        ImGui::PushStyleColor (ImGuiCol_WindowBg, ImVec4 (0, 0, 0, 0.3f));
+        ImGui::PushStyleColor (ImGuiCol_WindowBg, ImVec4 (0.f, 0.f, 0.f, 0.0f));
         if (ImGui::Begin ("Tools", nullptr,
                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
                     | ImGuiWindowFlags_NoCollapse))
@@ -1049,7 +1057,7 @@ namespace aga
             ImGui::Text (
                 (ToString ("SCENE: ") + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ()).c_str ());
 
-            ImGui::Separator ();
+            ImGui::NewLine ();
 
             ImVec2 buttonSize = ImVec2 (100.f, 18.f);
 
@@ -1084,8 +1092,7 @@ namespace aga
 
             m_EditorSceneWindow->RenderUI ();
 
-            ImGui::Separator ();
-            ImGui::Separator ();
+            ImGui::NewLine ();
 
             if (ImGui::Button ("RESET MOVE", buttonSize))
             {
@@ -1114,8 +1121,7 @@ namespace aga
 
             if (m_CursorMode != CursorMode::EditPhysBodyMode)
             {
-                ImGui::Separator ();
-                ImGui::Separator ();
+                ImGui::NewLine ();
 
                 if (ImGui::Button ("FLAG POINT", buttonSize))
                 {
@@ -1132,8 +1138,7 @@ namespace aga
                 RenderTriggerAreaWindow ();
             }
 
-            ImGui::Separator ();
-            ImGui::Separator ();
+            ImGui::NewLine ();
 
             if (ImGui::Button (m_CursorMode != CursorMode::EditPhysBodyMode ? "PHYS MODE" : "EXIT PHYS", buttonSize))
             {
@@ -1159,8 +1164,7 @@ namespace aga
             }
             else
             {
-                ImGui::Separator ();
-                ImGui::Separator ();
+                ImGui::NewLine ();
 
                 if (ImGui::Button ("ACTOR [F2]", buttonSize) || m_OpenPopupActorEditor)
                 {

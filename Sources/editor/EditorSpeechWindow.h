@@ -41,11 +41,6 @@ namespace aga
 
         void UpdateOutcomes ();
 
-        void OnOutcomeDataTextChanged ();
-        void OnOutcomeActionChanged ();
-        void OnUpOutcome ();
-        void OnDownOutcome ();
-
         void ClearControls ();
 
     private:

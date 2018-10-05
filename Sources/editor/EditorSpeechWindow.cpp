@@ -100,6 +100,7 @@ namespace aga
         speechData.AbsoluteFramePosition.Y = m_AbsPosY;
         speechData.MaxCharsInLine = m_MaxChars;
         speechData.MaxLines = m_MaxLines;
+        speechData.Action = m_Actions[m_Action];
 
         if (std::string (m_SpeechName) != "")
         {
@@ -228,58 +229,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorSpeechWindow::OnUpOutcome ()
-    {
-        std::vector<SpeechOutcome>& outcomes = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
-
-        for (int i = 0; i < outcomes.size (); ++i)
-        {
-            //            if (control->GetName () == std::to_string (i))
-            //            {
-            //                if (i == 0)
-            //                {
-            //                    std::iter_swap (outcomes.begin (), outcomes.end () - 1);
-            //                }
-            //                else
-            //                {
-            //                    std::iter_swap (outcomes.begin () + i, outcomes.begin () + i - 1);
-            //                }
-
-            //                break;
-            //            }
-        }
-
-        UpdateOutcomes ();
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void EditorSpeechWindow::OnDownOutcome ()
-    {
-        std::vector<SpeechOutcome>& outcomes = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
-
-        for (int i = 0; i < outcomes.size (); ++i)
-        {
-            //            if (control->GetName () == std::to_string (i))
-            //            {
-            //                if (i == outcomes.size () - 1)
-            //                {
-            //                    std::iter_swap (outcomes.begin (), outcomes.end () - 1);
-            //                }
-            //                else
-            //                {
-            //                    std::iter_swap (outcomes.begin () + i, outcomes.begin () + i + 1);
-            //                }
-
-            //                break;
-            //            }
-        }
-
-        UpdateOutcomes ();
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
     void EditorSpeechWindow::ClearControls ()
     {
         memset (m_SpeechID, 0, ARRAY_SIZE (m_SpeechID));
@@ -290,6 +239,7 @@ namespace aga
         m_MaxLines = 0;
         m_AbsPosX = 0;
         m_AbsPosY = 0;
+        m_Action = 0;
 
         memset (m_Text, 0, ARRAY_SIZE (m_Text));
         m_RelPosition = BottomCenter;
@@ -324,6 +274,15 @@ namespace aga
         m_AbsPosX = speech.AbsoluteFramePosition.X;
         m_AbsPosY = speech.AbsoluteFramePosition.Y;
 
+        for (int i = 0; i < m_Actions.size (); ++i)
+        {
+            if (m_Actions[i] == speech.Action)
+            {
+                m_Action = i;
+                break;
+            }
+        }
+
         UpdateOutcomes ();
     }
 
@@ -331,7 +290,7 @@ namespace aga
 
     void EditorSpeechWindow::RenderUI ()
     {
-        ImGui::SetNextWindowSize (ImVec2 (700, 600), ImGuiCond_Always);
+        ImGui::SetNextWindowSize (ImVec2 (700, 450), ImGuiCond_Always);
 
         if (ImGui::BeginPopupModal ("Speech Editor", NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
@@ -406,7 +365,7 @@ namespace aga
                     m_Editor->GetEditorSpeechMode ().GetSpeechData ().Action = m_Actions[m_Action];
                 }
 
-                if (ImGui::InputTextMultiline ("Text", m_Text, IM_ARRAYSIZE (m_Text), ImVec2 (235, 65)))
+                if (ImGui::InputTextMultiline ("Text", m_Text, IM_ARRAYSIZE (m_Text), ImVec2 (235, 70)))
                 {
                     m_Editor->GetEditorSpeechMode ().GetSpeechData ().Text[m_LangIndex] = std::string (m_Text);
                 }
@@ -442,35 +401,53 @@ namespace aga
 
                     ImGui::SameLine ();
 
-                    ImGui::PushItemWidth (90.f);
+                    ImGui::PushItemWidth (85.f);
                     if (ImGui::Combo (
                             (std::string ("##Action") + std::to_string (i)).c_str (), &out.ActionIndex, m_Actions))
                     {
-                        m_Editor->GetEditorSpeechMode ().GetSpeechData ().Action = m_Actions[out.ActionIndex];
+                        outcomes[i].Action = m_Actions[out.ActionIndex];
                     }
                     ImGui::PopItemWidth ();
 
                     ImGui::SameLine ();
 
-                    if (ImGui::Button ("X"))
+                    if (ImGui::Button ((std::string ("^##Up") + std::to_string (i)).c_str ()))
+                    {
+                        if (i == 0)
+                        {
+                            std::iter_swap (outcomes.begin (), outcomes.end () - 1);
+                        }
+                        else
+                        {
+                            std::iter_swap (outcomes.begin () + i, outcomes.begin () + i - 1);
+                        }
+
+                        UpdateOutcomes ();
+                    }
+
+                    ImGui::SameLine ();
+
+                    if (ImGui::Button ((std::string ("v##Down") + std::to_string (i)).c_str ()))
+                    {
+                        if (i == outcomes.size () - 1)
+                        {
+                            std::iter_swap (outcomes.begin (), outcomes.end () - 1);
+                        }
+                        else
+                        {
+                            std::iter_swap (outcomes.begin () + i, outcomes.begin () + i + 1);
+                        }
+
+                        UpdateOutcomes ();
+                    }
+
+                    ImGui::SameLine ();
+
+                    if (ImGui::Button ((std::string ("X##Remove") + std::to_string (i)).c_str ()))
                     {
                         outcomes.erase (outcomes.begin () + i);
                         UpdateOutcomes ();
                     }
-
-                    //            Gwk::Controls::Button* upButton = new Gwk::Controls::Button (m_OutcomesContainer);
-                    //            upButton->SetText (" ^");
-                    //            upButton->SetWidth (20);
-                    //            upButton->SetName (std::to_string (i));
-                    //            upButton->SetPos (actionCombo->Right () + 5, currentY);
-                    //            upButton->onPress.Add (this, &EditorSpeechWindow::OnUpOutcome);
-
-                    //            Gwk::Controls::Button* downButton = new Gwk::Controls::Button (m_OutcomesContainer);
-                    //            downButton->SetText (" v");
-                    //            downButton->SetWidth (20);
-                    //            downButton->SetName (std::to_string (i));
-                    //            downButton->SetPos (upButton->Right () + 5, currentY);
-                    //            downButton->onPress.Add (this, &EditorSpeechWindow::OnDownOutcome);
                 }
             }
             ImGui::EndGroup ();
@@ -484,7 +461,7 @@ namespace aga
 
                 if (ImGui::Button ("NEW", buttonSize))
                 {
-                    OnSave ();
+                    ClearControls ();
                 }
 
                 if (ImGui::Button ("SAVE", buttonSize))
@@ -502,14 +479,15 @@ namespace aga
                     OnOutcome ();
                 }
 
-                ImGui::Separator ();
+                ImGui::NewLine ();
 
                 if (ImGui::Button ("PREVIEW", buttonSize))
                 {
+                    OnSave ();
                     OnPreview ();
                 }
 
-                ImGui::Separator ();
+                ImGui::NewLine ();
 
                 if (ImGui::Button ("ACCEPT", buttonSize))
                 {

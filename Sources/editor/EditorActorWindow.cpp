@@ -664,7 +664,7 @@ namespace aga
                     m_Editor->GetEditorActorMode ().RemoveActor (atoi (m_ActorID));
                 }
 
-                ImGui::Separator ();
+                ImGui::NewLine ();
 
                 if (ImGui::Button ("SCRIPTS", buttonSize))
                 {
@@ -694,7 +694,7 @@ namespace aga
                 }
                 //  Alert window
 
-                ImGui::Separator ();
+                ImGui::NewLine ();
 
                 if (ImGui::Button ("ACCEPT", buttonSize))
                 {
@@ -713,8 +713,6 @@ namespace aga
             ImGui::EndGroup ();
 
             ImGui::EndPopup ();
-
-            RenderActorImage ();
         }
     }
 
@@ -727,10 +725,10 @@ namespace aga
         const int margin = 10;
         const int previewSize = 96;
 
-        al_draw_filled_rectangle (winSize.Width - previewSize - margin, winSize.Height - previewSize - margin * 6,
-            winSize.Width - margin, winSize.Height - margin * 6, COLOR_BLACK);
-        al_draw_rectangle (winSize.Width - previewSize - margin, winSize.Height - previewSize - margin * 6,
-            winSize.Width - margin, winSize.Height - margin * 6, COLOR_GREEN, 2);
+        al_draw_filled_rectangle (winSize.Width - previewSize - margin, winSize.Height - previewSize - margin,
+            winSize.Width - margin, winSize.Height - margin, COLOR_BLACK);
+        al_draw_rectangle (winSize.Width - previewSize - margin, winSize.Height - previewSize - margin,
+            winSize.Width - margin, winSize.Height - margin, COLOR_GREEN, 2);
 
         if (m_SelectedAtlas && m_SelectedAtlasRegion != "")
         {
@@ -738,7 +736,7 @@ namespace aga
 
             al_draw_scaled_bitmap (m_SelectedAtlas->GetImage (), region.Bounds.GetPos ().X, region.Bounds.GetPos ().Y,
                 region.Bounds.GetSize ().Width, region.Bounds.GetSize ().Height, winSize.Width - previewSize - margin,
-                winSize.Height - previewSize - margin * 6, previewSize, previewSize, 0);
+                winSize.Height - previewSize - margin, previewSize, previewSize, 0);
         }
     }
 

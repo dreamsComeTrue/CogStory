@@ -22,6 +22,8 @@ namespace aga
         void RenderUI ();
         bool IsVisible () const { return m_IsVisible; }
 
+        void RenderActorImage ();
+
     private:
         void OnSave ();
 
@@ -39,8 +41,6 @@ namespace aga
         void AddComponentEntry (const std::string& name, const std::string& type);
 
         void FillComponentsList ();
-
-        void RenderActorImage ();
 
     private:
         Editor* m_Editor;
