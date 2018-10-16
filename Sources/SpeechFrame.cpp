@@ -42,7 +42,6 @@ namespace aga
         , m_StillUpdating (true)
         , m_MaxKeyDelta (200)
         , m_KeyEventHandled (false)
-        , m_ScrollPossible (false)
         , m_ShouldBeHandled (shouldBeHandled)
         , m_Handled (false)
         , m_ActorRegionName (regionName)
@@ -150,7 +149,7 @@ namespace aga
 
     void SpeechFrame::HandleKeyUp ()
     {
-        if (!IsTextFitWithoutScroll ())
+        if (!IsTextFitWithoutScroll () && !m_IsSuspended && !m_StillUpdating)
         {
             //  We can only scroll, when there are no choices
             if (!m_Choices.empty () && !m_StillUpdating)
@@ -176,7 +175,7 @@ namespace aga
 
     void SpeechFrame::HandleKeyDown ()
     {
-        if (!IsTextFitWithoutScroll ())
+        if (!IsTextFitWithoutScroll () && !m_IsSuspended && !m_StillUpdating)
         {
             if (!m_Choices.empty () && !m_StillUpdating)
             {
@@ -839,7 +838,6 @@ namespace aga
         m_CurrentLine = 0;
         m_CurrentDrawTime = 0;
         m_ChosenLineDelta = 0;
-        m_ScrollPossible = false;
         m_StillUpdating = true;
         m_Handled = false;
         m_DelayCounter = 0.0f;

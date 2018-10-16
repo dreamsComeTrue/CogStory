@@ -150,7 +150,6 @@ namespace aga
         float m_MaxKeyDelta;
         bool m_KeyEventHandled;
 
-        bool m_ScrollPossible;
         bool m_ShouldBeHandled;
         bool m_Handled;
 

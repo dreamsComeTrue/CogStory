@@ -78,13 +78,6 @@ namespace aga
     {
         if (m_ActorName[0] != '\0')
         {
-            std::string actorName;
-
-            if (m_ActorName[0] != '\0')
-            {
-                actorName = m_ActorName;
-            }
-
             int id = -1;
 
             if (m_ActorID[0] != '\0')
@@ -99,12 +92,12 @@ namespace aga
                 blueprintID = ToInteger (m_Blueprints[m_SelectedBlueprint]);
             }
 
-            Point position;
-
-            sscanf (m_ActorPosition, "%.2f %.2f", &position.X, &position.Y);
+            std::vector<std::string> posParts = SplitString (m_ActorPosition, ' ');
+            Point position (
+                static_cast<float> (atof (posParts[0].c_str ())), static_cast<float> (atof (posParts[1].c_str ())));
 
             Actor* retActor
-                = m_Editor->GetEditorActorMode ().AddOrUpdateActor (id, actorName, m_ActorTypes[m_SelectedActorType],
+                = m_Editor->GetEditorActorMode ().AddOrUpdateActor (id, m_ActorName, m_ActorTypes[m_SelectedActorType],
                     blueprintID, position, m_ActorRotation, m_ActorZOrder, m_ActorFocusHeight);
 
             if (m_SelectedAtlas && m_SelectedAtlasRegion != "")

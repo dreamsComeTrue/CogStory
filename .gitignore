@@ -2,16 +2,6 @@ Binaries/
 CMakeLists.txt.user
 .ycm_extra_conf.py
 CMakeLists.txt.user.3b5dde4
-ThirdParty/GWork/.appveyor.yml
-ThirdParty/GWork/.editorconfig
-ThirdParty/GWork/.gitattributes
-ThirdParty/GWork/.gitignore
-ThirdParty/GWork/.travis.yml
-ThirdParty/GWork/CHANGELOG.md
-ThirdParty/GWork/LICENSE.md
-ThirdParty/GWork/ci/
-ThirdParty/GWork/docs/
-ThirdParty/GWork/attic
 ThirdParty/anglescript_2.31.2/angelscript/lib/
 compile_commands.json
 cscope.files

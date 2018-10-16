@@ -27,7 +27,7 @@ void SceneChanged (const string &in previousSceneName)
     //    pos = GetFlagPoint ("MARKER_HOME_CITY").Pos;
     }
 
-  //  player.SetCenterPosition (pos);
+    player.SetCenterPosition (pos);
 }
 
 void BeforeEnterScene ()

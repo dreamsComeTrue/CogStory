@@ -51,5 +51,6 @@
 
     "cmake.buildDirectory": "${workspaceRoot}/Binaries/Linux/Out",
     "cmake.buildBeforeRun": true,
-    "cmake.configureOnOpen": true
+    "cmake.configureOnOpen": true,
+    "C_Cpp.configurationWarnings": "Disabled"
 }

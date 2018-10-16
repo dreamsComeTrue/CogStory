@@ -13,8 +13,6 @@ void SceneChanged (const string &in previousSceneName)
     }
 
     player.SetCenterPosition (pos);
-
-    // player.SetCenterPosition (GetFlagPoint ("MARKER_CITY_HOME").Pos);
     camera.SetFollowActor (player);
 }
 
