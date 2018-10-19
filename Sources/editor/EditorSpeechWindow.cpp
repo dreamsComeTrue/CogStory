@@ -244,6 +244,7 @@ namespace aga
         memset (m_Text, 0, ARRAY_SIZE (m_Text));
         m_RelPosition = BottomCenter;
         m_Editor->GetEditorSpeechMode ().Clear ();
+        m_SpeechOutcomes.clear ();
     }
 
     //--------------------------------------------------------------------------------------------------

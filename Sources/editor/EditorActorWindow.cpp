@@ -47,7 +47,7 @@ namespace aga
         memset (m_ActorName, 0, ARRAY_SIZE (m_ActorName));
 
         memset (m_ActorPosition, 0, ARRAY_SIZE (m_ActorPosition));
-        m_ActorRotation = 0.f;
+        memset (m_ActorRotation, 0, ARRAY_SIZE (m_ActorRotation));
         m_ActorZOrder = 0;
 
         memset (m_ActorAnimation, 0, ARRAY_SIZE (m_ActorAnimation));
@@ -55,7 +55,8 @@ namespace aga
         m_ActorCollidable = false;
         m_ActorCollision = false;
         m_ActorOverlap = false;
-        m_ActorFocusHeight = -1;
+
+        memset (m_ActorFocusHeight, 0, ARRAY_SIZE (m_ActorFocusHeight));
 
         UpdateComboBoxes ();
 
@@ -98,7 +99,7 @@ namespace aga
 
             Actor* retActor
                 = m_Editor->GetEditorActorMode ().AddOrUpdateActor (id, m_ActorName, m_ActorTypes[m_SelectedActorType],
-                    blueprintID, position, m_ActorRotation, m_ActorZOrder, m_ActorFocusHeight);
+                    blueprintID, position, atof (m_ActorRotation), m_ActorZOrder, atof (m_ActorFocusHeight));
 
             if (m_SelectedAtlas && m_SelectedAtlasRegion != "")
             {
@@ -236,10 +237,11 @@ namespace aga
         }
 
         sprintf (m_ActorPosition, "%.2f %.2f", m_SelectedActor->Bounds.Pos.X, m_SelectedActor->Bounds.Pos.Y);
-        m_ActorRotation = m_SelectedActor->Rotation;
+        sprintf (m_ActorRotation, "%.2f", m_SelectedActor->Rotation);
         m_ActorZOrder = m_SelectedActor->ZOrder;
 
-        m_ActorFocusHeight = m_SelectedActor->GetFocusHeight ();
+        sprintf (m_ActorFocusHeight, "%.2f", m_SelectedActor->GetFocusHeight ());
+
         m_ActorCollision = m_SelectedActor->IsCollisionEnabled ();
         m_ActorCollidable = m_SelectedActor->IsCollidable ();
         m_ActorOverlap = m_SelectedActor->IsCheckOverlap ();
@@ -490,7 +492,7 @@ namespace aga
                     ImGui::Text ("Rotation");
                     ImGui::NextColumn ();
                     ImGui::PushItemWidth (120.f);
-                    ImGui::InputFloat ("##actorRotation", &m_ActorRotation);
+                    ImGui::InputText ("##actorRotation", m_ActorRotation, IM_ARRAYSIZE (m_ActorRotation));
                     ImGui::PopItemWidth ();
                     ImGui::NextColumn ();
 
@@ -544,10 +546,7 @@ namespace aga
                     ImGui::Text ("Focus Height");
                     ImGui::NextColumn ();
                     ImGui::PushItemWidth (120.f);
-                    if (ImGui::InputFloat ("##actorFocusHeight", &m_ActorFocusHeight))
-                    {
-                        m_SelectedActor->SetFocusHeight (m_ActorFocusHeight);
-                    }
+                    ImGui::InputText ("##actorFocusHeight", m_ActorFocusHeight, IM_ARRAYSIZE (m_ActorFocusHeight));
                     ImGui::PopItemWidth ();
                     ImGui::NextColumn ();
 

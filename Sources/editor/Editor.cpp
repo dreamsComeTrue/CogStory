@@ -545,7 +545,7 @@ namespace aga
 
         bool showMe;
 
-        // ImGui::ShowDemoWindow (&showMe);
+        //   ImGui::ShowDemoWindow (&showMe);
 
         //  Draw GUI
         ImGui::Render ();

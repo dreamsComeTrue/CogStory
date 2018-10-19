@@ -55,11 +55,11 @@ namespace aga
         char m_ActorName[100];
 
         char m_ActorPosition[100];
-        float m_ActorRotation;
+        char m_ActorRotation[20];
         int m_ActorZOrder;
 
         char m_ActorAnimation[100];
-        float m_ActorFocusHeight;
+        char m_ActorFocusHeight[20];
         bool m_ActorCollidable;
         bool m_ActorCollision;
         bool m_ActorOverlap;

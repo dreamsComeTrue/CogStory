@@ -72,6 +72,7 @@ namespace aga
             switch (event->keyboard.keycode)
             {
             case ALLEGRO_KEY_UP:
+            case ALLEGRO_KEY_W:
             {
                 m_SelectSample->Play ();
 
@@ -86,6 +87,7 @@ namespace aga
             }
 
             case ALLEGRO_KEY_DOWN:
+            case ALLEGRO_KEY_S:
             {
                 m_SelectSample->Play ();
 
@@ -100,6 +102,7 @@ namespace aga
             }
 
             case ALLEGRO_KEY_ENTER:
+            case ALLEGRO_KEY_X:
             {
                 m_SelectSample->Play ();
                 HandleSelection ();
@@ -171,7 +174,7 @@ namespace aga
         }
 
         int xPos = winSize.Width * 0.5f - textSize.Width * 0.5 - 30;
-        int yPos = menuItemStartY + textSize.Height * 0.5 + m_Selection * menuItemSpacing - 5;
+        int yPos = menuItemStartY + textSize.Height * 0.5 + m_Selection * menuItemSpacing - 7;
 
         m_SelectionAngle += MENU_SELECTION_ROTATION_SPEED * deltaTime;
 

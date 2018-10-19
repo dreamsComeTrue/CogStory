@@ -358,6 +358,7 @@ namespace aga
 
             case ALLEGRO_KEY_ENTER:
             case ALLEGRO_KEY_SPACE:
+            case ALLEGRO_KEY_X:
             {
                 if (m_IsSuspended)
                 {
