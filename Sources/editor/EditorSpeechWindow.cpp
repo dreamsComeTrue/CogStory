@@ -101,6 +101,7 @@ namespace aga
         speechData.MaxCharsInLine = m_MaxChars;
         speechData.MaxLines = m_MaxLines;
         speechData.Action = m_Actions[m_Action];
+        speechData.Group = m_SpeechGroup;
 
         if (std::string (m_SpeechName) != "")
         {
@@ -233,6 +234,7 @@ namespace aga
     {
         memset (m_SpeechID, 0, ARRAY_SIZE (m_SpeechID));
         memset (m_SpeechName, 0, ARRAY_SIZE (m_SpeechName));
+        memset (m_SpeechGroup, 0, ARRAY_SIZE (m_SpeechGroup));
 
         m_LangIndex = 0;
         m_MaxChars = 0;
@@ -258,6 +260,7 @@ namespace aga
 
         strcpy (m_SpeechID, std::to_string (speech.ID).c_str ());
         strcpy (m_SpeechName, speech.Name.c_str ());
+        strcpy (m_SpeechGroup, speech.Group.c_str ());
 
         for (int i = 0; i < g_SpeechFrames.size (); ++i)
         {
@@ -301,16 +304,52 @@ namespace aga
             {
                 if (ImGui::TreeNodeEx ("Speeches", ImGuiTreeNodeFlags_DefaultOpen))
                 {
+                    std::vector<std::string> groups;
+                    groups.push_back ("Ungrouped");
+
                     std::map<int, SpeechData>& speeches
                         = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
 
                     for (std::map<int, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
                     {
-                        std::string name = (*it).second.Name;
+                        std::string groupName = (*it).second.Group;
+                        bool foundGroup = false;
 
-                        if (ImGui::Selectable (name.c_str (), false))
+                        for (const std::string& gr : groups)
                         {
-                            SelectSpeech ((*it).first);
+                            if (gr == groupName || groupName == "")
+                            {
+                                foundGroup = true;
+                            }
+                        }
+
+                        if (!foundGroup)
+                        {
+                            groups.push_back (groupName);
+                        }
+                    }
+
+                    for (const std::string& gr : groups)
+                    {
+                        if (ImGui::TreeNodeEx (gr.c_str (), ImGuiTreeNodeFlags_DefaultOpen))
+                        {
+                            for (std::map<int, SpeechData>::iterator it = speeches.begin (); it != speeches.end ();
+                                 ++it)
+                            {
+                                std::string thisGroupName = (*it).second.Group;
+
+                                if (thisGroupName == gr || (gr == "Ungrouped" && thisGroupName == ""))
+                                {
+                                    std::string name = (*it).second.Name;
+
+                                    if (ImGui::Selectable (name.c_str (), false))
+                                    {
+                                        SelectSpeech ((*it).first);
+                                    }
+                                }
+                            }
+
+                            ImGui::TreePop ();
                         }
                     }
 
@@ -328,19 +367,26 @@ namespace aga
             {
                 ImGui::LabelText ("ID", m_SpeechID);
 
+                SpeechData& speechData = m_Editor->GetEditorSpeechMode ().GetSpeechData ();
+
                 if (ImGui::InputText ("Name", m_SpeechName, IM_ARRAYSIZE (m_SpeechName)))
                 {
-                    m_Editor->GetEditorSpeechMode ().GetSpeechData ().Name = std::string (m_SpeechName);
+                    speechData.Name = std::string (m_SpeechName);
+                }
+
+                if (ImGui::InputText ("Group", m_SpeechGroup, IM_ARRAYSIZE (m_SpeechGroup)))
+                {
+                    speechData.Group = std::string (m_SpeechGroup);
                 }
 
                 if (ImGui::Combo ("Language", &m_LangIndex, m_Languages))
                 {
-                    strcpy (m_Text, m_Editor->GetEditorSpeechMode ().GetSpeechData ().Text[m_LangIndex].c_str ());
+                    strcpy (m_Text, speechData.Text[m_LangIndex].c_str ());
                 }
 
                 if (ImGui::Combo ("Region", &m_SelectedRegion, m_Regions))
                 {
-                    m_Editor->GetEditorSpeechMode ().GetSpeechData ().ActorRegionName = m_Regions[m_SelectedRegion];
+                    speechData.ActorRegionName = m_Regions[m_SelectedRegion];
                 }
 
                 ImGui::InputInt ("Max chars/line", &m_MaxChars);
@@ -353,29 +399,28 @@ namespace aga
 
                 if (ImGui::InputInt ("X Pos", &m_AbsPosX))
                 {
-                    m_Editor->GetEditorSpeechMode ().GetSpeechData ().AbsoluteFramePosition.X = m_AbsPosX;
+                    speechData.AbsoluteFramePosition.X = m_AbsPosX;
                 }
 
                 if (ImGui::InputInt ("Y Pos", &m_AbsPosY))
                 {
-                    m_Editor->GetEditorSpeechMode ().GetSpeechData ().AbsoluteFramePosition.Y = m_AbsPosY;
+                    speechData.AbsoluteFramePosition.Y = m_AbsPosY;
                 }
 
                 if (ImGui::Combo ("Actions", &m_Action, m_Actions))
                 {
-                    m_Editor->GetEditorSpeechMode ().GetSpeechData ().Action = m_Actions[m_Action];
+                    speechData.Action = m_Actions[m_Action];
                 }
 
                 if (ImGui::InputTextMultiline ("Text", m_Text, IM_ARRAYSIZE (m_Text), ImVec2 (235, 70)))
                 {
-                    m_Editor->GetEditorSpeechMode ().GetSpeechData ().Text[m_LangIndex] = std::string (m_Text);
+                    speechData.Text[m_LangIndex] = std::string (m_Text);
                 }
 
                 ImGui::Separator ();
                 ImGui::Text ("--- OUTCOMES ---");
 
-                std::vector<SpeechOutcome>& outcomes
-                    = m_Editor->GetEditorSpeechMode ().GetSpeechData ().Outcomes[m_LangIndex];
+                std::vector<SpeechOutcome>& outcomes = speechData.Outcomes[m_LangIndex];
                 std::vector<EditorSpeechOutcome>& edOutcomes = m_SpeechOutcomes;
 
                 for (int i = 0; i < edOutcomes.size (); ++i)

@@ -50,6 +50,8 @@ namespace aga
         char m_SpeechID[10];
         char m_SpeechName[100];
 
+        char m_SpeechGroup[100];
+
         int m_LangIndex;
         std::vector<std::string> m_Languages;
 

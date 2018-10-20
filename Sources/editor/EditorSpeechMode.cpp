@@ -58,6 +58,7 @@ namespace aga
                 speech->Text = m_Speech.Text;
                 speech->Outcomes = m_Speech.Outcomes;
                 speech->Action = m_Speech.Action;
+                speech->Group = m_Speech.Group;
             }
             else
             {
@@ -84,6 +85,7 @@ namespace aga
     void EditorSpeechMode::Clear ()
     {
         m_Speech.Name = "";
+        m_Speech.Group = "";
         m_Speech.ActorRegionName = "";
         m_Speech.MaxCharsInLine = 0;
         m_Speech.MaxLines = 0;

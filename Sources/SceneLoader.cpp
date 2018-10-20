@@ -321,6 +321,7 @@ namespace aga
                 SpeechData speechData;
                 speechData.ID = speech["id"];
                 speechData.Name = speech["name"];
+                speechData.Group = speech["group"];
                 speechData.Action = speech["action"];
                 speechData.ActorRegionName = speech["region_name"];
                 speechData.MaxCharsInLine = speech["max_chars"];
@@ -549,6 +550,7 @@ namespace aga
 
                 speechObj["id"] = it->first;
                 speechObj["name"] = it->second.Name;
+                speechObj["group"] = it->second.Group;
                 speechObj["action"] = it->second.Action;
                 speechObj["region_name"] = it->second.ActorRegionName;
                 speechObj["max_chars"] = it->second.MaxCharsInLine;

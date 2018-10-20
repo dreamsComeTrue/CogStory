@@ -38,6 +38,7 @@ namespace aga
     {
         long ID = -1;
         std::string Name = "";
+        std::string Group = "";
         std::map<int, std::string> Text; //  LangID, data
         std::map<int, std::vector<SpeechOutcome>> Outcomes; //  LangID, outcomes
 

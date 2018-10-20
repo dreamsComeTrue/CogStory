@@ -1506,10 +1506,7 @@ namespace aga
         {
             static char sceneName[100] = {0};
 
-            if (sceneName[0] == '\0')
-            {
-                strcpy (sceneName, m_LastScenePath.c_str ());
-            }
+            strcpy (sceneName, m_LastScenePath.c_str ());
 
             ImGui::InputText ("", sceneName, IM_ARRAYSIZE (sceneName));
             ImGui::SetItemDefaultFocus ();
