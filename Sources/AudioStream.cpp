@@ -12,6 +12,7 @@ namespace aga
         , m_Name (name)
         , m_Stream (nullptr)
         , m_Gain (1.0f)
+        , m_VolumeOverriden (false)
         , m_Looping (false)
         , m_FadeInCurrent (-1.f)
         , m_FadeInMax (-1.f)
@@ -48,7 +49,11 @@ namespace aga
         {
             al_drain_audio_stream (m_Stream);
             al_destroy_audio_stream (m_Stream);
+
+            m_Stream = nullptr;
         }
+
+        m_AudioManager = nullptr;
 
         return Lifecycle::Destroy ();
     }
@@ -59,22 +64,20 @@ namespace aga
     {
         if (m_Stream && m_AudioManager->IsEnabled ())
         {
-            float volume = m_Gain;
-            float masterVolume = m_AudioManager->GetMasterVolume ();
+            float volume = 0.f;
 
-            if (!AreSame (masterVolume, 1.0))
+            if (m_VolumeOverriden)
             {
-                volume = masterVolume;
+                volume = m_Gain;
+            }
+            else
+            {
+                volume = m_AudioManager->GetMasterVolume ();
             }
 
             al_attach_audio_stream_to_mixer (m_Stream, al_get_default_mixer ());
             al_set_audio_stream_playing (m_Stream, true);
-        }
-
-        //  After maanger is paused, this sample should be paused too
-        if (m_AudioManager->IsPaused ())
-        {
-            Pause ();
+            al_set_audio_stream_gain (m_Stream, m_Gain);
         }
     }
 
@@ -86,8 +89,8 @@ namespace aga
         {
             m_CurrentPos = 0.f;
 
-            al_seek_audio_stream_secs (m_Stream, m_CurrentPos);
             al_set_audio_stream_playing (m_Stream, false);
+            al_seek_audio_stream_secs (m_Stream, m_CurrentPos);
         }
     }
 
@@ -120,16 +123,13 @@ namespace aga
             return;
         }
 
-        float gain = m_Gain;
-
         if (m_FadeInMax > 0.f)
         {
             m_FadeInCurrent += deltaTime * 1000.f;
 
             if (m_FadeInCurrent < m_FadeInMax)
             {
-                gain = m_FadeInCurrent / m_FadeInMax;
-                SetVolume (gain);
+                SetVolume (m_FadeInCurrent / m_FadeInMax);
             }
         }
 
@@ -139,8 +139,7 @@ namespace aga
 
             if (m_FadeOutCurrent > 0)
             {
-                gain = m_FadeOutCurrent / m_FadeOutMax;
-                SetVolume (gain);
+                SetVolume (m_FadeOutCurrent / m_FadeOutMax);
             }
             else
             {
@@ -172,6 +171,7 @@ namespace aga
         if (m_Stream && m_AudioManager->IsEnabled ())
         {
             m_Gain = volume;
+            m_VolumeOverriden = true;
 
             al_set_audio_stream_gain (m_Stream, m_Gain);
         }
@@ -189,6 +189,18 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    bool AudioStream::IsPlaying ()
+    {
+        if (m_Stream)
+        {
+            return al_get_audio_stream_playing (m_Stream);
+        }
+
+        return false;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void AudioStream::SetFadeIn (float milliSeconds)
     {
         m_FadeInMax = milliSeconds;
@@ -202,8 +214,17 @@ namespace aga
 
     void AudioStream::SetFadeOut (float milliSeconds, bool pauseOnFinish)
     {
-        m_FadeOutMax = milliSeconds;
-        m_FadeOutCurrent = milliSeconds;
+        if (!m_AudioManager->IsEnabled ())
+        {
+            m_FadeOutMax = 30.0f;
+            m_FadeOutCurrent = m_FadeOutMax;
+        }
+        else
+        {
+            m_FadeOutMax = milliSeconds;
+            m_FadeOutCurrent = m_FadeOutMax;
+        }
+
         m_FadeInMax = -1.f;
         m_FadeInCurrent = -1.f;
         m_Gain = 1.f;

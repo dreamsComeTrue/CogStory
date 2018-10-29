@@ -336,6 +336,7 @@ namespace aga
             }
 
             case ALLEGRO_KEY_X:
+            case ALLEGRO_KEY_DELETE:
             {
                 m_EditorActorMode.RemoveSelectedActors ();
                 break;

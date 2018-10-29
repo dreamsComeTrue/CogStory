@@ -21,7 +21,8 @@ namespace aga
 
     SpeechFrameManager::SpeechFrameManager (SceneManager* sceneManager)
         : m_SceneManager (sceneManager)
-        , m_SpeechesFinished (nullptr)
+        , m_SpeechesFinishedFunc (nullptr)
+        , m_SpeechesFinishedScriptFunc (nullptr)
         , m_SelectSample (nullptr)
         , m_TypeSample (nullptr)
     {
@@ -112,10 +113,15 @@ namespace aga
             nextSpeech->Show ();
         }
 
-        if (m_SpeechesFinished && m_Speeches.empty ())
+        if (m_SpeechesFinishedFunc && m_Speeches.empty ())
+        {
+            m_SpeechesFinishedFunc ();
+        }
+
+        if (m_SpeechesFinishedScriptFunc && m_Speeches.empty ())
         {
             asIScriptContext* ctx = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetContext ();
-            ctx->Prepare (m_SpeechesFinished);
+            ctx->Prepare (m_SpeechesFinishedScriptFunc);
             ctx->Execute ();
             ctx->Unprepare ();
             ctx->GetEngine ()->ReturnContext (ctx);

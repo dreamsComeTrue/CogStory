@@ -1,6 +1,7 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "GamePlayState.h"
+#include "AudioStream.h"
 #include "MainLoop.h"
 #include "MainMenuState.h"
 #include "Scene.h"
@@ -15,6 +16,7 @@ namespace aga
 
     GamePlayState::GamePlayState (MainLoop* mainLoop)
         : State (mainLoop, GAMEPLAY_STATE_NAME)
+        , m_AudioWasEnabled (true)
     {
     }
 
@@ -52,6 +54,8 @@ namespace aga
 
     void GamePlayState::BeforeEnter ()
     {
+        m_MainLoop->GetAudioManager ().SetEnabled (m_AudioWasEnabled);
+
         al_hide_mouse_cursor (m_MainLoop->GetScreen ()->GetDisplay ());
 
         if (m_MainLoop->GetStateManager ().GetPreviousState () != nullptr
@@ -67,8 +71,8 @@ namespace aga
 
         //  Initial scale in gameplay twice big as normal
         const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-        float scale = 2.0f;
-        sceneManager.GetCamera ().Scale (scale, scale, winSize.Width * 0.5, winSize.Height * 0.5);
+        const float SCREEN_SCALE = 2.0f;
+        sceneManager.GetCamera ().Scale (SCREEN_SCALE, SCREEN_SCALE, winSize.Width * 0.5, winSize.Height * 0.5);
 
         //  Re-init current initial scene everytime we start GamePlayState
         sceneManager.SetActiveScene (sceneManager.GetActiveScene ());
@@ -76,21 +80,32 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::AfterLeave () { m_MainLoop->GetSceneManager ().GetActiveScene ()->AfterLeave (); }
+    void GamePlayState::AfterLeave ()
+    {
+        m_MainLoop->GetSceneManager ().GetActiveScene ()->AfterLeave ();
+        m_MainLoop->GetAudioManager ().SetEnabled (true);
+    }
 
     //--------------------------------------------------------------------------------------------------
 
     bool GamePlayState::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
     {
-        if (event->keyboard.keycode == ALLEGRO_KEY_M)
+        if (event->type == ALLEGRO_EVENT_KEY_UP)
         {
-            if (m_MainLoop->GetAudioManager ().IsPaused ())
+            if (event->keyboard.keycode == ALLEGRO_KEY_M)
             {
-                m_MainLoop->GetAudioManager ().Resume ();
+                m_MainLoop->GetAudioManager ().SetEnabled (!m_MainLoop->GetAudioManager ().IsEnabled ());
+                m_AudioWasEnabled = m_MainLoop->GetAudioManager ().IsEnabled ();
             }
-            else
+
+            if (m_MainLoop->GetAudioManager ().IsEnabled ())
             {
-                m_MainLoop->GetAudioManager ().Pause ();
+                AudioStream* audioStream = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetSceneAudioStream ();
+
+                if (audioStream)
+                {
+                    audioStream->Play ();
+                }
             }
         }
 

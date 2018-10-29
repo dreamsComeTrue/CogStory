@@ -128,6 +128,8 @@ namespace aga
         Player* player = m_SceneManager->GetPlayer ();
         Point newPosition;
 
+        ResetAllActorsPositions ();
+
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () == GAMEPLAY_STATE_NAME)
         {
             player->BeforeEnter ();
@@ -142,8 +144,6 @@ namespace aga
         }
 
         player->SetPosition (newPosition);
-
-        ResetAllActorsPositions ();
 
         if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () == GAMEPLAY_STATE_NAME)
         {
@@ -1071,9 +1071,12 @@ namespace aga
     {
         CleanUpSceneAudio ();
 
-        AudioManager& audioManager = m_SceneManager->GetMainLoop ()->GetAudioManager ();
-        std::string sampleName = this->GetName () + "_SCENE_SAMPLE";
-        m_SceneAudioStream = audioManager.LoadStreamFromFile (sampleName, path);
+        if (path != "")
+        {
+            AudioManager& audioManager = m_SceneManager->GetMainLoop ()->GetAudioManager ();
+            std::string sampleName = this->GetName () + "_SCENE_STREAM";
+            m_SceneAudioStream = audioManager.LoadStreamFromFile (sampleName, path);
+        }
 
         return m_SceneAudioStream;
     }
@@ -1083,9 +1086,11 @@ namespace aga
     void Scene::CleanUpSceneAudio ()
     {
         AudioManager& audioManager = m_SceneManager->GetMainLoop ()->GetAudioManager ();
-        std::string sampleName = this->GetName () + "_SCENE_SAMPLE";
+        std::string streamName = this->GetName () + "_SCENE_STREAM";
 
-        audioManager.RemoveSample (sampleName);
+        audioManager.RemoveStream (streamName);
+
+        m_SceneAudioStream = nullptr;
     }
 
     //--------------------------------------------------------------------------------------------------

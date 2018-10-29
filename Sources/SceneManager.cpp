@@ -266,7 +266,7 @@ namespace aga
 
             if (!m_ActiveScene->IsSuppressSceneInfo ())
             {
-                PrintOverlayText (m_ActiveScene->GetName (), TopCenter);
+                PrintOverlayText (m_ActiveScene->GetName (), BottomRight);
             }
 
             al_set_blender (blendOp, blendSrc, blendDst);
@@ -451,6 +451,18 @@ namespace aga
         }
 
         return nullptr;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Point SceneManager::GetPlayerStartLocation ()
+    {
+        if (m_ActiveScene)
+        {
+            return m_ActiveScene->GetPlayerStartLocation ();
+        }
+
+        return Point::ZERO_POINT;
     }
 
     //--------------------------------------------------------------------------------------------------

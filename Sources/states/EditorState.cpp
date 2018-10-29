@@ -59,6 +59,9 @@ namespace aga
 
     void EditorState::BeforeEnter ()
     {
+        m_MainLoop->GetAudioManager ().SetEnabled (false);
+        m_MainLoop->GetAudioManager ().ClearLastPlayedStreams ();
+
         m_MainLoop->GetScreen ()->SetWindowSize (m_LastWindowSize);
         m_MainLoop->GetScreen ()->CenterOnScreen ();
 

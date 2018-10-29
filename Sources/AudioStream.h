@@ -35,12 +35,17 @@ namespace aga
         void SetFadeIn (float milliSeconds);
         void SetFadeOut (float milliSeconds, bool pauseOnFinish = true);
 
+        bool IsPlaying ();
+
+        const std::string& GetName () { return m_Name; }
+
     private:
         AudioManager* m_AudioManager;
         std::string m_Name;
         ALLEGRO_AUDIO_STREAM* m_Stream;
 
         float m_Gain;
+        bool m_VolumeOverriden;
         bool m_Looping;
 
         float m_FadeInCurrent, m_FadeInMax;

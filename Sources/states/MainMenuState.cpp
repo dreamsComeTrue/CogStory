@@ -57,6 +57,8 @@ namespace aga
     {
         al_hide_mouse_cursor (m_MainLoop->GetScreen ()->GetDisplay ());
         m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (60, 60, 70));
+
+        m_MainLoop->GetAudioManager ().SetEnabled (true);
     }
 
     //--------------------------------------------------------------------------------------------------

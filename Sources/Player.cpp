@@ -76,6 +76,13 @@ namespace aga
             {23.f, 64.f} //  Left leg
         });
 
+        m_SceneManager->GetSpeechFrameManager ().RegisterSpeechesFinishedHandler ([&]() {
+            if (m_LastActionActor)
+            {
+                m_LastActionActor->ResumeUpdate ();
+            }
+        });
+
         return true;
     }
 

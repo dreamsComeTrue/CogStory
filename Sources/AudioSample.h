@@ -45,6 +45,7 @@ namespace aga
         std::vector<ALLEGRO_SAMPLE_INSTANCE*> m_SampleInstances;
 
         float m_Gain;
+        bool m_VolumeOverriden;
         bool m_Looping;
 
         float m_FadeInCurrent, m_FadeInMax;

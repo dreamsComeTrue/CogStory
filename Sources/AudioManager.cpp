@@ -135,6 +135,17 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void AudioManager::ClearAudioStreams ()
+    {
+        for (std::map<std::string, AudioStream*>::iterator it = m_Streams.begin (); it != m_Streams.end ();)
+        {
+            SAFE_DELETE (it->second);
+            m_Streams.erase (it++);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void AudioManager::Pause ()
     {
         m_LastMasterVolume = m_MasterVolume;
@@ -196,16 +207,35 @@ namespace aga
     {
         m_Enabled = enabled;
 
-        if (!enabled)
+        if (m_Enabled)
         {
-            for (std::map<std::string, AudioSample*>::iterator it = m_Samples.begin (); it != m_Samples.end (); ++it)
+            m_MasterVolume = 1.0f;
+        }
+        else
+        {
+            m_LastMasterVolume = m_MasterVolume;
+            m_MasterVolume = 0.0f;
+        }
+
+        if (enabled)
+        {
+            for (AudioStream* lastPlayed : m_LastPlayedStreams)
             {
-                it->second->Stop ();
+                Log (lastPlayed->GetName ().c_str ());
+                lastPlayed->Play ();
             }
 
+            ClearLastPlayedStreams ();
+        }
+        else
+        {
             for (std::map<std::string, AudioStream*>::iterator it = m_Streams.begin (); it != m_Streams.end (); ++it)
             {
-                it->second->Stop ();
+                if (it->second->IsPlaying ())
+                {
+                    m_LastPlayedStreams.push_back (it->second);
+                    it->second->Stop ();
+                }
             }
         }
     }

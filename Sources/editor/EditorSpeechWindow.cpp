@@ -36,6 +36,8 @@ namespace aga
         m_Languages.push_back ("EN");
         m_Languages.push_back ("PL");
 
+        m_Regions.push_back ("");
+
         for (const std::string& s : g_SpeechFrames)
         {
             m_Regions.push_back (s);
@@ -262,9 +264,9 @@ namespace aga
         strcpy (m_SpeechName, speech.Name.c_str ());
         strcpy (m_SpeechGroup, speech.Group.c_str ());
 
-        for (int i = 0; i < g_SpeechFrames.size (); ++i)
+        for (int i = 0; i < m_Regions.size (); ++i)
         {
-            if (g_SpeechFrames[i] == speech.ActorRegionName)
+            if (m_Regions[i] == speech.ActorRegionName)
             {
                 m_SelectedRegion = i;
                 break;

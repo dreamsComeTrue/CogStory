@@ -24,7 +24,7 @@ void SceneChanged (const string &in previousSceneName)
     }
     else 
     {
-    //    pos = GetFlagPoint ("MARKER_HOME_CITY").Pos;
+        pos = GetPlayerStartLocation ();
     }
 
     player.SetCenterPosition (pos);
@@ -133,24 +133,14 @@ void RegisterFunctions ()
         return "SPCH_2";
     });
 
-    RegisterSpeechesFinishedHandler (function ()
+    player.AddOverlapCallbacks (function (otherActor)
     {
-        Actor@ lastActor = player.GetLastActionActor ();
-
-        if (lastActor !is null)
-        {
-            lastActor.ResumeUpdate ();
-        }
-    });
-
-    player.AddOverlapCallbacks (function (other)
+        ShowSpeechWhenOverlap (otherActor, "HOME_SIGN", "HOME_SIGN_INFO");
+        ShowSpeechWhenOverlap (otherActor, "FACTORY_SIGN", "FACTORY_SIGN_INFO");
+    }, null, function (otherActor)
     {
-        ShowSpeechWhenOverlap (other, "HOME_SIGN", "HOME_SIGN_SPEECH");
-        ShowSpeechWhenOverlap (other, "FACTORY_SIGN", "FACTORY_SIGN_SPEECH");
-    }, null, function (other)
-    {
-        HideSpeechWhenOverlap (other, "HOME_SIGN", "HOME_SIGN_SPEECH");
-        HideSpeechWhenOverlap (other, "FACTORY_SIGN", "FACTORY_SIGN_SPEECH");
+        HideSpeechWhenOverlap (otherActor, "HOME_SIGN", "HOME_SIGN_INFO");
+        HideSpeechWhenOverlap (otherActor, "FACTORY_SIGN", "FACTORY_SIGN_INFO");
     });
 }
 

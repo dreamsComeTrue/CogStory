@@ -26,6 +26,7 @@ namespace aga
 
         AudioStream* GetStream (const std::string& streamName);
         void RemoveStream (const std::string& streamName);
+        void ClearAudioStreams ();
 
         MainLoop* GetMainLoop () { return m_MainLoop; }
 
@@ -41,6 +42,7 @@ namespace aga
         void Resume ();
 
         bool IsPaused () const { return m_IsPaused; }
+        void ClearLastPlayedStreams () { m_LastPlayedStreams.clear (); }
 
     private:
         MainLoop* m_MainLoop;
@@ -50,6 +52,8 @@ namespace aga
         bool m_IsPaused;
         std::map<std::string, AudioSample*> m_Samples;
         std::map<std::string, AudioStream*> m_Streams;
+
+        std::vector<AudioStream*> m_LastPlayedStreams;
     };
 }
 

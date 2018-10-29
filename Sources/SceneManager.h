@@ -81,6 +81,8 @@ namespace aga
         AudioStream* SetSceneAudioStream (const std::string& path);
         AudioStream* GetSceneAudioStream ();
 
+        Point GetPlayerStartLocation ();
+
         void SetOverlayText (const std::string& text, float duration = 2000.f, float charTimeDelay = 5.f,
             ScreenRelativePosition pos = BottomRight);
         void SetOverlayActive (bool active) { m_OverlayActive = active; }

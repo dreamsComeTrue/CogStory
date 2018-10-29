@@ -231,6 +231,7 @@ namespace aga
            void RegisterChoiceFunction (string, ChoiceFunction @+ func)
            AudioSample@ SetSceneAudioStream (const string &in path)
            AudioSample@ GetSceneAudioStream ()
+           Point GetPlayerStartLocation ()
            void PushPoint (Point p)
            Point PopPoint ()
 
@@ -1118,8 +1119,8 @@ namespace aga
         r = m_ScriptEngine->RegisterFuncdef ("void SpeechHandler ()");
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction ("void RegisterSpeechesFinishedHandler (SpeechHandler @+ hd)",
-            asMETHOD (SpeechFrameManager, RegisterSpeechesFinishedHandler), asCALL_THISCALL_ASGLOBAL,
-            &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
+            asMETHODPR (SpeechFrameManager, RegisterSpeechesFinishedHandler, (asIScriptFunction * func), void),
+            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);
     }
 
@@ -1373,7 +1374,12 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void ScriptManager::RegisterSceneAPI () {}
+    void ScriptManager::RegisterSceneAPI ()
+    {
+        int r = m_ScriptEngine->RegisterGlobalFunction ("Point GetPlayerStartLocation ()",
+            asMETHOD (SceneManager, GetPlayerStartLocation), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+    }
 
     //--------------------------------------------------------------------------------------------------
 

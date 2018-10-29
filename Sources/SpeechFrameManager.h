@@ -37,7 +37,8 @@ namespace aga
 
         SpeechFrame* AddSpeechFrame (const std::string& speechID, Point pos, bool shouldBeHandled = true);
         SpeechFrame* AddSpeechFrame (const std::string& speechID, bool shouldBeHandled = true);
-        void RegisterSpeechesFinishedHandler (asIScriptFunction* func) { m_SpeechesFinished = func; }
+        void RegisterSpeechesFinishedHandler (asIScriptFunction* func) { m_SpeechesFinishedScriptFunc = func; }
+        void RegisterSpeechesFinishedHandler (std::function<void()> func) { m_SpeechesFinishedFunc = func; }
 
         void RemoveSpeechFrame (const std::string& speechID);
 
@@ -53,7 +54,8 @@ namespace aga
 
     private:
         SceneManager* m_SceneManager;
-        asIScriptFunction* m_SpeechesFinished;
+        asIScriptFunction* m_SpeechesFinishedScriptFunc;
+        std::function<void()> m_SpeechesFinishedFunc;
         std::map<std::string, SpeechFrame*> m_Speeches;
         AudioSample* m_SelectSample;
         AudioSample* m_TypeSample;

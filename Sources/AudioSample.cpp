@@ -12,6 +12,7 @@ namespace aga
         , m_Name (name)
         , m_Sample (nullptr)
         , m_Gain (1.0f)
+        , m_VolumeOverriden (false)
         , m_Looping (false)
         , m_FadeInCurrent (-1.f)
         , m_FadeInMax (-1.f)
@@ -69,12 +70,15 @@ namespace aga
         {
             CleanUpInstances ();
 
-            float volume = m_Gain;
-            float masterVolume = m_AudioManager->GetMasterVolume ();
+            float volume = 0.f;
 
-            if (!AreSame (masterVolume, 1.0))
+            if (m_VolumeOverriden)
             {
-                volume = masterVolume;
+                volume = m_Gain;
+            }
+            else
+            {
+                volume = m_AudioManager->GetMasterVolume ();
             }
 
             ALLEGRO_SAMPLE_INSTANCE* instance = al_create_sample_instance (m_Sample);
@@ -91,16 +95,13 @@ namespace aga
 
     void AudioSample::Stop ()
     {
-        if (m_Sample)
-        {
-            CleanUpInstances ();
+        CleanUpInstances ();
 
-            for (ALLEGRO_SAMPLE_INSTANCE* instance : m_SampleInstances)
+        for (ALLEGRO_SAMPLE_INSTANCE* instance : m_SampleInstances)
+        {
+            if (al_get_sample_instance_playing (instance))
             {
-                if (al_get_sample_instance_playing (instance))
-                {
-                    al_stop_sample_instance (instance);
-                }
+                al_stop_sample_instance (instance);
             }
         }
     }
@@ -124,6 +125,8 @@ namespace aga
 
                 al_set_sample_instance_playing (m_SampleInstances[i], false);
             }
+
+            CleanUpInstances ();
         }
     }
 
@@ -206,6 +209,7 @@ namespace aga
         if (m_AudioManager->IsEnabled ())
         {
             m_Gain = volume;
+            m_VolumeOverriden = true;
 
             for (int i = 0; i < m_SampleInstances.size (); ++i)
             {
