@@ -37,10 +37,17 @@ namespace aga
         void SetEnabled (bool enabled);
         bool IsEnabled () { return m_Enabled; }
 
+        void Pause ();
+        void Resume ();
+
+        bool IsPaused () const { return m_IsPaused; }
+
     private:
         MainLoop* m_MainLoop;
         float m_MasterVolume;
+        float m_LastMasterVolume;
         bool m_Enabled;
+        bool m_IsPaused;
         std::map<std::string, AudioSample*> m_Samples;
         std::map<std::string, AudioStream*> m_Streams;
     };

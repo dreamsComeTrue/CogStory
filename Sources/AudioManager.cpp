@@ -12,7 +12,9 @@ namespace aga
     AudioManager::AudioManager (MainLoop* mainLoop)
         : m_MainLoop (mainLoop)
         , m_MasterVolume (1.0f)
+        , m_LastMasterVolume (1.0f)
         , m_Enabled (true)
+        , m_IsPaused (false)
     {
     }
 
@@ -129,6 +131,45 @@ namespace aga
             SAFE_DELETE (streamPos->second);
             m_Streams.erase (streamName);
         }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void AudioManager::Pause ()
+    {
+        m_LastMasterVolume = m_MasterVolume;
+        m_MasterVolume = 0.0f;
+
+        for (std::map<std::string, AudioSample*>::iterator it = m_Samples.begin (); it != m_Samples.end (); ++it)
+        {
+            it->second->Pause ();
+        }
+
+        for (std::map<std::string, AudioStream*>::iterator it = m_Streams.begin (); it != m_Streams.end (); ++it)
+        {
+            it->second->Pause ();
+        }
+
+        m_IsPaused = true;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void AudioManager::Resume ()
+    {
+        m_MasterVolume = m_LastMasterVolume;
+
+        for (std::map<std::string, AudioSample*>::iterator it = m_Samples.begin (); it != m_Samples.end (); ++it)
+        {
+            it->second->Resume ();
+        }
+
+        for (std::map<std::string, AudioStream*>::iterator it = m_Streams.begin (); it != m_Streams.end (); ++it)
+        {
+            it->second->Resume ();
+        }
+
+        m_IsPaused = false;
     }
 
     //--------------------------------------------------------------------------------------------------

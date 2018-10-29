@@ -328,6 +328,24 @@ namespace aga
 
     void Player::HandleAction ()
     {
+        //  In case we're still moving...
+        if (m_Animation.GetCurrentAnimationName () == ANIM_MOVE_DOWN_NAME)
+        {
+            SetCurrentAnimation (ANIM_IDLE_NAME);
+        }
+        else if (m_Animation.GetCurrentAnimationName () == ANIM_MOVE_UP_NAME)
+        {
+            SetCurrentAnimation (ANIM_STAND_UP_NAME);
+        }
+        else if (m_Animation.GetCurrentAnimationName () == ANIM_MOVE_LEFT_NAME)
+        {
+            SetCurrentAnimation (ANIM_STAND_LEFT_NAME);
+        }
+        else if (m_Animation.GetCurrentAnimationName () == ANIM_MOVE_RIGHT_NAME)
+        {
+            SetCurrentAnimation (ANIM_STAND_RIGHT_NAME);
+        }
+
         m_ActionHandling = true;
 
         if (m_ActionHandler)

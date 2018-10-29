@@ -82,6 +82,18 @@ namespace aga
 
     bool GamePlayState::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
     {
+        if (event->keyboard.keycode == ALLEGRO_KEY_M)
+        {
+            if (m_MainLoop->GetAudioManager ().IsPaused ())
+            {
+                m_MainLoop->GetAudioManager ().Resume ();
+            }
+            else
+            {
+                m_MainLoop->GetAudioManager ().Pause ();
+            }
+        }
+
         return m_MainLoop->GetSceneManager ().GetPlayer ()->ProcessEvent (event, deltaTime);
     }
 

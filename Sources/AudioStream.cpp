@@ -70,6 +70,12 @@ namespace aga
             al_attach_audio_stream_to_mixer (m_Stream, al_get_default_mixer ());
             al_set_audio_stream_playing (m_Stream, true);
         }
+
+        //  After maanger is paused, this sample should be paused too
+        if (m_AudioManager->IsPaused ())
+        {
+            Pause ();
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
