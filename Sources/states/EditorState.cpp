@@ -38,6 +38,11 @@ namespace aga
         m_Editor = new Editor (m_MainLoop);
         m_Editor->Initialize ();
 
+        ALLEGRO_DISPLAY* display = m_MainLoop->GetScreen ()->GetDisplay ();
+
+        m_LastWindowSize.X = al_get_display_width (display);
+        m_LastWindowSize.Y = al_get_display_height (display);
+
         return true;
     }
 
@@ -54,6 +59,9 @@ namespace aga
 
     void EditorState::BeforeEnter ()
     {
+        m_MainLoop->GetScreen ()->SetWindowSize (m_LastWindowSize);
+        m_MainLoop->GetScreen ()->CenterOnScreen ();
+
         al_show_mouse_cursor (m_MainLoop->GetScreen ()->GetDisplay ());
 
         m_Editor->BeforeEnter ();
@@ -82,7 +90,18 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorState::AfterLeave () { m_LastEditedScene = m_MainLoop->GetSceneManager ().GetActiveScene (); }
+    void EditorState::AfterLeave ()
+    {
+        m_LastEditedScene = m_MainLoop->GetSceneManager ().GetActiveScene ();
+
+        ALLEGRO_DISPLAY* display = m_MainLoop->GetScreen ()->GetDisplay ();
+
+        m_LastWindowSize.X = al_get_display_width (display);
+        m_LastWindowSize.Y = al_get_display_height (display);
+
+        m_MainLoop->GetScreen ()->SetWindowSize ({800, 600});
+        m_MainLoop->GetScreen ()->CenterOnScreen ();
+    }
 
     //--------------------------------------------------------------------------------------------------
 

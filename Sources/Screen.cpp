@@ -62,27 +62,6 @@ namespace aga
             return false;
         }
 
-#ifdef __linux__
-        float winX = 0; //    px - frame border;
-        float winY = 0; //    px - frame border;
-#else
-        float winX = 2; //    px - frame border;
-        float winY = 32; //    px - frame border;
-#endif
-
-        if (m_CenterOnScreen)
-        {
-            ALLEGRO_MONITOR_INFO aminfo;
-            al_get_monitor_info (0, &aminfo);
-            int desktopWidth = aminfo.x2 - aminfo.x1 + 1;
-            int desktopHeight = aminfo.y2 - aminfo.y1 + 1;
-
-            winX = desktopWidth / 2 - m_RealSize.Width / 2;
-            winY = desktopHeight / 2 - m_RealSize.Height / 2;
-        }
-
-        al_set_new_window_position (winX, winY);
-
         al_set_new_display_flags (ALLEGRO_RESIZABLE);
         m_Display = al_create_display (m_Width, m_Height);
 
@@ -90,6 +69,23 @@ namespace aga
         {
             Log ("Failed to create display!\n");
             return false;
+        }
+
+        if (m_CenterOnScreen)
+        {
+            CenterOnScreen ();
+        }
+        else
+        {
+#ifdef __linux__
+            float winX = 0; //    px - frame border;
+            float winY = 0; //    px - frame border;
+#else
+            float winX = 2; //    px - frame border;
+            float winY = 32; //    px - frame border;
+#endif
+
+            al_set_window_position (m_Display, winX, winY);
         }
 
         if (!al_init_image_addon ())
@@ -262,6 +258,21 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Screen::CenterOnScreen ()
+    {
+        ALLEGRO_MONITOR_INFO aminfo;
+        al_get_monitor_info (0, &aminfo);
+        int desktopWidth = aminfo.x2 - aminfo.x1 + 1;
+        int desktopHeight = aminfo.y2 - aminfo.y1 + 1;
+
+        int winX = desktopWidth / 2 - m_RealSize.Width / 2;
+        int winY = desktopHeight / 2 - m_RealSize.Height / 2;
+
+        al_set_window_position (m_Display, winX, winY);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Screen::DrawDebugMessages ()
     {
         for (int i = 0; i < m_DebugMessages.size (); ++i)
@@ -299,6 +310,16 @@ namespace aga
         ALLEGRO_MOUSE_CURSOR* cursor = al_create_mouse_cursor (bitmap, 0, 0);
 
         al_set_mouse_cursor (m_Display, cursor);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Screen::SetWindowSize (Point size)
+    {
+        m_RealSize = size;
+
+        al_resize_display (m_Display, m_RealSize.Width, m_RealSize.Height);
+        al_acknowledge_resize (m_Display);
     }
 
     //--------------------------------------------------------------------------------------------------

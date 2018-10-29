@@ -32,6 +32,7 @@ namespace aga
 
         void SetMouseCursor (const char* path);
 
+        void SetWindowSize (Point size);
         const Point& GetWindowSize () const;
         Font& GetFont ();
 
@@ -46,6 +47,8 @@ namespace aga
         std::function<void()> RenderFunction;
 
         void AddDebugMessage (const std::string& text, float duration = 5000.f, ALLEGRO_COLOR color = COLOR_GREEN);
+
+        void CenterOnScreen ();
 
         static Screen* GetSingleton () { return m_Singleton; }
 
