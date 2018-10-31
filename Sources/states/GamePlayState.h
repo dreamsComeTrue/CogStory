@@ -28,6 +28,9 @@ namespace aga
         void Render (float deltaTime);
 
     private:
+        void ResizeWindow ();
+
+    private:
         bool m_AudioWasEnabled;
     };
 }

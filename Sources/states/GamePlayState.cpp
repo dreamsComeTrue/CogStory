@@ -14,6 +14,11 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
+    const Point GAME_WINDOW_SIZE = {800, 600};
+
+    //--------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
+
     GamePlayState::GamePlayState (MainLoop* mainLoop)
         : State (mainLoop, GAMEPLAY_STATE_NAME)
         , m_AudioWasEnabled (true)
@@ -54,6 +59,9 @@ namespace aga
 
     void GamePlayState::BeforeEnter ()
     {
+        m_MainLoop->GetScreen ()->SetWindowSize (GAME_WINDOW_SIZE);
+        m_MainLoop->GetScreen ()->CenterOnScreen ();
+
         m_MainLoop->GetAudioManager ().SetEnabled (m_AudioWasEnabled);
 
         al_hide_mouse_cursor (m_MainLoop->GetScreen ()->GetDisplay ());
@@ -69,10 +77,7 @@ namespace aga
         sceneManager.GetSpeechFrameManager ().Clear ();
         sceneManager.GetCamera ().ClearTransformations ();
 
-        //  Initial scale in gameplay twice big as normal
-        const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-        const float SCREEN_SCALE = 2.0f;
-        sceneManager.GetCamera ().Scale (SCREEN_SCALE, SCREEN_SCALE, winSize.Width * 0.5, winSize.Height * 0.5);
+        ResizeWindow ();
 
         //  Re-init current initial scene everytime we start GamePlayState
         sceneManager.SetActiveScene (sceneManager.GetActiveScene ());
@@ -109,7 +114,37 @@ namespace aga
             }
         }
 
+        if (event->type == ALLEGRO_EVENT_DISPLAY_RESIZE)
+        {
+            ResizeWindow ();
+        }
+
         return m_MainLoop->GetSceneManager ().GetPlayer ()->ProcessEvent (event, deltaTime);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void GamePlayState::ResizeWindow ()
+    {
+        //  Initial scale in gameplay twice big as normal
+        const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+        const float SCREEN_SCALE = 2.0f;
+        float finalScale = (winSize.Width * SCREEN_SCALE) / GAME_WINDOW_SIZE.Width;
+
+        Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
+        Point translate = camera.GetTranslate ();
+
+        camera.ClearTransformations ();
+
+        m_MainLoop->GetSceneManager ().GetCamera ().Scale (
+            finalScale, finalScale, winSize.Width * 0.5, winSize.Height * 0.5);
+
+        camera.SetTranslate (translate);
+
+        if (camera.GetFollowActor ())
+        {
+            camera.GetFollowActor ()->MoveCallback (0, 0);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

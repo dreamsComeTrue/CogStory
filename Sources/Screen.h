@@ -33,7 +33,7 @@ namespace aga
         void SetMouseCursor (const char* path);
 
         void SetWindowSize (Point size);
-        const Point& GetWindowSize () const;
+        Point& GetWindowSize ();
         Font& GetFont ();
 
         float GetDeltaTime () const;

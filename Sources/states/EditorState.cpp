@@ -101,9 +101,6 @@ namespace aga
 
         m_LastWindowSize.X = al_get_display_width (display);
         m_LastWindowSize.Y = al_get_display_height (display);
-
-        m_MainLoop->GetScreen ()->SetWindowSize ({800, 600});
-        m_MainLoop->GetScreen ()->CenterOnScreen ();
     }
 
     //--------------------------------------------------------------------------------------------------

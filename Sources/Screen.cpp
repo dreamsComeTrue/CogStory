@@ -324,7 +324,18 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    const Point& Screen::GetWindowSize () const { return m_RealSize; }
+    Point& Screen::GetWindowSize ()
+    {
+        int width = al_get_display_width (m_Display);
+        int height = al_get_display_height (m_Display);
+
+        if (width != m_RealSize.Width || height != m_RealSize.Height)
+        {
+            m_RealSize = {width, height};
+        }
+
+        return m_RealSize;
+    }
 
     //--------------------------------------------------------------------------------------------------
 
