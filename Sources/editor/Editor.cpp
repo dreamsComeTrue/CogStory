@@ -76,6 +76,7 @@ namespace aga
         , m_OpenPopupSaveScene (false)
         , m_OpenPopupActorEditor (false)
         , m_OpenPopupSpeechEditor (false)
+        , m_OpenPopupAnimationEditor (false)
     {
     }
 
@@ -436,6 +437,12 @@ namespace aga
             case ALLEGRO_KEY_F3:
             {
                 OnSpeech ();
+                break;
+            }
+
+            case ALLEGRO_KEY_F4:
+            {
+                OnAnimation ();
                 break;
             }
 
@@ -1045,6 +1052,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Editor::OnAnimation ()
+    {
+        m_OpenPopupAnimationEditor = true;
+
+        m_AnimationWindow->Show ([&](std::string name, std::string typeName) {}, nullptr);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Editor::MarkPlayerPosition ()
     {
         ALLEGRO_MOUSE_STATE state;
@@ -1211,6 +1227,20 @@ namespace aga
                 }
 
                 m_SpeechWindow->RenderUI ();
+
+                if ((ImGui::Button ("ANIMATIONS [F4]", buttonSize) || m_OpenPopupAnimationEditor))
+                {
+                    if (!m_OpenPopupAnimationEditor)
+                    {
+                        OnAnimation ();
+                    }
+
+                    ImGui::OpenPopup ("Animations");
+
+                    m_OpenPopupAnimationEditor = false;
+                }
+
+                m_AnimationWindow->Render ();
 
                 if (ImGui::Button ("PLAY [F1]", buttonSize))
                 {

@@ -55,9 +55,11 @@ namespace aga
 
         strcpy (m_Animation, m_Animations[m_SelectedAnimation].c_str ());
         strcpy (m_Name, m_Names[m_SelectedName].c_str ());
-        m_AnimSpeed = ActorFactory::GetAnimation (m_Animation).GetAnimationData (m_Name).GetPlaySpeed ();
 
-        ImGui::OpenPopup ("Animations");
+        AnimationData animData = ActorFactory::GetAnimation (m_Animation).GetAnimationData (m_Name);
+
+        m_AnimSpeed = animData.GetPlaySpeed ();
+        m_Frames = animData.GetFrames ();
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -376,19 +376,6 @@ namespace aga
             ImGui::OpenPopup ("Actor Window Alert");
         }
     }
-    //--------------------------------------------------------------------------------------------------
-
-    void EditorActorWindow::OnAnimation ()
-    {
-        if (m_ActorName[0] != '\0')
-        {
-            m_Editor->GetAnimationWindow ()->Show ([&](std::string name, std::string typeName) {}, nullptr);
-        }
-        else
-        {
-            ImGui::OpenPopup ("Actor Window Alert");
-        }
-    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -699,13 +686,6 @@ namespace aga
                 }
 
                 m_Editor->GetComponentWindow ()->Render ();
-
-                if (ImGui::Button ("ANIMATIONS", buttonSize))
-                {
-                    OnAnimation ();
-                }
-
-                m_Editor->GetAnimationWindow ()->Render ();
 
                 //  Alert window
                 bool open = true;

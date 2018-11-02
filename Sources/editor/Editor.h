@@ -130,6 +130,7 @@ namespace aga
 
         void OnSpeech ();
         void OnActorSelected ();
+        void OnAnimation ();
 
         void MarkPlayerPosition ();
 
@@ -201,6 +202,7 @@ namespace aga
         bool m_OpenPopupSaveScene;
         bool m_OpenPopupActorEditor;
         bool m_OpenPopupSpeechEditor;
+        bool m_OpenPopupAnimationEditor;
 
         std::vector<std::string> m_RecentFileNames;
     };
