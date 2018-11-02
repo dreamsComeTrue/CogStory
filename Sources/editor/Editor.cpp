@@ -1228,7 +1228,7 @@ namespace aga
 
                 m_SpeechWindow->RenderUI ();
 
-                if ((ImGui::Button ("ANIMATIONS [F4]", buttonSize) || m_OpenPopupAnimationEditor))
+                if ((ImGui::Button ("ANIM [F4]", buttonSize) || m_OpenPopupAnimationEditor))
                 {
                     if (!m_OpenPopupAnimationEditor)
                     {

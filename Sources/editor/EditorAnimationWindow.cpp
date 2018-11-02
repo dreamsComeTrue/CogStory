@@ -175,17 +175,18 @@ namespace aga
 
     void EditorAnimationWindow::Render ()
     {
-        ImGui::SetNextWindowPos (ImVec2 (0, 0));
-
         const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
 
-        ImGui::SetNextWindowSize (ImVec2 (220, winSize.Height - 220), ImGuiCond_Always);
+        ImGui::SetNextWindowPos (ImVec2 (0, 0));
+        ImGui::SetNextWindowSize (ImVec2 (245, winSize.Height - 220), ImGuiCond_Always);
 
         if (ImGui::BeginPopupModal ("Animations", NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
+            float controlWidth = 150.f;
+
             ImGui::Text ("Animations");
             ImGui::SameLine ();
-            ImGui::PushItemWidth (130.f);
+            ImGui::PushItemWidth (controlWidth);
             if (ImGui::Combo ("##animations", &m_SelectedAnimation, m_Animations))
             {
                 UpdateNames ();
@@ -196,7 +197,7 @@ namespace aga
 
             ImGui::Text ("     Names");
             ImGui::SameLine ();
-            ImGui::PushItemWidth (130.f);
+            ImGui::PushItemWidth (controlWidth);
             if (ImGui::Combo ("##names", &m_SelectedName, m_Names))
             {
                 strcpy (m_Name, m_Names[m_SelectedName].c_str ());
@@ -212,7 +213,7 @@ namespace aga
 
             ImGui::Text (" Animation");
             ImGui::SameLine ();
-            ImGui::PushItemWidth (130.f);
+            ImGui::PushItemWidth (controlWidth);
 
             if (ImGui::InputText ("##anim", m_Animation, IM_ARRAYSIZE (m_Animation)))
             {
@@ -223,13 +224,13 @@ namespace aga
 
             ImGui::Text ("      Name");
             ImGui::SameLine ();
-            ImGui::PushItemWidth (130.f);
+            ImGui::PushItemWidth (controlWidth);
             ImGui::InputText ("##name", m_Name, IM_ARRAYSIZE (m_Name));
             ImGui::PopItemWidth ();
 
             ImGui::Text ("      Path");
             ImGui::SameLine ();
-            ImGui::PushItemWidth (130.f);
+            ImGui::PushItemWidth (controlWidth);
             if (ImGui::Combo ("##animPath", &m_SelectedImagePath, m_ImagePaths))
             {
                 UpdateImageCombos ();
@@ -239,7 +240,7 @@ namespace aga
 
             ImGui::Text ("     Image");
             ImGui::SameLine ();
-            ImGui::PushItemWidth (130.f);
+            ImGui::PushItemWidth (controlWidth);
             if (ImGui::Combo ("##animImage", &m_SelectedImage, m_Images))
             {
                 UpdateImageCombos ();
@@ -249,18 +250,18 @@ namespace aga
 
             ImGui::Text ("     Speed");
             ImGui::SameLine ();
-            ImGui::PushItemWidth (130.f);
+            ImGui::PushItemWidth (controlWidth);
             ImGui::InputInt ("##animSpeed", &m_AnimSpeed);
             ImGui::PopItemWidth ();
 
-            if (ImGui::Button ("SAVE", ImVec2 (100, 18)))
+            if (ImGui::Button ("SAVE", ImVec2 (110, 18)))
             {
                 OnSave ();
                 UpdateAnimations ();
             }
 
             ImGui::SameLine ();
-            ImGui::Button ("DELETE", ImVec2 (100, 18));
+            ImGui::Button ("DELETE", ImVec2 (110, 18));
 
             int headerStyle = ImGuiTreeNodeFlags_Bullet | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_DefaultOpen;
             if (ImGui::CollapsingHeader ("Frames", headerStyle))
@@ -285,6 +286,46 @@ namespace aga
                         break;
                     }
 
+                    ImGui::SameLine ();
+
+                    if (ImGui::Button ((std::string ("^##animButton") + std::to_string (i)).c_str ()))
+                    {
+                        if (i == 0)
+                        {
+                            AnimationFrameEntry tmp = m_Frames[0];
+                            m_Frames[0] = m_Frames[m_Frames.size () - 1];
+                            m_Frames[m_Frames.size () - 1] = tmp;
+                        }
+                        else
+                        {
+                            AnimationFrameEntry tmp = m_Frames[i];
+                            m_Frames[i] = m_Frames[i - 1];
+                            m_Frames[i - 1] = tmp;
+                        }
+
+                        break;
+                    }
+
+                    ImGui::SameLine ();
+
+                    if (ImGui::Button ((std::string ("v##animButton") + std::to_string (i)).c_str ()))
+                    {
+                        if (i == m_Frames.size () - 1)
+                        {
+                            AnimationFrameEntry tmp = m_Frames[0];
+                            m_Frames[0] = m_Frames[m_Frames.size () - 1];
+                            m_Frames[m_Frames.size () - 1] = tmp;
+                        }
+                        else
+                        {
+                            AnimationFrameEntry tmp = m_Frames[i];
+                            m_Frames[i] = m_Frames[i + 1];
+                            m_Frames[i + 1] = tmp;
+                        }
+
+                        break;
+                    }
+
                     ImGui::NextColumn ();
                 }
 
@@ -295,7 +336,7 @@ namespace aga
 
             ImGui::BeginGroup ();
 
-            if (ImGui::Button ("ACCEPT", ImVec2 (50.f, 18.f)))
+            if (ImGui::Button ("ACCEPT", ImVec2 (110, 18)))
             {
                 ImGui::CloseCurrentPopup ();
                 m_IsVisible = false;
@@ -305,7 +346,7 @@ namespace aga
 
             ImGui::SameLine ();
 
-            if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
+            if (ImGui::Button ("CANCEL", ImVec2 (110, 18)) || m_Editor->IsCloseCurrentPopup ())
             {
                 OnCancel ();
 
@@ -385,7 +426,7 @@ namespace aga
     void EditorAnimationWindow::RenderSpritesheet ()
     {
         const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
-        const Point beginPoint = {240, 5};
+        const Point beginPoint = {260, 5};
 
         const int margin = 10;
 
