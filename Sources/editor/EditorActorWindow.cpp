@@ -102,15 +102,18 @@ namespace aga
                 = m_Editor->GetEditorActorMode ().AddOrUpdateActor (id, m_ActorName, m_ActorTypes[m_SelectedActorType],
                     blueprintID, position, atof (m_ActorRotation), m_ActorZOrder, atof (m_ActorFocusHeight));
 
-            if (m_SelectedAtlas && m_SelectedAtlasRegion != "")
-            {
-                retActor->Bounds.SetSize (m_SelectedAtlas->GetRegion (m_SelectedAtlasRegion).Bounds.Size);
-                retActor->SetAtlas (m_SelectedAtlas);
-                retActor->SetAtlasRegionName (m_SelectedAtlasRegion);
-            }
-
             if (retActor)
             {
+                if (m_SelectedAtlas && m_SelectedAtlasRegion != "")
+                {
+                    retActor->Bounds.SetSize (m_SelectedAtlas->GetRegion (m_SelectedAtlasRegion).Bounds.Size);
+                    retActor->SetAtlas (m_SelectedAtlas);
+                    retActor->SetAtlasRegionName (m_SelectedAtlasRegion);
+                }
+
+                retActor->SetAnimation (ActorFactory::GetAnimation (m_Animations[m_SelectedAnimation]));
+                retActor->SetCurrentAnimation (ANIM_IDLE_NAME);
+
                 m_Editor->GetEditorActorMode ().Clear ();
 
                 UpdateComboBoxes ();

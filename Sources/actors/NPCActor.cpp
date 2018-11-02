@@ -25,8 +25,10 @@ namespace aga
     {
         Actor::Initialize ();
 
-        SetAnimation (ActorFactory::GetAnimation ("NPC_1"));
-        SetCurrentAnimation (ANIM_STAND_LEFT_NAME);
+        if (GetAnimation ().GetName () != "")
+        {
+            SetCurrentAnimation (ANIM_IDLE_NAME);
+        }
 
         return true;
     }

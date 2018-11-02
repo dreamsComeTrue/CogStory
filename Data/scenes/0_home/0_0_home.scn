@@ -1,6 +1,7 @@
 {
     "actors": [
         {
+            "animation": "",
             "atlas": "0_0_home",
             "atlas-region": "main_room",
             "blueprint": "-1",
@@ -24,6 +25,7 @@
             "z-order": "-2"
         },
         {
+            "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0017",
             "blueprint": "-1",
@@ -47,6 +49,7 @@
             "z-order": "0"
         },
         {
+            "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0016",
             "blueprint": "-1",
@@ -66,6 +69,7 @@
             "z-order": "0"
         },
         {
+            "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0016",
             "blueprint": "-1",
@@ -85,6 +89,7 @@
             "z-order": "0"
         },
         {
+            "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0016",
             "blueprint": "-1",
@@ -104,6 +109,7 @@
             "z-order": "0"
         },
         {
+            "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0013",
             "blueprint": "-1",
@@ -127,6 +133,7 @@
             "z-order": "0"
         },
         {
+            "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0013",
             "blueprint": "-1",
@@ -150,6 +157,7 @@
             "z-order": "0"
         },
         {
+            "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0013",
             "blueprint": "-1",
@@ -173,6 +181,7 @@
             "z-order": "0"
         },
         {
+            "animation": "",
             "atlas": "0_0_home",
             "atlas-region": "bed",
             "blueprint": "-1",

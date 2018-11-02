@@ -175,6 +175,10 @@ namespace aga
     {
         ImGui::SetNextWindowPos (ImVec2 (0, 0));
 
+        const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+
+        ImGui::SetNextWindowSize (ImVec2 (220, winSize.Height - 220), ImGuiCond_Always);
+
         if (ImGui::BeginPopupModal ("Animations", NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
             ImGui::Text ("Animations");

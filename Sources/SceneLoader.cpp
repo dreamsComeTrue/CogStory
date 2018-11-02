@@ -147,6 +147,12 @@ namespace aga
                         newActor->SetAtlasRegionName (actorIt["atlas-region"]);
                     }
 
+                    if (!actorIt["animation"].is_null ())
+                    {
+                        Animation& animation = ActorFactory::GetAnimation (actorIt["animation"]);
+                        newActor->SetAnimation (animation);
+                    }
+
                     //  Physics
                     if (!actorIt["phys"].is_null ())
                     {
@@ -342,6 +348,7 @@ namespace aga
                 actorObj["rot"] = std::to_string (actor->Rotation);
                 actorObj["atlas"] = actor != nullptr ? actor->GetAtlas ()->GetName () : "";
                 actorObj["atlas-region"] = actor->GetAtlasRegionName ();
+                actorObj["animation"] = actor->GetAnimation ().GetName ();
                 actorObj["collision"] = std::to_string (actor->IsCollisionEnabled ());
                 actorObj["collidable"] = std::to_string (actor->IsCollidable ());
                 actorObj["overlap"] = std::to_string (actor->IsCheckOverlap ());
