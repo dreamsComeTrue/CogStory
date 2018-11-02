@@ -30,6 +30,7 @@ namespace aga
     class EditorSceneWindow;
     class EditorScriptWindow;
     class EditorComponentWindow;
+    class EditorAnimationWindow;
 
     class MainLoop;
     struct Tile;
@@ -78,6 +79,7 @@ namespace aga
 
         EditorScriptWindow* GetScriptWindow () { return m_ScriptWindow; }
         EditorComponentWindow* GetComponentWindow () { return m_ComponentWindow; }
+        EditorAnimationWindow* GetAnimationWindow () { return m_AnimationWindow; }
 
         ALLEGRO_TRANSFORM& GetWorldTransform () { return m_WorldTransform; }
 
@@ -183,6 +185,7 @@ namespace aga
         EditorActorWindow* m_ActorWindow;
         EditorScriptWindow* m_ScriptWindow;
         EditorComponentWindow* m_ComponentWindow;
+        EditorAnimationWindow* m_AnimationWindow;
 
         std::string m_LastScenePath;
 

@@ -29,7 +29,7 @@ namespace aga
     {
         m_InitialPos = owner->Bounds.Pos;
 
-        SetMoveExtents ({ -50.f, -50.f }, { 50.f, 50.f });
+        SetMoveExtents ({-50.f, -50.f}, {50.f, 50.f});
 
         m_Actor->AddCollisionCallback ([&](Collidable* other) { ComputeTargetPos (); });
     }
@@ -106,7 +106,7 @@ namespace aga
                     = m_Actor->GetSceneManager ()->GetActiveScene ()->RecomputeVisibleEntities (true);
                 for (Entity* ent : entites)
                 {
-                    Collidable* collidable = (Actor*)ent;
+                    Collidable* collidable = static_cast<Actor*> (ent);
                     Point collisionDelta;
 
                     if (ent != m_Actor && m_Actor->IsCollidingWith (collidable, deltaPos, std::move (collisionDelta)))

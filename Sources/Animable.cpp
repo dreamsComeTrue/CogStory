@@ -1,6 +1,7 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Animable.h"
+#include "ActorFactory.h"
 #include "Atlas.h"
 #include "AtlasManager.h"
 #include "Transformable.h"
@@ -12,6 +13,7 @@ namespace aga
     Animable::Animable (AtlasManager* atlasManager)
         : m_AtlasManager (atlasManager)
         , m_Atlas (nullptr)
+        , m_Animation (ActorFactory::GetDummyAnimation ())
     {
     }
 
@@ -77,13 +79,14 @@ namespace aga
             }
             else
             {
-                AnimationFrames& frames = m_Animation.GetCurrentAnimation ();
-                Rect& frame = frames.GetFrame (m_Animation.GetCurrentFrame ());
+                AnimationData& frames = m_Animation.GetCurrentAnimation ();
+                AnimationFrameEntry& frame = frames.GetFrame (m_Animation.GetCurrentFrame ());
+                Rect frameRect = frame.Bounds;
 
-                sourceX = frame.GetPos ().X;
-                sourceY = frame.GetPos ().Y;
-                sourceWidth = frame.GetSize ().Width;
-                sourceHeight = frame.GetSize ().Height;
+                sourceX = frameRect.GetPos ().X;
+                sourceY = frameRect.GetPos ().Y;
+                sourceWidth = frameRect.GetSize ().Width;
+                sourceHeight = frameRect.GetSize ().Height;
 
                 m_Atlas->DrawRegion (
                     sourceX, sourceY, sourceWidth, sourceHeight, pos.X, pos.Y, 1, 1, transformable->Rotation, true);
@@ -97,7 +100,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    std::map<std::string, AnimationFrames>& Animable::GetAnimations () { return m_Animation.GetAnimations (); }
+    std::map<std::string, AnimationData>& Animable::GetAnimationsData () { return m_Animation.GetAnimations (); }
 
     //--------------------------------------------------------------------------------------------------
 

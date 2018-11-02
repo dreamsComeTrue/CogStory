@@ -44,6 +44,8 @@ namespace aga
         Point GetCenter () { return Point{Pos.X + Size.Width * 0.5f, Pos.Y + Size.Height * 0.5f}; }
         Point GetHalfSize () { return Point{Size.Width * 0.5f, Size.Height * 0.5f}; }
 
+        float GetArea () { return Size.Width * Size.Height; }
+
         Point Pos;
         Point Size;
 

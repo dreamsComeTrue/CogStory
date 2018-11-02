@@ -3,6 +3,7 @@
 #include "Editor.h"
 #include "AtlasManager.h"
 #include "EditorActorWindow.h"
+#include "EditorAnimationWindow.h"
 #include "EditorComponentWindow.h"
 #include "EditorSceneWindow.h"
 #include "EditorScriptWindow.h"
@@ -103,6 +104,7 @@ namespace aga
             m_ActorWindow = new EditorActorWindow (this);
             m_ScriptWindow = new EditorScriptWindow (this);
             m_ComponentWindow = new EditorComponentWindow (this);
+            m_AnimationWindow = new EditorAnimationWindow (this);
         }
 
         std::map<std::string, Atlas*>& atlases = m_MainLoop->GetAtlasManager ().GetAtlases ();
@@ -143,6 +145,7 @@ namespace aga
         SAFE_DELETE (m_EditorSceneWindow);
         SAFE_DELETE (m_ScriptWindow);
         SAFE_DELETE (m_ComponentWindow);
+        SAFE_DELETE (m_AnimationWindow);
 
         // Cleanup
         ImGui_ImplAllegro5_Shutdown ();
@@ -295,6 +298,14 @@ namespace aga
             {
                 m_CloseCurrentPopup = true;
                 TryToCloseWindows ();
+            }
+        }
+
+        if (event->type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
+        {
+            if (m_AnimationWindow->IsVisible () && event->mouse.button == 1)
+            {
+                m_AnimationWindow->SelectAnimationFrame (event->mouse.x, event->mouse.y);
             }
         }
 
@@ -555,6 +566,12 @@ namespace aga
         if (m_ActorWindow->IsVisible ())
         {
             m_ActorWindow->RenderActorImage ();
+        }
+
+        if (m_AnimationWindow->IsVisible ())
+        {
+            m_AnimationWindow->RenderSpritesheet ();
+            m_AnimationWindow->RenderAnimationFrames (deltaTime);
         }
 
         if (m_SpeechWindow->IsVisible ())

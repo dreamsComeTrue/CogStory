@@ -5,6 +5,7 @@
 #include "Screen.h"
 
 #include <chrono>
+#include <dirent.h>
 
 namespace aga
 {
@@ -195,6 +196,39 @@ namespace aga
         size_t found = str.find_last_of ("/");
 
         return str.substr (0, found);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::vector<std::string> GetFilesInDirectory (const std::string& path)
+    {
+        std::vector<std::string> result;
+
+        DIR* dir;
+        struct dirent* ent;
+
+        if ((dir = opendir (path.c_str ())) != NULL)
+        {
+            /* print all the files and directories within directory */
+            while ((ent = readdir (dir)) != NULL)
+            {
+                std::string fileName = ent->d_name;
+
+                if (IsFileExists (path + "/" + fileName) && fileName != "." && fileName != "..")
+                {
+                    result.push_back (ent->d_name);
+                }
+            }
+
+            closedir (dir);
+        }
+        else
+        {
+            /* could not open directory */
+            perror ("");
+        }
+
+        return result;
     }
 
     //--------------------------------------------------------------------------------------------------

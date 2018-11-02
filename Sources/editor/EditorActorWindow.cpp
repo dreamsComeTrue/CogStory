@@ -6,6 +6,7 @@
 #include "AtlasManager.h"
 #include "Component.h"
 #include "Editor.h"
+#include "EditorAnimationWindow.h"
 #include "EditorComponentWindow.h"
 #include "EditorScriptWindow.h"
 #include "MainLoop.h"
@@ -160,9 +161,11 @@ namespace aga
 
         m_Animations.push_back ("");
 
-        for (AnimationData& data : g_AnimationData)
+        std::map<std::string, Animation>& animations = ActorFactory::GetAnimations ();
+
+        for (auto& kv : animations)
         {
-            m_Animations.push_back (data.Name);
+            m_Animations.push_back (kv.first);
         }
     }
 
@@ -284,6 +287,15 @@ namespace aga
             }
         }
 
+        for (int i = 0; i < m_Animations.size (); ++i)
+        {
+            if (m_SelectedActor->GetAnimation ().GetName () == m_Animations[i])
+            {
+                m_SelectedAnimation = i;
+                break;
+            }
+        }
+
         UpdateImageCombos ();
     }
 
@@ -355,6 +367,19 @@ namespace aga
         {
             m_Editor->GetComponentWindow ()->Show (
                 [&](std::string name, std::string typeName) { AddComponentEntry (name, typeName); }, nullptr);
+        }
+        else
+        {
+            ImGui::OpenPopup ("Actor Window Alert");
+        }
+    }
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::OnAnimation ()
+    {
+        if (m_ActorName[0] != '\0')
+        {
+            m_Editor->GetAnimationWindow ()->Show ([&](std::string name, std::string typeName) {}, nullptr);
         }
         else
         {
@@ -671,6 +696,13 @@ namespace aga
                 }
 
                 m_Editor->GetComponentWindow ()->Render ();
+
+                if (ImGui::Button ("ANIMATIONS", buttonSize))
+                {
+                    OnAnimation ();
+                }
+
+                m_Editor->GetAnimationWindow ()->Render ();
 
                 //  Alert window
                 bool open = true;

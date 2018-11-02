@@ -8,19 +8,16 @@
 #include "actors/components/MovementComponent.h"
 #include "actors/components/ParticleEmitterComponent.h"
 
+using json = nlohmann::json;
+
 namespace aga
 {
-    //--------------------------------------------------------------------------------------------------
-
-    std::vector<AnimationData> g_AnimationData
-        = {{"ANIMATION_PLAYER", "player.anim"}, {"ANIMATION_NPC_1", "npc_1.anim"}};
-
-    //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
     std::vector<std::string> ActorFactory::s_ActorTypes;
     std::vector<std::string> ActorFactory::s_ActorComponents;
     std::map<std::string, Animation> ActorFactory::s_Animations;
+    Animation ActorFactory::s_DummyAnimation;
 
     //--------------------------------------------------------------------------------------------------
 
@@ -48,11 +45,19 @@ namespace aga
 
     void ActorFactory::RegisterAnimations ()
     {
-        const std::string animPath = GetDataPath () + "/animations/";
+        s_Animations.clear ();
 
-        for (AnimationData& data : g_AnimationData)
+        const std::string animPath = GetDataPath () + "/animations/";
+        std::vector<std::string> files = GetFilesInDirectory (animPath);
+
+        for (std::string& fileName : files)
         {
-            s_Animations[data.Name] = LoadAnimationFromFile (animPath + "/" + data.FilePath);
+            Animation animation = LoadAnimationFromFile (animPath + "/" + fileName);
+
+            if (animation.GetName () != "")
+            {
+                s_Animations[animation.GetName ()] = animation;
+            }
         }
     }
 
@@ -61,51 +66,47 @@ namespace aga
     Animation ActorFactory::LoadAnimationFromFile (const std::string& path)
     {
         std::ifstream animFile (path);
-        std::string line = "";
+        json j;
+        animFile >> j;
+        animFile.close ();
 
         Animation animation;
+        std::string name = GetBaseName (j["animation"]);
 
-        AnimationFrames* currentFrames = nullptr;
-
-        while (!animFile.eof ())
+        if (EndsWith (name, ".anim"))
         {
-            getline (animFile, line);
-
-            if (line == "" || line == "\n")
-            {
-                continue;
-            }
-
-            //  We can parse - we have a name
-            if (!StartsWith (line, "\t"))
-            {
-                std::vector<std::string> lineData = SplitString (line, ' ');
-                std::string framesName = lineData[0];
-                int framesCount = atoi (lineData[1].c_str ());
-                int cellWidth = atoi (lineData[2].c_str ());
-                int cellHeight = atoi (lineData[3].c_str ());
-                int framesSpeed = atoi (lineData[4].c_str ());
-
-                AnimationFrames frames (framesCount, {cellWidth, cellHeight});
-                frames.SetPlaySpeed (framesSpeed);
-
-                animation.AddFrames (framesName, frames);
-                currentFrames = &animation.GetAnimationFrames (framesName);
-            }
-            else
-            {
-                std::vector<std::string> lineData = SplitString (TrimString (line), ' ');
-
-                if (currentFrames)
-                {
-                    int x = atoi (lineData[0].c_str ());
-                    int y = atoi (lineData[1].c_str ());
-                    currentFrames->AddFrame (x, y);
-                }
-            }
+            name = name.substr (0, name.find (".anim"));
         }
 
-        animFile.close ();
+        animation.SetName (name);
+
+        auto& animations = j["animations"];
+
+        for (auto& animationEntry : animations)
+        {
+            AnimationData animData;
+
+            animData.SetName (animationEntry["name"]);
+            animData.SetPlaySpeed (animationEntry["speed"]);
+
+            auto& frames = animationEntry["frames"];
+
+            for (auto& frame : frames)
+            {
+                AnimationFrameEntry frameEntry;
+
+                frameEntry.Atlas = frame["atlas"];
+                frameEntry.AtlasRegion = frame["region"];
+
+                std::vector<Point> points = StringToVectorPoints (frame["bounds"]);
+                frameEntry.Bounds.Pos = points[0];
+                frameEntry.Bounds.Size = points[1];
+
+                animData.AddFrame (frameEntry);
+            }
+
+            animation.AddAnimationData (animData.GetName (), animData);
+        }
 
         return animation;
     }
@@ -156,7 +157,18 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Animation& ActorFactory::GetAnimation (const std::string& name) { return s_Animations[name]; }
+    Animation& ActorFactory::GetAnimation (const std::string& name)
+    {
+        for (auto& kv : s_Animations)
+        {
+            if (kv.first == name)
+            {
+                return s_Animations[name];
+            }
+        }
+
+        return s_DummyAnimation;
+    }
 
     //--------------------------------------------------------------------------------------------------
 }

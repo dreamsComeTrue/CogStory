@@ -55,7 +55,7 @@ namespace aga
         Animable::Initialize ("player", "");
         Bounds.SetSize ({64, 64});
 
-        SetAnimation (ActorFactory::GetAnimation ("ANIMATION_PLAYER"));
+        SetAnimation (ActorFactory::GetAnimation ("PLAYER"));
         SetCurrentAnimation (ANIM_IDLE_NAME);
 
         m_FootStepComponent

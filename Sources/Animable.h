@@ -28,8 +28,8 @@ namespace aga
         virtual void SetCurrentAnimation (const std::string& name);
 
         Animation& GetAnimation () { return m_Animation; }
-        void SetAnimation (Animation animation) { m_Animation = animation; }
-        std::map<std::string, AnimationFrames>& GetAnimations ();
+        void SetAnimation (Animation& animation) { m_Animation = animation; }
+        std::map<std::string, AnimationData>& GetAnimationsData ();
 
         virtual void SetAtlasName (const std::string& name) { m_AtlasName = name; }
         virtual void SetAtlasRegionName (const std::string& name) { m_AtlasRegionName = name; }

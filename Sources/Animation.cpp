@@ -6,7 +6,7 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    AnimationFrames::AnimationFrames (unsigned howManyFrames, Point cellSize)
+    AnimationData::AnimationData (unsigned howManyFrames, Point cellSize)
         : m_SpeedMS (1000)
         , m_CellSize (cellSize)
     {
@@ -15,48 +15,51 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void AnimationFrames::SetPlaySpeed (unsigned milliseconds) { m_SpeedMS = milliseconds; }
+    void AnimationData::SetPlaySpeed (unsigned milliseconds) { m_SpeedMS = milliseconds; }
 
     //--------------------------------------------------------------------------------------------------
 
-    unsigned AnimationFrames::GetPlaySpeed () const { return m_SpeedMS; }
+    unsigned AnimationData::GetPlaySpeed () const { return m_SpeedMS; }
 
     //--------------------------------------------------------------------------------------------------
 
-    void AnimationFrames::AddFrame (unsigned index, const Rect& rect)
+    void AnimationData::AddFrame (const AnimationFrameEntry& frame, int index)
     {
-        m_Frames.insert (m_Frames.begin () + index, rect);
+        if (index >= 0)
+        {
+            m_Frames.insert (m_Frames.begin () + index, frame);
+        }
+        else
+        {
+            m_Frames.push_back (frame);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void AnimationFrames::AddFrame (unsigned index, int row, int col)
-    {
-        Rect rect = Rect ({col * m_CellSize.Width, row * m_CellSize.Height},
-            {col * m_CellSize.Width + m_CellSize.Width, row * m_CellSize.Height + m_CellSize.Height});
-        m_Frames.insert (m_Frames.begin () + index, rect);
-    }
+    //    void AnimationData::AddFrame (unsigned index, int row, int col)
+    //    {
+    //        Rect rect = Rect ({col * m_CellSize.Width, row * m_CellSize.Height},
+    //            {col * m_CellSize.Width + m_CellSize.Width, row * m_CellSize.Height + m_CellSize.Height});
+    //        m_Frames.insert (m_Frames.begin () + index, rect);
+    //    }
+
+    //    //--------------------------------------------------------------------------------------------------
+
+    //    void AnimationData::AddFrame (int row, int col)
+    //    {
+    //        Rect rect = Rect ({col * m_CellSize.Width, row * m_CellSize.Height},
+    //            {col * m_CellSize.Width + m_CellSize.Width, row * m_CellSize.Height + m_CellSize.Height});
+    //        m_Frames.push_back (rect);
+    //    }
 
     //--------------------------------------------------------------------------------------------------
 
-    void AnimationFrames::AddFrame (int row, int col)
-    {
-        Rect rect = Rect ({col * m_CellSize.Width, row * m_CellSize.Height},
-            {col * m_CellSize.Width + m_CellSize.Width, row * m_CellSize.Height + m_CellSize.Height});
-        m_Frames.push_back (rect);
-    }
+    AnimationFrameEntry& AnimationData::GetFrame (unsigned index) { return m_Frames[index]; }
 
     //--------------------------------------------------------------------------------------------------
 
-    Rect& AnimationFrames::GetFrame (unsigned index) { return m_Frames[index]; }
-
-    //--------------------------------------------------------------------------------------------------
-
-    size_t AnimationFrames::GetFramesCount () const { return m_Frames.size (); }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void AnimationFrames::SetCellSize (Point p) { m_CellSize = p; }
+    size_t AnimationData::GetFramesCount () const { return m_Frames.size (); }
 
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
@@ -69,18 +72,22 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Animation::AddFrames (const std::string& name, const AnimationFrames& frames)
+    void Animation::AddAnimationData (const std::string& name, const AnimationData& frames)
     {
         m_Animations.insert (std::make_pair (name, frames));
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    AnimationFrames& Animation::GetAnimationFrames (const std::string& name) { return m_Animations[name]; }
+    void Animation::ClearAnimationData () { m_Animations.clear (); }
 
     //--------------------------------------------------------------------------------------------------
 
-    AnimationFrames& Animation::GetCurrentAnimation () { return m_Animations[m_CurrentAnimationName]; }
+    AnimationData& Animation::GetAnimationData (const std::string& name) { return m_Animations[name]; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    AnimationData& Animation::GetCurrentAnimation () { return m_Animations[m_CurrentAnimationName]; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -88,7 +95,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    std::map<std::string, AnimationFrames>& Animation::GetAnimations () { return m_Animations; }
+    std::map<std::string, AnimationData>& Animation::GetAnimations () { return m_Animations; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -105,11 +112,11 @@ namespace aga
 
     void Animation::Update (float deltaTime)
     {
-        std::map<std::string, AnimationFrames>::iterator it = m_Animations.find (m_CurrentAnimationName);
+        std::map<std::string, AnimationData>::iterator it = m_Animations.find (m_CurrentAnimationName);
 
         if (it != m_Animations.end ())
         {
-            AnimationFrames& animation = it->second;
+            AnimationData& animation = it->second;
 
             m_TimeTaken += deltaTime * 1000;
 

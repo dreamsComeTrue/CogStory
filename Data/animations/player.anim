@@ -1,51 +1,225 @@
-ANIM_IDLE 3 64 64 500
-	0 0
-	0 1
-	0 2
-
-ANIM_MOVE_DOWN 6 64 64 80
-	1 0
-	1 1
-	1 2
-	1 3
-	1 4
-	1 5
-
-ANIM_MOVE_LEFT 6 64 64 110
-	2 0
-	2 1
-	2 2
-	2 3
-	2 4
-	2 5
-
-ANIM_MOVE_RIGHT 6 64 64 110
-	3 0
-	3 1
-	3 2
-	3 3
-	3 4
-	3 5
-
-ANIM_MOVE_UP 6 64 64 80
-	4 0
-	4 1
-	4 2
-	4 3
-	4 4
-	4 5
-
-ANIM_MOVE_UP_LOOK 1 64 64 80
-	4 0
-
-ANIM_STAND_LEFT 1 64 64 80
-	2 0
-
-ANIM_STAND_RIGHT 1 64 64 80
-	3 0
-
-ANIM_STAND_UP 1 64 64 80
-	4 0
-
-ANIM_STAND_DOWN 1 64 64 80
-	1 0
+{
+    "animation": "PLAYER",
+    "animations": [
+        {
+            "frames": [
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "0,000000 0,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "64,000000 0,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "128,000000 0,000000 64,000000 64,000000 "
+                }                                
+            ],
+            "name": "ANIM_IDLE",
+            "speed": 500
+        },
+        {
+            "frames": [
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "0,000000 64,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "64,000000 64,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "128,000000 64,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "192,000000 64,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "256,000000 64,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "320,000000 64,000000 64,000000 64,000000 "
+                }
+            ],
+            "name": "ANIM_MOVE_DOWN",
+            "speed": 80
+        },
+        {
+            "frames": [
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "0,000000 128,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "64,000000 128,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "128,000000 128,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "192,000000 128,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "256,000000 128,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "320,000000 128,000000 64,000000 64,000000 "
+                }
+            ],
+            "name": "ANIM_MOVE_LEFT",
+            "speed": 110
+        },
+        {
+            "frames": [
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "0,000000 192,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "64,000000 192,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "128,000000 192,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "192,000000 192,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "256,000000 192,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "320,000000 192,000000 64,000000 64,000000 "
+                }
+            ],
+            "name": "ANIM_MOVE_RIGHT",
+            "speed": 110
+        },
+        {
+            "frames": [
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "0,000000 256,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "64,000000 256,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "128,000000 256,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "192,000000 256,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "256,000000 256,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "320,000000 256,000000 64,000000 64,000000 "
+                }
+            ],
+            "name": "ANIM_MOVE_UP",
+            "speed": 80
+        },
+        {
+            "frames": [
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "0,000000 256,000000 64,000000 64,000000 "
+                }
+            ],
+            "name": "ANIM_MOVE_UP_LOOK",
+            "speed": 80
+        },
+        {
+            "frames": [
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "0,000000 128,000000 64,000000 64,000000 "
+                }
+            ],
+            "name": "ANIM_STAND_LEFT",
+            "speed": 80
+        },
+        {
+            "frames": [
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "0,000000 192,000000 64,000000 64,000000 "
+                }
+            ],
+            "name": "ANIM_STAND_RIGHT",
+            "speed": 80
+        },
+        {
+            "frames": [
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "0,000000 256,000000 64,000000 64,000000 "
+                }
+            ],
+            "name": "ANIM_STAND_UP",
+            "speed": 80
+        },
+        {
+            "frames": [
+                {
+                    "atlas": "player",
+                    "region": "player",
+                    "bounds": "0,000000 64,000000 64,000000 64,000000 "
+                }
+            ],
+            "name": "ANIM_STAND_DOWN",
+            "speed": 80
+        }        
+    ]
+}

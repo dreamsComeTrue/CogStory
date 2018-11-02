@@ -32,6 +32,8 @@ namespace aga
         void OnAddComponent ();
         void OnRemoveComponent ();
 
+        void OnAnimation ();
+
         void UpdateImageCombos ();
 
         void UpdateComboBoxes ();

@@ -77,7 +77,7 @@ namespace aga
 
     void Actor::ChooseWalkAnimation (float angleDeg)
     {
-        if (GetAnimations ().empty ())
+        if (GetAnimationsData ().empty ())
         {
             return;
         }
@@ -107,7 +107,7 @@ namespace aga
 
     void Actor::ChooseStandAnimation (float angleDeg)
     {
-        if (GetAnimations ().empty ())
+        if (GetAnimationsData ().empty ())
         {
             return;
         }
@@ -417,7 +417,7 @@ namespace aga
     {
         float angleDeg = GetAngleWith (actor);
 
-        if (GetAnimations ().empty ())
+        if (GetAnimationsData ().empty ())
         {
             return;
         }

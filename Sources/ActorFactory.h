@@ -7,14 +7,6 @@
 
 namespace aga
 {
-    struct AnimationData
-    {
-        std::string Name;
-        std::string FilePath;
-    };
-
-    extern std::vector<AnimationData> g_AnimationData;
-
     class ActorFactory
     {
     public:
@@ -29,6 +21,9 @@ namespace aga
         static Actor* GetActor (SceneManager* sceneManager, const std::string& type);
         static class Component* GetActorComponent (Actor* actor, const std::string& type);
         static Animation& GetAnimation (const std::string& name);
+        static Animation& GetDummyAnimation () { return s_DummyAnimation; }
+
+        static std::map<std::string, Animation>& GetAnimations () { return s_Animations; }
 
     private:
         static Animation LoadAnimationFromFile (const std::string& path);
@@ -37,6 +32,7 @@ namespace aga
         static std::vector<std::string> s_ActorTypes;
         static std::vector<std::string> s_ActorComponents;
         static std::map<std::string, Animation> s_Animations;
+        static Animation s_DummyAnimation;
     };
 }
 
