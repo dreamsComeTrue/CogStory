@@ -11,6 +11,10 @@ void SceneChanged (const string &in previousSceneName)
     {
         pos = GetFlagPoint ("MARKER_FACTORY_CITY").Pos;
     }
+    else if (previousSceneName == "Factory")
+    {
+        pos = GetFlagPoint ("MARKER_FACTORY_FACTORY").Pos;
+    }
 
     player.SetCenterPosition (pos);
     camera.SetFollowActor (player);
@@ -20,16 +24,19 @@ void BeforeEnterScene ()
 {
     AddOnEnterCallback ("ENTRY_CITY", function (pt)
     {
-    	Color color = COLOR_BLACK;
-	    SceneFadeInOut (400, 400, color);
 	    SetActiveScene ("2_city/2_0_city.scn", true);
+    });    
+
+    AddOnEnterCallback ("ENTRY_FACTORY", function (pt)
+    {
+	    SetActiveScene ("1_factory/1_1_factory.scn", true);
     });      
 
     GetSceneAudioStream ().Play ();
     GetSceneAudioStream ().SetFadeIn (500.f);
 
-    AddParticles (26);
-    AddParticles (41);
+//    AddParticles (26);
+//    AddParticles (41);
 }
 
 void AfterLeaveScene ()

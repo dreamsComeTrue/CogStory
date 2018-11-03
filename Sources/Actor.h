@@ -23,9 +23,6 @@ namespace aga
     const std::string ANIM_STAND_LEFT_NAME = "ANIM_STAND_LEFT";
     const std::string ANIM_STAND_RIGHT_NAME = "ANIM_STAND_RIGHT";
 
-    //  Pixels Per Second
-    const float MOVE_SPEED = 100.0;
-
     class SceneManager;
     class Scene;
     class Component;

@@ -59,6 +59,9 @@ namespace aga
         m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (60, 60, 70));
 
         m_MainLoop->GetAudioManager ().SetEnabled (true);
+
+        //  TODO: remove
+        m_MainLoop->GetAudioManager ().SetEnabled (false);
     }
 
     //--------------------------------------------------------------------------------------------------

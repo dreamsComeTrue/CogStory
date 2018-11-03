@@ -219,7 +219,7 @@
     "player_start": "-1005,000000 801,000000",
     "scripts": [
         {
-            "name": "main",
+            "name": "0_0_home",
             "path": "0_home/0_0_home.script"
         }
     ],

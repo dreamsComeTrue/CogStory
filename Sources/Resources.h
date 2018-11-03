@@ -48,12 +48,6 @@ namespace aga
         FONT_SPEECH_FRAME,
         FONT_EDITOR,
 
-        //  Scenes
-        SCENE_0_0,
-
-        //  Scripts
-        SCRIPT_0_0,
-
         //  Sounds
         SOUND_FOOT_STEP,
         SOUND_SPEECH_SELECT,

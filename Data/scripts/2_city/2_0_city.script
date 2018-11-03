@@ -18,7 +18,7 @@ void SceneChanged (const string &in previousSceneName)
     {
         pos = GetFlagPoint ("MARKER_HOME_CITY").Pos;
     }
-    else if (previousSceneName == "Factory")
+    else if (previousSceneName == "Factory Hallway")
     {
         pos = GetFlagPoint ("MARKER_FACTORY_CITY").Pos;
     }
@@ -116,15 +116,11 @@ void RegisterFunctions ()
 
     AddOnEnterCallback ("ENTRY_HOME", function (pt)
     {
-    	Color color = COLOR_BLACK;
-	    SceneFadeInOut (400, 400, color);
 	    SetActiveScene ("0_home/0_0_home.scn", true);        
     });
 
     AddOnEnterCallback ("ENTRY_FACTORY", function (pt)
     {
-    	Color color = COLOR_BLACK;
-	    SceneFadeInOut (400, 400, color);
 	    SetActiveScene ("1_factory/1_0_factory.scn", true);
     });    
 

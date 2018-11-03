@@ -81,6 +81,9 @@ namespace aga
 
         //  Re-init current initial scene everytime we start GamePlayState
         sceneManager.SetActiveScene (sceneManager.GetActiveScene ());
+
+        //  TODO: remove
+        m_MainLoop->GetAudioManager ().SetEnabled (false);
     }
 
     //--------------------------------------------------------------------------------------------------

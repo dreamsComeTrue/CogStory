@@ -169,32 +169,35 @@ namespace aga
                 = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetTriggerArea (m_TriggerAreaName);
         }
 
-        Point pointToInsert = m_Editor->CalculateWorldPoint (mouseX, mouseY);
-        bool inserted = false;
-
-        //  After we select one of trigger point, we can insert next one accordingly
-        Point* againSelected = GetTriggerPointUnderCursor (mouseX, mouseY);
-
-        if (m_TriggerPoint && !againSelected)
+        if (m_TriggerArea)
         {
-            for (int i = 0; i < m_TriggerArea->Points.size (); ++i)
+            Point pointToInsert = m_Editor->CalculateWorldPoint (mouseX, mouseY);
+            bool inserted = false;
+
+            //  After we select one of trigger point, we can insert next one accordingly
+            Point* againSelected = GetTriggerPointUnderCursor (mouseX, mouseY);
+
+            if (m_TriggerPoint && !againSelected)
             {
-                if (m_TriggerPoint && (m_TriggerArea->Points)[i] == *m_TriggerPoint)
+                for (int i = 0; i < m_TriggerArea->Points.size (); ++i)
                 {
-                    m_TriggerArea->Points.insert (m_TriggerArea->Points.begin () + i + 1, pointToInsert);
-                    m_TriggerPoint = nullptr;
-                    inserted = true;
-                    break;
+                    if (m_TriggerPoint && (m_TriggerArea->Points)[i] == *m_TriggerPoint)
+                    {
+                        m_TriggerArea->Points.insert (m_TriggerArea->Points.begin () + i + 1, pointToInsert);
+                        m_TriggerPoint = nullptr;
+                        inserted = true;
+                        break;
+                    }
                 }
             }
-        }
 
-        m_TriggerPoint = GetTriggerPointUnderCursor (mouseX, mouseY);
+            m_TriggerPoint = GetTriggerPointUnderCursor (mouseX, mouseY);
 
-        if (!inserted && !m_TriggerPoint)
-        {
-            m_TriggerArea->Points.push_back (pointToInsert);
-            m_TriggerPoint = &(m_TriggerArea->Points)[m_TriggerArea->Points.size () - 1];
+            if (!inserted && !m_TriggerPoint)
+            {
+                m_TriggerArea->Points.push_back (pointToInsert);
+                m_TriggerPoint = &(m_TriggerArea->Points)[m_TriggerArea->Points.size () - 1];
+            }
         }
     }
 

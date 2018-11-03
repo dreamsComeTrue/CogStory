@@ -221,7 +221,6 @@ namespace aga
         {
             for (AudioStream* lastPlayed : m_LastPlayedStreams)
             {
-                Log (lastPlayed->GetName ().c_str ());
                 lastPlayed->Play ();
             }
 
