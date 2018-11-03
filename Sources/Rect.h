@@ -50,6 +50,8 @@ namespace aga
         Point Size;
 
         bool operator== (const Rect& rhs) const { return Pos == rhs.Pos && Size == rhs.Size; }
+
+        static Rect ZERO_RECT;
     };
 
     static Rect OrientRect (float x1, float y1, float x2, float y2)

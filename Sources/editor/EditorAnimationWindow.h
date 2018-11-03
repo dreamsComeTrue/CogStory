@@ -62,6 +62,7 @@ namespace aga
         bool m_IsVisible;
 
         class AtlasRegion* m_HoveredRegion;
+        Rect m_HoveredArea;
 
         std::function<void(std::string, std::string)> m_OnAcceptFunc;
         std::function<void(std::string, std::string)> m_OnCancelFunc;
@@ -70,6 +71,8 @@ namespace aga
         std::vector<AnimationFrameEntry> m_Frames;
         int m_CurrentFrameIndex;
         float m_FrameTimeLeft;
+
+        int m_CellX, m_CellY;
     };
 }
 

@@ -27,6 +27,8 @@ namespace aga
         , m_FrameTimeLeft (0.f)
         , m_SelectedAnimation (0)
         , m_SelectedName (0)
+        , m_CellX (0)
+        , m_CellY (0)
     {
     }
 
@@ -178,11 +180,11 @@ namespace aga
         const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
 
         ImGui::SetNextWindowPos (ImVec2 (0, 0));
-        ImGui::SetNextWindowSize (ImVec2 (245, winSize.Height - 220), ImGuiCond_Always);
+        ImGui::SetNextWindowSize (ImVec2 (300, winSize.Height - 220), ImGuiCond_Always);
 
         if (ImGui::BeginPopupModal ("Animations", NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
-            float controlWidth = 150.f;
+            float controlWidth = 200.f;
 
             ImGui::Text ("Animations");
             ImGui::SameLine ();
@@ -254,14 +256,26 @@ namespace aga
             ImGui::InputInt ("##animSpeed", &m_AnimSpeed);
             ImGui::PopItemWidth ();
 
-            if (ImGui::Button ("SAVE", ImVec2 (110, 18)))
+            if (ImGui::Button ("SAVE", ImVec2 (controlWidth / 2 + 40, 18)))
             {
                 OnSave ();
                 UpdateAnimations ();
             }
 
             ImGui::SameLine ();
-            ImGui::Button ("DELETE", ImVec2 (110, 18));
+            ImGui::Button ("DELETE", ImVec2 (controlWidth / 2 + 40, 18));
+
+            ImGui::Text ("CellX");
+            ImGui::SameLine ();
+            ImGui::PushItemWidth (controlWidth / 2 - 10);
+            ImGui::InputInt ("##cellX", &m_CellX);
+            ImGui::PopItemWidth ();
+            ImGui::SameLine ();
+            ImGui::Text ("CellY");
+            ImGui::SameLine ();
+            ImGui::PushItemWidth (controlWidth / 2 - 10);
+            ImGui::InputInt ("##cellY", &m_CellY);
+            ImGui::PopItemWidth ();
 
             int headerStyle = ImGuiTreeNodeFlags_Bullet | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_DefaultOpen;
             if (ImGui::CollapsingHeader ("Frames", headerStyle))
@@ -272,13 +286,12 @@ namespace aga
                 {
                     AnimationFrameEntry frame = m_Frames[i];
 
-                    ImGui::SetColumnWidth (-1, 80.f);
+                    ImGui::SetColumnWidth (-1, 100.f);
                     ImGui::Text (frame.Atlas.c_str ());
                     ImGui::NextColumn ();
-                    ImGui::SetColumnWidth (-1, 80.f);
+                    ImGui::SetColumnWidth (-1, 120.f);
                     ImGui::Text (frame.AtlasRegion.c_str ());
                     ImGui::NextColumn ();
-                    ImGui::SetColumnWidth (-1, 150.f);
 
                     if (ImGui::Button ((std::string ("X##animButton") + std::to_string (i)).c_str ()))
                     {
@@ -336,7 +349,7 @@ namespace aga
 
             ImGui::BeginGroup ();
 
-            if (ImGui::Button ("ACCEPT", ImVec2 (110, 18)))
+            if (ImGui::Button ("ACCEPT", ImVec2 (controlWidth / 2 + 40, 18)))
             {
                 ImGui::CloseCurrentPopup ();
                 m_IsVisible = false;
@@ -346,7 +359,7 @@ namespace aga
 
             ImGui::SameLine ();
 
-            if (ImGui::Button ("CANCEL", ImVec2 (110, 18)) || m_Editor->IsCloseCurrentPopup ())
+            if (ImGui::Button ("CANCEL", ImVec2 (controlWidth / 2 + 40, 18)) || m_Editor->IsCloseCurrentPopup ())
             {
                 OnCancel ();
 
@@ -426,7 +439,7 @@ namespace aga
     void EditorAnimationWindow::RenderSpritesheet ()
     {
         const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
-        const Point beginPoint = {260, 5};
+        const Point beginPoint = {315, 5};
 
         const int margin = 10;
 
@@ -466,31 +479,57 @@ namespace aga
                 al_get_mouse_state (&state);
 
                 m_HoveredRegion = nullptr;
+                m_HoveredArea = Rect::ZERO_RECT;
 
-                for (AtlasRegion& region : regions)
+                if (m_CellX > 0 && m_CellY > 0)
                 {
-                    Rect bounds = region.Bounds;
-                    bounds.Pos *= 1.f / ratio;
-                    bounds.Size *= 1.f / ratio;
-                    bounds.Offset (beginPoint);
+                    float drawingWidth = winSize.Width - margin;
+                    float drawingHeight = winSize.Height - margin;
+                    Rect drawingRect = {beginPoint.X + 1, beginPoint.Y + 1, drawingWidth, drawingHeight};
 
-                    if (InsideRect (state.x, state.y, bounds))
+                    if (InsideRect (state.x, state.y, drawingRect))
                     {
-                        m_HoveredRegion = &region;
+                        Rect bounds;
+                        bounds.Pos = Point ((float)std::floor ((state.x - beginPoint.X - 1) / m_CellX) * m_CellX,
+                            (float)std::floor ((state.y - beginPoint.Y - 1) / m_CellY) * m_CellY);
+                        bounds.Size = {m_CellX, m_CellY};
 
-                        ALLEGRO_COLOR selectColor = COLOR_YELLOW;
-                        selectColor.a = 0.5f;
+                        Rect drawingBounds = bounds;
+                        drawingBounds.Offset (beginPoint.X + 1, beginPoint.Y + 1);
 
-                        int blendOp, blendSrc, blendDst;
-                        al_get_blender (&blendOp, &blendSrc, &blendDst);
-                        al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+                        al_draw_rectangle (drawingBounds.GetTopLeft ().X, drawingBounds.GetTopLeft ().Y,
+                            drawingBounds.GetBottomRight ().X, drawingBounds.GetBottomRight ().Y, COLOR_YELLOW, 1);
 
-                        al_draw_rectangle (bounds.GetTopLeft ().X, bounds.GetTopLeft ().Y, bounds.GetBottomRight ().X,
-                            bounds.GetBottomRight ().Y, COLOR_YELLOW, 1);
-                        al_draw_filled_rectangle (bounds.GetTopLeft ().X, bounds.GetTopLeft ().Y,
-                            bounds.GetBottomRight ().X, bounds.GetBottomRight ().Y, selectColor);
+                        m_HoveredArea = bounds;
+                    }
+                }
+                else
+                {
+                    for (AtlasRegion& region : regions)
+                    {
+                        Rect bounds = region.Bounds;
+                        bounds.Pos *= 1.f / ratio;
+                        bounds.Size *= 1.f / ratio;
+                        bounds.Offset (beginPoint);
 
-                        al_set_blender (blendOp, blendSrc, blendDst);
+                        if (InsideRect (state.x, state.y, bounds))
+                        {
+                            m_HoveredRegion = &region;
+
+                            ALLEGRO_COLOR selectColor = COLOR_YELLOW;
+                            selectColor.a = 0.5f;
+
+                            int blendOp, blendSrc, blendDst;
+                            al_get_blender (&blendOp, &blendSrc, &blendDst);
+                            al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+
+                            al_draw_rectangle (bounds.GetTopLeft ().X, bounds.GetTopLeft ().Y,
+                                bounds.GetBottomRight ().X, bounds.GetBottomRight ().Y, COLOR_YELLOW, 1);
+                            al_draw_filled_rectangle (bounds.GetTopLeft ().X, bounds.GetTopLeft ().Y,
+                                bounds.GetBottomRight ().X, bounds.GetBottomRight ().Y, selectColor);
+
+                            al_set_blender (blendOp, blendSrc, blendDst);
+                        }
                     }
                 }
             }
@@ -561,6 +600,15 @@ namespace aga
             AnimationFrameEntry frame;
             frame.Atlas = m_SelectedAtlas->GetName ();
             frame.AtlasRegion = m_HoveredRegion->Name;
+
+            m_Frames.push_back (frame);
+        }
+
+        if (m_HoveredArea.GetArea () > 0.f)
+        {
+            AnimationFrameEntry frame;
+            frame.Atlas = m_SelectedAtlas->GetName ();
+            frame.Bounds = m_HoveredArea;
 
             m_Frames.push_back (frame);
         }

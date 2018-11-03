@@ -23,6 +23,7 @@ namespace aga
     };
 
     Point Point::ZERO_POINT = {0.f, 0.f};
+    Rect Rect::ZERO_RECT = {Point::ZERO_POINT, Point::ZERO_POINT};
 
     //--------------------------------------------------------------------------------------------------
 
