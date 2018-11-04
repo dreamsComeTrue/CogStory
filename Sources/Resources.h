@@ -11,9 +11,6 @@ namespace aga
     enum ResourceID
     {
         //  Graphics
-        GFX_DEFAULT_SKIN,
-        GFX_TEXT_FRAME,
-
         __PACKS__MARKER__,
 
         //  PACKS

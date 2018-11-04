@@ -25,8 +25,6 @@ namespace aga
 
     Resource g_Resources[] = {
         //  Graphics
-        {GFX_DEFAULT_SKIN, GFX, "UISkin.png"}, {GFX_TEXT_FRAME, GFX_UI, "text_frame.9.png"},
-
         {__PACKS__MARKER__}, {PACK_MENU_UI, GFX_UI, "menu_ui.pack"}, {PACK_ACTORS_UI, GFX_UI, "actors_ui.pack"},
         {PACK_PLAYER, GFX_ACTORS, "player.pack"}, {PACK_PARTICLES, GFX_EFFECTS, "particles.pack"},
         {PACK_NPC_1, GFX_NPC, "npc_1.pack"}, {PACK_NPC_2, GFX_NPC, "npc_2.pack"}, {PACK_NPC_3, GFX_NPC, "npc_3.pack"},

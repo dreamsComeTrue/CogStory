@@ -61,37 +61,37 @@ namespace aga
         void LoadScene (const std::string& filePath);
         void SaveScene (const std::string& filePath);
 
-        CursorMode GetCursorMode () const { return m_CursorMode; }
-        void SetCursorMode (CursorMode mode) { m_CursorMode = mode; }
+        CursorMode GetCursorMode () const;
+        void SetCursorMode (CursorMode mode);
         void SwitchCursorMode ();
 
         Point CalculateWorldPoint (int mouseX, int mouseY);
         bool IsMouseWithinRect (int mouseX, int mouseY, Rect rect);
         bool IsMouseWithinPointRect (int mouseX, int mouseY, Point point, int outsets = 0);
 
-        MainLoop* GetMainLoop () { return m_MainLoop; }
+        MainLoop* GetMainLoop ();
 
-        EditorPhysMode& GetEditorPhysMode () { return m_EditorPhysMode; }
-        EditorActorMode& GetEditorActorMode () { return m_EditorActorMode; }
-        EditorFlagPointMode& GetEditorFlagPointMode () { return m_EditorFlagPointMode; }
-        EditorSpeechMode& GetEditorSpeechMode () { return m_EditorSpeechMode; }
-        EditorTriggerAreaMode& GetEditorTriggerAreaMode () { return m_EditorTriggerAreaMode; }
+        EditorPhysMode& GetEditorPhysMode ();
+        EditorActorMode& GetEditorActorMode ();
+        EditorFlagPointMode& GetEditorFlagPointMode ();
+        EditorSpeechMode& GetEditorSpeechMode ();
+        EditorTriggerAreaMode& GetEditorTriggerAreaMode ();
 
-        EditorScriptWindow* GetScriptWindow () { return m_ScriptWindow; }
-        EditorComponentWindow* GetComponentWindow () { return m_ComponentWindow; }
-        EditorAnimationWindow* GetAnimationWindow () { return m_AnimationWindow; }
+        EditorScriptWindow* GetScriptWindow ();
+        EditorComponentWindow* GetComponentWindow ();
+        EditorAnimationWindow* GetAnimationWindow ();
 
-        ALLEGRO_TRANSFORM& GetWorldTransform () { return m_WorldTransform; }
+        ALLEGRO_TRANSFORM& GetWorldTransform ();
 
-        Point GetLastMousePos () { return m_LastMousePos; }
+        Point GetLastMousePos ();
 
-        bool IsSnapToGrid () { return m_IsSnapToGrid; }
-        float GetGridSize () { return m_GridSize; }
+        bool IsSnapToGrid ();
+        float GetGridSize ();
 
-        Rect GetSelectionRect () { return m_SelectionRect; }
+        Rect GetSelectionRect ();
 
-        bool IsCloseCurrentPopup () { return m_CloseCurrentPopup; }
-        void SetCloseCurrentPopup (bool close) { m_CloseCurrentPopup = close; }
+        bool IsCloseCurrentPopup ();
+        void SetCloseCurrentPopup (bool close);
 
     private:
         void LoadConfig ();
@@ -143,7 +143,6 @@ namespace aga
         void RenderUINewScene ();
         void RenderUIOpenScene ();
         void RenderUISaveScene ();
-        void RenderFlagPointWindow ();
         void RenderTriggerAreaWindow ();
 
         void ResetSettings ();
@@ -201,10 +200,13 @@ namespace aga
         bool m_OpenPopupOpenScene;
         bool m_OpenPopupSaveScene;
         bool m_OpenPopupActorEditor;
+        bool m_OpenPopupFlagPointEditor;
         bool m_OpenPopupSpeechEditor;
         bool m_OpenPopupAnimationEditor;
 
         std::vector<std::string> m_RecentFileNames;
+
+        char m_FlagPointName[100];
     };
 }
 

@@ -129,9 +129,10 @@ namespace aga
         std::vector<TileActor*> GetTiles ();
         std::vector<Entity*> RecomputeVisibleEntities (bool force);
 
-        void AddFlagPoint (const std::string& name, Point point);
+        FlagPoint* AddFlagPoint (const std::string& name, Point point);
         FlagPoint* GetFlagPoint (const std::string& name);
         std::map<std::string, FlagPoint>& GetFlagPoints ();
+        void RemoveFlagPoint (const std::string& name);
 
         TriggerArea* AddTriggerArea (const std::string& name, std::vector<Point> points, bool collidable);
         std::map<std::string, TriggerArea>& GetTriggerAreas ();

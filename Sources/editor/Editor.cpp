@@ -77,6 +77,7 @@ namespace aga
         , m_OpenPopupActorEditor (false)
         , m_OpenPopupSpeechEditor (false)
         , m_OpenPopupAnimationEditor (false)
+        , m_OpenPopupFlagPointEditor (false)
     {
     }
 
@@ -1157,12 +1158,14 @@ namespace aga
             {
                 ImGui::NewLine ();
 
-                if (ImGui::Button ("FLAG POINT", buttonSize))
+                if (ImGui::Button ("FLAG POINT", buttonSize) || m_OpenPopupFlagPointEditor)
                 {
                     ImGui::OpenPopup ("Flag Point");
+
+                    m_OpenPopupFlagPointEditor = false;
                 }
 
-                RenderFlagPointWindow ();
+                m_EditorFlagPointMode.Render ();
 
                 if (ImGui::Button ("TRIGGER AREA", buttonSize))
                 {
@@ -1617,46 +1620,6 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::RenderFlagPointWindow ()
-    {
-        if (ImGui::BeginPopupModal ("Flag Point", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            m_EditorFlagPointMode.SetAskFlagPoint (false);
-
-            static char flagPointName[100] = {0};
-
-            ImGui::InputText ("", flagPointName, IM_ARRAYSIZE (flagPointName));
-            ImGui::SetItemDefaultFocus ();
-
-            ImGui::Separator ();
-            ImGui::BeginGroup ();
-
-            if (ImGui::Button ("ACCEPT", ImVec2 (50.f, 18.f)))
-            {
-                ImGui::CloseCurrentPopup ();
-
-                m_EditorFlagPointMode.SetFlagPointName (flagPointName);
-                SetCursorMode (CursorMode::EditFlagPointsMode);
-            }
-
-            ImGui::SameLine ();
-
-            if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_CloseCurrentPopup)
-            {
-                SetCursorMode (CursorMode::ActorSelectMode);
-                m_EditorFlagPointMode.SetFlagPointName ("");
-
-                ImGui::CloseCurrentPopup ();
-                m_CloseCurrentPopup = false;
-            }
-            ImGui::EndGroup ();
-
-            ImGui::EndPopup ();
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
     void Editor::RenderTriggerAreaWindow ()
     {
         if (ImGui::BeginPopupModal ("Trigger Area", NULL, ImGuiWindowFlags_AlwaysAutoResize))
@@ -1712,7 +1675,16 @@ namespace aga
     {
         if (event.button == 1)
         {
-            OnActorSelected ();
+            m_IsRectSelection = false;
+
+            if (m_EditorFlagPointMode.GetFlagPointUnderCursor (event.x, event.y) != "")
+            {
+                m_OpenPopupFlagPointEditor = true;
+            }
+            else
+            {
+                OnActorSelected ();
+            }
         }
     }
 
@@ -1887,7 +1859,7 @@ namespace aga
             {
                 m_EditorPhysMode.MoveSelectedPhysPoint ();
             }
-            else
+            else if (m_CursorMode == CursorMode::ActorSelectMode)
             {
                 ALLEGRO_MOUSE_STATE state;
                 al_get_mouse_state (&state);
@@ -1983,6 +1955,78 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Editor::OnTilesetSelected (const std::string& path) { m_EditorActorMode.ChangeAtlas (path); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    CursorMode Editor::GetCursorMode () const { return m_CursorMode; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::SetCursorMode (CursorMode mode) { m_CursorMode = mode; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    MainLoop* Editor::GetMainLoop () { return m_MainLoop; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    EditorPhysMode& Editor::GetEditorPhysMode () { return m_EditorPhysMode; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    EditorActorMode& Editor::GetEditorActorMode () { return m_EditorActorMode; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    EditorFlagPointMode& Editor::GetEditorFlagPointMode () { return m_EditorFlagPointMode; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    EditorSpeechMode& Editor::GetEditorSpeechMode () { return m_EditorSpeechMode; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    EditorTriggerAreaMode& Editor::GetEditorTriggerAreaMode () { return m_EditorTriggerAreaMode; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    EditorScriptWindow* Editor::GetScriptWindow () { return m_ScriptWindow; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    EditorComponentWindow* Editor::GetComponentWindow () { return m_ComponentWindow; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    EditorAnimationWindow* Editor::GetAnimationWindow () { return m_AnimationWindow; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    ALLEGRO_TRANSFORM& Editor::GetWorldTransform () { return m_WorldTransform; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Point Editor::GetLastMousePos () { return m_LastMousePos; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Editor::IsSnapToGrid () { return m_IsSnapToGrid; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    float Editor::GetGridSize () { return m_GridSize; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Rect Editor::GetSelectionRect () { return m_SelectionRect; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Editor::IsCloseCurrentPopup () { return m_CloseCurrentPopup; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Editor::SetCloseCurrentPopup (bool close) { m_CloseCurrentPopup = close; }
 
     //--------------------------------------------------------------------------------------------------
 

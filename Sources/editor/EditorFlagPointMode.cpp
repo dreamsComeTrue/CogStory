@@ -5,6 +5,8 @@
 #include "MainLoop.h"
 #include "Screen.h"
 
+#include "imgui.h"
+
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
@@ -14,7 +16,9 @@ namespace aga
         , m_AskFlagPoint (false)
         , m_FlagPoint ("")
         , m_DrawConnection (true)
+        , m_Editing (false)
     {
+        memset (m_FlagPointWindow, 0, ARRAY_SIZE (m_FlagPointWindow));
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -57,7 +61,16 @@ namespace aga
             = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
         int outsets = 4;
 
-        if (m_DrawConnection && m_FlagPoint != "")
+        bool addedFound = false;
+        for (auto& kv : flagPoints)
+        {
+            if (kv.first == m_FlagPoint)
+            {
+                addedFound = true;
+            }
+        }
+
+        if (m_DrawConnection && addedFound)
         {
             Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
             Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
@@ -107,17 +120,16 @@ namespace aga
 
     void EditorFlagPointMode::InsertFlagPointAtCursor (int mouseX, int mouseY)
     {
-        if (std::string (m_FlagPointName) != "")
+        if (std::string (m_FlagPoint) != "")
         {
             if (GetFlagPointUnderCursor (mouseX, mouseY) == "")
             {
                 Point p = m_Editor->CalculateWorldPoint (mouseX, mouseY);
 
-                m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddFlagPoint (m_FlagPointName, p);
-                m_FlagPoint = m_FlagPointName;
+                m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddFlagPoint (m_FlagPoint, p);
             }
 
-            m_FlagPointName = "";
+            m_FlagPoint = "";
         }
         else
         {
@@ -202,12 +214,91 @@ namespace aga
                     }
                 }
 
-                return it->first;
+                m_FlagPoint = it->first;
+                strcpy (m_FlagPointWindow, m_FlagPoint.c_str ());
+                m_Editing = true;
+
+                return m_FlagPoint;
             }
         }
 
+        m_Editing = false;
+
         return "";
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorFlagPointMode::Render ()
+    {
+        if (ImGui::BeginPopupModal ("Flag Point", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            m_DrawConnection = false;
+
+            ImGui::InputText ("", m_FlagPointWindow, IM_ARRAYSIZE (m_FlagPointWindow));
+            ImGui::SetItemDefaultFocus ();
+
+            ImGui::Separator ();
+            ImGui::BeginGroup ();
+
+            m_AskFlagPoint = false;
+
+            if (ImGui::Button ("ACCEPT", ImVec2 (50.f, 18.f)))
+            {
+                if (m_Editing)
+                {
+                    FlagPoint* oldFlagPoint
+                        = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoint (m_FlagPoint);
+
+                    m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveFlagPoint (m_FlagPoint);
+
+                    FlagPoint* newFlagPoint
+                        = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddFlagPoint (
+                            m_FlagPointWindow, oldFlagPoint->Pos);
+
+                    newFlagPoint->Connections = oldFlagPoint->Connections;
+
+                    m_Editing = false;
+                    m_Editor->SetCursorMode (CursorMode::ActorSelectMode);
+                }
+                else
+                {
+                    m_FlagPoint = m_FlagPointWindow;
+                    m_Editor->SetCursorMode (CursorMode::EditFlagPointsMode);
+                }
+
+                m_DrawConnection = true;
+                ImGui::CloseCurrentPopup ();
+            }
+
+            ImGui::SameLine ();
+
+            if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
+            {
+                m_FlagPoint = "";
+                m_Editor->SetCursorMode (CursorMode::ActorSelectMode);
+
+                m_DrawConnection = true;
+                ImGui::CloseCurrentPopup ();
+                m_Editor->SetCloseCurrentPopup (false);
+            }
+            ImGui::EndGroup ();
+
+            ImGui::EndPopup ();
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string EditorFlagPointMode::GetFlagPoint () { return m_FlagPoint; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorFlagPointMode::SetFlagPoint (const std::string& pointName) { m_FlagPoint = pointName; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorFlagPointMode::SetAskFlagPoint (bool ask) { m_AskFlagPoint = ask; }
 
     //--------------------------------------------------------------------------------------------------
 }

@@ -22,21 +22,21 @@ namespace aga
         void InsertFlagPointAtCursor (int mouseX, int mouseY);
         bool RemoveFlagPointUnderCursor (int mouseX, int mouseY);
 
-        std::string GetFlagPoint () { return m_FlagPoint; }
-        void SetFlagPoint (const std::string& pointName) { m_FlagPoint = pointName; }
+        std::string GetFlagPoint ();
+        void SetFlagPoint (const std::string& name);
 
-        std::string GetFlagPointName () { return m_FlagPointName; }
-        void SetFlagPointName (const std::string& name) { m_FlagPointName = name; }
+        void SetAskFlagPoint (bool ask);
 
-        void SetAskFlagPoint (bool ask) { m_AskFlagPoint = ask; }
+        void Render ();
 
     private:
         Editor* m_Editor;
 
         bool m_AskFlagPoint;
-        std::string m_FlagPointName;
         std::string m_FlagPoint;
+        char m_FlagPointWindow[100];
 
+        bool m_Editing;
         bool m_DrawConnection;
     };
 }

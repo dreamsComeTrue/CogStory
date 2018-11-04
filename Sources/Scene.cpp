@@ -569,7 +569,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::AddFlagPoint (const std::string& name, Point point)
+    FlagPoint* Scene::AddFlagPoint (const std::string& name, Point point)
     {
         if (m_FlagPoints.find (name) == m_FlagPoints.end ())
         {
@@ -579,6 +579,8 @@ namespace aga
 
             m_FlagPoints.insert (make_pair (name, fp));
         }
+
+        return GetFlagPoint (name);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -601,6 +603,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     std::map<std::string, FlagPoint>& Scene::GetFlagPoints () { return m_FlagPoints; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::RemoveFlagPoint (const std::string& name) { m_FlagPoints.erase (name); }
 
     //--------------------------------------------------------------------------------------------------
 
