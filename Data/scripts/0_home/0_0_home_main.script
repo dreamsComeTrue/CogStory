@@ -15,7 +15,7 @@ void BeforeEnterScene ()
 
     AddOnEnterCallback ("ENTRY_CITY", function (pt)
     {
-        SetActiveScene ("2_city/2_0_city.scn", true);
+        SetActiveScene ("2_city/2_0_city_main.scn", true);
     });    
 
     GetSceneAudioStream ().Play ();

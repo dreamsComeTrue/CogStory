@@ -78,6 +78,7 @@ namespace aga
         , m_OpenPopupSpeechEditor (false)
         , m_OpenPopupAnimationEditor (false)
         , m_OpenPopupFlagPointEditor (false)
+        , m_OpenPopupTriggerAreaEditor (false)
     {
     }
 
@@ -1167,9 +1168,11 @@ namespace aga
 
                 m_EditorFlagPointMode.Render ();
 
-                if (ImGui::Button ("TRIGGER AREA", buttonSize))
+                if (ImGui::Button ("TRIGGER AREA", buttonSize) || m_OpenPopupTriggerAreaEditor)
                 {
                     ImGui::OpenPopup ("Trigger Area");
+
+                    m_OpenPopupTriggerAreaEditor = false;
                 }
 
                 RenderTriggerAreaWindow ();
@@ -1464,6 +1467,8 @@ namespace aga
 
     void Editor::RenderUIOpenScene ()
     {
+        ImGui::SetNextWindowSize (ImVec2 (400, 245));
+
         if (ImGui::BeginPopupModal ("Open Scene", NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
             static char sceneName[100] = {0};
@@ -1477,6 +1482,7 @@ namespace aga
             }
 
             static int itemCurrent = 1;
+            ImGui::PushItemWidth (330);
             if (ImGui::ListBox ("", &itemCurrent, items, IM_ARRAYSIZE (items), 10))
             {
                 strcpy (sceneName, items[itemCurrent]);
@@ -1484,13 +1490,16 @@ namespace aga
 
                 LoadScene (sceneName);
             }
+            ImGui::PopItemWidth ();
 
             if (sceneName[0] == '\0')
             {
                 strcpy (sceneName, m_LastScenePath.c_str ());
             }
 
+            ImGui::PushItemWidth (330);
             ImGui::InputText ("", sceneName, IM_ARRAYSIZE (sceneName));
+            ImGui::PopItemWidth ();
             ImGui::SetItemDefaultFocus ();
             ImGui::SameLine ();
 
@@ -1553,13 +1562,17 @@ namespace aga
 
     void Editor::RenderUISaveScene ()
     {
+        ImGui::SetNextWindowSize (ImVec2 (400, 80));
+
         if (ImGui::BeginPopupModal ("Save Scene", NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
             static char sceneName[100] = {0};
 
             strcpy (sceneName, m_LastScenePath.c_str ());
 
+            ImGui::PushItemWidth (330);
             ImGui::InputText ("", sceneName, IM_ARRAYSIZE (sceneName));
+            ImGui::PopItemWidth ();
             ImGui::SetItemDefaultFocus ();
             ImGui::SameLine ();
 
@@ -1680,6 +1693,10 @@ namespace aga
             if (m_EditorFlagPointMode.GetFlagPointUnderCursor (event.x, event.y) != "")
             {
                 m_OpenPopupFlagPointEditor = true;
+            }
+            else if (m_EditorTriggerAreaMode.GetTriggerAreaUnderCursor (event.x, event.y))
+            {
+                m_OpenPopupTriggerAreaEditor = true;
             }
             else
             {

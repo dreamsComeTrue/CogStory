@@ -24,12 +24,12 @@ void BeforeEnterScene ()
 {
     AddOnEnterCallback ("ENTRY_CITY", function (pt)
     {
-	    SetActiveScene ("2_city/2_0_city.scn", true);
+	    SetActiveScene ("2_city/2_0_city_main.scn", true);
     });    
 
     AddOnEnterCallback ("ENTRY_FACTORY", function (pt)
     {
-	    SetActiveScene ("1_factory/1_1_factory.scn", true);
+	    SetActiveScene ("1_factory/1_1_factory_main.scn", true);
     });      
 
     GetSceneAudioStream ().Play ();

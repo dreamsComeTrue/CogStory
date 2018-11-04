@@ -220,7 +220,7 @@
     "scripts": [
         {
             "name": "0_0_home",
-            "path": "0_home/0_0_home.script"
+            "path": "0_home/0_0_home_main.script"
         }
     ],
     "speeches": [],

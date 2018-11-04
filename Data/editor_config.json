@@ -1,12 +1,12 @@
 {
     "recent_files": [
-        "0_home/0_0_home.scn",
-        "1_factory/1_0_factory.scn",
-        "2_city/2_0_city.scn",
-        "1_factory/1_1_factory.scn"
+        "0_home/0_0_home_main.scn",
+        "1_factory/1_0_factory_hallway.scn",
+        "2_city/2_0_city_main.scn",
+        "1_factory/1_1_factory_main.scn"
     ],
     "show_bounds": false,
-    "show_grid": true,
+    "show_grid": false,
     "show_names": false,
     "show_physics": false
 }

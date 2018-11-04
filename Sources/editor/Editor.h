@@ -201,6 +201,7 @@ namespace aga
         bool m_OpenPopupSaveScene;
         bool m_OpenPopupActorEditor;
         bool m_OpenPopupFlagPointEditor;
+        bool m_OpenPopupTriggerAreaEditor;
         bool m_OpenPopupSpeechEditor;
         bool m_OpenPopupAnimationEditor;
 

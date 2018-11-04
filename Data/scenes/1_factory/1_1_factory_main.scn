@@ -2618,7 +2618,7 @@
     "scripts": [
         {
             "name": "1_1_factory",
-            "path": "1_factory/1_1_factory.script"
+            "path": "1_factory/1_1_factory_main.script"
         }
     ],
     "speeches": [],
