@@ -143,7 +143,6 @@ namespace aga
         void RenderUINewScene ();
         void RenderUIOpenScene ();
         void RenderUISaveScene ();
-        void RenderTriggerAreaWindow ();
 
         void ResetSettings ();
         void ScreenResize ();

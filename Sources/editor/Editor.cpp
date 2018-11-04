@@ -1175,7 +1175,7 @@ namespace aga
                     m_OpenPopupTriggerAreaEditor = false;
                 }
 
-                RenderTriggerAreaWindow ();
+                m_EditorTriggerAreaMode.Render ();
             }
 
             ImGui::NewLine ();
@@ -1622,49 +1622,6 @@ namespace aga
 
             if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_CloseCurrentPopup)
             {
-                ImGui::CloseCurrentPopup ();
-                m_CloseCurrentPopup = false;
-            }
-            ImGui::EndGroup ();
-
-            ImGui::EndPopup ();
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Editor::RenderTriggerAreaWindow ()
-    {
-        if (ImGui::BeginPopupModal ("Trigger Area", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            static char triggerAreaName[100] = {0};
-
-            ImGui::InputText ("", triggerAreaName, IM_ARRAYSIZE (triggerAreaName));
-            ImGui::SetItemDefaultFocus ();
-
-            static bool triggerAreaCollidable;
-            ImGui::Checkbox ("Collidable?", &triggerAreaCollidable);
-
-            ImGui::Separator ();
-            ImGui::BeginGroup ();
-
-            if (ImGui::Button ("ACCEPT", ImVec2 (50.f, 18.f)))
-            {
-                ImGui::CloseCurrentPopup ();
-
-                m_EditorTriggerAreaMode.SetTriggerAreaName (triggerAreaName);
-                m_EditorTriggerAreaMode.SetTriggerAreaCollidable (triggerAreaCollidable);
-                m_EditorTriggerAreaMode.NewTriggerArea ();
-                SetCursorMode (CursorMode::EditTriggerAreaMode);
-            }
-
-            ImGui::SameLine ();
-
-            if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_CloseCurrentPopup)
-            {
-                SetCursorMode (CursorMode::ActorSelectMode);
-                m_EditorTriggerAreaMode.SetTriggerAreaName ("");
-
                 ImGui::CloseCurrentPopup ();
                 m_CloseCurrentPopup = false;
             }

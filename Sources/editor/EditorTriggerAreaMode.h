@@ -26,17 +26,19 @@ namespace aga
         bool RemoveTriggerPointUnderCursor (int mouseX, int mouseY);
         void NewTriggerArea ();
 
-        Point* GetTriggerPoint () { return m_TriggerPoint; }
-        void SetTriggerPoint (Point* point) { m_TriggerPoint = point; }
+        Point* GetTriggerPoint ();
+        void SetTriggerPoint (Point* point);
 
-        TriggerArea* GetTriggerArea () { return m_TriggerArea; }
-        void SetTriggerArea (TriggerArea* area) { m_TriggerArea = area; }
+        TriggerArea* GetTriggerArea ();
+        void SetTriggerArea (TriggerArea* area);
 
-        std::string GetTriggerAreaName () { return m_TriggerAreaName; }
-        void SetTriggerAreaName (const std::string& name) { m_TriggerAreaName = name; }
+        std::string GetTriggerAreaName ();
+        void SetTriggerAreaName (const std::string& name);
 
-        void SetTriggerAreaCollidable (bool collidable) { m_Collidable = collidable; }
-        bool IsTriggerAreaCollidable () const { return m_Collidable; }
+        void SetTriggerAreaCollidable (bool collidable);
+        bool IsTriggerAreaCollidable () const;
+
+        void Render ();
 
     private:
         Editor* m_Editor;
@@ -45,6 +47,10 @@ namespace aga
         Point* m_TriggerPoint;
         std::string m_TriggerAreaName;
         bool m_Collidable;
+
+        char m_TriggerAreaWindow[100];
+
+        bool m_Editing;
     };
 }
 

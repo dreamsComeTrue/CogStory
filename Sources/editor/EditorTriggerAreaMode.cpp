@@ -5,6 +5,8 @@
 #include "MainLoop.h"
 #include "Screen.h"
 
+#include "imgui.h"
+
 namespace aga
 {
     //--------------------------------------------------------------------------------------------------
@@ -15,7 +17,9 @@ namespace aga
         , m_TriggerPoint (nullptr)
         , m_TriggerAreaName ("")
         , m_Collidable (false)
+        , m_Editing (false)
     {
+        memset (m_TriggerAreaWindow, 0, ARRAY_SIZE (m_TriggerAreaWindow));
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -144,10 +148,17 @@ namespace aga
             {
                 if (m_Editor->IsMouseWithinPointRect (mouseX, mouseY, point, outsets))
                 {
+                    m_TriggerAreaName = it->first;
+                    strcpy (m_TriggerAreaWindow, m_TriggerAreaName.c_str ());
+                    m_Collidable = it->second.Collidable;
+                    m_Editing = true;
+
                     return &it->second;
                 }
             }
         }
+
+        m_Editing = false;
 
         return nullptr;
     }
@@ -256,6 +267,110 @@ namespace aga
         m_TriggerArea = scene->AddTriggerArea (m_TriggerAreaName, {}, m_Collidable);
         m_TriggerPoint = nullptr;
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorTriggerAreaMode::Render ()
+    {
+        if (ImGui::BeginPopupModal ("Trigger Area", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::InputText ("", m_TriggerAreaWindow, IM_ARRAYSIZE (m_TriggerAreaWindow));
+            ImGui::SetItemDefaultFocus ();
+
+            ImGui::Checkbox ("Collidable?", &m_Collidable);
+
+            ImGui::Separator ();
+            ImGui::BeginGroup ();
+
+            if (ImGui::Button ("ACCEPT", ImVec2 (50.f, 18.f)))
+            {
+                if (m_Editing)
+                {
+                    TriggerArea* oldTriggerArea
+                        = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetTriggerArea (
+                            m_TriggerAreaName);
+
+                    if (m_TriggerAreaName != m_TriggerAreaWindow)
+                    {
+                        TriggerArea* newTriggerArea
+                            = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddTriggerArea (
+                                m_TriggerAreaWindow, oldTriggerArea->Points, m_Collidable);
+                        newTriggerArea->Polygons = oldTriggerArea->Polygons;
+                        newTriggerArea->OnEnterCallback = oldTriggerArea->OnEnterCallback;
+                        newTriggerArea->OnLeaveCallback = oldTriggerArea->OnLeaveCallback;
+                        newTriggerArea->ScriptOnEnterCallback = oldTriggerArea->ScriptOnEnterCallback;
+                        newTriggerArea->ScriptOnLeaveCallback = oldTriggerArea->ScriptOnLeaveCallback;
+
+                        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveTriggerArea (
+                            m_TriggerAreaName);
+
+                        m_Editing = false;
+                        m_Editor->SetCursorMode (CursorMode::ActorSelectMode);
+                    }
+
+                    if (m_Collidable != oldTriggerArea->Collidable)
+                    {
+                        oldTriggerArea->Collidable = m_Collidable;
+                    }
+                }
+                else
+                {
+                    m_TriggerAreaName = m_TriggerAreaWindow;
+
+                    NewTriggerArea ();
+                    m_Editor->SetCursorMode (CursorMode::EditTriggerAreaMode);
+                }
+
+                ImGui::CloseCurrentPopup ();
+            }
+
+            ImGui::SameLine ();
+
+            if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
+            {
+                m_Editor->SetCursorMode (CursorMode::ActorSelectMode);
+                m_TriggerAreaName = "";
+
+                ImGui::CloseCurrentPopup ();
+                m_Editor->SetCloseCurrentPopup (false);
+            }
+            ImGui::EndGroup ();
+
+            ImGui::EndPopup ();
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Point* EditorTriggerAreaMode::GetTriggerPoint () { return m_TriggerPoint; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorTriggerAreaMode::SetTriggerPoint (Point* point) { m_TriggerPoint = point; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    TriggerArea* EditorTriggerAreaMode::GetTriggerArea () { return m_TriggerArea; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorTriggerAreaMode::SetTriggerArea (TriggerArea* area) { m_TriggerArea = area; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string EditorTriggerAreaMode::GetTriggerAreaName () { return m_TriggerAreaName; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorTriggerAreaMode::SetTriggerAreaName (const std::string& name) { m_TriggerAreaName = name; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorTriggerAreaMode::SetTriggerAreaCollidable (bool collidable) { m_Collidable = collidable; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool EditorTriggerAreaMode::IsTriggerAreaCollidable () const { return m_Collidable; }
 
     //--------------------------------------------------------------------------------------------------
 }
