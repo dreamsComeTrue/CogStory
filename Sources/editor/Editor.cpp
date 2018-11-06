@@ -1568,7 +1568,10 @@ namespace aga
         {
             static char sceneName[100] = {0};
 
-            strcpy (sceneName, m_LastScenePath.c_str ());
+            if (sceneName[0] == '\0')
+            {
+                strcpy (sceneName, m_LastScenePath.c_str ());
+            }
 
             ImGui::PushItemWidth (330);
             ImGui::InputText ("", sceneName, IM_ARRAYSIZE (sceneName));
@@ -1833,7 +1836,7 @@ namespace aga
             {
                 m_EditorPhysMode.MoveSelectedPhysPoint ();
             }
-            else if (m_CursorMode == CursorMode::ActorSelectMode)
+            else if (m_CursorMode == CursorMode::ActorSelectMode || m_CursorMode == CursorMode::EditSpriteSheetMode)
             {
                 ALLEGRO_MOUSE_STATE state;
                 al_get_mouse_state (&state);
