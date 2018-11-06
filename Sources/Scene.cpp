@@ -6,6 +6,7 @@
 #include "AudioManager.h"
 #include "AudioStream.h"
 #include "MainLoop.h"
+#include "PhysicsManager.h"
 #include "SceneManager.h"
 #include "Screen.h"
 #include "actors/TileActor.h"
@@ -211,79 +212,149 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    inline float Dot (const Point& a, const Point& b) { return (a.X * b.X) + (a.Y * b.Y); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    inline float PerpDot (const Point& a, const Point& b) { return (a.Y * b.X) - (a.X * b.Y); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool LineCollision (const Point& A1, const Point& A2, const Point& B1, const Point& B2, Point& intersection)
+    {
+        Point a (A2 - A1);
+        Point b (B2 - B1);
+
+        float f = PerpDot (a, b);
+
+        if (!f) // lines are parallel
+            return false;
+
+        Point c (B2 - A2);
+        float aa = PerpDot (a, c);
+        float bb = PerpDot (b, c);
+
+        if (f < 0)
+        {
+            if (aa > 0)
+                return false;
+            if (bb > 0)
+                return false;
+            if (aa < f)
+                return false;
+            if (bb < f)
+                return false;
+        }
+        else
+        {
+            if (aa < 0)
+                return false;
+            if (bb < 0)
+                return false;
+            if (aa > f)
+                return false;
+            if (bb > f)
+                return false;
+        }
+
+        float out = 1.0 - (aa / f);
+        intersection = ((B2 - B1) * out) + B1;
+
+        return true;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Scene::UpdateCameraBounds ()
     {
-        TriggerArea* boundsArea = GetTriggerArea ("SCENE_BOUNDS");
+        TriggerArea* sceneBounds = GetTriggerArea ("SCENE_BOUNDS");
 
-        if (boundsArea)
+        if (sceneBounds)
         {
             Camera& camera = m_SceneManager->GetCamera ();
             float scaleX = camera.GetScale ().X;
             float scaleY = camera.GetScale ().Y;
             Rect playerBounds = m_SceneManager->GetPlayer ()->Bounds;
-            const Point halfScreen = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize () * 0.5f;
-            Rect worldBounds = boundsArea->GetBounds ();
+            Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+            const Point halfScreen = screenSize * 0.5f;
 
+            Point playerPos = playerBounds.Pos + playerBounds.GetHalfSize ();
             float playerXPos = playerBounds.Pos.X + playerBounds.GetHalfSize ().Width;
             float playerYPos = playerBounds.Pos.Y + playerBounds.GetHalfSize ().Height;
 
-            Point followPoint = camera.GetSavedFollowPoint ();
+            std::vector<Point>& scenePoints = sceneBounds->Points;
+            Point p1;
+            Point p2;
+            bool foundLeftIntersection = false;
+            bool foundRightIntersection = false;
+            bool foundTopIntersection = false;
+            bool foundBottomIntersection = false;
+            Point intersectPoint = camera.GetSavedFollowPoint ();
 
-            float leftPos = playerXPos * scaleX - halfScreen.Width;
-            float rightPos = playerXPos * scaleX + halfScreen.Width;
-            float topPos = playerYPos * scaleY - halfScreen.Height;
-            float bottomPos = playerYPos * scaleY + halfScreen.Height;
-
-            if (camera.IsFollowingXAxis ())
+            for (size_t i = 0; i < scenePoints.size (); i++)
             {
-                //  Left
-                if (leftPos < worldBounds.GetTopLeft ().X * scaleX)
+                p1 = scenePoints[i];
+
+                if (i + 1 >= scenePoints.size ())
                 {
-                    camera.SetSavedFollowPoint (Point (-worldBounds.GetTopLeft ().X * scaleX, followPoint.Y));
-                    camera.SetFollowingXAxis (false);
+                    p2 = scenePoints[0];
+                }
+                else
+                {
+                    p2 = scenePoints[i + 1];
                 }
 
-                //  Right
-                if (rightPos > worldBounds.GetBottomRight ().X * scaleX)
+                Point tmpPoint;
+
+                if (LineCollision (playerPos, Point (playerXPos - halfScreen.Width, playerYPos), p1, p2, tmpPoint)
+                    && (playerXPos * scaleX - tmpPoint.X * scaleX) <= halfScreen.Width)
                 {
-                    camera.SetSavedFollowPoint (
-                        Point (-worldBounds.GetBottomRight ().X * scaleX + halfScreen.Width * 2.f, followPoint.Y));
-                    camera.SetFollowingXAxis (false);
+                    intersectPoint.X = -tmpPoint.X * scaleX;
+                    foundLeftIntersection = true;
                 }
+
+                if (LineCollision (playerPos, Point (playerXPos + halfScreen.Width, playerYPos), p1, p2, tmpPoint)
+                    && (tmpPoint.X * scaleX - playerXPos * scaleX) <= halfScreen.Width)
+                {
+                    intersectPoint.X = -tmpPoint.X * scaleX + screenSize.Width;
+                    foundRightIntersection = true;
+                }
+
+                if (LineCollision (playerPos, Point (playerXPos, playerYPos - halfScreen.Height), p1, p2, tmpPoint)
+                    && std::abs (tmpPoint.Y * scaleY) - std::abs (playerYPos * scaleY) <= halfScreen.Height)
+                {
+                    intersectPoint.Y = -tmpPoint.Y * scaleY;
+                    foundTopIntersection = true;
+                }
+
+                if (LineCollision (playerPos, Point (playerXPos, playerYPos + halfScreen.Height), p1, p2, tmpPoint)
+                    && (tmpPoint.Y * scaleY - playerYPos * scaleY) <= halfScreen.Height)
+                {
+                    intersectPoint.Y = -tmpPoint.Y * scaleY + screenSize.Height;
+                    foundBottomIntersection = true;
+                }
+            }
+
+            //  Left & Right
+            if (foundLeftIntersection || foundRightIntersection)
+            {
+                camera.SetSavedFollowPoint (intersectPoint);
+                camera.SetFollowingXAxis (false);
             }
             else
             {
-                if (leftPos > worldBounds.GetTopLeft ().X * scaleX
-                    && rightPos < worldBounds.GetBottomRight ().X * scaleX)
-                {
-                    camera.SetFollowingXAxis (true);
-                }
+                camera.SetFollowingXAxis (true);
             }
 
-            if (camera.IsFollowingYAxis ())
+            //  Top && Bottom
+            if (foundTopIntersection || foundBottomIntersection)
             {
-                //  Top
-                if (topPos < worldBounds.GetTopLeft ().Y * scaleY && camera.IsFollowingYAxis ())
-                {
-                    camera.SetSavedFollowPoint (Point (followPoint.X, -worldBounds.GetTopLeft ().Y * scaleY));
-                    camera.SetFollowingYAxis (false);
-                }
-
-                //  Bottom
-                if (bottomPos > worldBounds.GetBottomRight ().Y * scaleY && camera.IsFollowingYAxis ())
-                {
-                    camera.SetSavedFollowPoint (
-                        Point (followPoint.X, -worldBounds.GetBottomRight ().Y * scaleY + halfScreen.Height * 2.f));
-                    camera.SetFollowingYAxis (false);
-                }
+                camera.SetSavedFollowPoint (intersectPoint);
+                camera.SetFollowingYAxis (false);
             }
             else
             {
-                if (topPos > worldBounds.GetTopLeft ().Y * scaleY
-                    && bottomPos < worldBounds.GetBottomRight ().Y * scaleY)
-                {
-                    camera.SetFollowingYAxis (true);
-                }
+                camera.SetFollowingYAxis (true);
             }
         }
     }

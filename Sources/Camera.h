@@ -22,31 +22,31 @@ namespace aga
         void UseIdentityTransform ();
         void ClearTransformations ();
 
-        void SetTranslate (Point point) { SetTranslate (point.X, point.Y); }
+        void SetTranslate (Point point);
         void SetTranslate (float dx, float dy);
         Point GetTranslate ();
 
-        ALLEGRO_TRANSFORM& GetCurrentTransform () { return m_Transform; }
-        void SetCurrentTransform (ALLEGRO_TRANSFORM& transform) { m_Transform = transform; }
+        ALLEGRO_TRANSFORM& GetCurrentTransform ();
+        void SetCurrentTransform (ALLEGRO_TRANSFORM& transform);
 
         void Scale (float dx, float dy, float mousePosX = -1, float mousePosY = -1);
         Point GetScale ();
 
         void SetCenter (float x, float y);
-        void SetCenter (Point point) { SetCenter (point.X, point.Y); }
+        void SetCenter (Point point);
         Point GetCenter ();
 
         void SetFollowActor (Actor* actor, Point followOffset = {0.f, 0.f});
-        Actor* GetFollowActor () { return m_CameraFollowActor; }
+        Actor* GetFollowActor ();
 
-        void SetFollowOffset (Point offset) { m_FollowOffset = offset; }
+        void SetFollowOffset (Point offset);
 
         void SetFollowingXAxis (bool enabled);
-        bool IsFollowingXAxis () { return m_FollowingEnabledXAxis; }
+        bool IsFollowingXAxis ();
         void SetFollowingYAxis (bool enabled);
-        bool IsFollowingYAxis () { return m_FollowingEnabledYAxis; }
-        void SetSavedFollowPoint (Point p) { m_SavedFollowPoint = p; }
-        Point GetSavedFollowPoint () const { return m_SavedFollowPoint; }
+        bool IsFollowingYAxis ();
+        void SetSavedFollowPoint (Point p);
+        Point GetSavedFollowPoint () const;
 
         void TweenToPoint (Point endPoint, float timeMs = 1000, bool centerScreen = true);
         void TweenToPoint (

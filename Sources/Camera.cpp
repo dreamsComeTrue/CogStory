@@ -45,6 +45,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Camera::SetTranslate (Point point) { SetTranslate (point.X, point.Y); }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Camera::Move (float dx, float dy) { al_translate_transform (&m_Transform, dx, dy); }
 
     //--------------------------------------------------------------------------------------------------
@@ -86,12 +90,24 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    ALLEGRO_TRANSFORM& Camera::GetCurrentTransform () { return m_Transform; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Camera::SetCurrentTransform (ALLEGRO_TRANSFORM& transform) { m_Transform = transform; }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Camera::SetCenter (float x, float y)
     {
         const Point winSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
 
         SetTranslate (-x * 2 + winSize.Width * 0.5f, -y * 2 + winSize.Height * 0.5f);
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Camera::SetCenter (Point point) { SetCenter (point.X, point.Y); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -146,6 +162,30 @@ namespace aga
             m_CameraFollowActor->MoveCallback (0, 0);
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Actor* Camera::GetFollowActor () { return m_CameraFollowActor; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Camera::SetFollowOffset (Point offset) { m_FollowOffset = offset; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Camera::IsFollowingXAxis () { return m_FollowingEnabledXAxis; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Camera::IsFollowingYAxis () { return m_FollowingEnabledYAxis; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Camera::SetSavedFollowPoint (Point p) { m_SavedFollowPoint = p; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Point Camera::GetSavedFollowPoint () const { return m_SavedFollowPoint; }
 
     //--------------------------------------------------------------------------------------------------
 
