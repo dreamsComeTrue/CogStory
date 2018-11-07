@@ -30,26 +30,6 @@ void SceneChanged (const string &in previousSceneName)
 
 void BeforeEnterScene ()
 {
-    AddOnEnterCallback ("ENTRY_FACTORY_HALLWAY", function (pt)
-    {
-	    SetActiveScene ("1_factory/1_0_factory_hallway.scn", true);
-    });  
-
-    AddOnEnterCallback ("ENTRY_CABIN_I", function (pt)
-    {
-	    SetActiveScene ("1_factory/1_2_factory_cabinI.scn", true);
-    }); 
-    
-    AddOnEnterCallback ("ENTRY_CABIN_II", function (pt)
-    {
-	    SetActiveScene ("1_factory/1_3_factory_cabinII.scn", true);
-    });  
-
-    AddOnEnterCallback ("ENTRY_CABIN_III", function (pt)
-    {
-	    SetActiveScene ("1_factory/1_4_factory_cabinIII.scn", true);
-    });             
-
     GetSceneAudioStream ().Play ();
     GetSceneAudioStream ().SetFadeIn (500.f);   
 }

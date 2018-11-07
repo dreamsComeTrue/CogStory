@@ -5,7 +5,8 @@
         "2_city/2_0_city_main.scn",
         "1_factory/1_1_factory_main.scn",
         "1_factory/1_2_factory_cabinI.scn",
-        "1_factory/1_3_factory_cabinII.scn"
+        "1_factory/1_3_factory_cabinII.scn",
+        "1_factory/1_4_factory_cabinIII.scn"
     ],
     "show_bounds": false,
     "show_grid": true,

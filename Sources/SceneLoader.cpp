@@ -107,10 +107,27 @@ namespace aga
             for (auto& triggerArea : triggerAreas)
             {
                 std::string name = triggerArea["name"];
+                std::string data;
+
+                if (!triggerArea["data"].is_null () && triggerArea["data"] != "")
+                {
+                    data = triggerArea["data"];
+                }
+
                 std::vector<Point> poly = StringToVectorPoints (triggerArea["poly"]);
                 std::string collidableStr = triggerArea["collidable"];
 
-                scene->AddTriggerArea (name, poly, atoi (collidableStr.c_str ()));
+                scene->AddTriggerArea (name, data, poly, atoi (collidableStr.c_str ()));
+
+                if (data != "")
+                {
+                    scene->AddSceneTransition (name, data);
+                    scene->AddOnEnterCallback (name, [=](std::string areaName, float, float) {
+                        sceneManager->SetActiveScene (scene->GetSceneTransition (areaName), true);
+
+                        return false;
+                    });
+                }
             }
 
             auto& actors = j["actors"];
@@ -431,6 +448,7 @@ namespace aga
                 json triggerObj = json::object ({});
 
                 triggerObj["name"] = it->second.Name;
+                triggerObj["data"] = it->second.Data;
                 triggerObj["collidable"] = std::to_string (it->second.Collidable);
                 triggerObj["poly"] = VectorPointsToString (it->second.Points);
 

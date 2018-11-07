@@ -61,10 +61,11 @@ namespace aga
     struct TriggerArea
     {
         std::string Name = "";
+        std::string Data = "";
         std::vector<Point> Points = {};
         std::vector<Polygon> Polygons = {};
-        std::function<void(float dx, float dy)> OnEnterCallback = nullptr;
-        std::function<void(float dx, float dy)> OnLeaveCallback = nullptr;
+        std::function<void(std::string areaName, float dx, float dy)> OnEnterCallback = nullptr;
+        std::function<void(std::string areaName, float dx, float dy)> OnLeaveCallback = nullptr;
         asIScriptFunction* ScriptOnEnterCallback = nullptr;
         asIScriptFunction* ScriptOnLeaveCallback = nullptr;
 
@@ -134,7 +135,8 @@ namespace aga
         std::map<std::string, FlagPoint>& GetFlagPoints ();
         void RemoveFlagPoint (const std::string& name);
 
-        TriggerArea* AddTriggerArea (const std::string& name, std::vector<Point> points, bool collidable);
+        TriggerArea* AddTriggerArea (
+            const std::string& name, const std::string& data, std::vector<Point> points, bool collidable);
         std::map<std::string, TriggerArea>& GetTriggerAreas ();
         TriggerArea* GetTriggerArea (const std::string& name);
         void RemoveTriggerArea (const std::string& name);
@@ -167,12 +169,14 @@ namespace aga
         Rect GetRenderBounds (Entity* entity, bool drawOOBBox = false);
         Rect GetRenderBounds (Rect b);
 
-        void AddOnEnterCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
+        void AddOnEnterCallback (
+            const std::string& triggerName, std::function<void(std::string areaName, float dx, float dy)> func);
         void AddOnEnterCallback (const std::string& triggerName, asIScriptFunction* func);
 
         void RemoveOnEnterCallback (const std::string& triggerName);
 
-        void AddOnLeaveCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
+        void AddOnLeaveCallback (
+            const std::string& triggerName, std::function<void(std::string areaName, float dx, float dy)> func);
         void AddOnLeaveCallback (const std::string& triggerName, asIScriptFunction* func);
 
         void RemoveOnLeaveCallback (const std::string& triggerName);
@@ -191,6 +195,9 @@ namespace aga
         void ResetAllActorsPositions ();
 
         void DrawTriggerAreas ();
+
+        void AddSceneTransition (const std::string& triggerAreaName, const std::string& newSceneName);
+        std::string GetSceneTransition (const std::string& triggerAreaName);
 
     private:
         static void UpdateMaxTileID (Scene* scene);
@@ -211,6 +218,8 @@ namespace aga
         std::map<int, SpeechData> m_Speeches;
         std::vector<Actor*> m_Actors;
         SceneManager* m_SceneManager;
+
+        std::map<std::string, std::string> m_ScenesTransitions;
 
         std::map<std::string, asIScriptFunction*> m_ChoiceFunctions;
 

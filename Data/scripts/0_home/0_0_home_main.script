@@ -13,11 +13,6 @@ void BeforeEnterScene ()
 {
     SetSuppressSceneInfo (false);
 
-    AddOnEnterCallback ("ENTRY_CITY", function (pt)
-    {
-        SetActiveScene ("2_city/2_0_city_main.scn", true);
-    });    
-
     GetSceneAudioStream ().Play ();
     GetSceneAudioStream ().SetFadeIn (500.f);    
 }

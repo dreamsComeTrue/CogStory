@@ -18,11 +18,6 @@ void SceneChanged (const string &in previousSceneName)
 
 void BeforeEnterScene ()
 {
-    AddOnEnterCallback ("ENTRY_FACTORY_MAIN", function (pt)
-    {
-	    SetActiveScene ("1_factory/1_1_factory_main.scn", true);
-    });  
-
     GetSceneAudioStream ().Play ();
     GetSceneAudioStream ().SetFadeIn (500.f);
 }

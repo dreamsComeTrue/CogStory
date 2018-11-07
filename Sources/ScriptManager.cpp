@@ -234,6 +234,7 @@ namespace aga
            Point GetPlayerStartLocation ()
            void PushPoint (Point p)
            Point PopPoint ()
+           void RegisterTriggerScene (const string &in areaName, const string &in sceneFile)
 
        Camera
            Camera camera
@@ -1370,6 +1371,10 @@ namespace aga
         r = m_ScriptEngine->RegisterGlobalFunction ("Point PopPoint ()", asMETHOD (SceneManager, PopPoint),
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction (
+            "void RegisterTriggerScene (const string &in areaName, const string &in sceneFile)",
+            asMETHOD (SceneManager, RegisterTriggerScene), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1473,6 +1478,20 @@ namespace aga
         asIScriptContext* ctx = GetContext ();
         ctx->Prepare (func);
         ctx->SetArgObject (0, obj);
+
+        ctx->Execute ();
+        ctx->Unprepare ();
+        ctx->GetEngine ()->ReturnContext (ctx);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void ScriptManager::RunScriptFunction (asIScriptFunction* func, void* obj1, void* obj2)
+    {
+        asIScriptContext* ctx = GetContext ();
+        ctx->Prepare (func);
+        ctx->SetArgObject (0, obj1);
+        ctx->SetArgObject (1, obj2);
 
         ctx->Execute ();
         ctx->Unprepare ();

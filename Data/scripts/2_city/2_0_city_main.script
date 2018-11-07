@@ -114,16 +114,6 @@ void RegisterFunctions ()
 {
     player.SetActionHandler (PlayerActionHandler);
 
-    AddOnEnterCallback ("ENTRY_HOME", function (pt)
-    {
-	    SetActiveScene ("0_home/0_0_home_main.scn", true);        
-    });
-
-    AddOnEnterCallback ("ENTRY_FACTORY", function (pt)
-    {
-	    SetActiveScene ("1_factory/1_0_factory_hallway.scn", true);
-    });    
-
     RegisterChoiceFunction ("choice1", function ()
     {
         return "SPCH_2";

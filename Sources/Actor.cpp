@@ -365,7 +365,7 @@ namespace aga
                             if (area.OnEnterCallback)
                             {
                                 area.OnEnterCallback (
-                                    dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y);
+                                    area.Name, dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y);
                             }
 
                             if (area.ScriptOnEnterCallback)
@@ -373,7 +373,7 @@ namespace aga
                                 Point point = {dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y};
 
                                 m_SceneManager->GetMainLoop ()->GetScriptManager ().RunScriptFunction (
-                                    area.ScriptOnEnterCallback, &point);
+                                    area.ScriptOnEnterCallback, &area.Name, &point);
                             }
                         }
 
@@ -385,7 +385,8 @@ namespace aga
 
                         if (area.OnLeaveCallback)
                         {
-                            area.OnLeaveCallback (dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y);
+                            area.OnLeaveCallback (
+                                area.Name, dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y);
                         }
 
                         if (area.ScriptOnLeaveCallback)
@@ -393,7 +394,7 @@ namespace aga
                             Point point = {dx + r.MinimumTranslationVector.X, dy + r.MinimumTranslationVector.Y};
 
                             m_SceneManager->GetMainLoop ()->GetScriptManager ().RunScriptFunction (
-                                area.ScriptOnLeaveCallback, &point);
+                                area.ScriptOnLeaveCallback, &area.Name, &point);
                         }
                     }
                 }

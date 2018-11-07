@@ -313,7 +313,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneManager::AddOnEnterCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func)
+    void SceneManager::AddOnEnterCallback (
+        const std::string& triggerName, std::function<void(std::string areaName, float dx, float dy)> func)
     {
         if (m_ActiveScene)
         {
@@ -343,7 +344,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneManager::AddOnLeaveCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func)
+    void SceneManager::AddOnLeaveCallback (
+        const std::string& triggerName, std::function<void(std::string areaName, float dx, float dy)> func)
     {
         if (m_ActiveScene)
         {
@@ -537,6 +539,34 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    bool SceneManager::IsTransitioning () const { return m_Transitioning; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::SetDrawPhysData (bool enable) { m_DrawPhysData = enable; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool SceneManager::IsDrawPhysData () { return m_DrawPhysData; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::SetDrawBoundingBox (bool enable) { m_DrawBoundingBox = enable; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool SceneManager::IsDrawBoundingBox () { return m_DrawBoundingBox; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::SetDrawActorsNames (bool enable) { m_DrawActorsNames = enable; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool SceneManager::IsDrawActorsNames () { return m_DrawActorsNames; }
+
+    //--------------------------------------------------------------------------------------------------
+
     void SceneManager::SceneIntro (float duration)
     {
         m_CenterTextColor = al_map_rgb (160, 160, 160);
@@ -660,12 +690,27 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void SceneManager::PushPoint (Point p) { m_SavedPoints.push (p); }
+
+    //--------------------------------------------------------------------------------------------------
+
     Point SceneManager::PopPoint ()
     {
         Point point = m_SavedPoints.top ();
         m_SavedPoints.pop ();
 
         return point;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::RegisterTriggerScene (const std::string& areaName, const std::string& sceneFile)
+    {
+        AddOnEnterCallback (areaName, [&](std::string areaName, float, float) {
+            SetActiveScene (m_ActiveScene->GetSceneTransition (areaName), true);
+
+            return false;
+        });
     }
 
     //--------------------------------------------------------------------------------------------------

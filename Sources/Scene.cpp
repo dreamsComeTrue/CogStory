@@ -681,11 +681,12 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    TriggerArea* Scene::AddTriggerArea (const std::string& name, std::vector<Point> points, bool collidable)
+    TriggerArea* Scene::AddTriggerArea (
+        const std::string& name, const std::string& data, std::vector<Point> points, bool collidable)
     {
         if (m_TriggerAreas.find (name) == m_TriggerAreas.end ())
         {
-            TriggerArea area{name, points};
+            TriggerArea area{name, data, points};
             area.Collidable = collidable;
 
             area.UpdatePolygons (&m_SceneManager->GetMainLoop ()->GetPhysicsManager ().GetTriangulator ());
@@ -899,7 +900,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::AddOnEnterCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func)
+    void Scene::AddOnEnterCallback (
+        const std::string& triggerName, std::function<void(std::string areaName, float dx, float dy)> func)
     {
         if (m_TriggerAreas.find (triggerName) != m_TriggerAreas.end ())
         {
@@ -933,7 +935,8 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::AddOnLeaveCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func)
+    void Scene::AddOnLeaveCallback (
+        const std::string& triggerName, std::function<void(std::string areaName, float dx, float dy)> func)
     {
         if (m_TriggerAreas.find (triggerName) != m_TriggerAreas.end ())
         {
@@ -1168,6 +1171,20 @@ namespace aga
         audioManager.RemoveStream (streamName);
 
         m_SceneAudioStream = nullptr;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scene::AddSceneTransition (const std::string& triggerAreaName, const std::string& newSceneName)
+    {
+        m_ScenesTransitions[triggerAreaName] = newSceneName;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string Scene::GetSceneTransition (const std::string& triggerAreaName)
+    {
+        return m_ScenesTransitions[triggerAreaName];
     }
 
     //--------------------------------------------------------------------------------------------------

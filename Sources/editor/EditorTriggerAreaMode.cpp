@@ -20,6 +20,7 @@ namespace aga
         , m_Editing (false)
     {
         memset (m_TriggerAreaWindow, 0, ARRAY_SIZE (m_TriggerAreaWindow));
+        memset (m_TriggerAreaData, 0, ARRAY_SIZE (m_TriggerAreaData));
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -150,6 +151,7 @@ namespace aga
                 {
                     m_TriggerAreaName = it->first;
                     strcpy (m_TriggerAreaWindow, m_TriggerAreaName.c_str ());
+                    strcpy (m_TriggerAreaData, it->second.Data.c_str ());
                     m_Collidable = it->second.Collidable;
                     m_Editing = true;
 
@@ -264,7 +266,7 @@ namespace aga
     {
         Scene* scene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
 
-        m_TriggerArea = scene->AddTriggerArea (m_TriggerAreaName, {}, m_Collidable);
+        m_TriggerArea = scene->AddTriggerArea (m_TriggerAreaName, m_TriggerAreaData, {}, m_Collidable);
         m_TriggerPoint = nullptr;
     }
 
@@ -272,10 +274,15 @@ namespace aga
 
     void EditorTriggerAreaMode::Render ()
     {
+        ImGui::SetNextWindowSize (ImVec2 (400, 130));
+
         if (ImGui::BeginPopupModal ("Trigger Area", NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
-            ImGui::InputText ("", m_TriggerAreaWindow, IM_ARRAYSIZE (m_TriggerAreaWindow));
+            ImGui::PushItemWidth (350);
+            ImGui::InputText ("Name", m_TriggerAreaWindow, IM_ARRAYSIZE (m_TriggerAreaWindow));
             ImGui::SetItemDefaultFocus ();
+            ImGui::InputText ("Data", m_TriggerAreaData, IM_ARRAYSIZE (m_TriggerAreaData));
+            ImGui::PopItemWidth ();
 
             ImGui::Checkbox ("Collidable?", &m_Collidable);
 
@@ -294,7 +301,8 @@ namespace aga
                     {
                         TriggerArea* newTriggerArea
                             = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddTriggerArea (
-                                m_TriggerAreaWindow, oldTriggerArea->Points, m_Collidable);
+                                m_TriggerAreaWindow, m_TriggerAreaData, oldTriggerArea->Points, m_Collidable);
+                        newTriggerArea->Data = oldTriggerArea->Data;
                         newTriggerArea->Polygons = oldTriggerArea->Polygons;
                         newTriggerArea->OnEnterCallback = oldTriggerArea->OnEnterCallback;
                         newTriggerArea->OnLeaveCallback = oldTriggerArea->OnLeaveCallback;
@@ -311,6 +319,11 @@ namespace aga
                     if (m_Collidable != oldTriggerArea->Collidable)
                     {
                         oldTriggerArea->Collidable = m_Collidable;
+                    }
+
+                    if (m_TriggerAreaData != oldTriggerArea->Data)
+                    {
+                        oldTriggerArea->Data = m_TriggerAreaData;
                     }
                 }
                 else

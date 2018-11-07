@@ -42,12 +42,14 @@ namespace aga
         Camera& GetCamera ();
         MainLoop* GetMainLoop ();
 
-        void AddOnEnterCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
+        void AddOnEnterCallback (
+            const std::string& triggerName, std::function<void(std::string areaName, float dx, float dy)> func);
         void AddOnEnterCallback (const std::string& triggerName, asIScriptFunction* func);
 
         void RemoveOnEnterCallback (const std::string& triggerName);
 
-        void AddOnLeaveCallback (const std::string& triggerName, std::function<void(float dx, float dy)> func);
+        void AddOnLeaveCallback (
+            const std::string& triggerName, std::function<void(std::string areaName, float dx, float dy)> func);
         void AddOnLeaveCallback (const std::string& triggerName, asIScriptFunction* func);
 
         void RemoveOnLeaveCallback (const std::string& triggerName);
@@ -64,16 +66,16 @@ namespace aga
 
         void Reset ();
         void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, ALLEGRO_COLOR color = COLOR_BLACK);
-        bool IsTransitioning () const { return m_Transitioning; }
+        bool IsTransitioning () const;
 
-        void SetDrawPhysData (bool enable) { m_DrawPhysData = enable; }
-        bool IsDrawPhysData () { return m_DrawPhysData; }
+        void SetDrawPhysData (bool enable);
+        bool IsDrawPhysData ();
 
-        void SetDrawBoundingBox (bool enable) { m_DrawBoundingBox = enable; }
-        bool IsDrawBoundingBox () { return m_DrawBoundingBox; }
+        void SetDrawBoundingBox (bool enable);
+        bool IsDrawBoundingBox ();
 
-        void SetDrawActorsNames (bool enable) { m_DrawActorsNames = enable; }
-        bool IsDrawActorsNames () { return m_DrawActorsNames; }
+        void SetDrawActorsNames (bool enable);
+        bool IsDrawActorsNames ();
 
         void SetSuppressSceneInfo (bool suppress);
         bool IsSuppressSceneInfo () const;
@@ -87,8 +89,10 @@ namespace aga
             ScreenRelativePosition pos = BottomRight);
         void SetOverlayActive (bool active) { m_OverlayActive = active; }
 
-        void PushPoint (Point p) { m_SavedPoints.push (p); }
+        void PushPoint (Point p);
         Point PopPoint ();
+
+        void RegisterTriggerScene (const std::string& areaName, const std::string& sceneFile);
 
     private:
         void SceneIntro (float duration = 1000.f);

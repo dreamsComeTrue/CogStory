@@ -49,6 +49,7 @@ namespace aga
         bool m_Collidable;
 
         char m_TriggerAreaWindow[100];
+        char m_TriggerAreaData[100];
 
         bool m_Editing;
     };
