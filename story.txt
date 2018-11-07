@@ -1,28 +1,75 @@
 =============================
-RobotTales v0.1
+       RobotTales v0.1
 =============================
 
 
 =============================
+           STORY
+=============================
 
- -- Chapter I --
- No ordinary day
+                                   -- Chapter I --
+                                   No ordinary day
 
- = Kamera przesuwa się powoli nad miastem, pokazuje budynki i ludzi oraz roboty wędrujące po nim.
- = Fade napisu na środku
+ = Camera moves over the town, shows buildings, people and robots wandering around
+ = Fade in center text
     -- Chapter I --
     No ordinary day
 
- = Kamera zatrzymuje się nad budynkiem fabryki, fading do wnętrza.
- = Kamera płynie nad robotami podczas pracy przy taśmach.
- = Kamera zatrzymuje się nad dwójką rozmawiających robotów (R1, R2).
-    R1: Czy wszystko idzie zgodnie z planem?
-    R2: Nastąpiły pewne komplikacje...
-    R1: Co to znaczy kom-pli-ka-cje ?!? [podskakuje]   
-    R2: Nie zdążymy do końca tygodnia 
+ = Camera stops over factory building, fades to entry
+ = Camera flows over robots moving slowly around belts
+ = Stop over two talking robots (R1, R2)
+    R1: Is everything going according to the plan?
+    R2: There...are...some..c-c-complications...
+    R1: What does it mean "com-pli-ca-tions" ?!? [jumps nervously]
+    R2: I don't think we're gonna make it till end of the week
     
- = Zza sceny przychodzi człowiek (CZ), podchodzi do robotów (R1, R2).
-    - 
+ = Over screen walks unknown human (UH), approaches robots (R1, R2).
+    UH: Excuse me, can you tell me, where should I put my job application?
+ = Robots still talks to each other
+    R1: I don't want to hear that, we are acting according to plan
+    R2: Try harder or you'll end up on the scrap yard!
+ = Human interrupts once again
+    UH: S-s-sorry, uhm, eee, can you two guys help me?
+ = Robots are still doing their own bussines
+    R1: Our registers shown we're expecting today at least 10 humans
+    R2: Yeah, but...
+    R1: But? BUT !?! I will kick your BUTT if you 'but' me again!
+ = Human tries once again
+    UH: Hey, I really don't want to interrupt you, but I'm in a little hurry.
+    R1: [turns his face to UH]: WHAT ???!!!
+    UH: Oh, right, yes. Now, can you show me where is job application office?
+    R2: [also turns his head]: WHAT ???!!!
+    UH: Office. Job office. Where I can go and put my job application. Where is it?
+ = R1 and R2 look at each other, then UH, then once again at each, then
+   simultaneously moves back 2 steps and shows a little ballon with exclamation
+   marks over their heads. Waits a while, and both of them moves back to UH
+     R2: You serious?
+     UH: Yeah, what's the matter?
+     R1: Didn't you hit your head or something?
+     UH: No, I'm pretty fine
+     R2: But you are aware this a ROBOT factory, where only ROBOTS work, right?
+     UH: Of course, I have read it at sign in front of the entrance
+     R1: You also know that...akhem...
+     R1: FOR THE LAST 300 YEARS NO HUMAN DOESN'T HAVE TO WORK ANYMORE ?!?
+     R2: [side-text-frame] Are you out of your mind?
+     UH: Yup, that is correct. After the invention of [Thought-Propelled Brain] 
+         robots became self-aware and from that day on they replaced humans in all
+         labour-related tasks. After that, every single human retired and devoted
+         himself to all pleasures free time can ensure.
+     R2: Exaclty, so, what's your reason? 
+     R2: Can't you just enjoy your happy life without any work-concerns? 
+         Just leave them to us, that's what we are created for after all!
+     UH: ....nah, that's fine. I just got bored and wanted to try something
+         different, that's all
+     R1: [thinks for the moment] .... .... .... ....
+     R1: Well, I can not promise you anything, but...come with me
+ = UH and R1 walks slowly outside the screen, while walking
+     R1: [turns head to R2] Get back to work!!!
+ = R2 starts to move rapidly in all directions. UH and R1 continue walking, 
+   screen fades
+     
+     
+    
 
 
 
@@ -35,12 +82,12 @@ RobotTales v0.1
 =============================
 
    -- Chapter III --
-      Wasteland
+       Wasteland
 
 =============================
 
    -- Chapter IV --
-    Space Station
+     Space Station
 
 =============================
 
@@ -50,9 +97,9 @@ RobotTales v0.1
 =============================
 
    -- Chapter VI --
-     You are me
+      You are me
 
-= PiTi spotyka sam siebie z przeszłości
+= PiTi meets himself from the past
 
 
 
@@ -68,25 +115,24 @@ RobotTales v0.1
 
 
 Peter (PTR 467) oddaje swój umysł w przyszłości i zostaje umieszczony w ciele robota
-Pracuje w fabryce
-Walka z korporacją
+PiTi works in a factory
+Fight with the factory
 Mechanika - wkłada przedmioty do swojego wnętrza i je ożywia (ciepłem)
 Hakowanie umysłu (jak Project IGI), niszczenie kamer w fabryce
 
-Temat detektywistyczny
+Film noir theme
 Na końcu poznaję matkę - Agatha, gracz może go poświęcić lub nie
 
-Festyn na rynku
-Przemarsz wojsk
+Marketplace festival
+March of troops
 
 PiT odkrywa że jest jedynym myślącym robotem (ma duszę człowieka z przeszłości)
 
 "He created The Core"
 
-Planeta/wyspa gdzie wszystkie postacie kłamią/na wszystko się zgadzają
-
+Character/village where character[s] lies in 50/50 ratio
 
 ===================
-Nawiązania do świata współczesnego:
+Memes/easter eggs:
 
-- lot w kosmos: mija po drodze Teslę z astronautą
+- while in space/spaceshuffle he passes by over Tesla car with astronaut inside
