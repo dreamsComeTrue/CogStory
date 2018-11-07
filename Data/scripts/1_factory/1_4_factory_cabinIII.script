@@ -1,0 +1,40 @@
+void Start ()
+{
+    SetSceneAudioStream ("music/Little People At Work.ogg");
+}
+
+void SceneChanged (const string &in previousSceneName)
+{
+    Point pos;
+
+    if (previousSceneName == "Factory")
+    {
+        pos = GetFlagPoint ("MARKER_FACTORY_MAIN").Pos;
+    }
+
+    player.SetCenterPosition (pos);
+    camera.SetFollowActor (player);
+}
+
+void BeforeEnterScene ()
+{
+    AddOnEnterCallback ("ENTRY_FACTORY_MAIN", function (pt)
+    {
+	    SetActiveScene ("1_factory/1_1_factory_main.scn", true);
+    });  
+
+    GetSceneAudioStream ().Play ();
+    GetSceneAudioStream ().SetFadeIn (500.f);
+}
+
+void AfterLeaveScene ()
+{
+    if (GetSceneAudioStream () !is null)
+    {
+        GetSceneAudioStream ().SetFadeOut (500.f, true);
+    }
+}
+
+void Update (float deltaTime)
+{
+}

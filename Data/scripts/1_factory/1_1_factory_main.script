@@ -11,6 +11,18 @@ void SceneChanged (const string &in previousSceneName)
     {
         pos = GetFlagPoint ("MARKER_FACTORY_HALLWAY").Pos;
     }
+    else if (previousSceneName == "Factory Cabin I")
+    {
+        pos = GetFlagPoint ("MARKER_FACTORY_CABIN_I").Pos;
+    }
+    else if (previousSceneName == "Factory Cabin II")
+    {
+        pos = GetFlagPoint ("MARKER_FACTORY_CABIN_II").Pos;
+    }
+    else if (previousSceneName == "Factory Cabin III")
+    {
+        pos = GetFlagPoint ("MARKER_FACTORY_CABIN_III").Pos;
+    }
 
     player.SetCenterPosition (pos);
     camera.SetFollowActor (player);
@@ -21,13 +33,25 @@ void BeforeEnterScene ()
     AddOnEnterCallback ("ENTRY_FACTORY_HALLWAY", function (pt)
     {
 	    SetActiveScene ("1_factory/1_0_factory_hallway.scn", true);
-    });      
+    });  
+
+    AddOnEnterCallback ("ENTRY_CABIN_I", function (pt)
+    {
+	    SetActiveScene ("1_factory/1_2_factory_cabinI.scn", true);
+    }); 
+    
+    AddOnEnterCallback ("ENTRY_CABIN_II", function (pt)
+    {
+	    SetActiveScene ("1_factory/1_3_factory_cabinII.scn", true);
+    });  
+
+    AddOnEnterCallback ("ENTRY_CABIN_III", function (pt)
+    {
+	    SetActiveScene ("1_factory/1_4_factory_cabinIII.scn", true);
+    });             
 
     GetSceneAudioStream ().Play ();
-    GetSceneAudioStream ().SetFadeIn (500.f);
-
-//    AddParticles (26);
-//    AddParticles (41);    
+    GetSceneAudioStream ().SetFadeIn (500.f);   
 }
 
 void AfterLeaveScene ()
@@ -40,21 +64,4 @@ void AfterLeaveScene ()
 
 void Update (float deltaTime)
 {
-}
-
-void AddParticles (int actorName)
-{
-    Actor@ tile = GetActor (actorName);
-    ParticleEmitterComponent@ particles = tile.GetParticleEmitterComponent ("PARTICLES");
-
-    particles.CreateEmitter ("particles", "smog_particles", 10, 0.5f);
-    Color fadeColor (255, 255, 255, 0);
-    particles.GetEmitter ().SetColorTransition (COLOR_WHITE, fadeColor);
-    float xSpread = 0.12f;
-    particles.GetEmitter ().SetVelocityVariance (Point (-xSpread, 0.3f), Point (xSpread, 0.3f));
-    float partLife = 1.5f;
-    particles.GetEmitter ().SetParticleLifeVariance (partLife, partLife);
-    Point pos = particles.GetEmitter ().GetPosition ();
-    particles.GetEmitter ().SetPosition (pos.X + tile.Bounds.GetHalfSize ().Width, pos.Y - 5);
-    particles.GetEmitter ().Initialize ();
 }

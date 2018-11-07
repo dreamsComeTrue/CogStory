@@ -19,3 +19,22 @@ void HideSpeechWhenOverlap (Actor@ other, string objectName, string speechID)
 } 
 
 //--------------------------------------------------------------------------------------------------
+
+void AddParticles (int actorName)
+{
+    Actor@ tile = GetActor (actorName);
+    ParticleEmitterComponent@ particles = tile.GetParticleEmitterComponent ("PARTICLES");
+
+    particles.CreateEmitter ("particles", "smog_particles", 10, 0.5f);
+    Color fadeColor (255, 255, 255, 0);
+    particles.GetEmitter ().SetColorTransition (COLOR_WHITE, fadeColor);
+    float xSpread = 0.12f;
+    particles.GetEmitter ().SetVelocityVariance (Point (-xSpread, 0.3f), Point (xSpread, 0.3f));
+    float partLife = 1.5f;
+    particles.GetEmitter ().SetParticleLifeVariance (partLife, partLife);
+    Point pos = particles.GetEmitter ().GetPosition ();
+    particles.GetEmitter ().SetPosition (pos.X + tile.Bounds.GetHalfSize ().Width, pos.Y - 5);
+    particles.GetEmitter ().Initialize ();
+}
+
+//--------------------------------------------------------------------------------------------------
