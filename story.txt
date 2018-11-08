@@ -104,6 +104,13 @@
 
 
 
+Factory
+City
+Underground/Wasteland/Sewers
+Forest
+SpaceShip
+Planet
+Memories
 
 
 
