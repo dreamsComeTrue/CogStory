@@ -12,22 +12,6 @@ void Start ()
 
 void SceneChanged (const string &in previousSceneName)
 {
-    Point pos;
-
-    if (previousSceneName == "Home")
-    {
-        pos = GetFlagPoint ("MARKER_HOME_CITY").Pos;
-    }
-    else if (previousSceneName == "Factory Hallway")
-    {
-        pos = GetFlagPoint ("MARKER_FACTORY_CITY").Pos;
-    }
-    else 
-    {
-        pos = GetPlayerStartLocation ();
-    }
-
-    player.SetCenterPosition (pos);
 }
 
 void BeforeEnterScene ()

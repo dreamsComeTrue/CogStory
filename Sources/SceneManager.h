@@ -97,6 +97,7 @@ namespace aga
     private:
         void SceneIntro (float duration = 1000.f);
         void PrintOverlayText (const std::string& text, ScreenRelativePosition pos = BottomRight);
+        void TeleportToMarkerPosition (std::string& lastSceneName);
 
     private:
         SpeechFrameManager m_SpeechFrameManager;

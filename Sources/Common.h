@@ -123,6 +123,8 @@ namespace aga
 
     bool StartsWith (const std::string& str, const std::string& prefix);
 
+    std::string ToUpper (std::string& str);
+
     float RandZeroToOne ();
     bool RandBool ();
     float RandInRange (float min, float max);

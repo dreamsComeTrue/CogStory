@@ -5,26 +5,6 @@ void Start ()
 
 void SceneChanged (const string &in previousSceneName)
 {
-    Point pos;
-
-    if (previousSceneName == "Factory Hallway")
-    {
-        pos = GetFlagPoint ("MARKER_FACTORY_HALLWAY").Pos;
-    }
-    else if (previousSceneName == "Factory Cabin I")
-    {
-        pos = GetFlagPoint ("MARKER_FACTORY_CABIN_I").Pos;
-    }
-    else if (previousSceneName == "Factory Cabin II")
-    {
-        pos = GetFlagPoint ("MARKER_FACTORY_CABIN_II").Pos;
-    }
-    else if (previousSceneName == "Factory Cabin III")
-    {
-        pos = GetFlagPoint ("MARKER_FACTORY_CABIN_III").Pos;
-    }
-
-    player.SetCenterPosition (pos);
     camera.SetFollowActor (player);
 }
 

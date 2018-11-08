@@ -154,22 +154,41 @@ namespace aga
 
         if (scene)
         {
-            std::string currentSceneName = "";
+            std::string prevSceneName = "";
 
             if (m_ActiveScene != nullptr)
             {
                 m_ActiveScene->AfterLeave ();
-                currentSceneName = m_ActiveScene->GetName ();
+                prevSceneName = m_ActiveScene->GetName ();
             }
 
             m_ActiveScene = scene;
             m_ActiveScene->BeforeEnter ();
-            m_ActiveScene->RunAllScripts ("void SceneChanged (const string &in str)", &currentSceneName);
+            m_ActiveScene->RunAllScripts ("void SceneChanged (const string &in str)", &prevSceneName);
 
             if (!m_ActiveScene->IsSuppressSceneInfo ())
             {
                 SceneIntro (2500.0f);
             }
+
+            TeleportToMarkerPosition (prevSceneName);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::TeleportToMarkerPosition (std::string& lastSceneName)
+    {
+        //  Find matching marker position
+        std::replace (lastSceneName.begin (), lastSceneName.end (), ' ', '_');
+        ToUpper (lastSceneName);
+
+        std::string flagPointName = "MARKER_" + lastSceneName;
+        FlagPoint* flagPoint = m_ActiveScene->GetFlagPoint (flagPointName);
+
+        if (flagPoint)
+        {
+            m_Player->SetCenterPosition (flagPoint->Pos);
         }
     }
 
