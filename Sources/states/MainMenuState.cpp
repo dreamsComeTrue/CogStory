@@ -2,13 +2,11 @@
 
 #include "MainMenuState.h"
 #include "Atlas.h"
-#include "AtlasManager.h"
 #include "AudioSample.h"
 #include "GamePlayState.h"
 #include "MainLoop.h"
 #include "Resources.h"
 #include "Screen.h"
-#include "StateManager.h"
 
 namespace aga
 {
@@ -18,8 +16,8 @@ namespace aga
 
     MainMenuState::MainMenuState (MainLoop* mainLoop)
         : State (mainLoop, MAIN_MENU_STATE_NAME)
-        , m_Selection (0)
         , m_SelectionAngle (0.0f)
+        , m_Selection (0)
     {
     }
 
@@ -70,7 +68,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool MainMenuState::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
+    bool MainMenuState::ProcessEvent (ALLEGRO_EVENT* event, float)
     {
         if (event->type == ALLEGRO_EVENT_KEY_DOWN)
         {
@@ -148,7 +146,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void MainMenuState::Update (float deltaTime) {}
+    void MainMenuState::Update (float) {}
 
     //--------------------------------------------------------------------------------------------------
 
@@ -161,8 +159,8 @@ namespace aga
         Point textSize = font.GetTextDimensions (FONT_NAME_MENU_ITEM_NORMAL, menuItems[m_Selection]);
 
         int offset = 10;
-        int menuItemSpacing = textSize.Height + offset;
-        int menuItemStartY = winSize.Height * 0.5f - menuItemSpacing;
+        int menuItemSpacing = static_cast<int> (textSize.Height + offset);
+        int menuItemStartY = static_cast<int> (winSize.Height * 0.5f - menuItemSpacing);
 
         ALLEGRO_COLOR menuItemColor = al_map_rgb (140, 140, 160);
 
@@ -173,13 +171,13 @@ namespace aga
         {
             font.DrawText (m_Selection == i ? FONT_NAME_MENU_ITEM_NORMAL : FONT_NAME_MENU_ITEM_SMALL, menuItemColor,
                 winSize.Width * 0.5f,
-                m_Selection == i ? menuItemStartY + i * menuItemSpacing - offset * 0.5
+                m_Selection == i ? menuItemStartY + i * menuItemSpacing - offset * 0.5f
                                  : menuItemStartY + i * menuItemSpacing,
                 menuItems[i], ALLEGRO_ALIGN_CENTER);
         }
 
-        int xPos = winSize.Width * 0.5f - textSize.Width * 0.5 - 30;
-        int yPos = menuItemStartY + textSize.Height * 0.5 + m_Selection * menuItemSpacing - 7;
+        int xPos = static_cast<int> (winSize.Width * 0.5f - textSize.Width * 0.5f - 30.f);
+        int yPos = static_cast<int> (menuItemStartY + textSize.Height * 0.5f + m_Selection * menuItemSpacing - 7.f);
 
         m_SelectionAngle += MENU_SELECTION_ROTATION_SPEED * deltaTime;
 

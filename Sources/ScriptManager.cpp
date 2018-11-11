@@ -1,12 +1,12 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "ScriptManager.h"
-#include "AudioManager.h"
 #include "AudioSample.h"
 #include "AudioStream.h"
 #include "MainLoop.h"
+#include "ParticleEmitter.h"
+#include "Player.h"
 #include "Scene.h"
-#include "SceneManager.h"
 #include "Screen.h"
 #include "Script.h"
 #include "SpeechFrame.h"
@@ -377,8 +377,8 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     ScriptManager::ScriptManager (MainLoop* mainLoop)
-        : m_FileListener (&mainLoop->GetSceneManager ())
-        , m_MainLoop (mainLoop)
+        : m_MainLoop (mainLoop)
+        , m_FileListener (&mainLoop->GetSceneManager ())
     {
     }
 
@@ -401,7 +401,7 @@ namespace aga
         m_ScriptEngine = asCreateScriptEngine ();
 
         // Set the message callback to receive information on errors in human readable form.
-        int r = m_ScriptEngine->SetMessageCallback (asFUNCTION (MessageCallback), 0, asCALL_CDECL);
+        int r = m_ScriptEngine->SetMessageCallback (asFUNCTION (MessageCallback), nullptr, asCALL_CDECL);
         assert (r >= 0);
 
         RegisterStdString (m_ScriptEngine);
@@ -432,7 +432,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void ScriptManager::Update (float deltaTime) { m_FileWatcher.update (); }
+    void ScriptManager::Update (float) { m_FileWatcher.update (); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -545,7 +545,7 @@ namespace aga
 
     static void ConstructColorRGBA (float r, float g, float b, float a, ALLEGRO_COLOR* ptr)
     {
-        new (ptr) ALLEGRO_COLOR{r, g, b, a};
+        new (ptr) ALLEGRO_COLOR {r, g, b, a};
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1095,7 +1095,7 @@ namespace aga
                 (const std::string&, const std::string&, Rect, bool, const std::string& actionName,
                     const std::string& regionName),
                 SpeechFrame*),
-            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
+            asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction (
             "SpeechFrame@ AddSpeechFrame (const string &in, const string &in, "
@@ -1104,24 +1104,24 @@ namespace aga
                 (const std::string&, const std::string&, Point, int, int, bool, const std::string& actionName,
                     const std::string& regionName),
                 SpeechFrame*),
-            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
+            asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction (
             "SpeechFrame@ AddSpeechFrame (const string &in id, bool shouldBeHandled = true)",
             asMETHODPR (
                 SpeechFrameManager, AddSpeechFrame, (const std::string& id, bool shouldBeHandled), SpeechFrame*),
-            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
+            asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction ("void RemoveSpeechFrame (const string &in id)",
             asMETHOD (SpeechFrameManager, RemoveSpeechFrame), asCALL_THISCALL_ASGLOBAL,
-            &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
+            m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);
 
         r = m_ScriptEngine->RegisterFuncdef ("void SpeechHandler ()");
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction ("void RegisterSpeechesFinishedHandler (SpeechHandler @+ hd)",
             asMETHODPR (SpeechFrameManager, RegisterSpeechesFinishedHandler, (asIScriptFunction * func), void),
-            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
+            asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
         assert (r >= 0);
     }
 

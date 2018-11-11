@@ -1,13 +1,12 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "EditorState.h"
-#include "Camera.h"
 #include "Common.h"
 #include "MainLoop.h"
-#include "Scene.h"
-#include "SceneManager.h"
+#include "Player.h"
 #include "Screen.h"
-#include "StateManager.h"
+
+#include "editor/Editor.h"
 
 namespace aga
 {
@@ -82,7 +81,7 @@ namespace aga
 
         //  Reset camera to player
         player->BeforeEnter ();
-        player->Move (0, 0.00001);
+        player->Move (0.f, 0.00001f);
         player->SetPosition (player->TemplateBounds.Pos);
 
         if (m_Editor->GetCursorMode () == EditPhysBodyMode)

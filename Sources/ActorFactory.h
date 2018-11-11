@@ -15,15 +15,15 @@ namespace aga
         static void RegisterActorTypes ();
         static void RegisterActorComponents ();
         static void RegisterAnimations ();
-        static std::vector<std::string>& GetActorTypes () { return s_ActorTypes; }
-        static std::vector<std::string>& GetActorComponents () { return s_ActorComponents; }
+        static std::vector<std::string>& GetActorTypes ();
+        static std::vector<std::string>& GetActorComponents ();
 
         static Actor* GetActor (SceneManager* sceneManager, const std::string& type);
         static class Component* GetActorComponent (Actor* actor, const std::string& type);
         static Animation& GetAnimation (const std::string& name);
-        static Animation& GetDummyAnimation () { return s_DummyAnimation; }
+        static Animation& GetDummyAnimation ();
 
-        static std::map<std::string, Animation>& GetAnimations () { return s_Animations; }
+        static std::map<std::string, Animation>& GetAnimations ();
 
     private:
         static Animation LoadAnimationFromFile (const std::string& path);

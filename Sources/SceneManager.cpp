@@ -3,14 +3,13 @@
 #include "SceneManager.h"
 #include "ActorFactory.h"
 #include "MainLoop.h"
+#include "Player.h"
 #include "Scene.h"
 #include "SceneLoader.h"
 #include "Screen.h"
 #include "Script.h"
+#include "SpeechFrameManager.h"
 #include "states/GamePlayState.h"
-#include "states/MainMenuState.h"
-
-#include <algorithm>
 
 namespace aga
 {
@@ -26,21 +25,20 @@ namespace aga
         : m_MainLoop (mainLoop)
         , m_Player (nullptr)
         , m_Camera (this)
-        , m_SpeechFrameManager (this)
         , m_ActiveScene (nullptr)
+        , m_NextScene (nullptr)
+        , m_TweenFade (nullptr)
         , m_Transitioning (true)
         , m_FadeColor (COLOR_BLACK)
-        , m_TweenFade (nullptr)
         , m_DrawPhysData (true)
         , m_DrawBoundingBox (true)
         , m_DrawActorsNames (true)
-        , m_NextScene (nullptr)
         , m_OverlayText ("")
         , m_OverlayPosition (Center)
         , m_OverlayDuration (2000.f)
         , m_OverlayActive (false)
-
     {
+        m_SpeechFrameManager = new SpeechFrameManager (this);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -69,7 +67,7 @@ namespace aga
 
         m_Camera.SetFollowActor (m_Player, {0, 0});
 
-        m_SpeechFrameManager.Initialize ();
+        m_SpeechFrameManager->Initialize ();
 
         return true;
     }
@@ -78,9 +76,8 @@ namespace aga
 
     bool SceneManager::Destroy ()
     {
+        SAFE_DELETE (m_SpeechFrameManager);
         SAFE_DELETE (m_Player);
-
-        m_SpeechFrameManager.Destroy ();
 
         for (std::map<std::string, Scene*>::iterator it = m_Scenes.begin (); it != m_Scenes.end ();)
         {
@@ -240,7 +237,7 @@ namespace aga
 
     bool SceneManager::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
     {
-        return m_SpeechFrameManager.ProcessEvent (event, deltaTime);
+        return m_SpeechFrameManager->ProcessEvent (event, deltaTime);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -253,7 +250,7 @@ namespace aga
 
             if (m_MainLoop->GetStateManager ().GetActiveStateName () == GAMEPLAY_STATE_NAME)
             {
-                m_SpeechFrameManager.Update (deltaTime);
+                m_SpeechFrameManager->Update (deltaTime);
             }
         }
 
@@ -272,7 +269,7 @@ namespace aga
 
             if (m_MainLoop->GetStateManager ().GetActiveStateName () == GAMEPLAY_STATE_NAME)
             {
-                m_SpeechFrameManager.Render (deltaTime);
+                m_SpeechFrameManager->Render (deltaTime);
             }
         }
 
@@ -311,7 +308,7 @@ namespace aga
             if (m_OverlayCharDuration > m_OverlayCharMaxDuration)
             {
                 ++m_OverlayCharPos;
-                m_OverlayCharPos = std::min (m_OverlayCharPos, (int)m_OverlayText.length ());
+                m_OverlayCharPos = std::min (m_OverlayCharPos, static_cast<int> (m_OverlayText.length ()));
 
                 m_OverlayCharDuration = 0.f;
             }
@@ -510,7 +507,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    SpeechFrameManager& SceneManager::GetSpeechFrameManager () { return m_SpeechFrameManager; }
+    SpeechFrameManager* SceneManager::GetSpeechFrameManager () { return m_SpeechFrameManager; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -628,6 +625,9 @@ namespace aga
 
         switch (screenPos)
         {
+        case aga::Absoulte:
+            break;
+
         case aga::TopLeft:
             pos = {offset, offset};
             align = ALLEGRO_ALIGN_LEFT;
@@ -723,7 +723,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SceneManager::RegisterTriggerScene (const std::string& areaName, const std::string& sceneFile)
+    void SceneManager::RegisterTriggerScene (const std::string& areaName, const std::string& /**sceneFile**/)
     {
         AddOnEnterCallback (areaName, [&](std::string areaName, float, float) {
             SetActiveScene (m_ActiveScene->GetSceneTransition (areaName), true);

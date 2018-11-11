@@ -6,14 +6,15 @@
 using namespace aga;
 
 // The attributes of the screen
+const char* GAME_TITLE = "Robot Tales";
 const int SCREEN_WIDTH = 1200;
 const int SCREEN_HEIGHT = 700;
 
 //--------------------------------------------------------------------------------------------------
 
-int main (int argc, char** argv)
+int main (int /*argc*/, char** /*argv*/)
 {
-    Screen mainScreen (SCREEN_WIDTH, SCREEN_HEIGHT, true);
+    Screen mainScreen (SCREEN_WIDTH, SCREEN_HEIGHT, GAME_TITLE, true);
 
     if (mainScreen.Initialize ())
     {

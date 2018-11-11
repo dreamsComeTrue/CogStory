@@ -2,10 +2,7 @@
 
 #include "TileActor.h"
 #include "Atlas.h"
-#include "AtlasManager.h"
-#include "Font.h"
 #include "MainLoop.h"
-#include "SceneManager.h"
 #include "Screen.h"
 
 namespace aga

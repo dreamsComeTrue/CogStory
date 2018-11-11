@@ -75,7 +75,7 @@ namespace aga
 
     void Scriptable::RemoveAllScripts ()
     {
-        for (int i = 0; i < m_Scripts.size (); ++i)
+        for (size_t i = 0; i < m_Scripts.size (); ++i)
         {
             RemoveScript (m_Scripts[i].ScriptObj);
         }

@@ -1,7 +1,6 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Atlas.h"
-#include "Screen.h"
 
 namespace aga
 {
@@ -84,7 +83,7 @@ namespace aga
                 int height = atoi (sizeData[1].c_str ());
 
                 AtlasRegion region;
-                region.Bounds = Rect{ { x, y }, { x + width, y + height } };
+                region.Bounds = Rect {{x, y}, {x + width, y + height}};
                 region.Name = name;
 
                 m_Regions.insert (std::make_pair (name, region));
@@ -98,7 +97,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Atlas::DrawRegion (const std::string& name, float x, float y, float scaleX, float scaleY, float rotation,
-                            bool offsetByCenter, ALLEGRO_COLOR color)
+        bool offsetByCenter, ALLEGRO_COLOR color)
     {
         if (m_Regions.find (name) != m_Regions.end ())
         {
@@ -111,15 +110,15 @@ namespace aga
             }
 
             al_draw_tinted_scaled_rotated_bitmap_region (m_Image, r.GetPos ().X, r.GetPos ().Y, r.GetSize ().Width,
-                                                         r.GetSize ().Height, color, r.GetHalfSize ().Width,
-                                                         r.GetHalfSize ().Height, x, y, scaleX, scaleY, rotation, 0);
+                r.GetSize ().Height, color, r.GetHalfSize ().Width, r.GetHalfSize ().Height, x, y, scaleX, scaleY,
+                rotation, 0);
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void Atlas::DrawRegion (float sourceX, float sourceY, float sourceWidth, float sourceHeight, float x, float y,
-                            float scaleX, float scaleY, float rotation, bool offsetByCenter, ALLEGRO_COLOR color)
+        float scaleX, float scaleY, float rotation, bool offsetByCenter, ALLEGRO_COLOR color)
     {
         if (offsetByCenter)
         {
@@ -128,8 +127,7 @@ namespace aga
         }
 
         al_draw_tinted_scaled_rotated_bitmap_region (m_Image, sourceX, sourceY, sourceWidth, sourceHeight, color,
-                                                     sourceWidth * 0.5f, sourceHeight * 0.5f, x, y, scaleX, scaleY,
-                                                     rotation, 0);
+            sourceWidth * 0.5f, sourceHeight * 0.5f, x, y, scaleX, scaleY, rotation, 0);
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -28,11 +28,12 @@ namespace aga
 
     private:
         int m_ID;
-        int m_CurrentTweenIndex;
-        int m_CurrentAfterTweenIndex;
+        TweenManager* m_TweenManager;
+
+        size_t m_CurrentTweenIndex;
+        size_t m_CurrentAfterTweenIndex;
         std::vector<TweenData> m_Tweens;
         std::vector<TweenData> m_AfterTweens;
-        TweenManager* m_TweenManager;
     };
 }
 

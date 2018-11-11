@@ -6,8 +6,7 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    const float TARGET_FPS = 60;
-    const char* GAME_TITLE = "Robot Tales";
+    const double TARGET_FPS = 60.0;
 
     //--------------------------------------------------------------------------------------------------
 
@@ -16,10 +15,11 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
-    Screen::Screen (unsigned width, unsigned height, bool centerOnScreen)
-        : m_Width (width)
+    Screen::Screen (unsigned width, unsigned height, const char* gameTitle, bool centerOnScreen)
+        : m_GameTitle (gameTitle)
+        , m_Width (width)
         , m_Height (height)
-        , m_RealSize ((int)width, (int)height)
+        , m_RealSize (static_cast<int> (width), static_cast<int> (height))
         , m_CenterOnScreen (centerOnScreen)
         , m_Redraw (false)
         , m_BackgroundColor (al_map_rgb (0, 0, 0))
@@ -44,7 +44,7 @@ namespace aga
         Lifecycle::Initialize ();
 
         // use current time as seed for random generator
-        std::srand (std::time (0));
+        std::srand (static_cast<unsigned> (std::time (nullptr)));
 
         if (!al_init ())
         {
@@ -63,7 +63,7 @@ namespace aga
         }
 
         al_set_new_display_flags (ALLEGRO_RESIZABLE);
-        m_Display = al_create_display (m_Width, m_Height);
+        m_Display = al_create_display (static_cast<int> (m_Width), static_cast<int> (m_Height));
 
         if (!m_Display)
         {
@@ -78,11 +78,11 @@ namespace aga
         else
         {
 #ifdef __linux__
-            float winX = 0; //    px - frame border;
-            float winY = 0; //    px - frame border;
+            int winX = 0; //    px - frame border;
+            int winY = 0; //    px - frame border;
 #else
-            float winX = 2; //    px - frame border;
-            float winY = 32; //    px - frame border;
+            int winX = 2; //    px - frame border;
+            int winY = 32; //    px - frame border;
 #endif
 
             al_set_window_position (m_Display, winX, winY);
@@ -148,7 +148,7 @@ namespace aga
         al_register_event_source (m_EventQueue, al_get_mouse_event_source ());
         al_register_event_source (m_EventQueue, al_get_keyboard_event_source ());
 
-        al_set_window_title (m_Display, GAME_TITLE);
+        al_set_window_title (m_Display, m_GameTitle.c_str ());
 
         al_start_timer (m_DisplayTimer);
 
@@ -265,8 +265,8 @@ namespace aga
         int desktopWidth = aminfo.x2 - aminfo.x1 + 1;
         int desktopHeight = aminfo.y2 - aminfo.y1 + 1;
 
-        int winX = desktopWidth / 2 - m_RealSize.Width / 2;
-        int winY = desktopHeight / 2 - m_RealSize.Height / 2;
+        int winX = static_cast<int> (desktopWidth / 2 - m_RealSize.Width / 2);
+        int winY = static_cast<int> (desktopHeight / 2 - m_RealSize.Height / 2);
 
         al_set_window_position (m_Display, winX, winY);
     }
@@ -275,7 +275,7 @@ namespace aga
 
     void Screen::DrawDebugMessages ()
     {
-        for (int i = 0; i < m_DebugMessages.size (); ++i)
+        for (size_t i = 0; i < m_DebugMessages.size (); ++i)
         {
             DebugMessage& msg = m_DebugMessages.at (i);
             msg.ActualDuration += (m_DeltaTime * 1000.0f);
@@ -299,7 +299,7 @@ namespace aga
 
     void Screen::SetBackgroundColor (float r, float g, float b, float a)
     {
-        m_BackgroundColor = al_map_rgba (r, g, b, a);
+        m_BackgroundColor = al_map_rgba_f (r, g, b, a);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -318,7 +318,7 @@ namespace aga
     {
         m_RealSize = size;
 
-        al_resize_display (m_Display, m_RealSize.Width, m_RealSize.Height);
+        al_resize_display (m_Display, static_cast<int> (m_RealSize.Width), static_cast<int> (m_RealSize.Height));
         al_acknowledge_resize (m_Display);
     }
 
@@ -329,7 +329,7 @@ namespace aga
         int width = al_get_display_width (m_Display);
         int height = al_get_display_height (m_Display);
 
-        if (width != m_RealSize.Width || height != m_RealSize.Height)
+        if (width != static_cast<int> (m_RealSize.Width) || height != static_cast<int> (m_RealSize.Height))
         {
             m_RealSize = {width, height};
         }

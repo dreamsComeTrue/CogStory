@@ -4,7 +4,6 @@
 #include "Editor.h"
 #include "EditorScriptWindow.h"
 #include "MainLoop.h"
-#include "Screen.h"
 #include "Script.h"
 
 namespace aga
@@ -73,7 +72,7 @@ namespace aga
     {
         ImGui::SetNextWindowSize (ImVec2 (500, 200));
 
-        if (ImGui::BeginPopupModal ("Scene Settings", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        if (ImGui::BeginPopupModal ("Scene Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             if (m_SceneName[0] == '\0')
             {
@@ -81,15 +80,15 @@ namespace aga
                     m_SceneName, m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetName ().c_str ());
             }
 
-            ImGui::InputText ("Scene Name", m_SceneName, IM_ARRAYSIZE (m_SceneName));
+            ImGui::InputText ("Scene Name", m_SceneName, ARRAY_SIZE (m_SceneName));
             ImGui::SetItemDefaultFocus ();
 
             static ImVec4 color = m_BackColor;
 
             ImGui::ColorEdit4 ("Scene color", (float*)&color, 0);
 
-            if ((color.x != m_BackColor.x) || (color.y != m_BackColor.y) || (color.z != m_BackColor.z)
-                || (color.w != m_BackColor.w))
+            if (!AreSame (color.x, m_BackColor.x) || !AreSame (color.y, m_BackColor.y)
+                || !AreSame (color.z, m_BackColor.z) || !AreSame (color.w, m_BackColor.w))
             {
                 m_BackColor = color;
                 m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->SetBackgroundColor (
@@ -190,6 +189,10 @@ namespace aga
             ImGui::EndPopup ();
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool EditorSceneWindow::IsVisible () const { return m_IsVisible; }
 
     //--------------------------------------------------------------------------------------------------
 }

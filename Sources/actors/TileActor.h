@@ -28,7 +28,7 @@ namespace aga
         bool operator== (const TileActor& rhs) const
         {
             return m_AtlasName == rhs.m_AtlasName && m_AtlasRegionName == rhs.m_AtlasRegionName && Name == rhs.Name
-                && Bounds == rhs.Bounds && Rotation == rhs.Rotation;
+                && Bounds == rhs.Bounds && AreSame (Rotation, rhs.Rotation);
         }
     };
 }

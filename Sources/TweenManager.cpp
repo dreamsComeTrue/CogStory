@@ -1,9 +1,7 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "TweenManager.h"
-#include "Common.h"
 #include "MainLoop.h"
-#include "Screen.h"
 #include "Timeline.h"
 
 namespace aga
@@ -37,7 +35,7 @@ namespace aga
 
     bool TweenManager::Update (float deltaTime)
     {
-        for (int i = 0; i < m_Tweens.size (); ++i)
+        for (size_t i = 0; i < m_Tweens.size (); ++i)
         {
             TweenData& tween = m_Tweens[i];
 
@@ -49,13 +47,13 @@ namespace aga
                     {
                         asIScriptContext* ctx = m_MainLoop->GetScriptManager ().GetContext ();
                         ctx->Prepare (tween.BeginScriptFunc);
-                        ctx->SetArgDWord (0, tween.ID);
+                        ctx->SetArgDWord (0, static_cast<asDWORD> (tween.ID));
                         ctx->Execute ();
                         ctx->Unprepare ();
                         ctx->GetEngine ()->ReturnContext (ctx);
                     }
 
-                    tween.TweenF.step ((int)(deltaTime * 1000));
+                    tween.TweenF.step (static_cast<int> (deltaTime * 1000));
                 }
 
                 if (tween.TweenMask & TWEEN_FF)
@@ -64,18 +62,18 @@ namespace aga
                     {
                         asIScriptContext* ctx = m_MainLoop->GetScriptManager ().GetContext ();
                         ctx->Prepare (tween.BeginScriptFunc);
-                        ctx->SetArgDWord (0, tween.ID);
+                        ctx->SetArgDWord (0, static_cast<asDWORD> (tween.ID));
                         ctx->Execute ();
                         ctx->Unprepare ();
                         ctx->GetEngine ()->ReturnContext (ctx);
                     }
 
-                    tween.TweenFF.step ((int)(deltaTime * 1000));
+                    tween.TweenFF.step (static_cast<int> (deltaTime * 1000));
                 }
             }
         }
 
-        for (int i = 0; i < m_Timelines.size (); ++i)
+        for (size_t i = 0; i < m_Timelines.size (); ++i)
         {
             m_Timelines[i]->Update (deltaTime);
         }
@@ -89,7 +87,7 @@ namespace aga
 
     void TweenManager::CleanupFinishedTweens ()
     {
-        for (int i = 0; i < m_Tweens.size (); ++i)
+        for (size_t i = 0; i < m_Tweens.size (); ++i)
         {
             if (((m_Tweens[i].TweenMask & TWEEN_F) && (m_Tweens[i].TweenF.progress () >= 1.0f))
                 || ((m_Tweens[i].TweenMask & TWEEN_FF) && (m_Tweens[i].TweenFF.progress () >= 1.0f)))
@@ -105,7 +103,7 @@ namespace aga
                 {
                     asIScriptContext* ctx = m_MainLoop->GetScriptManager ().GetContext ();
                     ctx->Prepare (tweenToProcess.FinishScriptFunc);
-                    ctx->SetArgDWord (0, tweenToProcess.ID);
+                    ctx->SetArgDWord (0, static_cast<asDWORD> (tweenToProcess.ID));
                     ctx->Execute ();
                     ctx->Unprepare ();
                     ctx->GetEngine ()->ReturnContext (ctx);
@@ -289,7 +287,7 @@ namespace aga
 
                       asIScriptContext* ctx = m_MainLoop->GetScriptManager ().GetContext ();
                       ctx->Prepare (tweenData->CallbackScriptFunc);
-                      ctx->SetArgDWord (0, tweenData->ID);
+                      ctx->SetArgDWord (0, static_cast<asDWORD> (tweenData->ID));
                       ctx->SetArgFloat (1, t.progress ());
                       ctx->SetArgObject (2, &p);
 
@@ -304,7 +302,7 @@ namespace aga
                       ctx->Unprepare ();
                       ctx->GetEngine ()->ReturnContext (ctx);
 
-                      return (bool)ret;
+                      return static_cast<bool> (ret);
                   };
 
             tweeny::tween<float, float> tween
@@ -325,7 +323,7 @@ namespace aga
 
     void TweenManager::RemoveTween (int id)
     {
-        for (int i = 0; i < m_Tweens.size (); ++i)
+        for (size_t i = 0; i < m_Tweens.size (); ++i)
         {
             if (m_Tweens[i].ID == id)
             {

@@ -9,13 +9,13 @@ namespace aga
 
     QuadTreeNode::QuadTreeNode (Rect bounds, float quadSize, QuadTreeNode* parent)
         : m_Bounds (bounds)
+        , m_IsDivided (false)
         , m_QuadSize (quadSize)
         , m_Parent (parent)
         , m_TopLeftTree (nullptr)
         , m_TopRightTree (nullptr)
         , m_BottomLeftTree (nullptr)
         , m_BottomRightTree (nullptr)
-        , m_IsDivided (false)
     {
     }
 

@@ -4,11 +4,13 @@
 #define __EDITOR_STATE_H__
 
 #include "State.h"
-#include "editor/Editor.h"
 
 namespace aga
 {
     const std::string EDITOR_STATE_NAME = "EDITOR_STATE";
+
+    class Editor;
+    class Scene;
 
     class EditorState : public State
     {

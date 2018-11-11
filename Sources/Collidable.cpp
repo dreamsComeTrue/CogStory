@@ -1,10 +1,8 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Collidable.h"
+#include "Actor.h"
 #include "MainLoop.h"
-#include "PhysicsManager.h"
-#include "Screen.h"
-#include "addons/triangulator/Triangulator.h"
 
 namespace aga
 {
@@ -40,18 +38,18 @@ namespace aga
 
     void Collidable::DrawPhysBody ()
     {
-        for (int i = 0; i < m_PhysPolygons.size (); ++i)
+        for (size_t i = 0; i < m_PhysPolygons.size (); ++i)
         {
             std::vector<float> out;
             std::vector<Point>& points = m_PhysPolygons[i].Points;
 
-            for (int j = 0; j < points.size (); ++j)
+            for (size_t j = 0; j < points.size (); ++j)
             {
                 out.push_back (points[j].X);
                 out.push_back (points[j].Y);
             }
 
-            al_draw_polygon (out.data (), (int)out.size () / 2, 0, COLOR_GREEN, 1, 0);
+            al_draw_polygon (out.data (), static_cast<int> (out.size ()) / 2, 0, COLOR_GREEN, 1, 0);
         }
         // for (int i = 0; i < PhysPoints.size (); ++i)
         //{
@@ -72,7 +70,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    Polygon& Collidable::GetPhysPolygon (int index) { return m_PhysPolygons[index]; }
+    Polygon& Collidable::GetPhysPolygon (size_t index) { return m_PhysPolygons[index]; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -85,7 +83,7 @@ namespace aga
         m_PhysPolygons.clear ();
 
         int counter = 0;
-        for (int i = 0; i < PhysPoints.size (); ++i)
+        for (size_t i = 0; i < PhysPoints.size (); ++i)
         {
             std::vector<Point> pointsCopy = PhysPoints[i];
 
@@ -101,7 +99,7 @@ namespace aga
                 std::vector<std::vector<Point>> result;
                 m_PhysicsManager->GetTriangulator ().ProcessVertices (&pointsCopy, result);
 
-                for (int j = 0; j < result.size (); ++j)
+                for (size_t j = 0; j < result.size (); ++j)
                 {
                     Polygon poly = Polygon ();
                     poly.Points = result[j];
@@ -115,6 +113,22 @@ namespace aga
             }
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Collidable::SetCollisionEnabled (bool enabled) { m_CollisionEnabled = enabled; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Collidable::IsCollisionEnabled () const { return m_CollisionEnabled; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Collidable::SetCollidable (bool enabled) { m_Collidable = enabled; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Collidable::IsCollidable () const { return m_Collidable; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -134,13 +148,13 @@ namespace aga
         {
             Point combinedOffset = Point::ZERO_POINT;
 
-            for (int i = 0; i < GetPhysPolygonsCount (); ++i)
+            for (size_t i = 0; i < GetPhysPolygonsCount (); ++i)
             {
                 Polygon& myPolygon = GetPhysPolygon (i);
 
                 if (!myPolygon.Points.empty ())
                 {
-                    for (int j = 0; j < other->GetPhysPolygonsCount (); ++j)
+                    for (size_t j = 0; j < other->GetPhysPolygonsCount (); ++j)
                     {
                         if (other->m_Collidable && !other->GetPhysPolygon (j).Points.empty ())
                         {
@@ -259,6 +273,14 @@ namespace aga
             }
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Collidable::ClearCollisionCallbacks () { m_Callbacks.clear (); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Collidable::CollisionEvent (Collidable* /*other*/) {}
 
     //--------------------------------------------------------------------------------------------------
 }

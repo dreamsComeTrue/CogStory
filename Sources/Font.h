@@ -30,11 +30,11 @@ namespace aga
             float max_width, float line_height, int flags, const char* text, ...);
 
         static Point GetTextDimensions (const std::string& fontName, const std::string& text);
-        static unsigned GetFontAscent (const std::string& fontName);
-        static unsigned GetFontDescent (const std::string& fontName);
+        static int GetFontAscent (const std::string& fontName);
+        static int GetFontDescent (const std::string& fontName);
 
     private:
-        void GenerateFont (const std::string& name, const std::string& path, float size);
+        void GenerateFont (const std::string& name, const std::string& path, int size);
 
     private:
         static std::map<std::string, ALLEGRO_FONT*> m_Fonts;

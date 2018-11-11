@@ -2,11 +2,8 @@
 
 #include "EditorActorWindow.h"
 #include "ActorFactory.h"
-#include "Atlas.h"
-#include "AtlasManager.h"
 #include "Component.h"
 #include "Editor.h"
-#include "EditorAnimationWindow.h"
 #include "EditorComponentWindow.h"
 #include "EditorScriptWindow.h"
 #include "MainLoop.h"
@@ -24,10 +21,10 @@ namespace aga
 
     EditorActorWindow::EditorActorWindow (Editor* editor)
         : m_Editor (editor)
+        , m_IsVisible (false)
+        , m_SelectedActor (nullptr)
         , m_SelectedAtlas (nullptr)
         , m_SelectedAtlasRegion ("")
-        , m_SelectedActor (nullptr)
-        , m_IsVisible (false)
         , m_SelectedImage (0)
         , m_SelectedImagePath (0)
         , m_SelectedAnimation (0)
@@ -98,9 +95,9 @@ namespace aga
             Point position (
                 static_cast<float> (atof (posParts[0].c_str ())), static_cast<float> (atof (posParts[1].c_str ())));
 
-            Actor* retActor
-                = m_Editor->GetEditorActorMode ().AddOrUpdateActor (id, m_ActorName, m_ActorTypes[m_SelectedActorType],
-                    blueprintID, position, atof (m_ActorRotation), m_ActorZOrder, atof (m_ActorFocusHeight));
+            Actor* retActor = m_Editor->GetEditorActorMode ().AddOrUpdateActor (id, m_ActorName,
+                m_ActorTypes[m_SelectedActorType], blueprintID, position, static_cast<float> (atof (m_ActorRotation)),
+                m_ActorZOrder, static_cast<float> (atof (m_ActorFocusHeight)));
 
             if (retActor)
             {
@@ -223,7 +220,7 @@ namespace aga
         strcpy (m_ActorName, m_SelectedActor->Name.c_str ());
 
         std::vector<std::string>& actorTypes = ActorFactory::GetActorTypes ();
-        for (int i = 0; i < actorTypes.size (); ++i)
+        for (size_t i = 0; i < actorTypes.size (); ++i)
         {
             if (m_SelectedActor->GetTypeName () == actorTypes[i])
             {
@@ -233,7 +230,7 @@ namespace aga
         }
 
         m_SelectedBlueprint = 0;
-        for (int i = 1; i < actors.size (); ++i)
+        for (size_t i = 1; i < actors.size (); ++i)
         {
             if (m_SelectedActor->BlueprintID == actors[i]->ID)
             {
@@ -262,7 +259,7 @@ namespace aga
         m_SelectedAtlasRegion = m_SelectedActor->GetAtlasRegionName ();
 
         std::vector<ResourceID> packs = GetGfxPacks ();
-        for (int i = 0; i < packs.size (); ++i)
+        for (size_t i = 0; i < packs.size (); ++i)
         {
             std::string name = GetBaseName (GetResource (packs[i]).Name);
             std::string path = m_SelectedActor->GetAtlas ()->GetName ();
@@ -277,7 +274,7 @@ namespace aga
         if (m_SelectedAtlas)
         {
             std::vector<AtlasRegion>& regions = m_SelectedAtlas->GetRegions ();
-            for (int i = 0; i < regions.size (); ++i)
+            for (size_t i = 0; i < regions.size (); ++i)
             {
                 std::string name = regions[i].Name;
 
@@ -290,7 +287,7 @@ namespace aga
             }
         }
 
-        for (int i = 0; i < m_Animations.size (); ++i)
+        for (size_t i = 0; i < m_Animations.size (); ++i)
         {
             if (m_SelectedActor->GetAnimation ().GetName () == m_Animations[i])
             {
@@ -383,7 +380,7 @@ namespace aga
     {
         ImGui::SetNextWindowSize (ImVec2 (600, 550), ImGuiCond_Always);
 
-        if (ImGui::BeginPopupModal ("Actor Editor", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        if (ImGui::BeginPopupModal ("Actor Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
 
@@ -473,7 +470,7 @@ namespace aga
                     ImGui::Text ("Name");
                     ImGui::NextColumn ();
                     ImGui::PushItemWidth (120.f);
-                    ImGui::InputText ("##actorName", m_ActorName, IM_ARRAYSIZE (m_ActorName));
+                    ImGui::InputText ("##actorName", m_ActorName, ARRAY_SIZE (m_ActorName));
                     ImGui::PopItemWidth ();
                     ImGui::NextColumn ();
 
@@ -500,14 +497,14 @@ namespace aga
                     ImGui::Text ("Position");
                     ImGui::NextColumn ();
                     ImGui::PushItemWidth (120.f);
-                    ImGui::InputText ("##actorPosition", m_ActorPosition, IM_ARRAYSIZE (m_ActorPosition));
+                    ImGui::InputText ("##actorPosition", m_ActorPosition, ARRAY_SIZE (m_ActorPosition));
                     ImGui::PopItemWidth ();
                     ImGui::NextColumn ();
 
                     ImGui::Text ("Rotation");
                     ImGui::NextColumn ();
                     ImGui::PushItemWidth (120.f);
-                    ImGui::InputText ("##actorRotation", m_ActorRotation, IM_ARRAYSIZE (m_ActorRotation));
+                    ImGui::InputText ("##actorRotation", m_ActorRotation, ARRAY_SIZE (m_ActorRotation));
                     ImGui::PopItemWidth ();
                     ImGui::NextColumn ();
 
@@ -561,7 +558,7 @@ namespace aga
                     ImGui::Text ("Focus Height");
                     ImGui::NextColumn ();
                     ImGui::PushItemWidth (120.f);
-                    ImGui::InputText ("##actorFocusHeight", m_ActorFocusHeight, IM_ARRAYSIZE (m_ActorFocusHeight));
+                    ImGui::InputText ("##actorFocusHeight", m_ActorFocusHeight, ARRAY_SIZE (m_ActorFocusHeight));
                     ImGui::PopItemWidth ();
                     ImGui::NextColumn ();
 
@@ -746,6 +743,10 @@ namespace aga
                 winSize.Height - previewSize - margin, previewSize, previewSize, 0);
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool EditorActorWindow::IsVisible () const { return m_IsVisible; }
 
     //--------------------------------------------------------------------------------------------------
 }

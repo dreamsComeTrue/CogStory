@@ -15,8 +15,8 @@ namespace aga
         : m_Editor (editor)
         , m_AskFlagPoint (false)
         , m_FlagPoint ("")
-        , m_DrawConnection (true)
         , m_Editing (false)
+        , m_DrawConnection (true)
     {
         memset (m_FlagPointWindow, 0, ARRAY_SIZE (m_FlagPointWindow));
     }
@@ -147,9 +147,9 @@ namespace aga
         {
             FlagPoint* flag = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoint (flagPoint);
 
-            for (int i = 0; i < flag->Connections.size (); ++i)
+            for (size_t i = 0; i < flag->Connections.size (); ++i)
             {
-                for (int j = 0; j < flag->Connections[i]->Connections.size (); ++j)
+                for (size_t j = 0; j < flag->Connections[i]->Connections.size (); ++j)
                 {
                     if (flag->Connections[i]->Connections[j] == flag)
                     {
@@ -185,7 +185,7 @@ namespace aga
                     bool found = false;
                     std::vector<FlagPoint*>& others = flagPoints[m_FlagPoint].Connections;
 
-                    for (int i = 0; i < others.size (); ++i)
+                    for (size_t i = 0; i < others.size (); ++i)
                     {
                         if (others[i]->Name == it->first)
                         {
@@ -193,7 +193,7 @@ namespace aga
 
                             std::vector<FlagPoint*>& mine = flagPoints[it->first].Connections;
 
-                            for (int j = 0; j < mine.size (); ++j)
+                            for (size_t j = 0; j < mine.size (); ++j)
                             {
                                 if (mine[j]->Name == flagPoints[m_FlagPoint].Name)
                                 {
@@ -231,11 +231,11 @@ namespace aga
 
     void EditorFlagPointMode::Render ()
     {
-        if (ImGui::BeginPopupModal ("Flag Point", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        if (ImGui::BeginPopupModal ("Flag Point", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             m_DrawConnection = false;
 
-            ImGui::InputText ("", m_FlagPointWindow, IM_ARRAYSIZE (m_FlagPointWindow));
+            ImGui::InputText ("", m_FlagPointWindow, ARRAY_SIZE (m_FlagPointWindow));
             ImGui::SetItemDefaultFocus ();
 
             ImGui::Separator ();

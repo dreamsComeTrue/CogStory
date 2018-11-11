@@ -2,7 +2,6 @@
 
 #include "Font.h"
 #include "Resources.h"
-#include "Screen.h"
 
 namespace aga
 {
@@ -45,7 +44,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Font::GenerateFont (const std::string& name, const std::string& path, float size)
+    void Font::GenerateFont (const std::string& name, const std::string& path, int size)
     {
         ALLEGRO_FONT* font = al_load_ttf_font (path.c_str (), size, 0);
 
@@ -105,12 +104,12 @@ namespace aga
 
         al_get_text_dimensions (font, text.c_str (), &x, &y, &width, &height);
 
-        return Point{width, height};
+        return Point {width, height};
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    unsigned Font::GetFontAscent (const std::string& fontName)
+    int Font::GetFontAscent (const std::string& fontName)
     {
         ALLEGRO_FONT* font = m_Fonts[fontName];
 
@@ -119,7 +118,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    unsigned Font::GetFontDescent (const std::string& fontName)
+    int Font::GetFontDescent (const std::string& fontName)
     {
         ALLEGRO_FONT* font = m_Fonts[fontName];
 

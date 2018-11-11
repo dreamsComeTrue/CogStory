@@ -13,16 +13,16 @@ namespace aga
         : m_CanEmit (true)
         , m_MaxParticles (maxParticles)
         , m_EmitLifeSpan (emitLifeSpan)
-        , m_AtlasManager (atlasManager)
-        , m_Atlas (nullptr)
-        , m_AtlasName (atlasName)
-        , m_AtlasRegionName (atlasRegionName)
         , m_ParticleMinLife (1.0f)
         , m_ParticleMaxLife (1.0f)
         , m_VelocityMinVariance (-1.0f, -1.0f)
         , m_VelocityMaxVariance (1.0f, 1.0f)
         , m_BeginColor (COLOR_WHITE)
         , m_EndColor (COLOR_WHITE)
+        , m_AtlasManager (atlasManager)
+        , m_AtlasName (atlasName)
+        , m_AtlasRegionName (atlasRegionName)
+        , m_Atlas (nullptr)
     {
     }
 
@@ -63,7 +63,7 @@ namespace aga
 
     bool ParticleEmitter::Update (float deltaTime)
     {
-        for (int i = 0; i < m_Particles.size (); ++i)
+        for (size_t i = 0; i < m_Particles.size (); ++i)
         {
             Particle& particle = m_Particles[i];
 
@@ -91,7 +91,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void ParticleEmitter::Render (float deltaTime)
+    void ParticleEmitter::Render (float)
     {
         int blendOp, blendSrc, blendDst;
         al_get_blender (&blendOp, &blendSrc, &blendDst);

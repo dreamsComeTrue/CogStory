@@ -44,10 +44,10 @@ namespace aga
         virtual void Move (float dx, float dy);
         virtual void Move (Point deltaPos);
         virtual void SetPosition (float x, float y);
-        virtual void SetPosition (Point pos) { SetPosition (pos.X, pos.Y); }
+        virtual void SetPosition (Point pos);
 
         virtual void SetCenterPosition (float x, float y);
-        virtual void SetCenterPosition (Point pos) { SetCenterPosition (pos.X, pos.Y); }
+        virtual void SetCenterPosition (Point pos);
 
         Point GetPosition ();
         Point GetSize ();
@@ -58,7 +58,7 @@ namespace aga
         Component* FindComponent (const std::string& name, const std::string& typeName);
         class MovementComponent* GetMovementComponent (const std::string& name);
         class ParticleEmitterComponent* GetParticleEmitterComponent (const std::string& name);
-        std::map<std::string, Component*>& GetComponents () { return m_Components; }
+        std::map<std::string, Component*>& GetComponents ();
 
         void OrientTo (Actor* actor);
         void ChooseWalkAnimation (float angleDeg);
@@ -67,8 +67,8 @@ namespace aga
         virtual void DrawBounds ();
         virtual void DrawName ();
 
-        void SuspendUpdate () { m_IsUpdating = false; }
-        void ResumeUpdate () { m_IsUpdating = true; }
+        void SuspendUpdate ();
+        void ResumeUpdate ();
 
         std::function<void(float dx, float dy)> MoveCallback;
 
@@ -77,8 +77,8 @@ namespace aga
         //  Helper functions
         void AssignFlagPointsToWalk (const std::string& flagPointName);
 
-        float GetFocusHeight () const { return m_FocusHeight; }
-        void SetFocusHeight (float focusHeight) { m_FocusHeight = focusHeight; }
+        float GetFocusHeight () const;
+        void SetFocusHeight (float focusHeight);
 
     protected:
         void ProcessTriggerAreas (float dx, float dy, Point&& offset);

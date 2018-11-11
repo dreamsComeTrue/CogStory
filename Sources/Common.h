@@ -39,11 +39,14 @@ extern "C"
 #else
 #include <experimental/optional>
 #endif
+#include <algorithm>
+#include <cmath>
 #include <fstream>
 #include <functional>
 #include <map>
 #include <queue>
 #include <sstream>
+#include <stack>
 #include <string>
 #include <vector>
 
@@ -60,26 +63,26 @@ extern "C"
         }                                                                                                              \
     }
 
-#define ARRAY_SIZE(_ARR) ((int)(sizeof (_ARR) / sizeof (*_ARR)))
+#define ARRAY_SIZE(_ARR) (static_cast<int> (sizeof (_ARR) / sizeof (*_ARR)))
 
 #define EDITOR_ENABLED
 
 namespace aga
 {
-    const ALLEGRO_COLOR COLOR_BLACK{0.0f, 0.0f, 0.0f, 1.0f};
-    const ALLEGRO_COLOR COLOR_WHITE{1.0f, 1.0f, 1.0f, 1.0f};
-    const ALLEGRO_COLOR COLOR_RED{1.0f, 0.0f, 0.0f, 1.0f};
-    const ALLEGRO_COLOR COLOR_GREEN{0.0f, 1.0f, 0.0f, 1.0f};
-    const ALLEGRO_COLOR COLOR_BLUE{0.0f, 0.0f, 1.0f, 1.0f};
-    const ALLEGRO_COLOR COLOR_LIGHTBLUE{51 / 255.f, 153 / 255.f, 255 / 255.f, 1.0f};
-    const ALLEGRO_COLOR COLOR_YELLOW{1.0f, 1.0f, 0.0f, 1.0f};
-    const ALLEGRO_COLOR COLOR_GRAY{0.3f, 0.3f, 0.3f, 1.0f};
-    const ALLEGRO_COLOR COLOR_LIGHTGRAY{0.8f, 0.8f, 0.8f, 1.0f};
-    const ALLEGRO_COLOR COLOR_VIOLET{138 / 255.f, 43 / 255.f, 226 / 255.f, 1.0f};
-    const ALLEGRO_COLOR COLOR_INDIGO{75 / 255.f, 0 / 255.f, 130 / 255.f, 1.0f};
-    const ALLEGRO_COLOR COLOR_DARKBLUE{55 / 255.f, 51 / 255.f, 153 / 255.f, 1.0f};
-    const ALLEGRO_COLOR COLOR_ORANGE{255 / 255.f, 165 / 255.f, 0 / 255.f, 1.0f};
-    const ALLEGRO_COLOR COLOR_PINK{191 / 255.f, 63 / 255.f, 191 / 255.f, 1.0f};
+    const ALLEGRO_COLOR COLOR_BLACK {0.0f, 0.0f, 0.0f, 1.0f};
+    const ALLEGRO_COLOR COLOR_WHITE {1.0f, 1.0f, 1.0f, 1.0f};
+    const ALLEGRO_COLOR COLOR_RED {1.0f, 0.0f, 0.0f, 1.0f};
+    const ALLEGRO_COLOR COLOR_GREEN {0.0f, 1.0f, 0.0f, 1.0f};
+    const ALLEGRO_COLOR COLOR_BLUE {0.0f, 0.0f, 1.0f, 1.0f};
+    const ALLEGRO_COLOR COLOR_LIGHTBLUE {51 / 255.f, 153 / 255.f, 255 / 255.f, 1.0f};
+    const ALLEGRO_COLOR COLOR_YELLOW {1.0f, 1.0f, 0.0f, 1.0f};
+    const ALLEGRO_COLOR COLOR_GRAY {0.3f, 0.3f, 0.3f, 1.0f};
+    const ALLEGRO_COLOR COLOR_LIGHTGRAY {0.8f, 0.8f, 0.8f, 1.0f};
+    const ALLEGRO_COLOR COLOR_VIOLET {138 / 255.f, 43 / 255.f, 226 / 255.f, 1.0f};
+    const ALLEGRO_COLOR COLOR_INDIGO {75 / 255.f, 0 / 255.f, 130 / 255.f, 1.0f};
+    const ALLEGRO_COLOR COLOR_DARKBLUE {55 / 255.f, 51 / 255.f, 153 / 255.f, 1.0f};
+    const ALLEGRO_COLOR COLOR_ORANGE {255 / 255.f, 165 / 255.f, 0 / 255.f, 1.0f};
+    const ALLEGRO_COLOR COLOR_PINK {191 / 255.f, 63 / 255.f, 191 / 255.f, 1.0f};
 
     enum ScreenRelativePosition
     {
@@ -100,7 +103,7 @@ namespace aga
 
     float ToPositiveAngle (float degrees);
 
-    bool AreSame (float a, float b, float epsilon = 1.0E-8);
+    bool AreSame (float a, float b, float epsilon = 1.0E-8f);
     bool AreSame (Point a, Point b, Point epsilonPoint = Point (1.0E-8f, 1.0E-8f));
 
     //--------------------------------------------------------------------------------------------------
@@ -159,7 +162,6 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     auto StringToVectorPoints = [](std::string in) -> std::vector<Point> {
-        size_t count = 0;
         const char* delimiter = " ";
         std::vector<Point> nums;
         char* str = const_cast<char*> (in.c_str ());
@@ -181,7 +183,6 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     auto StringToVectorStrings = [](std::string in) -> std::vector<std::string> {
-        size_t count = 0;
         const char* delimiter = " ";
         std::vector<std::string> strings;
         char* str = const_cast<char*> (in.c_str ());
@@ -211,7 +212,7 @@ namespace aga
     auto IntsToString = [](std::vector<int> data) -> std::string {
         std::string result;
 
-        for (int i = 0; i < data.size (); ++i)
+        for (size_t i = 0; i < data.size (); ++i)
         {
             result += std::to_string (data[i]);
 
@@ -227,7 +228,6 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     auto StringToInts = [](std::string in) -> std::vector<int> {
-        size_t count = 0;
         const char* delimiter = " ";
         std::vector<int> ints;
         char* str = const_cast<char*> (in.c_str ());

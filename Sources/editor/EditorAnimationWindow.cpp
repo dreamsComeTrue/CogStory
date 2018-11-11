@@ -17,16 +17,16 @@ namespace aga
 
     EditorAnimationWindow::EditorAnimationWindow (Editor* editor)
         : m_Editor (editor)
-        , m_IsVisible (false)
         , m_SelectedAtlas (nullptr)
         , m_SelectedAtlasRegion ("")
+        , m_SelectedAnimation (0)
+        , m_SelectedName (0)
         , m_SelectedImage (0)
         , m_SelectedImagePath (0)
         , m_AnimSpeed (100)
+        , m_IsVisible (false)
         , m_CurrentFrameIndex (0)
         , m_FrameTimeLeft (0.f)
-        , m_SelectedAnimation (0)
-        , m_SelectedName (0)
         , m_CellX (0)
         , m_CellY (0)
     {
@@ -182,7 +182,7 @@ namespace aga
         ImGui::SetNextWindowPos (ImVec2 (0, 0));
         ImGui::SetNextWindowSize (ImVec2 (300, winSize.Height - 220), ImGuiCond_Always);
 
-        if (ImGui::BeginPopupModal ("Animations", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        if (ImGui::BeginPopupModal ("Animations", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             float controlWidth = 200.f;
 
@@ -217,7 +217,7 @@ namespace aga
             ImGui::SameLine ();
             ImGui::PushItemWidth (controlWidth);
 
-            if (ImGui::InputText ("##anim", m_Animation, IM_ARRAYSIZE (m_Animation)))
+            if (ImGui::InputText ("##anim", m_Animation, ARRAY_SIZE (m_Animation)))
             {
                 m_AnimationData.SetName (m_Animation);
             }
@@ -227,7 +227,7 @@ namespace aga
             ImGui::Text ("      Name");
             ImGui::SameLine ();
             ImGui::PushItemWidth (controlWidth);
-            ImGui::InputText ("##name", m_Name, IM_ARRAYSIZE (m_Name));
+            ImGui::InputText ("##name", m_Name, ARRAY_SIZE (m_Name));
             ImGui::PopItemWidth ();
 
             ImGui::Text ("      Path");
@@ -282,7 +282,7 @@ namespace aga
             {
                 ImGui::Columns (3, "mycolumns2");
 
-                for (int i = 0; i < m_Frames.size (); ++i)
+                for (size_t i = 0; i < m_Frames.size (); ++i)
                 {
                     AnimationFrameEntry frame = m_Frames[i];
 
@@ -455,8 +455,8 @@ namespace aga
             {
                 int imageWidth = al_get_bitmap_width (image);
                 int imageHeight = al_get_bitmap_height (image);
-                int canvasWidth = winSize.Width - margin - beginPoint.X;
-                int canvasHeight = winSize.Height - margin - beginPoint.Y;
+                int canvasWidth = static_cast<int> (winSize.Width - margin - beginPoint.X);
+                int canvasHeight = static_cast<int> (winSize.Height - margin - beginPoint.Y);
 
                 int destWidth = imageWidth;
                 int destHeight = imageHeight;
@@ -464,7 +464,8 @@ namespace aga
 
                 if (imageWidth > canvasWidth || imageHeight > canvasHeight)
                 {
-                    ratio = std::max ((float)imageWidth / canvasWidth, (float)imageHeight / canvasHeight);
+                    ratio = std::max (
+                        static_cast<float> (imageWidth) / canvasWidth, static_cast<float> (imageHeight) / canvasHeight);
                     destWidth /= ratio;
                     destHeight /= ratio;
                 }
@@ -490,8 +491,9 @@ namespace aga
                     if (InsideRect (state.x, state.y, drawingRect))
                     {
                         Rect bounds;
-                        bounds.Pos = Point ((float)std::floor ((state.x - beginPoint.X - 1) / m_CellX) * m_CellX,
-                            (float)std::floor ((state.y - beginPoint.Y - 1) / m_CellY) * m_CellY);
+                        bounds.Pos
+                            = Point (static_cast<float> (std::floor ((state.x - beginPoint.X - 1) / m_CellX)) * m_CellX,
+                                static_cast<float> (std::floor ((state.y - beginPoint.Y - 1) / m_CellY)) * m_CellY);
                         bounds.Size = {m_CellX, m_CellY};
 
                         Rect drawingBounds = bounds;
@@ -593,7 +595,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorAnimationWindow::SelectAnimationFrame (int mouseX, int mouseY)
+    void EditorAnimationWindow::SelectAnimationFrame ()
     {
         if (m_HoveredRegion)
         {
@@ -613,6 +615,10 @@ namespace aga
             m_Frames.push_back (frame);
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool EditorAnimationWindow::IsVisible () { return m_IsVisible; }
 
     //--------------------------------------------------------------------------------------------------
 }

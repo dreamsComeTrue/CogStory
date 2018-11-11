@@ -21,8 +21,8 @@ namespace aga
         void RemoveSpeech (int id);
         void Clear ();
 
-        SpeechData& GetSpeechData () { return m_Speech; }
-        void SetSpeechData (SpeechData& data) { m_Speech = data; }
+        SpeechData& GetSpeechData ();
+        void SetSpeechData (SpeechData& data);
 
     private:
         Editor* m_Editor;

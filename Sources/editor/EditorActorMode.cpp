@@ -4,7 +4,6 @@
 #include "ActorFactory.h"
 #include "Editor.h"
 #include "MainLoop.h"
-#include "SceneManager.h"
 #include "Screen.h"
 #include "actors/TileActor.h"
 
@@ -19,11 +18,11 @@ namespace aga
 
     EditorActorMode::EditorActorMode (Editor* editor)
         : m_Editor (editor)
-        , m_ActorUnderCursor (nullptr)
-        , m_Rotation (0)
         , m_Atlas (nullptr)
-        , m_CurrentTileBegin (0)
+        , m_Rotation (0)
+        , m_ActorUnderCursor (nullptr)
         , m_PrimarySelectedActor (nullptr)
+        , m_CurrentTileBegin (0)
         , m_SpriteSheetChoosen (false)
     {
     }
@@ -108,8 +107,8 @@ namespace aga
 
     bool EditorActorMode::MoveSelectedActors (float moveX, float moveY)
     {
-        Point movePoint
-            = m_Editor->CalculateWorldPoint (moveX + m_TileSelectionOffset.X, moveY + m_TileSelectionOffset.Y);
+        Point movePoint = m_Editor->CalculateWorldPoint (
+            static_cast<int> (moveX + m_TileSelectionOffset.X), static_cast<int> (moveY + m_TileSelectionOffset.Y));
         Point deltaPoint = {0, 0};
 
         if (m_PrimarySelectedActor)
@@ -317,18 +316,18 @@ namespace aga
         m_SelectedAtlasRegions.clear ();
 
         const Point screenSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
-        float beginning = screenSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
+        float beginning = screenSize.Width * 0.5f - (TILES_COUNT - 1) * 0.5f * TILE_SIZE - TILE_SIZE * 0.5f;
         float advance = 0;
         std::vector<AtlasRegion> regions = m_Atlas->GetRegions ();
 
-        for (int i = 0; i < TILES_COUNT; ++i)
+        for (size_t i = 0; i < TILES_COUNT; ++i)
         {
             if (i < regions.size ())
             {
                 advance = beginning + i * TILE_SIZE;
                 float x = advance;
                 float y = screenSize.Height - TILE_SIZE - 1;
-                Rect r = Rect{{x, y}, {x + TILE_SIZE, y + TILE_SIZE - 2}};
+                Rect r = Rect {{x, y}, {x + TILE_SIZE, y + TILE_SIZE - 2}};
 
                 if (InsideRect (mouseX, mouseY, r))
                 {
@@ -490,7 +489,7 @@ namespace aga
 
         std::vector<AtlasRegion>& regions = m_Atlas->GetRegions ();
         const Point windowSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
-        float beginning = windowSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
+        float beginning = windowSize.Width * 0.5f - (TILES_COUNT - 1) * 0.5f * TILE_SIZE - TILE_SIZE * 0.5f;
         float advance = 0;
 
         ALLEGRO_MOUSE_STATE state;
@@ -499,7 +498,7 @@ namespace aga
         Point drawNamePoint = Point::MIN_POINT;
         std::string drawName = "";
 
-        for (int i = 0; i < TILES_COUNT; ++i)
+        for (size_t i = 0; i < TILES_COUNT; ++i)
         {
             advance = beginning + i * TILE_SIZE;
 
@@ -515,7 +514,7 @@ namespace aga
 
                 float x = advance;
                 float y = windowSize.Height - TILE_SIZE - 1;
-                Rect r = Rect{{x, y}, {x + TILE_SIZE, y + TILE_SIZE - 2}};
+                Rect r = Rect {{x, y}, {x + TILE_SIZE, y + TILE_SIZE - 2}};
 
                 if (InsideRect (state.x, state.y, r))
                 {
@@ -537,6 +536,24 @@ namespace aga
         m_SelectedActors.clear ();
         m_TileUnderCursor = nullptr;
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    AtlasRegion* EditorActorMode::GetSelectedAtlasRegion ()
+    {
+        if (!m_SelectedAtlasRegions.empty ())
+        {
+            return &m_SelectedAtlasRegions[0];
+        }
+        else
+        {
+            return nullptr;
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::vector<Actor*> EditorActorMode::GetSelectedActors () { return m_SelectedActors; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -630,6 +647,50 @@ namespace aga
 
         m_PrimarySelectedActor = nullptr;
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Actor* EditorActorMode::GetActorUnderCursor () { return m_ActorUnderCursor; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorMode::SetActorUnderCursor (Actor* actor) { m_ActorUnderCursor = actor; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool EditorActorMode::IsDrawTiles () const { return m_IsDrawTiles; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorMode::SetDrawTiles (bool draw) { m_IsDrawTiles = draw; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    float EditorActorMode::GetRotation () const { return m_Rotation; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorMode::SetRotation (float rotation) { m_Rotation = rotation; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Actor* EditorActorMode::GetActor () { return m_Actor; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorMode::SetActor (Actor* actor) { m_Actor = actor; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorMode::SetPrimarySelectedActor (Actor* actor) { m_PrimarySelectedActor = actor; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool EditorActorMode::IsSpriteSheetChoosen () { return m_SpriteSheetChoosen; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorMode::SetSpriteSheetChoosen (bool choosen) { m_SpriteSheetChoosen = choosen; }
 
     //--------------------------------------------------------------------------------------------------
 }

@@ -30,7 +30,7 @@ namespace aga
         void Update (float deltaTime);
 
         void SetLooping (bool looping);
-        bool IsLooping () const { return m_Looping; }
+        bool IsLooping () const;
 
         void SetFadeIn (float milliSeconds);
         void SetFadeOut (float milliSeconds, bool pauseOnFinish = true);

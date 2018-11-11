@@ -17,8 +17,8 @@ namespace aga
         Entity* EntityData;
 
         QuadTreeData (Entity* entityData, QuadTreeNode* container)
-          : EntityData (entityData)
-          , Container (container)
+            : Container (container)
+            , EntityData (entityData)
         {
         }
     };

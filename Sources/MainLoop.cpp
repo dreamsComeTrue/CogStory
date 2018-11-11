@@ -1,7 +1,6 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "MainLoop.h"
-#include "Common.h"
 #include "Screen.h"
 
 #include "states/EditorState.h"
@@ -13,16 +12,16 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     MainLoop::MainLoop (Screen* screen)
-        : m_AudioManager (this)
+        : m_Screen (screen)
+        , m_AudioManager (this)
+        , m_StateManager (this)
+        , m_SceneManager (this)
         , m_ScriptManager (this)
         , m_PhysicsManager (this)
-        , m_SceneManager (this)
-        , m_StateManager (this)
         , m_TweenManager (this)
-        , m_EditorState (nullptr)
-        , m_GamePlayState (nullptr)
         , m_MainMenuState (nullptr)
-        , m_Screen (screen)
+        , m_GamePlayState (nullptr)
+        , m_EditorState (nullptr)
         , m_IsRunning (true)
     {
     }
@@ -136,11 +135,11 @@ namespace aga
 
         while (m_IsRunning)
         {
-            float newTime = al_get_time ();
-            float deltaTime = (newTime - oldTime);
+            double newTime = al_get_time ();
+            double deltaTime = (newTime - oldTime);
             oldTime = newTime;
 
-            if (!m_Screen->Update (deltaTime))
+            if (!m_Screen->Update (static_cast<float> (deltaTime)))
             {
                 break;
             }

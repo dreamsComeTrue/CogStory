@@ -16,22 +16,22 @@ namespace aga
     MovementComponent::MovementComponent (Actor* owner)
         : Component (owner)
         , m_MoveType (MoveWander)
+        , m_MaxTargetTime (0.f)
+        , m_CurrentTargetTime (0.f)
         , m_Speed (150.f)
+        , m_CurrentPointIndex (0)
+        , m_PointsMovingForward (true)
         , m_WaitTimeBounds (1.f, 4.f)
         , m_WaitLikelihood (0.001f)
         , m_WaitTimeElapsed (0.f)
         , m_MaxWaitTime (0.f)
-        , m_MaxTargetTime (0.f)
-        , m_CurrentTargetTime (0.f)
-        , m_CurrentPointIndex (0)
-        , m_PointsMovingForward (true)
         , m_ScriptMoveCallback (nullptr)
     {
         m_InitialPos = owner->Bounds.Pos;
 
         SetMoveExtents ({-50.f, -50.f}, {50.f, 50.f});
 
-        m_Actor->AddCollisionCallback ([&](Collidable* other) { ComputeTargetPos (); });
+        m_Actor->AddCollisionCallback ([&](Collidable*) { ComputeTargetPos (); });
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -155,21 +155,14 @@ namespace aga
         asIScriptContext* ctx = m_Actor->GetSceneManager ()->GetMainLoop ()->GetScriptManager ().GetContext ();
         ctx->Prepare (m_ScriptMoveCallback);
         ctx->SetArgObject (0, &newPos);
-
-        int r = ctx->Execute ();
-
-        asDWORD ret = 0;
-        if (r == asEXECUTION_FINISHED)
-        {
-        }
-
+        ctx->Execute ();
         ctx->Unprepare ();
         ctx->GetEngine ()->ReturnContext (ctx);
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    bool MovementComponent::Render (float deltaTime)
+    bool MovementComponent::Render (float)
     {
         if (!m_IsEnabled)
         {
@@ -230,7 +223,7 @@ namespace aga
 
     void MovementComponent::ComputeMovePoints ()
     {
-        if (m_CurrentPointIndex >= 0 && m_CurrentPointIndex < m_Points.size ())
+        if (m_CurrentPointIndex < m_Points.size ())
         {
             m_TargetPos = m_Points[m_CurrentPointIndex];
         }
@@ -305,7 +298,7 @@ namespace aga
                 {
                     bool found = false;
 
-                    for (int i = 0; i < next->Connections.size (); ++i)
+                    for (size_t i = 0; i < next->Connections.size (); ++i)
                     {
                         if (std::find (visited.begin (), visited.end (), next->Connections[i]->Name) == visited.end ())
                         {
@@ -338,7 +331,7 @@ namespace aga
 
         for (asUINT i = 0; i < points->GetSize (); ++i)
         {
-            m_Points.push_back (*((Point*)points->At (i)));
+            m_Points.push_back (*(static_cast<Point*> (points->At (i))));
         }
 
         ComputeClosestWalkPoint ();
@@ -357,13 +350,13 @@ namespace aga
 
     void MovementComponent::ComputeClosestWalkPoint ()
     {
-        float minDistance = 1e100;
-        int closestIndex = 0;
+        double minDistance = 1e100;
+        size_t closestIndex = 0;
         Point actorPos = m_Actor->GetPosition ();
 
-        for (int i = 0; i < m_Points.size (); ++i)
+        for (size_t i = 0; i < m_Points.size (); ++i)
         {
-            float distance = Distance (actorPos, m_Points[i]);
+            double distance = static_cast<double> (Distance (actorPos, m_Points[i]));
 
             if (distance < minDistance)
             {

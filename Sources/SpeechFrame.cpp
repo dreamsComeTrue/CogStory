@@ -2,18 +2,12 @@
 
 #include "SpeechFrame.h"
 #include "Atlas.h"
-#include "AtlasManager.h"
 #include "AudioSample.h"
-#include "Font.h"
 #include "MainLoop.h"
 #include "Resources.h"
 #include "Scene.h"
-#include "SceneManager.h"
 #include "Screen.h"
-#include "Script.h"
 #include "SpeechFrameManager.h"
-
-#include <stack>
 
 namespace aga
 {
@@ -29,30 +23,30 @@ namespace aga
     SpeechFrame::SpeechFrame (SpeechFrameManager* manager, const std::string& text, Rect rect, bool shouldBeHandled,
         const std::string& actionName, const std::string& regionName)
         : m_Manager (manager)
+        , m_ActorRegionName (regionName)
+        , m_Action (actionName)
+        , m_ActualChoiceIndex (0)
         , m_DrawRect (rect)
         , m_Visible (true)
         , m_DrawTextCenter (false)
+        , m_StillUpdating (true)
         , m_DrawSpeed (15)
-        , m_ArrowDrawSpeed (300)
-        , m_DrawLightArrow (true)
         , m_CurrentDrawTime (0)
         , m_CurrentIndex (0)
         , m_CurrentLine (0)
+        , m_OverallIndex (0)
+        , m_ArrowDrawSpeed (300)
+        , m_DrawLightArrow (true)
         , m_ChosenLineDelta (0)
-        , m_StillUpdating (true)
         , m_MaxKeyDelta (200)
         , m_KeyEventHandled (false)
         , m_ShouldBeHandled (shouldBeHandled)
         , m_Handled (false)
-        , m_ActorRegionName (regionName)
         , m_DelayCounter (0.0f)
         , m_IsDelayed (false)
-        , m_ActualChoiceIndex (0)
         , m_AttrColorIndex (0)
         , m_AttrDelayIndex (0)
-        , m_Action (actionName)
         , m_ScriptHandleFunction (nullptr)
-        , m_OverallIndex (0)
         , m_IsSuspended (false)
         , m_OverrideSuspension (false)
         , m_CurrentLineBreakOffset (0)
@@ -60,8 +54,9 @@ namespace aga
         Atlas* atlas = m_Manager->GetSceneManager ()->GetMainLoop ()->GetAtlasManager ().GetAtlas (
             GetBaseName (GetResourcePath (PACK_MENU_UI)));
         Rect atlasRect = atlas->GetRegion ("text_frame").Bounds;
-        ALLEGRO_BITMAP* bmp = al_create_sub_bitmap (atlas->GetImage (), atlasRect.GetPos ().X, atlasRect.GetPos ().Y,
-            atlasRect.GetSize ().Width, atlasRect.GetSize ().Height);
+        ALLEGRO_BITMAP* bmp = al_create_sub_bitmap (atlas->GetImage (), static_cast<int> (atlasRect.GetPos ().X),
+            static_cast<int> (atlasRect.GetPos ().Y), static_cast<int> (atlasRect.GetSize ().Width),
+            static_cast<int> (atlasRect.GetSize ().Height));
 
         m_FrameBitmap = create_nine_patch_bitmap (bmp, true);
 
@@ -276,7 +271,7 @@ namespace aga
 
         if (changedLastIndex)
         {
-            for (int breakPoint : m_BreakPoints)
+            for (size_t breakPoint : m_BreakPoints)
             {
                 if (m_OverallIndex == breakPoint)
                 {
@@ -332,7 +327,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SpeechFrame::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
+    void SpeechFrame::ProcessEvent (ALLEGRO_EVENT* event, float)
     {
         if (event->type == ALLEGRO_EVENT_KEY_DOWN)
         {
@@ -397,7 +392,7 @@ namespace aga
 
                                 if (ctx->Execute () == asEXECUTION_FINISHED)
                                 {
-                                    m_OutcomeAction = *(std::string*)ctx->GetReturnObject ();
+                                    m_OutcomeAction = *static_cast<std::string*> (ctx->GetReturnObject ());
                                 }
 
                                 ctx->Unprepare ();
@@ -446,7 +441,7 @@ namespace aga
         int currentDrawingLine = 0;
 
         //  How many lines are hidden
-        int diff = (int)m_CurrentLine + 1 - maxLinesCanFit - m_CurrentLineBreakOffset;
+        int diff = static_cast<int> (m_CurrentLine) + 1 - maxLinesCanFit - m_CurrentLineBreakOffset;
 
         //  Offset current drawing start position by hidden lines
         if (m_CurrentLine + 1 - m_CurrentLineBreakOffset > maxLinesCanFit)
@@ -521,8 +516,9 @@ namespace aga
         DrawActorSprite ();
 
         //  Draw background
-        draw_nine_patch_bitmap (m_FrameBitmap, m_DrawRect.GetPos ().X, m_DrawRect.GetPos ().Y,
-            m_DrawRect.GetSize ().Width, m_DrawRect.GetSize ().Height);
+        draw_nine_patch_bitmap (m_FrameBitmap, static_cast<int> (m_DrawRect.GetPos ().X),
+            static_cast<int> (m_DrawRect.GetPos ().Y), static_cast<int> (m_DrawRect.GetSize ().Width),
+            static_cast<int> (m_DrawRect.GetSize ().Height));
 
         int maxLines = GetMaxLinesCanFit ();
         int currentDrawingLine = GetCurrentDrawingLine ();
@@ -530,8 +526,9 @@ namespace aga
 
         int x, y, w, h;
         al_get_clipping_rectangle (&x, &y, &w, &h);
-        al_set_clipping_rectangle (m_DrawRect.GetPos ().X, m_DrawRect.GetPos ().Y, m_DrawRect.GetSize ().Width,
-            m_DrawRect.GetSize ().Height - SPEECH_FRAME_LINE_OFFSET);
+        al_set_clipping_rectangle (static_cast<int> (m_DrawRect.GetPos ().X), static_cast<int> (m_DrawRect.GetPos ().Y),
+            static_cast<int> (m_DrawRect.GetSize ().Width),
+            static_cast<int> (m_DrawRect.GetSize ().Height - SPEECH_FRAME_LINE_OFFSET));
 
         float yOffset = -1;
 
@@ -590,12 +587,12 @@ namespace aga
         if (m_Atlas && m_ActorRegionName != "")
         {
             Point characterOffset = GetActorRegionOffset ();
-            int edgeLength
-                = std::min (m_DrawRect.GetSize ().Height - 2 * characterOffset.Y, SPEECH_FRAME_MAX_CHAR_EDGE_LENGTH);
+            int edgeLength = static_cast<int> (
+                std::min (m_DrawRect.GetSize ().Height - 2 * characterOffset.Y, SPEECH_FRAME_MAX_CHAR_EDGE_LENGTH));
             AtlasRegion region = m_Atlas->GetRegion (m_ActorRegionName);
 
-            float ratio = std::min (
-                (float)edgeLength / region.Bounds.Size.Width, (float)edgeLength / region.Bounds.Size.Height);
+            float ratio = std::min (static_cast<float> (edgeLength) / region.Bounds.Size.Width,
+                static_cast<float> (edgeLength) / region.Bounds.Size.Height);
 
             float xPos = m_DrawRect.GetPos ().X - ratio * region.Bounds.Size.Width * 0.5f - characterOffset.X;
             float yPos
@@ -607,15 +604,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void SpeechFrame::DrawTextLine (const std::string& line, Point drawPoint, int advance)
+    void SpeechFrame::DrawTextLine (const std::string& line, Point drawPoint, float advance)
     {
         Font& font = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetFont ();
 
-        for (int j = 0; j < line.length (); ++j)
+        for (size_t j = 0; j < line.length (); ++j)
         {
             ALLEGRO_COLOR color = {0.9f, 0.9f, 0.9f, 1.0f};
 
-            for (int k = 0; k < m_Attributes.size (); ++k)
+            for (size_t k = 0; k < m_Attributes.size (); ++k)
             {
                 SpeechTextAttribute& attr = m_Attributes[k];
 
@@ -698,7 +695,7 @@ namespace aga
         }
 
         //  How many lines are hidden
-        int diff = (int)m_CurrentLine + 1 - maxLines;
+        int diff = static_cast<int> (m_CurrentLine) + 1 - maxLines;
 
         //  Down arrow
         if (currentDrawingLine < diff)
@@ -721,8 +718,8 @@ namespace aga
             std::string text = m_Text.substr (0, m_CurrentIndex);
             Point textDimensions = font.GetTextDimensions (FONT_NAME_SPEECH_FRAME, text);
 
-            xPoint = m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width * 0.5;
-            yPoint = m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Height * 0.5 - textDimensions.Height * 0.5;
+            xPoint = m_DrawRect.GetPos ().X + m_DrawRect.GetSize ().Width * 0.5f;
+            yPoint = m_DrawRect.GetPos ().Y + m_DrawRect.GetSize ().Height * 0.5f - textDimensions.Height * 0.5f;
         }
         else
         {

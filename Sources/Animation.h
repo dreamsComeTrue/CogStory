@@ -23,17 +23,15 @@ namespace aga
         unsigned GetPlaySpeed () const;
 
         void AddFrame (const AnimationFrameEntry& frame, int index = -1);
-        //        void AddFrame (unsigned index, int row, int col);
-        //        void AddFrame (int row, int col);
         void ClearFrames ();
 
         AnimationFrameEntry& GetFrame (unsigned index);
-        std::vector<AnimationFrameEntry>& GetFrames () { return m_Frames; }
+        std::vector<AnimationFrameEntry>& GetFrames ();
 
         size_t GetFramesCount () const;
 
-        void SetName (const std::string& name) { m_Name = name; }
-        std::string GetName () { return m_Name; }
+        void SetName (const std::string& name);
+        std::string GetName ();
 
     private:
         std::string m_Name;
@@ -60,8 +58,8 @@ namespace aga
         void Update (float deltaTime);
         unsigned GetCurrentFrame () const;
 
-        void SetName (const std::string& name) { m_Name = name; }
-        std::string GetName () { return m_Name; }
+        void SetName (const std::string& name);
+        std::string GetName ();
 
     private:
         std::string m_Name;

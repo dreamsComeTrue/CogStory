@@ -9,7 +9,6 @@
 #include "EditorPhysMode.h"
 #include "EditorSpeechMode.h"
 #include "EditorTriggerAreaMode.h"
-#include "Scene.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -154,7 +153,7 @@ namespace aga
 
         void TryToCloseWindows ();
 
-        void AddActorsFromSpritesheet (float x, float y);
+        void AddActorsFromSpritesheet (int x, int y);
         void SelectActorsWithinSelectionRect ();
 
         void SelectPhysPoint ();

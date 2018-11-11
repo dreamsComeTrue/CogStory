@@ -28,21 +28,19 @@ namespace aga
         void RemoveStream (const std::string& streamName);
         void ClearAudioStreams ();
 
-        MainLoop* GetMainLoop () { return m_MainLoop; }
-
         void Update (float deltaTime);
 
-        void SetMasterVolume (float volume = 1.0f) { m_MasterVolume = volume; }
-        float GetMasterVolume () const { return m_MasterVolume; }
+        void SetMasterVolume (float volume = 1.0f);
+        float GetMasterVolume () const;
 
         void SetEnabled (bool enabled);
-        bool IsEnabled () { return m_Enabled; }
+        bool IsEnabled ();
 
         void Pause ();
         void Resume ();
 
-        bool IsPaused () const { return m_IsPaused; }
-        void ClearLastPlayedStreams () { m_LastPlayedStreams.clear (); }
+        bool IsPaused () const;
+        void ClearLastPlayedStreams ();
 
     private:
         MainLoop* m_MainLoop;

@@ -2,7 +2,6 @@
 
 #include "Timeline.h"
 #include "MainLoop.h"
-#include "ScriptManager.h"
 
 namespace aga
 {
@@ -38,13 +37,13 @@ namespace aga
                     {
                         asIScriptContext* ctx = m_TweenManager->GetMainLoop ()->GetScriptManager ().GetContext ();
                         ctx->Prepare (tween.BeginScriptFunc);
-                        ctx->SetArgDWord (0, tween.ID);
+                        ctx->SetArgDWord (0, static_cast<asDWORD> (tween.ID));
                         ctx->Execute ();
                         ctx->Unprepare ();
                         ctx->GetEngine ()->ReturnContext (ctx);
                     }
 
-                    tween.TweenF.step ((int)(deltaTime * 1000));
+                    tween.TweenF.step (static_cast<int> (deltaTime * 1000));
                 }
 
                 if (tween.TweenMask & TWEEN_FF)
@@ -53,13 +52,13 @@ namespace aga
                     {
                         asIScriptContext* ctx = m_TweenManager->GetMainLoop ()->GetScriptManager ().GetContext ();
                         ctx->Prepare (tween.BeginScriptFunc);
-                        ctx->SetArgDWord (0, tween.ID);
+                        ctx->SetArgDWord (0, static_cast<asDWORD> (tween.ID));
                         ctx->Execute ();
                         ctx->Unprepare ();
                         ctx->GetEngine ()->ReturnContext (ctx);
                     }
 
-                    tween.TweenFF.step ((int)(deltaTime * 1000));
+                    tween.TweenFF.step (static_cast<int> (deltaTime * 1000));
                 }
             }
         }
@@ -72,12 +71,12 @@ namespace aga
             {
                 if (tween.TweenMask & TWEEN_F)
                 {
-                    tween.TweenF.step ((int)(deltaTime * 1000));
+                    tween.TweenF.step (static_cast<int> (deltaTime * 1000));
                 }
 
                 if (tween.TweenMask & TWEEN_FF)
                 {
-                    tween.TweenFF.step ((int)(deltaTime * 1000));
+                    tween.TweenFF.step (static_cast<int> (deltaTime * 1000));
                 }
             }
         }
@@ -108,7 +107,7 @@ namespace aga
                 {
                     asIScriptContext* ctx = m_TweenManager->GetMainLoop ()->GetScriptManager ().GetContext ();
                     ctx->Prepare (tweenToProcess.FinishScriptFunc);
-                    ctx->SetArgDWord (0, tweenToProcess.ID);
+                    ctx->SetArgDWord (0, static_cast<asDWORD> (tweenToProcess.ID));
                     ctx->Execute ();
                     ctx->Unprepare ();
                     ctx->GetEngine ()->ReturnContext (ctx);
@@ -139,7 +138,7 @@ namespace aga
                 {
                     asIScriptContext* ctx = m_TweenManager->GetMainLoop ()->GetScriptManager ().GetContext ();
                     ctx->Prepare (tweenToProcess.FinishScriptFunc);
-                    ctx->SetArgDWord (0, tweenToProcess.ID);
+                    ctx->SetArgDWord (0, static_cast<asDWORD> (tweenToProcess.ID));
                     ctx->Execute ();
                     ctx->Unprepare ();
                     ctx->GetEngine ()->ReturnContext (ctx);
@@ -200,7 +199,7 @@ namespace aga
 
             asIScriptContext* ctx = m_TweenManager->GetMainLoop ()->GetScriptManager ().GetContext ();
             ctx->Prepare (tweenData->CallbackScriptFunc);
-            ctx->SetArgDWord (0, tweenData->ID);
+            ctx->SetArgDWord (0, static_cast<asDWORD> (tweenData->ID));
             ctx->SetArgFloat (1, t.progress ());
             ctx->SetArgFloat (2, value);
 
@@ -215,7 +214,7 @@ namespace aga
             ctx->Unprepare ();
             ctx->GetEngine ()->ReturnContext (ctx);
 
-            return (bool)ret;
+            return static_cast<bool> (ret);
         };
 
         tweeny::tween<float> tween = tweeny::from (from).to (to).during (duringMS).onStep (func);
@@ -248,7 +247,7 @@ namespace aga
 
                   asIScriptContext* ctx = m_TweenManager->GetMainLoop ()->GetScriptManager ().GetContext ();
                   ctx->Prepare (tweenData->CallbackScriptFunc);
-                  ctx->SetArgDWord (0, tweenData->ID);
+                  ctx->SetArgDWord (0, static_cast<asDWORD> (tweenData->ID));
                   ctx->SetArgFloat (1, t.progress ());
                   ctx->SetArgObject (2, &p);
 
@@ -263,7 +262,7 @@ namespace aga
                   ctx->Unprepare ();
                   ctx->GetEngine ()->ReturnContext (ctx);
 
-                  return (bool)ret;
+                  return static_cast<bool> (ret);
               };
 
         tweeny::tween<float, float> tween

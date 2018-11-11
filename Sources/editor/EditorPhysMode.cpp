@@ -75,7 +75,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorPhysMode::DrawPhysPoints (float mouseX, float mouseY)
+    void EditorPhysMode::DrawPhysPoints (int mouseX, int mouseY)
     {
         Point origin = {0, 0};
         std::vector<std::vector<Point>>* physPoints = nullptr;
@@ -94,7 +94,7 @@ namespace aga
                 int i = 0;
                 int selectedIndex = std::numeric_limits<int>::min ();
 
-                for (int j = 0; j < points.size (); ++j)
+                for (size_t j = 0; j < points.size (); ++j)
                 {
                     if (m_PhysPoint && points[j] == *m_PhysPoint)
                     {
@@ -136,7 +136,7 @@ namespace aga
                         color = COLOR_RED;
                     }
 
-                    if (m_Editor->GetMainLoop ()->GetSceneManager ().IsDrawPhysData () && false)
+                    if (m_Editor->GetMainLoop ()->GetSceneManager ().IsDrawPhysData ())
                     {
                         m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_SMALL,
                             al_map_rgb (0, 255, 0), xPoint, yPoint, std::to_string (i), ALLEGRO_ALIGN_CENTER);
@@ -186,7 +186,7 @@ namespace aga
 
             if (m_PhysPoint && !againSelected)
             {
-                for (int i = 0; i < m_PhysPoly->size (); ++i)
+                for (size_t i = 0; i < m_PhysPoly->size (); ++i)
                 {
                     if (m_PhysPoint && (*m_PhysPoly)[i] == *m_PhysPoint)
                     {
@@ -225,7 +225,7 @@ namespace aga
     Point* EditorPhysMode::GetPhysPointUnderCursor (int mouseX, int mouseY)
     {
         Point origin = {0, 0};
-        std::vector<std::vector<Point>>* physPoints;
+        std::vector<std::vector<Point>>* physPoints = nullptr;
 
         std::vector<Actor*> actors = m_Editor->GetEditorActorMode ().GetSelectedActors ();
 
@@ -275,11 +275,11 @@ namespace aga
 
             if (physPoints && point)
             {
-                for (int j = 0; j < physPoints->size (); ++j)
+                for (size_t j = 0; j < physPoints->size (); ++j)
                 {
                     std::vector<Point>& points = (*physPoints)[j];
 
-                    for (int i = 0; i < points.size (); ++i)
+                    for (size_t i = 0; i < points.size (); ++i)
                     {
                         if (points[i] == *point)
                         {
@@ -317,6 +317,22 @@ namespace aga
         m_PhysPointIndex = -1;
         m_PhysPoly = nullptr;
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Point* EditorPhysMode::GetPhysPoint () { return m_PhysPoint; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorPhysMode::SetPhysPoint (Point* point) { m_PhysPoint = point; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::vector<Point>* EditorPhysMode::GetPhysPoly () { return m_PhysPoly; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorPhysMode::SetPhysPoly (std::vector<Point>* poly) { m_PhysPoly = poly; }
 
     //--------------------------------------------------------------------------------------------------
 }

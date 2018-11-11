@@ -27,16 +27,16 @@ namespace aga
 
         virtual void SetCurrentAnimation (const std::string& name);
 
-        Animation& GetAnimation () { return m_Animation; }
-        void SetAnimation (Animation& animation) { m_Animation = animation; }
+        Animation& GetAnimation ();
+        void SetAnimation (Animation& animation);
         std::map<std::string, AnimationData>& GetAnimationsData ();
 
-        virtual void SetAtlasName (const std::string& name) { m_AtlasName = name; }
-        virtual void SetAtlasRegionName (const std::string& name) { m_AtlasRegionName = name; }
+        virtual void SetAtlasName (const std::string& name);
+        virtual void SetAtlasRegionName (const std::string& name);
         virtual void SetAtlas (Atlas* atlas);
 
-        std::string GetAtlasRegionName () const { return m_AtlasRegionName; }
-        Atlas* GetAtlas () { return m_Atlas; }
+        std::string GetAtlasRegionName () const;
+        Atlas* GetAtlas ();
 
     protected:
         AtlasManager* m_AtlasManager;

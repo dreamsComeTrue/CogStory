@@ -4,7 +4,6 @@
 #define __EDITOR_SCENE_WINDOW_H__
 
 #include "Common.h"
-#include "Entity.h"
 
 #include "imgui.h"
 
@@ -21,7 +20,7 @@ namespace aga
         void Show ();
         void RenderUI ();
 
-        bool IsVisible () const { return m_IsVisible; }
+        bool IsVisible () const;
 
     private:
         void OnReloadScript (const std::string& scriptName);

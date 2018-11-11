@@ -48,7 +48,7 @@ namespace aga
                 totalY += Points[i].Y;
             }
 
-            return Point (totalX / (float)Points.size (), totalY / (float)Points.size ());
+            return Point (totalX / static_cast<float> (Points.size ()), totalY / static_cast<float> (Points.size ()));
         }
 
         void Offset (Point v) { Offset (v.X, v.Y); }

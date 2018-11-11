@@ -30,7 +30,7 @@ namespace aga
         void Render (float deltaTime);
 
         MainLoop* GetMainLoop ();
-        State* GetPreviousState () { return m_PreviousState; }
+        State* GetPreviousState ();
 
         void StateFadeInOut (const std::string& enteringStateName);
 

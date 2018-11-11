@@ -3,7 +3,6 @@
 #include "EditorTriggerAreaMode.h"
 #include "Editor.h"
 #include "MainLoop.h"
-#include "Screen.h"
 
 #include "imgui.h"
 
@@ -66,7 +65,7 @@ namespace aga
                 int i = 0;
                 int selectedIndex = std::numeric_limits<int>::min ();
 
-                for (int j = 0; j < it->second.Points.size (); ++j)
+                for (size_t j = 0; j < it->second.Points.size (); ++j)
                 {
                     if (m_TriggerPoint && it->second.Points[j] == *m_TriggerPoint)
                     {
@@ -192,7 +191,7 @@ namespace aga
 
             if (m_TriggerPoint && !againSelected)
             {
-                for (int i = 0; i < m_TriggerArea->Points.size (); ++i)
+                for (size_t i = 0; i < m_TriggerArea->Points.size (); ++i)
                 {
                     if (m_TriggerPoint && (m_TriggerArea->Points)[i] == *m_TriggerPoint)
                     {
@@ -223,7 +222,7 @@ namespace aga
 
         if (triggerArea && triggerPoint)
         {
-            for (int i = 0; i < triggerArea->Points.size (); ++i)
+            for (size_t i = 0; i < triggerArea->Points.size (); ++i)
             {
                 if (triggerArea->Points[i] == *triggerPoint)
                 {
@@ -276,12 +275,12 @@ namespace aga
     {
         ImGui::SetNextWindowSize (ImVec2 (400, 130));
 
-        if (ImGui::BeginPopupModal ("Trigger Area", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        if (ImGui::BeginPopupModal ("Trigger Area", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             ImGui::PushItemWidth (350);
-            ImGui::InputText ("Name", m_TriggerAreaWindow, IM_ARRAYSIZE (m_TriggerAreaWindow));
+            ImGui::InputText ("Name", m_TriggerAreaWindow, ARRAY_SIZE (m_TriggerAreaWindow));
             ImGui::SetItemDefaultFocus ();
-            ImGui::InputText ("Data", m_TriggerAreaData, IM_ARRAYSIZE (m_TriggerAreaData));
+            ImGui::InputText ("Data", m_TriggerAreaData, ARRAY_SIZE (m_TriggerAreaData));
             ImGui::PopItemWidth ();
 
             ImGui::Checkbox ("Collidable?", &m_Collidable);

@@ -17,7 +17,7 @@ namespace aga
         EditorPhysMode (Editor* editor);
         virtual ~EditorPhysMode ();
 
-        void DrawPhysPoints (float mouseX, float mouseY);
+        void DrawPhysPoints (int mouseX, int mouseY);
         void DrawGuideLines ();
 
         bool MoveSelectedPhysPoint ();
@@ -28,11 +28,11 @@ namespace aga
 
         void ResetSettings ();
 
-        Point* GetPhysPoint () { return m_PhysPoint; }
-        void SetPhysPoint (Point* point) { m_PhysPoint = point; }
+        Point* GetPhysPoint ();
+        void SetPhysPoint (Point* point);
 
-        std::vector<Point>* GetPhysPoly () { return m_PhysPoly; }
-        void SetPhysPoly (std::vector<Point>* poly) { m_PhysPoly = poly; }
+        std::vector<Point>* GetPhysPoly ();
+        void SetPhysPoly (std::vector<Point>* poly);
 
     private:
         Editor* m_Editor;

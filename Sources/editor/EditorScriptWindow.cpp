@@ -95,15 +95,15 @@ namespace aga
 
     void EditorScriptWindow::Render ()
     {
-        if (ImGui::BeginPopupModal ("Script", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        if (ImGui::BeginPopupModal ("Script", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             if (m_Name[0] == '\0')
             {
             }
 
-            ImGui::InputText ("Name", m_Name, IM_ARRAYSIZE (m_Name));
+            ImGui::InputText ("Name", m_Name, ARRAY_SIZE (m_Name));
             ImGui::SetItemDefaultFocus ();
-            ImGui::InputText ("Path", m_Path, IM_ARRAYSIZE (m_Path));
+            ImGui::InputText ("Path", m_Path, ARRAY_SIZE (m_Path));
             ImGui::SameLine ();
 
             if (ImGui::Button ("BROWSE", ImVec2 (50.f, 18)))
@@ -140,6 +140,18 @@ namespace aga
             ImGui::EndPopup ();
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string EditorScriptWindow::GetName () const { return m_Name; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string EditorScriptWindow::GetPath () const { return m_Path; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool EditorScriptWindow::IsVisible () { return m_IsVisible; }
 
     //--------------------------------------------------------------------------------------------------
 }

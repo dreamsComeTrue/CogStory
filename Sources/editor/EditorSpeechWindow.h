@@ -25,7 +25,7 @@ namespace aga
         void Show ();
         void RenderUI ();
 
-        bool IsVisible () const { return m_IsVisible; }
+        bool IsVisible () const;
 
     private:
         void OnSave ();
@@ -33,7 +33,7 @@ namespace aga
         void OnOutcome ();
         void OnPreview ();
 
-        void SelectSpeech (int id);
+        void SelectSpeech (long id);
 
         void OnWindoClosed ();
 

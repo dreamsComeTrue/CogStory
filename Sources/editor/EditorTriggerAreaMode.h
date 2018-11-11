@@ -4,12 +4,12 @@
 #define __EDITOR_TRIGGER_AREA_MODE_H__
 
 #include "Common.h"
-#include "Scene.h"
 
 namespace aga
 {
     class Editor;
     class TriggerAreaWindow;
+    struct TriggerArea;
 
     class EditorTriggerAreaMode
     {

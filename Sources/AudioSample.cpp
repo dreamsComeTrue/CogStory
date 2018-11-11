@@ -45,7 +45,7 @@ namespace aga
 
     bool AudioSample::Destroy ()
     {
-        for (int i = 0; i < m_SampleInstances.size (); ++i)
+        for (size_t i = 0; i < m_SampleInstances.size (); ++i)
         {
             al_destroy_sample_instance (m_SampleInstances[i]);
             m_SampleInstances.erase (m_SampleInstances.begin () + i);
@@ -114,7 +114,7 @@ namespace aga
         {
             m_CurrentPos = 0;
 
-            for (int i = 0; i < m_SampleInstances.size (); ++i)
+            for (size_t i = 0; i < m_SampleInstances.size (); ++i)
             {
                 unsigned pos = al_get_sample_instance_position (m_SampleInstances[i]);
 
@@ -136,7 +136,7 @@ namespace aga
     {
         if (m_AudioManager->IsEnabled ())
         {
-            for (int i = 0; i < m_SampleInstances.size (); ++i)
+            for (size_t i = 0; i < m_SampleInstances.size (); ++i)
             {
                 al_set_sample_instance_position (m_SampleInstances[i], m_CurrentPos);
                 al_set_sample_instance_playing (m_SampleInstances[i], true);
@@ -194,13 +194,17 @@ namespace aga
         {
             m_Looping = looping;
 
-            for (int i = 0; i < m_SampleInstances.size (); ++i)
+            for (size_t i = 0; i < m_SampleInstances.size (); ++i)
             {
                 al_set_sample_instance_playmode (
                     m_SampleInstances[i], m_Looping ? ALLEGRO_PLAYMODE_LOOP : ALLEGRO_PLAYMODE_ONCE);
             }
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool AudioSample::IsLooping () const { return m_Looping; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -211,7 +215,7 @@ namespace aga
             m_Gain = volume;
             m_VolumeOverriden = true;
 
-            for (int i = 0; i < m_SampleInstances.size (); ++i)
+            for (size_t i = 0; i < m_SampleInstances.size (); ++i)
             {
                 al_set_sample_instance_gain (m_SampleInstances[i], m_Gain);
             }
@@ -224,7 +228,7 @@ namespace aga
     {
         if (m_AudioManager->IsEnabled ())
         {
-            for (int i = 0; i < m_SampleInstances.size (); ++i)
+            for (size_t i = 0; i < m_SampleInstances.size (); ++i)
             {
                 al_set_sample_instance_speed (m_SampleInstances[i], speed);
             }
@@ -235,7 +239,7 @@ namespace aga
 
     void AudioSample::CleanUpInstances ()
     {
-        for (int i = 0; i < m_SampleInstances.size (); ++i)
+        for (size_t i = 0; i < m_SampleInstances.size (); ++i)
         {
             if (!al_get_sample_instance_playing (m_SampleInstances[i]))
             {

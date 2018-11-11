@@ -20,7 +20,7 @@ namespace aga
     class Screen : public Lifecycle
     {
     public:
-        Screen (unsigned width, unsigned height, bool centerOnScreen = true);
+        Screen (unsigned width, unsigned height, const char* gameTitle, bool centerOnScreen = true);
         virtual ~Screen ();
         bool Initialize ();
         bool Destroy ();
@@ -56,8 +56,9 @@ namespace aga
         void DrawDebugMessages ();
 
     private:
-        Point m_RealSize;
+        std::string m_GameTitle;
         unsigned m_Width, m_Height;
+        Point m_RealSize;
         bool m_CenterOnScreen;
         bool m_Redraw;
         float m_DeltaTime;

@@ -34,8 +34,9 @@ namespace aga
         bool InternalRun (asIScriptContext* ctx);
 
     private:
-        std::string m_Name;
         ScriptManager* m_Manager;
+
+        std::string m_Name;
         asIScriptModule* m_Module;
     };
 }

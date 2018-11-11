@@ -87,7 +87,7 @@ namespace aga
 
     private:
         void DrawActorSprite ();
-        void DrawTextLine (const std::string& line, Point drawPoint, int advance);
+        void DrawTextLine (const std::string& line, Point drawPoint, float advance);
         void DrawChoiceArrow (float yOffset);
         void DrawScrollArrows (int currentDrawingLine);
 
@@ -122,7 +122,7 @@ namespace aga
         std::string m_OriginalText;
         std::vector<std::string> m_TextLines;
         std::vector<SpeechTextAttribute> m_Attributes;
-        std::vector<int> m_BreakPoints;
+        std::vector<size_t> m_BreakPoints;
         Rect m_DrawRect;
         bool m_Visible;
         bool m_DrawTextCenter;

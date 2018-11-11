@@ -7,8 +7,11 @@
 
 namespace aga
 {
+    auto Compare = [](float a, float b, float epsilon = 1.0E-8f) -> bool { return std::fabs (a - b) < epsilon; };
+
     struct Point
     {
+    public:
         Point ()
             : X (0.0)
             , Y (0.0)
@@ -16,8 +19,8 @@ namespace aga
         }
 
         Point (int x, int y)
-            : X ((float)x)
-            , Y ((float)y)
+            : X (static_cast<float> (x))
+            , Y (static_cast<float> (y))
         {
         }
 
@@ -38,7 +41,7 @@ namespace aga
             };
         };
 
-        float Magnitude () const { return (float)std::sqrt (X * X + Y * Y); }
+        float Magnitude () const { return static_cast<float> (std::sqrt (X * X + Y * Y)); }
 
         void Normalize ()
         {
@@ -55,9 +58,9 @@ namespace aga
 
         float DotProduct (const Point& vector) { return X * vector.X + Y * vector.Y; }
 
-        bool operator== (const Point& rhs) const { return X == rhs.X && Y == rhs.Y; }
+        bool operator== (const Point& rhs) const { return Compare (X, rhs.X) && Compare (Y, rhs.Y); }
 
-        bool operator!= (const Point& rhs) const { return X != rhs.X || Y != rhs.Y; }
+        bool operator!= (const Point& rhs) const { return !Compare (X, rhs.X) || !Compare (Y, rhs.Y); }
 
         Point operator+ (const Point& rhs) const { return Point (X + rhs.X, Y + rhs.Y); }
 

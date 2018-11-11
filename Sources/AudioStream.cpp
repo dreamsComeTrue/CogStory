@@ -87,7 +87,7 @@ namespace aga
     {
         if (m_Stream)
         {
-            m_CurrentPos = 0.f;
+            m_CurrentPos = 0;
 
             al_set_audio_stream_playing (m_Stream, false);
             al_seek_audio_stream_secs (m_Stream, m_CurrentPos);
@@ -163,6 +163,10 @@ namespace aga
             al_set_audio_stream_playmode (m_Stream, m_Looping ? ALLEGRO_PLAYMODE_LOOP : ALLEGRO_PLAYMODE_ONCE);
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool AudioStream::IsLooping () const { return m_Looping; }
 
     //--------------------------------------------------------------------------------------------------
 

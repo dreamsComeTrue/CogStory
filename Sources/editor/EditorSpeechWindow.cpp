@@ -2,19 +2,14 @@
 
 #include "EditorSpeechWindow.h"
 #include "Editor.h"
-#include "Font.h"
 #include "MainLoop.h"
 #include "SpeechFrame.h"
+#include "SpeechFrameManager.h"
 
 #include "imgui.h"
 
 namespace aga
 {
-    //--------------------------------------------------------------------------------------------------
-
-    Point letterSize;
-
-    //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
     std::vector<std::string> g_SpeechFrames = {"player_head"};
@@ -47,8 +42,6 @@ namespace aga
         {
             m_Positions.push_back (s.second);
         }
-
-        letterSize = {7.f, 17.f}; // Font::GetTextDimensions (FONT_NAME_SMALL, "-");
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -84,9 +77,9 @@ namespace aga
         {
             int maxID = -1;
 
-            std::map<int, SpeechData>& speeches
+            std::map<long, SpeechData>& speeches
                 = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
-            for (std::map<int, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
+            for (std::map<long, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
             {
                 if (it->first > maxID)
                 {
@@ -147,15 +140,15 @@ namespace aga
 
     void EditorSpeechWindow::OnPreview ()
     {
-        SpeechFrameManager& frameManager = m_Editor->GetMainLoop ()->GetSceneManager ().GetSpeechFrameManager ();
+        SpeechFrameManager* frameManager = m_Editor->GetMainLoop ()->GetSceneManager ().GetSpeechFrameManager ();
 
-        if (frameManager.GetSpeechFrames ().empty ())
+        if (frameManager->GetSpeechFrames ().empty ())
         {
-            frameManager.AddSpeechFrame (std::string (m_SpeechName));
+            frameManager->AddSpeechFrame (std::string (m_SpeechName));
         }
         else
         {
-            frameManager.Clear ();
+            frameManager->Clear ();
         }
     }
 
@@ -163,7 +156,7 @@ namespace aga
 
     void EditorSpeechWindow::OnWindoClosed ()
     {
-        m_Editor->GetMainLoop ()->GetSceneManager ().GetSpeechFrameManager ().Clear ();
+        m_Editor->GetMainLoop ()->GetSceneManager ().GetSpeechFrameManager ()->Clear ();
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -184,7 +177,7 @@ namespace aga
 
     void EditorSpeechWindow::UpdateOutcomes ()
     {
-        std::map<int, SpeechData>& speeches
+        std::map<long, SpeechData>& speeches
             = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
 
         std::map<std::string, asIScriptFunction*>& choiceFunctions
@@ -193,7 +186,7 @@ namespace aga
         m_Actions.clear ();
         m_Actions.push_back ("[CLOSE]");
 
-        for (std::map<int, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
+        for (std::map<long, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
         {
             m_Actions.push_back ((*it).second.Name);
         }
@@ -217,7 +210,7 @@ namespace aga
             strcpy (edOut.Text, out.Text.c_str ());
             strcpy (edOut.Action, out.Action.c_str ());
 
-            for (int i = 0; i < m_Actions.size (); ++i)
+            for (size_t i = 0; i < m_Actions.size (); ++i)
             {
                 if (out.Action == m_Actions[i])
                 {
@@ -253,9 +246,9 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorSpeechWindow::SelectSpeech (int id)
+    void EditorSpeechWindow::SelectSpeech (long id)
     {
-        std::map<int, SpeechData>& speeches
+        std::map<long, SpeechData>& speeches
             = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
         SpeechData& speech = speeches[id];
         m_Editor->GetEditorSpeechMode ().SetSpeechData (speech);
@@ -264,7 +257,7 @@ namespace aga
         strcpy (m_SpeechName, speech.Name.c_str ());
         strcpy (m_SpeechGroup, speech.Group.c_str ());
 
-        for (int i = 0; i < m_Regions.size (); ++i)
+        for (size_t i = 0; i < m_Regions.size (); ++i)
         {
             if (m_Regions[i] == speech.ActorRegionName)
             {
@@ -277,10 +270,10 @@ namespace aga
         m_MaxChars = speech.MaxCharsInLine;
         m_MaxLines = speech.MaxLines;
         m_RelPosition = speech.RelativeFramePosition;
-        m_AbsPosX = speech.AbsoluteFramePosition.X;
-        m_AbsPosY = speech.AbsoluteFramePosition.Y;
+        m_AbsPosX = static_cast<int> (speech.AbsoluteFramePosition.X);
+        m_AbsPosY = static_cast<int> (speech.AbsoluteFramePosition.Y);
 
-        for (int i = 0; i < m_Actions.size (); ++i)
+        for (size_t i = 0; i < m_Actions.size (); ++i)
         {
             if (m_Actions[i] == speech.Action)
             {
@@ -298,7 +291,7 @@ namespace aga
     {
         ImGui::SetNextWindowSize (ImVec2 (700, 450), ImGuiCond_Always);
 
-        if (ImGui::BeginPopupModal ("Speech Editor", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        if (ImGui::BeginPopupModal ("Speech Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             ImGui::BeginChild (
                 "Child1", ImVec2 (200, ImGui::GetWindowSize ().y - 50), false, ImGuiWindowFlags_HorizontalScrollbar);
@@ -309,10 +302,10 @@ namespace aga
                     std::vector<std::string> groups;
                     groups.push_back ("Ungrouped");
 
-                    std::map<int, SpeechData>& speeches
+                    std::map<long, SpeechData>& speeches
                         = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
 
-                    for (std::map<int, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
+                    for (std::map<long, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
                     {
                         std::string groupName = (*it).second.Group;
                         bool foundGroup = false;
@@ -335,7 +328,7 @@ namespace aga
                     {
                         if (ImGui::TreeNodeEx (gr.c_str (), ImGuiTreeNodeFlags_DefaultOpen))
                         {
-                            for (std::map<int, SpeechData>::iterator it = speeches.begin (); it != speeches.end ();
+                            for (std::map<long, SpeechData>::iterator it = speeches.begin (); it != speeches.end ();
                                  ++it)
                             {
                                 std::string thisGroupName = (*it).second.Group;
@@ -371,12 +364,12 @@ namespace aga
 
                 SpeechData& speechData = m_Editor->GetEditorSpeechMode ().GetSpeechData ();
 
-                if (ImGui::InputText ("Name", m_SpeechName, IM_ARRAYSIZE (m_SpeechName)))
+                if (ImGui::InputText ("Name", m_SpeechName, ARRAY_SIZE (m_SpeechName)))
                 {
                     speechData.Name = std::string (m_SpeechName);
                 }
 
-                if (ImGui::InputText ("Group", m_SpeechGroup, IM_ARRAYSIZE (m_SpeechGroup)))
+                if (ImGui::InputText ("Group", m_SpeechGroup, ARRAY_SIZE (m_SpeechGroup)))
                 {
                     speechData.Group = std::string (m_SpeechGroup);
                 }
@@ -414,7 +407,7 @@ namespace aga
                     speechData.Action = m_Actions[m_Action];
                 }
 
-                if (ImGui::InputTextMultiline ("Text", m_Text, IM_ARRAYSIZE (m_Text), ImVec2 (235, 70)))
+                if (ImGui::InputTextMultiline ("Text", m_Text, ARRAY_SIZE (m_Text), ImVec2 (235, 70)))
                 {
                     speechData.Text[m_LangIndex] = std::string (m_Text);
                 }
@@ -425,13 +418,13 @@ namespace aga
                 std::vector<SpeechOutcome>& outcomes = speechData.Outcomes[m_LangIndex];
                 std::vector<EditorSpeechOutcome>& edOutcomes = m_SpeechOutcomes;
 
-                for (int i = 0; i < edOutcomes.size (); ++i)
+                for (size_t i = 0; i < edOutcomes.size (); ++i)
                 {
                     EditorSpeechOutcome& out = edOutcomes[i];
 
                     ImGui::PushItemWidth (40.f);
                     if (ImGui::InputText (
-                            (std::string ("##Name") + std::to_string (i)).c_str (), out.Name, IM_ARRAYSIZE (out.Name)))
+                            (std::string ("##Name") + std::to_string (i)).c_str (), out.Name, ARRAY_SIZE (out.Name)))
                     {
                         outcomes[i].Name = out.Name;
                     }
@@ -441,7 +434,7 @@ namespace aga
 
                     ImGui::PushItemWidth (150.f);
                     if (ImGui::InputText (
-                            (std::string ("##Text") + std::to_string (i)).c_str (), out.Text, IM_ARRAYSIZE (out.Text)))
+                            (std::string ("##Text") + std::to_string (i)).c_str (), out.Text, ARRAY_SIZE (out.Text)))
                     {
                         outcomes[i].Text = out.Text;
                     }
@@ -556,6 +549,10 @@ namespace aga
             ImGui::EndPopup ();
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool EditorSpeechWindow::IsVisible () const { return m_IsVisible; }
 
     //--------------------------------------------------------------------------------------------------
 }

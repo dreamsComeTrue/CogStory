@@ -4,7 +4,6 @@
 #define __EDITOR_COMPONENT_WINDOW_H__
 
 #include "Common.h"
-#include "Entity.h"
 
 namespace aga
 {
@@ -18,14 +17,13 @@ namespace aga
 
         void Show (std::function<void(std::string, std::string)> OnAcceptFunc,
             std::function<void(std::string, std::string)> OnCancelFunc);
-        bool GetResult () { return m_Result; }
 
-        std::string GetName () const { return m_Name; }
-        std::string GetTypeName () const { return m_Types[m_SelectedType]; }
+        std::string GetName () const;
+        std::string GetTypeName () const;
 
         void Render ();
 
-        bool IsVisible () { return m_IsVisible; }
+        bool IsVisible ();
 
     private:
         void OnAccept ();
@@ -41,8 +39,6 @@ namespace aga
 
         char m_Name[100];
         char m_Type[100];
-
-        bool m_Result;
 
         std::function<void(std::string, std::string)> m_OnAcceptFunc;
         std::function<void(std::string, std::string)> m_OnCancelFunc;

@@ -5,8 +5,6 @@
 
 #include "Common.h"
 
-#include <string>
-
 union ALLEGRO_EVENT;
 
 namespace aga
@@ -21,6 +19,8 @@ namespace aga
             , m_Name (name)
         {
         }
+
+        virtual ~State () {}
 
         virtual void BeforeEnter () = 0;
         virtual void AfterLeave () = 0;

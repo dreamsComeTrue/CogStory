@@ -14,7 +14,7 @@ namespace aga
     {
     public:
         AtlasManager ();
-        ~AtlasManager ();
+        virtual ~AtlasManager ();
 
         bool Initialize ();
         bool Destroy ();

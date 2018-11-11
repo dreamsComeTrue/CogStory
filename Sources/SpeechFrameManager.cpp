@@ -1,13 +1,11 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "SpeechFrameManager.h"
-#include "AudioManager.h"
 #include "AudioSample.h"
 #include "MainLoop.h"
 #include "Player.h"
 #include "Resources.h"
 #include "Scene.h"
-#include "SceneManager.h"
 #include "Screen.h"
 #include "SpeechFrame.h"
 
@@ -21,8 +19,8 @@ namespace aga
 
     SpeechFrameManager::SpeechFrameManager (SceneManager* sceneManager)
         : m_SceneManager (sceneManager)
-        , m_SpeechesFinishedFunc (nullptr)
         , m_SpeechesFinishedScriptFunc (nullptr)
+        , m_SpeechesFinishedFunc (nullptr)
         , m_SelectSample (nullptr)
         , m_TypeSample (nullptr)
     {
@@ -299,7 +297,8 @@ namespace aga
         if (showActor)
         {
             Point characterOffset = SpeechFrame::GetActorRegionOffset ();
-            edgeLength = std::min (size.Height - 2 * characterOffset.Y, SPEECH_FRAME_MAX_CHAR_EDGE_LENGTH);
+            edgeLength
+                = static_cast<int> (std::min (size.Height - 2 * characterOffset.Y, SPEECH_FRAME_MAX_CHAR_EDGE_LENGTH));
         }
 
         switch (position)
@@ -368,8 +367,8 @@ namespace aga
     Point SpeechFrameManager::GetTextRectSize (int maxLineCharsCount, int linesCount)
     {
         Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
-        unsigned ascent = font.GetFontAscent (FONT_NAME_SPEECH_FRAME);
-        unsigned descent = font.GetFontDescent (FONT_NAME_SPEECH_FRAME);
+        int ascent = font.GetFontAscent (FONT_NAME_SPEECH_FRAME);
+        int descent = font.GetFontDescent (FONT_NAME_SPEECH_FRAME);
 
         Point letterDim
             = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().GetTextDimensions (FONT_NAME_SPEECH_FRAME, "X");

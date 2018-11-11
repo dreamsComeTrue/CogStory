@@ -3,7 +3,6 @@
 #include "EditorSpeechMode.h"
 #include "Editor.h"
 #include "MainLoop.h"
-#include "SceneManager.h"
 
 namespace aga
 {
@@ -30,9 +29,9 @@ namespace aga
 
             if (speech)
             {
-                std::map<int, SpeechData>& speeches
+                std::map<long, SpeechData>& speeches
                     = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
-                for (std::map<int, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
+                for (std::map<long, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
                 {
                     std::map<int, std::vector<SpeechOutcome>>& outcomes = it->second.Outcomes;
 
@@ -94,6 +93,14 @@ namespace aga
         m_Speech.Text.clear ();
         m_Speech.Outcomes.clear ();
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    SpeechData& EditorSpeechMode::GetSpeechData () { return m_Speech; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorSpeechMode::SetSpeechData (SpeechData& data) { m_Speech = data; }
 
     //--------------------------------------------------------------------------------------------------
 }

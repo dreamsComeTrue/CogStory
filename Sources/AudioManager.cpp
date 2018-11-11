@@ -3,7 +3,6 @@
 #include "AudioManager.h"
 #include "AudioSample.h"
 #include "AudioStream.h"
-#include "MainLoop.h"
 
 namespace aga
 {
@@ -203,6 +202,14 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void AudioManager::SetMasterVolume (float volume) { m_MasterVolume = volume; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    float AudioManager::GetMasterVolume () const { return m_MasterVolume; }
+
+    //--------------------------------------------------------------------------------------------------
+
     void AudioManager::SetEnabled (bool enabled)
     {
         m_Enabled = enabled;
@@ -238,6 +245,18 @@ namespace aga
             }
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool AudioManager::IsEnabled () { return m_Enabled; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool AudioManager::IsPaused () const { return m_IsPaused; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void AudioManager::ClearLastPlayedStreams () { m_LastPlayedStreams.clear (); }
 
     //--------------------------------------------------------------------------------------------------
 }

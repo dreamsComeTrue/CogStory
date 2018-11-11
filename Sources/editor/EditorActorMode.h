@@ -5,7 +5,6 @@
 
 #include "Atlas.h"
 #include "Common.h"
-#include "Scene.h"
 
 namespace aga
 {
@@ -16,6 +15,7 @@ namespace aga
     class EditorPhysMode;
     class Actor;
     class Atlas;
+    class TileActor;
 
     class EditorActorMode
     {
@@ -46,52 +46,43 @@ namespace aga
 
         void ResetSettings ();
 
-        AtlasRegion* GetSelectedAtlasRegion ()
-        {
-            if (!m_SelectedAtlasRegions.empty ())
-            {
-                return &m_SelectedAtlasRegions[0];
-            }
-            else
-            {
-                return nullptr;
-            }
-        }
+        AtlasRegion* GetSelectedAtlasRegion ();
 
-        std::vector<Actor*> GetSelectedActors () { return m_SelectedActors; }
+        std::vector<Actor*> GetSelectedActors ();
         void ClearSelectedActors ();
         void SetSelectedActor (Actor* actor);
         bool IsActorSelected (Actor* actor);
         void AddActorToSelection (Actor* actor);
         void RemoveActorFromSelection (Actor* actor);
 
-        Actor* GetActorUnderCursor () { return m_ActorUnderCursor; }
-        void SetActorUnderCursor (Actor* actor) { m_ActorUnderCursor = actor; }
+        Actor* GetActorUnderCursor ();
+        void SetActorUnderCursor (Actor* actor);
 
-        bool IsDrawTiles () const { return m_IsDrawTiles; }
-        void SetDrawTiles (bool draw) { m_IsDrawTiles = draw; }
+        bool IsDrawTiles () const;
+        void SetDrawTiles (bool draw);
 
-        float GetRotation () const { return m_Rotation; }
-        void SetRotation (float rotation) { m_Rotation = rotation; }
+        float GetRotation () const;
+        void SetRotation (float rotation);
 
-        Actor* GetActor () { return m_Actor; }
-        void SetActor (Actor* actor) { m_Actor = actor; }
+        Actor* GetActor ();
+        void SetActor (Actor* actor);
 
-        void SetPrimarySelectedActor (Actor* actor) { m_PrimarySelectedActor = actor; }
+        void SetPrimarySelectedActor (Actor* actor);
 
         void ScrollNextTile (int offset);
         void ScrollPrevTile (int offset);
 
         void RenderSpriteSheet ();
 
-        bool IsSpriteSheetChoosen () { return m_SpriteSheetChoosen; }
-        void SetSpriteSheetChoosen (bool choosen) { m_SpriteSheetChoosen = choosen; }
+        bool IsSpriteSheetChoosen ();
+        void SetSpriteSheetChoosen (bool choosen);
 
     private:
+        Editor* m_Editor;
+
         Atlas* m_Atlas;
         std::vector<AtlasRegion> m_SelectedAtlasRegions;
 
-        Editor* m_Editor;
         Actor* m_Actor;
         float m_Rotation;
         Point m_TileSelectionOffset;

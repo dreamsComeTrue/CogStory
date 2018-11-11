@@ -1,9 +1,6 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "NPCActor.h"
-#include "ActorFactory.h"
-#include "Player.h"
-#include "SceneManager.h"
 
 namespace aga
 {

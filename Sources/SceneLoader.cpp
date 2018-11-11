@@ -3,11 +3,9 @@
 #include "SceneLoader.h"
 #include "ActorFactory.h"
 #include "Atlas.h"
-#include "AtlasManager.h"
 #include "Component.h"
 #include "MainLoop.h"
-#include "SceneManager.h"
-#include "actors/TileActor.h"
+#include "Scene.h"
 
 using json = nlohmann::json;
 
@@ -58,7 +56,9 @@ namespace aga
             scene->m_PlayerStartLocation = StringToPoint (j["player_start"]);
 
             std::vector<int> ints = StringToInts (j["color"]);
-            scene->m_BackgroundColor = al_map_rgba (ints[0], ints[1], ints[2], ints[3]);
+            scene->m_BackgroundColor
+                = al_map_rgba (static_cast<unsigned char> (ints[0]), static_cast<unsigned char> (ints[1]),
+                    static_cast<unsigned char> (ints[2]), static_cast<unsigned char> (ints[3]));
 
             auto& flag_points = j["flag_points"];
 
@@ -86,7 +86,7 @@ namespace aga
                             for (std::map<std::string, FlagPoint>::iterator it2 = scene->m_FlagPoints.begin ();
                                  it2 != scene->m_FlagPoints.end (); ++it2)
                             {
-                                for (int i = 0; i < connections.size (); ++i)
+                                for (size_t i = 0; i < connections.size (); ++i)
                                 {
                                     if (connections[i] == it2->first)
                                     {
@@ -151,9 +151,9 @@ namespace aga
                     std::string zOrder = actorIt["z-order"];
                     newActor->ZOrder = atoi (zOrder.c_str ());
                     std::string rot = actorIt["rot"];
-                    newActor->Rotation = atof (rot.c_str ());
+                    newActor->Rotation = static_cast<float> (atof (rot.c_str ()));
                     std::string focusHeight = actorIt["focus-height"];
-                    newActor->SetFocusHeight (atof (focusHeight.c_str ()));
+                    newActor->SetFocusHeight (static_cast<float> (atof (focusHeight.c_str ())));
 
                     if (!actorIt["atlas"].is_null ())
                     {
@@ -305,8 +305,8 @@ namespace aga
 
     void SceneLoader::SaveScene (Scene* scene, const std::string& filePath)
     {
-        Point minRect{std::numeric_limits<float>::max (), std::numeric_limits<float>::max ()};
-        Point maxRect{std::numeric_limits<float>::min (), std::numeric_limits<float>::min ()};
+        Point minRect {std::numeric_limits<float>::max (), std::numeric_limits<float>::max ()};
+        Point maxRect {std::numeric_limits<float>::min (), std::numeric_limits<float>::min ()};
 
         try
         {
@@ -315,8 +315,8 @@ namespace aga
             j["name"] = scene->m_Name;
 
             ALLEGRO_COLOR color = scene->m_BackgroundColor;
-            j["color"] = IntsToString (
-                {(int)(color.r * 255.f), (int)(color.g * 255.f), (int)(color.b * 255.f), (int)(color.a * 255.f)});
+            j["color"] = IntsToString ({static_cast<int> (color.r * 255.f), static_cast<int> (color.g * 255.f),
+                static_cast<int> (color.b * 255.f), static_cast<int> (color.a * 255.f)});
 
             j["player_start"] = PointToString (scene->GetPlayerStartLocation ());
 
@@ -373,7 +373,7 @@ namespace aga
 
                 actorObj["phys"] = json::array ({});
 
-                for (int i = 0; i < actor->PhysPoints.size (); ++i)
+                for (size_t i = 0; i < actor->PhysPoints.size (); ++i)
                 {
                     std::vector<Point>& points = actor->PhysPoints[i];
 
@@ -430,7 +430,7 @@ namespace aga
                 flagObj["pos"] = PointToString (it->second.Pos);
 
                 std::vector<std::string> connections;
-                for (int i = 0; i < it->second.Connections.size (); ++i)
+                for (size_t i = 0; i < it->second.Connections.size (); ++i)
                 {
                     connections.push_back (it->second.Connections[i]->Name);
                 }
@@ -457,7 +457,7 @@ namespace aga
 
             j["speeches"] = json::array ({});
 
-            for (std::map<int, SpeechData>::iterator it = scene->m_Speeches.begin (); it != scene->m_Speeches.end ();
+            for (std::map<long, SpeechData>::iterator it = scene->m_Speeches.begin (); it != scene->m_Speeches.end ();
                  ++it)
             {
                 json speechObj = json::object ({});
@@ -493,7 +493,7 @@ namespace aga
 
                 outcomeObj["texts"] = json::array ({});
 
-                for (int i = 0; i < it->second.Outcomes[LANG_EN].size (); ++i)
+                for (size_t i = 0; i < it->second.Outcomes[LANG_EN].size (); ++i)
                 {
                     json outComeTextObj = json::object ({});
                     outComeTextObj["name"] = it->second.Outcomes[LANG_EN][i].Name;
@@ -511,7 +511,7 @@ namespace aga
 
                 outcomeObj["texts"] = json::array ({});
 
-                for (int i = 0; i < it->second.Outcomes[LANG_PL].size (); ++i)
+                for (size_t i = 0; i < it->second.Outcomes[LANG_PL].size (); ++i)
                 {
                     json outComeTextObj = json::object ({});
                     outComeTextObj["name"] = it->second.Outcomes[LANG_PL][i].Name;

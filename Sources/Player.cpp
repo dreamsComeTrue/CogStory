@@ -3,11 +3,11 @@
 #include "ActorFactory.h"
 #include "AudioSample.h"
 #include "MainLoop.h"
-#include "PhysicsManager.h"
+#include "ParticleEmitter.h"
 #include "Resources.h"
 #include "Scene.h"
-#include "SceneManager.h"
 #include "Screen.h"
+#include "SpeechFrameManager.h"
 #include "actors/components/AudioSampleComponent.h"
 #include "actors/components/ParticleEmitterComponent.h"
 
@@ -61,8 +61,8 @@ namespace aga
         SetAnimation (ActorFactory::GetAnimation ("PLAYER"));
         SetCurrentAnimation (ANIM_IDLE_NAME);
 
-        m_FootStepComponent
-            = (AudioSampleComponent*)ActorFactory::GetActorComponent (this, AudioSampleComponent::TypeName);
+        m_FootStepComponent = static_cast<AudioSampleComponent*> (
+            ActorFactory::GetActorComponent (this, AudioSampleComponent::TypeName));
         m_FootStepComponent->LoadSampleFromFile (
             "FOOT_STEP", GetResource (SOUND_FOOT_STEP).Dir + GetResource (SOUND_FOOT_STEP).Name);
         m_FootStepComponent->GetAudioSample ()->SetVolume (2.0f);
@@ -79,7 +79,7 @@ namespace aga
             {23.f, 64.f} //  Left leg
         });
 
-        m_SceneManager->GetSpeechFrameManager ().RegisterSpeechesFinishedHandler ([&]() {
+        m_SceneManager->GetSpeechFrameManager ()->RegisterSpeechesFinishedHandler ([&]() {
             if (m_LastActionActor)
             {
                 m_LastActionActor->ResumeUpdate ();
@@ -107,8 +107,8 @@ namespace aga
 
     void Player::CreateParticleEmitters ()
     {
-        m_HeadParticleComponent
-            = (ParticleEmitterComponent*)ActorFactory::GetActorComponent (this, ParticleEmitterComponent::TypeName);
+        m_HeadParticleComponent = static_cast<ParticleEmitterComponent*> (
+            ActorFactory::GetActorComponent (this, ParticleEmitterComponent::TypeName));
 
         m_HeadParticleComponent->CreateEmitter ("particles", "smog_particles", 3, 2.0f);
         m_HeadParticleComponent->GetEmitter ()->SetColorTransition (COLOR_WHITE, al_map_rgba (255, 255, 255, 0));
@@ -120,10 +120,10 @@ namespace aga
 
         m_Components.insert (std::make_pair ("HEAD_PARTICLE_COMPONENT", m_HeadParticleComponent));
 
-        m_FootParticleComponent
-            = (ParticleEmitterComponent*)ActorFactory::GetActorComponent (this, ParticleEmitterComponent::TypeName);
+        m_FootParticleComponent = static_cast<ParticleEmitterComponent*> (
+            ActorFactory::GetActorComponent (this, ParticleEmitterComponent::TypeName));
 
-        m_FootParticleComponent->CreateEmitter ("particles", "dust_particles", 2, 0.7f);
+        m_FootParticleComponent->CreateEmitter ("particles", "dust_particles", 2, 1);
         m_FootParticleComponent->GetEmitter ()->SetColorTransition (COLOR_WHITE, al_map_rgba (255, 255, 255, 0));
         float velVar = 0.4f;
         m_FootParticleComponent->GetEmitter ()->SetVelocityVariance (Point (-velVar, -velVar), Point (velVar, velVar));
@@ -191,6 +191,18 @@ namespace aga
 
         return false;
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Player::IsAction () { return m_ActionHandling; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::SetPreventInput (bool prevent) { m_PreventInput = prevent; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Player::IsPreventInput () const { return m_PreventInput; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -271,7 +283,7 @@ namespace aga
         std::vector<Entity*> entites = m_SceneManager->GetActiveScene ()->RecomputeVisibleEntities (true);
         for (Entity* ent : entites)
         {
-            Collidable* collidable = (Actor*)ent;
+            Collidable* collidable = static_cast<Actor*> (ent);
             Point collisionDelta;
 
             if (IsCollidingWith (collidable, Point (dx, dy), std::move (collisionDelta)))
@@ -333,6 +345,22 @@ namespace aga
         UpdateParticleEmitters ();
         SetCurrentAnimation (ANIM_IDLE_NAME);
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::SetPosition (Point point) { Player::SetPosition (point.X, point.Y); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string Player::GetTypeName () { return TypeName; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::SetCurrentAnimation (const std::string& name) { Animable::SetCurrentAnimation (name); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::SetActionHandler (asIScriptFunction* func) { m_ActionHandler = func; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -416,10 +444,14 @@ namespace aga
         actor->OrientTo (this);
         actor->SuspendUpdate ();
 
-        SpeechFrame* frame = m_SceneManager->GetSpeechFrameManager ().AddSpeechFrame (speechID, true);
+        SpeechFrame* frame = m_SceneManager->GetSpeechFrameManager ()->AddSpeechFrame (speechID, true);
 
         return frame;
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Actor* Player::GetLastActionActor () { return m_LastActionActor; }
 
     //--------------------------------------------------------------------------------------------------
 }

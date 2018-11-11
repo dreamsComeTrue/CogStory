@@ -1,17 +1,13 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "StateManager.h"
-#include "Common.h"
 #include "MainLoop.h"
 #include "Screen.h"
 #include "State.h"
-#include "TweenManager.h"
 
 #include "states/EditorState.h"
 #include "states/GamePlayState.h"
 #include "states/MainMenuState.h"
-
-#include <algorithm>
 
 namespace aga
 {
@@ -22,12 +18,12 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     StateManager::StateManager (MainLoop* mainLoop)
-        : m_ActiveState (nullptr)
-        , m_PreviousState (nullptr)
+        : m_PreviousState (nullptr)
+        , m_ActiveState (nullptr)
         , m_MainLoop (mainLoop)
+        , m_TweenFade (nullptr)
         , m_Transitioning (false)
         , m_FadeColor (COLOR_BLACK)
-        , m_TweenFade (nullptr)
     {
     }
 
@@ -190,6 +186,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     MainLoop* StateManager::GetMainLoop () { return m_MainLoop; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    State* StateManager::GetPreviousState () { return m_PreviousState; }
 
     //--------------------------------------------------------------------------------------------------
 

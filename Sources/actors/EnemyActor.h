@@ -17,7 +17,7 @@ namespace aga
 
         virtual bool Initialize () override;
 
-        virtual bool Update (float deltaTime);
+        virtual bool Update (float deltaTime) override;
 
         virtual std::string GetTypeName () override { return TypeName; }
     };

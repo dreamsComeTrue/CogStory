@@ -1,13 +1,9 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 #include "Actor.h"
 #include "Atlas.h"
-#include "Component.h"
-#include "Font.h"
 #include "MainLoop.h"
 #include "Scene.h"
-#include "SceneManager.h"
 #include "Screen.h"
-#include "Script.h"
 #include "actors/components/MovementComponent.h"
 #include "actors/components/ParticleEmitterComponent.h"
 
@@ -16,10 +12,10 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Actor::Actor (SceneManager* sceneManager)
-        : Animable (&sceneManager->GetMainLoop ()->GetAtlasManager ())
+        : Entity (sceneManager)
+        , Animable (&sceneManager->GetMainLoop ()->GetAtlasManager ())
         , Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
         , Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
-        , Entity (sceneManager)
         , m_IsUpdating (true)
         , m_FocusHeight (100.0f) //  We set it way down for small tiles grid layout
     {
@@ -258,6 +254,10 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    std::map<std::string, Component*>& Actor::GetComponents () { return m_Components; }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Actor::DrawBounds ()
     {
         if (m_SceneManager->IsDrawBoundingBox ())
@@ -276,6 +276,14 @@ namespace aga
         std::string str = Name + "[" + std::to_string (ID) + "]";
         font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), pos.X, pos.Y, str, ALLEGRO_ALIGN_CENTER);
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Actor::SuspendUpdate () { m_IsUpdating = false; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Actor::ResumeUpdate () { m_IsUpdating = true; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -316,12 +324,20 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Actor::SetPosition (Point pos) { SetPosition (pos.X, pos.Y); }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Actor::SetCenterPosition (float x, float y)
     {
         Point halfSize = Bounds.GetHalfSize ();
 
         SetPosition (x - halfSize.Width, y - halfSize.Height);
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Actor::SetCenterPosition (Point pos) { SetCenterPosition (pos.X, pos.Y); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -461,6 +477,14 @@ namespace aga
             }
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    float Actor::GetFocusHeight () const { return m_FocusHeight; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Actor::SetFocusHeight (float focusHeight) { m_FocusHeight = focusHeight; }
 
     //--------------------------------------------------------------------------------------------------
 }

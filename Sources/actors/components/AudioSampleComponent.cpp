@@ -1,7 +1,6 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "AudioSampleComponent.h"
-#include "AudioManager.h"
 #include "AudioSample.h"
 #include "MainLoop.h"
 
@@ -31,7 +30,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool AudioSampleComponent::Render (float deltaTime) { return true; }
+    bool AudioSampleComponent::Render (float) { return true; }
 
     //--------------------------------------------------------------------------------------------------
 

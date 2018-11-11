@@ -3,7 +3,6 @@
 #include "Camera.h"
 #include "Actor.h"
 #include "MainLoop.h"
-#include "SceneManager.h"
 #include "Screen.h"
 
 namespace aga
@@ -20,9 +19,9 @@ namespace aga
         : m_SceneManager (sceneManager)
         , m_CameraFollowActor (nullptr)
         , m_TweenToPoint (nullptr)
+        , m_SavedFollowPoint (Point::ZERO_POINT)
         , m_FollowingEnabledXAxis (false)
         , m_FollowingEnabledYAxis (false)
-        , m_SavedFollowPoint (Point::ZERO_POINT)
     {
         al_identity_transform (&IdentityTransform);
     }
@@ -33,7 +32,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Camera::Update (float deltaTime) { al_use_transform (&m_Transform); }
+    void Camera::Update (float) { al_use_transform (&m_Transform); }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -137,7 +136,7 @@ namespace aga
 
         if (m_CameraFollowActor)
         {
-            m_CameraFollowActor->MoveCallback = [&](float dx, float dy) {
+            m_CameraFollowActor->MoveCallback = [&](float, float) {
                 Point scale = GetScale ();
                 Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
                 Point actorHalfSize = m_CameraFollowActor->Bounds.GetHalfSize ();
@@ -146,13 +145,13 @@ namespace aga
                 if (m_FollowingEnabledXAxis)
                 {
                     m_SavedFollowPoint.X
-                        = screenSize.Width * 0.5 - (pos.X + actorHalfSize.Width) * scale.X - m_FollowOffset.X;
+                        = screenSize.Width * 0.5f - (pos.X + actorHalfSize.Width) * scale.X - m_FollowOffset.X;
                 }
 
                 if (m_FollowingEnabledYAxis)
                 {
                     m_SavedFollowPoint.Y
-                        = screenSize.Height * 0.5 - (pos.Y + actorHalfSize.Height) * scale.Y - m_FollowOffset.Y;
+                        = screenSize.Height * 0.5f - (pos.Y + actorHalfSize.Height) * scale.Y - m_FollowOffset.Y;
                 }
 
                 SetTranslate (m_SavedFollowPoint);
@@ -245,12 +244,12 @@ namespace aga
         if (finishFunc)
         {
             m_TweenToPoint = &m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (
-                CAMERA_TWEEN_ID++, startPoint, endPoint, timeMs, tweenFunc, finishFunc);
+                CAMERA_TWEEN_ID++, startPoint, endPoint, static_cast<int> (timeMs), tweenFunc, finishFunc);
         }
         else
         {
             m_TweenToPoint = &m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (
-                CAMERA_TWEEN_ID++, startPoint, endPoint, timeMs, tweenFunc);
+                CAMERA_TWEEN_ID++, startPoint, endPoint, static_cast<int> (timeMs), tweenFunc);
         }
     }
 
@@ -260,7 +259,7 @@ namespace aga
     {
         if (!m_ShakeComputed)
         {
-            if (progress < 0.8)
+            if (progress < 0.8f)
             {
                 float newX = RandInRange (-m_ShakeRangePixels, m_ShakeRangePixels);
                 float newY = RandInRange (-m_ShakeRangePixels, m_ShakeRangePixels);
@@ -311,7 +310,8 @@ namespace aga
             return false;
         };
 
-        &m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (CAMERA_TWEEN_ID++, 0.f, 1.0f, timeMs, tweenFunc);
+        m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (
+            CAMERA_TWEEN_ID++, 0.f, 1.0f, static_cast<int> (timeMs), tweenFunc);
     }
 
     //--------------------------------------------------------------------------------------------------

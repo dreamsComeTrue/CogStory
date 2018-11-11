@@ -5,16 +5,15 @@
 
 #include "Camera.h"
 #include "Common.h"
-#include "Player.h"
-#include "SpeechFrameManager.h"
-#include <stack>
 
 namespace aga
 {
     class Scene;
+    class Player;
     class MainLoop;
     class AtlasManager;
     class AudioStream;
+    class SpeechFrameManager;
     struct TweenData;
     struct FlagPoint;
 
@@ -62,7 +61,7 @@ namespace aga
 
         Actor* GetCurrentlyProcessedActor ();
 
-        SpeechFrameManager& GetSpeechFrameManager ();
+        SpeechFrameManager* GetSpeechFrameManager ();
 
         void Reset ();
         void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, ALLEGRO_COLOR color = COLOR_BLACK);
@@ -100,11 +99,11 @@ namespace aga
         void TeleportToMarkerPosition (std::string& lastSceneName);
 
     private:
-        SpeechFrameManager m_SpeechFrameManager;
+        MainLoop* m_MainLoop;
+        SpeechFrameManager* m_SpeechFrameManager;
         Player* m_Player;
         Camera m_Camera;
 
-        MainLoop* m_MainLoop;
         std::map<std::string, Scene*> m_Scenes;
         Scene* m_ActiveScene;
         Scene* m_NextScene;

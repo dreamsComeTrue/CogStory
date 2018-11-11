@@ -1,7 +1,6 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Common.h"
-#include "Font.h"
 #include "Screen.h"
 
 #include <chrono>
@@ -36,17 +35,17 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
-    float RadiansToDegrees (float radians) { return radians * 180.0 / M_PI; }
+    float RadiansToDegrees (float radians) { return radians * 180.0f / static_cast<float> (M_PI); }
 
     //--------------------------------------------------------------------------------------------------
 
-    float DegressToRadians (float degrees) { return degrees * M_PI / 180.0; }
+    float DegressToRadians (float degrees) { return degrees * static_cast<float> (M_PI) / 180.0f; }
 
     //--------------------------------------------------------------------------------------------------
 
     float ToPositiveAngle (float degrees)
     {
-        degrees = fmod (degrees, 360);
+        degrees = fmod (degrees, 360.f);
 
         if (degrees < 0)
         {

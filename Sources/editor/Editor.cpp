@@ -1,7 +1,6 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Editor.h"
-#include "AtlasManager.h"
 #include "EditorActorWindow.h"
 #include "EditorAnimationWindow.h"
 #include "EditorComponentWindow.h"
@@ -9,10 +8,10 @@
 #include "EditorScriptWindow.h"
 #include "EditorSpeechWindow.h"
 #include "MainLoop.h"
-#include "Resources.h"
+#include "Player.h"
 #include "SceneLoader.h"
 #include "Screen.h"
-#include "actors/TileActor.h"
+#include "SpeechFrameManager.h"
 
 #include "imgui.h"
 #include "imgui_impl_allegro5.h"
@@ -58,27 +57,27 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Editor::Editor (MainLoop* mainLoop)
-        : m_EditorPhysMode (this)
+        : m_MainLoop (mainLoop)
+        , m_EditorPhysMode (this)
         , m_EditorFlagPointMode (this)
         , m_EditorTriggerAreaMode (this)
         , m_EditorSpeechMode (this)
         , m_EditorActorMode (this)
-        , m_MainLoop (mainLoop)
+        , m_CursorMode (CursorMode::ActorSelectMode)
         , m_IsSnapToGrid (true)
-        , m_IsMousePan (false)
         , m_BaseGridSize (16.0f)
         , m_GridSize (16.0f)
-        , m_CursorMode (CursorMode::ActorSelectMode)
+        , m_IsMousePan (false)
         , m_LastTimeClicked (0.0f)
         , m_IsRectSelection (false)
         , m_CloseCurrentPopup (false)
         , m_OpenPopupOpenScene (false)
         , m_OpenPopupSaveScene (false)
         , m_OpenPopupActorEditor (false)
-        , m_OpenPopupSpeechEditor (false)
-        , m_OpenPopupAnimationEditor (false)
         , m_OpenPopupFlagPointEditor (false)
         , m_OpenPopupTriggerAreaEditor (false)
+        , m_OpenPopupSpeechEditor (false)
+        , m_OpenPopupAnimationEditor (false)
     {
     }
 
@@ -254,7 +253,7 @@ namespace aga
         ALLEGRO_KEYBOARD_STATE state;
         al_get_keyboard_state (&state);
 
-        int delta = 300 * deltaTime;
+        int delta = static_cast<int> (300 * deltaTime);
 
         if (al_key_down (&state, ALLEGRO_KEY_LSHIFT))
         {
@@ -308,7 +307,7 @@ namespace aga
         {
             if (m_AnimationWindow->IsVisible () && event->mouse.button == 1)
             {
-                m_AnimationWindow->SelectAnimationFrame (event->mouse.x, event->mouse.y);
+                m_AnimationWindow->SelectAnimationFrame ();
             }
         }
 
@@ -564,8 +563,7 @@ namespace aga
             RenderActorMode (deltaTime);
         }
 
-        bool showMe;
-
+        //        bool showMe;
         //   ImGui::ShowDemoWindow (&showMe);
 
         //  Draw GUI
@@ -585,9 +583,9 @@ namespace aga
 
         if (m_SpeechWindow->IsVisible ())
         {
-            SpeechFrameManager& frameManager = m_MainLoop->GetSceneManager ().GetSpeechFrameManager ();
-            frameManager.Update (deltaTime);
-            frameManager.Render (deltaTime);
+            SpeechFrameManager* frameManager = m_MainLoop->GetSceneManager ().GetSpeechFrameManager ();
+            frameManager->Update (deltaTime);
+            frameManager->Render (deltaTime);
         }
     }
 
@@ -695,8 +693,8 @@ namespace aga
 
     void Editor::DrawGrid ()
     {
-        const ALLEGRO_COLOR DARK_GRAY{0.4f, 0.4f, 0.4f, 1.0f};
-        const ALLEGRO_COLOR LIGHT_GRAY{0.5f, 0.5f, 0.5f, 1.0f};
+        const ALLEGRO_COLOR DARK_GRAY {0.4f, 0.4f, 0.4f, 1.0f};
+        const ALLEGRO_COLOR LIGHT_GRAY {0.5f, 0.5f, 0.5f, 1.0f};
 
         const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
         Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
@@ -707,12 +705,12 @@ namespace aga
         cameraCenter.X = cameraCenter.X / m_GridSize * scale.X;
         cameraCenter.Y = cameraCenter.Y / m_GridSize * scale.Y;
 
-        int halfSegmentsX = screenSize.Width * 0.5f / m_GridSize;
-        int halfSegmentsY = screenSize.Height * 0.5f / m_GridSize;
+        int halfSegmentsX = static_cast<int> (screenSize.Width * 0.5f / m_GridSize);
+        int halfSegmentsY = static_cast<int> (screenSize.Height * 0.5f / m_GridSize);
 
         int spareSegments = 2;
-        int horBeginX = cameraCenter.X - halfSegmentsX - spareSegments;
-        int horEndX = cameraCenter.X + halfSegmentsX + spareSegments;
+        int horBeginX = static_cast<int> (cameraCenter.X - halfSegmentsX - spareSegments);
+        int horEndX = static_cast<int> (cameraCenter.X + halfSegmentsX + spareSegments);
 
         for (int i = horBeginX; i < horEndX; ++i)
         {
@@ -731,8 +729,8 @@ namespace aga
             al_draw_line (xOffset, 0, xOffset, screenSize.Height, color, thickness);
         }
 
-        int horBeginY = cameraCenter.Y - halfSegmentsY - spareSegments;
-        int horEndY = cameraCenter.Y + halfSegmentsY + spareSegments;
+        int horBeginY = static_cast<int> (cameraCenter.Y - halfSegmentsY - spareSegments);
+        int horEndY = static_cast<int> (cameraCenter.Y + halfSegmentsY + spareSegments);
 
         for (int i = horBeginY; i < horEndY; ++i)
         {
@@ -766,7 +764,7 @@ namespace aga
 
     bool Editor::IsMouseWithinPointRect (int mouseX, int mouseY, Point point, int outsets)
     {
-        Rect r = Rect{{point.X - outsets, point.Y - outsets}, {point.X + outsets, point.Y + outsets}};
+        Rect r = Rect {{point.X - outsets, point.Y - outsets}, {point.X + outsets, point.Y + outsets}};
 
         return IsMouseWithinRect (mouseX, mouseY, r);
     }
@@ -903,7 +901,7 @@ namespace aga
     void Editor::OnResetTranslate ()
     {
         const Point& windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-        m_MainLoop->GetSceneManager ().GetCamera ().SetTranslate (windowSize.Width * 0.5, windowSize.Height * 0.5);
+        m_MainLoop->GetSceneManager ().GetCamera ().SetTranslate (windowSize.Width * 0.5f, windowSize.Height * 0.5f);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1042,14 +1040,13 @@ namespace aga
 
     void Editor::OnActorSelected ()
     {
-        m_OpenPopupActorEditor = true;
-
         if (!m_EditorActorMode.GetSelectedActors ().empty ())
         {
-            m_ActorWindow->SelectActor (m_EditorActorMode.GetSelectedActors ()[0]);
-        }
+            m_OpenPopupActorEditor = true;
 
-        m_ActorWindow->Show ();
+            m_ActorWindow->SelectActor (m_EditorActorMode.GetSelectedActors ()[0]);
+            m_ActorWindow->Show ();
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1058,7 +1055,7 @@ namespace aga
     {
         m_OpenPopupAnimationEditor = true;
 
-        m_AnimationWindow->Show ([&](std::string name, std::string typeName) {}, nullptr);
+        m_AnimationWindow->Show ([&](std::string, std::string) {}, nullptr);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1259,7 +1256,7 @@ namespace aga
         ImGui::PopStyleColor ();
 
         const Point windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-        float beginning = windowSize.Width * 0.5 - (TILES_COUNT - 1) * 0.5 * TILE_SIZE - TILE_SIZE * 0.5;
+        float beginning = windowSize.Width * 0.5f - (TILES_COUNT - 1) * 0.5f * TILE_SIZE - TILE_SIZE * 0.5f;
         float end = beginning + TILES_COUNT * TILE_SIZE;
 
         ImGui::SetNextWindowPos (ImVec2 (beginning - 130, windowSize.Height - 58), ImGuiCond_Always);
@@ -1430,12 +1427,12 @@ namespace aga
 
     void Editor::RenderUINewScene ()
     {
-        if (ImGui::BeginPopupModal ("New Scene", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        if (ImGui::BeginPopupModal ("New Scene", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             ImGui::Text ("Are you sure clearing current scene?");
 
             static char sceneName[100] = {};
-            ImGui::InputText ("", sceneName, IM_ARRAYSIZE (sceneName));
+            ImGui::InputText ("", sceneName, ARRAY_SIZE (sceneName));
             ImGui::SetItemDefaultFocus ();
 
             ImGui::Separator ();
@@ -1469,13 +1466,13 @@ namespace aga
     {
         ImGui::SetNextWindowSize (ImVec2 (400, 245));
 
-        if (ImGui::BeginPopupModal ("Open Scene", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        if (ImGui::BeginPopupModal ("Open Scene", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             static char sceneName[100] = {0};
 
             char* items[m_RecentFileNames.size ()];
 
-            for (int i = 0; i < m_RecentFileNames.size (); ++i)
+            for (size_t i = 0; i < m_RecentFileNames.size (); ++i)
             {
                 char* fileName = const_cast<char*> (m_RecentFileNames[i].c_str ());
                 items[i] = fileName;
@@ -1483,7 +1480,7 @@ namespace aga
 
             static int itemCurrent = 1;
             ImGui::PushItemWidth (330);
-            if (ImGui::ListBox ("", &itemCurrent, items, IM_ARRAYSIZE (items), 10))
+            if (ImGui::ListBox ("", &itemCurrent, items, ARRAY_SIZE (items), 10))
             {
                 strcpy (sceneName, items[itemCurrent]);
                 ImGui::CloseCurrentPopup ();
@@ -1498,7 +1495,7 @@ namespace aga
             }
 
             ImGui::PushItemWidth (330);
-            ImGui::InputText ("", sceneName, IM_ARRAYSIZE (sceneName));
+            ImGui::InputText ("", sceneName, ARRAY_SIZE (sceneName));
             ImGui::PopItemWidth ();
             ImGui::SetItemDefaultFocus ();
             ImGui::SameLine ();
@@ -1564,14 +1561,14 @@ namespace aga
     {
         ImGui::SetNextWindowSize (ImVec2 (400, 80));
 
-        if (ImGui::BeginPopupModal ("Save Scene", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        if (ImGui::BeginPopupModal ("Save Scene", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             static char sceneName[100] = {0};
 
             strcpy (sceneName, m_LastScenePath.c_str ());
 
             ImGui::PushItemWidth (330);
-            ImGui::InputText ("", sceneName, IM_ARRAYSIZE (sceneName));
+            ImGui::InputText ("", sceneName, ARRAY_SIZE (sceneName));
             ImGui::PopItemWidth ();
             ImGui::SetItemDefaultFocus ();
             ImGui::SameLine ();
@@ -1860,7 +1857,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Editor::AddActorsFromSpritesheet (float x, float y)
+    void Editor::AddActorsFromSpritesheet (int x, int y)
     {
         if (m_EditorActorMode.ChooseTilesFromSpriteSheet ())
         {

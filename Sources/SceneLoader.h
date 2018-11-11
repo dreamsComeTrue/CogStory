@@ -3,12 +3,15 @@
 #ifndef __SCENE_LOADER_H__
 #define __SCENE_LOADER_H__
 
-#include "Scene.h"
+#include "Common.h"
 
 namespace aga
 {
 #define LANG_EN 0
 #define LANG_PL 1
+
+    class SceneManager;
+    class Scene;
 
     class SceneLoader
     {

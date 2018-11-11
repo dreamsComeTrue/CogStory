@@ -5,7 +5,6 @@
 
 #include "Animation.h"
 #include "Common.h"
-#include "Entity.h"
 
 namespace aga
 {
@@ -24,9 +23,9 @@ namespace aga
         void RenderSpritesheet ();
         void RenderAnimationFrames (float deltaTime);
 
-        void SelectAnimationFrame (int mouseX, int mouseY);
+        void SelectAnimationFrame ();
 
-        bool IsVisible () { return m_IsVisible; }
+        bool IsVisible ();
 
     private:
         void OnSave ();

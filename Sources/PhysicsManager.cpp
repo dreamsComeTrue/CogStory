@@ -1,7 +1,6 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "PhysicsManager.h"
-#include "MainLoop.h"
 
 namespace aga
 {
@@ -50,7 +49,7 @@ namespace aga
         Point edge;
 
         // Loop through all the edges of both polygons
-        for (int edgeIndex = 0; edgeIndex < edgeCountA + edgeCountB; edgeIndex++)
+        for (size_t edgeIndex = 0; edgeIndex < edgeCountA + edgeCountB; edgeIndex++)
         {
             if (edgeIndex < edgeCountA)
             {
@@ -64,7 +63,7 @@ namespace aga
             // ===== 1. Find if the polygons are currently intersecting =====
 
             // Find the axis perpendicular to the current edge
-            Point axis = { -edge.Y, edge.X };
+            Point axis = {-edge.Y, edge.X};
             axis.Normalize ();
 
             // Find the projection of the polygon on the current axis
@@ -158,7 +157,7 @@ namespace aga
         float min = d;
         float max = d;
 
-        for (int i = 0; i < polygon.Points.size (); i++)
+        for (size_t i = 0; i < polygon.Points.size (); i++)
         {
             d = polygon.Points[i].DotProduct (axis);
 
@@ -172,7 +171,7 @@ namespace aga
             }
         }
 
-        return { min, max };
+        return {min, max};
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -63,6 +63,14 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    std::vector<std::string>& ActorFactory::GetActorTypes () { return s_ActorTypes; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::vector<std::string>& ActorFactory::GetActorComponents () { return s_ActorComponents; }
+
+    //--------------------------------------------------------------------------------------------------
+
     Animation ActorFactory::LoadAnimationFromFile (const std::string& path)
     {
         std::ifstream animFile (path);
@@ -169,6 +177,14 @@ namespace aga
 
         return s_DummyAnimation;
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Animation& ActorFactory::GetDummyAnimation () { return s_DummyAnimation; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::map<std::string, Animation>& ActorFactory::GetAnimations () { return s_Animations; }
 
     //--------------------------------------------------------------------------------------------------
 }

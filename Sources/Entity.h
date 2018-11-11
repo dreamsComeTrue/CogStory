@@ -21,20 +21,15 @@ namespace aga
     {
     public:
         Entity (SceneManager* sceneManager);
+        virtual ~Entity () {}
 
         void SetCheckOverlap (bool check);
         bool IsCheckOverlap ();
 
-        SceneManager* GetSceneManager () { return m_SceneManager; }
+        SceneManager* GetSceneManager ();
         bool IsOverlaping (Entity* entity);
 
         float GetAngleWith (Entity* ent);
-
-        int ID = 0;
-        std::string Name;
-        int ZOrder = 0;
-        int RenderID = 0;
-        int BlueprintID = -1;
 
         virtual std::string GetTypeName () = 0;
 
@@ -45,16 +40,23 @@ namespace aga
 
         std::vector<Entity*> GetBluprintChildren ();
 
-        static int GetNextID () { return ++GlobalID; }
+        static int GetNextID ();
 
-        static bool CompareByZOrder (const Entity* a, const Entity* b) { return a->ZOrder < b->ZOrder; }
+        static bool CompareByZOrder (const Entity* a, const Entity* b);
 
         static int GlobalID;
 
+    public:
+        int ID = 0;
+        std::string Name;
+        int ZOrder = 0;
+        int RenderID = 0;
+        int BlueprintID = -1;
+
     protected:
         void CheckOverlap ();
-        virtual void BeginOverlap (Entity* entity) {}
-        virtual void EndOverlap (Entity* entity) {}
+        virtual void BeginOverlap (Entity* entity);
+        virtual void EndOverlap (Entity* entity);
 
         void CallBeginOverlapCallbacks (Entity* whom, Entity* target);
         void CallOverlappingCallbacks (Entity* whom, Entity* target);
@@ -62,9 +64,10 @@ namespace aga
 
     protected:
         SceneManager* m_SceneManager;
-        bool m_CheckOverlap;
         std::vector<Entity*> m_OverlapedEntities;
         std::vector<OverlapCallback> m_OverlapCallbacks;
+
+        bool m_CheckOverlap;
     };
 }
 

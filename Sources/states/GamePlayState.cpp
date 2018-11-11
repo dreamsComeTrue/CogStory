@@ -4,11 +4,11 @@
 #include "AudioStream.h"
 #include "MainLoop.h"
 #include "MainMenuState.h"
+#include "Player.h"
 #include "Scene.h"
-#include "SceneManager.h"
 #include "Screen.h"
 #include "Script.h"
-#include "StateManager.h"
+#include "SpeechFrameManager.h"
 
 namespace aga
 {
@@ -74,7 +74,7 @@ namespace aga
 
         SceneManager& sceneManager = m_MainLoop->GetSceneManager ();
 
-        sceneManager.GetSpeechFrameManager ().Clear ();
+        sceneManager.GetSpeechFrameManager ()->Clear ();
         sceneManager.GetCamera ().ClearTransformations ();
 
         ResizeWindow ();
@@ -140,7 +140,7 @@ namespace aga
         camera.ClearTransformations ();
 
         m_MainLoop->GetSceneManager ().GetCamera ().Scale (
-            finalScale, finalScale, winSize.Width * 0.5, winSize.Height * 0.5);
+            finalScale, finalScale, winSize.Width * 0.5f, winSize.Height * 0.5f);
 
         camera.SetTranslate (translate);
 

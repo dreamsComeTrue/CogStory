@@ -7,8 +7,8 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     AnimationData::AnimationData (unsigned howManyFrames, Point cellSize)
-        : m_SpeedMS (1000)
-        , m_CellSize (cellSize)
+        : m_CellSize (cellSize)
+        , m_SpeedMS (1000)
     {
         m_Frames.reserve (howManyFrames);
     }
@@ -37,29 +37,23 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    //    void AnimationData::AddFrame (unsigned index, int row, int col)
-    //    {
-    //        Rect rect = Rect ({col * m_CellSize.Width, row * m_CellSize.Height},
-    //            {col * m_CellSize.Width + m_CellSize.Width, row * m_CellSize.Height + m_CellSize.Height});
-    //        m_Frames.insert (m_Frames.begin () + index, rect);
-    //    }
-
-    //    //--------------------------------------------------------------------------------------------------
-
-    //    void AnimationData::AddFrame (int row, int col)
-    //    {
-    //        Rect rect = Rect ({col * m_CellSize.Width, row * m_CellSize.Height},
-    //            {col * m_CellSize.Width + m_CellSize.Width, row * m_CellSize.Height + m_CellSize.Height});
-    //        m_Frames.push_back (rect);
-    //    }
-
-    //--------------------------------------------------------------------------------------------------
-
     AnimationFrameEntry& AnimationData::GetFrame (unsigned index) { return m_Frames[index]; }
 
     //--------------------------------------------------------------------------------------------------
 
+    std::vector<AnimationFrameEntry>& AnimationData::GetFrames () { return m_Frames; }
+
+    //--------------------------------------------------------------------------------------------------
+
     size_t AnimationData::GetFramesCount () const { return m_Frames.size (); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void AnimationData::SetName (const std::string& name) { m_Name = name; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string AnimationData::GetName () { return m_Name; }
 
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
@@ -136,6 +130,14 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     unsigned Animation::GetCurrentFrame () const { return m_CurrentFrame; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Animation::SetName (const std::string& name) { m_Name = name; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string Animation::GetName () { return m_Name; }
 
     //--------------------------------------------------------------------------------------------------
 }

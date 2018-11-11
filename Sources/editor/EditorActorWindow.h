@@ -4,7 +4,6 @@
 #define __EDITOR_ACTOR_WINDOW_H__
 
 #include "Common.h"
-#include "Entity.h"
 
 namespace aga
 {
@@ -20,7 +19,7 @@ namespace aga
         void SelectActor (class Actor* actor);
 
         void RenderUI ();
-        bool IsVisible () const { return m_IsVisible; }
+        bool IsVisible () const;
 
         void RenderActorImage ();
 

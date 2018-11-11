@@ -8,22 +8,28 @@ namespace aga
     class Lifecycle
     {
     public:
+        virtual ~Lifecycle () {}
+
         virtual bool Initialize ()
         {
             m_IsDestroyed = false;
             m_IsInitialized = true;
+
             return true;
         }
+
         virtual bool Destroy ()
         {
             m_IsDestroyed = true;
             m_IsInitialized = false;
+
             return true;
         }
+
         bool IsInitialized () { return m_IsInitialized; }
         bool IsDestroyed () { return m_IsDestroyed; }
 
-    private:
+    protected:
         bool m_IsInitialized;
         bool m_IsDestroyed;
     };

@@ -4,7 +4,6 @@
 #define __EDITOR_SCRIPT_WINDOW_H__
 
 #include "Common.h"
-#include "Entity.h"
 
 namespace aga
 {
@@ -21,10 +20,10 @@ namespace aga
 
         void Render ();
 
-        std::string GetName () const { return m_Name; }
-        std::string GetPath () const { return m_Path; }
+        std::string GetName () const;
+        std::string GetPath () const;
 
-        bool IsVisible () { return m_IsVisible; }
+        bool IsVisible ();
 
     private:
         void OnAccept ();

@@ -30,14 +30,12 @@ namespace aga
         void Update (float deltaTime);
 
         void SetLooping (bool looping);
-        bool IsLooping () const { return m_Looping; }
+        bool IsLooping () const;
 
         void SetFadeIn (float milliSeconds);
         void SetFadeOut (float milliSeconds, bool pauseOnFinish = true);
 
         bool IsPlaying ();
-
-        const std::string& GetName () { return m_Name; }
 
     private:
         AudioManager* m_AudioManager;
@@ -51,7 +49,7 @@ namespace aga
         float m_FadeInCurrent, m_FadeInMax;
         float m_FadeOutCurrent, m_FadeOutMax;
 
-        float m_CurrentPos;
+        double m_CurrentPos;
         bool m_PauseOnFinish;
     };
 }

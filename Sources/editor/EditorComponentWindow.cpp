@@ -3,7 +3,6 @@
 #include "EditorComponentWindow.h"
 #include "ActorFactory.h"
 #include "Editor.h"
-#include "MainLoop.h"
 
 #include "imgui.h"
 
@@ -12,10 +11,9 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     EditorComponentWindow::EditorComponentWindow (Editor* editor)
-        : m_IsVisible (false)
+        : m_Editor (editor)
+        , m_IsVisible (false)
     {
-        m_Result = true;
-        m_Editor = editor;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -45,8 +43,6 @@ namespace aga
 
     void EditorComponentWindow::OnAccept ()
     {
-        m_Result = true;
-
         if (m_OnAcceptFunc)
         {
             m_OnAcceptFunc (GetName (), GetTypeName ());
@@ -57,8 +53,6 @@ namespace aga
 
     void EditorComponentWindow::OnCancel ()
     {
-        m_Result = false;
-
         if (m_OnCancelFunc)
         {
             m_OnCancelFunc (GetName (), GetTypeName ());
@@ -69,9 +63,9 @@ namespace aga
 
     void EditorComponentWindow::Render ()
     {
-        if (ImGui::BeginPopupModal ("Component", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        if (ImGui::BeginPopupModal ("Component", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
-            ImGui::InputText ("Name", m_Name, IM_ARRAYSIZE (m_Name));
+            ImGui::InputText ("Name", m_Name, ARRAY_SIZE (m_Name));
             ImGui::SetItemDefaultFocus ();
             ImGui::Combo ("Type", &m_SelectedType, m_Types);
             ImGui::SameLine ();
@@ -107,6 +101,18 @@ namespace aga
             ImGui::EndPopup ();
         }
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string EditorComponentWindow::GetName () const { return m_Name; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string EditorComponentWindow::GetTypeName () const { return m_Types[m_SelectedType]; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool EditorComponentWindow::IsVisible () { return m_IsVisible; }
 
     //--------------------------------------------------------------------------------------------------
 }

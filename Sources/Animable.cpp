@@ -4,7 +4,6 @@
 #include "ActorFactory.h"
 #include "Atlas.h"
 #include "AtlasManager.h"
-#include "Transformable.h"
 
 namespace aga
 {
@@ -59,7 +58,6 @@ namespace aga
             float sourceWidth;
             float sourceHeight;
 
-            Rect bounds = m_Atlas->GetRegion (m_AtlasRegionName).Bounds;
             Point pos = transformable->Bounds.GetPos ();
 
             if (m_Animation.GetAnimations ().empty ())
@@ -100,7 +98,31 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    Animation& Animable::GetAnimation () { return m_Animation; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Animable::SetAnimation (Animation& animation) { m_Animation = animation; }
+
+    //--------------------------------------------------------------------------------------------------
+
     std::map<std::string, AnimationData>& Animable::GetAnimationsData () { return m_Animation.GetAnimations (); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Animable::SetAtlasName (const std::string& name) { m_AtlasName = name; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Animable::SetAtlasRegionName (const std::string& name) { m_AtlasRegionName = name; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string Animable::GetAtlasRegionName () const { return m_AtlasRegionName; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Atlas* Animable::GetAtlas () { return m_Atlas; }
 
     //--------------------------------------------------------------------------------------------------
 

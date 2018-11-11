@@ -2,18 +2,13 @@
 
 #include "Scene.h"
 #include "Atlas.h"
-#include "AtlasManager.h"
-#include "AudioManager.h"
-#include "AudioStream.h"
 #include "MainLoop.h"
-#include "PhysicsManager.h"
-#include "SceneManager.h"
+#include "Player.h"
 #include "Screen.h"
+#include "SpeechFrameManager.h"
 #include "actors/TileActor.h"
 #include "states/EditorState.h"
 #include "states/GamePlayState.h"
-
-#include "addons/triangulator/Triangulator.h"
 
 using json = nlohmann::json;
 
@@ -60,7 +55,7 @@ namespace aga
             {
                 triangulator->ProcessVertices (&pointsCopy, result);
 
-                for (int j = 0; j < result.size (); ++j)
+                for (size_t j = 0; j < result.size (); ++j)
                 {
                     Polygon poly = Polygon ();
                     poly.Points = result[j];
@@ -78,10 +73,10 @@ namespace aga
 
     Scene::Scene (SceneManager* sceneManager, Rect size)
         : Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
-        , m_SceneManager (sceneManager)
-        , m_QuadTree (size)
-        , m_CurrentActor (nullptr)
         , m_BackgroundColor (al_map_rgb (60, 60, 70))
+        , m_SceneManager (sceneManager)
+        , m_CurrentActor (nullptr)
+        , m_QuadTree (size)
         , m_ActorsTreeChanged (false)
         , m_SceneAudioStream (nullptr)
         , m_SuppressSceneInfo (false)
@@ -108,7 +103,7 @@ namespace aga
     {
         CleanUpSceneAudio ();
 
-        for (int i = 0; i < m_Actors.size (); ++i)
+        for (size_t i = 0; i < m_Actors.size (); ++i)
         {
             SAFE_DELETE (m_Actors[i]);
         }
@@ -183,7 +178,7 @@ namespace aga
         m_VisibleEntities.clear ();
         m_VisibleLastCameraPos = Point::MIN_POINT;
 
-        m_SceneManager->GetSpeechFrameManager ().Clear ();
+        m_SceneManager->GetSpeechFrameManager ()->Clear ();
 
         CleanUpTriggerAreas ();
     }
@@ -228,7 +223,9 @@ namespace aga
         float f = PerpDot (a, b);
 
         if (!f) // lines are parallel
+        {
             return false;
+        }
 
         Point c (B2 - A2);
         float aa = PerpDot (a, c);
@@ -257,7 +254,7 @@ namespace aga
                 return false;
         }
 
-        float out = 1.0 - (aa / f);
+        float out = 1.0f - (aa / f);
         intersection = ((B2 - B1) * out) + B1;
 
         return true;
@@ -378,7 +375,7 @@ namespace aga
 
         int minZOrder = 1000000;
         int maxZOrder = -1000000;
-        for (int i = 0; i < m_VisibleEntities.size (); ++i)
+        for (size_t i = 0; i < m_VisibleEntities.size (); ++i)
         {
             int zOrder = m_VisibleEntities[i]->ZOrder;
 
@@ -399,9 +396,9 @@ namespace aga
         {
             std::vector<Entity*> entitiesPack;
 
-            for (int i = 0; i < m_VisibleEntities.size (); ++i)
+            for (size_t i = 0; i < m_VisibleEntities.size (); ++i)
             {
-                Actor* actor = (Actor*)m_VisibleEntities[i];
+                Actor* actor = static_cast<Actor*> (m_VisibleEntities[i]);
 
                 if (actor->ZOrder == currZOrder)
                 {
@@ -420,7 +417,7 @@ namespace aga
         {
             for (Entity* ent : pack)
             {
-                Actor* actor = (Actor*)ent;
+                Actor* actor = static_cast<Actor*> (ent);
 
                 float heightPercentage = actor->GetFocusHeight ();
                 float maxHeight = actor->Bounds.Pos.Y + actor->Bounds.Size.Height * heightPercentage;
@@ -544,7 +541,7 @@ namespace aga
 
     void Scene::RemoveActor (Actor* actor)
     {
-        for (int i = 0; i < m_Actors.size (); ++i)
+        for (size_t i = 0; i < m_Actors.size (); ++i)
         {
             if (m_Actors[i] == actor)
             {
@@ -686,7 +683,7 @@ namespace aga
     {
         if (m_TriggerAreas.find (name) == m_TriggerAreas.end ())
         {
-            TriggerArea area{name, data, points};
+            TriggerArea area {name, data, points};
             area.Collidable = collidable;
 
             area.UpdatePolygons (&m_SceneManager->GetMainLoop ()->GetPhysicsManager ().GetTriangulator ());
@@ -735,13 +732,13 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    std::map<int, SpeechData>& Scene::GetSpeeches () { return m_Speeches; }
+    std::map<long, SpeechData>& Scene::GetSpeeches () { return m_Speeches; }
 
     //--------------------------------------------------------------------------------------------------
 
-    SpeechData* Scene::GetSpeech (int id)
+    SpeechData* Scene::GetSpeech (long id)
     {
-        for (std::map<int, SpeechData>::iterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
+        for (std::map<long, SpeechData>::iterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
         {
             if (it->first == id)
             {
@@ -756,7 +753,7 @@ namespace aga
 
     SpeechData* Scene::GetSpeech (const std::string& name)
     {
-        for (std::map<int, SpeechData>::iterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
+        for (std::map<long, SpeechData>::iterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
         {
             if (it->second.Name == name)
             {
@@ -769,9 +766,9 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::RemoveSpeech (int id)
+    void Scene::RemoveSpeech (long id)
     {
-        for (std::map<int, SpeechData>::iterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
+        for (std::map<long, SpeechData>::iterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
         {
             if (it->first == id)
             {
@@ -785,7 +782,7 @@ namespace aga
 
     void Scene::RemoveSpeech (const std::string& name)
     {
-        for (std::map<int, SpeechData>::iterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
+        for (std::map<long, SpeechData>::iterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
         {
             if (it->second.Name == name)
             {
@@ -801,7 +798,7 @@ namespace aga
     {
         RemoveAllScripts ();
 
-        for (int i = 0; i < m_Actors.size (); ++i)
+        for (size_t i = 0; i < m_Actors.size (); ++i)
         {
             SAFE_DELETE (m_Actors[i]);
         }
@@ -809,7 +806,7 @@ namespace aga
         m_Actors.clear ();
         m_VisibleEntities.clear ();
 
-        m_SceneManager->GetSpeechFrameManager ().Clear ();
+        m_SceneManager->GetSpeechFrameManager ()->Clear ();
         m_SceneManager->GetMainLoop ()->GetTweenManager ().Clear ();
 
         m_FlagPoints.clear ();
@@ -1081,11 +1078,11 @@ namespace aga
                     out.push_back (yPoint);
                 }
 
-                al_draw_polygon (out.data (), (int)it->second.Points.size (), 0,
+                al_draw_polygon (out.data (), static_cast<int> (it->second.Points.size ()), 0,
                     it->second.Collidable ? COLOR_GREEN : COLOR_LIGHTBLUE, 2, 0);
 
-                Point min{std::numeric_limits<int>::max (), std::numeric_limits<int>::max ()};
-                Point max{std::numeric_limits<int>::min (), std::numeric_limits<int>::min ()};
+                Point min {std::numeric_limits<int>::max (), std::numeric_limits<int>::max ()};
+                Point max {std::numeric_limits<int>::min (), std::numeric_limits<int>::min ()};
 
                 for (const Point& p : it->second.Points)
                 {
@@ -1129,8 +1126,8 @@ namespace aga
                 }
 
                 m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_SMALL,
-                    al_map_rgb (0, 255, 0), static_cast<float> (min.X + (max.X - min.X) * 0.5),
-                    static_cast<float> (min.Y + (max.Y - min.Y) * 0.5), it->second.Name, ALLEGRO_ALIGN_CENTER);
+                    al_map_rgb (0, 255, 0), static_cast<float> (min.X + (max.X - min.X) * 0.5f),
+                    static_cast<float> (min.Y + (max.Y - min.Y) * 0.5f), it->second.Name, ALLEGRO_ALIGN_CENTER);
             }
         }
     }

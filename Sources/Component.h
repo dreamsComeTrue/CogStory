@@ -3,8 +3,8 @@
 #ifndef __COMPONENT_H__
 #define __COMPONENT_H__
 
-#include "Lifecycle.h"
 #include "Actor.h"
+#include "Lifecycle.h"
 
 namespace aga
 {
@@ -12,6 +12,7 @@ namespace aga
     {
     public:
         Component (Actor* owner);
+        virtual ~Component () {}
 
         virtual bool Update (float deltaTime) = 0;
 
@@ -29,4 +30,3 @@ namespace aga
 }
 
 #endif //   __COMPONENT_H__
-

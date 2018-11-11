@@ -8,9 +8,9 @@ namespace aga
     //---------------------------------------------------------------------------
 
     Script::Script (asIScriptModule* module, ScriptManager* manager, const std::string& name)
-        : m_Module (module)
-        , m_Manager (manager)
+        : m_Manager (manager)
         , m_Name (name)
+        , m_Module (module)
     {
     }
 
@@ -91,7 +91,7 @@ namespace aga
 
         if (ctx)
         {
-            ctx->SetArgDWord (0, arg0);
+            ctx->SetArgDWord (0, static_cast<asDWORD> (arg0));
 
             return InternalRun (ctx);
         }

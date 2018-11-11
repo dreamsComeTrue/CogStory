@@ -3,12 +3,9 @@
 #ifndef __SCENE_H__
 #define __SCENE_H__
 
-#include "Collidable.h"
 #include "Common.h"
-#include "Entity.h"
 #include "QuadTree.h"
 #include "Scriptable.h"
-#include "SpeechFrameManager.h"
 
 namespace aga
 {
@@ -18,6 +15,7 @@ namespace aga
 
     extern const float SCENE_INFINITE_BOUND_SIZE;
 
+    class Entity;
     class Actor;
     class SceneManager;
     class AtlasManager;
@@ -142,10 +140,10 @@ namespace aga
         void RemoveTriggerArea (const std::string& name);
 
         bool AddSpeech (SpeechData data);
-        std::map<int, SpeechData>& GetSpeeches ();
-        SpeechData* GetSpeech (int id);
+        std::map<long, SpeechData>& GetSpeeches ();
+        SpeechData* GetSpeech (long id);
         SpeechData* GetSpeech (const std::string& name);
-        void RemoveSpeech (int id);
+        void RemoveSpeech (long id);
         void RemoveSpeech (const std::string& name);
 
         void RegisterChoiceFunction (const std::string& name, asIScriptFunction* func);
@@ -215,7 +213,7 @@ namespace aga
 
         std::map<std::string, FlagPoint> m_FlagPoints;
         std::map<std::string, TriggerArea> m_TriggerAreas;
-        std::map<int, SpeechData> m_Speeches;
+        std::map<long, SpeechData> m_Speeches;
         std::vector<Actor*> m_Actors;
         SceneManager* m_SceneManager;
 
