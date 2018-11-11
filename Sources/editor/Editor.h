@@ -206,6 +206,8 @@ namespace aga
         std::vector<std::string> m_RecentFileNames;
 
         char m_FlagPointName[100];
+
+        char m_SceneName[100] = {0};
     };
 }
 

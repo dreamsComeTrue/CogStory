@@ -6,7 +6,10 @@
         "1_factory/1_1_factory_main.scn",
         "1_factory/1_2_factory_cabinI.scn",
         "1_factory/1_3_factory_cabinII.scn",
-        "1_factory/1_4_factory_cabinIII.scn"
+        "1_factory/1_4_factory_cabinIII.scn",
+        "2_city/2_1_city_robots_district.scn",
+        "2_city/2_2_city_humans_district.scn",
+        "2_city/2_3_city_factory_district.scn"
     ],
     "show_bounds": false,
     "show_grid": true,

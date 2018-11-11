@@ -637,10 +637,14 @@ namespace aga
                 if (actor->BlueprintID > -1)
                 {
                     Actor* parent = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetActor (actor->BlueprintID);
-                    Rect r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (parent, true);
 
-                    al_draw_rectangle (r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X,
-                        r.GetBottomRight ().Y, COLOR_BLUE, 2);
+                    if (parent)
+                    {
+                        Rect r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (parent, true);
+
+                        al_draw_rectangle (r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X,
+                            r.GetBottomRight ().Y, COLOR_BLUE, 2);
+                    }
                 }
             }
 
@@ -1082,6 +1086,7 @@ namespace aga
     void Editor::RenderUI ()
     {
         ImGui::SetNextWindowPos (ImVec2 (5, 5), ImGuiCond_Always);
+        ImGui::SetNextWindowSize (ImVec2 (200, 600));
         ImGui::PushStyleColor (ImGuiCol_WindowBg, ImVec4 (0.f, 0.f, 0.f, 0.0f));
         if (ImGui::Begin ("Tools", nullptr,
                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
@@ -1103,6 +1108,8 @@ namespace aga
 
             if (ImGui::Button ("OPEN SCENE", buttonSize) || m_OpenPopupOpenScene)
             {
+                strcpy (m_SceneName, m_LastScenePath.c_str ());
+
                 ImGui::OpenPopup ("Open Scene");
                 m_OpenPopupOpenScene = false;
             }
@@ -1111,6 +1118,8 @@ namespace aga
 
             if (ImGui::Button ("SAVE SCENE", buttonSize) || m_OpenPopupSaveScene)
             {
+                strcpy (m_SceneName, m_LastScenePath.c_str ());
+
                 ImGui::OpenPopup ("Save Scene");
                 m_OpenPopupSaveScene = false;
             }
@@ -1468,8 +1477,6 @@ namespace aga
 
         if (ImGui::BeginPopupModal ("Open Scene", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
-            static char sceneName[100] = {0};
-
             char* items[m_RecentFileNames.size ()];
 
             for (size_t i = 0; i < m_RecentFileNames.size (); ++i)
@@ -1482,20 +1489,15 @@ namespace aga
             ImGui::PushItemWidth (330);
             if (ImGui::ListBox ("", &itemCurrent, items, ARRAY_SIZE (items), 10))
             {
-                strcpy (sceneName, items[itemCurrent]);
+                strcpy (m_SceneName, items[itemCurrent]);
                 ImGui::CloseCurrentPopup ();
 
-                LoadScene (sceneName);
+                LoadScene (m_SceneName);
             }
             ImGui::PopItemWidth ();
 
-            if (sceneName[0] == '\0')
-            {
-                strcpy (sceneName, m_LastScenePath.c_str ());
-            }
-
             ImGui::PushItemWidth (330);
-            ImGui::InputText ("", sceneName, ARRAY_SIZE (sceneName));
+            ImGui::InputText ("", m_SceneName, ARRAY_SIZE (m_SceneName));
             ImGui::PopItemWidth ();
             ImGui::SetItemDefaultFocus ();
             ImGui::SameLine ();
@@ -1526,7 +1528,7 @@ namespace aga
                         fileName = fileName.substr (index + dataPath.length ());
                     }
 
-                    strcpy (sceneName, fileName.c_str ());
+                    strcpy (m_SceneName, fileName.c_str ());
                 }
 
                 al_destroy_native_file_dialog (fileOpenDialog);
@@ -1539,7 +1541,7 @@ namespace aga
             {
                 ImGui::CloseCurrentPopup ();
 
-                LoadScene (sceneName);
+                LoadScene (m_SceneName);
             }
 
             ImGui::SameLine ();
@@ -1563,12 +1565,8 @@ namespace aga
 
         if (ImGui::BeginPopupModal ("Save Scene", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
-            static char sceneName[100] = {0};
-
-            strcpy (sceneName, m_LastScenePath.c_str ());
-
             ImGui::PushItemWidth (330);
-            ImGui::InputText ("", sceneName, ARRAY_SIZE (sceneName));
+            ImGui::InputText ("", m_SceneName, ARRAY_SIZE (m_SceneName));
             ImGui::PopItemWidth ();
             ImGui::SetItemDefaultFocus ();
             ImGui::SameLine ();
@@ -1599,7 +1597,7 @@ namespace aga
                         fileName = fileName.substr (index + dataPath.length ());
                     }
 
-                    strcpy (sceneName, fileName.c_str ());
+                    strcpy (m_SceneName, fileName.c_str ());
                 }
 
                 al_destroy_native_file_dialog (fileSaveDialog);
@@ -1612,7 +1610,7 @@ namespace aga
             {
                 ImGui::CloseCurrentPopup ();
 
-                SaveScene (sceneName);
+                SaveScene (m_SceneName);
             }
 
             ImGui::SameLine ();
@@ -1667,20 +1665,6 @@ namespace aga
 
         if (event.button == 1)
         {
-            if (m_EditorActorMode.IsDrawTiles ())
-            {
-                if (m_EditorActorMode.ChooseTile (event.x, event.y))
-                {
-                    OnCloseSpriteSheetEdit ();
-                    m_EditorActorMode.AddActor (event.x, event.y);
-                }
-            }
-
-            if (m_EditorActorMode.IsSpriteSheetChoosen ())
-            {
-                m_EditorActorMode.SetSpriteSheetChoosen (false);
-            }
-
             ALLEGRO_KEYBOARD_STATE state;
             al_get_keyboard_state (&state);
 
@@ -1712,6 +1696,20 @@ namespace aga
             }
             else if (m_CursorMode == CursorMode::ActorSelectMode)
             {
+                if (m_EditorActorMode.IsDrawTiles ())
+                {
+                    if (m_EditorActorMode.ChooseTile (event.x, event.y))
+                    {
+                        OnCloseSpriteSheetEdit ();
+                        m_EditorActorMode.AddActor (event.x, event.y);
+                    }
+                }
+
+                if (m_EditorActorMode.IsSpriteSheetChoosen ())
+                {
+                    m_EditorActorMode.SetSpriteSheetChoosen (false);
+                }
+
                 Rect r;
                 Actor* actorUnderCursor = m_EditorActorMode.GetActorUnderCursor (event.x, event.y, true, std::move (r));
 
@@ -1816,7 +1814,17 @@ namespace aga
 
         if (m_CursorMode == CursorMode::EditTriggerAreaMode && event.button == 1)
         {
-            SelectTriggerAreaPoint ();
+            ALLEGRO_KEYBOARD_STATE state;
+            al_get_keyboard_state (&state);
+
+            if (al_key_down (&state, ALLEGRO_KEY_LSHIFT))
+            {
+                SelectTriggerAreaPoint ();
+            }
+            else
+            {
+                m_EditorTriggerAreaMode.ClearSelection ();
+            }
         }
     }
 

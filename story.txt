@@ -128,6 +128,9 @@ Mechanika - wkłada przedmioty do swojego wnętrza i je ożywia (ciepłem)
 Hakowanie umysłu (jak Project IGI), niszczenie kamer w fabryce
 
 Film noir theme
+In-game internet - player's hero can go into his own Operating System and search for 
+useful infos there
+
 Na końcu poznaję matkę - Agatha, gracz może go poświęcić lub nie
 
 Marketplace festival

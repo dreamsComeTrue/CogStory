@@ -628,7 +628,12 @@ namespace aga
         {
             if (actor->GetTypeName () == TileActor::TypeName)
             {
-                tiles.push_back (dynamic_cast<TileActor*> (actor));
+                TileActor* tile = dynamic_cast<TileActor*> (actor);
+
+                if (tile)
+                {
+                    tiles.push_back (tile);
+                }
             }
         }
 

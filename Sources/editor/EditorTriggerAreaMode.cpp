@@ -248,13 +248,14 @@ namespace aga
                             &m_Editor->GetMainLoop ()->GetPhysicsManager ().GetTriangulator ());
                     }
 
+                    ClearSelection ();
+
                     return true;
                 }
             }
         }
 
-        m_TriggerPoint = nullptr;
-        m_TriggerArea = nullptr;
+        ClearSelection ();
 
         return false;
     }
@@ -296,12 +297,11 @@ namespace aga
                         = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetTriggerArea (
                             m_TriggerAreaName);
 
-                    if (m_TriggerAreaName != m_TriggerAreaWindow)
+                    if (oldTriggerArea && m_TriggerAreaName != m_TriggerAreaWindow)
                     {
                         TriggerArea* newTriggerArea
                             = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddTriggerArea (
                                 m_TriggerAreaWindow, m_TriggerAreaData, oldTriggerArea->Points, m_Collidable);
-                        newTriggerArea->Data = oldTriggerArea->Data;
                         newTriggerArea->Polygons = oldTriggerArea->Polygons;
                         newTriggerArea->OnEnterCallback = oldTriggerArea->OnEnterCallback;
                         newTriggerArea->OnLeaveCallback = oldTriggerArea->OnLeaveCallback;
@@ -383,6 +383,17 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     bool EditorTriggerAreaMode::IsTriggerAreaCollidable () const { return m_Collidable; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorTriggerAreaMode::ClearSelection ()
+    {
+        m_TriggerAreaName = "";
+        m_TriggerPoint = nullptr;
+        m_TriggerArea = nullptr;
+
+        m_Editor->SetCursorMode (CursorMode::ActorSelectMode);
+    }
 
     //--------------------------------------------------------------------------------------------------
 }

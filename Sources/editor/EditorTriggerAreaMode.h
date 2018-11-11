@@ -40,6 +40,8 @@ namespace aga
 
         void Render ();
 
+        void ClearSelection ();
+
     private:
         Editor* m_Editor;
 

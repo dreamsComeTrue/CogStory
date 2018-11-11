@@ -250,13 +250,16 @@ namespace aga
                     FlagPoint* oldFlagPoint
                         = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoint (m_FlagPoint);
 
-                    m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveFlagPoint (m_FlagPoint);
+                    if (oldFlagPoint)
+                    {
+                        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveFlagPoint (m_FlagPoint);
 
-                    FlagPoint* newFlagPoint
-                        = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddFlagPoint (
-                            m_FlagPointWindow, oldFlagPoint->Pos);
+                        FlagPoint* newFlagPoint
+                            = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddFlagPoint (
+                                m_FlagPointWindow, oldFlagPoint->Pos);
 
-                    newFlagPoint->Connections = oldFlagPoint->Connections;
+                        newFlagPoint->Connections = oldFlagPoint->Connections;
+                    }
 
                     m_Editing = false;
                     m_Editor->SetCursorMode (CursorMode::ActorSelectMode);

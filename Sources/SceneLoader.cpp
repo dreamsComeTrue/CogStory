@@ -355,6 +355,12 @@ namespace aga
 
                 json actorObj = json::object ({});
 
+                std::stringstream streamRotation;
+                streamRotation << std::fixed << std::setprecision (2) << actor->Rotation;
+
+                std::stringstream streamFucsHeight;
+                streamFucsHeight << std::fixed << std::setprecision (2) << actor->GetFocusHeight ();
+
                 actorObj["id"] = std::to_string (actor->ID);
                 actorObj["type"] = actor->GetTypeName ();
                 actorObj["name"] = actor->Name;
@@ -362,14 +368,14 @@ namespace aga
                 actorObj["pos"] = PointToString (actor->Bounds.GetPos ());
                 actorObj["size"] = PointToString (actor->Bounds.GetSize ());
                 actorObj["z-order"] = std::to_string (actor->ZOrder);
-                actorObj["rot"] = std::to_string (actor->Rotation);
+                actorObj["rot"] = streamRotation.str ();
                 actorObj["atlas"] = actor != nullptr ? actor->GetAtlas ()->GetName () : "";
                 actorObj["atlas-region"] = actor->GetAtlasRegionName ();
                 actorObj["animation"] = actor->GetAnimation ().GetName ();
                 actorObj["collision"] = std::to_string (actor->IsCollisionEnabled ());
                 actorObj["collidable"] = std::to_string (actor->IsCollidable ());
                 actorObj["overlap"] = std::to_string (actor->IsCheckOverlap ());
-                actorObj["focus-height"] = std::to_string (actor->GetFocusHeight ());
+                actorObj["focus-height"] = streamFucsHeight.str ();
 
                 actorObj["phys"] = json::array ({});
 

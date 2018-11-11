@@ -205,7 +205,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    auto PointToString = [](Point in) -> std::string { return std::to_string (in.X) + " " + std::to_string (in.Y); };
+    auto PointToString = [](Point in) -> std::string {
+        std::stringstream streamX;
+        streamX << std::fixed << std::setprecision (2) << in.X;
+
+        std::stringstream streamY;
+        streamY << std::fixed << std::setprecision (2) << in.Y;
+
+        return streamX.str () + " " + streamY.str ();
+    };
 
     //--------------------------------------------------------------------------------------------------
 
