@@ -9,7 +9,8 @@
         "1_factory/1_4_factory_cabinIII.scn",
         "2_city/2_1_city_robots_district.scn",
         "2_city/2_2_city_humans_district.scn",
-        "2_city/2_3_city_factory_district.scn"
+        "2_city/2_3_city_factory_district.scn",
+        "1_factory/1_5_factory_corridor_job_office.scn"
     ],
     "show_bounds": false,
     "show_grid": true,
