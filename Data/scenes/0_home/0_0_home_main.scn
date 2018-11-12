@@ -209,14 +209,14 @@
     "flag_points": [
         {
             "connections": "",
-            "name": "MARKER_CITY",
-            "pos": "11.00 85.00"
+            "name": "MARKER_ROBOTS_DISTRICT",
+            "pos": "16.00 112.00"
         }
     ],
     "max_size": "256.00 158.00",
     "min_size": "-256.00 -224.00",
     "name": "Home",
-    "player_start": "-1005.00 801.00",
+    "player_start": "-128.00 -16.00",
     "scripts": [
         {
             "name": "0_0_home",
@@ -227,9 +227,9 @@
     "trigger_areas": [
         {
             "collidable": "0",
-            "data": "2_city/2_0_city_main.scn",
-            "name": "ENTRY_CITY",
-            "poly": "-32.00 160.00 -32.00 192.00 48.00 192.00 48.00 160.00 "
+            "data": "2_city/2_1_city_robots_district.scn",
+            "name": "ENTRY_ROBOTS_DISTRICT",
+            "poly": "-32.00 160.00 16.00 192.00 48.00 160.00 "
         },
         {
             "collidable": "0",

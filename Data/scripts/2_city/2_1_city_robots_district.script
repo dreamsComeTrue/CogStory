@@ -1,0 +1,40 @@
+#include "../../Data/scripts/Common.script"
+
+void Start ()
+{
+    SetSceneAudioStream ("music/Caketown 1.ogg");
+}
+
+void SceneChanged (const string &in previousSceneName)
+{
+}
+
+void BeforeEnterScene ()
+{
+    GetSceneAudioStream ().Play ();
+    GetSceneAudioStream ().SetFadeIn (500.f);    
+
+    RegisterFunctions ();    
+}
+
+void AfterLeaveScene ()
+{
+    GetSceneAudioStream ().SetFadeOut (500.f, true);
+}
+
+void RegisterFunctions ()
+{
+    player.AddOverlapCallbacks (function (otherActor)
+    {
+        ShowSpeechWhenOverlap (otherActor, "HOME_SIGN", "HOME_SIGN_INFO");
+    }, null, function (otherActor)
+    {
+        HideSpeechWhenOverlap (otherActor, "HOME_SIGN", "HOME_SIGN_INFO");
+    });
+}
+
+
+
+void Update (float deltaTime)
+{
+}

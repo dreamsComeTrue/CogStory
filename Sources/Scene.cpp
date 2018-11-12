@@ -719,7 +719,13 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scene::RemoveTriggerArea (const std::string& name) { m_TriggerAreas.erase (name); }
+    void Scene::RemoveTriggerArea (const std::string& name)
+    {
+        if (m_TriggerAreas.find (name) != m_TriggerAreas.end ())
+        {
+            m_TriggerAreas.erase (name);
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 

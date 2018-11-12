@@ -43,6 +43,9 @@ namespace aga
         void ClearSelection ();
 
     private:
+        void EditTriggerArea ();
+
+    private:
         Editor* m_Editor;
 
         TriggerArea* m_TriggerArea;

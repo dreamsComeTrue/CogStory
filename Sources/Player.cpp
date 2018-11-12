@@ -101,6 +101,8 @@ namespace aga
 
         m_HeadParticleComponent->GetEmitter ()->Reset ();
         m_FootParticleComponent->GetEmitter ()->Reset ();
+
+        m_OverlapCallbacks.clear ();
     }
 
     //--------------------------------------------------------------------------------------------------

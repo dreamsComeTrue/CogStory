@@ -293,37 +293,7 @@ namespace aga
             {
                 if (m_Editing)
                 {
-                    TriggerArea* oldTriggerArea
-                        = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetTriggerArea (
-                            m_TriggerAreaName);
-
-                    if (oldTriggerArea && m_TriggerAreaName != m_TriggerAreaWindow)
-                    {
-                        TriggerArea* newTriggerArea
-                            = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddTriggerArea (
-                                m_TriggerAreaWindow, m_TriggerAreaData, oldTriggerArea->Points, m_Collidable);
-                        newTriggerArea->Polygons = oldTriggerArea->Polygons;
-                        newTriggerArea->OnEnterCallback = oldTriggerArea->OnEnterCallback;
-                        newTriggerArea->OnLeaveCallback = oldTriggerArea->OnLeaveCallback;
-                        newTriggerArea->ScriptOnEnterCallback = oldTriggerArea->ScriptOnEnterCallback;
-                        newTriggerArea->ScriptOnLeaveCallback = oldTriggerArea->ScriptOnLeaveCallback;
-
-                        m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveTriggerArea (
-                            m_TriggerAreaName);
-
-                        m_Editing = false;
-                        m_Editor->SetCursorMode (CursorMode::ActorSelectMode);
-                    }
-
-                    if (m_Collidable != oldTriggerArea->Collidable)
-                    {
-                        oldTriggerArea->Collidable = m_Collidable;
-                    }
-
-                    if (m_TriggerAreaData != oldTriggerArea->Data)
-                    {
-                        oldTriggerArea->Data = m_TriggerAreaData;
-                    }
+                    EditTriggerArea ();
                 }
                 else
                 {
@@ -350,6 +320,44 @@ namespace aga
 
             ImGui::EndPopup ();
         }
+    }
+
+    void EditorTriggerAreaMode::EditTriggerArea ()
+    {
+        Scene* scene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
+        TriggerArea* editedTriggerArea = scene->GetTriggerArea (m_TriggerAreaName);
+
+        if (editedTriggerArea)
+        {
+            if (m_TriggerAreaName != std::string (m_TriggerAreaWindow))
+            {
+                TriggerArea* newTriggerArea = scene->AddTriggerArea (
+                    m_TriggerAreaWindow, m_TriggerAreaData, editedTriggerArea->Points, m_Collidable);
+                newTriggerArea->Polygons = editedTriggerArea->Polygons;
+                newTriggerArea->OnEnterCallback = editedTriggerArea->OnEnterCallback;
+                newTriggerArea->OnLeaveCallback = editedTriggerArea->OnLeaveCallback;
+                newTriggerArea->ScriptOnEnterCallback = editedTriggerArea->ScriptOnEnterCallback;
+                newTriggerArea->ScriptOnLeaveCallback = editedTriggerArea->ScriptOnLeaveCallback;
+
+                //  Cleanup previous area
+                scene->RemoveTriggerArea (m_TriggerAreaName);
+
+                editedTriggerArea = newTriggerArea;
+            }
+
+            if (m_Collidable != editedTriggerArea->Collidable)
+            {
+                editedTriggerArea->Collidable = m_Collidable;
+            }
+
+            if (m_TriggerAreaData != editedTriggerArea->Data)
+            {
+                editedTriggerArea->Data = m_TriggerAreaData;
+            }
+        }
+
+        m_Editing = false;
+        m_Editor->SetCursorMode (CursorMode::ActorSelectMode);
     }
 
     //--------------------------------------------------------------------------------------------------

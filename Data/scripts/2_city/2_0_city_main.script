@@ -102,16 +102,6 @@ void RegisterFunctions ()
     {
         return "SPCH_2";
     });
-
-    player.AddOverlapCallbacks (function (otherActor)
-    {
-        ShowSpeechWhenOverlap (otherActor, "HOME_SIGN", "HOME_SIGN_INFO");
-        ShowSpeechWhenOverlap (otherActor, "FACTORY_SIGN", "FACTORY_SIGN_INFO");
-    }, null, function (otherActor)
-    {
-        HideSpeechWhenOverlap (otherActor, "HOME_SIGN", "HOME_SIGN_INFO");
-        HideSpeechWhenOverlap (otherActor, "FACTORY_SIGN", "FACTORY_SIGN_INFO");
-    });
 }
 
 
