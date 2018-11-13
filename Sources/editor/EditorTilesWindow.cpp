@@ -54,46 +54,48 @@ namespace aga
 
     void EditorTilesWindow::OnSave ()
     {
-        std::string path = GetDataPath () + "x/";
-        std::string dirName = GetDataPath ();
-
-        ALLEGRO_FILECHOOSER* fileSaveDialog
-            = al_create_native_file_dialog (path.c_str (), "Save tiles", "", ALLEGRO_FILECHOOSER_FOLDER);
-
-        if (al_show_native_file_dialog (m_Editor->GetMainLoop ()->GetScreen ()->GetDisplay (), fileSaveDialog)
-            && al_get_native_file_dialog_count (fileSaveDialog) > 0)
+        if (m_Image)
         {
-            std::string fileName = al_get_native_file_dialog_path (fileSaveDialog, 0);
-            std::replace (fileName.begin (), fileName.end (), '\\', '/');
+            std::string path = GetDataPath () + "x/";
+            std::string dirName = GetDataPath ();
 
-            dirName = GetDirectory (fileName);
+            ALLEGRO_FILECHOOSER* fileSaveDialog
+                = al_create_native_file_dialog (path.c_str (), "Save tiles", "", ALLEGRO_FILECHOOSER_FOLDER);
+
+            if (al_show_native_file_dialog (m_Editor->GetMainLoop ()->GetScreen ()->GetDisplay (), fileSaveDialog)
+                && al_get_native_file_dialog_count (fileSaveDialog) > 0)
+            {
+                std::string fileName = al_get_native_file_dialog_path (fileSaveDialog, 0);
+                std::replace (fileName.begin (), fileName.end (), '\\', '/');
+
+                dirName = GetDirectory (fileName);
+            }
+
+            al_destroy_native_file_dialog (fileSaveDialog);
+
+            //  Count number of characters required to generate name
+            int numberOfNums = static_cast<int> (std::to_string (m_TilesX * m_TilesY).length ());
+
+            for (int y = 0; y < m_TilesY; ++y)
+            {
+                for (int x = 0; x < m_TilesX; ++x)
+                {
+                    ALLEGRO_BITMAP* sprite
+                        = al_create_sub_bitmap (m_Image, x * m_Width, y * m_Height, m_Width, m_Height);
+
+                    if (sprite)
+                    {
+                        std::ostringstream out;
+                        out << std::internal << std::setfill ('0') << std::setw (numberOfNums) << (x + y * m_TilesX);
+
+                        std::string name = dirName + "/" + std::string (m_Name) + "_" + out.str () + ".png";
+
+                        al_save_bitmap (name.c_str (), sprite);
+                        al_destroy_bitmap (sprite);
+                    }
+                }
+            }
         }
-
-        al_destroy_native_file_dialog (fileSaveDialog);
-
-        //        std::string animName = m_Animation;
-
-        //        std::map<std::string, AnimationData>& animations = m_AnimationData.GetAnimations ();
-        //        bool found = false;
-
-        //        for (auto& kv : animations)
-        //        {
-        //            if (kv.first == m_Name)
-        //            {
-        //                found = true;
-        //                break;
-        //            }
-        //        }
-
-        //        if (animName != "")
-        //        {
-        //            const std::string animPath = GetDataPath () + "/animations/";
-
-        //            if (!EndsWith (animName, ".anim"))
-        //            {
-        //                animName += ".anim";
-        //            }
-        //        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -102,7 +104,6 @@ namespace aga
     {
         if (m_OnAcceptFunc)
         {
-            // m_OnAcceptFunc (m_Images[m_SelectedImage], m_ImagePaths[m_SelectedImagePath]);
         }
     }
 
@@ -112,7 +113,6 @@ namespace aga
     {
         if (m_OnCancelFunc)
         {
-            // m_OnAcceptFunc (m_Images[m_SelectedImage], m_ImagePaths[m_SelectedImagePath]);
         }
     }
 
@@ -330,8 +330,8 @@ namespace aga
 
                 int index = (selX / m_Width) + (selY / m_Height) * m_TilesX;
 
-                m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_SMALL, COLOR_WHITE,
-                    selBeginPoint.X, selBeginPoint.Y - 15, std::string (m_Name) + "_" + std::to_string (index),
+                m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_MEDIUM, COLOR_WHITE,
+                    selBeginPoint.X, selBeginPoint.Y - 20, std::string (m_Name) + "_" + std::to_string (index),
                     ALLEGRO_ALIGN_LEFT);
             }
         }

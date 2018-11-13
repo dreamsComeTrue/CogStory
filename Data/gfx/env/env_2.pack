@@ -4,7087 +4,7171 @@ size: 1024,1024
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-sprite
+tile_0000
   rotate: false
   xy: 0, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 0
-sprite
+  index: -1
+tile_0001
   rotate: false
   xy: 32, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 1
-sprite
+  index: -1
+tile_0002
   rotate: false
   xy: 64, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 2
-sprite
+  index: -1
+tile_0003
   rotate: false
   xy: 96, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 3
-sprite
+  index: -1
+tile_0004
   rotate: false
   xy: 128, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 4
-sprite
+  index: -1
+tile_0005
   rotate: false
   xy: 160, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 5
-sprite
+  index: -1
+tile_0006
   rotate: false
   xy: 192, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 6
-sprite
+  index: -1
+tile_0007
   rotate: false
   xy: 224, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 7
-sprite
+  index: -1
+tile_0008
   rotate: false
   xy: 256, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 8
-sprite
+  index: -1
+tile_0009
   rotate: false
   xy: 288, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 9
-sprite
+  index: -1
+tile_0010
   rotate: false
   xy: 320, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 10
-sprite
+  index: -1
+tile_0011
   rotate: false
   xy: 352, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 11
-sprite
+  index: -1
+tile_0012
   rotate: false
   xy: 384, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 12
-sprite
+  index: -1
+tile_0013
   rotate: false
   xy: 416, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 13
-sprite
+  index: -1
+tile_0014
   rotate: false
   xy: 448, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 14
-sprite
+  index: -1
+tile_0015
   rotate: false
   xy: 480, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 15
-sprite
+  index: -1
+tile_0016
   rotate: false
   xy: 512, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 16
-sprite
+  index: -1
+tile_0017
   rotate: false
   xy: 544, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 17
-sprite
+  index: -1
+tile_0018
   rotate: false
   xy: 576, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 18
-sprite
+  index: -1
+tile_0019
   rotate: false
   xy: 608, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 19
-sprite
+  index: -1
+tile_0020
   rotate: false
   xy: 640, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 20
-sprite
+  index: -1
+tile_0021
   rotate: false
   xy: 672, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 21
-sprite
+  index: -1
+tile_0022
   rotate: false
   xy: 704, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 22
-sprite
+  index: -1
+tile_0023
   rotate: false
   xy: 736, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 23
-sprite
+  index: -1
+tile_0024
   rotate: false
   xy: 768, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 24
-sprite
+  index: -1
+tile_0025
   rotate: false
   xy: 800, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 25
-sprite
+  index: -1
+tile_0026
   rotate: false
   xy: 832, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 26
-sprite
+  index: -1
+tile_0027
   rotate: false
   xy: 864, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 27
-sprite
+  index: -1
+tile_0028
   rotate: false
   xy: 896, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 28
-sprite
+  index: -1
+tile_0029
   rotate: false
   xy: 928, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 29
-sprite
+  index: -1
+tile_0030
   rotate: false
   xy: 960, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 30
-sprite
+  index: -1
+tile_0031
   rotate: false
   xy: 992, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 31
-sprite
+  index: -1
+tile_0032
   rotate: false
   xy: 0, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 32
-sprite
+  index: -1
+tile_0033
   rotate: false
   xy: 32, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 33
-sprite
+  index: -1
+tile_0034
   rotate: false
   xy: 64, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 34
-sprite
+  index: -1
+tile_0035
   rotate: false
   xy: 96, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 35
-sprite
+  index: -1
+tile_0036
   rotate: false
   xy: 128, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 36
-sprite
+  index: -1
+tile_0037
   rotate: false
   xy: 160, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 37
-sprite
+  index: -1
+tile_0038
   rotate: false
   xy: 192, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 38
-sprite
+  index: -1
+tile_0039
   rotate: false
   xy: 224, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 39
-sprite
+  index: -1
+tile_0040
   rotate: false
   xy: 256, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 40
-sprite
+  index: -1
+tile_0041
   rotate: false
   xy: 288, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 41
-sprite
+  index: -1
+tile_0042
   rotate: false
   xy: 320, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 42
-sprite
+  index: -1
+tile_0043
   rotate: false
   xy: 352, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 43
-sprite
+  index: -1
+tile_0044
   rotate: false
   xy: 384, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 44
-sprite
+  index: -1
+tile_0045
   rotate: false
   xy: 416, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 45
-sprite
+  index: -1
+tile_0046
   rotate: false
   xy: 448, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 46
-sprite
+  index: -1
+tile_0047
   rotate: false
   xy: 480, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 47
-sprite
+  index: -1
+tile_0048
   rotate: false
   xy: 512, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 48
-sprite
+  index: -1
+tile_0049
   rotate: false
   xy: 544, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 49
-sprite
+  index: -1
+tile_0050
   rotate: false
   xy: 576, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 50
-sprite
+  index: -1
+tile_0051
   rotate: false
   xy: 608, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 51
-sprite
+  index: -1
+tile_0052
   rotate: false
   xy: 640, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 52
-sprite
+  index: -1
+tile_0053
   rotate: false
   xy: 672, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 53
-sprite
+  index: -1
+tile_0054
   rotate: false
   xy: 704, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 54
-sprite
+  index: -1
+tile_0055
   rotate: false
   xy: 736, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 55
-sprite
+  index: -1
+tile_0056
   rotate: false
   xy: 768, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 56
-sprite
+  index: -1
+tile_0057
   rotate: false
   xy: 800, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 57
-sprite
+  index: -1
+tile_0058
   rotate: false
   xy: 832, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 58
-sprite
+  index: -1
+tile_0059
   rotate: false
   xy: 864, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 59
-sprite
+  index: -1
+tile_0060
   rotate: false
   xy: 896, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 60
-sprite
+  index: -1
+tile_0061
   rotate: false
   xy: 928, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 61
-sprite
+  index: -1
+tile_0062
   rotate: false
   xy: 960, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 62
-sprite
+  index: -1
+tile_0063
   rotate: false
   xy: 992, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 63
-sprite
+  index: -1
+tile_0064
   rotate: false
   xy: 0, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 64
-sprite
+  index: -1
+tile_0065
   rotate: false
   xy: 32, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 65
-sprite
+  index: -1
+tile_0066
   rotate: false
   xy: 64, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 66
-sprite
+  index: -1
+tile_0067
   rotate: false
   xy: 96, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 67
-sprite
+  index: -1
+tile_0068
   rotate: false
   xy: 128, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 68
-sprite
+  index: -1
+tile_0069
   rotate: false
   xy: 160, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 69
-sprite
+  index: -1
+tile_0070
   rotate: false
   xy: 192, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 70
-sprite
+  index: -1
+tile_0071
   rotate: false
   xy: 224, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 71
-sprite
+  index: -1
+tile_0072
   rotate: false
   xy: 256, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 72
-sprite
+  index: -1
+tile_0073
   rotate: false
   xy: 288, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 73
-sprite
+  index: -1
+tile_0074
   rotate: false
   xy: 320, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 74
-sprite
+  index: -1
+tile_0075
   rotate: false
   xy: 352, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 75
-sprite
+  index: -1
+tile_0076
   rotate: false
   xy: 384, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 76
-sprite
+  index: -1
+tile_0077
   rotate: false
   xy: 416, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 77
-sprite
+  index: -1
+tile_0078
   rotate: false
   xy: 448, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 78
-sprite
+  index: -1
+tile_0079
   rotate: false
   xy: 480, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 79
-sprite
+  index: -1
+tile_0080
   rotate: false
   xy: 512, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 80
-sprite
+  index: -1
+tile_0081
   rotate: false
   xy: 544, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 81
-sprite
+  index: -1
+tile_0082
   rotate: false
   xy: 576, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 82
-sprite
+  index: -1
+tile_0083
   rotate: false
   xy: 608, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 83
-sprite
+  index: -1
+tile_0084
   rotate: false
   xy: 640, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 84
-sprite
+  index: -1
+tile_0085
   rotate: false
   xy: 672, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 85
-sprite
+  index: -1
+tile_0086
   rotate: false
   xy: 704, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 86
-sprite
+  index: -1
+tile_0087
   rotate: false
   xy: 736, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 87
-sprite
+  index: -1
+tile_0088
   rotate: false
   xy: 768, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 88
-sprite
+  index: -1
+tile_0089
   rotate: false
   xy: 800, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 89
-sprite
+  index: -1
+tile_0090
   rotate: false
   xy: 832, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 90
-sprite
+  index: -1
+tile_0091
   rotate: false
   xy: 864, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 91
-sprite
+  index: -1
+tile_0092
   rotate: false
   xy: 896, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 92
-sprite
+  index: -1
+tile_0093
   rotate: false
   xy: 928, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 93
-sprite
+  index: -1
+tile_0094
   rotate: false
   xy: 960, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 94
-sprite
+  index: -1
+tile_0095
   rotate: false
   xy: 992, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 95
-sprite
+  index: -1
+tile_0096
   rotate: false
   xy: 0, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 96
-sprite
+  index: -1
+tile_0097
   rotate: false
   xy: 32, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 97
-sprite
+  index: -1
+tile_0098
   rotate: false
   xy: 64, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 98
-sprite
+  index: -1
+tile_0099
   rotate: false
   xy: 96, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 99
-sprite
+  index: -1
+tile_0100
   rotate: false
   xy: 128, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 100
-sprite
+  index: -1
+tile_0101
   rotate: false
   xy: 160, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 101
-sprite
+  index: -1
+tile_0102
   rotate: false
   xy: 192, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 102
-sprite
+  index: -1
+tile_0103
   rotate: false
   xy: 224, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 103
-sprite
+  index: -1
+tile_0104
   rotate: false
   xy: 256, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 104
-sprite
+  index: -1
+tile_0105
   rotate: false
   xy: 288, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 105
-sprite
+  index: -1
+tile_0106
   rotate: false
   xy: 320, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 106
-sprite
+  index: -1
+tile_0107
   rotate: false
   xy: 352, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 107
-sprite
+  index: -1
+tile_0108
   rotate: false
   xy: 384, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 108
-sprite
+  index: -1
+tile_0109
   rotate: false
   xy: 416, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 109
-sprite
+  index: -1
+tile_0110
   rotate: false
   xy: 448, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 110
-sprite
+  index: -1
+tile_0111
   rotate: false
   xy: 480, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 111
-sprite
+  index: -1
+tile_0112
   rotate: false
   xy: 512, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 112
-sprite
+  index: -1
+tile_0113
   rotate: false
   xy: 544, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 113
-sprite
+  index: -1
+tile_0114
   rotate: false
   xy: 576, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 114
-sprite
+  index: -1
+tile_0115
   rotate: false
   xy: 608, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 115
-sprite
+  index: -1
+tile_0116
   rotate: false
   xy: 640, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 116
-sprite
+  index: -1
+tile_0117
   rotate: false
   xy: 672, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 117
-sprite
+  index: -1
+tile_0118
   rotate: false
   xy: 704, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 118
-sprite
+  index: -1
+tile_0119
   rotate: false
   xy: 736, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 119
-sprite
+  index: -1
+tile_0120
   rotate: false
   xy: 768, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 120
-sprite
+  index: -1
+tile_0121
   rotate: false
   xy: 800, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 121
-sprite
+  index: -1
+tile_0122
   rotate: false
   xy: 832, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 122
-sprite
+  index: -1
+tile_0123
   rotate: false
   xy: 864, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 123
-sprite
+  index: -1
+tile_0124
   rotate: false
   xy: 896, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 124
-sprite
+  index: -1
+tile_0125
   rotate: false
   xy: 928, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 125
-sprite
+  index: -1
+tile_0126
   rotate: false
   xy: 960, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 126
-sprite
+  index: -1
+tile_0127
   rotate: false
   xy: 992, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 127
-sprite
+  index: -1
+tile_0128
   rotate: false
   xy: 0, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 128
-sprite
+  index: -1
+tile_0129
   rotate: false
   xy: 32, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 129
-sprite
+  index: -1
+tile_0130
   rotate: false
   xy: 64, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 130
-sprite
+  index: -1
+tile_0131
   rotate: false
   xy: 96, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 131
-sprite
+  index: -1
+tile_0132
   rotate: false
   xy: 128, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 132
-sprite
+  index: -1
+tile_0133
   rotate: false
   xy: 160, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 133
-sprite
+  index: -1
+tile_0134
   rotate: false
   xy: 192, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 134
-sprite
+  index: -1
+tile_0135
   rotate: false
   xy: 224, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 135
-sprite
+  index: -1
+tile_0136
   rotate: false
   xy: 256, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 136
-sprite
+  index: -1
+tile_0137
   rotate: false
   xy: 288, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 137
-sprite
+  index: -1
+tile_0138
   rotate: false
   xy: 320, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 138
-sprite
+  index: -1
+tile_0139
   rotate: false
   xy: 352, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 139
-sprite
+  index: -1
+tile_0140
   rotate: false
   xy: 384, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 140
-sprite
+  index: -1
+tile_0141
   rotate: false
   xy: 416, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 141
-sprite
+  index: -1
+tile_0142
   rotate: false
   xy: 448, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 142
-sprite
+  index: -1
+tile_0143
   rotate: false
   xy: 480, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 143
-sprite
+  index: -1
+tile_0144
   rotate: false
   xy: 512, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 144
-sprite
+  index: -1
+tile_0145
   rotate: false
   xy: 544, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 145
-sprite
+  index: -1
+tile_0146
   rotate: false
   xy: 576, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 146
-sprite
+  index: -1
+tile_0147
   rotate: false
   xy: 608, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 147
-sprite
+  index: -1
+tile_0148
   rotate: false
   xy: 640, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 148
-sprite
+  index: -1
+tile_0149
   rotate: false
   xy: 672, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 149
-sprite
+  index: -1
+tile_0150
   rotate: false
   xy: 704, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 150
-sprite
+  index: -1
+tile_0151
   rotate: false
   xy: 736, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 151
-sprite
+  index: -1
+tile_0152
   rotate: false
   xy: 768, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 152
-sprite
+  index: -1
+tile_0153
   rotate: false
   xy: 800, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 153
-sprite
+  index: -1
+tile_0154
   rotate: false
   xy: 832, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 154
-sprite
+  index: -1
+tile_0155
   rotate: false
   xy: 864, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 155
-sprite
+  index: -1
+tile_0156
   rotate: false
   xy: 896, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 156
-sprite
+  index: -1
+tile_0157
   rotate: false
   xy: 928, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 157
-sprite
+  index: -1
+tile_0158
   rotate: false
   xy: 960, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 158
-sprite
+  index: -1
+tile_0159
   rotate: false
   xy: 992, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 159
-sprite
+  index: -1
+tile_0160
   rotate: false
   xy: 0, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 160
-sprite
+  index: -1
+tile_0161
   rotate: false
   xy: 32, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 161
-sprite
+  index: -1
+tile_0162
   rotate: false
   xy: 64, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 162
-sprite
+  index: -1
+tile_0163
   rotate: false
   xy: 96, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 163
-sprite
+  index: -1
+tile_0164
   rotate: false
   xy: 128, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 164
-sprite
+  index: -1
+tile_0165
   rotate: false
   xy: 160, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 165
-sprite
+  index: -1
+tile_0166
   rotate: false
   xy: 192, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 166
-sprite
+  index: -1
+tile_0167
   rotate: false
   xy: 224, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 167
-sprite
+  index: -1
+tile_0168
   rotate: false
   xy: 256, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 168
-sprite
+  index: -1
+tile_0169
   rotate: false
   xy: 288, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 169
-sprite
+  index: -1
+tile_0170
   rotate: false
   xy: 320, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 170
-sprite
+  index: -1
+tile_0171
   rotate: false
   xy: 352, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 171
-sprite
+  index: -1
+tile_0172
   rotate: false
   xy: 384, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 172
-sprite
+  index: -1
+tile_0173
   rotate: false
   xy: 416, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 173
-sprite
+  index: -1
+tile_0174
   rotate: false
   xy: 448, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 174
-sprite
+  index: -1
+tile_0175
   rotate: false
   xy: 480, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 175
-sprite
+  index: -1
+tile_0176
   rotate: false
   xy: 512, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 176
-sprite
+  index: -1
+tile_0177
   rotate: false
   xy: 544, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 177
-sprite
+  index: -1
+tile_0178
   rotate: false
   xy: 576, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 178
-sprite
+  index: -1
+tile_0179
   rotate: false
   xy: 608, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 179
-sprite
+  index: -1
+tile_0180
   rotate: false
   xy: 640, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 180
-sprite
+  index: -1
+tile_0181
   rotate: false
   xy: 672, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 181
-sprite
+  index: -1
+tile_0182
   rotate: false
   xy: 704, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 182
-sprite
+  index: -1
+tile_0183
   rotate: false
   xy: 736, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 183
-sprite
+  index: -1
+tile_0184
   rotate: false
   xy: 768, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 184
-sprite
+  index: -1
+tile_0185
   rotate: false
   xy: 800, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 185
-sprite
+  index: -1
+tile_0186
   rotate: false
   xy: 832, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 186
-sprite
+  index: -1
+tile_0187
   rotate: false
   xy: 864, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 187
-sprite
+  index: -1
+tile_0188
   rotate: false
   xy: 896, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 188
-sprite
+  index: -1
+tile_0189
   rotate: false
   xy: 928, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 189
-sprite
+  index: -1
+tile_0190
   rotate: false
   xy: 960, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 190
-sprite
+  index: -1
+tile_0191
   rotate: false
   xy: 992, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 191
-sprite
+  index: -1
+tile_0192
   rotate: false
   xy: 0, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 192
-sprite
+  index: -1
+tile_0193
   rotate: false
   xy: 32, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 193
-sprite
+  index: -1
+tile_0194
   rotate: false
   xy: 64, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 194
-sprite
+  index: -1
+tile_0195
   rotate: false
   xy: 96, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 195
-sprite
+  index: -1
+tile_0196
   rotate: false
   xy: 128, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 196
-sprite
+  index: -1
+tile_0197
   rotate: false
   xy: 160, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 197
-sprite
+  index: -1
+tile_0198
   rotate: false
   xy: 192, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 198
-sprite
+  index: -1
+tile_0199
   rotate: false
   xy: 224, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 199
-sprite
+  index: -1
+tile_0200
   rotate: false
   xy: 256, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 200
-sprite
+  index: -1
+tile_0201
   rotate: false
   xy: 288, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 201
-sprite
+  index: -1
+tile_0202
   rotate: false
   xy: 320, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 202
-sprite
+  index: -1
+tile_0203
   rotate: false
   xy: 352, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 203
-sprite
+  index: -1
+tile_0204
   rotate: false
   xy: 384, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 204
-sprite
+  index: -1
+tile_0205
   rotate: false
   xy: 416, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 205
-sprite
+  index: -1
+tile_0206
   rotate: false
   xy: 448, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 206
-sprite
+  index: -1
+tile_0207
   rotate: false
   xy: 480, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 207
-sprite
+  index: -1
+tile_0208
   rotate: false
   xy: 512, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 208
-sprite
+  index: -1
+tile_0209
   rotate: false
   xy: 544, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 209
-sprite
+  index: -1
+tile_0210
   rotate: false
   xy: 576, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 210
-sprite
+  index: -1
+tile_0211
   rotate: false
   xy: 608, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 211
-sprite
+  index: -1
+tile_0212
   rotate: false
   xy: 640, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 212
-sprite
+  index: -1
+tile_0213
   rotate: false
   xy: 672, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 213
-sprite
+  index: -1
+tile_0214
   rotate: false
   xy: 704, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 214
-sprite
+  index: -1
+tile_0215
   rotate: false
   xy: 736, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 215
-sprite
+  index: -1
+tile_0216
   rotate: false
   xy: 768, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 216
-sprite
+  index: -1
+tile_0217
   rotate: false
   xy: 800, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 217
-sprite
+  index: -1
+tile_0218
   rotate: false
   xy: 832, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 218
-sprite
+  index: -1
+tile_0219
   rotate: false
   xy: 864, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 219
-sprite
+  index: -1
+tile_0220
   rotate: false
   xy: 896, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 220
-sprite
+  index: -1
+tile_0221
   rotate: false
   xy: 928, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 221
-sprite
+  index: -1
+tile_0222
   rotate: false
   xy: 960, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 222
-sprite
+  index: -1
+tile_0223
   rotate: false
   xy: 992, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 223
-sprite
+  index: -1
+tile_0224
   rotate: false
   xy: 0, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 224
-sprite
+  index: -1
+tile_0225
   rotate: false
   xy: 32, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 225
-sprite
+  index: -1
+tile_0226
   rotate: false
   xy: 64, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 226
-sprite
+  index: -1
+tile_0227
   rotate: false
   xy: 96, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 227
-sprite
+  index: -1
+tile_0228
   rotate: false
   xy: 128, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 228
-sprite
+  index: -1
+tile_0229
   rotate: false
   xy: 160, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 229
-sprite
+  index: -1
+tile_0230
   rotate: false
   xy: 192, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 230
-sprite
+  index: -1
+tile_0231
   rotate: false
   xy: 224, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 231
-sprite
+  index: -1
+tile_0232
   rotate: false
   xy: 256, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 232
-sprite
+  index: -1
+tile_0233
   rotate: false
   xy: 288, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 233
-sprite
+  index: -1
+tile_0234
   rotate: false
   xy: 320, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 234
-sprite
+  index: -1
+tile_0235
   rotate: false
   xy: 352, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 235
-sprite
+  index: -1
+tile_0236
   rotate: false
   xy: 384, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 236
-sprite
+  index: -1
+tile_0237
   rotate: false
   xy: 416, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 237
-sprite
+  index: -1
+tile_0238
   rotate: false
   xy: 448, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 238
-sprite
+  index: -1
+tile_0239
   rotate: false
   xy: 480, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 239
-sprite
+  index: -1
+tile_0240
   rotate: false
   xy: 512, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 240
-sprite
+  index: -1
+tile_0241
   rotate: false
   xy: 544, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 241
-sprite
+  index: -1
+tile_0242
   rotate: false
   xy: 576, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 242
-sprite
+  index: -1
+tile_0243
   rotate: false
   xy: 608, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 243
-sprite
+  index: -1
+tile_0244
   rotate: false
   xy: 640, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 244
-sprite
+  index: -1
+tile_0245
   rotate: false
   xy: 672, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 245
-sprite
+  index: -1
+tile_0246
   rotate: false
   xy: 704, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 246
-sprite
+  index: -1
+tile_0247
   rotate: false
   xy: 736, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 247
-sprite
+  index: -1
+tile_0248
   rotate: false
   xy: 768, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 248
-sprite
+  index: -1
+tile_0249
   rotate: false
   xy: 800, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 249
-sprite
+  index: -1
+tile_0250
   rotate: false
   xy: 832, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 250
-sprite
+  index: -1
+tile_0251
   rotate: false
   xy: 864, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 251
-sprite
+  index: -1
+tile_0252
   rotate: false
   xy: 896, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 252
-sprite
+  index: -1
+tile_0253
   rotate: false
   xy: 928, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 253
-sprite
+  index: -1
+tile_0254
   rotate: false
   xy: 960, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 254
-sprite
+  index: -1
+tile_0255
   rotate: false
   xy: 992, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 255
-sprite
+  index: -1
+tile_0256
   rotate: false
   xy: 0, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 256
-sprite
+  index: -1
+tile_0257
   rotate: false
   xy: 32, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 257
-sprite
+  index: -1
+tile_0258
   rotate: false
   xy: 64, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 258
-sprite
+  index: -1
+tile_0259
   rotate: false
   xy: 96, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 259
-sprite
+  index: -1
+tile_0260
   rotate: false
   xy: 128, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 260
-sprite
+  index: -1
+tile_0261
   rotate: false
   xy: 160, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 261
-sprite
+  index: -1
+tile_0262
   rotate: false
   xy: 192, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 262
-sprite
+  index: -1
+tile_0263
   rotate: false
   xy: 224, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 263
-sprite
+  index: -1
+tile_0264
   rotate: false
   xy: 256, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 264
-sprite
+  index: -1
+tile_0265
   rotate: false
   xy: 288, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 265
-sprite
+  index: -1
+tile_0266
   rotate: false
   xy: 320, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 266
-sprite
+  index: -1
+tile_0267
   rotate: false
   xy: 352, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 267
-sprite
+  index: -1
+tile_0268
   rotate: false
   xy: 384, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 268
-sprite
+  index: -1
+tile_0269
   rotate: false
   xy: 416, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 269
-sprite
+  index: -1
+tile_0270
   rotate: false
   xy: 448, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 270
-sprite
+  index: -1
+tile_0271
   rotate: false
   xy: 480, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 271
-sprite
+  index: -1
+tile_0272
   rotate: false
   xy: 512, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 272
-sprite
+  index: -1
+tile_0273
   rotate: false
   xy: 544, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 273
-sprite
+  index: -1
+tile_0274
   rotate: false
   xy: 576, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 274
-sprite
+  index: -1
+tile_0275
   rotate: false
   xy: 608, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 275
-sprite
+  index: -1
+tile_0276
   rotate: false
   xy: 640, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 276
-sprite
+  index: -1
+tile_0277
   rotate: false
   xy: 672, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 277
-sprite
+  index: -1
+tile_0278
   rotate: false
   xy: 704, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 278
-sprite
+  index: -1
+tile_0279
   rotate: false
   xy: 736, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 279
-sprite
+  index: -1
+tile_0280
   rotate: false
   xy: 768, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 280
-sprite
+  index: -1
+tile_0281
   rotate: false
   xy: 800, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 281
-sprite
+  index: -1
+tile_0282
   rotate: false
   xy: 832, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 282
-sprite
+  index: -1
+tile_0283
   rotate: false
   xy: 864, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 283
-sprite
+  index: -1
+tile_0284
   rotate: false
   xy: 896, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 284
-sprite
+  index: -1
+tile_0285
   rotate: false
   xy: 928, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 285
-sprite
+  index: -1
+tile_0286
   rotate: false
   xy: 960, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 286
-sprite
+  index: -1
+tile_0287
   rotate: false
   xy: 992, 256
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 287
-sprite
+  index: -1
+tile_0288
   rotate: false
   xy: 0, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 288
-sprite
+  index: -1
+tile_0289
   rotate: false
   xy: 32, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 289
-sprite
+  index: -1
+tile_0290
   rotate: false
   xy: 64, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 290
-sprite
+  index: -1
+tile_0291
   rotate: false
   xy: 96, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 291
-sprite
+  index: -1
+tile_0292
   rotate: false
   xy: 128, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 292
-sprite
+  index: -1
+tile_0293
   rotate: false
   xy: 160, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 293
-sprite
+  index: -1
+tile_0294
   rotate: false
   xy: 192, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 294
-sprite
+  index: -1
+tile_0295
   rotate: false
   xy: 224, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 295
-sprite
+  index: -1
+tile_0296
   rotate: false
   xy: 256, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 296
-sprite
+  index: -1
+tile_0297
   rotate: false
   xy: 288, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 297
-sprite
+  index: -1
+tile_0298
   rotate: false
   xy: 320, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 298
-sprite
+  index: -1
+tile_0299
   rotate: false
   xy: 352, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 299
-sprite
+  index: -1
+tile_0300
   rotate: false
   xy: 384, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 300
-sprite
+  index: -1
+tile_0301
   rotate: false
   xy: 416, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 301
-sprite
+  index: -1
+tile_0302
   rotate: false
   xy: 448, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 302
-sprite
+  index: -1
+tile_0303
   rotate: false
   xy: 480, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 303
-sprite
+  index: -1
+tile_0304
   rotate: false
   xy: 512, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 304
-sprite
+  index: -1
+tile_0305
   rotate: false
   xy: 544, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 305
-sprite
+  index: -1
+tile_0306
   rotate: false
   xy: 576, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 306
-sprite
+  index: -1
+tile_0307
   rotate: false
   xy: 608, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 307
-sprite
+  index: -1
+tile_0308
   rotate: false
   xy: 640, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 308
-sprite
+  index: -1
+tile_0309
   rotate: false
   xy: 672, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 309
-sprite
+  index: -1
+tile_0310
   rotate: false
   xy: 704, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 310
-sprite
+  index: -1
+tile_0311
   rotate: false
   xy: 736, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 311
-sprite
+  index: -1
+tile_0312
   rotate: false
   xy: 768, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 312
-sprite
+  index: -1
+tile_0313
   rotate: false
   xy: 800, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 313
-sprite
+  index: -1
+tile_0314
   rotate: false
   xy: 832, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 314
-sprite
+  index: -1
+tile_0315
   rotate: false
   xy: 864, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 315
-sprite
+  index: -1
+tile_0316
   rotate: false
   xy: 896, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 316
-sprite
+  index: -1
+tile_0317
   rotate: false
   xy: 928, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 317
-sprite
+  index: -1
+tile_0318
   rotate: false
   xy: 960, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 318
-sprite
+  index: -1
+tile_0319
   rotate: false
   xy: 992, 288
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 319
-sprite
+  index: -1
+tile_0320
   rotate: false
   xy: 0, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 320
-sprite
+  index: -1
+tile_0321
   rotate: false
   xy: 32, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 321
-sprite
+  index: -1
+tile_0322
   rotate: false
   xy: 64, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 322
-sprite
+  index: -1
+tile_0323
   rotate: false
   xy: 96, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 323
-sprite
+  index: -1
+tile_0324
   rotate: false
   xy: 128, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 324
-sprite
+  index: -1
+tile_0325
   rotate: false
   xy: 160, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 325
-sprite
+  index: -1
+tile_0326
   rotate: false
   xy: 192, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 326
-sprite
+  index: -1
+tile_0327
   rotate: false
   xy: 224, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 327
-sprite
+  index: -1
+tile_0328
   rotate: false
   xy: 256, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 328
-sprite
+  index: -1
+tile_0329
   rotate: false
   xy: 288, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 329
-sprite
+  index: -1
+tile_0330
   rotate: false
   xy: 320, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 330
-sprite
+  index: -1
+tile_0331
   rotate: false
   xy: 352, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 331
-sprite
+  index: -1
+tile_0332
   rotate: false
   xy: 384, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 332
-sprite
+  index: -1
+tile_0333
   rotate: false
   xy: 416, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 333
-sprite
+  index: -1
+tile_0334
   rotate: false
   xy: 448, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 334
-sprite
+  index: -1
+tile_0335
   rotate: false
   xy: 480, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 335
-sprite
+  index: -1
+tile_0336
   rotate: false
   xy: 512, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 336
-sprite
+  index: -1
+tile_0337
   rotate: false
   xy: 544, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 337
-sprite
+  index: -1
+tile_0338
   rotate: false
   xy: 576, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 338
-sprite
+  index: -1
+tile_0339
   rotate: false
   xy: 608, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 339
-sprite
+  index: -1
+tile_0340
   rotate: false
   xy: 640, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 340
-sprite
+  index: -1
+tile_0341
   rotate: false
   xy: 672, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 341
-sprite
+  index: -1
+tile_0342
   rotate: false
   xy: 704, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 342
-sprite
+  index: -1
+tile_0343
   rotate: false
   xy: 736, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 343
-sprite
+  index: -1
+tile_0344
   rotate: false
   xy: 768, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 344
-sprite
+  index: -1
+tile_0345
   rotate: false
   xy: 800, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 345
-sprite
+  index: -1
+tile_0346
   rotate: false
   xy: 832, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 346
-sprite
+  index: -1
+tile_0347
   rotate: false
   xy: 864, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 347
-sprite
+  index: -1
+tile_0348
   rotate: false
   xy: 896, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 348
-sprite
+  index: -1
+tile_0349
   rotate: false
   xy: 928, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 349
-sprite
+  index: -1
+tile_0350
   rotate: false
   xy: 960, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 350
-sprite
+  index: -1
+tile_0351
   rotate: false
   xy: 992, 320
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 351
-sprite
+  index: -1
+tile_0352
   rotate: false
   xy: 0, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 352
-sprite
+  index: -1
+tile_0353
   rotate: false
   xy: 32, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 353
-sprite
+  index: -1
+tile_0354
   rotate: false
   xy: 64, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 354
-sprite
+  index: -1
+tile_0355
   rotate: false
   xy: 96, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 355
-sprite
+  index: -1
+tile_0356
   rotate: false
   xy: 128, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 356
-sprite
+  index: -1
+tile_0357
   rotate: false
   xy: 160, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 357
-sprite
+  index: -1
+tile_0358
   rotate: false
   xy: 192, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 358
-sprite
+  index: -1
+tile_0359
   rotate: false
   xy: 224, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 359
-sprite
+  index: -1
+tile_0360
   rotate: false
   xy: 256, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 360
-sprite
+  index: -1
+tile_0361
   rotate: false
   xy: 288, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 361
-sprite
+  index: -1
+tile_0362
   rotate: false
   xy: 320, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 362
-sprite
+  index: -1
+tile_0363
   rotate: false
   xy: 352, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 363
-sprite
+  index: -1
+tile_0364
   rotate: false
   xy: 384, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 364
-sprite
+  index: -1
+tile_0365
   rotate: false
   xy: 416, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 365
-sprite
+  index: -1
+tile_0366
   rotate: false
   xy: 448, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 366
-sprite
+  index: -1
+tile_0367
   rotate: false
   xy: 480, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 367
-sprite
+  index: -1
+tile_0368
   rotate: false
   xy: 512, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 368
-sprite
+  index: -1
+tile_0369
   rotate: false
   xy: 544, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 369
-sprite
+  index: -1
+tile_0370
   rotate: false
   xy: 576, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 370
-sprite
+  index: -1
+tile_0371
   rotate: false
   xy: 608, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 371
-sprite
+  index: -1
+tile_0372
   rotate: false
   xy: 640, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 372
-sprite
+  index: -1
+tile_0373
   rotate: false
   xy: 672, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 373
-sprite
+  index: -1
+tile_0374
   rotate: false
   xy: 704, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 374
-sprite
+  index: -1
+tile_0375
   rotate: false
   xy: 736, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 375
-sprite
+  index: -1
+tile_0376
   rotate: false
   xy: 768, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 376
-sprite
+  index: -1
+tile_0377
   rotate: false
   xy: 800, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 377
-sprite
+  index: -1
+tile_0378
   rotate: false
   xy: 832, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 378
-sprite
+  index: -1
+tile_0379
   rotate: false
   xy: 864, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 379
-sprite
+  index: -1
+tile_0380
   rotate: false
   xy: 896, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 380
-sprite
+  index: -1
+tile_0381
   rotate: false
   xy: 928, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 381
-sprite
+  index: -1
+tile_0382
   rotate: false
   xy: 960, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 382
-sprite
+  index: -1
+tile_0383
   rotate: false
   xy: 992, 352
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 383
-sprite
+  index: -1
+tile_0384
   rotate: false
   xy: 0, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 384
-sprite
+  index: -1
+tile_0385
   rotate: false
   xy: 32, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 385
-sprite
+  index: -1
+tile_0386
   rotate: false
   xy: 64, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 386
-sprite
+  index: -1
+tile_0387
   rotate: false
   xy: 96, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 387
-sprite
+  index: -1
+tile_0388
   rotate: false
   xy: 128, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 388
-sprite
+  index: -1
+tile_0389
   rotate: false
   xy: 160, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 389
-sprite
+  index: -1
+tile_0390
   rotate: false
   xy: 192, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 390
-sprite
+  index: -1
+tile_0391
   rotate: false
   xy: 224, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 391
-sprite
+  index: -1
+tile_0392
   rotate: false
   xy: 256, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 392
-sprite
+  index: -1
+tile_0393
   rotate: false
   xy: 288, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 393
-sprite
+  index: -1
+tile_0394
   rotate: false
   xy: 320, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 394
-sprite
+  index: -1
+tile_0395
   rotate: false
   xy: 352, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 395
-sprite
+  index: -1
+tile_0396
   rotate: false
   xy: 384, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 396
-sprite
+  index: -1
+tile_0397
   rotate: false
   xy: 416, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 397
-sprite
+  index: -1
+tile_0398
   rotate: false
   xy: 448, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 398
-sprite
+  index: -1
+tile_0399
   rotate: false
   xy: 480, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 399
-sprite
+  index: -1
+tile_0400
   rotate: false
   xy: 512, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 400
-sprite
+  index: -1
+tile_0401
   rotate: false
   xy: 544, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 401
-sprite
+  index: -1
+tile_0402
   rotate: false
   xy: 576, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 402
-sprite
+  index: -1
+tile_0403
   rotate: false
   xy: 608, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 403
-sprite
+  index: -1
+tile_0404
   rotate: false
   xy: 640, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 404
-sprite
+  index: -1
+tile_0405
   rotate: false
   xy: 672, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 405
-sprite
+  index: -1
+tile_0406
   rotate: false
   xy: 704, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 406
-sprite
+  index: -1
+tile_0407
   rotate: false
   xy: 736, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 407
-sprite
+  index: -1
+tile_0408
   rotate: false
   xy: 768, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 408
-sprite
+  index: -1
+tile_0409
   rotate: false
   xy: 800, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 409
-sprite
+  index: -1
+tile_0410
   rotate: false
   xy: 832, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 410
-sprite
+  index: -1
+tile_0411
   rotate: false
   xy: 864, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 411
-sprite
+  index: -1
+tile_0412
   rotate: false
   xy: 896, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 412
-sprite
+  index: -1
+tile_0413
   rotate: false
   xy: 928, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 413
-sprite
+  index: -1
+tile_0414
   rotate: false
   xy: 960, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 414
-sprite
+  index: -1
+tile_0415
   rotate: false
   xy: 992, 384
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 415
-sprite
+  index: -1
+tile_0416
   rotate: false
   xy: 0, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 416
-sprite
+  index: -1
+tile_0417
   rotate: false
   xy: 32, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 417
-sprite
+  index: -1
+tile_0418
   rotate: false
   xy: 64, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 418
-sprite
+  index: -1
+tile_0419
   rotate: false
   xy: 96, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 419
-sprite
+  index: -1
+tile_0420
   rotate: false
   xy: 128, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 420
-sprite
+  index: -1
+tile_0421
   rotate: false
   xy: 160, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 421
-sprite
+  index: -1
+tile_0422
   rotate: false
   xy: 192, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 422
-sprite
+  index: -1
+tile_0423
   rotate: false
   xy: 224, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 423
-sprite
+  index: -1
+tile_0424
   rotate: false
   xy: 256, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 424
-sprite
+  index: -1
+tile_0425
   rotate: false
   xy: 288, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 425
-sprite
+  index: -1
+tile_0426
   rotate: false
   xy: 320, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 426
-sprite
+  index: -1
+tile_0427
   rotate: false
   xy: 352, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 427
-sprite
+  index: -1
+tile_0428
   rotate: false
   xy: 384, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 428
-sprite
+  index: -1
+tile_0429
   rotate: false
   xy: 416, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 429
-sprite
+  index: -1
+tile_0430
   rotate: false
   xy: 448, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 430
-sprite
+  index: -1
+tile_0431
   rotate: false
   xy: 480, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 431
-sprite
+  index: -1
+tile_0432
   rotate: false
   xy: 512, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 432
-sprite
+  index: -1
+tile_0433
   rotate: false
   xy: 544, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 433
-sprite
+  index: -1
+tile_0434
   rotate: false
   xy: 576, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 434
-sprite
+  index: -1
+tile_0435
   rotate: false
   xy: 608, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 435
-sprite
+  index: -1
+tile_0436
   rotate: false
   xy: 640, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 436
-sprite
+  index: -1
+tile_0437
   rotate: false
   xy: 672, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 437
-sprite
+  index: -1
+tile_0438
   rotate: false
   xy: 704, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 438
-sprite
+  index: -1
+tile_0439
   rotate: false
   xy: 736, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 439
-sprite
+  index: -1
+tile_0440
   rotate: false
   xy: 768, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 440
-sprite
+  index: -1
+tile_0441
   rotate: false
   xy: 800, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 441
-sprite
+  index: -1
+tile_0442
   rotate: false
   xy: 832, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 442
-sprite
+  index: -1
+tile_0443
   rotate: false
   xy: 864, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 443
-sprite
+  index: -1
+tile_0444
   rotate: false
   xy: 896, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 444
-sprite
+  index: -1
+tile_0445
   rotate: false
   xy: 928, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 445
-sprite
+  index: -1
+tile_0446
   rotate: false
   xy: 960, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 446
-sprite
+  index: -1
+tile_0447
   rotate: false
   xy: 992, 416
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 447
-sprite
+  index: -1
+tile_0448
   rotate: false
   xy: 0, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 448
-sprite
+  index: -1
+tile_0449
   rotate: false
   xy: 32, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 449
-sprite
+  index: -1
+tile_0450
   rotate: false
   xy: 64, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 450
-sprite
+  index: -1
+tile_0451
   rotate: false
   xy: 96, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 451
-sprite
+  index: -1
+tile_0452
   rotate: false
   xy: 128, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 452
-sprite
+  index: -1
+tile_0453
   rotate: false
   xy: 160, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 453
-sprite
+  index: -1
+tile_0454
   rotate: false
   xy: 192, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 454
-sprite
+  index: -1
+tile_0455
   rotate: false
   xy: 224, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 455
-sprite
+  index: -1
+tile_0456
   rotate: false
   xy: 256, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 456
-sprite
+  index: -1
+tile_0457
   rotate: false
   xy: 288, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 457
-sprite
+  index: -1
+tile_0458
   rotate: false
   xy: 320, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 458
-sprite
+  index: -1
+tile_0459
   rotate: false
   xy: 352, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 459
-sprite
+  index: -1
+tile_0460
   rotate: false
   xy: 384, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 460
-sprite
+  index: -1
+tile_0461
   rotate: false
   xy: 416, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 461
-sprite
+  index: -1
+tile_0462
   rotate: false
   xy: 448, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 462
-sprite
+  index: -1
+tile_0463
   rotate: false
   xy: 480, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 463
-sprite
+  index: -1
+tile_0464
   rotate: false
   xy: 512, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 464
-sprite
+  index: -1
+tile_0465
   rotate: false
   xy: 544, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 465
-sprite
+  index: -1
+tile_0466
   rotate: false
   xy: 576, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 466
-sprite
+  index: -1
+tile_0467
   rotate: false
   xy: 608, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 467
-sprite
+  index: -1
+tile_0468
   rotate: false
   xy: 640, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 468
-sprite
+  index: -1
+tile_0469
   rotate: false
   xy: 672, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 469
-sprite
+  index: -1
+tile_0470
   rotate: false
   xy: 704, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 470
-sprite
+  index: -1
+tile_0471
   rotate: false
   xy: 736, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 471
-sprite
+  index: -1
+tile_0472
   rotate: false
   xy: 768, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 472
-sprite
+  index: -1
+tile_0473
   rotate: false
   xy: 800, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 473
-sprite
+  index: -1
+tile_0474
   rotate: false
   xy: 832, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 474
-sprite
+  index: -1
+tile_0475
   rotate: false
   xy: 864, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 475
-sprite
+  index: -1
+tile_0476
   rotate: false
   xy: 896, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 476
-sprite
+  index: -1
+tile_0477
   rotate: false
   xy: 928, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 477
-sprite
+  index: -1
+tile_0478
   rotate: false
   xy: 960, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 478
-sprite
+  index: -1
+tile_0479
   rotate: false
   xy: 992, 448
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 479
-sprite
+  index: -1
+tile_0480
   rotate: false
   xy: 0, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 480
-sprite
+  index: -1
+tile_0481
   rotate: false
   xy: 32, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 481
-sprite
+  index: -1
+tile_0482
   rotate: false
   xy: 64, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 482
-sprite
+  index: -1
+tile_0483
   rotate: false
   xy: 96, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 483
-sprite
+  index: -1
+tile_0484
   rotate: false
   xy: 128, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 484
-sprite
+  index: -1
+tile_0485
   rotate: false
   xy: 160, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 485
-sprite
+  index: -1
+tile_0486
   rotate: false
   xy: 192, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 486
-sprite
+  index: -1
+tile_0487
   rotate: false
   xy: 224, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 487
-sprite
+  index: -1
+tile_0488
   rotate: false
   xy: 256, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 488
-sprite
+  index: -1
+tile_0489
   rotate: false
   xy: 288, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 489
-sprite
+  index: -1
+tile_0490
   rotate: false
   xy: 320, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 490
-sprite
+  index: -1
+tile_0491
   rotate: false
   xy: 352, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 491
-sprite
+  index: -1
+tile_0492
   rotate: false
   xy: 384, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 492
-sprite
+  index: -1
+tile_0493
   rotate: false
   xy: 416, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 493
-sprite
+  index: -1
+tile_0494
   rotate: false
   xy: 448, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 494
-sprite
+  index: -1
+tile_0495
   rotate: false
   xy: 480, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 495
-sprite
+  index: -1
+tile_0496
   rotate: false
   xy: 512, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 496
-sprite
+  index: -1
+tile_0497
   rotate: false
   xy: 544, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 497
-sprite
+  index: -1
+tile_0498
   rotate: false
   xy: 576, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 498
-sprite
+  index: -1
+tile_0499
   rotate: false
   xy: 608, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 499
-sprite
+  index: -1
+tile_0500
   rotate: false
   xy: 640, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 500
-sprite
+  index: -1
+tile_0501
   rotate: false
   xy: 672, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 501
-sprite
+  index: -1
+tile_0502
   rotate: false
   xy: 704, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 502
-sprite
+  index: -1
+tile_0503
   rotate: false
   xy: 736, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 503
-sprite
+  index: -1
+tile_0504
   rotate: false
   xy: 768, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 504
-sprite
+  index: -1
+tile_0505
   rotate: false
   xy: 800, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 505
-sprite
+  index: -1
+tile_0506
   rotate: false
   xy: 832, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 506
-sprite
+  index: -1
+tile_0507
   rotate: false
   xy: 864, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 507
-sprite
+  index: -1
+tile_0508
   rotate: false
   xy: 896, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 508
-sprite
+  index: -1
+tile_0509
   rotate: false
   xy: 928, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 509
-sprite
+  index: -1
+tile_0510
   rotate: false
   xy: 960, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 510
-sprite
+  index: -1
+tile_0511
   rotate: false
   xy: 992, 480
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 511
-sprite
+  index: -1
+tile_0512
   rotate: false
   xy: 0, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 512
-sprite
+  index: -1
+tile_0513
   rotate: false
   xy: 32, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 513
-sprite
+  index: -1
+tile_0514
   rotate: false
   xy: 64, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 514
-sprite
+  index: -1
+tile_0515
   rotate: false
   xy: 96, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 515
-sprite
+  index: -1
+tile_0516
   rotate: false
   xy: 128, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 516
-sprite
+  index: -1
+tile_0517
   rotate: false
   xy: 160, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 517
-sprite
+  index: -1
+tile_0518
   rotate: false
   xy: 192, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 518
-sprite
+  index: -1
+tile_0519
   rotate: false
   xy: 224, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 519
-sprite
+  index: -1
+tile_0520
   rotate: false
   xy: 256, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 520
-sprite
+  index: -1
+tile_0521
   rotate: false
   xy: 288, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 521
-sprite
+  index: -1
+tile_0522
   rotate: false
   xy: 320, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 522
-sprite
+  index: -1
+tile_0523
   rotate: false
   xy: 352, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 523
-sprite
+  index: -1
+tile_0524
   rotate: false
   xy: 384, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 524
-sprite
+  index: -1
+tile_0525
   rotate: false
   xy: 416, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 525
-sprite
+  index: -1
+tile_0526
   rotate: false
   xy: 448, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 526
-sprite
+  index: -1
+tile_0527
   rotate: false
   xy: 480, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 527
-sprite
+  index: -1
+tile_0528
   rotate: false
   xy: 512, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 528
-sprite
+  index: -1
+tile_0529
   rotate: false
   xy: 544, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 529
-sprite
+  index: -1
+tile_0530
   rotate: false
   xy: 576, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 530
-sprite
+  index: -1
+tile_0531
   rotate: false
   xy: 608, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 531
-sprite
+  index: -1
+tile_0532
   rotate: false
   xy: 640, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 532
-sprite
+  index: -1
+tile_0533
   rotate: false
   xy: 672, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 533
-sprite
+  index: -1
+tile_0534
   rotate: false
   xy: 704, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 534
-sprite
+  index: -1
+tile_0535
   rotate: false
   xy: 736, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 535
-sprite
+  index: -1
+tile_0536
   rotate: false
   xy: 768, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 536
-sprite
+  index: -1
+tile_0537
   rotate: false
   xy: 800, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 537
-sprite
+  index: -1
+tile_0538
   rotate: false
   xy: 832, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 538
-sprite
+  index: -1
+tile_0539
   rotate: false
   xy: 864, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 539
-sprite
+  index: -1
+tile_0540
   rotate: false
   xy: 896, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 540
-sprite
+  index: -1
+tile_0541
   rotate: false
   xy: 928, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 541
-sprite
+  index: -1
+tile_0542
   rotate: false
   xy: 960, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 542
-sprite
+  index: -1
+tile_0543
   rotate: false
   xy: 992, 512
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 543
-sprite
+  index: -1
+tile_0544
   rotate: false
   xy: 0, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 544
-sprite
+  index: -1
+tile_0545
   rotate: false
   xy: 32, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 545
-sprite
+  index: -1
+tile_0546
   rotate: false
   xy: 64, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 546
-sprite
+  index: -1
+tile_0547
   rotate: false
   xy: 96, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 547
-sprite
+  index: -1
+tile_0548
   rotate: false
   xy: 128, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 548
-sprite
+  index: -1
+tile_0549
   rotate: false
   xy: 160, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 549
-sprite
+  index: -1
+tile_0550
   rotate: false
   xy: 192, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 550
-sprite
+  index: -1
+tile_0551
   rotate: false
   xy: 224, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 551
-sprite
+  index: -1
+tile_0552
   rotate: false
   xy: 256, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 552
-sprite
+  index: -1
+tile_0553
   rotate: false
   xy: 288, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 553
-sprite
+  index: -1
+tile_0554
   rotate: false
   xy: 320, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 554
-sprite
+  index: -1
+tile_0555
   rotate: false
   xy: 352, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 555
-sprite
+  index: -1
+tile_0556
   rotate: false
   xy: 384, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 556
-sprite
+  index: -1
+tile_0557
   rotate: false
   xy: 416, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 557
-sprite
+  index: -1
+tile_0558
   rotate: false
   xy: 448, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 558
-sprite
+  index: -1
+tile_0559
   rotate: false
   xy: 480, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 559
-sprite
+  index: -1
+tile_0560
   rotate: false
   xy: 512, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 560
-sprite
+  index: -1
+tile_0561
   rotate: false
   xy: 544, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 561
-sprite
+  index: -1
+tile_0562
   rotate: false
   xy: 576, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 562
-sprite
+  index: -1
+tile_0563
   rotate: false
   xy: 608, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 563
-sprite
+  index: -1
+tile_0564
   rotate: false
   xy: 640, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 564
-sprite
+  index: -1
+tile_0565
   rotate: false
   xy: 672, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 565
-sprite
+  index: -1
+tile_0566
   rotate: false
   xy: 704, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 566
-sprite
+  index: -1
+tile_0567
   rotate: false
   xy: 736, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 567
-sprite
+  index: -1
+tile_0568
   rotate: false
   xy: 768, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 568
-sprite
+  index: -1
+tile_0569
   rotate: false
   xy: 800, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 569
-sprite
+  index: -1
+tile_0570
   rotate: false
   xy: 832, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 570
-sprite
+  index: -1
+tile_0571
   rotate: false
   xy: 864, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 571
-sprite
+  index: -1
+tile_0572
   rotate: false
   xy: 896, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 572
-sprite
+  index: -1
+tile_0573
   rotate: false
   xy: 928, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 573
-sprite
+  index: -1
+tile_0574
   rotate: false
   xy: 960, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 574
-sprite
+  index: -1
+tile_0575
   rotate: false
   xy: 992, 544
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 575
-sprite
+  index: -1
+tile_0576
   rotate: false
   xy: 0, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 576
-sprite
+  index: -1
+tile_0577
   rotate: false
   xy: 32, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 577
-sprite
+  index: -1
+tile_0578
   rotate: false
   xy: 64, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 578
-sprite
+  index: -1
+tile_0579
   rotate: false
   xy: 96, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 579
-sprite
+  index: -1
+tile_0580
   rotate: false
   xy: 128, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 580
-sprite
+  index: -1
+tile_0581
   rotate: false
   xy: 160, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 581
-sprite
+  index: -1
+tile_0582
   rotate: false
   xy: 192, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 582
-sprite
+  index: -1
+tile_0583
   rotate: false
   xy: 224, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 583
-sprite
+  index: -1
+tile_0584
   rotate: false
   xy: 256, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 584
-sprite
+  index: -1
+tile_0585
   rotate: false
   xy: 288, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 585
-sprite
+  index: -1
+tile_0586
   rotate: false
   xy: 320, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 586
-sprite
+  index: -1
+tile_0587
   rotate: false
   xy: 352, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 587
-sprite
+  index: -1
+tile_0588
   rotate: false
   xy: 384, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 588
-sprite
+  index: -1
+tile_0589
   rotate: false
   xy: 416, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 589
-sprite
+  index: -1
+tile_0590
   rotate: false
   xy: 448, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 590
-sprite
+  index: -1
+tile_0591
   rotate: false
   xy: 480, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 591
-sprite
+  index: -1
+tile_0592
   rotate: false
   xy: 512, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 592
-sprite
+  index: -1
+tile_0593
   rotate: false
   xy: 544, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 593
-sprite
+  index: -1
+tile_0594
   rotate: false
   xy: 576, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 594
-sprite
+  index: -1
+tile_0595
   rotate: false
   xy: 608, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 595
-sprite
+  index: -1
+tile_0596
   rotate: false
   xy: 640, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 596
-sprite
+  index: -1
+tile_0597
   rotate: false
   xy: 672, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 597
-sprite
+  index: -1
+tile_0598
   rotate: false
   xy: 704, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 598
-sprite
+  index: -1
+tile_0599
   rotate: false
   xy: 736, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 599
-sprite
+  index: -1
+tile_0600
   rotate: false
   xy: 768, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 600
-sprite
+  index: -1
+tile_0601
   rotate: false
   xy: 800, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 601
-sprite
+  index: -1
+tile_0602
   rotate: false
   xy: 832, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 602
-sprite
+  index: -1
+tile_0603
   rotate: false
   xy: 864, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 603
-sprite
+  index: -1
+tile_0604
   rotate: false
   xy: 896, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 604
-sprite
+  index: -1
+tile_0605
   rotate: false
   xy: 928, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 605
-sprite
+  index: -1
+tile_0606
   rotate: false
   xy: 960, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 606
-sprite
+  index: -1
+tile_0607
   rotate: false
   xy: 992, 576
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 607
-sprite
+  index: -1
+tile_0608
   rotate: false
   xy: 0, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 608
-sprite
+  index: -1
+tile_0609
   rotate: false
   xy: 32, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 609
-sprite
+  index: -1
+tile_0610
   rotate: false
   xy: 64, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 610
-sprite
+  index: -1
+tile_0611
   rotate: false
   xy: 96, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 611
-sprite
+  index: -1
+tile_0612
   rotate: false
   xy: 128, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 612
-sprite
+  index: -1
+tile_0613
   rotate: false
   xy: 160, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 613
-sprite
+  index: -1
+tile_0614
   rotate: false
   xy: 192, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 614
-sprite
+  index: -1
+tile_0615
   rotate: false
   xy: 224, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 615
-sprite
+  index: -1
+tile_0616
   rotate: false
   xy: 256, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 616
-sprite
+  index: -1
+tile_0617
   rotate: false
   xy: 288, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 617
-sprite
+  index: -1
+tile_0618
   rotate: false
   xy: 320, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 618
-sprite
+  index: -1
+tile_0619
   rotate: false
   xy: 352, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 619
-sprite
+  index: -1
+tile_0620
   rotate: false
   xy: 384, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 620
-sprite
+  index: -1
+tile_0621
   rotate: false
   xy: 416, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 621
-sprite
+  index: -1
+tile_0622
   rotate: false
   xy: 448, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 622
-sprite
+  index: -1
+tile_0623
   rotate: false
   xy: 480, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 623
-sprite
+  index: -1
+tile_0624
   rotate: false
   xy: 512, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 624
-sprite
+  index: -1
+tile_0625
   rotate: false
   xy: 544, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 625
-sprite
+  index: -1
+tile_0626
   rotate: false
   xy: 576, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 626
-sprite
+  index: -1
+tile_0627
   rotate: false
   xy: 608, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 627
-sprite
+  index: -1
+tile_0628
   rotate: false
   xy: 640, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 628
-sprite
+  index: -1
+tile_0629
   rotate: false
   xy: 672, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 629
-sprite
+  index: -1
+tile_0630
   rotate: false
   xy: 704, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 630
-sprite
+  index: -1
+tile_0631
   rotate: false
   xy: 736, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 631
-sprite
+  index: -1
+tile_0632
   rotate: false
   xy: 768, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 632
-sprite
+  index: -1
+tile_0633
   rotate: false
   xy: 800, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 633
-sprite
+  index: -1
+tile_0634
   rotate: false
   xy: 832, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 634
-sprite
+  index: -1
+tile_0635
   rotate: false
   xy: 864, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 635
-sprite
+  index: -1
+tile_0636
   rotate: false
   xy: 896, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 636
-sprite
+  index: -1
+tile_0637
   rotate: false
   xy: 928, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 637
-sprite
+  index: -1
+tile_0638
   rotate: false
   xy: 960, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 638
-sprite
+  index: -1
+tile_0639
   rotate: false
   xy: 992, 608
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 639
-sprite
+  index: -1
+tile_0640
   rotate: false
   xy: 0, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 640
-sprite
+  index: -1
+tile_0641
   rotate: false
   xy: 32, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 641
-sprite
+  index: -1
+tile_0642
   rotate: false
   xy: 64, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 642
-sprite
+  index: -1
+tile_0643
   rotate: false
   xy: 96, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 643
-sprite
+  index: -1
+tile_0644
   rotate: false
   xy: 128, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 644
-sprite
+  index: -1
+tile_0645
   rotate: false
   xy: 160, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 645
-sprite
+  index: -1
+tile_0646
   rotate: false
   xy: 192, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 646
-sprite
+  index: -1
+tile_0647
   rotate: false
   xy: 224, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 647
-sprite
+  index: -1
+tile_0648
   rotate: false
   xy: 256, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 648
-sprite
+  index: -1
+tile_0649
   rotate: false
   xy: 288, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 649
-sprite
+  index: -1
+tile_0650
   rotate: false
   xy: 320, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 650
-sprite
+  index: -1
+tile_0651
   rotate: false
   xy: 352, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 651
-sprite
+  index: -1
+tile_0652
   rotate: false
   xy: 384, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 652
-sprite
+  index: -1
+tile_0653
   rotate: false
   xy: 416, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 653
-sprite
+  index: -1
+tile_0654
   rotate: false
   xy: 448, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 654
-sprite
+  index: -1
+tile_0655
   rotate: false
   xy: 480, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 655
-sprite
+  index: -1
+tile_0656
   rotate: false
   xy: 512, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 656
-sprite
+  index: -1
+tile_0657
   rotate: false
   xy: 544, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 657
-sprite
+  index: -1
+tile_0658
   rotate: false
   xy: 576, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 658
-sprite
+  index: -1
+tile_0659
   rotate: false
   xy: 608, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 659
-sprite
+  index: -1
+tile_0660
   rotate: false
   xy: 640, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 660
-sprite
+  index: -1
+tile_0661
   rotate: false
   xy: 672, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 661
-sprite
+  index: -1
+tile_0662
   rotate: false
   xy: 704, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 662
-sprite
+  index: -1
+tile_0663
   rotate: false
   xy: 736, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 663
-sprite
+  index: -1
+tile_0664
   rotate: false
   xy: 768, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 664
-sprite
+  index: -1
+tile_0665
   rotate: false
   xy: 800, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 665
-sprite
+  index: -1
+tile_0666
   rotate: false
   xy: 832, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 666
-sprite
+  index: -1
+tile_0667
   rotate: false
   xy: 864, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 667
-sprite
+  index: -1
+tile_0668
   rotate: false
   xy: 896, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 668
-sprite
+  index: -1
+tile_0669
   rotate: false
   xy: 928, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 669
-sprite
+  index: -1
+tile_0670
   rotate: false
   xy: 960, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 670
-sprite
+  index: -1
+tile_0671
   rotate: false
   xy: 992, 640
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 671
-sprite
+  index: -1
+tile_0672
   rotate: false
   xy: 0, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 672
-sprite
+  index: -1
+tile_0673
   rotate: false
   xy: 32, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 673
-sprite
+  index: -1
+tile_0674
   rotate: false
   xy: 64, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 674
-sprite
+  index: -1
+tile_0675
   rotate: false
   xy: 96, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 675
-sprite
+  index: -1
+tile_0676
   rotate: false
   xy: 128, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 676
-sprite
+  index: -1
+tile_0677
   rotate: false
   xy: 160, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 677
-sprite
+  index: -1
+tile_0678
   rotate: false
   xy: 192, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 678
-sprite
+  index: -1
+tile_0679
   rotate: false
   xy: 224, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 679
-sprite
+  index: -1
+tile_0680
   rotate: false
   xy: 256, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 680
-sprite
+  index: -1
+tile_0681
   rotate: false
   xy: 288, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 681
-sprite
+  index: -1
+tile_0682
   rotate: false
   xy: 320, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 682
-sprite
+  index: -1
+tile_0683
   rotate: false
   xy: 352, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 683
-sprite
+  index: -1
+tile_0684
   rotate: false
   xy: 384, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 684
-sprite
+  index: -1
+tile_0685
   rotate: false
   xy: 416, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 685
-sprite
+  index: -1
+tile_0686
   rotate: false
   xy: 448, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 686
-sprite
+  index: -1
+tile_0687
   rotate: false
   xy: 480, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 687
-sprite
+  index: -1
+tile_0688
   rotate: false
   xy: 512, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 688
-sprite
+  index: -1
+tile_0689
   rotate: false
   xy: 544, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 689
-sprite
+  index: -1
+tile_0690
   rotate: false
   xy: 576, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 690
-sprite
+  index: -1
+tile_0691
   rotate: false
   xy: 608, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 691
-sprite
+  index: -1
+tile_0692
   rotate: false
   xy: 640, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 692
-sprite
+  index: -1
+tile_0693
   rotate: false
   xy: 672, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 693
-sprite
+  index: -1
+tile_0694
   rotate: false
   xy: 704, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 694
-sprite
+  index: -1
+tile_0695
   rotate: false
   xy: 736, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 695
-sprite
+  index: -1
+tile_0696
   rotate: false
   xy: 768, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 696
-sprite
+  index: -1
+tile_0697
   rotate: false
   xy: 800, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 697
-sprite
+  index: -1
+tile_0698
   rotate: false
   xy: 832, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 698
-sprite
+  index: -1
+tile_0699
   rotate: false
   xy: 864, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 699
-sprite
+  index: -1
+tile_0700
   rotate: false
   xy: 896, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 700
-sprite
+  index: -1
+tile_0701
   rotate: false
   xy: 928, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 701
-sprite
+  index: -1
+tile_0702
   rotate: false
   xy: 960, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 702
-sprite
+  index: -1
+tile_0703
   rotate: false
   xy: 992, 672
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 703
-sprite
+  index: -1
+tile_0704
   rotate: false
   xy: 0, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 704
-sprite
+  index: -1
+tile_0705
   rotate: false
   xy: 32, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 705
-sprite
+  index: -1
+tile_0706
   rotate: false
   xy: 64, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 706
-sprite
+  index: -1
+tile_0707
   rotate: false
   xy: 96, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 707
-sprite
+  index: -1
+tile_0708
   rotate: false
   xy: 128, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 708
-sprite
+  index: -1
+tile_0709
   rotate: false
   xy: 160, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 709
-sprite
+  index: -1
+tile_0710
   rotate: false
   xy: 192, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 710
-sprite
+  index: -1
+tile_0711
   rotate: false
   xy: 224, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 711
-sprite
+  index: -1
+tile_0712
   rotate: false
   xy: 256, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 712
-sprite
+  index: -1
+tile_0713
   rotate: false
   xy: 288, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 713
-sprite
+  index: -1
+tile_0714
   rotate: false
   xy: 320, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 714
-sprite
+  index: -1
+tile_0715
   rotate: false
   xy: 352, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 715
-sprite
+  index: -1
+tile_0716
   rotate: false
   xy: 384, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 716
-sprite
+  index: -1
+tile_0717
   rotate: false
   xy: 416, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 717
-sprite
+  index: -1
+tile_0718
   rotate: false
   xy: 448, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 718
-sprite
+  index: -1
+tile_0719
   rotate: false
   xy: 480, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 719
-sprite
+  index: -1
+tile_0720
   rotate: false
   xy: 512, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 720
-sprite
+  index: -1
+tile_0721
   rotate: false
   xy: 544, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 721
-sprite
+  index: -1
+tile_0722
   rotate: false
   xy: 576, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 722
-sprite
+  index: -1
+tile_0723
   rotate: false
   xy: 608, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 723
-sprite
+  index: -1
+tile_0724
   rotate: false
   xy: 640, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 724
-sprite
+  index: -1
+tile_0725
   rotate: false
   xy: 672, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 725
-sprite
+  index: -1
+tile_0726
   rotate: false
   xy: 704, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 726
-sprite
+  index: -1
+tile_0727
   rotate: false
   xy: 736, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 727
-sprite
+  index: -1
+tile_0728
   rotate: false
   xy: 768, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 728
-sprite
+  index: -1
+tile_0729
   rotate: false
   xy: 800, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 729
-sprite
+  index: -1
+tile_0730
   rotate: false
   xy: 832, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 730
-sprite
+  index: -1
+tile_0731
   rotate: false
   xy: 864, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 731
-sprite
+  index: -1
+tile_0732
   rotate: false
   xy: 896, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 732
-sprite
+  index: -1
+tile_0733
   rotate: false
   xy: 928, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 733
-sprite
+  index: -1
+tile_0734
   rotate: false
   xy: 960, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 734
-sprite
+  index: -1
+tile_0735
   rotate: false
   xy: 992, 704
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 735
-sprite
+  index: -1
+tile_0736
   rotate: false
   xy: 0, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 736
-sprite
+  index: -1
+tile_0737
   rotate: false
   xy: 32, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 737
-sprite
+  index: -1
+tile_0738
   rotate: false
   xy: 64, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 738
-sprite
+  index: -1
+tile_0739
   rotate: false
   xy: 96, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 739
-sprite
+  index: -1
+tile_0740
   rotate: false
   xy: 128, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 740
-sprite
+  index: -1
+tile_0741
   rotate: false
   xy: 160, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 741
-sprite
+  index: -1
+tile_0742
   rotate: false
   xy: 192, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 742
-sprite
+  index: -1
+tile_0743
   rotate: false
   xy: 224, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 743
-sprite
+  index: -1
+tile_0744
   rotate: false
   xy: 256, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 744
-sprite
+  index: -1
+tile_0745
   rotate: false
   xy: 288, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 745
-sprite
+  index: -1
+tile_0746
   rotate: false
   xy: 320, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 746
-sprite
+  index: -1
+tile_0747
   rotate: false
   xy: 352, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 747
-sprite
+  index: -1
+tile_0748
   rotate: false
   xy: 384, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 748
-sprite
+  index: -1
+tile_0749
   rotate: false
   xy: 416, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 749
-sprite
+  index: -1
+tile_0750
   rotate: false
   xy: 448, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 750
-sprite
+  index: -1
+tile_0751
   rotate: false
   xy: 480, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 751
-sprite
+  index: -1
+tile_0752
   rotate: false
   xy: 512, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 752
-sprite
+  index: -1
+tile_0753
   rotate: false
   xy: 544, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 753
-sprite
+  index: -1
+tile_0754
   rotate: false
   xy: 576, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 754
-sprite
+  index: -1
+tile_0755
   rotate: false
   xy: 608, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 755
-sprite
+  index: -1
+tile_0756
   rotate: false
   xy: 640, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 756
-sprite
+  index: -1
+tile_0757
   rotate: false
   xy: 672, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 757
-sprite
+  index: -1
+tile_0758
   rotate: false
   xy: 704, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 758
-sprite
+  index: -1
+tile_0759
   rotate: false
   xy: 736, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 759
-sprite
+  index: -1
+tile_0760
   rotate: false
   xy: 768, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 760
-sprite
+  index: -1
+tile_0761
   rotate: false
   xy: 800, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 761
-sprite
+  index: -1
+tile_0762
   rotate: false
   xy: 832, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 762
-sprite
+  index: -1
+tile_0763
   rotate: false
   xy: 864, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 763
-sprite
+  index: -1
+tile_0764
   rotate: false
   xy: 896, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 764
-sprite
+  index: -1
+tile_0765
   rotate: false
   xy: 928, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 765
-sprite
+  index: -1
+tile_0766
   rotate: false
   xy: 960, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 766
-sprite
+  index: -1
+tile_0767
   rotate: false
   xy: 992, 736
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 767
-sprite
+  index: -1
+tile_0768
   rotate: false
   xy: 0, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 768
-sprite
+  index: -1
+tile_0769
   rotate: false
   xy: 32, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 769
-sprite
+  index: -1
+tile_0770
   rotate: false
   xy: 64, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 770
-sprite
+  index: -1
+tile_0771
   rotate: false
   xy: 96, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 771
-sprite
+  index: -1
+tile_0772
   rotate: false
   xy: 128, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 772
-sprite
+  index: -1
+tile_0773
   rotate: false
   xy: 160, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 773
-sprite
+  index: -1
+tile_0774
   rotate: false
   xy: 192, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 774
-sprite
+  index: -1
+tile_0775
   rotate: false
   xy: 224, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 775
-sprite
+  index: -1
+tile_0776
   rotate: false
   xy: 256, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 776
-sprite
+  index: -1
+tile_0777
   rotate: false
   xy: 288, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 777
-sprite
+  index: -1
+tile_0778
   rotate: false
   xy: 320, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 778
-sprite
+  index: -1
+tile_0779
   rotate: false
   xy: 352, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 779
-sprite
+  index: -1
+tile_0780
   rotate: false
   xy: 384, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 780
-sprite
+  index: -1
+tile_0781
   rotate: false
   xy: 416, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 781
-sprite
+  index: -1
+tile_0782
   rotate: false
   xy: 448, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 782
-sprite
+  index: -1
+tile_0783
   rotate: false
   xy: 480, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 783
-sprite
+  index: -1
+tile_0784
   rotate: false
   xy: 512, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 784
-sprite
+  index: -1
+tile_0785
   rotate: false
   xy: 544, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 785
-sprite
+  index: -1
+tile_0786
   rotate: false
   xy: 576, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 786
-sprite
+  index: -1
+tile_0787
   rotate: false
   xy: 608, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 787
-sprite
+  index: -1
+tile_0788
   rotate: false
   xy: 640, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 788
-sprite
+  index: -1
+tile_0789
   rotate: false
   xy: 672, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 789
-sprite
+  index: -1
+tile_0790
   rotate: false
   xy: 704, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 790
-sprite
+  index: -1
+tile_0791
   rotate: false
   xy: 736, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 791
-sprite
+  index: -1
+tile_0792
   rotate: false
   xy: 768, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 792
-sprite
+  index: -1
+tile_0793
   rotate: false
   xy: 800, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 793
-sprite
+  index: -1
+tile_0794
   rotate: false
   xy: 832, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 794
-sprite
+  index: -1
+tile_0795
   rotate: false
   xy: 864, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 795
-sprite
+  index: -1
+tile_0796
   rotate: false
   xy: 896, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 796
-sprite
+  index: -1
+tile_0797
   rotate: false
   xy: 928, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 797
-sprite
+  index: -1
+tile_0798
   rotate: false
   xy: 960, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 798
-sprite
+  index: -1
+tile_0799
   rotate: false
   xy: 992, 768
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 799
-sprite
+  index: -1
+tile_0800
   rotate: false
   xy: 0, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 800
-sprite
+  index: -1
+tile_0801
   rotate: false
   xy: 32, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 801
-sprite
+  index: -1
+tile_0802
   rotate: false
   xy: 64, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 802
-sprite
+  index: -1
+tile_0803
   rotate: false
   xy: 96, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 803
-sprite
+  index: -1
+tile_0804
   rotate: false
   xy: 128, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 804
-sprite
+  index: -1
+tile_0805
   rotate: false
   xy: 160, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 805
-sprite
+  index: -1
+tile_0806
   rotate: false
   xy: 192, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 806
-sprite
+  index: -1
+tile_0807
   rotate: false
   xy: 224, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 807
-sprite
+  index: -1
+tile_0808
   rotate: false
   xy: 256, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 808
-sprite
+  index: -1
+tile_0809
   rotate: false
   xy: 288, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 809
-sprite
+  index: -1
+tile_0810
   rotate: false
   xy: 320, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 810
-sprite
+  index: -1
+tile_0811
   rotate: false
   xy: 352, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 811
-sprite
+  index: -1
+tile_0812
   rotate: false
   xy: 384, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 812
-sprite
+  index: -1
+tile_0813
   rotate: false
   xy: 416, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 813
-sprite
+  index: -1
+tile_0814
   rotate: false
   xy: 448, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 814
-sprite
+  index: -1
+tile_0815
   rotate: false
   xy: 480, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 815
-sprite
+  index: -1
+tile_0816
   rotate: false
   xy: 512, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 816
-sprite
+  index: -1
+tile_0817
   rotate: false
   xy: 544, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 817
-sprite
+  index: -1
+tile_0818
   rotate: false
   xy: 576, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 818
-sprite
+  index: -1
+tile_0819
   rotate: false
   xy: 608, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 819
-sprite
+  index: -1
+tile_0820
   rotate: false
   xy: 640, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 820
-sprite
+  index: -1
+tile_0821
   rotate: false
   xy: 672, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 821
-sprite
+  index: -1
+tile_0822
   rotate: false
   xy: 704, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 822
-sprite
+  index: -1
+tile_0823
   rotate: false
   xy: 736, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 823
-sprite
+  index: -1
+tile_0824
   rotate: false
   xy: 768, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 824
-sprite
+  index: -1
+tile_0825
   rotate: false
   xy: 800, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 825
-sprite
+  index: -1
+tile_0826
   rotate: false
   xy: 832, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 826
-sprite
+  index: -1
+tile_0827
   rotate: false
   xy: 864, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 827
-sprite
+  index: -1
+tile_0828
   rotate: false
   xy: 896, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 828
-sprite
+  index: -1
+tile_0829
   rotate: false
   xy: 928, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 829
-sprite
+  index: -1
+tile_0830
   rotate: false
   xy: 960, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 830
-sprite
+  index: -1
+tile_0831
   rotate: false
   xy: 992, 800
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 831
-sprite
+  index: -1
+tile_0832
   rotate: false
   xy: 0, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 832
-sprite
+  index: -1
+tile_0833
   rotate: false
   xy: 32, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 833
-sprite
+  index: -1
+tile_0834
   rotate: false
   xy: 64, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 834
-sprite
+  index: -1
+tile_0835
   rotate: false
   xy: 96, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 835
-sprite
+  index: -1
+tile_0836
   rotate: false
   xy: 128, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 836
-sprite
+  index: -1
+tile_0837
   rotate: false
   xy: 160, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 837
-sprite
+  index: -1
+tile_0838
   rotate: false
   xy: 192, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 838
-sprite
+  index: -1
+tile_0839
   rotate: false
   xy: 224, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 839
-sprite
+  index: -1
+tile_0840
   rotate: false
   xy: 256, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 840
-sprite
+  index: -1
+tile_0841
   rotate: false
   xy: 288, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 841
-sprite
+  index: -1
+tile_0842
   rotate: false
   xy: 320, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 842
-sprite
+  index: -1
+tile_0843
   rotate: false
   xy: 352, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 843
-sprite
+  index: -1
+tile_0844
   rotate: false
   xy: 384, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 844
-sprite
+  index: -1
+tile_0845
   rotate: false
   xy: 416, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 845
-sprite
+  index: -1
+tile_0846
   rotate: false
   xy: 448, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 846
-sprite
+  index: -1
+tile_0847
   rotate: false
   xy: 480, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 847
-sprite
+  index: -1
+tile_0848
   rotate: false
   xy: 512, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 848
-sprite
+  index: -1
+tile_0849
   rotate: false
   xy: 544, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 849
-sprite
+  index: -1
+tile_0850
   rotate: false
   xy: 576, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 850
-sprite
+  index: -1
+tile_0851
   rotate: false
   xy: 608, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 851
-sprite
+  index: -1
+tile_0852
   rotate: false
   xy: 640, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 852
-sprite
+  index: -1
+tile_0853
   rotate: false
   xy: 672, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 853
-sprite
+  index: -1
+tile_0854
   rotate: false
   xy: 704, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 854
-sprite
+  index: -1
+tile_0855
   rotate: false
   xy: 736, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 855
-sprite
+  index: -1
+tile_0856
   rotate: false
   xy: 768, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 856
-sprite
+  index: -1
+tile_0857
   rotate: false
   xy: 800, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 857
-sprite
+  index: -1
+tile_0858
   rotate: false
   xy: 832, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 858
-sprite
+  index: -1
+tile_0859
   rotate: false
   xy: 864, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 859
-sprite
+  index: -1
+tile_0860
   rotate: false
   xy: 896, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 860
-sprite
+  index: -1
+tile_0861
   rotate: false
   xy: 928, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 861
-sprite
+  index: -1
+tile_0862
   rotate: false
   xy: 960, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 862
-sprite
+  index: -1
+tile_0863
   rotate: false
   xy: 992, 832
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 863
-sprite
+  index: -1
+tile_0864
   rotate: false
   xy: 0, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 864
-sprite
+  index: -1
+tile_0865
   rotate: false
   xy: 32, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 865
-sprite
+  index: -1
+tile_0866
   rotate: false
   xy: 64, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 866
-sprite
+  index: -1
+tile_0867
   rotate: false
   xy: 96, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 867
-sprite
+  index: -1
+tile_0868
   rotate: false
   xy: 128, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 868
-sprite
+  index: -1
+tile_0869
   rotate: false
   xy: 160, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 869
-sprite
+  index: -1
+tile_0870
   rotate: false
   xy: 192, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 870
-sprite
+  index: -1
+tile_0871
   rotate: false
   xy: 224, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 871
-sprite
+  index: -1
+tile_0872
   rotate: false
   xy: 256, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 872
-sprite
+  index: -1
+tile_0873
   rotate: false
   xy: 288, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 873
-sprite
+  index: -1
+tile_0874
   rotate: false
   xy: 320, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 874
-sprite
+  index: -1
+tile_0875
   rotate: false
   xy: 352, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 875
-sprite
+  index: -1
+tile_0876
   rotate: false
   xy: 384, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 876
-sprite
+  index: -1
+tile_0877
   rotate: false
   xy: 416, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 877
-sprite
+  index: -1
+tile_0878
   rotate: false
   xy: 448, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 878
-sprite
+  index: -1
+tile_0879
   rotate: false
   xy: 480, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 879
-sprite
+  index: -1
+tile_0880
   rotate: false
   xy: 512, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 880
-sprite
+  index: -1
+tile_0881
   rotate: false
   xy: 544, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 881
-sprite
+  index: -1
+tile_0882
   rotate: false
   xy: 576, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 882
-sprite
+  index: -1
+tile_0883
   rotate: false
   xy: 608, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 883
-sprite
+  index: -1
+tile_0884
   rotate: false
   xy: 640, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 884
-sprite
+  index: -1
+tile_0885
   rotate: false
   xy: 672, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 885
-sprite
+  index: -1
+tile_0886
   rotate: false
   xy: 704, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 886
-sprite
+  index: -1
+tile_0887
   rotate: false
   xy: 736, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 887
-sprite
+  index: -1
+tile_0888
   rotate: false
   xy: 768, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 888
-sprite
+  index: -1
+tile_0889
   rotate: false
   xy: 800, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 889
-sprite
+  index: -1
+tile_0890
   rotate: false
   xy: 832, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 890
-sprite
+  index: -1
+tile_0891
   rotate: false
   xy: 864, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 891
-sprite
+  index: -1
+tile_0892
   rotate: false
   xy: 896, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 892
-sprite
+  index: -1
+tile_0893
   rotate: false
   xy: 928, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 893
-sprite
+  index: -1
+tile_0894
   rotate: false
   xy: 960, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 894
-sprite
+  index: -1
+tile_0895
   rotate: false
   xy: 992, 864
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 895
-sprite
+  index: -1
+tile_0896
   rotate: false
   xy: 0, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 896
-sprite
+  index: -1
+tile_0897
   rotate: false
   xy: 32, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 897
-sprite
+  index: -1
+tile_0898
   rotate: false
   xy: 64, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 898
-sprite
+  index: -1
+tile_0899
   rotate: false
   xy: 96, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 899
-sprite
+  index: -1
+tile_0900
   rotate: false
   xy: 128, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 900
-sprite
+  index: -1
+tile_0901
   rotate: false
   xy: 160, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 901
-sprite
+  index: -1
+tile_0902
   rotate: false
   xy: 192, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 902
-sprite
+  index: -1
+tile_0903
   rotate: false
   xy: 224, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 903
-sprite
+  index: -1
+tile_0904
   rotate: false
   xy: 256, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 904
-sprite
+  index: -1
+tile_0905
   rotate: false
   xy: 288, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 905
-sprite
+  index: -1
+tile_0906
   rotate: false
   xy: 320, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 906
-sprite
+  index: -1
+tile_0907
   rotate: false
   xy: 352, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 907
-sprite
+  index: -1
+tile_0908
   rotate: false
   xy: 384, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 908
-sprite
+  index: -1
+tile_0909
   rotate: false
   xy: 416, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 909
-sprite
+  index: -1
+tile_0910
   rotate: false
   xy: 448, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 910
-sprite
+  index: -1
+tile_0911
   rotate: false
   xy: 480, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 911
-sprite
+  index: -1
+tile_0912
   rotate: false
   xy: 512, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 912
-sprite
+  index: -1
+tile_0913
   rotate: false
   xy: 544, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 913
-sprite
+  index: -1
+tile_0914
   rotate: false
   xy: 576, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 914
-sprite
+  index: -1
+tile_0915
   rotate: false
   xy: 608, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 915
-sprite
+  index: -1
+tile_0916
   rotate: false
   xy: 640, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 916
-sprite
+  index: -1
+tile_0917
   rotate: false
   xy: 672, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 917
-sprite
+  index: -1
+tile_0918
   rotate: false
   xy: 704, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 918
-sprite
+  index: -1
+tile_0919
   rotate: false
   xy: 736, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 919
-sprite
+  index: -1
+tile_0920
   rotate: false
   xy: 768, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 920
-sprite
+  index: -1
+tile_0921
   rotate: false
   xy: 800, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 921
-sprite
+  index: -1
+tile_0922
   rotate: false
   xy: 832, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 922
-sprite
+  index: -1
+tile_0923
   rotate: false
   xy: 864, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 923
-sprite
+  index: -1
+tile_0924
   rotate: false
   xy: 896, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 924
-sprite
+  index: -1
+tile_0925
   rotate: false
   xy: 928, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 925
-sprite
+  index: -1
+tile_0926
   rotate: false
   xy: 960, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 926
-sprite
+  index: -1
+tile_0927
   rotate: false
   xy: 992, 896
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 927
-sprite
+  index: -1
+tile_0928
   rotate: false
   xy: 0, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 928
-sprite
+  index: -1
+tile_0929
   rotate: false
   xy: 32, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 929
-sprite
+  index: -1
+tile_0930
   rotate: false
   xy: 64, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 930
-sprite
+  index: -1
+tile_0931
   rotate: false
   xy: 96, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 931
-sprite
+  index: -1
+tile_0932
   rotate: false
   xy: 128, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 932
-sprite
+  index: -1
+tile_0933
   rotate: false
   xy: 160, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 933
-sprite
+  index: -1
+tile_0934
   rotate: false
   xy: 192, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 934
-sprite
+  index: -1
+tile_0935
   rotate: false
   xy: 224, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 935
-sprite
+  index: -1
+tile_0936
   rotate: false
   xy: 256, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 936
-sprite
+  index: -1
+tile_0937
   rotate: false
   xy: 288, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 937
-sprite
+  index: -1
+tile_0938
   rotate: false
   xy: 320, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 938
-sprite
+  index: -1
+tile_0939
   rotate: false
   xy: 352, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 939
-sprite
+  index: -1
+tile_0940
   rotate: false
   xy: 384, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 940
-sprite
+  index: -1
+tile_0941
   rotate: false
   xy: 416, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 941
-sprite
+  index: -1
+tile_0942
   rotate: false
   xy: 448, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 942
-sprite
+  index: -1
+tile_0943
   rotate: false
   xy: 480, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 943
-sprite
+  index: -1
+tile_0944
   rotate: false
   xy: 512, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 944
-sprite
+  index: -1
+tile_0945
   rotate: false
   xy: 544, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 945
-sprite
+  index: -1
+tile_0946
   rotate: false
   xy: 576, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 946
-sprite
+  index: -1
+tile_0947
   rotate: false
   xy: 608, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 947
-sprite
+  index: -1
+tile_0948
   rotate: false
   xy: 640, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 948
-sprite
+  index: -1
+tile_0949
   rotate: false
   xy: 672, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 949
-sprite
+  index: -1
+tile_0950
   rotate: false
   xy: 704, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 950
-sprite
+  index: -1
+tile_0951
   rotate: false
   xy: 736, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 951
-sprite
+  index: -1
+tile_0952
   rotate: false
   xy: 768, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 952
-sprite
+  index: -1
+tile_0953
   rotate: false
   xy: 800, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 953
-sprite
+  index: -1
+tile_0954
   rotate: false
   xy: 832, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 954
-sprite
+  index: -1
+tile_0955
   rotate: false
   xy: 864, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 955
-sprite
+  index: -1
+tile_0956
   rotate: false
   xy: 896, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 956
-sprite
+  index: -1
+tile_0957
   rotate: false
   xy: 928, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 957
-sprite
+  index: -1
+tile_0958
   rotate: false
   xy: 960, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 958
-sprite
+  index: -1
+tile_0959
   rotate: false
   xy: 992, 928
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 959
-sprite
+  index: -1
+tile_0960
   rotate: false
   xy: 0, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 960
-sprite
+  index: -1
+tile_0961
   rotate: false
   xy: 32, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 961
-sprite
+  index: -1
+tile_0962
   rotate: false
   xy: 64, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 962
-sprite
+  index: -1
+tile_0963
   rotate: false
   xy: 96, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 963
-sprite
+  index: -1
+tile_0964
   rotate: false
   xy: 128, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 964
-sprite
+  index: -1
+tile_0965
   rotate: false
   xy: 160, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 965
-sprite
+  index: -1
+tile_0966
   rotate: false
   xy: 192, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 966
-sprite
+  index: -1
+tile_0967
   rotate: false
   xy: 224, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 967
-sprite
+  index: -1
+tile_0968
   rotate: false
   xy: 256, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 968
-sprite
+  index: -1
+tile_0969
   rotate: false
   xy: 288, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 969
-sprite
+  index: -1
+tile_0970
   rotate: false
   xy: 320, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 970
-sprite
+  index: -1
+tile_0971
   rotate: false
   xy: 352, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 971
-sprite
+  index: -1
+tile_0972
   rotate: false
   xy: 384, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 972
-sprite
+  index: -1
+tile_0973
   rotate: false
   xy: 416, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 973
-sprite
+  index: -1
+tile_0974
   rotate: false
   xy: 448, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 974
-sprite
+  index: -1
+tile_0975
   rotate: false
   xy: 480, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 975
-sprite
+  index: -1
+tile_0976
   rotate: false
   xy: 512, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 976
-sprite
+  index: -1
+tile_0977
   rotate: false
   xy: 544, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 977
-sprite
+  index: -1
+tile_0978
   rotate: false
   xy: 576, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 978
-sprite
+  index: -1
+tile_0979
   rotate: false
   xy: 608, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 979
-sprite
+  index: -1
+tile_0980
   rotate: false
   xy: 640, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 980
-sprite
+  index: -1
+tile_0981
   rotate: false
   xy: 672, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 981
-sprite
+  index: -1
+tile_0982
   rotate: false
   xy: 704, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 982
-sprite
+  index: -1
+tile_0983
   rotate: false
   xy: 736, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 983
-sprite
+  index: -1
+tile_0984
   rotate: false
   xy: 768, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 984
-sprite
+  index: -1
+tile_0985
   rotate: false
   xy: 800, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 985
-sprite
+  index: -1
+tile_0986
   rotate: false
   xy: 832, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 986
-sprite
+  index: -1
+tile_0987
   rotate: false
   xy: 864, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 987
-sprite
+  index: -1
+tile_0988
   rotate: false
   xy: 896, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 988
-sprite
+  index: -1
+tile_0989
   rotate: false
   xy: 928, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 989
-sprite
+  index: -1
+tile_0990
   rotate: false
   xy: 960, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 990
-sprite
+  index: -1
+tile_0991
   rotate: false
   xy: 992, 960
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 991
-sprite
+  index: -1
+tile_0992
   rotate: false
   xy: 0, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 992
-sprite
+  index: -1
+tile_0993
   rotate: false
   xy: 32, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 993
-sprite
+  index: -1
+tile_0994
   rotate: false
   xy: 64, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 994
-sprite
+  index: -1
+tile_0995
   rotate: false
   xy: 96, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 995
-sprite
+  index: -1
+tile_0996
   rotate: false
   xy: 128, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 996
-sprite
+  index: -1
+tile_0997
   rotate: false
   xy: 160, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 997
-sprite
+  index: -1
+tile_0998
   rotate: false
   xy: 192, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 998
-sprite
+  index: -1
+tile_0999
   rotate: false
   xy: 224, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 999
-sprite
+  index: -1
+tile_1000
   rotate: false
   xy: 256, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 1000
-sprite
+  index: -1
+tile_1001
   rotate: false
   xy: 288, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 1001
-sprite
+  index: -1
+tile_1002
   rotate: false
   xy: 320, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 1002
-sprite
+  index: -1
+tile_1003
   rotate: false
   xy: 352, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 1003
-sprite
+  index: -1
+tile_1004
   rotate: false
   xy: 384, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 1004
-sprite
+  index: -1
+tile_1005
   rotate: false
   xy: 416, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 1005
-sprite
+  index: -1
+tile_1006
   rotate: false
   xy: 448, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 1006
-sprite
+  index: -1
+tile_1007
   rotate: false
   xy: 480, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 1007
-sprite
+  index: -1
+tile_1008
   rotate: false
   xy: 512, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 1008
-sprite
+  index: -1
+tile_1009
   rotate: false
   xy: 544, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 1009
-sprite
+  index: -1
+tile_1010
   rotate: false
   xy: 576, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 1010
-sprite
+  index: -1
+tile_1011
   rotate: false
   xy: 608, 992
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 1011
+  index: -1
+tile_1012
+  rotate: false
+  xy: 640, 992
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tile_1013
+  rotate: false
+  xy: 672, 992
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tile_1014
+  rotate: false
+  xy: 704, 992
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tile_1015
+  rotate: false
+  xy: 736, 992
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tile_1016
+  rotate: false
+  xy: 768, 992
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tile_1017
+  rotate: false
+  xy: 800, 992
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tile_1018
+  rotate: false
+  xy: 832, 992
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tile_1019
+  rotate: false
+  xy: 864, 992
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tile_1020
+  rotate: false
+  xy: 896, 992
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tile_1021
+  rotate: false
+  xy: 928, 992
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tile_1022
+  rotate: false
+  xy: 960, 992
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tile_1023
+  rotate: false
+  xy: 992, 992
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1

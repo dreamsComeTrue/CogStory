@@ -41,7 +41,8 @@ namespace aga
         {PACK_2_2_CITY, GFX_2_CITY, "2_2_city.pack"}, {PACK_2_3_CITY, GFX_2_CITY, "2_3_city.pack"},
 
         //  Env
-        {PACK_ENV_0, GFX_ENV, "env_0.pack"}, {PACK_ENV_1, GFX_ENV, "env_1.pack"}, {PACK_ENV_5, GFX_ENV, "env_5.pack"},
+        {PACK_ENV_0, GFX_ENV, "env_0.pack"}, {PACK_ENV_2, GFX_ENV, "env_2.pack"}, {PACK_ENV_1, GFX_ENV, "env_1.pack"},
+        {PACK_ENV_5, GFX_ENV, "env_5.pack"},
 
         //  Fonts
         {__FONTS__MARKER__, "", ""}, {FONT_SMALL, FONTS, "coders_crux.ttf"}, {FONT_MEDIUM, FONTS, "coders_crux.ttf"},
