@@ -30,6 +30,7 @@ namespace aga
     class EditorScriptWindow;
     class EditorComponentWindow;
     class EditorAnimationWindow;
+    class EditorTilesWindow;
 
     class MainLoop;
     struct Tile;
@@ -130,6 +131,7 @@ namespace aga
         void OnSpeech ();
         void OnActorSelected ();
         void OnAnimation ();
+        void OnTilesEditor ();
 
         void MarkPlayerPosition ();
 
@@ -184,6 +186,7 @@ namespace aga
         EditorScriptWindow* m_ScriptWindow;
         EditorComponentWindow* m_ComponentWindow;
         EditorAnimationWindow* m_AnimationWindow;
+        EditorTilesWindow* m_TilesWindow;
 
         std::string m_LastScenePath;
 
@@ -202,6 +205,7 @@ namespace aga
         bool m_OpenPopupTriggerAreaEditor;
         bool m_OpenPopupSpeechEditor;
         bool m_OpenPopupAnimationEditor;
+        bool m_OpenPopupTilesEditor;
 
         std::vector<std::string> m_RecentFileNames;
 

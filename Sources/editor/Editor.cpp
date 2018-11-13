@@ -7,6 +7,7 @@
 #include "EditorSceneWindow.h"
 #include "EditorScriptWindow.h"
 #include "EditorSpeechWindow.h"
+#include "EditorTilesWindow.h"
 #include "MainLoop.h"
 #include "Player.h"
 #include "SceneLoader.h"
@@ -78,6 +79,7 @@ namespace aga
         , m_OpenPopupTriggerAreaEditor (false)
         , m_OpenPopupSpeechEditor (false)
         , m_OpenPopupAnimationEditor (false)
+        , m_OpenPopupTilesEditor (false)
     {
     }
 
@@ -107,6 +109,7 @@ namespace aga
             m_ScriptWindow = new EditorScriptWindow (this);
             m_ComponentWindow = new EditorComponentWindow (this);
             m_AnimationWindow = new EditorAnimationWindow (this);
+            m_TilesWindow = new EditorTilesWindow (this);
         }
 
         std::map<std::string, Atlas*>& atlases = m_MainLoop->GetAtlasManager ().GetAtlases ();
@@ -148,6 +151,7 @@ namespace aga
         SAFE_DELETE (m_ScriptWindow);
         SAFE_DELETE (m_ComponentWindow);
         SAFE_DELETE (m_AnimationWindow);
+        SAFE_DELETE (m_TilesWindow);
 
         // Cleanup
         ImGui_ImplAllegro5_Shutdown ();
@@ -447,6 +451,12 @@ namespace aga
                 break;
             }
 
+            case ALLEGRO_KEY_F12:
+            {
+                OnTilesEditor ();
+                break;
+            }
+
             case ALLEGRO_KEY_F5:
             case ALLEGRO_KEY_SPACE:
             {
@@ -579,6 +589,11 @@ namespace aga
         {
             m_AnimationWindow->RenderSpritesheet ();
             m_AnimationWindow->RenderAnimationFrames (deltaTime);
+        }
+
+        if (m_TilesWindow->IsVisible ())
+        {
+            m_TilesWindow->RenderSpritesheet ();
         }
 
         if (m_SpeechWindow->IsVisible ())
@@ -1064,6 +1079,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void Editor::OnTilesEditor ()
+    {
+        m_OpenPopupTilesEditor = true;
+
+        m_TilesWindow->Show ([&](std::string, std::string) {}, nullptr);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void Editor::MarkPlayerPosition ()
     {
         ALLEGRO_MOUSE_STATE state;
@@ -1253,6 +1277,20 @@ namespace aga
                 }
 
                 m_AnimationWindow->Render ();
+
+                if ((ImGui::Button ("TILES [F12]", buttonSize) || m_OpenPopupTilesEditor))
+                {
+                    if (!m_OpenPopupTilesEditor)
+                    {
+                        OnTilesEditor ();
+                    }
+
+                    ImGui::OpenPopup ("Tile Editor");
+
+                    m_OpenPopupTilesEditor = false;
+                }
+
+                m_TilesWindow->Render ();
 
                 if (ImGui::Button ("PLAY [F1]", buttonSize))
                 {
