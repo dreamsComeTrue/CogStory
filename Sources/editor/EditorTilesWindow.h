@@ -26,6 +26,7 @@ namespace aga
 
     private:
         void OnSave ();
+        void OnSavePack ();
         void OnAccept ();
         void OnCancel ();
 

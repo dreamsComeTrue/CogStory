@@ -100,6 +100,70 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void EditorTilesWindow::OnSavePack ()
+    {
+        if (m_Image)
+        {
+            std::string path = GetDataPath () + "x/";
+            std::string dirName = GetDataPath ();
+
+            ALLEGRO_FILECHOOSER* fileSaveDialog
+                = al_create_native_file_dialog (path.c_str (), "Save pack", "", ALLEGRO_FILECHOOSER_FOLDER);
+
+            if (al_show_native_file_dialog (m_Editor->GetMainLoop ()->GetScreen ()->GetDisplay (), fileSaveDialog)
+                && al_get_native_file_dialog_count (fileSaveDialog) > 0)
+            {
+                std::string fileName = al_get_native_file_dialog_path (fileSaveDialog, 0);
+                std::replace (fileName.begin (), fileName.end (), '\\', '/');
+
+                dirName = GetDirectory (fileName);
+            }
+
+            al_destroy_native_file_dialog (fileSaveDialog);
+
+            std::string fileName = dirName + "/" + std::string (m_Name);
+
+            al_save_bitmap ((fileName + ".png").c_str (), m_Image);
+
+            std::string packData = "";
+            packData += "\n";
+            packData += std::string (m_Name) + ".png\n";
+            packData += "size: " + std::to_string (al_get_bitmap_width (m_Image)) + ","
+                + std::to_string (al_get_bitmap_height (m_Image)) + "\n";
+            packData += "format: RGBA8888\n";
+            packData += "filter: Nearest,Nearest\n";
+            packData += "repeat: none\n";
+
+            //  Count number of characters required to generate name
+            int numberOfNums = static_cast<int> (std::to_string (m_TilesX * m_TilesY).length ());
+
+            for (int y = 0; y < m_TilesY; ++y)
+            {
+                for (int x = 0; x < m_TilesX; ++x)
+                {
+                    std::ostringstream out;
+                    out << std::internal << std::setfill ('0') << std::setw (numberOfNums) << (x + y * m_TilesX);
+
+                    std::string name = "tile_" + out.str ();
+
+                    packData += name + "\n";
+                    packData += "  rotate: false\n";
+                    packData += "  xy: " + std::to_string (x * m_Width) + ", " + std::to_string (y * m_Height) + "\n";
+                    packData += "  size: " + std::to_string (m_Width) + ", " + std::to_string (m_Height) + "\n";
+                    packData += "  orig: 32, 32\n";
+                    packData += "  offset: 0, 0\n";
+                    packData += "  index: -1\n";
+                }
+            }
+
+            std::ofstream outFile ((fileName + ".pack").c_str ());
+            outFile.write (packData.c_str (), static_cast<int> (packData.length ()));
+            outFile.close ();
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void EditorTilesWindow::OnAccept ()
     {
         if (m_OnAcceptFunc)
@@ -122,7 +186,7 @@ namespace aga
     void EditorTilesWindow::Render ()
     {
         ImGui::SetNextWindowPos (ImVec2 (0, 0));
-        ImGui::SetNextWindowSize (ImVec2 (300, 190), ImGuiCond_Always);
+        ImGui::SetNextWindowSize (ImVec2 (300, 210), ImGuiCond_Always);
 
         if (ImGui::BeginPopupModal ("Tile Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
@@ -201,6 +265,11 @@ namespace aga
             if (ImGui::Button ("CUT & SAVE", ImVec2 (controlWidth + 35, 18)))
             {
                 OnSave ();
+            }
+
+            if (ImGui::Button ("SAVE PACK", ImVec2 (controlWidth + 35, 18)))
+            {
+                OnSavePack ();
             }
 
             ImGui::BeginGroup ();
