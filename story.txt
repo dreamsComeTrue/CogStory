@@ -43,32 +43,49 @@
  = R1 and R2 look at each other, then UH, then once again at each, then
    simultaneously moves back 2 steps and shows a little ballon with exclamation
    marks over their heads. Waits a while, and both of them moves back to UH
-     R2: You serious?
-     UH: Yeah, what's the matter?
-     R1: Didn't you hit your head or something?
-     UH: No, I'm pretty fine
-     R2: But you are aware this a ROBOT factory, where only ROBOTS work, right?
-     UH: Of course, I have read it at sign in front of the entrance
-     R1: You also know that...akhem...
-     R1: FOR THE LAST 300 YEARS NO HUMAN DOESN'T HAVE TO WORK ANYMORE ?!?
-     R2: [side-text-frame] Are you out of your mind?
-     UH: Yup, that is correct. After the invention of [Thought-Propelled Brain] 
-         robots became self-aware and from that day on they replaced humans in all
-         labour-related tasks. After that, every single human retired and devoted
-         himself to all pleasures free time can ensure.
-     R2: Exaclty, so, what's your reason? 
-     R2: Can't you just enjoy your happy life without any work-concerns? 
-         Just leave them to us, that's what we are created for after all!
-     UH: ....nah, that's fine. I just got bored and wanted to try something
-         different, that's all
-     R1: [thinks for the moment] .... .... .... ....
-     R1: Well, I can not promise you anything, but...come with me
+    R2: You serious?
+    UH: Yeah, what's the matter?
+    R1: Didn't you hit your head or something?
+    UH: No, I'm pretty fine
+    R2: But you are aware this a ROBOT factory, where only ROBOTS work, right?
+    UH: Of course, I have read it at sign in front of the entrance
+    R1: You also know that...akhem...
+    R1: FOR THE LAST 300 YEARS NO HUMAN DOESN'T HAVE TO WORK ANYMORE ?!?
+    R2: [side-text-frame] Are you out of your mind?
+    UH: Yup, that is correct. After the invention of [Thought-Propelled Brain] 
+        robots became self-aware and from that day on they replaced humans in all
+        labour-related tasks. After that, every single human retired and devoted
+        himself to all pleasures free time can ensure.
+    R2: Exaclty, so, what's your reason? 
+    R2: Can't you just enjoy your happy life without any work-concerns? 
+        Just leave them to us, that's what we are created for after all!
+    UH: ....nah, that's fine. I just got bored and wanted to try something
+        different, that's all
+    R1: [thinks for the moment] .... .... .... ....
+    R1: Well, I can not promise you anything, but...come with me
  = UH and R1 walks slowly outside the screen, while walking
-     R1: [turns head to R2] Get back to work!!!
+    R1: [turns head to R2] Get back to work!!!
  = R2 starts to move rapidly in all directions. UH and R1 continue walking, 
    screen fades
-     
-     
+ 
+ ===    SCENE CUTS
+
+ = UH with R1 walk slowly through main factory area    
+    R1: So, where'd you come from?
+    UH: Uhmm... I really don't have any place to dwell longer than couple of weeks.
+        Seems, hiking is my nature.
+    R1: But you need to stay SOMEWHERE, if you want to work here, not?
+    UH: We'll see, we'll see...
+ = Scene fades, UH with R1 walk slowly up the corridor to job office
+    R1: Anyway, do you know you role here? See, all the tasks are fairly covered by us
+    UH: Maybe Human Contact Department?
+    R1: Taken. Automatic Call Center
+    UH: Wish Machines Mechanic?
+    R1: They never break. Besides, human brain IQ alone can't handle such complicated
+        machinery
+    UH: OK, then Marketing Agent!
+    R1: Hahaha - first human ever eager to work wants to praise our relaxing services
+ = Scene fades, they enter job office
     
 
 
