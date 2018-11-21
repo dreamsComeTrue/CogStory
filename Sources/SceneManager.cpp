@@ -92,24 +92,27 @@ namespace aga
 
     void SceneManager::AddScene (Scene* scene)
     {
-        Scene* foundScene = GetScene (scene->GetPath ());
-
-        if (!foundScene)
+        if (scene)
         {
-            //  Save current scene as active, only for script's "Start" method purposes
-            Scene* savedScene = m_ActiveScene;
-            m_ActiveScene = scene;
+            Scene* foundScene = GetScene (scene->GetPath ());
 
-            std::vector<ScriptMetaData>& scripts = scene->GetScripts ();
-
-            for (ScriptMetaData& obj : scripts)
+            if (!foundScene)
             {
-                obj.ScriptObj->Run ("void Start ()");
+                //  Save current scene as active, only for script's "Start" method purposes
+                Scene* savedScene = m_ActiveScene;
+                m_ActiveScene = scene;
+
+                std::vector<ScriptMetaData>& scripts = scene->GetScripts ();
+
+                for (ScriptMetaData& obj : scripts)
+                {
+                    obj.ScriptObj->Run ("void Start ()");
+                }
+
+                m_ActiveScene = savedScene;
+
+                m_Scenes.insert (std::make_pair (scene->GetPath (), scene));
             }
-
-            m_ActiveScene = savedScene;
-
-            m_Scenes.insert (std::make_pair (scene->GetPath (), scene));
         }
     }
 
@@ -730,6 +733,60 @@ namespace aga
 
             return false;
         });
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Script* SceneManager::AttachScript (class Script* script, const std::string& path)
+    {
+        if (m_ActiveScene)
+        {
+            return m_ActiveScene->AttachScript (script, path);
+        }
+
+        return nullptr;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Script* SceneManager::AttachScript (const std::string& name, const std::string& path)
+    {
+        if (m_ActiveScene)
+        {
+            return m_ActiveScene->AttachScript (name, path);
+        }
+
+        return nullptr;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::RemoveScript (const std::string& name)
+    {
+        if (m_ActiveScene)
+        {
+            m_ActiveScene->RemoveScript (name);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::EnableSceneScripts ()
+    {
+        if (m_ActiveScene)
+        {
+            m_ActiveScene->EnableScripts ();
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void SceneManager::DisableSceneScripts ()
+    {
+        if (m_ActiveScene)
+        {
+            m_ActiveScene->DisableScripts ();
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

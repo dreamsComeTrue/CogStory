@@ -192,7 +192,10 @@ namespace aga
     {
         m_FollowingEnabledXAxis = enabled;
 
-        m_CameraFollowActor->MoveCallback (0, 0);
+        if (m_CameraFollowActor)
+        {
+            m_CameraFollowActor->MoveCallback (0, 0);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -201,7 +204,10 @@ namespace aga
     {
         m_FollowingEnabledYAxis = enabled;
 
-        m_CameraFollowActor->MoveCallback (0, 0);
+        if (m_CameraFollowActor)
+        {
+            m_CameraFollowActor->MoveCallback (0, 0);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

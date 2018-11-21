@@ -25,8 +25,8 @@ namespace aga
         Scriptable (ScriptManager* scriptManager);
         virtual ~Scriptable ();
 
-        void AttachScript (const std::string& name, const std::string& path);
-        void AttachScript (Script* script, const std::string& path);
+        virtual Script* AttachScript (const std::string& name, const std::string& path);
+        virtual Script* AttachScript (Script* script, const std::string& path);
 
         void RemoveScript (const std::string& name);
         void RemoveScript (Script* script);
@@ -37,6 +37,9 @@ namespace aga
         void RunAllScripts (const std::string& functionName, void* obj);
 
         ScriptMetaData* GetScript (const std::string& name);
+
+        void EnableScripts ();
+        void DisableScripts ();
 
 #ifdef _MSC_VER
         std::optional<ScriptMetaData> GetScriptByName (const std::string& name);
@@ -51,6 +54,7 @@ namespace aga
     protected:
         ScriptManager* m_ScriptManager;
         std::vector<ScriptMetaData> m_Scripts;
+        bool m_Enabled;
     };
 }
 

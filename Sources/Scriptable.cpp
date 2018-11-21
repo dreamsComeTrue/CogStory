@@ -10,6 +10,7 @@ namespace aga
 
     Scriptable::Scriptable (ScriptManager* scriptManager)
         : m_ScriptManager (scriptManager)
+        , m_Enabled (true)
     {
     }
 
@@ -19,27 +20,32 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scriptable::AttachScript (const std::string& name, const std::string& path)
+    Script* Scriptable::AttachScript (const std::string& name, const std::string& path)
     {
         ScriptMetaData* found = GetScript (name);
 
         if (!found)
         {
-            std::string realPath = GetDataPath () + "/scripts/" + path;
-            Script* script = m_ScriptManager->LoadScriptFromFile (realPath, name);
+            Script* script = m_ScriptManager->LoadScriptFromFile (path, name);
 
             ScriptMetaData meta = {name, path, script};
             m_Scripts.push_back (meta);
+
+            return script;
+        }
+        else
+        {
+            return found->ScriptObj;
         }
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Scriptable::AttachScript (Script* script, const std::string& path)
+    Script* Scriptable::AttachScript (Script* script, const std::string& path)
     {
         if (!script)
         {
-            return;
+            return nullptr;
         }
 
         ScriptMetaData* found = GetScript (script->GetName ());
@@ -49,6 +55,8 @@ namespace aga
             ScriptMetaData meta = {script->GetName (), path, script};
             m_Scripts.push_back (meta);
         }
+
+        return script;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -87,11 +95,14 @@ namespace aga
 
     void Scriptable::UpdateScripts (float deltaTime)
     {
-        for (ScriptMetaData& script : m_Scripts)
+        if (m_Enabled)
         {
-            if (script.ScriptObj)
+            for (ScriptMetaData& script : m_Scripts)
             {
-                script.ScriptObj->Update (deltaTime);
+                if (script.ScriptObj)
+                {
+                    script.ScriptObj->Update (deltaTime);
+                }
             }
         }
     }
@@ -100,11 +111,14 @@ namespace aga
 
     void Scriptable::RunAllScripts (const std::string& functionName)
     {
-        for (ScriptMetaData& script : m_Scripts)
+        if (m_Enabled)
         {
-            if (script.ScriptObj)
+            for (ScriptMetaData& script : m_Scripts)
             {
-                script.ScriptObj->Run (functionName);
+                if (script.ScriptObj)
+                {
+                    script.ScriptObj->Run (functionName);
+                }
             }
         }
     }
@@ -113,11 +127,14 @@ namespace aga
 
     void Scriptable::RunAllScripts (const std::string& functionName, void* obj)
     {
-        for (ScriptMetaData& script : m_Scripts)
+        if (m_Enabled)
         {
-            if (script.ScriptObj)
+            for (ScriptMetaData& script : m_Scripts)
             {
-                script.ScriptObj->Run (functionName, obj);
+                if (script.ScriptObj)
+                {
+                    script.ScriptObj->Run (functionName, obj);
+                }
             }
         }
     }
@@ -136,6 +153,14 @@ namespace aga
 
         return nullptr;
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scriptable::EnableScripts () { m_Enabled = true; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Scriptable::DisableScripts () { m_Enabled = false; }
 
     //--------------------------------------------------------------------------------------------------
 

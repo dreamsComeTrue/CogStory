@@ -2,16 +2,14 @@ bool g_IntroPlayed = false;
 
 void Start ()
 {
-
 }
 
 void BeforeEnterScene ()
-{
+{    
     SetSuppressSceneInfo (true);
 
     if (!g_IntroPlayed)
     {
-        g_IntroPlayed = true;
         IntroAnimation ();        
     }
     else
@@ -20,29 +18,48 @@ void BeforeEnterScene ()
     }
 }
 
-void IntroAnimation ()
-{
-    Point screenSize = screen.GetWindowSize ();
-
-    player.SetPreventInput (true);
-    player.SetPosition (0, 0);
-
-    camera.SetTranslate (screenSize.Width * 0.5f - player.Bounds.GetSize ().Width, -200);
-	camera.SetFollowActor (null);
-    camera.TweenToPoint (player.GetPosition () + player.Bounds.GetHalfSize (), IntroAnimationFinish, 5000, true);
-
-    player.SetCurrentAnimation ("ANIM_MOVE_UP_LOOK");
-
-    SetOverlayText ("-- Chapter I --\nNo ordinary day", 3000.f, 100.f, Center);    
-}
-
-void IntroAnimationFinish (int id)
-{
-    player.SetPreventInput (false);
-}
-
 void AfterLeaveScene ()
 {
+}
+
+int timeout = 2000;
+
+void IntroAnimation ()
+{    
+    Timeline@ timeline = CreateTimeline (0);
+
+    timeline
+    .Once (timeout, function (id)
+    {
+        Point screenSize = screen.GetWindowSize ();
+
+        player.SetPreventInput (true);
+        player.SetPosition (0, 0);
+
+        camera.SetTranslate (screenSize.Width * 0.5f - player.Bounds.GetSize ().Width, -200);
+    	camera.SetFollowActor (null);
+        player.SetCurrentAnimation ("ANIM_MOVE_UP");
+
+        camera.TweenToPoint (player.GetPosition () + player.Bounds.GetHalfSize (), timeout, true, function (id)
+        {
+        });
+    }).Once (timeout, function (id)
+    {
+        Point pos = player.GetPosition () + player.Bounds.GetHalfSize ();
+        pos.X -= 200;
+
+        camera.TweenToPoint (pos, timeout, true, function (id)
+        {
+            camera.SetFollowActor (player);
+            player.SetPreventInput (false);
+
+            g_IntroPlayed = true;
+            RemoveScript ("intro");
+        });    
+    });
+
+    SetOverlayText ("-- Chapter I --\nNo ordinary day", 3000.f, 100.f, Center);    
+
 }
 
 void Update (float deltaTime)

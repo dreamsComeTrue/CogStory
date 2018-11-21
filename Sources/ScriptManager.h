@@ -73,6 +73,7 @@ namespace aga
         void RegisterSceneManagerAPI ();
         void RegisterSceneAPI ();
         void RegisterCameraAPI ();
+        void RegisterScriptAPI ();
         void RegisterGlobalAPI ();
 
         template <class T> void RegisterBaseActorAPI (const char* typeName);

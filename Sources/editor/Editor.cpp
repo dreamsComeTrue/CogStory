@@ -464,7 +464,14 @@ namespace aga
 
             case ALLEGRO_KEY_Q:
             {
-                m_OpenPopupOpenScene = true;
+                if (event->keyboard.modifiers == ALLEGRO_KEYMOD_CTRL)
+                {
+                    m_MainLoop->Exit ();
+                }
+                else
+                {
+                    m_OpenPopupOpenScene = true;
+                }
                 break;
             }
 

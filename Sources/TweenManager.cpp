@@ -75,7 +75,10 @@ namespace aga
 
         for (size_t i = 0; i < m_Timelines.size (); ++i)
         {
-            m_Timelines[i]->Update (deltaTime);
+            if (m_Timelines[i])
+            {
+                m_Timelines[i]->Update (deltaTime);
+            }
         }
 
         CleanupFinishedTweens ();
@@ -354,7 +357,15 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void TweenManager::Clear () { m_Tweens.clear (); }
+    void TweenManager::Clear ()
+    {
+        m_Tweens.clear ();
+
+        for (size_t i = 0; i < m_Timelines.size (); ++i)
+        {
+            SAFE_DELETE (m_Timelines[i]);
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 

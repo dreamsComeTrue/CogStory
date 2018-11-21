@@ -235,6 +235,11 @@ namespace aga
            void PushPoint (Point p)
            Point PopPoint ()
            void RegisterTriggerScene (const string &in areaName, const string &in sceneFile)
+           Script@ AttachScript (Script@ script, const string &in path)
+           Script@ AttachScript (const string &in name, const string &in path)
+           void RemoveScript (const string &in name)
+           void EnableSceneScripts ()
+           void DisableSceneScripts ()
 
        Camera
            Camera camera
@@ -248,10 +253,14 @@ namespace aga
            void TweenToPoint (Point point, TweenFuncPointFinish @+ te, float timeMs = 1000, bool centerScreen = true)
            void Shake (float timeMs = 500, float oscilatingTime = 0.2f, float rangePixels = 5.f)
 
+       Script
+           bool Run (const string &in functionName);
+
        Global
+           Script@ LoadScript (const string &in)
+
            void Log(const string &in)
            void Log (float)
-           const Point& GetWindowSize ()
            float GetDeltaTime ()
            float GetFPS ()
            void SetBackgroundColor (Color)
@@ -438,7 +447,8 @@ namespace aga
 
     Script* ScriptManager::LoadScriptFromFile (const std::string& path, const std::string& moduleName)
     {
-        std::ifstream file (path.c_str ());
+        std::string realPath = GetDataPath () + "/scripts/" + path;
+        std::ifstream file (realPath.c_str ());
         std::string text;
         std::stringstream strStream;
 
@@ -623,6 +633,9 @@ namespace aga
 
         //  ParticleEmitterComponent
         RegisterParticleEmitterComponentAPI ();
+
+        //  Script
+        RegisterScriptAPI ();
 
         // Scene Manager
         RegisterSceneManagerAPI ();
@@ -1384,6 +1397,24 @@ namespace aga
         int r = m_ScriptEngine->RegisterGlobalFunction ("Point GetPlayerStartLocation ()",
             asMETHOD (SceneManager, GetPlayerStartLocation), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
+
+        m_ScriptEngine->RegisterGlobalFunction ("Script@ AttachScript (Script@ script, const string &in path)",
+            asMETHODPR (SceneManager, AttachScript, (Script*, const std::string&), Script*), asCALL_THISCALL_ASGLOBAL,
+            &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+        m_ScriptEngine->RegisterGlobalFunction ("Script@ AttachScript (const string &in name, const string &in path)",
+            asMETHODPR (SceneManager, AttachScript, (const std::string&, const std::string&), Script*),
+            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+        m_ScriptEngine->RegisterGlobalFunction ("void RemoveScript (const string &in name)",
+            asMETHOD (SceneManager, RemoveScript), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+        m_ScriptEngine->RegisterGlobalFunction ("void EnableSceneScripts ()",
+            asMETHOD (SceneManager, EnableSceneScripts), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+        m_ScriptEngine->RegisterGlobalFunction ("void DisableSceneScripts ()",
+            asMETHOD (SceneManager, DisableSceneScripts), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -1433,9 +1464,23 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void ScriptManager::RegisterScriptAPI ()
+    {
+        int r = m_ScriptEngine->RegisterObjectType ("Script", 0, asOBJ_REF | asOBJ_NOCOUNT);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Script", "bool Run (const string &in functionName)",
+            asMETHODPR (Script, Run, (const std::string&), bool), asCALL_THISCALL);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void ScriptManager::RegisterGlobalAPI ()
     {
         int r = m_ScriptEngine->RegisterGlobalFunction (
+            " Script@ LoadScript (const string& in path, const string& in moduleName)",
+            asMETHOD (ScriptManager, LoadScriptFromFile), asCALL_THISCALL_ASGLOBAL, this);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterGlobalFunction (
             "void Log(const string &in)", asFUNCTIONPR (Log, (const std::string&), void), asCALL_CDECL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction (

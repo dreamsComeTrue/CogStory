@@ -21,6 +21,8 @@ namespace aga
         Timeline* During (float from, float to, int duringMS, asIScriptFunction* func);
         Timeline* During (Point from, Point to, int duringMS, asIScriptFunction* func);
 
+        void Clear ();
+
     private:
         void CleanupFinishedTweens ();
         TweenData* FindTweenData (tweeny::tween<float>& t);

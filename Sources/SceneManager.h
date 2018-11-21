@@ -10,6 +10,7 @@ namespace aga
 {
     class Scene;
     class Player;
+    class Script;
     class MainLoop;
     class AtlasManager;
     class AudioStream;
@@ -92,6 +93,12 @@ namespace aga
         Point PopPoint ();
 
         void RegisterTriggerScene (const std::string& areaName, const std::string& sceneFile);
+
+        Script* AttachScript (Script* script, const std::string& path);
+        Script* AttachScript (const std::string& name, const std::string& path);
+        void RemoveScript (const std::string& name);
+        void EnableSceneScripts ();
+        void DisableSceneScripts ();
 
     private:
         void SceneIntro (float duration = 1000.f);

@@ -41,8 +41,7 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
-        Script* masterScript
-            = m_MainLoop->GetScriptManager ().LoadScriptFromFile (GetDataPath () + "/scripts/Master.script", "master");
+        Script* masterScript = m_MainLoop->GetScriptManager ().LoadScriptFromFile ("Master.script", "master");
         masterScript->Run ("void Start ()");
 
         m_MainLoop->GetSceneManager ().GetPlayer ()->TemplateBounds.Pos

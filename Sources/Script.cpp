@@ -26,12 +26,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Script::Initialize ()
-    {
-        Lifecycle::Initialize ();
-
-        return true;
-    }
+    bool Script::Initialize () { return Lifecycle::Initialize (); }
 
     //--------------------------------------------------------------------------------------------------
 
