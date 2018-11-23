@@ -6,7 +6,7 @@
         "1_factory/1_5_factory_corridor_job_office.scn"
     ],
     "show_bounds": false,
-    "show_grid": false,
+    "show_grid": true,
     "show_names": false,
     "show_physics": false
 }

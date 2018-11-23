@@ -197,6 +197,8 @@ namespace aga
         void AddSceneTransition (const std::string& triggerAreaName, const std::string& newSceneName);
         std::string GetSceneTransition (const std::string& triggerAreaName);
 
+        Actor* GetDummyActor ();
+
     private:
         static void UpdateMaxTileID (Scene* scene);
         void DrawQuadTree (QuadTreeNode* node);
@@ -232,6 +234,8 @@ namespace aga
         AudioStream* m_SceneAudioStream;
 
         bool m_SuppressSceneInfo;
+
+        Actor* m_DummyActor;
     };
 }
 

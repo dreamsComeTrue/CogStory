@@ -100,6 +100,8 @@ namespace aga
         void EnableSceneScripts ();
         void DisableSceneScripts ();
 
+        Actor* GetDummyActor ();
+
     private:
         void SceneIntro (float duration = 1000.f);
         void PrintOverlayText (const std::string& text, ScreenRelativePosition pos = BottomRight);

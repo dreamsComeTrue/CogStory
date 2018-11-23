@@ -50,6 +50,8 @@ namespace aga
             }
 
             Scene* scene = new Scene (sceneManager, size);
+            scene->Initialize ();
+
             scene->m_Size = size;
             scene->m_Name = j["name"];
             scene->m_Path = filePath;
@@ -336,6 +338,11 @@ namespace aga
 
             for (Actor* actor : scene->m_Actors)
             {
+                if (actor == scene->GetDummyActor ())
+                {
+                    continue;
+                }
+
                 if (actor->Bounds.GetTopLeft ().X < minRect.X)
                 {
                     minRect.X = actor->Bounds.GetTopLeft ().X;

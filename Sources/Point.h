@@ -122,6 +122,63 @@ namespace aga
         static Point MAX_POINT;
         static Point ZERO_POINT;
     };
+
+    //--------------------------------------------------------------------------------------------------
+
+    inline float Dot (const Point& a, const Point& b) { return (a.X * b.X) + (a.Y * b.Y); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    inline float PerpDot (const Point& a, const Point& b) { return (a.Y * b.X) - (a.X * b.Y); }
+
+    //--------------------------------------------------------------------------------------------------
+
+    inline bool LineCollision (const Point& A1, const Point& A2, const Point& B1, const Point& B2, Point& intersection)
+    {
+        Point a (A2 - A1);
+        Point b (B2 - B1);
+
+        float f = PerpDot (a, b);
+
+        if (!f) // lines are parallel
+        {
+            return false;
+        }
+
+        Point c (B2 - A2);
+        float aa = PerpDot (a, c);
+        float bb = PerpDot (b, c);
+
+        if (f < 0)
+        {
+            if (aa > 0)
+                return false;
+            if (bb > 0)
+                return false;
+            if (aa < f)
+                return false;
+            if (bb < f)
+                return false;
+        }
+        else
+        {
+            if (aa < 0)
+                return false;
+            if (bb < 0)
+                return false;
+            if (aa > f)
+                return false;
+            if (bb > f)
+                return false;
+        }
+
+        float out = 1.0f - (aa / f);
+        intersection = ((B2 - B1) * out) + B1;
+
+        return true;
+    }
+
+    //--------------------------------------------------------------------------------------------------
 }
 
 #endif //   __POINT_H__

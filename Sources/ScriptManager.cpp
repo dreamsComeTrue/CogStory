@@ -54,7 +54,7 @@ namespace aga
        Tween
                = bool TweenFuncPoint (int id, float progress, Point value)
                = void TweenFuncPointFinish (int)
-           void AddTween (int, Point, Point, int, TweenFuncPoint @+ tf, TweenFuncPointFinish @+ te)
+           int AddTween (Point, Point, int, TweenFuncPoint @+ tf, TweenFuncPointFinish @+ te)
            void PauseTween (int)
            void ResumeTween (int)
 
@@ -240,6 +240,7 @@ namespace aga
            void RemoveScript (const string &in name)
            void EnableSceneScripts ()
            void DisableSceneScripts ()
+           Actor@ GetDummyActor ()
 
        Camera
            Camera camera
@@ -800,8 +801,8 @@ namespace aga
         assert (r >= 0);
 
         r = m_ScriptEngine->RegisterGlobalFunction (
-            "void AddTween (int, Point, Point, int, TweenFuncPoint @+ tf, TweenFuncPointFinish @+ te)",
-            asMETHODPR (TweenManager, AddTween, (int, Point, Point, int, asIScriptFunction*, asIScriptFunction*), void),
+            "int AddTween (Point, Point, int, TweenFuncPoint @+ tf, TweenFuncPointFinish @+ te)",
+            asMETHODPR (TweenManager, AddTween, (Point, Point, int, asIScriptFunction*, asIScriptFunction*), int),
             asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterGlobalFunction ("void PauseTween (int)", asMETHOD (TweenManager, PauseTween),
@@ -1414,6 +1415,9 @@ namespace aga
         assert (r >= 0);
         m_ScriptEngine->RegisterGlobalFunction ("void DisableSceneScripts ()",
             asMETHOD (SceneManager, DisableSceneScripts), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+        assert (r >= 0);
+        m_ScriptEngine->RegisterGlobalFunction ("Actor@ GetDummyActor ()", asMETHOD (SceneManager, GetDummyActor),
+            asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
         assert (r >= 0);
     }
 

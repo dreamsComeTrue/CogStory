@@ -48,8 +48,7 @@ namespace aga
         MainLoop* GetMainLoop () { return m_MainLoop; }
 
         // void AddTween (int id, float from, float to, int during, asIScriptFunction* func);
-        void AddTween (
-            int id, Point from, Point to, int during, asIScriptFunction* func, asIScriptFunction* finishFunc);
+        int AddTween (Point from, Point to, int during, asIScriptFunction* func, asIScriptFunction* finishFunc);
         TweenData* GetTween (int id);
 
         void PauseTween (int id);

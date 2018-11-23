@@ -8,6 +8,10 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
+    static int NORMAL_TWEEN_ID = 1000;
+
+    //--------------------------------------------------------------------------------------------------
+
     TweenManager::TweenManager (MainLoop* mainLoop)
         : m_MainLoop (mainLoop)
     {
@@ -270,56 +274,52 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void TweenManager::AddTween (
-        int id, Point from, Point to, int during, asIScriptFunction* asFunc, asIScriptFunction* finishFunc)
+    int TweenManager::AddTween (
+        Point from, Point to, int during, asIScriptFunction* asFunc, asIScriptFunction* finishFunc)
     {
-        TweenData* foundTween = GetTween (id);
+        std::function<bool(tweeny::tween<float, float> & t, float, float)> func
+            = [&](tweeny::tween<float, float>& t, float x, float y) {
+                  TweenData* tweenData = FindTweenData (t);
 
-        if (!foundTween)
-        {
-            std::function<bool(tweeny::tween<float, float> & t, float, float)> func
-                = [&](tweeny::tween<float, float>& t, float x, float y) {
-                      TweenData* tweenData = FindTweenData (t);
+                  if (!tweenData || !tweenData->CallbackScriptFunc)
+                  {
+                      return true;
+                  }
 
-                      if (!tweenData || !tweenData->CallbackScriptFunc)
-                      {
-                          return true;
-                      }
+                  Point p = {x, y};
 
-                      Point p = {x, y};
+                  asIScriptContext* ctx = m_MainLoop->GetScriptManager ().GetContext ();
+                  ctx->Prepare (tweenData->CallbackScriptFunc);
+                  ctx->SetArgDWord (0, static_cast<asDWORD> (tweenData->ID));
+                  ctx->SetArgFloat (1, t.progress ());
+                  ctx->SetArgObject (2, &p);
 
-                      asIScriptContext* ctx = m_MainLoop->GetScriptManager ().GetContext ();
-                      ctx->Prepare (tweenData->CallbackScriptFunc);
-                      ctx->SetArgDWord (0, static_cast<asDWORD> (tweenData->ID));
-                      ctx->SetArgFloat (1, t.progress ());
-                      ctx->SetArgObject (2, &p);
+                  int r = ctx->Execute ();
 
-                      int r = ctx->Execute ();
+                  asDWORD ret = 0;
+                  if (r == asEXECUTION_FINISHED)
+                  {
+                      ret = ctx->GetReturnDWord ();
+                  }
 
-                      asDWORD ret = 0;
-                      if (r == asEXECUTION_FINISHED)
-                      {
-                          ret = ctx->GetReturnDWord ();
-                      }
+                  ctx->Unprepare ();
+                  ctx->GetEngine ()->ReturnContext (ctx);
 
-                      ctx->Unprepare ();
-                      ctx->GetEngine ()->ReturnContext (ctx);
+                  return static_cast<bool> (ret);
+              };
 
-                      return static_cast<bool> (ret);
-                  };
+        tweeny::tween<float, float> tween = tweeny::from (from.X, from.Y).to (to.X, to.Y).during (during).onStep (func);
 
-            tweeny::tween<float, float> tween
-                = tweeny::from (from.X, from.Y).to (to.X, to.Y).during (during).onStep (func);
+        TweenData tweenData;
+        tweenData.ID = NORMAL_TWEEN_ID++;
+        tweenData.CallbackScriptFunc = asFunc;
+        tweenData.FinishScriptFunc = finishFunc;
+        tweenData.TweenFF = tween;
+        tweenData.TweenMask |= TWEEN_FF;
 
-            TweenData tweenData;
-            tweenData.ID = id;
-            tweenData.CallbackScriptFunc = asFunc;
-            tweenData.FinishScriptFunc = finishFunc;
-            tweenData.TweenFF = tween;
-            tweenData.TweenMask |= TWEEN_FF;
+        m_Tweens.push_back (tweenData);
 
-            m_Tweens.push_back (tweenData);
-        }
+        return tweenData.ID;
     }
 
     //--------------------------------------------------------------------------------------------------

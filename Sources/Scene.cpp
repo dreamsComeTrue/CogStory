@@ -80,6 +80,7 @@ namespace aga
         , m_ActorsTreeChanged (false)
         , m_SceneAudioStream (nullptr)
         , m_SuppressSceneInfo (false)
+        , m_DummyActor (nullptr)
     {
     }
 
@@ -95,7 +96,14 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    bool Scene::Initialize () { return Lifecycle::Initialize (); }
+    bool Scene::Initialize ()
+    {
+        m_DummyActor = new TileActor (m_SceneManager);
+
+        AddActor (m_DummyActor);
+
+        return Lifecycle::Initialize ();
+    }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -207,77 +215,29 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    inline float Dot (const Point& a, const Point& b) { return (a.X * b.X) + (a.Y * b.Y); }
-
-    //--------------------------------------------------------------------------------------------------
-
-    inline float PerpDot (const Point& a, const Point& b) { return (a.Y * b.X) - (a.X * b.Y); }
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool LineCollision (const Point& A1, const Point& A2, const Point& B1, const Point& B2, Point& intersection)
-    {
-        Point a (A2 - A1);
-        Point b (B2 - B1);
-
-        float f = PerpDot (a, b);
-
-        if (!f) // lines are parallel
-        {
-            return false;
-        }
-
-        Point c (B2 - A2);
-        float aa = PerpDot (a, c);
-        float bb = PerpDot (b, c);
-
-        if (f < 0)
-        {
-            if (aa > 0)
-                return false;
-            if (bb > 0)
-                return false;
-            if (aa < f)
-                return false;
-            if (bb < f)
-                return false;
-        }
-        else
-        {
-            if (aa < 0)
-                return false;
-            if (bb < 0)
-                return false;
-            if (aa > f)
-                return false;
-            if (bb > f)
-                return false;
-        }
-
-        float out = 1.0f - (aa / f);
-        intersection = ((B2 - B1) * out) + B1;
-
-        return true;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
     void Scene::UpdateCameraBounds ()
     {
         TriggerArea* sceneBounds = GetTriggerArea ("SCENE_BOUNDS");
 
+        Camera& camera = m_SceneManager->GetCamera ();
+        Actor* followActor = camera.GetFollowActor ();
+
+        if (!followActor)
+        {
+            followActor = m_SceneManager->GetPlayer ();
+        }
+
         if (sceneBounds)
         {
-            Camera& camera = m_SceneManager->GetCamera ();
             float scaleX = camera.GetScale ().X;
             float scaleY = camera.GetScale ().Y;
-            Rect playerBounds = m_SceneManager->GetPlayer ()->Bounds;
+            Rect followActorBounds = followActor->Bounds;
             Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
             const Point halfScreen = screenSize * 0.5f;
 
-            Point playerPos = playerBounds.Pos + playerBounds.GetHalfSize ();
-            float playerXPos = playerBounds.Pos.X + playerBounds.GetHalfSize ().Width;
-            float playerYPos = playerBounds.Pos.Y + playerBounds.GetHalfSize ().Height;
+            Point followActorPos = followActorBounds.Pos + followActorBounds.GetHalfSize ();
+            float followActorXPos = followActorBounds.Pos.X + followActorBounds.GetHalfSize ().Width;
+            float followActorYPos = followActorBounds.Pos.Y + followActorBounds.GetHalfSize ().Height;
 
             std::vector<Point>& scenePoints = sceneBounds->Points;
             Point p1;
@@ -303,29 +263,33 @@ namespace aga
 
                 Point tmpPoint;
 
-                if (LineCollision (playerPos, Point (playerXPos - halfScreen.Width, playerYPos), p1, p2, tmpPoint)
-                    && (playerXPos * scaleX - tmpPoint.X * scaleX) <= halfScreen.Width)
+                if (LineCollision (
+                        followActorPos, Point (followActorXPos - halfScreen.Width, followActorYPos), p1, p2, tmpPoint)
+                    && (followActorXPos * scaleX - tmpPoint.X * scaleX) <= halfScreen.Width)
                 {
                     intersectPoint.X = -tmpPoint.X * scaleX;
                     foundLeftIntersection = true;
                 }
 
-                if (LineCollision (playerPos, Point (playerXPos + halfScreen.Width, playerYPos), p1, p2, tmpPoint)
-                    && (tmpPoint.X * scaleX - playerXPos * scaleX) <= halfScreen.Width)
+                if (LineCollision (
+                        followActorPos, Point (followActorXPos + halfScreen.Width, followActorYPos), p1, p2, tmpPoint)
+                    && (tmpPoint.X * scaleX - followActorXPos * scaleX) <= halfScreen.Width)
                 {
                     intersectPoint.X = -tmpPoint.X * scaleX + screenSize.Width;
                     foundRightIntersection = true;
                 }
 
-                if (LineCollision (playerPos, Point (playerXPos, playerYPos - halfScreen.Height), p1, p2, tmpPoint)
-                    && std::abs (tmpPoint.Y * scaleY) - std::abs (playerYPos * scaleY) <= halfScreen.Height)
+                if (LineCollision (
+                        followActorPos, Point (followActorXPos, followActorYPos - halfScreen.Height), p1, p2, tmpPoint)
+                    && std::abs (tmpPoint.Y * scaleY) - std::abs (followActorYPos * scaleY) <= halfScreen.Height)
                 {
                     intersectPoint.Y = -tmpPoint.Y * scaleY;
                     foundTopIntersection = true;
                 }
 
-                if (LineCollision (playerPos, Point (playerXPos, playerYPos + halfScreen.Height), p1, p2, tmpPoint)
-                    && (tmpPoint.Y * scaleY - playerYPos * scaleY) <= halfScreen.Height)
+                if (LineCollision (
+                        followActorPos, Point (followActorXPos, followActorYPos + halfScreen.Height), p1, p2, tmpPoint)
+                    && (tmpPoint.Y * scaleY - followActorYPos * scaleY) <= halfScreen.Height)
                 {
                     intersectPoint.Y = -tmpPoint.Y * scaleY + screenSize.Height;
                     foundBottomIntersection = true;
@@ -1194,6 +1158,10 @@ namespace aga
     {
         return m_ScenesTransitions[triggerAreaName];
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    Actor* Scene::GetDummyActor () { return m_DummyActor; }
 
     //--------------------------------------------------------------------------------------------------
 }

@@ -1,5 +1,3 @@
-bool g_IntroPlayed = false;
-
 void Start ()
 {
 }
@@ -7,15 +5,7 @@ void Start ()
 void BeforeEnterScene ()
 {    
     SetSuppressSceneInfo (true);
-
-    if (!g_IntroPlayed)
-    {
-        IntroAnimation ();        
-    }
-    else
-    {
-        camera.SetFollowActor (GetActor ("PLAYER"));
-    }
+    IntroAnimation ();        
 }
 
 void AfterLeaveScene ()
@@ -26,40 +16,41 @@ int timeout = 2000;
 
 void IntroAnimation ()
 {    
+    player.SetPreventInput (true);
+    player.SetPosition (0, 0);
+    player.SetCurrentAnimation ("ANIM_MOVE_UP");
+
+    GetDummyActor ().SetPosition (GetFlagPoint ("INTRO_CAMERA_START").Pos);
+    camera.SetFollowActor (GetDummyActor ());
+
+    SetOverlayText ("-- Chapter I --\nNo ordinary day", timeout, 100.f, Center);    
+
     Timeline@ timeline = CreateTimeline (0);
 
     timeline
     .Once (timeout, function (id)
     {
-        Point screenSize = screen.GetWindowSize ();
-
-        player.SetPreventInput (true);
-        player.SetPosition (0, 0);
-
-        camera.SetTranslate (screenSize.Width * 0.5f - player.Bounds.GetSize ().Width, -200);
-    	camera.SetFollowActor (null);
-        player.SetCurrentAnimation ("ANIM_MOVE_UP");
-
-        camera.TweenToPoint (player.GetPosition () + player.Bounds.GetHalfSize (), timeout, true, function (id)
+        AddTween (GetDummyActor ().GetPosition (), GetFlagPoint ("INTRO_CAMERA_EXIT").Pos, timeout, function (id, progress, value)
         {
-        });
+            GetDummyActor ().SetPosition (value);
+
+            return false;
+        }, null);
     }).Once (timeout, function (id)
     {
-        Point pos = player.GetPosition () + player.Bounds.GetHalfSize ();
-        pos.X -= 200;
+        AddTween (GetDummyActor ().GetPosition (), player.GetPosition () + player.Bounds.GetHalfSize (), timeout, function (id, progress, value)
+        {
+            GetDummyActor ().SetPosition (value);
 
-        camera.TweenToPoint (pos, timeout, true, function (id)
+            return false;
+        }, function (id)
         {
             camera.SetFollowActor (player);
             player.SetPreventInput (false);
 
-            g_IntroPlayed = true;
             RemoveScript ("intro");
-        });    
+        });
     });
-
-    SetOverlayText ("-- Chapter I --\nNo ordinary day", 3000.f, 100.f, Center);    
-
 }
 
 void Update (float deltaTime)
