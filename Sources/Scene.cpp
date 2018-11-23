@@ -1162,7 +1162,7 @@ namespace aga
         if (path != "")
         {
             AudioManager& audioManager = m_SceneManager->GetMainLoop ()->GetAudioManager ();
-            std::string sampleName = this->GetName () + "_SCENE_STREAM";
+            std::string sampleName = GetBaseName (path) + "_SCENE_STREAM";
             m_SceneAudioStream = audioManager.LoadStreamFromFile (sampleName, path);
         }
 

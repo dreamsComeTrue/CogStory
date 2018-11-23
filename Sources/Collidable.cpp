@@ -51,6 +51,7 @@ namespace aga
 
             al_draw_polygon (out.data (), static_cast<int> (out.size ()) / 2, 0, COLOR_GREEN, 1, 0);
         }
+        
         // for (int i = 0; i < PhysPoints.size (); ++i)
         //{
         // std::vector<float> out;

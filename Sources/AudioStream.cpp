@@ -211,7 +211,9 @@ namespace aga
         m_FadeInCurrent = 0.f;
         m_FadeOutMax = -1.f;
         m_FadeOutCurrent = -1.f;
-        m_Gain = 0.f;
+
+        SetVolume (0.f);
+        Play ();
     }
 
     //--------------------------------------------------------------------------------------------------

@@ -10,16 +10,10 @@ void SceneChanged (const string &in previousSceneName)
 
 void BeforeEnterScene ()
 {
-    GetSceneAudioStream ().Play ();
-    GetSceneAudioStream ().SetFadeIn (500.f);   
 }
 
 void AfterLeaveScene ()
 {
-    if (GetSceneAudioStream () !is null)
-    {
-        GetSceneAudioStream ().SetFadeOut (500.f, true);
-    }
 }
 
 void Update (float deltaTime)

@@ -11,15 +11,11 @@ void SceneChanged (const string &in previousSceneName)
 
 void BeforeEnterScene ()
 {
-    GetSceneAudioStream ().Play ();
-    GetSceneAudioStream ().SetFadeIn (500.f);    
-
     RegisterFunctions ();    
 }
 
 void AfterLeaveScene ()
 {
-    GetSceneAudioStream ().SetFadeOut (500.f, true);
 }
 
 void RegisterFunctions ()

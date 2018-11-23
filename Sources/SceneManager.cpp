@@ -2,6 +2,7 @@
 
 #include "SceneManager.h"
 #include "ActorFactory.h"
+#include "AudioStream.h"
 #include "MainLoop.h"
 #include "Player.h"
 #include "Scene.h"
@@ -155,16 +156,25 @@ namespace aga
         if (scene)
         {
             std::string prevSceneName = "";
+            Scene* prevScene = nullptr;
 
             if (m_ActiveScene != nullptr)
             {
                 m_ActiveScene->AfterLeave ();
                 prevSceneName = m_ActiveScene->GetName ();
+                prevScene = m_ActiveScene;
             }
 
             m_ActiveScene = scene;
             m_ActiveScene->BeforeEnter ();
             m_ActiveScene->RunAllScripts ("void SceneChanged (const string &in str)", &prevSceneName);
+
+            if (prevScene && prevScene->GetSceneAudioStream () != m_ActiveScene->GetSceneAudioStream ())
+            {
+                float fadeTime = 1000.f;
+                prevScene->GetSceneAudioStream ()->SetFadeOut (fadeTime, true);
+                m_ActiveScene->GetSceneAudioStream ()->SetFadeIn (fadeTime);
+            }
 
             if (!m_ActiveScene->IsSuppressSceneInfo ())
             {

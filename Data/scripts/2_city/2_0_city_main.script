@@ -14,10 +14,6 @@ void SceneChanged (const string &in previousSceneName)
 
 void BeforeEnterScene ()
 {
-    SetSuppressSceneInfo (true);
-    GetSceneAudioStream ().Play ();
-    GetSceneAudioStream ().SetFadeIn (500.f);    
-
     RegisterFunctions ();    
 
     SetSuppressSceneInfo (false);
@@ -29,8 +25,6 @@ void BeforeEnterScene ()
 
 void AfterLeaveScene ()
 {
-    GetSceneAudioStream ().SetFadeOut (500.f, true);
-
     SetOverlayActive (false);
 }
 
