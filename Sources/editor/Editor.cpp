@@ -13,6 +13,7 @@
 #include "SceneLoader.h"
 #include "Screen.h"
 #include "SpeechFrameManager.h"
+#include "states/GamePlayState.h"
 
 #include "imgui.h"
 #include "imgui_impl_allegro5.h"
@@ -133,6 +134,10 @@ namespace aga
         , m_OpenPopupSpeechEditor (false)
         , m_OpenPopupAnimationEditor (false)
         , m_OpenPopupTilesEditor (false)
+        , m_DrawActors (true)
+        , m_DrawFlagPoints (true)
+        , m_DrawTriggerAreas (true)
+        , m_DrawCameraBounds (false)
     {
     }
 
@@ -228,6 +233,10 @@ namespace aga
             m_MainLoop->GetSceneManager ().SetDrawPhysData (j["show_physics"]);
             m_MainLoop->GetSceneManager ().SetDrawBoundingBox (j["show_bounds"]);
             m_MainLoop->GetSceneManager ().SetDrawActorsNames (j["show_names"]);
+            m_DrawActors = j["show_actors"];
+            m_DrawFlagPoints = j["show_flag_points"];
+            m_DrawTriggerAreas = j["show_trigger_areas"];
+            m_DrawCameraBounds = j["show_camera_bounds"];
 
             auto& recentFiles = j["recent_files"];
 
@@ -253,6 +262,10 @@ namespace aga
             j["show_physics"] = m_MainLoop->GetSceneManager ().IsDrawPhysData ();
             j["show_bounds"] = m_MainLoop->GetSceneManager ().IsDrawBoundingBox ();
             j["show_names"] = m_MainLoop->GetSceneManager ().IsDrawActorsNames ();
+            j["show_actors"] = m_DrawActors;
+            j["show_flag_points"] = m_DrawFlagPoints;
+            j["show_trigger_areas"] = m_DrawTriggerAreas;
+            j["show_camera_bounds"] = m_DrawCameraBounds;
 
             j["recent_files"] = json::array ({});
 
@@ -686,6 +699,12 @@ namespace aga
         }
 
         m_MainLoop->GetSceneManager ().Render (deltaTime);
+
+        if (m_DrawTriggerAreas)
+        {
+            m_EditorTriggerAreaMode.Render ();
+        }
+
         m_MainLoop->GetSceneManager ().GetCamera ().UseIdentityTransform ();
 
         if (IsEditorCanvasNotCovered ())
@@ -729,13 +748,46 @@ namespace aga
             }
         }
 
-        m_EditorFlagPointMode.DrawFlagPoints ();
+        if (m_DrawFlagPoints)
+        {
+            m_EditorFlagPointMode.Render ();
+        }
+
         m_EditorTriggerAreaMode.MarkSelectedTriggerAreas ();
 
         if (m_EditorActorMode.IsDrawTiles ())
         {
             m_EditorActorMode.DrawTiles ();
             RenderUI ();
+        }
+
+        if (m_DrawCameraBounds)
+        {
+            Point cameraScale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
+            Point windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+            float finalWidth = GAME_WINDOW_SIZE.Width * cameraScale.Width / GAME_WINDOW_SCALE;
+            float finalHeight = GAME_WINDOW_SIZE.Height * cameraScale.Height / GAME_WINDOW_SCALE;
+            Rect r = Rect (windowSize.Width * 0.5f - finalWidth * 0.5f, windowSize.Height * 0.5f - finalHeight * 0.5f,
+                finalWidth, finalHeight);
+
+            ALLEGRO_MOUSE_STATE state;
+            al_get_mouse_state (&state);
+
+            ALLEGRO_COLOR color = COLOR_ORANGE;
+
+            float margin = 2;
+            if (InsideRect (state.x, state.y,
+                    Rect (r.GetCenter ().X - margin, r.GetCenter ().Y - margin, margin * 2, margin * 2)))
+            {
+                color = COLOR_GREEN;
+            }
+
+            al_draw_rectangle (
+                r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y, color, 2);
+            al_draw_line (r.GetTopLeft ().X + r.GetHalfSize ().Width, r.GetTopLeft ().Y,
+                r.GetTopLeft ().X + r.GetHalfSize ().Width, r.GetBottomRight ().Y, color, 1);
+            al_draw_line (r.GetTopLeft ().X, r.GetTopLeft ().Y + r.GetHalfSize ().Height, r.GetBottomRight ().X,
+                r.GetTopLeft ().Y + r.GetHalfSize ().Height, color, 1);
         }
 
         DrawSelectionRect (m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_SelectionRect));
@@ -1256,7 +1308,7 @@ namespace aga
                     m_OpenPopupFlagPointEditor = false;
                 }
 
-                m_EditorFlagPointMode.Render ();
+                m_EditorFlagPointMode.RenderUI ();
 
                 if (ImGui::Button ("TRIGGER AREA", buttonSize) || m_OpenPopupTriggerAreaEditor)
                 {
@@ -1265,7 +1317,7 @@ namespace aga
                     m_OpenPopupTriggerAreaEditor = false;
                 }
 
-                m_EditorTriggerAreaMode.Render ();
+                m_EditorTriggerAreaMode.RenderUI ();
             }
 
             ImGui::NewLine ();
@@ -1535,6 +1587,23 @@ namespace aga
             };
 
             ImGui::Text (std::string ("CURSOR: " + ToString (cursorMode)).c_str ());
+
+            ImGui::End ();
+        }
+        ImGui::PopStyleColor ();
+
+        ImGui::SetNextWindowPos (
+            ImVec2 (m_MainLoop->GetScreen ()->GetWindowSize ().Width - 130, 280), ImGuiCond_Always);
+        ImGui::SetNextWindowSize (ImVec2 (125, 270));
+        ImGui::PushStyleColor (ImGuiCol_WindowBg, ImVec4 (0.f, 0.f, 0.f, 0.0f));
+        if (ImGui::Begin ("Visiblies", nullptr,
+                ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
+                    | ImGuiWindowFlags_NoCollapse))
+        {
+            ImGui::Checkbox ("Actors", &m_DrawActors);
+            ImGui::Checkbox ("Flag Points", &m_DrawFlagPoints);
+            ImGui::Checkbox ("Trigger Areas", &m_DrawTriggerAreas);
+            ImGui::Checkbox ("Camera Bounds", &m_DrawCameraBounds);
 
             ImGui::End ();
         }

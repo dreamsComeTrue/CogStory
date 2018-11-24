@@ -14,6 +14,7 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
+    const float GAME_WINDOW_SCALE = 2.0f;
     const Point GAME_WINDOW_SIZE = {800, 600};
 
     //--------------------------------------------------------------------------------------------------
@@ -130,8 +131,8 @@ namespace aga
     {
         //  Initial scale in gameplay twice big as normal
         const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-        const float SCREEN_SCALE = 2.0f;
-        float finalScale = (winSize.Width * SCREEN_SCALE) / GAME_WINDOW_SIZE.Width;
+
+        float finalScale = (winSize.Width * GAME_WINDOW_SCALE) / GAME_WINDOW_SIZE.Width;
 
         Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
         Point translate = camera.GetTranslate ();

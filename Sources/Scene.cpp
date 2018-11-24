@@ -445,12 +445,6 @@ namespace aga
 
         m_SceneManager->GetCamera ().UseIdentityTransform ();
 
-        if (m_SceneManager->IsDrawBoundingBox ()
-            || m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () == EDITOR_STATE_NAME)
-        {
-            DrawTriggerAreas ();
-        }
-
         Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
         font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), 10,
             m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ().Height - 12,
@@ -1025,84 +1019,6 @@ namespace aga
             if (it->second.ScriptOnLeaveCallback)
             {
                 it->second.ScriptOnLeaveCallback = nullptr;
-            }
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void Scene::DrawTriggerAreas ()
-    {
-        Point translate = m_SceneManager->GetCamera ().GetTranslate ();
-        Point scale = m_SceneManager->GetCamera ().GetScale ();
-
-        for (std::map<std::string, TriggerArea>::iterator it = m_TriggerAreas.begin (); it != m_TriggerAreas.end ();
-             ++it)
-        {
-            if (!it->second.Points.empty ())
-            {
-                int i = 0;
-
-                std::vector<float> out;
-                for (const Point& p : it->second.Points)
-                {
-                    float xPoint = p.X * scale.X - translate.X;
-                    float yPoint = p.Y * scale.Y - translate.Y;
-
-                    out.push_back (xPoint);
-                    out.push_back (yPoint);
-                }
-
-                al_draw_polygon (out.data (), static_cast<int> (it->second.Points.size ()), 0,
-                    it->second.Collidable ? COLOR_GREEN : COLOR_LIGHTBLUE, 2, 0);
-
-                Point min {std::numeric_limits<int>::max (), std::numeric_limits<int>::max ()};
-                Point max {std::numeric_limits<int>::min (), std::numeric_limits<int>::min ()};
-
-                for (const Point& p : it->second.Points)
-                {
-                    float xPoint = p.X * scale.X - translate.X;
-                    float yPoint = p.Y * scale.Y - translate.Y;
-
-                    if (xPoint < min.X)
-                    {
-                        min.X = xPoint;
-                    }
-
-                    if (yPoint < min.Y)
-                    {
-                        min.Y = yPoint;
-                    }
-
-                    if (xPoint > max.X)
-                    {
-                        max.X = xPoint;
-                    }
-
-                    if (yPoint > max.Y)
-                    {
-                        max.Y = yPoint;
-                    }
-
-                    ALLEGRO_COLOR color;
-
-                    if (i == 0)
-                    {
-                        color = COLOR_GREEN;
-                    }
-                    else
-                    {
-                        color = COLOR_YELLOW;
-                    }
-
-                    ++i;
-
-                    al_draw_filled_circle (xPoint, yPoint, 4, color);
-                }
-
-                m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_SMALL,
-                    al_map_rgb (0, 255, 0), static_cast<float> (min.X + (max.X - min.X) * 0.5f),
-                    static_cast<float> (min.Y + (max.Y - min.Y) * 0.5f), it->second.Name, ALLEGRO_ALIGN_CENTER);
             }
         }
     }

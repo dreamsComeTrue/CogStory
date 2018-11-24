@@ -48,7 +48,7 @@ void IntroAnimation ()
             camera.SetFollowActor (player);
             player.SetPreventInput (false);
 
-            RemoveScript ("intro");
+         //   RemoveScript ("intro");
         });
     });
 }

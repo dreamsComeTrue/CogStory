@@ -16,7 +16,7 @@ namespace aga
         EditorFlagPointMode (Editor* editor);
         virtual ~EditorFlagPointMode ();
 
-        void DrawFlagPoints ();
+        void Render ();
         bool MoveSelectedFlagPoint ();
         std::string GetFlagPointUnderCursor (int mouseX, int mouseY);
         void InsertFlagPointAtCursor (int mouseX, int mouseY);
@@ -27,7 +27,7 @@ namespace aga
 
         void SetAskFlagPoint (bool ask);
 
-        void Render ();
+        void RenderUI ();
 
     private:
         Editor* m_Editor;

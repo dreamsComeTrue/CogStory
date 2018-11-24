@@ -52,7 +52,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorFlagPointMode::DrawFlagPoints ()
+    void EditorFlagPointMode::Render ()
     {
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
@@ -229,7 +229,7 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    void EditorFlagPointMode::Render ()
+    void EditorFlagPointMode::RenderUI ()
     {
         if (ImGui::BeginPopupModal ("Flag Point", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {

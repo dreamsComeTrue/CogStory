@@ -39,6 +39,7 @@ namespace aga
         bool IsTriggerAreaCollidable () const;
 
         void Render ();
+        void RenderUI ();
 
         void ClearSelection ();
 

@@ -41,8 +41,8 @@ namespace aga
         void Offset (float x, float y) { SetPos (Pos.X + x, Pos.Y + y); }
 
         void SetCenter (Point p) { return SetPos (p.X - Size.Width * 0.5f, p.Y - Size.Height * 0.5f); }
-        Point GetCenter () { return Point{Pos.X + Size.Width * 0.5f, Pos.Y + Size.Height * 0.5f}; }
-        Point GetHalfSize () { return Point{Size.Width * 0.5f, Size.Height * 0.5f}; }
+        Point GetCenter () { return Point {Pos.X + Size.Width * 0.5f, Pos.Y + Size.Height * 0.5f}; }
+        Point GetHalfSize () { return Point {Size.Width * 0.5f, Size.Height * 0.5f}; }
 
         float GetArea () { return Size.Width * Size.Height; }
 
@@ -70,13 +70,13 @@ namespace aga
             && rectA.GetTopLeft ().Y < rectB.GetBottomRight ().Y && rectB.GetTopLeft ().Y < rectA.GetBottomRight ().Y;
     }
 
-    static bool InsideRect (float x, float y, Rect& rect)
+    static bool InsideRect (float x, float y, Rect rect)
     {
         return (x >= rect.GetTopLeft ().X && y >= rect.GetTopLeft ().Y && x <= rect.GetBottomRight ().X
             && y <= rect.GetBottomRight ().Y);
     }
 
-    static bool InsideRect (const Point& point, Rect& rect) { return InsideRect (point.X, point.Y, rect); }
+    static bool InsideRect (const Point& point, Rect rect) { return InsideRect (point.X, point.Y, rect); }
 }
 
 #endif //   __RECT_H__

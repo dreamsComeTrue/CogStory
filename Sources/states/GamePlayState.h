@@ -8,6 +8,8 @@
 namespace aga
 {
     const std::string GAMEPLAY_STATE_NAME = "GAMEPLAY_STATE";
+    extern const Point GAME_WINDOW_SIZE;
+    extern const float GAME_WINDOW_SCALE;
 
     class MainLoop;
 

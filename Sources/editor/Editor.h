@@ -212,6 +212,11 @@ namespace aga
         char m_FlagPointName[100];
 
         char m_SceneName[100] = {0};
+
+        bool m_DrawActors;
+        bool m_DrawFlagPoints;
+        bool m_DrawTriggerAreas;
+        bool m_DrawCameraBounds;
     };
 }
 

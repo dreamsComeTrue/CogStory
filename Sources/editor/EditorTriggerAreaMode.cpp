@@ -3,6 +3,7 @@
 #include "EditorTriggerAreaMode.h"
 #include "Editor.h"
 #include "MainLoop.h"
+#include "Screen.h"
 
 #include "imgui.h"
 
@@ -273,6 +274,85 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void EditorTriggerAreaMode::Render ()
+    {
+        Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
+        Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
+        std::map<std::string, TriggerArea> triggerAreas
+            = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetTriggerAreas ();
+
+        for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)
+        {
+            if (!it->second.Points.empty ())
+            {
+                int i = 0;
+
+                std::vector<float> out;
+                for (const Point& p : it->second.Points)
+                {
+                    float xPoint = p.X * scale.X - translate.X;
+                    float yPoint = p.Y * scale.Y - translate.Y;
+
+                    out.push_back (xPoint);
+                    out.push_back (yPoint);
+                }
+
+                al_draw_polygon (out.data (), static_cast<int> (it->second.Points.size ()), 0,
+                    it->second.Collidable ? COLOR_GREEN : COLOR_LIGHTBLUE, 2, 0);
+
+                Point min {std::numeric_limits<int>::max (), std::numeric_limits<int>::max ()};
+                Point max {std::numeric_limits<int>::min (), std::numeric_limits<int>::min ()};
+
+                for (const Point& p : it->second.Points)
+                {
+                    float xPoint = p.X * scale.X - translate.X;
+                    float yPoint = p.Y * scale.Y - translate.Y;
+
+                    if (xPoint < min.X)
+                    {
+                        min.X = xPoint;
+                    }
+
+                    if (yPoint < min.Y)
+                    {
+                        min.Y = yPoint;
+                    }
+
+                    if (xPoint > max.X)
+                    {
+                        max.X = xPoint;
+                    }
+
+                    if (yPoint > max.Y)
+                    {
+                        max.Y = yPoint;
+                    }
+
+                    ALLEGRO_COLOR color;
+
+                    if (i == 0)
+                    {
+                        color = COLOR_GREEN;
+                    }
+                    else
+                    {
+                        color = COLOR_YELLOW;
+                    }
+
+                    ++i;
+
+                    al_draw_filled_circle (xPoint, yPoint, 4, color);
+                }
+
+                m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0),
+                    static_cast<float> (min.X + (max.X - min.X) * 0.5f),
+                    static_cast<float> (min.Y + (max.Y - min.Y) * 0.5f), it->second.Name, ALLEGRO_ALIGN_CENTER);
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorTriggerAreaMode::RenderUI ()
     {
         ImGui::SetNextWindowSize (ImVec2 (400, 130));
 
