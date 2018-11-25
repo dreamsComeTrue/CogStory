@@ -231,24 +231,21 @@ namespace aga
         {
             float scaleX = camera.GetScale ().X;
             float scaleY = camera.GetScale ().Y;
-            Rect followActorBounds = followActor->Bounds;
+
             Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
             const Point halfScreen = screenSize * 0.5f;
 
+            Rect followActorBounds = followActor->Bounds;
             Point followActorPos = followActorBounds.Pos + followActorBounds.GetHalfSize ();
-            float followActorXPos = followActorBounds.Pos.X + followActorBounds.GetHalfSize ().Width;
-            float followActorYPos = followActorBounds.Pos.Y + followActorBounds.GetHalfSize ().Height;
 
             std::vector<Point>& scenePoints = sceneBounds->Points;
             Point p1;
             Point p2;
-            bool foundLeftIntersection = false;
-            bool foundRightIntersection = false;
-            bool foundTopIntersection = false;
-            bool foundBottomIntersection = false;
+            bool foundXIntersection = false;
+            bool foundYIntersection = false;
             Point intersectPoint = camera.GetSavedFollowPoint ();
 
-            for (size_t i = 0; i < scenePoints.size (); i++)
+            for (size_t i = 0; i < scenePoints.size (); ++i)
             {
                 p1 = scenePoints[i];
 
@@ -263,60 +260,51 @@ namespace aga
 
                 Point tmpPoint;
 
+                //  Left & Right
                 if (LineCollision (
-                        followActorPos, Point (followActorXPos - halfScreen.Width, followActorYPos), p1, p2, tmpPoint)
-                    && (followActorXPos * scaleX - tmpPoint.X * scaleX) <= halfScreen.Width)
+                        followActorPos, Point (followActorPos.X - halfScreen.Width, followActorPos.Y), p1, p2, tmpPoint)
+                    && (followActorPos.X * scaleX - tmpPoint.X * scaleX) <= halfScreen.Width)
                 {
                     intersectPoint.X = -tmpPoint.X * scaleX;
-                    foundLeftIntersection = true;
+                    foundXIntersection = true;
                 }
-
-                if (LineCollision (
-                        followActorPos, Point (followActorXPos + halfScreen.Width, followActorYPos), p1, p2, tmpPoint)
-                    && (tmpPoint.X * scaleX - followActorXPos * scaleX) <= halfScreen.Width)
+                else if (LineCollision (followActorPos, Point (followActorPos.X + halfScreen.Width, followActorPos.Y),
+                             p1, p2, tmpPoint)
+                    && (tmpPoint.X * scaleX - followActorPos.X * scaleX) <= halfScreen.Width)
                 {
                     intersectPoint.X = -tmpPoint.X * scaleX + screenSize.Width;
-                    foundRightIntersection = true;
+                    foundXIntersection = true;
                 }
 
-                if (LineCollision (
-                        followActorPos, Point (followActorXPos, followActorYPos - halfScreen.Height), p1, p2, tmpPoint)
-                    && std::abs (tmpPoint.Y * scaleY) - std::abs (followActorYPos * scaleY) <= halfScreen.Height)
+                //  Top && Bottom
+                if (LineCollision (followActorPos, Point (followActorPos.X, followActorPos.Y - halfScreen.Height), p1,
+                        p2, tmpPoint)
+                    && (followActorPos.Y * scaleY - tmpPoint.Y * scaleY) <= halfScreen.Height)
                 {
                     intersectPoint.Y = -tmpPoint.Y * scaleY;
-                    foundTopIntersection = true;
+                    foundYIntersection = true;
                 }
-
-                if (LineCollision (
-                        followActorPos, Point (followActorXPos, followActorYPos + halfScreen.Height), p1, p2, tmpPoint)
-                    && (tmpPoint.Y * scaleY - followActorYPos * scaleY) <= halfScreen.Height)
+                else if (LineCollision (followActorPos, Point (followActorPos.X, followActorPos.Y + halfScreen.Height),
+                             p1, p2, tmpPoint)
+                    && (tmpPoint.Y * scaleY - followActorPos.Y * scaleY) <= halfScreen.Height)
                 {
                     intersectPoint.Y = -tmpPoint.Y * scaleY + screenSize.Height;
-                    foundBottomIntersection = true;
+                    foundYIntersection = true;
                 }
             }
 
-            //  Left & Right
-            if (foundLeftIntersection || foundRightIntersection)
+            if (foundXIntersection)
             {
                 camera.SetSavedFollowPoint (intersectPoint);
-                camera.SetFollowingXAxis (false);
-            }
-            else
-            {
-                camera.SetFollowingXAxis (true);
             }
 
-            //  Top && Bottom
-            if (foundTopIntersection || foundBottomIntersection)
+            if (foundYIntersection)
             {
                 camera.SetSavedFollowPoint (intersectPoint);
-                camera.SetFollowingYAxis (false);
             }
-            else
-            {
-                camera.SetFollowingYAxis (true);
-            }
+
+            camera.SetFollowingXAxis (!foundXIntersection);
+            camera.SetFollowingYAxis (!foundYIntersection);
         }
     }
 

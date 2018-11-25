@@ -5,14 +5,12 @@ void Start ()
 void BeforeEnterScene ()
 {    
     SetSuppressSceneInfo (true);
-    IntroAnimation ();        
+  //  IntroAnimation ();        
 }
 
 void AfterLeaveScene ()
 {
 }
-
-int timeout = 2000;
 
 void IntroAnimation ()
 {    
@@ -23,22 +21,22 @@ void IntroAnimation ()
     GetDummyActor ().SetPosition (GetFlagPoint ("INTRO_CAMERA_START").Pos);
     camera.SetFollowActor (GetDummyActor ());
 
-    SetOverlayText ("-- Chapter I --\nNo ordinary day", timeout, 100.f, Center);    
+    SetOverlayText ("-- Chapter I --\nNo ordinary day", 3000.f, 100.f, Center);    
 
     Timeline@ timeline = CreateTimeline (0);
 
     timeline
-    .Once (timeout, function (id)
+    .Once (8000.f, function (id)
     {
-        AddTween (GetDummyActor ().GetPosition (), GetFlagPoint ("INTRO_CAMERA_EXIT").Pos, timeout, function (id, progress, value)
+        AddTween (GetDummyActor ().GetPosition (), GetFlagPoint ("INTRO_CAMERA_EXIT").Pos, 8000.f, function (id, progress, value)
         {
             GetDummyActor ().SetPosition (value);
 
             return false;
         }, null);
-    }).Once (timeout, function (id)
+    }).Once (2000.f, function (id)
     {
-        AddTween (GetDummyActor ().GetPosition (), player.GetPosition () + player.Bounds.GetHalfSize (), timeout, function (id, progress, value)
+        AddTween (GetDummyActor ().GetPosition (), player.GetPosition () + player.Bounds.GetHalfSize (), 2000.f, function (id, progress, value)
         {
             GetDummyActor ().SetPosition (value);
 
@@ -48,7 +46,7 @@ void IntroAnimation ()
             camera.SetFollowActor (player);
             player.SetPreventInput (false);
 
-         //   RemoveScript ("intro");
+            RemoveScript ("intro");
         });
     });
 }

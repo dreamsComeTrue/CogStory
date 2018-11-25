@@ -169,11 +169,33 @@ namespace aga
             m_ActiveScene->BeforeEnter ();
             m_ActiveScene->RunAllScripts ("void SceneChanged (const string &in str)", &prevSceneName);
 
-            if (prevScene && prevScene->GetSceneAudioStream () != m_ActiveScene->GetSceneAudioStream ())
+            AudioStream* prevAudioStream = nullptr;
+
+            if (prevScene)
+            {
+                prevAudioStream = prevScene->GetSceneAudioStream ();
+            }
+
+            AudioStream* currentAudioStream = nullptr;
+
+            if (m_ActiveScene)
+            {
+                currentAudioStream = m_ActiveScene->GetSceneAudioStream ();
+            }
+
+            if (prevScene && prevAudioStream != currentAudioStream)
             {
                 float fadeTime = 1000.f;
-                prevScene->GetSceneAudioStream ()->SetFadeOut (fadeTime, true);
-                m_ActiveScene->GetSceneAudioStream ()->SetFadeIn (fadeTime);
+
+                if (prevAudioStream)
+                {
+                    prevAudioStream->SetFadeOut (fadeTime, true);
+                }
+
+                if (currentAudioStream)
+                {
+                    currentAudioStream->SetFadeIn (fadeTime);
+                }
             }
 
             if (!m_ActiveScene->IsSuppressSceneInfo ())

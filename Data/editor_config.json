@@ -1,10 +1,14 @@
 {
-    "recent_files": [],
+    "recent_files": [
+        "2_city/2_3_city_factory_district.scn",
+        "2_city/2_2_city_humans_district.scn",
+        "1_factory/1_1_factory_main.scn"
+    ],
     "show_actors": true,
     "show_bounds": false,
-    "show_camera_bounds": false,
+    "show_camera_bounds": true,
     "show_flag_points": true,
-    "show_grid": false,
+    "show_grid": true,
     "show_names": false,
     "show_physics": false,
     "show_trigger_areas": true
