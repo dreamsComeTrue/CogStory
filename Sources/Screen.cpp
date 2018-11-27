@@ -286,7 +286,8 @@ namespace aga
             }
             else
             {
-                GetFont ().DrawText (FONT_NAME_SMALL, msg.Color, 10, 10 + i * 10, msg.Message, ALLEGRO_ALIGN_LEFT);
+                GetFont ().DrawText (
+                    FONT_NAME_SMALL, msg.Message, msg.Color, 10, 10 + i * 10, 1.0f, ALLEGRO_ALIGN_LEFT);
             }
         }
     }

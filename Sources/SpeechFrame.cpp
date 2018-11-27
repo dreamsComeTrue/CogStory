@@ -639,8 +639,8 @@ namespace aga
             {
                 std::string charToDraw = std::string (1, line[j]);
 
-                font.DrawText (
-                    FONT_NAME_SPEECH_FRAME, color, drawPoint.X + advance, drawPoint.Y, charToDraw, GetTextAlign ());
+                font.DrawText (FONT_NAME_SPEECH_FRAME, charToDraw, color, drawPoint.X + advance, drawPoint.Y, 1.0f,
+                    GetTextAlign ());
 
                 if (charToDraw == " ")
                 {

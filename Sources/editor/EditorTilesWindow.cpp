@@ -399,9 +399,9 @@ namespace aga
 
                 int index = (selX / m_Width) + (selY / m_Height) * m_TilesX;
 
-                m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_MEDIUM, COLOR_WHITE,
-                    selBeginPoint.X, selBeginPoint.Y - 20, std::string (m_Name) + "_" + std::to_string (index),
-                    ALLEGRO_ALIGN_LEFT);
+                m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_MEDIUM,
+                    std::string (m_Name) + "_" + std::to_string (index), COLOR_WHITE, selBeginPoint.X,
+                    selBeginPoint.Y - 20, 1.0f, ALLEGRO_ALIGN_LEFT);
             }
         }
     }

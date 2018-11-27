@@ -343,9 +343,9 @@ namespace aga
                     al_draw_filled_circle (xPoint, yPoint, 4, color);
                 }
 
-                m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0),
-                    static_cast<float> (min.X + (max.X - min.X) * 0.5f),
-                    static_cast<float> (min.Y + (max.Y - min.Y) * 0.5f), it->second.Name, ALLEGRO_ALIGN_CENTER);
+                m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_SMALL, it->second.Name,
+                    al_map_rgb (0, 255, 0), static_cast<float> (min.X + (max.X - min.X) * 0.5f),
+                    static_cast<float> (min.Y + (max.Y - min.Y) * 0.5f), 1.0f, ALLEGRO_ALIGN_CENTER);
             }
         }
     }

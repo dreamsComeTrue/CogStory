@@ -434,9 +434,8 @@ namespace aga
         m_SceneManager->GetCamera ().UseIdentityTransform ();
 
         Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
-        font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), 10,
-            m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ().Height - 12,
-            std::to_string (m_VisibleEntities.size ()), ALLEGRO_ALIGN_LEFT);
+        font.DrawText (FONT_NAME_SMALL, std::to_string (m_VisibleEntities.size ()), al_map_rgb (0, 255, 0), 10,
+            m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ().Height - 12, 1.0f, ALLEGRO_ALIGN_LEFT);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -813,8 +812,8 @@ namespace aga
             bounds.GetBottomRight ().Y, COLOR_WHITE, 1);
 
         Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
-        font.DrawText (FONT_NAME_SMALL, al_map_rgb (255, 255, 0), bounds.GetCenter ().X, bounds.GetCenter ().Y,
-            std::to_string (node->GetData ().size ()), ALLEGRO_ALIGN_CENTER);
+        font.DrawText (FONT_NAME_SMALL, std::to_string (node->GetData ().size ()), al_map_rgb (255, 255, 0),
+            bounds.GetCenter ().X, bounds.GetCenter ().Y, 1.0f, ALLEGRO_ALIGN_CENTER);
 
         if (node->GetTopLeftTree ())
         {

@@ -525,7 +525,7 @@ namespace aga
         }
 
         Font& font = m_Editor->GetMainLoop ()->GetScreen ()->GetFont ();
-        font.DrawText (FONT_NAME_SMALL, al_map_rgb (255, 255, 0), drawNamePoint.X, drawNamePoint.Y, drawName,
+        font.DrawText (FONT_NAME_SMALL, drawName, al_map_rgb (255, 255, 0), drawNamePoint.X, drawNamePoint.Y, 1.0f,
             ALLEGRO_ALIGN_CENTER);
     }
 

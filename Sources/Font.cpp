@@ -8,11 +8,12 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     std::map<std::string, ALLEGRO_FONT*> Font::m_Fonts;
+    ALLEGRO_TRANSFORM* Font::m_BackupTransform;
 
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
 
-    Font::Font () {}
+    Font::Font () { m_BackupTransform = nullptr; }
 
     //--------------------------------------------------------------------------------------------------
 
@@ -38,6 +39,8 @@ namespace aga
         GenerateFont (FONT_NAME_MENU_TITLE, GetResourcePath (FONT_MENU_TITLE), 120);
         GenerateFont (FONT_NAME_MENU_ITEM_NORMAL, GetResourcePath (FONT_MENU_ITEM_NORMAL), 70);
         GenerateFont (FONT_NAME_MENU_ITEM_SMALL, GetResourcePath (FONT_MENU_ITEM_SMALL), 50);
+
+        m_BackupTransform = new ALLEGRO_TRANSFORM;
 
         return true;
     }
@@ -67,17 +70,28 @@ namespace aga
             m_Fonts.erase (it++);
         }
 
+        SAFE_DELETE (m_BackupTransform);
+
         return Lifecycle::Destroy ();
     }
 
     //--------------------------------------------------------------------------------------------------
 
-    void Font::DrawText (
-        const std::string& fontName, ALLEGRO_COLOR color, float x, float y, const std::string& text, int flags)
+    void Font::DrawText (const std::string& fontName, const std::string& text, ALLEGRO_COLOR color, float x, float y,
+        float scale, int flags)
     {
         ALLEGRO_FONT* font = m_Fonts[fontName];
 
-        al_draw_text (font, color, x, y, flags, text.c_str ());
+        ALLEGRO_TRANSFORM* currentTransform = const_cast<ALLEGRO_TRANSFORM*> (al_get_current_transform ());
+        al_copy_transform (m_BackupTransform, currentTransform);
+
+        al_identity_transform (currentTransform);
+
+        al_scale_transform (currentTransform, scale, scale);
+
+        al_draw_text (font, color, x / scale, y / scale, flags, text.c_str ());
+
+        al_use_transform (m_BackupTransform);
     }
 
     //--------------------------------------------------------------------------------------------------

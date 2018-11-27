@@ -6,7 +6,7 @@
 using namespace aga;
 
 // The attributes of the screen
-const char* GAME_TITLE = "πTER";
+const char* GAME_TITLE = "COG STORY";
 const int SCREEN_WIDTH = 1200;
 const int SCREEN_HEIGHT = 700;
 

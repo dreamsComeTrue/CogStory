@@ -91,7 +91,7 @@ namespace aga
             float yPoint = fp.Pos.Y * scale.Y - translate.Y;
 
             m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
-                FONT_NAME_SMALL, al_map_rgb (0, 255, 0), xPoint, yPoint - 15, it->first, ALLEGRO_ALIGN_CENTER);
+                FONT_NAME_SMALL, it->first, al_map_rgb (0, 255, 0), xPoint, yPoint - 15, 1.0f, ALLEGRO_ALIGN_CENTER);
 
             Point p = {fp.Pos.X, fp.Pos.Y};
 

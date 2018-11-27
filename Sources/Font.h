@@ -24,8 +24,8 @@ namespace aga
         bool Initialize ();
         bool Destroy ();
 
-        static void DrawText (const std::string& fontName, ALLEGRO_COLOR color, float x, float y,
-            const std::string& text, int flags = ALLEGRO_ALIGN_CENTRE);
+        static void DrawText (const std::string& fontName, const std::string& text, ALLEGRO_COLOR color, float x,
+            float y, float scale, int flags = ALLEGRO_ALIGN_CENTRE);
         static void DrawMultilineText (const std::string& fontName, ALLEGRO_COLOR color, float x, float y,
             float max_width, float line_height, int flags, const char* text, ...);
 
@@ -37,6 +37,7 @@ namespace aga
         void GenerateFont (const std::string& name, const std::string& path, int size);
 
     private:
+        static ALLEGRO_TRANSFORM* m_BackupTransform;
         static std::map<std::string, ALLEGRO_FONT*> m_Fonts;
     };
 }

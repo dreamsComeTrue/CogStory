@@ -52,7 +52,7 @@ namespace aga
             Point pos = {Bounds.GetPos ().X + regionBounds.GetHalfSize ().Width,
                 Bounds.GetPos ().Y + regionBounds.GetSize ().Height};
             std::string str = Name + "[" + std::to_string (ID) + "]";
-            font.DrawText (FONT_NAME_SMALL, al_map_rgb (0, 255, 0), pos.X, pos.Y, str, ALLEGRO_ALIGN_CENTER);
+            font.DrawText (FONT_NAME_SMALL, str, al_map_rgb (0, 255, 0), pos.X, pos.Y, 1.0f, ALLEGRO_ALIGN_CENTER);
         }
     }
 

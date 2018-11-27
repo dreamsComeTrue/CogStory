@@ -38,6 +38,7 @@ namespace aga
         void HandleSelection ();
 
     private:
+        ALLEGRO_BITMAP* m_Image;
         AudioSample* m_SelectSample;
         class Atlas* m_SelectItemAtlas;
         float m_SelectionAngle;
@@ -45,6 +46,8 @@ namespace aga
 
         int m_AnimationStage;
         float m_AnimationTimer;
+        float m_SelectionTimer;
+        bool m_AnimationUp;
     };
 }
 
