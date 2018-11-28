@@ -16,6 +16,9 @@ namespace aga
     float MENU_ANIMATION_TIME_STAGE1 = 1500.f;
     float MENU_ANIMATION_TIME_STAGE2 = 500.f;
 
+    //--------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
+
     MainMenuState::MainMenuState (MainLoop* mainLoop)
         : State (mainLoop, MAIN_MENU_STATE_NAME)
         , m_Image (nullptr)
@@ -25,6 +28,7 @@ namespace aga
         , m_AnimationTimer (0.f)
         , m_SelectionTimer (0.f)
         , m_AnimationUp (true)
+        , m_ExitSelected (false)
     {
     }
 
@@ -77,6 +81,12 @@ namespace aga
 
         //  TODO: remove
         m_MainLoop->GetAudioManager ().SetEnabled (false);
+
+        m_ExitSelected = false;
+
+        // m_AnimationStage = 0;
+        // m_AnimationTimer = 0.f;
+        // m_SelectionTimer = 0.f;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -98,9 +108,19 @@ namespace aga
 
                 --m_Selection;
 
-                if (m_Selection < MENU_ITEM_NEW_STORY)
+                if (m_ExitSelected)
                 {
-                    m_Selection = MENU_ITEM_EXIT;
+                    if (m_Selection < MENU_ITEM_EXIT_YES)
+                    {
+                        m_Selection = MENU_ITEM_EXIT_NO;
+                    }
+                }
+                else
+                {
+                    if (m_Selection < MENU_ITEM_NEW_JOURNEY)
+                    {
+                        m_Selection = MENU_ITEM_EXIT;
+                    }
                 }
 
                 break;
@@ -113,9 +133,19 @@ namespace aga
 
                 ++m_Selection;
 
-                if (m_Selection > MENU_ITEM_EXIT)
+                if (m_ExitSelected)
                 {
-                    m_Selection = MENU_ITEM_NEW_STORY;
+                    if (m_Selection > MENU_ITEM_EXIT_NO)
+                    {
+                        m_Selection = MENU_ITEM_EXIT_YES;
+                    }
+                }
+                else
+                {
+                    if (m_Selection > MENU_ITEM_EXIT)
+                    {
+                        m_Selection = MENU_ITEM_NEW_JOURNEY;
+                    }
                 }
 
                 break;
@@ -141,7 +171,7 @@ namespace aga
     {
         switch (m_Selection)
         {
-        case MENU_ITEM_NEW_STORY:
+        case MENU_ITEM_NEW_JOURNEY:
         {
             m_MainLoop->GetStateManager ().StateFadeInOut (GAMEPLAY_STATE_NAME);
             break;
@@ -155,7 +185,21 @@ namespace aga
 
         case MENU_ITEM_EXIT:
         {
+            m_ExitSelected = true;
+            m_Selection = MENU_ITEM_EXIT_YES;
+            break;
+        }
+
+        case MENU_ITEM_EXIT_YES:
+        {
             m_MainLoop->Exit ();
+            break;
+        }
+
+        case MENU_ITEM_EXIT_NO:
+        {
+            m_ExitSelected = false;
+            m_Selection = MENU_ITEM_EXIT;
             break;
         }
         }
@@ -188,19 +232,8 @@ namespace aga
     void MainMenuState::Render (float deltaTime)
     {
         const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-        std::string menuItems[3] = {"NEW STORY", "CONTINUE", "EXIT"};
-
         Font& font = m_MainLoop->GetScreen ()->GetFont ();
-        Point textSize = font.GetTextDimensions (FONT_NAME_MENU_ITEM_NORMAL, menuItems[m_Selection]);
-
-        int offset = 10;
-        int menuItemSpacing = static_cast<int> (textSize.Height + offset);
-        int menuItemStartY = static_cast<int> (winSize.Height * 0.6f + menuItemSpacing);
-
-        ALLEGRO_COLOR menuItemColor = al_map_rgb (140, 140, 160);
         ALLEGRO_COLOR backColor = al_map_rgb (60, 60, 70);
-
-        float percent = 1.0f;
 
         if (m_AnimationStage < 2)
         {
@@ -213,33 +246,34 @@ namespace aga
                 ++m_AnimationStage;
                 m_AnimationTimer = 0.f;
             }
-
-            percent = m_AnimationTimer / maxTime;
         }
 
-        if (m_AnimationStage >= 0)
+        float percent = m_AnimationTimer / MENU_ANIMATION_TIME_STAGE1;
+        float currentPercent = m_AnimationStage > 0 ? 1.0f : percent;
+
+        al_draw_bitmap (m_Image, winSize.Width * 0.5f - al_get_bitmap_width (m_Image) * 0.5f,
+            winSize.Height * 0.5f - al_get_bitmap_height (m_Image) * 0.5f, 0);
+
+        if (m_ExitSelected)
         {
-            float currentPercent = m_AnimationStage > 0 ? 1.0f : percent;
-
-            al_draw_bitmap (m_Image, winSize.Width * 0.5f - al_get_bitmap_width (m_Image) * 0.5f,
-                winSize.Height * 0.5f - al_get_bitmap_height (m_Image) * 0.5f, 0);
-            al_draw_filled_rectangle (0, winSize.Height * currentPercent, winSize.Width, winSize.Height, backColor);
-
-            if (m_AnimationStage == 0 && currentPercent > 0.7f)
-            {
-                m_AnimationTimer = MENU_ANIMATION_TIME_STAGE1;
-            }
+            RenderExitItems ();
         }
-
-        if (m_AnimationStage >= 1)
+        else
         {
-            float currentPercent = m_AnimationStage > 1 ? 1.0f : percent;
-            float scale = 1.3f * currentPercent;
-
-            m_SelectionAngle += MENU_SELECTION_ROTATION_SPEED * deltaTime;
-            m_SelectItemAtlas->DrawRegion ("cog", winSize.Width * 0.5f, winSize.Height * 0.5f - 70, scale, scale,
-                m_SelectionAngle, false, COLOR_WHITE);
+            RenderMenuItems ();
         }
+
+        //  Draw cover-up rect
+        al_draw_filled_rectangle (0, winSize.Height * currentPercent, winSize.Width, winSize.Height, backColor);
+
+        //  Draw center cog
+        percent = m_AnimationTimer / MENU_ANIMATION_TIME_STAGE2;
+        currentPercent = m_AnimationStage > 0 ? 1.0f : std::clamp (percent, 0.f, 1.f);
+        float scale = 1.3f * currentPercent;
+
+        m_SelectionAngle += MENU_SELECTION_ROTATION_SPEED * deltaTime;
+        m_SelectItemAtlas->DrawRegion ("cog", winSize.Width * 0.5f, winSize.Height * 0.5f - 70, scale, scale,
+            m_SelectionAngle, false, COLOR_WHITE);
 
         if (m_AnimationUp)
         {
@@ -261,6 +295,26 @@ namespace aga
             }
         }
 
+        font.DrawText (FONT_NAME_SMALL, "v 0.1 (C) Dominik 'squall' Jasinski", al_map_rgb (130, 130, 130), 5,
+            winSize.Height - 20, 1.0f, ALLEGRO_ALIGN_LEFT);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void MainMenuState::RenderMenuItems ()
+    {
+        const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+        std::string menuItems[3] = {"NEW JOURNEY", "CONTINUE", "EXIT"};
+
+        Font& font = m_MainLoop->GetScreen ()->GetFont ();
+        Point textSize = font.GetTextDimensions (FONT_NAME_MENU_ITEM_NORMAL, menuItems[m_Selection]);
+
+        int offset = 10;
+        int menuItemSpacing = static_cast<int> (textSize.Height + offset);
+        int menuItemStartY = static_cast<int> (winSize.Height * 0.6f + menuItemSpacing);
+
+        ALLEGRO_COLOR menuItemColor = al_map_rgb (140, 140, 160);
+
         for (int i = 0; i < 3; ++i)
         {
             float currentPercent = m_SelectionTimer / MENU_ANIMATION_TIME_STAGE2;
@@ -271,9 +325,34 @@ namespace aga
                                  : menuItemStartY + i * menuItemSpacing,
                 scale, ALLEGRO_ALIGN_CENTER);
         }
+    }
 
-        font.DrawText (FONT_NAME_SMALL, "v 0.1 (C) Dominik 'squall' Jasinski", al_map_rgb (130, 130, 130), 5,
-            winSize.Height - 20, 1.0f, ALLEGRO_ALIGN_LEFT);
+    //--------------------------------------------------------------------------------------------------
+
+    void MainMenuState::RenderExitItems ()
+    {
+        const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+        std::string menuItems[3] = {"SURE?", "YES", "NO"};
+
+        Font& font = m_MainLoop->GetScreen ()->GetFont ();
+        Point textSize = font.GetTextDimensions (FONT_NAME_MENU_ITEM_NORMAL, menuItems[m_Selection - MENU_ITEM_EXIT]);
+
+        int offset = 10;
+        int menuItemSpacing = static_cast<int> (textSize.Height + offset);
+        int menuItemStartY = static_cast<int> (winSize.Height * 0.6f + menuItemSpacing);
+
+        ALLEGRO_COLOR menuItemColor = al_map_rgb (140, 140, 160);
+
+        for (int i = 0; i < 3; ++i)
+        {
+            float currentPercent = m_SelectionTimer / MENU_ANIMATION_TIME_STAGE2;
+            float scale = i == (m_Selection - MENU_ITEM_EXIT) ? 1.0f + currentPercent * 0.2f : 1.0f;
+
+            font.DrawText (FONT_NAME_MENU_ITEM_SMALL, menuItems[i], menuItemColor, winSize.Width * 0.5f + 250.f,
+                i == (m_Selection - MENU_ITEM_EXIT) ? menuItemStartY + i * menuItemSpacing - offset * 0.5f
+                                                    : menuItemStartY + i * menuItemSpacing,
+                scale, ALLEGRO_ALIGN_CENTER);
+        }
     }
 
     //--------------------------------------------------------------------------------------------------
