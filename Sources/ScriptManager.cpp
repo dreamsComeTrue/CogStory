@@ -91,6 +91,7 @@ namespace aga
             = void ActorActionHandler (Actor@ actor)
            Actor@ RegisterActorAction (const string &in actionName, string &in actorName,
                                        ActorActionHandler @+ callback)
+           void RegisterActionSpeech (const string &in actorName, const string &in speechID)
            SpeechFrame@ TalkTo (Actor@ actor, const string in& speechID)
            Actor@ GetLastActionActor ()
 
@@ -913,6 +914,10 @@ namespace aga
             "Actor@ RegisterActorAction (const string &in actionName, const string &in actorName, ActorActionHandler "
             "@+ callback)",
             asMETHOD (Player, RegisterActorAction), asCALL_THISCALL);
+        assert (r >= 0);
+        r = m_ScriptEngine->RegisterObjectMethod ("Player",
+            "void RegisterActionSpeech (const string &in actorName, const string &in speechID)",
+            asMETHOD (Player, RegisterActionSpeech), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("Player",
             "SpeechFrame@ TalkTo (Actor@ actor, const string &in speechID)", asMETHOD (Player, TalkTo),

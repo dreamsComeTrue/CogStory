@@ -16,6 +16,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     std::string Player::TypeName = "Player";
+    static int ACTION_ID = 0;
 
     //  Pixels Per Second
     const float MOVE_SPEED = 130.0;
@@ -404,16 +405,25 @@ namespace aga
         {
             ActorAction& action = it->second;
 
-            bool overlaping = this->IsOverlaping (action.AnActor);
-
-            if (overlaping)
+            if (IsOverlaping (action.AnActor))
             {
-                asIScriptContext* ctx = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetContext ();
-                ctx->Prepare (action.Func);
-                ctx->SetArgObject (0, action.AnActor);
-                ctx->Execute ();
-                ctx->Unprepare ();
-                ctx->GetEngine ()->ReturnContext (ctx);
+                if (action.Func)
+                {
+                    asIScriptContext* ctx = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetContext ();
+                    ctx->Prepare (action.Func);
+                    ctx->SetArgObject (0, action.AnActor);
+                    ctx->Execute ();
+                    ctx->Unprepare ();
+                    ctx->GetEngine ()->ReturnContext (ctx);
+                }
+
+                if (action.SpeechID != "")
+                {
+                    action.AnActor->OrientTo (this);
+                    action.AnActor->SuspendUpdate ();
+
+                    m_SceneManager->GetSpeechFrameManager ()->AddSpeechFrame (action.SpeechID, true);
+                }
 
                 action.Handled = true;
 
@@ -437,6 +447,17 @@ namespace aga
         }
 
         return m_ActorActions[actionName].AnActor;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::RegisterActionSpeech (const std::string& actorName, const std::string& speechID)
+    {
+        ActorAction action;
+        action.AnActor = m_SceneManager->GetActor (actorName);
+        action.SpeechID = speechID;
+
+        m_ActorActions.insert (std::make_pair ("ACTION_" + std::to_string (ACTION_ID++), action));
     }
 
     //--------------------------------------------------------------------------------------------------

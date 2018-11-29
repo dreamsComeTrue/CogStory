@@ -19,6 +19,7 @@ namespace aga
     {
         Actor* AnActor = nullptr;
         asIScriptFunction* Func = nullptr;
+        std::string SpeechID = "";
         bool Handled = false;
     };
 
@@ -57,6 +58,7 @@ namespace aga
         void SetActionHandler (asIScriptFunction* func);
         Actor* RegisterActorAction (
             const std::string& actionName, const std::string& actorName, asIScriptFunction* func);
+        void RegisterActionSpeech (const std::string& actorName, const std::string& speechID);
         class SpeechFrame* TalkTo (Actor* actor, const std::string& speechID);
         Actor* GetLastActionActor ();
 

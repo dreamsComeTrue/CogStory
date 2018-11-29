@@ -11,6 +11,8 @@ void SceneChanged (const string &in previousSceneName)
 void BeforeEnterScene ()
 {
     SetSuppressSceneInfo (false);  
+
+    player.RegisterActionSpeech ("TABLE", "SPEECH_TABLE");
 }
 
 void AfterLeaveScene ()

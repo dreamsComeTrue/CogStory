@@ -34,8 +34,8 @@
             "components": [],
             "focus-height": "100.00",
             "id": "3",
-            "name": "Sprite-0017",
-            "overlap": "0",
+            "name": "TABLE",
+            "overlap": "1",
             "phys": [
                 {
                     "poly": "-30.00 -22.00 30.00 -22.00 30.00 22.00 -30.00 22.00 "
@@ -191,7 +191,7 @@
             "focus-height": "100.00",
             "id": "12",
             "name": "bed",
-            "overlap": "0",
+            "overlap": "1",
             "phys": [
                 {
                     "poly": "-32.00 -16.00 31.00 -15.00 31.00 16.00 -32.00 16.00 "
@@ -223,7 +223,39 @@
             "path": "0_home/0_0_home_main.script"
         }
     ],
-    "speeches": [],
+    "speeches": [
+        {
+            "abs_pos": "0.00 0.00",
+            "action": "[CLOSE]",
+            "group": "",
+            "id": 0,
+            "max_chars": 13,
+            "max_lines": 1,
+            "name": "SPEECH_TABLE",
+            "outcomes": [
+                {
+                    "langID": "EN",
+                    "texts": []
+                },
+                {
+                    "langID": "PL",
+                    "texts": []
+                }
+            ],
+            "region_name": "",
+            "rel_pos": 5,
+            "texts": [
+                {
+                    "data": "Ordinary table",
+                    "langID": "EN"
+                },
+                {
+                    "data": "",
+                    "langID": "PL"
+                }
+            ]
+        }
+    ],
     "trigger_areas": [
         {
             "collidable": "0",
