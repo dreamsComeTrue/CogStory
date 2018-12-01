@@ -26,7 +26,7 @@
             "z-order": "-2"
         },
         {
-            "action-speech": "",
+            "action-speech": "PROPS_TABLE",
             "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0017",
@@ -236,11 +236,11 @@
         {
             "abs_pos": "0.00 0.00",
             "action": "[CLOSE]",
-            "group": "",
+            "group": "PROPS",
             "id": 0,
             "max_chars": 13,
             "max_lines": 1,
-            "name": "SPEECH_TABLE",
+            "name": "PROPS_TABLE",
             "outcomes": [
                 {
                     "langID": "EN",

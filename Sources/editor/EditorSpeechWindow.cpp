@@ -53,8 +53,6 @@ namespace aga
 
         ClearControls ();
         UpdateOutcomes ();
-
-        ImGui::OpenPopup ("Speech Editor");
     }
 
     //--------------------------------------------------------------------------------------------------

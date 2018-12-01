@@ -12,9 +12,9 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    float MENU_SELECTION_ROTATION_SPEED = 0.5;
-    float MENU_ANIMATION_TIME_STAGE1 = 1500.f;
-    float MENU_ANIMATION_TIME_STAGE2 = 500.f;
+    const float MENU_SELECTION_ROTATION_SPEED = 0.5;
+    const float MENU_ANIMATION_TIME_STAGE1 = 500.f;
+    const float MENU_ANIMATION_TIME_STAGE2 = 500.f;
 
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
@@ -84,9 +84,9 @@ namespace aga
 
         m_ExitSelected = false;
 
-        // m_AnimationStage = 0;
-        // m_AnimationTimer = 0.f;
-        // m_SelectionTimer = 0.f;
+        m_AnimationStage = 0;
+        m_AnimationTimer = 0.f;
+        m_SelectionTimer = 0.f;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -233,7 +233,6 @@ namespace aga
     {
         const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
         Font& font = m_MainLoop->GetScreen ()->GetFont ();
-        ALLEGRO_COLOR backColor = al_map_rgb (60, 60, 70);
 
         if (m_AnimationStage < 2)
         {
@@ -251,8 +250,14 @@ namespace aga
         float percent = m_AnimationTimer / MENU_ANIMATION_TIME_STAGE1;
         float currentPercent = m_AnimationStage > 0 ? 1.0f : percent;
 
-        al_draw_bitmap (m_Image, winSize.Width * 0.5f - al_get_bitmap_width (m_Image) * 0.5f,
-            winSize.Height * 0.5f - al_get_bitmap_height (m_Image) * 0.5f, 0);
+        float imgHeight = al_get_bitmap_height (m_Image);
+        float targetYPos = winSize.Height * 0.5f - imgHeight * 0.5f;
+        float yPos = -imgHeight * 0.5f + std::abs (-imgHeight * 0.5f - targetYPos) * currentPercent;
+
+        al_draw_bitmap (m_Image, winSize.Width * 0.5f - al_get_bitmap_width (m_Image) * 0.5f, yPos, 0);
+
+        //  Draw cover-up rect
+        //  al_draw_filled_rectangle (0, winSize.Height * currentPercent, winSize.Width, winSize.Height, backColor);
 
         if (m_ExitSelected)
         {
@@ -263,12 +268,10 @@ namespace aga
             RenderMenuItems ();
         }
 
-        //  Draw cover-up rect
-        al_draw_filled_rectangle (0, winSize.Height * currentPercent, winSize.Width, winSize.Height, backColor);
-
         //  Draw center cog
         percent = m_AnimationTimer / MENU_ANIMATION_TIME_STAGE2;
         currentPercent = m_AnimationStage > 0 ? 1.0f : std::clamp (percent, 0.f, 1.f);
+
         float scale = 1.3f * currentPercent;
 
         m_SelectionAngle += MENU_SELECTION_ROTATION_SPEED * deltaTime;
@@ -315,12 +318,16 @@ namespace aga
 
         ALLEGRO_COLOR menuItemColor = al_map_rgb (140, 140, 160);
 
+        float percent = m_AnimationTimer / MENU_ANIMATION_TIME_STAGE2;
+        float currentPercent = m_AnimationStage > 0 ? 1.0f : std::clamp (percent, 0.f, 1.f);
+
         for (int i = 0; i < 3; ++i)
         {
-            float currentPercent = m_SelectionTimer / MENU_ANIMATION_TIME_STAGE2;
-            float scale = i == m_Selection ? 1.0f + currentPercent * 0.2f : 1.0f;
+            float scale = i == m_Selection ? 1.0f + (m_SelectionTimer / MENU_ANIMATION_TIME_STAGE2) * 0.2f : 1.0f;
+            float targetXPos = winSize.Width * 0.5f + 250.f;
+            float xPos = winSize.Width - (winSize.Width - targetXPos) * currentPercent;
 
-            font.DrawText (FONT_NAME_MENU_ITEM_SMALL, menuItems[i], menuItemColor, winSize.Width * 0.5f + 250.f,
+            font.DrawText (FONT_NAME_MENU_ITEM_SMALL, menuItems[i], menuItemColor, xPos,
                 m_Selection == i ? menuItemStartY + i * menuItemSpacing - offset * 0.5f
                                  : menuItemStartY + i * menuItemSpacing,
                 scale, ALLEGRO_ALIGN_CENTER);

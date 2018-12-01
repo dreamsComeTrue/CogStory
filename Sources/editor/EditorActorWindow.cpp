@@ -735,6 +735,8 @@ namespace aga
                 if (ImGui::Button ("SPEECH", buttonSize))
                 {
                     m_Editor->GetSpeechWindow ()->Show ();
+
+                    ImGui::OpenPopup ("Speech Editor");
                 }
 
                 m_Editor->GetSpeechWindow ()->RenderUI ();
