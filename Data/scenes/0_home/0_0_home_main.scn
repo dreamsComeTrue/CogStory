@@ -1,6 +1,7 @@
 {
     "actors": [
         {
+            "action-speech": "",
             "animation": "",
             "atlas": "0_0_home",
             "atlas-region": "main_room",
@@ -25,6 +26,7 @@
             "z-order": "-2"
         },
         {
+            "action-speech": "",
             "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0017",
@@ -49,6 +51,7 @@
             "z-order": "0"
         },
         {
+            "action-speech": "",
             "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0016",
@@ -69,6 +72,7 @@
             "z-order": "0"
         },
         {
+            "action-speech": "",
             "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0016",
@@ -89,6 +93,7 @@
             "z-order": "0"
         },
         {
+            "action-speech": "",
             "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0016",
@@ -109,6 +114,7 @@
             "z-order": "0"
         },
         {
+            "action-speech": "PROP_FLOWER",
             "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0013",
@@ -119,7 +125,7 @@
             "focus-height": "100.00",
             "id": "8",
             "name": "Sprite-0013",
-            "overlap": "0",
+            "overlap": "1",
             "phys": [
                 {
                     "poly": "-16.00 -14.00 16.00 -14.00 16.00 14.00 -16.00 14.00 "
@@ -133,6 +139,7 @@
             "z-order": "0"
         },
         {
+            "action-speech": "",
             "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0013",
@@ -157,6 +164,7 @@
             "z-order": "0"
         },
         {
+            "action-speech": "",
             "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0013",
@@ -181,6 +189,7 @@
             "z-order": "0"
         },
         {
+            "action-speech": "",
             "animation": "",
             "atlas": "0_0_home",
             "atlas-region": "bed",
@@ -247,6 +256,37 @@
             "texts": [
                 {
                     "data": "Ordinary table",
+                    "langID": "EN"
+                },
+                {
+                    "data": "",
+                    "langID": "PL"
+                }
+            ]
+        },
+        {
+            "abs_pos": "0.00 0.00",
+            "action": "[CLOSE]",
+            "group": "PROPS",
+            "id": 1,
+            "max_chars": 16,
+            "max_lines": 1,
+            "name": "PROP_FLOWER",
+            "outcomes": [
+                {
+                    "langID": "EN",
+                    "texts": []
+                },
+                {
+                    "langID": "PL",
+                    "texts": []
+                }
+            ],
+            "region_name": "",
+            "rel_pos": 5,
+            "texts": [
+                {
+                    "data": "An ordinary flower",
                     "langID": "EN"
                 },
                 {

@@ -453,11 +453,40 @@ namespace aga
 
     void Player::RegisterActionSpeech (const std::string& actorName, const std::string& speechID)
     {
+        RegisterActionSpeech (m_SceneManager->GetActor (actorName), speechID);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::RegisterActionSpeech (int actorID, const std::string& speechID)
+    {
+        RegisterActionSpeech (m_SceneManager->GetActor (actorID), speechID);
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::RegisterActionSpeech (Actor* actor, const std::string& speechID)
+    {
         ActorAction action;
-        action.AnActor = m_SceneManager->GetActor (actorName);
+        action.AnActor = actor;
         action.SpeechID = speechID;
 
         m_ActorActions.insert (std::make_pair ("ACTION_" + std::to_string (ACTION_ID++), action));
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::RemoveActionSpeech (Actor* actor)
+    {
+        for (std::map<std::string, ActorAction>::iterator it = m_ActorActions.begin (); it != m_ActorActions.end ();
+             ++it)
+        {
+            if (it->second.AnActor == actor)
+            {
+                m_ActorActions.erase (it);
+                break;
+            }
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

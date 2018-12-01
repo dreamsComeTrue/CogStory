@@ -80,6 +80,9 @@ namespace aga
         float GetFocusHeight () const;
         void SetFocusHeight (float focusHeight);
 
+        std::string GetActionSpeech ();
+        void SetActionSpeech (const std::string& speechID);
+
     protected:
         void ProcessTriggerAreas (float dx, float dy, Point&& offset);
         void RenderComponents (float deltaTime);
@@ -93,6 +96,9 @@ namespace aga
 
         //  At which percent [0..1] Player should be rendered OVER this actor
         float m_FocusHeight;
+
+        //  Speech triggered when 'action' with player
+        std::string m_ActionSpeech;
 
     public:
         Rect TemplateBounds;

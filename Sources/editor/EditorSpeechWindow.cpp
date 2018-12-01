@@ -2,6 +2,7 @@
 
 #include "EditorSpeechWindow.h"
 #include "Editor.h"
+#include "EditorActorWindow.h"
 #include "MainLoop.h"
 #include "SpeechFrame.h"
 #include "SpeechFrameManager.h"
@@ -52,6 +53,8 @@ namespace aga
 
         ClearControls ();
         UpdateOutcomes ();
+
+        ImGui::OpenPopup ("Speech Editor");
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -232,8 +235,8 @@ namespace aga
         memset (m_SpeechGroup, 0, ARRAY_SIZE (m_SpeechGroup));
 
         m_LangIndex = 0;
-        m_MaxChars = 0;
-        m_MaxLines = 0;
+        m_MaxChars = 10;
+        m_MaxLines = 1;
         m_AbsPosX = 0;
         m_AbsPosY = 0;
         m_Action = 0;
@@ -534,6 +537,11 @@ namespace aga
                 {
                     ImGui::CloseCurrentPopup ();
                     m_IsVisible = false;
+
+                    if (m_Editor->GetActorWindow ()->IsVisible ())
+                    {
+                        m_Editor->GetActorWindow ()->UpdateSpeeches ();
+                    }
                 }
 
                 if (ImGui::Button ("CANCEL", buttonSize) || m_Editor->IsCloseCurrentPopup ())
@@ -542,6 +550,11 @@ namespace aga
                     m_IsVisible = false;
 
                     m_Editor->SetCloseCurrentPopup (false);
+
+                    if (m_Editor->GetActorWindow ()->IsVisible ())
+                    {
+                        m_Editor->GetActorWindow ()->UpdateSpeeches ();
+                    }
                 }
             }
             ImGui::EndGroup ();

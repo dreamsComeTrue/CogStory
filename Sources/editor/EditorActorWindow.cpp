@@ -6,7 +6,9 @@
 #include "Editor.h"
 #include "EditorComponentWindow.h"
 #include "EditorScriptWindow.h"
+#include "EditorSpeechWindow.h"
 #include "MainLoop.h"
+#include "Player.h"
 #include "Resources.h"
 #include "Screen.h"
 #include "actors/EnemyActor.h"
@@ -28,6 +30,7 @@ namespace aga
         , m_SelectedImage (0)
         , m_SelectedImagePath (0)
         , m_SelectedAnimation (0)
+        , m_SelectedSpeech (0)
     {
     }
 
@@ -64,6 +67,7 @@ namespace aga
         m_SelectedImage = 0;
         m_SelectedImagePath = 0;
         m_SelectedAnimation = 0;
+        m_SelectedSpeech = 0;
 
         if (m_SelectedActor)
         {
@@ -110,6 +114,15 @@ namespace aga
 
                 retActor->SetAnimation (ActorFactory::GetAnimation (m_Animations[m_SelectedAnimation]));
                 retActor->SetCurrentAnimation (ANIM_IDLE_NAME);
+                retActor->SetActionSpeech (m_Speeches[m_SelectedSpeech]);
+
+                Player* player = m_Editor->GetMainLoop ()->GetSceneManager ().GetPlayer ();
+                player->RemoveActionSpeech (retActor);
+
+                if (retActor->GetActionSpeech () != "")
+                {
+                    player->RegisterActionSpeech (retActor, retActor->GetActionSpeech ());
+                }
 
                 m_Editor->GetEditorActorMode ().Clear ();
 
@@ -192,6 +205,24 @@ namespace aga
         for (const std::string& type : actorTypes)
         {
             m_ActorTypes.push_back (type);
+        }
+
+        UpdateSpeeches ();
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void EditorActorWindow::UpdateSpeeches ()
+    {
+        m_Speeches.clear ();
+        m_Speeches.push_back ("");
+
+        std::map<long, SpeechData>& speeches
+            = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetSpeeches ();
+
+        for (std::map<long, SpeechData>::iterator it = speeches.begin (); it != speeches.end (); ++it)
+        {
+            m_Speeches.push_back (it->second.Name);
         }
     }
 
@@ -292,6 +323,15 @@ namespace aga
             if (m_SelectedActor->GetAnimation ().GetName () == m_Animations[i])
             {
                 m_SelectedAnimation = i;
+                break;
+            }
+        }
+
+        for (size_t i = 0; i < m_Speeches.size (); ++i)
+        {
+            if (m_SelectedActor->GetActionSpeech () == m_Speeches[i])
+            {
+                m_SelectedSpeech = i;
                 break;
             }
         }
@@ -590,6 +630,14 @@ namespace aga
                         m_SelectedActor->SetCheckOverlap (m_ActorOverlap);
                     }
                     ImGui::PopItemWidth ();
+                    ImGui::NextColumn ();
+
+                    ImGui::Text ("Action Speech");
+                    ImGui::NextColumn ();
+                    ImGui::PushItemWidth (120.f);
+                    if (ImGui::Combo ("##actionSpeech", &m_SelectedSpeech, m_Speeches))
+                    {
+                    }
                 }
 
                 ImGui::Columns (1);
@@ -683,6 +731,13 @@ namespace aga
                 }
 
                 m_Editor->GetComponentWindow ()->Render ();
+
+                if (ImGui::Button ("SPEECH", buttonSize))
+                {
+                    m_Editor->GetSpeechWindow ()->Show ();
+                }
+
+                m_Editor->GetSpeechWindow ()->RenderUI ();
 
                 //  Alert window
                 bool open = true;

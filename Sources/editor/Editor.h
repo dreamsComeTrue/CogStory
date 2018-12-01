@@ -80,6 +80,8 @@ namespace aga
         EditorScriptWindow* GetScriptWindow ();
         EditorComponentWindow* GetComponentWindow ();
         EditorAnimationWindow* GetAnimationWindow ();
+        EditorSpeechWindow* GetSpeechWindow ();
+        EditorActorWindow* GetActorWindow ();
 
         ALLEGRO_TRANSFORM& GetWorldTransform ();
 

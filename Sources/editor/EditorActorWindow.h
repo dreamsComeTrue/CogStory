@@ -23,6 +23,8 @@ namespace aga
 
         void RenderActorImage ();
 
+        void UpdateSpeeches ();
+
     private:
         void OnSave ();
 
@@ -77,6 +79,9 @@ namespace aga
 
         std::vector<std::string> m_Animations;
         int m_SelectedAnimation;
+
+        std::vector<std::string> m_Speeches;
+        int m_SelectedSpeech;
     };
 }
 

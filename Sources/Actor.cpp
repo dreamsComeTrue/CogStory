@@ -18,6 +18,7 @@ namespace aga
         , Collidable (&sceneManager->GetMainLoop ()->GetPhysicsManager ())
         , m_IsUpdating (true)
         , m_FocusHeight (100.0f) //  We set it way down for small tiles grid layout
+        , m_ActionSpeech ("")
     {
         ID = Entity::GetNextID ();
     }
@@ -485,6 +486,14 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Actor::SetFocusHeight (float focusHeight) { m_FocusHeight = focusHeight; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string Actor::GetActionSpeech () { return m_ActionSpeech; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Actor::SetActionSpeech (const std::string& speechID) { m_ActionSpeech = speechID; }
 
     //--------------------------------------------------------------------------------------------------
 }

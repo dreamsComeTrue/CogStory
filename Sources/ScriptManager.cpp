@@ -917,7 +917,7 @@ namespace aga
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("Player",
             "void RegisterActionSpeech (const string &in actorName, const string &in speechID)",
-            asMETHOD (Player, RegisterActionSpeech), asCALL_THISCALL);
+            asMETHODPR (Player, RegisterActionSpeech, (const std::string&, const std::string&), void), asCALL_THISCALL);
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod ("Player",
             "SpeechFrame@ TalkTo (Actor@ actor, const string &in speechID)", asMETHOD (Player, TalkTo),

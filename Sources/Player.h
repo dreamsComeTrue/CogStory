@@ -59,6 +59,10 @@ namespace aga
         Actor* RegisterActorAction (
             const std::string& actionName, const std::string& actorName, asIScriptFunction* func);
         void RegisterActionSpeech (const std::string& actorName, const std::string& speechID);
+        void RegisterActionSpeech (int actorID, const std::string& speechID);
+        void RegisterActionSpeech (Actor* actor, const std::string& speechID);
+        void RemoveActionSpeech (Actor* actor);
+
         class SpeechFrame* TalkTo (Actor* actor, const std::string& speechID);
         Actor* GetLastActionActor ();
 

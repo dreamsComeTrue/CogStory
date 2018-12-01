@@ -5,6 +5,7 @@
 #include "Atlas.h"
 #include "Component.h"
 #include "MainLoop.h"
+#include "Player.h"
 #include "Scene.h"
 
 using json = nlohmann::json;
@@ -156,6 +157,12 @@ namespace aga
                     newActor->Rotation = static_cast<float> (atof (rot.c_str ()));
                     std::string focusHeight = actorIt["focus-height"];
                     newActor->SetFocusHeight (static_cast<float> (atof (focusHeight.c_str ())));
+
+                    if (!actorIt["action-speech"].is_null () && actorIt["action-speech"] != "")
+                    {
+                        newActor->SetActionSpeech (actorIt["action-speech"]);
+                        sceneManager->GetPlayer ()->RegisterActionSpeech (newActor, newActor->GetActionSpeech ());
+                    }
 
                     if (!actorIt["atlas"].is_null ())
                     {
@@ -383,6 +390,7 @@ namespace aga
                 actorObj["collidable"] = std::to_string (actor->IsCollidable ());
                 actorObj["overlap"] = std::to_string (actor->IsCheckOverlap ());
                 actorObj["focus-height"] = streamFucsHeight.str ();
+                actorObj["action-speech"] = actor->GetActionSpeech ();
 
                 actorObj["phys"] = json::array ({});
 

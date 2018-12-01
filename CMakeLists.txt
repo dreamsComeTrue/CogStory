@@ -75,6 +75,7 @@ target_link_libraries(${PROJECT_NAME} ${LIBRARIES_LIST})
 set_target_properties(${PROJECT_NAME} PROPERTIES
                       RUNTIME_OUTPUT_DIRECTORY_DEBUG ../
                       RUNTIME_OUTPUT_DIRECTORY_RELEASE ../
+                      RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ../
                       )
 
 #set_target_properties(${PROJECT_NAME} PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
