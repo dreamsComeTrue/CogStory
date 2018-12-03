@@ -13,8 +13,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     const float MENU_SELECTION_ROTATION_SPEED = 0.5;
-    const float MENU_ANIMATION_TIME_STAGE1 = 500.f;
-    const float MENU_ANIMATION_TIME_STAGE2 = 500.f;
+    const float MENU_ANIMATION_TIME = 500.f;
 
     //--------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------
@@ -29,6 +28,7 @@ namespace aga
         , m_SelectionTimer (0.f)
         , m_AnimationUp (true)
         , m_ExitSelected (false)
+        , m_Closing (false)
     {
     }
 
@@ -83,6 +83,7 @@ namespace aga
         m_MainLoop->GetAudioManager ().SetEnabled (false);
 
         m_ExitSelected = false;
+        m_Closing = false;
 
         m_AnimationStage = 0;
         m_AnimationTimer = 0.f;
@@ -97,6 +98,17 @@ namespace aga
 
     bool MainMenuState::ProcessEvent (ALLEGRO_EVENT* event, float)
     {
+        if (event->type == ALLEGRO_EVENT_KEY_CHAR)
+        {
+            switch (event->keyboard.keycode)
+            {
+            case ALLEGRO_KEY_ESCAPE:
+                m_AnimationTimer = 0.f;
+                m_Closing = true;
+                break;
+            }
+        }
+
         if (event->type == ALLEGRO_EVENT_KEY_DOWN)
         {
             switch (event->keyboard.keycode)
@@ -234,30 +246,47 @@ namespace aga
         const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
         Font& font = m_MainLoop->GetScreen ()->GetFont ();
 
-        if (m_AnimationStage < 2)
+        if (!m_Closing)
+        {
+            if (m_AnimationStage < 2)
+            {
+                m_AnimationTimer += deltaTime * 1000.f;
+
+                if (m_AnimationTimer > MENU_ANIMATION_TIME)
+                {
+                    ++m_AnimationStage;
+                    m_AnimationTimer = 0.f;
+                }
+            }
+        }
+        else
         {
             m_AnimationTimer += deltaTime * 1000.f;
 
-            float maxTime = m_AnimationStage == 0 ? MENU_ANIMATION_TIME_STAGE1 : MENU_ANIMATION_TIME_STAGE2;
-
-            if (m_AnimationTimer > maxTime)
+            if (m_AnimationTimer > MENU_ANIMATION_TIME)
             {
                 ++m_AnimationStage;
                 m_AnimationTimer = 0.f;
             }
         }
 
-        float percent = m_AnimationTimer / MENU_ANIMATION_TIME_STAGE1;
-        float currentPercent = m_AnimationStage > 0 ? 1.0f : percent;
+        float percent = m_AnimationTimer / MENU_ANIMATION_TIME;
+        float currentPercent;
+
+        if (!m_Closing)
+        {
+            currentPercent = m_AnimationStage > 0 ? 1.0f : std::clamp (percent, 0.f, 1.f);
+        }
+        else
+        {
+            currentPercent = 1.0f - std::clamp (percent, 0.f, 1.f);
+        }
 
         float imgHeight = al_get_bitmap_height (m_Image);
         float targetYPos = winSize.Height * 0.5f - imgHeight * 0.5f;
         float yPos = -imgHeight * 0.5f + std::abs (-imgHeight * 0.5f - targetYPos) * currentPercent;
 
         al_draw_bitmap (m_Image, winSize.Width * 0.5f - al_get_bitmap_width (m_Image) * 0.5f, yPos, 0);
-
-        //  Draw cover-up rect
-        //  al_draw_filled_rectangle (0, winSize.Height * currentPercent, winSize.Width, winSize.Height, backColor);
 
         if (m_ExitSelected)
         {
@@ -269,9 +298,6 @@ namespace aga
         }
 
         //  Draw center cog
-        percent = m_AnimationTimer / MENU_ANIMATION_TIME_STAGE2;
-        currentPercent = m_AnimationStage > 0 ? 1.0f : std::clamp (percent, 0.f, 1.f);
-
         float scale = 1.3f * currentPercent;
 
         m_SelectionAngle += MENU_SELECTION_ROTATION_SPEED * deltaTime;
@@ -282,7 +308,7 @@ namespace aga
         {
             m_SelectionTimer += deltaTime * 1000.f;
 
-            if (m_SelectionTimer > MENU_ANIMATION_TIME_STAGE2)
+            if (m_SelectionTimer > MENU_ANIMATION_TIME)
             {
                 m_AnimationUp = false;
             }
@@ -318,12 +344,21 @@ namespace aga
 
         ALLEGRO_COLOR menuItemColor = al_map_rgb (140, 140, 160);
 
-        float percent = m_AnimationTimer / MENU_ANIMATION_TIME_STAGE2;
-        float currentPercent = m_AnimationStage > 0 ? 1.0f : std::clamp (percent, 0.f, 1.f);
+        float percent = m_AnimationTimer / MENU_ANIMATION_TIME;
+        float currentPercent;
+
+        if (!m_Closing)
+        {
+            currentPercent = m_AnimationStage > 0 ? 1.0f : std::clamp (percent, 0.f, 1.f);
+        }
+        else
+        {
+            currentPercent = 1.0f - std::clamp (percent, 0.f, 1.f);
+        }
 
         for (int i = 0; i < 3; ++i)
         {
-            float scale = i == m_Selection ? 1.0f + (m_SelectionTimer / MENU_ANIMATION_TIME_STAGE2) * 0.2f : 1.0f;
+            float scale = i == m_Selection ? 1.0f + (m_SelectionTimer / MENU_ANIMATION_TIME) * 0.2f : 1.0f;
             float targetXPos = winSize.Width * 0.5f + 250.f;
             float xPos = winSize.Width - (winSize.Width - targetXPos) * currentPercent;
 
@@ -352,7 +387,7 @@ namespace aga
 
         for (int i = 0; i < 3; ++i)
         {
-            float currentPercent = m_SelectionTimer / MENU_ANIMATION_TIME_STAGE2;
+            float currentPercent = m_SelectionTimer / MENU_ANIMATION_TIME;
             float scale = i == (m_Selection - MENU_ITEM_EXIT) ? 1.0f + currentPercent * 0.2f : 1.0f;
 
             font.DrawText (FONT_NAME_MENU_ITEM_SMALL, menuItems[i], menuItemColor, winSize.Width * 0.5f + 250.f,

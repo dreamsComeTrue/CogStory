@@ -1,5 +1,5 @@
 =============================
-       RobotTales v0.1
+       Cog Story v0.1
 =============================
 
 
@@ -16,33 +16,47 @@
     No ordinary day
 
  = Camera stops over factory building, fades to entry
+
  = Camera flows over robots moving slowly around belts
+
  = Stop over two talking robots (R1, R2)
+
     R1: Is everything going according to the plan?
     R2: There...are...some..c-c-complications...
     R1: What does it mean "com-pli-ca-tions" ?!? [jumps nervously]
     R2: I don't think we're gonna make it till end of the week
     
  = Over screen walks unknown human (UH), approaches robots (R1, R2).
+
     UH: Excuse me, can you tell me, where should I put my job application?
+
  = Robots still talks to each other
+
     R1: I don't want to hear that, we are acting according to plan
     R2: Try harder or you'll end up on the scrap yard!
+
  = Human interrupts once again
+
     UH: S-s-sorry, uhm, eee, can you two guys help me?
+
  = Robots are still doing their own bussines
+
     R1: Our registers shown we're expecting today at least 10 humans
     R2: Yeah, but...
     R1: But? BUT !?! I will kick your BUTT if you 'but' me again!
+
  = Human tries once again
+
     UH: Hey, I really don't want to interrupt you, but I'm in a little hurry.
     R1: [turns his face to UH]: WHAT ???!!!
     UH: Oh, right, yes. Now, can you show me where is job application office?
     R2: [also turns his head]: WHAT ???!!!
     UH: Office. Job office. Where I can go and put my job application. Where is it?
+ 
  = R1 and R2 look at each other, then UH, then once again at each, then
    simultaneously moves back 2 steps and shows a little ballon with exclamation
    marks over their heads. Waits a while, and both of them moves back to UH
+ 
     R2: You serious?
     UH: Yeah, what's the matter?
     R1: Didn't you hit your head or something?
@@ -63,28 +77,34 @@
         different, that's all
     R1: [thinks for the moment] .... .... .... ....
     R1: Well, I can not promise you anything, but...come with me
+ 
  = UH and R1 walks slowly outside the screen, while walking
     R1: [turns head to R2] Get back to work!!!
- = R2 starts to move rapidly in all directions. UH and R1 continue walking, 
-   screen fades
  
- ===    SCENE CUTS
-
+ = R2 starts to move rapidly in all directions. UH and R1 continue walking, 
+   screen fades 
+ 
+ = SCENE CUTS
+ 
  = UH with R1 walk slowly through main factory area    
+ 
     R1: So, where'd you come from?
     UH: Uhmm... I really don't have any place to dwell longer than couple of weeks.
         Seems, hiking is my nature.
     R1: But you need to stay SOMEWHERE, if you want to work here, not?
     UH: We'll see, we'll see...
+ 
  = Scene fades, UH with R1 walk slowly up the corridor to job office
+ 
     R1: Anyway, do you know you role here? See, all the tasks are fairly covered by us
     UH: Maybe Human Contact Department?
-    R1: Taken. Automatic Call Center
-    UH: Wish Machines Mechanic?
+    R1: Taken. By Autonomous Call Center
+    UH: Wishes Machines' Mechanic?
     R1: They never break. Besides, human brain IQ alone can't handle such complicated
         machinery
     UH: OK, then Marketing Agent!
-    R1: Hahaha - first human ever eager to work wants to praise our relaxing services
+    R1: Hahaha - first human ever, eager to work, wants to praise our relaxing services
+ 
  = Scene fades, they enter job office
     
 

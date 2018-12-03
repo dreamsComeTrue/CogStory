@@ -55,6 +55,7 @@ namespace aga
         bool m_AnimationUp;
 
         bool m_ExitSelected;
+        bool m_Closing;
     };
 }
 
