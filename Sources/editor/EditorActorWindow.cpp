@@ -31,6 +31,7 @@ namespace aga
         , m_SelectedImagePath (0)
         , m_SelectedAnimation (0)
         , m_SelectedSpeech (0)
+        , m_ActionSpeechHandling (false)
     {
     }
 
@@ -68,6 +69,7 @@ namespace aga
         m_SelectedImagePath = 0;
         m_SelectedAnimation = 0;
         m_SelectedSpeech = 0;
+        m_ActionSpeechHandling = false;
 
         if (m_SelectedActor)
         {
@@ -115,6 +117,7 @@ namespace aga
                 retActor->SetAnimation (ActorFactory::GetAnimation (m_Animations[m_SelectedAnimation]));
                 retActor->SetCurrentAnimation (ANIM_IDLE_NAME);
                 retActor->SetActionSpeech (m_Speeches[m_SelectedSpeech]);
+                retActor->SetActionSpeechHandling (m_ActionSpeechHandling);
 
                 Player* player = m_Editor->GetMainLoop ()->GetSceneManager ().GetPlayer ();
                 player->RemoveActionSpeech (retActor);
@@ -335,6 +338,8 @@ namespace aga
                 break;
             }
         }
+
+        m_ActionSpeechHandling = m_SelectedActor->IsActionSpeechHandling ();
 
         UpdateImageCombos ();
     }
@@ -635,9 +640,15 @@ namespace aga
                     ImGui::Text ("Action Speech");
                     ImGui::NextColumn ();
                     ImGui::PushItemWidth (120.f);
-                    if (ImGui::Combo ("##actionSpeech", &m_SelectedSpeech, m_Speeches))
-                    {
-                    }
+                    ImGui::Combo ("##actionSpeech", &m_SelectedSpeech, m_Speeches);
+
+                    ImGui::PopItemWidth ();
+                    ImGui::NextColumn ();
+
+                    ImGui::Text ("Action Speech Handling");
+                    ImGui::NextColumn ();
+                    ImGui::PushItemWidth (120.f);
+                    ImGui::Checkbox ("##actionSpeechHandling", &m_ActionSpeechHandling);
                 }
 
                 ImGui::Columns (1);

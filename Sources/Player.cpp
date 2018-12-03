@@ -417,7 +417,7 @@ namespace aga
                     ctx->GetEngine ()->ReturnContext (ctx);
                 }
 
-                if (action.SpeechID != "")
+                if (action.SpeechID != "" && action.AnActor->IsActionSpeechHandling ())
                 {
                     action.AnActor->OrientTo (this);
                     action.AnActor->SuspendUpdate ();
@@ -504,6 +504,55 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     Actor* Player::GetLastActionActor () { return m_LastActionActor; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::BeginOverlap (Entity* entity)
+    {
+        for (std::map<std::string, ActorAction>::iterator it = m_ActorActions.begin (); it != m_ActorActions.end ();
+             ++it)
+        {
+            ActorAction& action = it->second;
+
+            if (entity == action.AnActor && !action.AnActor->IsActionSpeechHandling ())
+            {
+                if (action.SpeechID != "")
+                {
+                    action.AnActor->OrientTo (this);
+                    action.AnActor->SuspendUpdate ();
+
+                    m_SceneManager->GetSpeechFrameManager ()->AddSpeechFrame (action.SpeechID, false);
+                }
+
+                action.Handled = true;
+
+                m_LastActionActor = action.AnActor;
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Player::EndOverlap (Entity* entity)
+    {
+        for (std::map<std::string, ActorAction>::iterator it = m_ActorActions.begin (); it != m_ActorActions.end ();
+             ++it)
+        {
+            ActorAction& action = it->second;
+
+            if (entity == action.AnActor && !action.AnActor->IsActionSpeechHandling ())
+            {
+                if (action.SpeechID != "")
+                {
+                    m_SceneManager->GetSpeechFrameManager ()->RemoveSpeechFrame (action.SpeechID);
+                }
+
+                action.Handled = true;
+
+                m_LastActionActor = action.AnActor;
+            }
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------
 }

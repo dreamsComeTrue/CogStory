@@ -472,7 +472,7 @@ namespace aga
     {
         Actor* act = GetActor (actor->ID);
 
-        if (!act)
+        if (!act && actor)
         {
             m_Actors.push_back (actor);
             m_QuadTree.Insert (actor);

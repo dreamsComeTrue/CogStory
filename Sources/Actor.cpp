@@ -19,6 +19,7 @@ namespace aga
         , m_IsUpdating (true)
         , m_FocusHeight (100.0f) //  We set it way down for small tiles grid layout
         , m_ActionSpeech ("")
+        , m_ActionSpeechHandling (false)
     {
         ID = Entity::GetNextID ();
     }
@@ -494,6 +495,14 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void Actor::SetActionSpeech (const std::string& speechID) { m_ActionSpeech = speechID; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    bool Actor::IsActionSpeechHandling () { return m_ActionSpeechHandling; }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void Actor::SetActionSpeechHandling (bool handling) { m_ActionSpeechHandling = handling; }
 
     //--------------------------------------------------------------------------------------------------
 }

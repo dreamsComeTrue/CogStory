@@ -36,6 +36,9 @@ namespace aga
 
         void BeforeEnter () override;
 
+        virtual void BeginOverlap (Entity* entity) override;
+        virtual void EndOverlap (Entity* entity) override;
+
         void SetPreventInput (bool prevent = false);
         bool IsPreventInput () const;
         void HandleInput (float deltaTime);

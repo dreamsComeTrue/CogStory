@@ -63,73 +63,79 @@ namespace aga
                 = al_map_rgba (static_cast<unsigned char> (ints[0]), static_cast<unsigned char> (ints[1]),
                     static_cast<unsigned char> (ints[2]), static_cast<unsigned char> (ints[3]));
 
-            auto& flag_points = j["flag_points"];
-
-            for (auto& flag_point : flag_points)
+            if (!j["flag_points"].is_null () && j["flag_points"] != "")
             {
-                std::string name = flag_point["name"];
-                Point pos = StringToPoint (flag_point["pos"]);
+                auto& flag_points = j["flag_points"];
 
-                scene->AddFlagPoint (name, pos);
-            }
-
-            for (std::map<std::string, FlagPoint>::iterator it = scene->m_FlagPoints.begin ();
-                 it != scene->m_FlagPoints.end (); ++it)
-            {
                 for (auto& flag_point : flag_points)
                 {
                     std::string name = flag_point["name"];
+                    Point pos = StringToPoint (flag_point["pos"]);
 
-                    if (name == it->first)
+                    scene->AddFlagPoint (name, pos);
+                }
+
+                for (std::map<std::string, FlagPoint>::iterator it = scene->m_FlagPoints.begin ();
+                     it != scene->m_FlagPoints.end (); ++it)
+                {
+                    for (auto& flag_point : flag_points)
                     {
-                        std::vector<std::string> connections = StringToVectorStrings (flag_point["connections"]);
+                        std::string name = flag_point["name"];
 
-                        if (!connections.empty ())
+                        if (name == it->first)
                         {
-                            for (std::map<std::string, FlagPoint>::iterator it2 = scene->m_FlagPoints.begin ();
-                                 it2 != scene->m_FlagPoints.end (); ++it2)
+                            std::vector<std::string> connections = StringToVectorStrings (flag_point["connections"]);
+
+                            if (!connections.empty ())
                             {
-                                for (size_t i = 0; i < connections.size (); ++i)
+                                for (std::map<std::string, FlagPoint>::iterator it2 = scene->m_FlagPoints.begin ();
+                                     it2 != scene->m_FlagPoints.end (); ++it2)
                                 {
-                                    if (connections[i] == it2->first)
+                                    for (size_t i = 0; i < connections.size (); ++i)
                                     {
-                                        it->second.Connections.push_back (&it2->second);
-                                        break;
+                                        if (connections[i] == it2->first)
+                                        {
+                                            it->second.Connections.push_back (&it2->second);
+                                            break;
+                                        }
                                     }
                                 }
-                            }
 
-                            break;
+                                break;
+                            }
                         }
                     }
                 }
             }
 
-            auto& triggerAreas = j["trigger_areas"];
-
-            for (auto& triggerArea : triggerAreas)
+            if (!j["trigger_areas"].is_null () && j["trigger_areas"] != "")
             {
-                std::string name = triggerArea["name"];
-                std::string data;
+                auto& triggerAreas = j["trigger_areas"];
 
-                if (!triggerArea["data"].is_null () && triggerArea["data"] != "")
+                for (auto& triggerArea : triggerAreas)
                 {
-                    data = triggerArea["data"];
-                }
+                    std::string name = triggerArea["name"];
+                    std::string data;
 
-                std::vector<Point> poly = StringToVectorPoints (triggerArea["poly"]);
-                std::string collidableStr = triggerArea["collidable"];
+                    if (!triggerArea["data"].is_null () && triggerArea["data"] != "")
+                    {
+                        data = triggerArea["data"];
+                    }
 
-                scene->AddTriggerArea (name, data, poly, atoi (collidableStr.c_str ()));
+                    std::vector<Point> poly = StringToVectorPoints (triggerArea["poly"]);
+                    std::string collidableStr = triggerArea["collidable"];
 
-                if (data != "")
-                {
-                    scene->AddSceneTransition (name, data);
-                    scene->AddOnEnterCallback (name, [=](std::string areaName, float, float) {
-                        sceneManager->SetActiveScene (scene->GetSceneTransition (areaName), true);
+                    scene->AddTriggerArea (name, data, poly, atoi (collidableStr.c_str ()));
 
-                        return false;
-                    });
+                    if (data != "")
+                    {
+                        scene->AddSceneTransition (name, data);
+                        scene->AddOnEnterCallback (name, [=](std::string areaName, float, float) {
+                            sceneManager->SetActiveScene (scene->GetSceneTransition (areaName), true);
+
+                            return false;
+                        });
+                    }
                 }
             }
 
@@ -161,10 +167,17 @@ namespace aga
                     if (!actorIt["action-speech"].is_null () && actorIt["action-speech"] != "")
                     {
                         newActor->SetActionSpeech (actorIt["action-speech"]);
+
+                        if (!actorIt["action-speech-handling"].is_null () && actorIt["action-speech-handling"] != "")
+                        {
+                            std::string handlingStr = actorIt["action-speech-handling"];
+                            newActor->SetActionSpeechHandling (atoi (handlingStr.c_str ()));
+                        }
+
                         sceneManager->GetPlayer ()->RegisterActionSpeech (newActor, newActor->GetActionSpeech ());
                     }
 
-                    if (!actorIt["atlas"].is_null ())
+                    if (!actorIt["atlas"].is_null () && actorIt["atlas"] != "")
                     {
                         Atlas* atlas = sceneManager->GetMainLoop ()->GetAtlasManager ().GetAtlas (actorIt["atlas"]);
 
@@ -173,14 +186,14 @@ namespace aga
                         newActor->SetAtlasRegionName (actorIt["atlas-region"]);
                     }
 
-                    if (!actorIt["animation"].is_null ())
+                    if (!actorIt["animation"].is_null () && actorIt["animation"] != "")
                     {
                         Animation& animation = ActorFactory::GetAnimation (actorIt["animation"]);
                         newActor->SetAnimation (animation);
                     }
 
                     //  Physics
-                    if (!actorIt["phys"].is_null ())
+                    if (!actorIt["phys"].is_null () && actorIt["phys"] != "")
                     {
                         auto& physTiles = actorIt["phys"];
 
@@ -192,28 +205,36 @@ namespace aga
                         newActor->SetPhysOffset (newActor->Bounds.GetPos () + newActor->Bounds.GetHalfSize ());
                     }
 
-                    auto& scripts = actorIt["scripts"];
-
-                    for (auto& scriptIt : scripts)
+                    //  Scripts
+                    if (!actorIt["scripts"].is_null () && actorIt["scripts"] != "")
                     {
-                        std::string name = scriptIt["name"];
-                        std::string path = scriptIt["path"];
+                        auto& scripts = actorIt["scripts"];
 
-                        newActor->AttachScript (name, path);
+                        for (auto& scriptIt : scripts)
+                        {
+                            std::string name = scriptIt["name"];
+                            std::string path = scriptIt["path"];
+
+                            newActor->AttachScript (name, path);
+                        }
                     }
 
-                    auto& components = actorIt["components"];
-
-                    for (auto& component : components)
+                    //  Components
+                    if (!actorIt["components"].is_null () && actorIt["components"] != "")
                     {
-                        std::string name = component["name"];
-                        std::string type = component["type"];
+                        auto& components = actorIt["components"];
 
-                        Component* componentObj = ActorFactory::GetActorComponent (newActor, type);
-
-                        if (componentObj)
+                        for (auto& component : components)
                         {
-                            newActor->AddComponent (name, componentObj);
+                            std::string name = component["name"];
+                            std::string type = component["type"];
+
+                            Component* componentObj = ActorFactory::GetActorComponent (newActor, type);
+
+                            if (componentObj)
+                            {
+                                newActor->AddComponent (name, componentObj);
+                            }
                         }
                     }
 
@@ -329,16 +350,19 @@ namespace aga
 
             j["player_start"] = PointToString (scene->GetPlayerStartLocation ());
 
-            j["scripts"] = json::array ({});
-
-            for (ScriptMetaData& script : scene->m_Scripts)
+            if (!scene->m_Scripts.empty ())
             {
-                json scriptObj = json::object ({});
+                j["scripts"] = json::array ({});
 
-                scriptObj["name"] = script.Name;
-                scriptObj["path"] = script.Path;
+                for (ScriptMetaData& script : scene->m_Scripts)
+                {
+                    json scriptObj = json::object ({});
 
-                j["scripts"].push_back (scriptObj);
+                    scriptObj["name"] = script.Name;
+                    scriptObj["path"] = script.Path;
+
+                    j["scripts"].push_back (scriptObj);
+                }
             }
 
             j["actors"] = json::array ({});
@@ -385,53 +409,72 @@ namespace aga
                 actorObj["rot"] = streamRotation.str ();
                 actorObj["atlas"] = actor != nullptr ? actor->GetAtlas ()->GetName () : "";
                 actorObj["atlas-region"] = actor->GetAtlasRegionName ();
-                actorObj["animation"] = actor->GetAnimation ().GetName ();
+
+                if (actor->GetAnimation ().GetName () != "")
+                {
+                    actorObj["animation"] = actor->GetAnimation ().GetName ();
+                }
+
                 actorObj["collision"] = std::to_string (actor->IsCollisionEnabled ());
                 actorObj["collidable"] = std::to_string (actor->IsCollidable ());
                 actorObj["overlap"] = std::to_string (actor->IsCheckOverlap ());
                 actorObj["focus-height"] = streamFucsHeight.str ();
-                actorObj["action-speech"] = actor->GetActionSpeech ();
 
-                actorObj["phys"] = json::array ({});
-
-                for (size_t i = 0; i < actor->PhysPoints.size (); ++i)
+                if (actor->GetActionSpeech () != "")
                 {
-                    std::vector<Point>& points = actor->PhysPoints[i];
+                    actorObj["action-speech"] = actor->GetActionSpeech ();
+                    actorObj["action-speech-handling"] = std::to_string (actor->IsActionSpeechHandling ());
+                }
 
-                    if (!points.empty ())
+                if (!actor->PhysPoints.empty ())
+                {
+                    actorObj["phys"] = json::array ({});
+
+                    for (size_t i = 0; i < actor->PhysPoints.size (); ++i)
                     {
-                        json physObj = json::object ({});
+                        std::vector<Point>& points = actor->PhysPoints[i];
 
-                        physObj["poly"] = VectorPointsToString (points);
+                        if (!points.empty ())
+                        {
+                            json physObj = json::object ({});
 
-                        actorObj["phys"].push_back (physObj);
+                            physObj["poly"] = VectorPointsToString (points);
+
+                            actorObj["phys"].push_back (physObj);
+                        }
                     }
                 }
 
-                actorObj["scripts"] = json::array ({});
-
-                for (ScriptMetaData& script : actor->GetScripts ())
+                if (!actor->GetScripts ().empty ())
                 {
-                    json scriptObj = json::object ({});
+                    actorObj["scripts"] = json::array ({});
 
-                    scriptObj["name"] = script.Name;
-                    scriptObj["path"] = script.Path;
+                    for (ScriptMetaData& script : actor->GetScripts ())
+                    {
+                        json scriptObj = json::object ({});
 
-                    actorObj["scripts"].push_back (scriptObj);
+                        scriptObj["name"] = script.Name;
+                        scriptObj["path"] = script.Path;
+
+                        actorObj["scripts"].push_back (scriptObj);
+                    }
                 }
 
-                actorObj["components"] = json::array ({});
-
-                std::map<std::string, Component*>& components = actor->GetComponents ();
-                for (std::map<std::string, Component*>::iterator it = components.begin (); it != components.end ();
-                     ++it)
+                if (!actor->GetComponents ().empty ())
                 {
-                    json componentObj = json::object ({});
+                    actorObj["components"] = json::array ({});
 
-                    componentObj["name"] = it->first;
-                    componentObj["type"] = it->second->GetTypeName ();
+                    std::map<std::string, Component*>& components = actor->GetComponents ();
+                    for (std::map<std::string, Component*>::iterator it = components.begin (); it != components.end ();
+                         ++it)
+                    {
+                        json componentObj = json::object ({});
 
-                    actorObj["components"].push_back (componentObj);
+                        componentObj["name"] = it->first;
+                        componentObj["type"] = it->second->GetTypeName ();
+
+                        actorObj["components"].push_back (componentObj);
+                    }
                 }
 
                 j["actors"].push_back (actorObj);
@@ -440,111 +483,120 @@ namespace aga
             j["min_size"] = PointToString (minRect);
             j["max_size"] = PointToString (maxRect);
 
-            j["flag_points"] = json::array ({});
-
-            for (std::map<std::string, FlagPoint>::iterator it = scene->m_FlagPoints.begin ();
-                 it != scene->m_FlagPoints.end (); ++it)
+            if (!scene->m_FlagPoints.empty ())
             {
-                json flagObj = json::object ({});
+                j["flag_points"] = json::array ({});
 
-                flagObj["name"] = it->first;
-                flagObj["pos"] = PointToString (it->second.Pos);
-
-                std::vector<std::string> connections;
-                for (size_t i = 0; i < it->second.Connections.size (); ++i)
+                for (std::map<std::string, FlagPoint>::iterator it = scene->m_FlagPoints.begin ();
+                     it != scene->m_FlagPoints.end (); ++it)
                 {
-                    connections.push_back (it->second.Connections[i]->Name);
+                    json flagObj = json::object ({});
+
+                    flagObj["name"] = it->first;
+                    flagObj["pos"] = PointToString (it->second.Pos);
+
+                    std::vector<std::string> connections;
+                    for (size_t i = 0; i < it->second.Connections.size (); ++i)
+                    {
+                        connections.push_back (it->second.Connections[i]->Name);
+                    }
+
+                    flagObj["connections"] = VectorStringsToString (connections);
+
+                    j["flag_points"].push_back (flagObj);
                 }
-
-                flagObj["connections"] = VectorStringsToString (connections);
-
-                j["flag_points"].push_back (flagObj);
             }
 
-            j["trigger_areas"] = json::array ({});
-
-            for (std::map<std::string, TriggerArea>::iterator it = scene->m_TriggerAreas.begin ();
-                 it != scene->m_TriggerAreas.end (); ++it)
+            if (!scene->m_TriggerAreas.empty ())
             {
-                json triggerObj = json::object ({});
+                j["trigger_areas"] = json::array ({});
 
-                triggerObj["name"] = it->second.Name;
-                triggerObj["data"] = it->second.Data;
-                triggerObj["collidable"] = std::to_string (it->second.Collidable);
-                triggerObj["poly"] = VectorPointsToString (it->second.Points);
+                for (std::map<std::string, TriggerArea>::iterator it = scene->m_TriggerAreas.begin ();
+                     it != scene->m_TriggerAreas.end (); ++it)
+                {
+                    json triggerObj = json::object ({});
 
-                j["trigger_areas"].push_back (triggerObj);
+                    triggerObj["name"] = it->second.Name;
+                    triggerObj["data"] = it->second.Data;
+                    triggerObj["collidable"] = std::to_string (it->second.Collidable);
+                    triggerObj["poly"] = VectorPointsToString (it->second.Points);
+
+                    j["trigger_areas"].push_back (triggerObj);
+                }
             }
 
-            j["speeches"] = json::array ({});
-
-            for (std::map<long, SpeechData>::iterator it = scene->m_Speeches.begin (); it != scene->m_Speeches.end ();
-                 ++it)
+            if (!scene->m_Speeches.empty ())
             {
-                json speechObj = json::object ({});
+                j["speeches"] = json::array ({});
 
-                speechObj["id"] = it->first;
-                speechObj["name"] = it->second.Name;
-                speechObj["group"] = it->second.Group;
-                speechObj["action"] = it->second.Action;
-                speechObj["region_name"] = it->second.ActorRegionName;
-                speechObj["max_chars"] = it->second.MaxCharsInLine;
-                speechObj["max_lines"] = it->second.MaxLines;
-                speechObj["abs_pos"] = PointToString (it->second.AbsoluteFramePosition);
-                speechObj["rel_pos"] = static_cast<int> (it->second.RelativeFramePosition);
-
-                speechObj["texts"] = json::array ({});
-
-                json textObj = json::object ({});
-                textObj["langID"] = "EN";
-                textObj["data"] = it->second.Text[LANG_EN];
-
-                speechObj["texts"].push_back (textObj);
-
-                textObj["langID"] = "PL";
-                textObj["data"] = it->second.Text[LANG_PL];
-
-                speechObj["texts"].push_back (textObj);
-
-                speechObj["outcomes"] = json::array ({});
-
-                //  EN - Outcome
-                json outcomeObj = json::object ({});
-                outcomeObj["langID"] = "EN";
-
-                outcomeObj["texts"] = json::array ({});
-
-                for (size_t i = 0; i < it->second.Outcomes[LANG_EN].size (); ++i)
+                for (std::map<long, SpeechData>::iterator it = scene->m_Speeches.begin ();
+                     it != scene->m_Speeches.end (); ++it)
                 {
-                    json outComeTextObj = json::object ({});
-                    outComeTextObj["name"] = it->second.Outcomes[LANG_EN][i].Name;
-                    outComeTextObj["data"] = it->second.Outcomes[LANG_EN][i].Text;
-                    outComeTextObj["action"] = it->second.Outcomes[LANG_EN][i].Action;
+                    json speechObj = json::object ({});
 
-                    outcomeObj["texts"].push_back (outComeTextObj);
+                    speechObj["id"] = it->first;
+                    speechObj["name"] = it->second.Name;
+                    speechObj["group"] = it->second.Group;
+                    speechObj["action"] = it->second.Action;
+                    speechObj["region_name"] = it->second.ActorRegionName;
+                    speechObj["max_chars"] = it->second.MaxCharsInLine;
+                    speechObj["max_lines"] = it->second.MaxLines;
+                    speechObj["abs_pos"] = PointToString (it->second.AbsoluteFramePosition);
+                    speechObj["rel_pos"] = static_cast<int> (it->second.RelativeFramePosition);
+
+                    speechObj["texts"] = json::array ({});
+
+                    json textObj = json::object ({});
+                    textObj["langID"] = "EN";
+                    textObj["data"] = it->second.Text[LANG_EN];
+
+                    speechObj["texts"].push_back (textObj);
+
+                    textObj["langID"] = "PL";
+                    textObj["data"] = it->second.Text[LANG_PL];
+
+                    speechObj["texts"].push_back (textObj);
+
+                    speechObj["outcomes"] = json::array ({});
+
+                    //  EN - Outcome
+                    json outcomeObj = json::object ({});
+                    outcomeObj["langID"] = "EN";
+
+                    outcomeObj["texts"] = json::array ({});
+
+                    for (size_t i = 0; i < it->second.Outcomes[LANG_EN].size (); ++i)
+                    {
+                        json outComeTextObj = json::object ({});
+                        outComeTextObj["name"] = it->second.Outcomes[LANG_EN][i].Name;
+                        outComeTextObj["data"] = it->second.Outcomes[LANG_EN][i].Text;
+                        outComeTextObj["action"] = it->second.Outcomes[LANG_EN][i].Action;
+
+                        outcomeObj["texts"].push_back (outComeTextObj);
+                    }
+
+                    speechObj["outcomes"].push_back (outcomeObj);
+
+                    //  PL - Outcome
+                    outcomeObj = json::object ({});
+                    outcomeObj["langID"] = "PL";
+
+                    outcomeObj["texts"] = json::array ({});
+
+                    for (size_t i = 0; i < it->second.Outcomes[LANG_PL].size (); ++i)
+                    {
+                        json outComeTextObj = json::object ({});
+                        outComeTextObj["name"] = it->second.Outcomes[LANG_PL][i].Name;
+                        outComeTextObj["data"] = it->second.Outcomes[LANG_PL][i].Text;
+                        outComeTextObj["action"] = it->second.Outcomes[LANG_PL][i].Action;
+
+                        outcomeObj["texts"].push_back (outComeTextObj);
+                    }
+
+                    speechObj["outcomes"].push_back (outcomeObj);
+
+                    j["speeches"].push_back (speechObj);
                 }
-
-                speechObj["outcomes"].push_back (outcomeObj);
-
-                //  PL - Outcome
-                outcomeObj = json::object ({});
-                outcomeObj["langID"] = "PL";
-
-                outcomeObj["texts"] = json::array ({});
-
-                for (size_t i = 0; i < it->second.Outcomes[LANG_PL].size (); ++i)
-                {
-                    json outComeTextObj = json::object ({});
-                    outComeTextObj["name"] = it->second.Outcomes[LANG_PL][i].Name;
-                    outComeTextObj["data"] = it->second.Outcomes[LANG_PL][i].Text;
-                    outComeTextObj["action"] = it->second.Outcomes[LANG_PL][i].Action;
-
-                    outcomeObj["texts"].push_back (outComeTextObj);
-                }
-
-                speechObj["outcomes"].push_back (outcomeObj);
-
-                j["speeches"].push_back (speechObj);
             }
 
             // write prettified JSON to another file

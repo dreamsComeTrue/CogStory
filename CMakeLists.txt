@@ -2,7 +2,7 @@ project("Cog Story")
 cmake_minimum_required(VERSION 2.8)
 
 set(BIN_DIR Binaries)
-set(CMAKE_BUILD_TYPE RelWithDebInfo)
+set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
 set(ROOT_THIRD_PARTY_DIR ./ThirdParty)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

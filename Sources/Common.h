@@ -166,13 +166,13 @@ namespace aga
         std::vector<Point> nums;
         char* str = const_cast<char*> (in.c_str ());
 
-        for (char* pch = strtok (str, delimiter); pch != NULL; pch = strtok (NULL, delimiter))
+        for (char* pch = strtok (str, delimiter); pch != nullptr; pch = strtok (nullptr, delimiter))
         {
-            float x = atof (pch);
+            float x = static_cast<float> (atof (pch));
 
-            pch = strtok (NULL, delimiter);
+            pch = strtok (nullptr, delimiter);
 
-            float y = atof (pch);
+            float y = static_cast<float> (atof (pch));
 
             nums.push_back ({x, y});
         }
@@ -187,7 +187,7 @@ namespace aga
         std::vector<std::string> strings;
         char* str = const_cast<char*> (in.c_str ());
 
-        for (char* pch = strtok (str, delimiter); pch != NULL; pch = strtok (NULL, delimiter))
+        for (char* pch = strtok (str, delimiter); pch != nullptr; pch = strtok (nullptr, delimiter))
         {
             strings.push_back (pch);
         }
@@ -240,7 +240,7 @@ namespace aga
         std::vector<int> ints;
         char* str = const_cast<char*> (in.c_str ());
 
-        for (char* pch = strtok (str, delimiter); pch != NULL; pch = strtok (NULL, delimiter))
+        for (char* pch = strtok (str, delimiter); pch != nullptr; pch = strtok (nullptr, delimiter))
         {
             ints.push_back (atoi (pch));
         }

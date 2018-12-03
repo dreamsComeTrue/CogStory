@@ -53,7 +53,7 @@ void RegisterFunctions ()
     RegisterChoiceFunction ("choice1", function ()
     {
         return "SPCH_2";
-    });
+    });    
 }
 
 

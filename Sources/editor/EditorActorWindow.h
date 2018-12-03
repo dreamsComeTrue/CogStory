@@ -82,6 +82,7 @@ namespace aga
 
         std::vector<std::string> m_Speeches;
         int m_SelectedSpeech;
+        bool m_ActionSpeechHandling;
     };
 }
 

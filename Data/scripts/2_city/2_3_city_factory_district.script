@@ -11,25 +11,11 @@ void SceneChanged (const string &in previousSceneName)
 
 void BeforeEnterScene ()
 {
-    RegisterFunctions ();    
 }
 
 void AfterLeaveScene ()
 {
 }
-
-void RegisterFunctions ()
-{
-    player.AddOverlapCallbacks (function (otherActor)
-    {
-        ShowSpeechWhenOverlap (otherActor, "FACTORY_SIGN", "FACTORY_SIGN_INFO");
-    }, null, function (otherActor)
-    {
-        HideSpeechWhenOverlap (otherActor, "FACTORY_SIGN", "FACTORY_SIGN_INFO");
-    });
-}
-
-
 
 void Update (float deltaTime)
 {
