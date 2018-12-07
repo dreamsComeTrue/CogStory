@@ -128,6 +128,21 @@ namespace aga
 
         if (before == after)
         {
+            if (event->type == ALLEGRO_EVENT_JOYSTICK_BUTTON_UP)
+            {
+                if (event->joystick.button == 0)
+                {
+                    if (GetActiveStateName () == GAMEPLAY_STATE_NAME)
+                    {
+                        StateFadeInOut (MAIN_MENU_STATE_NAME);
+                    }
+                    else if (GetActiveStateName () == MAIN_MENU_STATE_NAME)
+                    {
+                        StateFadeInOut (GAMEPLAY_STATE_NAME);
+                    }
+                }
+            }
+
             if (event->type == ALLEGRO_EVENT_KEY_UP)
             {
                 switch (event->keyboard.keycode)

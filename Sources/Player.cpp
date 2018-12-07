@@ -156,6 +156,14 @@ namespace aga
             return false;
         }
 
+        if (event->type == ALLEGRO_EVENT_JOYSTICK_BUTTON_UP)
+        {
+            if (event->joystick.button == 2)
+            {
+                HandleAction ();
+            }
+        }
+
         if (event->type == ALLEGRO_EVENT_KEY_DOWN)
         {
             if (event->keyboard.keycode == ALLEGRO_KEY_SPACE || event->keyboard.keycode == ALLEGRO_KEY_ENTER)
@@ -220,11 +228,28 @@ namespace aga
         al_get_keyboard_state (&state);
         float dx = 0, dy = 0;
 
-        //  Prevent diagonal moveing from left/right move animation resetting
-        bool isMoveRight = al_key_down (&state, ALLEGRO_KEY_RIGHT) || al_key_down (&state, ALLEGRO_KEY_D);
-        bool isMoveLeft = al_key_down (&state, ALLEGRO_KEY_LEFT) || al_key_down (&state, ALLEGRO_KEY_A);
+        float joyXVal = 0.f;
+        float joyYVal = 0.f;
+        const float JOY_DELTA = 0.7f;
+        bool speedBooster = false;
 
-        if (al_key_down (&state, ALLEGRO_KEY_DOWN) || al_key_down (&state, ALLEGRO_KEY_S))
+        if (al_is_joystick_installed ())
+        {
+            ALLEGRO_JOYSTICK_STATE joyState;
+
+            al_get_joystick_state (al_get_joystick (0), &joyState);
+            joyXVal = joyState.stick[0].axis[0];
+            joyYVal = joyState.stick[0].axis[1];
+            speedBooster = joyState.button[7];
+        }
+
+        //  Prevent diagonal moveing from left/right move animation resetting
+        bool isMoveRight
+            = al_key_down (&state, ALLEGRO_KEY_RIGHT) || al_key_down (&state, ALLEGRO_KEY_D) || joyXVal > JOY_DELTA;
+        bool isMoveLeft
+            = al_key_down (&state, ALLEGRO_KEY_LEFT) || al_key_down (&state, ALLEGRO_KEY_A) || joyXVal < -JOY_DELTA;
+
+        if (al_key_down (&state, ALLEGRO_KEY_DOWN) || al_key_down (&state, ALLEGRO_KEY_S) || joyYVal > JOY_DELTA)
         {
             dy = MOVE_SPEED * deltaTime;
 
@@ -234,7 +259,7 @@ namespace aga
             }
         }
 
-        if (al_key_down (&state, ALLEGRO_KEY_UP) || al_key_down (&state, ALLEGRO_KEY_W))
+        if (al_key_down (&state, ALLEGRO_KEY_UP) || al_key_down (&state, ALLEGRO_KEY_W) || joyYVal < -JOY_DELTA)
         {
             dy = -MOVE_SPEED * deltaTime;
 
@@ -276,7 +301,7 @@ namespace aga
         ProcessTriggerAreas (dx, dy, std::move (triggerAreaDelta));
         updatePos (triggerAreaDelta);
 
-        if (al_key_down (&state, ALLEGRO_KEY_LSHIFT))
+        if (al_key_down (&state, ALLEGRO_KEY_LSHIFT) || speedBooster)
         {
             float multiplier = 3;
             dx *= multiplier;

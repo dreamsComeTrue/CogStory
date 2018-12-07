@@ -101,6 +101,8 @@ namespace aga
         void HandleKeyUp ();
         void HandleKeyDown ();
 
+        void HandleAction ();
+
         void UpdateScrollArrowsFlash (float deltaTime);
         void UpdateTextPosition (float deltaTime);
         bool IsTextFitWithoutScroll ();

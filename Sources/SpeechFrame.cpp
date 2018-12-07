@@ -329,7 +329,27 @@ namespace aga
 
     void SpeechFrame::ProcessEvent (ALLEGRO_EVENT* event, float)
     {
-        if (event->type == ALLEGRO_EVENT_KEY_DOWN)
+        if (event->type == ALLEGRO_EVENT_JOYSTICK_BUTTON_UP)
+        {
+            if (event->joystick.button == 2)
+            {
+                HandleAction ();
+            }
+        }
+        else if (event->type == ALLEGRO_EVENT_JOYSTICK_AXIS)
+        {
+            if (event->joystick.pos > 0.7f)
+            {
+                HandleKeyUp ();
+                m_KeyEventHandled = true;
+            }
+            if (event->joystick.pos < -0.7f)
+            {
+                HandleKeyDown ();
+                m_KeyEventHandled = true;
+            }
+        }
+        else if (event->type == ALLEGRO_EVENT_KEY_DOWN)
         {
             switch (event->keyboard.keycode)
             {
@@ -355,80 +375,85 @@ namespace aga
             case ALLEGRO_KEY_SPACE:
             case ALLEGRO_KEY_X:
             {
-                if (m_IsSuspended)
-                {
-                    m_IsSuspended = false;
-                    m_OverrideSuspension = true;
-                    m_CurrentLineBreakOffset = m_CurrentLine + 1;
-                }
-                else if (m_ShouldBeHandled && !m_StillUpdating)
-                {
-                    if (!m_Choices.empty ())
-                    {
-                        SpeechChoice& choice = m_Choices[m_ActualChoiceIndex];
-
-                        std::function<void()>& handler = choice.Func;
-
-                        if (handler)
-                        {
-                            handler ();
-                        }
-
-                        //  Check, if we are using plain OUTCOME reference,
-                        //  or one with REGISTERED_CHOICE_PREFIX (usually '*' mark) as the prefix
-                        //  which coresponds to function registered with 'RegisterChoiceFunction'
-                        if (StartsWith (choice.Action, REGISTERED_CHOICE_PREFIX))
-                        {
-                            std::string actionName = choice.Action.substr (REGISTERED_CHOICE_PREFIX.length ());
-                            std::map<std::string, asIScriptFunction*>& choiceFunctions
-                                = m_Manager->GetSceneManager ()->GetActiveScene ()->GetChoiceFunctions ();
-                            asIScriptFunction* func = choiceFunctions[actionName];
-
-                            if (func)
-                            {
-                                asIScriptContext* ctx
-                                    = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScriptManager ().GetContext ();
-                                ctx->Prepare (func);
-
-                                if (ctx->Execute () == asEXECUTION_FINISHED)
-                                {
-                                    m_OutcomeAction = *static_cast<std::string*> (ctx->GetReturnObject ());
-                                }
-
-                                ctx->Unprepare ();
-                                ctx->GetEngine ()->ReturnContext (ctx);
-                            }
-                        }
-                        else
-                        {
-                            m_OutcomeAction = choice.Action;
-                        }
-                    }
-                    else
-                    {
-                        m_OutcomeAction = m_Action;
-                    }
-
-                    m_Handled = true;
-
-                    if (m_ScriptHandleFunction)
-                    {
-                        asIScriptContext* ctx
-                            = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScriptManager ().GetContext ();
-                        ctx->Prepare (m_ScriptHandleFunction);
-                        ctx->Execute ();
-                        ctx->Unprepare ();
-                        ctx->GetEngine ()->ReturnContext (ctx);
-                    }
-
-                    if (HandledFunction)
-                    {
-                        HandledFunction ();
-                    }
-                }
+                HandleAction ();
 
                 break;
             }
+            }
+        }
+    }
+
+    void SpeechFrame::HandleAction ()
+    {
+        if (m_IsSuspended)
+        {
+            m_IsSuspended = false;
+            m_OverrideSuspension = true;
+            m_CurrentLineBreakOffset = m_CurrentLine + 1;
+        }
+        else if (m_ShouldBeHandled && !m_StillUpdating)
+        {
+            if (!m_Choices.empty ())
+            {
+                SpeechChoice& choice = m_Choices[m_ActualChoiceIndex];
+
+                std::function<void()>& handler = choice.Func;
+
+                if (handler)
+                {
+                    handler ();
+                }
+
+                //  Check, if we are using plain OUTCOME reference,
+                //  or one with REGISTERED_CHOICE_PREFIX (usually '*' mark) as the prefix
+                //  which coresponds to function registered with 'RegisterChoiceFunction'
+                if (StartsWith (choice.Action, REGISTERED_CHOICE_PREFIX))
+                {
+                    std::string actionName = choice.Action.substr (REGISTERED_CHOICE_PREFIX.length ());
+                    std::map<std::string, asIScriptFunction*>& choiceFunctions
+                        = m_Manager->GetSceneManager ()->GetActiveScene ()->GetChoiceFunctions ();
+                    asIScriptFunction* func = choiceFunctions[actionName];
+
+                    if (func)
+                    {
+                        asIScriptContext* ctx
+                            = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScriptManager ().GetContext ();
+                        ctx->Prepare (func);
+
+                        if (ctx->Execute () == asEXECUTION_FINISHED)
+                        {
+                            m_OutcomeAction = *static_cast<std::string*> (ctx->GetReturnObject ());
+                        }
+
+                        ctx->Unprepare ();
+                        ctx->GetEngine ()->ReturnContext (ctx);
+                    }
+                }
+                else
+                {
+                    m_OutcomeAction = choice.Action;
+                }
+            }
+            else
+            {
+                m_OutcomeAction = m_Action;
+            }
+
+            m_Handled = true;
+
+            if (m_ScriptHandleFunction)
+            {
+                asIScriptContext* ctx
+                    = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScriptManager ().GetContext ();
+                ctx->Prepare (m_ScriptHandleFunction);
+                ctx->Execute ();
+                ctx->Unprepare ();
+                ctx->GetEngine ()->ReturnContext (ctx);
+            }
+
+            if (HandledFunction)
+            {
+                HandledFunction ();
             }
         }
     }

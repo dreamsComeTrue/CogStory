@@ -38,6 +38,8 @@ namespace aga
 
     private:
         void HandleSelection ();
+        void HandleMoveUp ();
+        void HandleMoveDown ();
 
         void RenderMenuItems ();
         void RenderExitItems ();

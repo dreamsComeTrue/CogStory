@@ -98,6 +98,31 @@ namespace aga
 
     bool MainMenuState::ProcessEvent (ALLEGRO_EVENT* event, float)
     {
+        if (event->type == ALLEGRO_EVENT_JOYSTICK_BUTTON_UP)
+        {
+            if (event->joystick.button == 1)
+            {
+                m_AnimationTimer = 0.f;
+                m_Closing = true;
+            }
+            else if (event->joystick.button == 2)
+            {
+                HandleSelection ();
+            }
+        }
+
+        if (event->type == ALLEGRO_EVENT_JOYSTICK_AXIS)
+        {
+            if (event->joystick.pos < -0.7f)
+            {
+                HandleMoveUp ();
+            }
+            else if (event->joystick.pos > 0.7f)
+            {
+                HandleMoveDown ();
+            }
+        }
+
         if (event->type == ALLEGRO_EVENT_KEY_CHAR)
         {
             switch (event->keyboard.keycode)
@@ -116,24 +141,7 @@ namespace aga
             case ALLEGRO_KEY_UP:
             case ALLEGRO_KEY_W:
             {
-                m_SelectSample->Play ();
-
-                --m_Selection;
-
-                if (m_ExitSelected)
-                {
-                    if (m_Selection < MENU_ITEM_EXIT_YES)
-                    {
-                        m_Selection = MENU_ITEM_EXIT_NO;
-                    }
-                }
-                else
-                {
-                    if (m_Selection < MENU_ITEM_NEW_JOURNEY)
-                    {
-                        m_Selection = MENU_ITEM_EXIT;
-                    }
-                }
+                HandleMoveUp ();
 
                 break;
             }
@@ -141,24 +149,7 @@ namespace aga
             case ALLEGRO_KEY_DOWN:
             case ALLEGRO_KEY_S:
             {
-                m_SelectSample->Play ();
-
-                ++m_Selection;
-
-                if (m_ExitSelected)
-                {
-                    if (m_Selection > MENU_ITEM_EXIT_NO)
-                    {
-                        m_Selection = MENU_ITEM_EXIT_YES;
-                    }
-                }
-                else
-                {
-                    if (m_Selection > MENU_ITEM_EXIT)
-                    {
-                        m_Selection = MENU_ITEM_NEW_JOURNEY;
-                    }
-                }
+                HandleMoveDown ();
 
                 break;
             }
@@ -166,7 +157,6 @@ namespace aga
             case ALLEGRO_KEY_ENTER:
             case ALLEGRO_KEY_X:
             {
-                m_SelectSample->Play ();
                 HandleSelection ();
 
                 break;
@@ -179,8 +169,58 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    void MainMenuState::HandleMoveUp ()
+    {
+        m_SelectSample->Play ();
+
+        --m_Selection;
+
+        if (m_ExitSelected)
+        {
+            if (m_Selection < MENU_ITEM_EXIT_YES)
+            {
+                m_Selection = MENU_ITEM_EXIT_NO;
+            }
+        }
+        else
+        {
+            if (m_Selection < MENU_ITEM_NEW_JOURNEY)
+            {
+                m_Selection = MENU_ITEM_EXIT;
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    void MainMenuState::HandleMoveDown ()
+    {
+        m_SelectSample->Play ();
+
+        ++m_Selection;
+
+        if (m_ExitSelected)
+        {
+            if (m_Selection > MENU_ITEM_EXIT_NO)
+            {
+                m_Selection = MENU_ITEM_EXIT_YES;
+            }
+        }
+        else
+        {
+            if (m_Selection > MENU_ITEM_EXIT)
+            {
+                m_Selection = MENU_ITEM_NEW_JOURNEY;
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void MainMenuState::HandleSelection ()
     {
+        m_SelectSample->Play ();
+
         switch (m_Selection)
         {
         case MENU_ITEM_NEW_JOURNEY:

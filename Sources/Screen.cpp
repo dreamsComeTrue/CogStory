@@ -62,6 +62,13 @@ namespace aga
             return false;
         }
 
+        if (!al_install_joystick ())
+        {
+            return false;
+        }
+
+        al_reconfigure_joysticks ();
+
         al_set_new_display_flags (ALLEGRO_RESIZABLE);
         m_Display = al_create_display (static_cast<int> (m_Width), static_cast<int> (m_Height));
 
@@ -145,6 +152,7 @@ namespace aga
 
         al_register_event_source (m_EventQueue, al_get_display_event_source (m_Display));
         al_register_event_source (m_EventQueue, al_get_timer_event_source (m_DisplayTimer));
+        al_register_event_source (m_EventQueue, al_get_joystick_event_source ());
         al_register_event_source (m_EventQueue, al_get_mouse_event_source ());
         al_register_event_source (m_EventQueue, al_get_keyboard_event_source ());
 
@@ -209,6 +217,10 @@ namespace aga
         {
             m_Redraw = true;
         }
+        else if (ev.type == ALLEGRO_EVENT_JOYSTICK_CONFIGURATION)
+        {
+            al_reconfigure_joysticks ();
+        }
         else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
         {
             return false;
@@ -226,7 +238,9 @@ namespace aga
         }
         else if ((ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) || (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
             || (ev.type == ALLEGRO_EVENT_MOUSE_AXES) || (ev.type == ALLEGRO_EVENT_KEY_DOWN)
-            || (ev.type == ALLEGRO_EVENT_KEY_UP) || (ev.type == ALLEGRO_EVENT_KEY_CHAR))
+            || (ev.type == ALLEGRO_EVENT_KEY_UP) || (ev.type == ALLEGRO_EVENT_KEY_CHAR)
+            || (ev.type == ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN) || (ev.type == ALLEGRO_EVENT_JOYSTICK_BUTTON_UP)
+            || (ev.type == ALLEGRO_EVENT_JOYSTICK_AXIS))
         {
             if (ProcessEventFunction != nullptr)
             {
