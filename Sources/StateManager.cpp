@@ -130,6 +130,18 @@ namespace aga
         {
             if (event->type == ALLEGRO_EVENT_JOYSTICK_BUTTON_UP)
             {
+                if (event->joystick.button == 9)
+                {
+                    if (GetActiveStateName () == GAMEPLAY_STATE_NAME)
+                    {
+                        SetActiveState (EDITOR_STATE_NAME);
+                    }
+                    else if (GetActiveStateName () == EDITOR_STATE_NAME)
+                    {
+                        SetActiveState (GAMEPLAY_STATE_NAME);
+                    }
+                }
+
                 if (event->joystick.button == 0)
                 {
                     if (GetActiveStateName () == GAMEPLAY_STATE_NAME)

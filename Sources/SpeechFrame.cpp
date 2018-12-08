@@ -664,22 +664,34 @@ namespace aga
             {
                 std::string charToDraw = std::string (1, line[j]);
 
+                if (charToDraw == "," || charToDraw == ".")
+                {
+                    advance -= 8;
+                }
+
                 font.DrawText (FONT_NAME_SPEECH_FRAME, charToDraw, color, drawPoint.X + advance, drawPoint.Y, 1.0f,
                     GetTextAlign ());
+
+                if (charToDraw == ",")
+                {
+                    advance -= 8;
+                }
 
                 if (charToDraw == " ")
                 {
                     advance += SPEECH_FRAME_ADVANCE_SPACE;
                 }
+                else if (charToDraw == "'")
+                {
+                    advance += 8;
+                }
+                else if (charToDraw == ".")
+                {
+                    advance += 18;
+                }
                 else
                 {
-                    advance += m_Manager->GetSceneManager ()
-                                   ->GetMainLoop ()
-                                   ->GetScreen ()
-                                   ->GetFont ()
-                                   .GetTextDimensions (FONT_NAME_SPEECH_FRAME, charToDraw)
-                                   .Width;
-                    advance += SPEECH_FRAME_ADVANCE_LETTERS;
+                    advance += 25;
                 }
             }
         }

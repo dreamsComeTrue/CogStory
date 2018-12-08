@@ -14,7 +14,7 @@ namespace aga
     const int SPEECH_FRAME_TEXT_INSETS = 20;
     const int SPEECH_FRAME_LINE_OFFSET = 5;
     const int SPEECH_FRAME_ADVANCE_LETTERS = 4;
-    const int SPEECH_FRAME_ADVANCE_SPACE = 8;
+    const int SPEECH_FRAME_ADVANCE_SPACE = 14;
     const int SPEECH_FRAME_ADVANCE_CHOICE = 30;
     const float SPEECH_FRAME_MAX_CHAR_EDGE_LENGTH = 64;
 
@@ -135,8 +135,8 @@ namespace aga
         float m_CurrentDrawTime;
 
         float m_LineHeight;
-        unsigned m_LineAscent;
-        unsigned m_LineDescent;
+        int m_LineAscent;
+        int m_LineDescent;
 
         size_t m_CurrentIndex;
         size_t m_CurrentLine;

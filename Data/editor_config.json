@@ -6,12 +6,12 @@
         "0_home/0_0_home_main.scn",
         "2_city/2_0_city_main.scn"
     ],
-    "show_actors": true,
+    "show_actors": false,
     "show_bounds": false,
     "show_camera_bounds": true,
-    "show_flag_points": true,
-    "show_grid": true,
+    "show_flag_points": false,
+    "show_grid": false,
     "show_names": false,
     "show_physics": false,
-    "show_trigger_areas": true
+    "show_trigger_areas": false
 }

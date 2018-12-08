@@ -34,7 +34,7 @@ namespace aga
         GenerateFont (FONT_NAME_SMALL, GetResourcePath (FONT_SMALL), 20);
         GenerateFont (FONT_NAME_MEDIUM, GetResourcePath (FONT_MEDIUM), 30);
         GenerateFont (FONT_NAME_NORMAL, GetResourcePath (FONT_NORMAL), 40);
-        GenerateFont (FONT_NAME_SPEECH_FRAME, GetResourcePath (FONT_SPEECH_FRAME), 50);
+        GenerateFont (FONT_NAME_SPEECH_FRAME, GetResourcePath (FONT_SPEECH_FRAME), 65);
 
         GenerateFont (FONT_NAME_MENU_TITLE, GetResourcePath (FONT_MENU_TITLE), 120);
         GenerateFont (FONT_NAME_MENU_ITEM_NORMAL, GetResourcePath (FONT_MENU_ITEM_NORMAL), 70);

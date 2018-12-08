@@ -364,8 +364,8 @@ namespace aga
             }
         }
 
-        font.DrawText (FONT_NAME_SMALL, "v 0.1 (C) Dominik 'squall' Jasinski", al_map_rgb (130, 130, 130), 5,
-            winSize.Height - 20, 1.0f, ALLEGRO_ALIGN_LEFT);
+        font.DrawText (FONT_NAME_SMALL, "v 0.1 (C) Agado Studio", al_map_rgb (130, 130, 130), 5, winSize.Height - 20,
+            1.0f, ALLEGRO_ALIGN_LEFT);
     }
 
     //--------------------------------------------------------------------------------------------------
