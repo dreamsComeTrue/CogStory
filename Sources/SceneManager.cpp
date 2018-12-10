@@ -242,7 +242,12 @@ namespace aga
         {
             m_NextScene = sceneToSet;
 
-            Log (m_NextScene->GetName ().c_str ());
+            if (sceneToSet == nullptr)
+            {
+                Log ("NUUUUUUUUUULLLLLLLLLLL!!!!!!\n");
+            }
+            else
+                Log (m_NextScene->GetName ().c_str ());
 
             SceneFadeInOut ();
         }

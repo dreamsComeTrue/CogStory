@@ -459,6 +459,7 @@ namespace aga
             newActor->TemplateBounds = newActor->Bounds;
             newActor->Rotation = selectedActor->Rotation;
             newActor->ZOrder = selectedActor->ZOrder;
+            newActor->SetFocusHeight (selectedActor->GetFocusHeight ());
             newActor->SetAtlas (selectedActor->GetAtlas ());
             newActor->SetAtlasRegionName (selectedActor->GetAtlasRegionName ());
             newActor->PhysPoints = selectedActor->PhysPoints;

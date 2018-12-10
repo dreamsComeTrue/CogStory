@@ -101,9 +101,19 @@ namespace aga
             Point position (
                 static_cast<float> (atof (posParts[0].c_str ())), static_cast<float> (atof (posParts[1].c_str ())));
 
-            Actor* retActor = m_Editor->GetEditorActorMode ().AddOrUpdateActor (id, m_ActorName,
-                m_ActorTypes[m_SelectedActorType], blueprintID, position, static_cast<float> (atof (m_ActorRotation)),
-                m_ActorZOrder, static_cast<float> (atof (m_ActorFocusHeight)));
+            for (int i = 0; i < 20; ++i)
+            {
+                if (m_ActorFocusHeight[i] == '.')
+                {
+                    m_ActorFocusHeight[i] = ',';
+                }
+            }
+
+            float focusHeight = static_cast<float> (atof (m_ActorFocusHeight));
+
+            Actor* retActor
+                = m_Editor->GetEditorActorMode ().AddOrUpdateActor (id, m_ActorName, m_ActorTypes[m_SelectedActorType],
+                    blueprintID, position, static_cast<float> (atof (m_ActorRotation)), m_ActorZOrder, focusHeight);
 
             if (retActor)
             {
