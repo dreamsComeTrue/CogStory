@@ -227,6 +227,8 @@ namespace aga
 
             if (it != m_States.end ())
             {
+                m_PreviousState = m_ActiveState;
+
                 if (m_ActiveState != nullptr)
                 {
                     m_ActiveState->AfterLeave ();

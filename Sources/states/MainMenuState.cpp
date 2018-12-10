@@ -320,6 +320,11 @@ namespace aga
         else
         {
             currentPercent = 1.0f - std::clamp (percent, 0.f, 1.f);
+
+            if (m_AnimationStage >= 1)
+            {
+                m_MainLoop->GetStateManager ().StateFadeInOut (GAMEPLAY_STATE_NAME);
+            }
         }
 
         float imgHeight = al_get_bitmap_height (m_Image);

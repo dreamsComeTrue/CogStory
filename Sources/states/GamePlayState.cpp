@@ -2,6 +2,7 @@
 
 #include "GamePlayState.h"
 #include "AudioStream.h"
+#include "EditorState.h"
 #include "MainLoop.h"
 #include "MainMenuState.h"
 #include "Player.h"
@@ -60,17 +61,15 @@ namespace aga
     void GamePlayState::BeforeEnter ()
     {
         m_MainLoop->GetScreen ()->SetWindowSize (GAME_WINDOW_SIZE);
-        m_MainLoop->GetScreen ()->CenterOnScreen ();
+
+        if (m_MainLoop->GetStateManager ().GetPreviousState ()->GetName () == EDITOR_STATE_NAME)
+        {
+            m_MainLoop->GetScreen ()->CenterOnScreen ();
+        }
 
         m_MainLoop->GetAudioManager ().SetEnabled (m_AudioWasEnabled);
 
         al_hide_mouse_cursor (m_MainLoop->GetScreen ()->GetDisplay ());
-
-        if (m_MainLoop->GetStateManager ().GetPreviousState () != nullptr
-            && m_MainLoop->GetStateManager ().GetPreviousState ()->GetName () == MAIN_MENU_STATE_NAME)
-        {
-            return;
-        }
 
         SceneManager& sceneManager = m_MainLoop->GetSceneManager ();
 

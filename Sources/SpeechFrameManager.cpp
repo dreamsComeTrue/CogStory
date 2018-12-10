@@ -370,11 +370,7 @@ namespace aga
         int ascent = font.GetFontAscent (FONT_NAME_SPEECH_FRAME);
         int descent = font.GetFontDescent (FONT_NAME_SPEECH_FRAME);
 
-        Point letterDim
-            = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ().GetTextDimensions (FONT_NAME_SPEECH_FRAME, "X");
-
-        float width = maxLineCharsCount * letterDim.Width + 2 * SPEECH_FRAME_TEXT_INSETS
-            + (maxLineCharsCount - 1) * SPEECH_FRAME_ADVANCE_LETTERS;
+        float width = maxLineCharsCount * 25 + 2 * SPEECH_FRAME_TEXT_INSETS;
         float height = linesCount * (ascent + descent) - descent + 2 * SPEECH_FRAME_TEXT_INSETS;
         height += (linesCount - 1) * SPEECH_FRAME_LINE_OFFSET;
 

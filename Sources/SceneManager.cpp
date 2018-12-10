@@ -228,24 +228,27 @@ namespace aga
 
     void SceneManager::SetActiveScene (const std::string& scenePath, bool fadeAnimation)
     {
-        Scene* scene = GetScene (scenePath);
+        Scene* sceneToSet = GetScene (scenePath);
 
-        if (!scene)
+        if (!sceneToSet)
         {
             bool loadBounds = false; // m_MainLoop->GetStateManager ().GetActiveStateName () == GAMEPLAY_STATE_NAME;
 
-            scene = SceneLoader::LoadScene (this, scenePath, loadBounds);
-            AddScene (scene);
+            sceneToSet = SceneLoader::LoadScene (this, scenePath, loadBounds);
+            AddScene (sceneToSet);
         }
 
         if (fadeAnimation)
         {
-            m_NextScene = scene;
+            m_NextScene = sceneToSet;
+
+            Log (m_NextScene->GetName ().c_str ());
+
             SceneFadeInOut ();
         }
         else
         {
-            SetActiveScene (scene);
+            SetActiveScene (sceneToSet);
         }
     }
 
@@ -567,13 +570,14 @@ namespace aga
         auto fadeFunc = [&](float v) {
             m_FadeColor.a = v;
 
-            if (m_TweenFade->TweenF.progress () > 0.5f)
+            if (m_NextScene && m_TweenFade->TweenF.progress () > 0.5f)
             {
-                if (m_NextScene && m_NextScene != m_ActiveScene)
+                if (m_NextScene != m_ActiveScene)
                 {
                     SetActiveScene (m_NextScene);
-                    m_NextScene = nullptr;
                 }
+
+                m_NextScene = nullptr;
             }
 
             return false;
