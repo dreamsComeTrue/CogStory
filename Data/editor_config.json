@@ -10,7 +10,7 @@
     ],
     "show_actors": false,
     "show_bounds": false,
-    "show_camera_bounds": false,
+    "show_camera_bounds": true,
     "show_flag_points": false,
     "show_grid": true,
     "show_names": false,

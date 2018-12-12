@@ -213,6 +213,7 @@ namespace aga
     {
         if (m_StillUpdating && !m_IsSuspended)
         {
+            //  Handle [WAIT] annotation
             if (m_IsDelayed)
             {
                 m_DelayCounter -= deltaTime * 1000.0f;
@@ -226,6 +227,7 @@ namespace aga
 
             m_CurrentDrawTime += deltaTime * 1000;
 
+            //  Update each character
             if (m_CurrentDrawTime >= m_DrawSpeed)
             {
                 if (m_OverallIndex % 7 == 0)
@@ -392,8 +394,14 @@ namespace aga
             m_IsSuspended = false;
             m_OverrideSuspension = true;
             m_CurrentLineBreakOffset = m_CurrentLine + 1;
+
+            if (m_CurrentLine >= m_TextLines.size () - 1)
+            {
+                m_StillUpdating = false;
+            }
         }
-        else if (m_ShouldBeHandled && !m_StillUpdating)
+
+        if (m_ShouldBeHandled && !m_StillUpdating)
         {
             if (!m_Choices.empty ())
             {
