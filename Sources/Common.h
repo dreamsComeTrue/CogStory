@@ -133,6 +133,8 @@ namespace aga
     bool RandBool ();
     float RandInRange (float min, float max);
 
+    template <typename T> T clamp (T n, T lower, T upper) { return std::max (lower, std::min (n, upper)); }
+
     template <typename T> std::string ToString (T t)
     {
         std::stringstream strStream;

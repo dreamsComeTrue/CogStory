@@ -4,7 +4,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build",
+            "label": "Build Cog Story",
             "command" : "ninja",
             "options": {
                 "cwd": "${workspaceFolder}/Binaries/Linux/Out"
@@ -15,14 +15,14 @@
             }
         },
         {
-            "label": "Run RobotTales",
+            "label": "Run Cog Story",
             "type": "shell",
-            "command": "${workspaceFolder}/Binaries/Linux/RobotTales",
+            "command": "\"${workspaceFolder}/Binaries/Linux/Cog Story\"",
             "options": {
                 "cwd": "${workspaceFolder}/Binaries/Linux/"
             },
             "dependsOn": [
-                "Build"
+                "Build Cog Story"
             ],
             "problemMatcher": [
                 "$gcc"

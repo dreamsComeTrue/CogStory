@@ -26,9 +26,9 @@ namespace aga
 
     struct SpeechTextAttribute
     {
-        int LineIndex;
-        int BeginIndex;
-        int EndIndex;
+        size_t LineIndex;
+        size_t BeginIndex;
+        size_t EndIndex;
         ALLEGRO_COLOR Color;
         float Delay = 0.0f;
 
@@ -94,7 +94,7 @@ namespace aga
         Point GetNextDrawPoint (int lineIndex);
         float GetTextAdvance (int lineCounter);
         int GetTextAlign ();
-        int GetMaxLinesCanFit ();
+        size_t GetMaxLinesCanFit ();
 
         void MoveChoiceUp ();
         void MoveChoiceDown ();
@@ -109,6 +109,10 @@ namespace aga
         void PreprocessText (std::string& text);
         int GetCurrentDrawingLine ();
         std::vector<std::string> BreakLine (const std::string& line, float maxWidth);
+
+        void UpdateWaitTime (float deltaTime);
+        void PlayTypeWriterSound ();
+        void TryToSuspendOnBreakPoints ();
 
     private:
         SpeechFrameManager* m_Manager;
@@ -132,15 +136,15 @@ namespace aga
         bool m_StillUpdating;
 
         float m_DrawSpeed;
-        float m_CurrentDrawTime;
+        float m_DrawTimeAccumulator;
 
         float m_LineHeight;
         int m_LineAscent;
         int m_LineDescent;
 
-        size_t m_CurrentIndex;
+        size_t m_CurrentIndexInLine;
         size_t m_CurrentLine;
-        size_t m_OverallIndex;
+        size_t m_CurrentCharIndex;
 
         float m_CurrentFlashTime;
         float m_ArrowDrawSpeed;
