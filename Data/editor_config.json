@@ -8,10 +8,10 @@
         "2_city/2_4_city_forest_alley.scn",
         "4_forest/4_0_forest_I.scn"
     ],
-    "show_actors": false,
+    "show_actors": true,
     "show_bounds": false,
-    "show_camera_bounds": true,
-    "show_flag_points": false,
+    "show_camera_bounds": false,
+    "show_flag_points": true,
     "show_grid": true,
     "show_names": false,
     "show_physics": false,

@@ -173,9 +173,9 @@ namespace aga
             if (ImGui::HoverableListBox ("", &m_ItemCurrent, items, ARRAY_SIZE (items), 10, &hoveredItem))
             {
                 strcpy (m_SceneName, items[m_ItemCurrent]);
-                ImGui::CloseCurrentPopup ();
-
                 m_Editor->LoadScene (m_SceneName);
+
+                m_ScheduleClosed = true;
             }
 
             if (ImGui::IsItemClicked (1))

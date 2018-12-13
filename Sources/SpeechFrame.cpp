@@ -237,7 +237,7 @@ namespace aga
                     bool drawnLastLine = (m_CurrentLine + 1) % GetMaxLinesCanFit () == 0;
                     bool notOnLastLine = !(m_CurrentLine + 1 >= m_TextLines.size ());
 
-                    if (!m_OverrideSuspension && m_CurrentLine > 0 && drawnLastLine && notOnLastLine)
+                    if (!m_OverrideSuspension && notOnLastLine && drawnLastLine)
                     {
                         m_IsSuspended = true;
                         m_OverrideSuspension = false;
@@ -251,7 +251,7 @@ namespace aga
                 }
 
                 //  Are we at the end of processing?
-                if (m_CurrentLine >= m_TextLines.size ())
+                if (!m_IsSuspended && m_CurrentLine >= m_TextLines.size ())
                 {
                     m_StillUpdating = false;
                     m_CurrentLine = m_TextLines.size () - 1;
@@ -355,20 +355,22 @@ namespace aga
                 HandleAction ();
             }
         }
-        else if (event->type == ALLEGRO_EVENT_JOYSTICK_AXIS)
+
+        if (event->type == ALLEGRO_EVENT_JOYSTICK_AXIS)
         {
-            if (event->joystick.pos > 0.7f)
+            if (event->joystick.pos < -0.7f)
             {
                 HandleKeyUp ();
                 m_KeyEventHandled = true;
             }
-            if (event->joystick.pos < -0.7f)
+            if (event->joystick.pos > 0.7f)
             {
                 HandleKeyDown ();
                 m_KeyEventHandled = true;
             }
         }
-        else if (event->type == ALLEGRO_EVENT_KEY_DOWN)
+
+        if (event->type == ALLEGRO_EVENT_KEY_DOWN)
         {
             switch (event->keyboard.keycode)
             {
@@ -410,7 +412,7 @@ namespace aga
         {
             m_IsSuspended = false;
             m_OverrideSuspension = true;
-            m_CurrentLineBreakOffset = m_CurrentLine + 1;
+            m_CurrentLineBreakOffset = m_CurrentLine;
 
             //  After resume - do we still need to update?
             if (m_CurrentLine >= m_TextLines.size () - 1)
