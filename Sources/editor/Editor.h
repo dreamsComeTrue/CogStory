@@ -23,6 +23,8 @@ namespace aga
 {
     extern const int TILES_COUNT;
 
+    class EditorSaveSceneWindow;
+    class EditorOpenSceneWindow;
     class EditorSpeechWindow;
     class EditorActorWindow;
     class EditorActorScriptWindow;
@@ -130,6 +132,8 @@ namespace aga
         void OnRemoveBody ();
         void OnNewPoly ();
 
+        void OnOpenScene ();
+        void OnSaveScene ();
         void OnSpeech ();
         void OnActorSelected ();
         void OnAnimation ();
@@ -144,8 +148,6 @@ namespace aga
         void RenderPhysBodyMode (float deltaTime);
 
         void RenderUINewScene ();
-        void RenderUIOpenScene ();
-        void RenderUISaveScene ();
 
         void ResetSettings ();
         void ScreenResize ();
@@ -182,6 +184,8 @@ namespace aga
         Point m_LastMousePos;
         long m_LastTimeClicked;
 
+        EditorOpenSceneWindow* m_OpenSceneWindow;
+        EditorSaveSceneWindow* m_SaveSceneWindow;
         EditorSceneWindow* m_EditorSceneWindow;
         EditorSpeechWindow* m_SpeechWindow;
         EditorActorWindow* m_ActorWindow;
@@ -209,11 +213,7 @@ namespace aga
         bool m_OpenPopupAnimationEditor;
         bool m_OpenPopupTilesEditor;
 
-        std::vector<std::string> m_RecentFileNames;
-
         char m_FlagPointName[100];
-
-        char m_SceneName[100] = {0};
 
         bool m_DrawActors;
         bool m_DrawFlagPoints;
