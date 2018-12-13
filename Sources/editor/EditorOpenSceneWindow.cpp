@@ -156,7 +156,7 @@ namespace aga
 
     void EditorOpenSceneWindow::Render ()
     {
-        ImGui::SetNextWindowSize (ImVec2 (400, 260));
+        ImGui::SetNextWindowSize (ImVec2 (530, 275));
 
         if (ImGui::BeginPopupModal ("Open Scene", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
@@ -169,7 +169,7 @@ namespace aga
             }
 
             static int hoveredItem = 0;
-            ImGui::PushItemWidth (330);
+            ImGui::PushItemWidth (430);
             if (ImGui::HoverableListBox ("", &m_ItemCurrent, items, ARRAY_SIZE (items), 10, &hoveredItem))
             {
                 strcpy (m_SceneName, items[m_ItemCurrent]);
@@ -185,13 +185,13 @@ namespace aga
 
             ImGui::PopItemWidth ();
 
-            ImGui::PushItemWidth (330);
+            ImGui::PushItemWidth (430);
             ImGui::InputText ("", m_SceneName, ARRAY_SIZE (m_SceneName));
             ImGui::PopItemWidth ();
             ImGui::SetItemDefaultFocus ();
             ImGui::SameLine ();
 
-            if (ImGui::Button ("BROWSE", ImVec2 (50.f, 18.f)))
+            if (ImGui::Button ("BROWSE", ImVec2 (80.f, 18.f)))
             {
                 std::string path = GetDataPath () + "scenes/x/";
 
@@ -226,7 +226,7 @@ namespace aga
             ImGui::Separator ();
             ImGui::BeginGroup ();
 
-            if (ImGui::Button ("OPEN", ImVec2 (50.f, 18.f)))
+            if (ImGui::Button ("OPEN", ImVec2 (80.f, 18.f)))
             {
                 ImGui::CloseCurrentPopup ();
                 m_IsVisible = false;
@@ -236,7 +236,7 @@ namespace aga
 
             ImGui::SameLine ();
 
-            if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
+            if (ImGui::Button ("CANCEL", ImVec2 (80.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
             {
                 ImGui::CloseCurrentPopup ();
                 m_IsVisible = false;

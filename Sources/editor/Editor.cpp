@@ -12,6 +12,7 @@
 #include "EditorTilesWindow.h"
 #include "MainLoop.h"
 #include "Player.h"
+#include "Resources.h"
 #include "SceneLoader.h"
 #include "Screen.h"
 #include "SpeechFrameManager.h"
@@ -117,6 +118,9 @@ namespace aga
         ImGui::GetStyle ().ItemSpacing.y = 3.f;
         ImGui::GetStyle ().WindowTitleAlign.x = 0.5f;
         ImGui::GetStyle ().WindowBorderSize = 0.f;
+
+        ImGui::GetIO ().FontDefault
+            = ImGui::GetIO ().Fonts->AddFontFromFileTTF (GetResourcePath (FONT_MEDIUM).c_str (), 15.0f);
 
         return true;
     }
@@ -1186,7 +1190,7 @@ namespace aga
 
             ImGui::NewLine ();
 
-            ImVec2 buttonSize = ImVec2 (100.f, 18.f);
+            ImVec2 buttonSize = ImVec2 (135.f, 18.f);
 
             if (ImGui::Button ("NEW SCENE", buttonSize))
             {
@@ -1464,8 +1468,8 @@ namespace aga
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
 
-        ImGui::SetNextWindowPos (ImVec2 (m_MainLoop->GetScreen ()->GetWindowSize ().Width - 125, 5), ImGuiCond_Always);
-        ImGui::SetNextWindowSize (ImVec2 (120, 270));
+        ImGui::SetNextWindowPos (ImVec2 (m_MainLoop->GetScreen ()->GetWindowSize ().Width - 155, 5), ImGuiCond_Always);
+        ImGui::SetNextWindowSize (ImVec2 (150, 302));
 
         ImGui::PushStyleColor (ImGuiCol_WindowBg, ImVec4 (0, 0, 0, 0.3f));
         if (ImGui::Begin ("Info", nullptr,
@@ -1554,8 +1558,8 @@ namespace aga
         ImGui::PopStyleColor ();
 
         ImGui::SetNextWindowPos (
-            ImVec2 (m_MainLoop->GetScreen ()->GetWindowSize ().Width - 130, 280), ImGuiCond_Always);
-        ImGui::SetNextWindowSize (ImVec2 (125, 270));
+            ImVec2 (m_MainLoop->GetScreen ()->GetWindowSize ().Width - 155, 300), ImGuiCond_Always);
+        ImGui::SetNextWindowSize (ImVec2 (150, 270));
         ImGui::PushStyleColor (ImGuiCol_WindowBg, ImVec4 (0.f, 0.f, 0.f, 0.0f));
         if (ImGui::Begin ("Visiblies", nullptr,
                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove

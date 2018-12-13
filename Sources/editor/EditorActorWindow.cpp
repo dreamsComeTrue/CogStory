@@ -460,14 +460,14 @@ namespace aga
 
     void EditorActorWindow::RenderUI ()
     {
-        ImGui::SetNextWindowSize (ImVec2 (600, 550), ImGuiCond_Always);
+        ImGui::SetNextWindowSize (ImVec2 (800, 650), ImGuiCond_Always);
 
         if (ImGui::BeginPopupModal ("Actor Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
 
             ImGui::BeginChild (
-                "Child1", ImVec2 (200, ImGui::GetWindowSize ().y - 50), false, ImGuiWindowFlags_HorizontalScrollbar);
+                "Child1", ImVec2 (240, ImGui::GetWindowSize ().y - 40), false, ImGuiWindowFlags_HorizontalScrollbar);
             ImGui::BeginGroup ();
             {
                 if (ImGui::TreeNodeEx ("NPC", ImGuiTreeNodeFlags_DefaultOpen))
@@ -533,10 +533,12 @@ namespace aga
             ImGui::SameLine ();
 
             ImGui::BeginChild (
-                "Child2", ImVec2 (250, ImGui::GetWindowSize ().y - 50), false, ImGuiWindowFlags_HorizontalScrollbar);
+                "Child2", ImVec2 (400, ImGui::GetWindowSize ().y - 40), false, ImGuiWindowFlags_HorizontalScrollbar);
             ImGui::BeginGroup ();
             {
                 int headerStyle = ImGuiTreeNodeFlags_Bullet | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_DefaultOpen;
+
+                float controlWidth = 190.f;
 
                 if (ImGui::CollapsingHeader ("General", headerStyle))
                 {
@@ -544,28 +546,28 @@ namespace aga
 
                     ImGui::Text ("ID");
                     ImGui::NextColumn ();
-                    ImGui::PushItemWidth (120.f);
+                    ImGui::PushItemWidth (controlWidth);
                     ImGui::Text (m_ActorID);
                     ImGui::PopItemWidth ();
                     ImGui::NextColumn ();
 
                     ImGui::Text ("Name");
                     ImGui::NextColumn ();
-                    ImGui::PushItemWidth (120.f);
+                    ImGui::PushItemWidth (controlWidth);
                     ImGui::InputText ("##actorName", m_ActorName, ARRAY_SIZE (m_ActorName));
                     ImGui::PopItemWidth ();
                     ImGui::NextColumn ();
 
                     ImGui::Text ("Type");
                     ImGui::NextColumn ();
-                    ImGui::PushItemWidth (120.f);
+                    ImGui::PushItemWidth (controlWidth);
                     ImGui::Combo ("##actorType", &m_SelectedActorType, m_ActorTypes);
                     ImGui::PopItemWidth ();
                     ImGui::NextColumn ();
 
                     ImGui::Text ("Blueprint");
                     ImGui::NextColumn ();
-                    ImGui::PushItemWidth (120.f);
+                    ImGui::PushItemWidth (controlWidth);
                     ImGui::Combo ("##actorBlueprint", &m_SelectedBlueprint, m_Blueprints);
                     ImGui::PopItemWidth ();
 
@@ -578,21 +580,21 @@ namespace aga
 
                     ImGui::Text ("Position");
                     ImGui::NextColumn ();
-                    ImGui::PushItemWidth (120.f);
+                    ImGui::PushItemWidth (controlWidth);
                     ImGui::InputText ("##actorPosition", m_ActorPosition, ARRAY_SIZE (m_ActorPosition));
                     ImGui::PopItemWidth ();
                     ImGui::NextColumn ();
 
                     ImGui::Text ("Rotation");
                     ImGui::NextColumn ();
-                    ImGui::PushItemWidth (120.f);
+                    ImGui::PushItemWidth (controlWidth);
                     ImGui::InputText ("##actorRotation", m_ActorRotation, ARRAY_SIZE (m_ActorRotation));
                     ImGui::PopItemWidth ();
                     ImGui::NextColumn ();
 
                     ImGui::Text ("ZOrder");
                     ImGui::NextColumn ();
-                    ImGui::PushItemWidth (120.f);
+                    ImGui::PushItemWidth (controlWidth);
                     ImGui::InputInt ("##actorZOrder", &m_ActorZOrder);
                     ImGui::PopItemWidth ();
 
@@ -605,7 +607,7 @@ namespace aga
 
                     ImGui::Text ("Path");
                     ImGui::NextColumn ();
-                    ImGui::PushItemWidth (120.f);
+                    ImGui::PushItemWidth (controlWidth);
                     if (ImGui::Combo ("##actorPath", &m_SelectedImagePath, m_ImagePaths))
                     {
                         UpdateImageCombos ();
@@ -616,7 +618,7 @@ namespace aga
 
                     ImGui::Text ("Image");
                     ImGui::NextColumn ();
-                    ImGui::PushItemWidth (120.f);
+                    ImGui::PushItemWidth (controlWidth);
                     if (ImGui::Combo ("##actorImage", &m_SelectedImage, m_Images))
                     {
                         UpdateImageCombos ();
@@ -626,7 +628,7 @@ namespace aga
 
                     ImGui::Text ("Animation");
                     ImGui::NextColumn ();
-                    ImGui::PushItemWidth (120.f);
+                    ImGui::PushItemWidth (controlWidth);
                     ImGui::Combo ("##actorAnimation", &m_SelectedAnimation, m_Animations);
                     ImGui::PopItemWidth ();
 
@@ -639,14 +641,14 @@ namespace aga
 
                     ImGui::Text ("Focus Height");
                     ImGui::NextColumn ();
-                    ImGui::PushItemWidth (120.f);
+                    ImGui::PushItemWidth (controlWidth);
                     ImGui::InputText ("##actorFocusHeight", m_ActorFocusHeight, ARRAY_SIZE (m_ActorFocusHeight));
                     ImGui::PopItemWidth ();
                     ImGui::NextColumn ();
 
                     ImGui::Text ("Collision");
                     ImGui::NextColumn ();
-                    ImGui::PushItemWidth (120.f);
+                    ImGui::PushItemWidth (controlWidth);
                     if (ImGui::Checkbox ("##actorCollision", &m_ActorCollision))
                     {
                         m_SelectedActor->SetCollisionEnabled (m_ActorCollision);
@@ -656,7 +658,7 @@ namespace aga
 
                     ImGui::Text ("Collidable");
                     ImGui::NextColumn ();
-                    ImGui::PushItemWidth (120.f);
+                    ImGui::PushItemWidth (controlWidth);
                     if (ImGui::Checkbox ("##actorCollidable", &m_ActorCollidable))
                     {
                         m_SelectedActor->SetCollidable (m_ActorCollidable);
@@ -666,7 +668,7 @@ namespace aga
 
                     ImGui::Text ("Overlap");
                     ImGui::NextColumn ();
-                    ImGui::PushItemWidth (120.f);
+                    ImGui::PushItemWidth (controlWidth);
                     if (ImGui::Checkbox ("##actorOverlap", &m_ActorOverlap))
                     {
                         m_SelectedActor->SetCheckOverlap (m_ActorOverlap);
@@ -676,7 +678,7 @@ namespace aga
 
                     ImGui::Text ("Action Speech");
                     ImGui::NextColumn ();
-                    ImGui::PushItemWidth (120.f);
+                    ImGui::PushItemWidth (controlWidth);
                     ImGui::Combo ("##actionSpeech", &m_SelectedSpeech, m_Speeches);
 
                     ImGui::PopItemWidth ();
@@ -684,7 +686,7 @@ namespace aga
 
                     ImGui::Text ("Action Speech Handling");
                     ImGui::NextColumn ();
-                    ImGui::PushItemWidth (120.f);
+                    ImGui::PushItemWidth (controlWidth);
                     ImGui::Checkbox ("##actionSpeechHandling", &m_ActionSpeechHandling);
                 }
 
@@ -752,7 +754,7 @@ namespace aga
 
             ImGui::BeginGroup ();
             {
-                ImVec2 buttonSize = ImVec2 (100.f, 18.f);
+                ImVec2 buttonSize = ImVec2 (120.f, 18.f);
 
                 if (ImGui::Button ("SAVE", buttonSize))
                 {

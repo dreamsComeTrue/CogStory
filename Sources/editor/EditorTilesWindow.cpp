@@ -186,11 +186,11 @@ namespace aga
     void EditorTilesWindow::Render ()
     {
         ImGui::SetNextWindowPos (ImVec2 (0, 0));
-        ImGui::SetNextWindowSize (ImVec2 (300, 210), ImGuiCond_Always);
+        ImGui::SetNextWindowSize (ImVec2 (340, 220), ImGuiCond_Always);
 
         if (ImGui::BeginPopupModal ("Tile Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
-            float controlWidth = 240.f;
+            float controlWidth = 260.f;
 
             ImGui::Text ("  Name");
             ImGui::SameLine ();
@@ -200,11 +200,11 @@ namespace aga
 
             ImGui::Text ("  Path");
             ImGui::SameLine ();
-            ImGui::PushItemWidth (controlWidth - 70);
+            ImGui::PushItemWidth (controlWidth - 90);
             ImGui::InputText ("##path", m_Path, ARRAY_SIZE (m_Path));
             ImGui::PopItemWidth ();
             ImGui::SameLine ();
-            if (ImGui::Button ("BROWSE", ImVec2 (60, 18)))
+            if (ImGui::Button ("BROWSE", ImVec2 (80, 18)))
             {
                 if (fileOpenPath == "")
                 {
@@ -262,19 +262,19 @@ namespace aga
 
             ImGui::Separator ();
 
-            if (ImGui::Button ("CUT & SAVE", ImVec2 (controlWidth + 35, 18)))
+            if (ImGui::Button ("CUT & SAVE", ImVec2 (controlWidth + 65, 18)))
             {
                 OnSave ();
             }
 
-            if (ImGui::Button ("SAVE PACK", ImVec2 (controlWidth + 35, 18)))
+            if (ImGui::Button ("SAVE PACK", ImVec2 (controlWidth + 65, 18)))
             {
                 OnSavePack ();
             }
 
             ImGui::BeginGroup ();
 
-            if (ImGui::Button ("ACCEPT", ImVec2 (controlWidth / 2 + 15, 18)))
+            if (ImGui::Button ("ACCEPT", ImVec2 (controlWidth / 2 + 25, 18)))
             {
                 ImGui::CloseCurrentPopup ();
                 m_IsVisible = false;
@@ -284,7 +284,7 @@ namespace aga
 
             ImGui::SameLine ();
 
-            if (ImGui::Button ("CANCEL", ImVec2 (controlWidth / 2 + 15, 18)) || m_Editor->IsCloseCurrentPopup ())
+            if (ImGui::Button ("CANCEL", ImVec2 (controlWidth / 2 + 25, 18)) || m_Editor->IsCloseCurrentPopup ())
             {
                 OnCancel ();
 
@@ -314,7 +314,7 @@ namespace aga
         al_draw_rectangle (selBeginPoint.X, selBeginPoint.Y, selBeginPoint.X + frameBoxSize,
             selBeginPoint.Y + frameBoxSize, COLOR_GREEN, 2);
 
-        Point beginPoint = {315, 0};
+        Point beginPoint = {345, 0};
 
         //  Spritesheet
         al_draw_filled_rectangle (beginPoint.X, beginPoint.Y, winSize.Width, winSize.Height, COLOR_BLACK);

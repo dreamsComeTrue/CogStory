@@ -354,7 +354,7 @@ namespace aga
 
     void EditorTriggerAreaMode::RenderUI ()
     {
-        ImGui::SetNextWindowSize (ImVec2 (400, 130));
+        ImGui::SetNextWindowSize (ImVec2 (420, 130));
 
         if (ImGui::BeginPopupModal ("Trigger Area", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
@@ -369,7 +369,7 @@ namespace aga
             ImGui::Separator ();
             ImGui::BeginGroup ();
 
-            if (ImGui::Button ("ACCEPT", ImVec2 (50.f, 18.f)))
+            if (ImGui::Button ("ACCEPT", ImVec2 (80.f, 18.f)))
             {
                 if (m_Editing)
                 {
@@ -388,7 +388,7 @@ namespace aga
 
             ImGui::SameLine ();
 
-            if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
+            if (ImGui::Button ("CANCEL", ImVec2 (80.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
             {
                 m_Editor->SetCursorMode (CursorMode::ActorSelectMode);
                 m_TriggerAreaName = "";

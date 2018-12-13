@@ -180,7 +180,7 @@ namespace aga
         const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
 
         ImGui::SetNextWindowPos (ImVec2 (0, 0));
-        ImGui::SetNextWindowSize (ImVec2 (300, winSize.Height - 220), ImGuiCond_Always);
+        ImGui::SetNextWindowSize (ImVec2 (320, winSize.Height - 220), ImGuiCond_Always);
 
         if (ImGui::BeginPopupModal ("Animations", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
@@ -439,7 +439,7 @@ namespace aga
     void EditorAnimationWindow::RenderSpritesheet ()
     {
         const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
-        const Point beginPoint = {315, 5};
+        const Point beginPoint = {335, 5};
 
         const int margin = 10;
 

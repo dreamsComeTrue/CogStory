@@ -290,12 +290,12 @@ namespace aga
 
     void EditorSpeechWindow::RenderUI ()
     {
-        ImGui::SetNextWindowSize (ImVec2 (700, 450), ImGuiCond_Always);
+        ImGui::SetNextWindowSize (ImVec2 (900, 550), ImGuiCond_Always);
 
         if (ImGui::BeginPopupModal ("Speech Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             ImGui::BeginChild (
-                "Child1", ImVec2 (200, ImGui::GetWindowSize ().y - 50), false, ImGuiWindowFlags_HorizontalScrollbar);
+                "Child1", ImVec2 (280, ImGui::GetWindowSize ().y - 50), false, ImGuiWindowFlags_HorizontalScrollbar);
             ImGui::BeginGroup ();
             {
                 if (ImGui::TreeNodeEx ("Speeches", ImGuiTreeNodeFlags_DefaultOpen))
@@ -358,7 +358,7 @@ namespace aga
             ImGui::SameLine ();
 
             ImGui::BeginChild (
-                "Child2", ImVec2 (360, ImGui::GetWindowSize ().y - 50), false, ImGuiWindowFlags_HorizontalScrollbar);
+                "Child2", ImVec2 (460, ImGui::GetWindowSize ().y - 50), false, ImGuiWindowFlags_HorizontalScrollbar);
             ImGui::BeginGroup ();
             {
                 ImGui::LabelText ("ID", m_SpeechID);
@@ -408,13 +408,17 @@ namespace aga
                     speechData.Action = m_Actions[m_Action];
                 }
 
-                if (ImGui::InputTextMultiline ("Text", m_Text, ARRAY_SIZE (m_Text), ImVec2 (235, 70)))
+                ImGui::Dummy (ImVec2 (100, 10));
+
+                if (ImGui::InputTextMultiline ("Text", m_Text, ARRAY_SIZE (m_Text), ImVec2 (305, 90)))
                 {
                     speechData.Text[m_LangIndex] = std::string (m_Text);
                 }
 
+                ImGui::Dummy (ImVec2 (100, 10));
+
                 ImGui::Separator ();
-                ImGui::Text ("--- OUTCOMES ---");
+                ImGui::Text ("              --- OUTCOMES ---");
 
                 std::vector<SpeechOutcome>& outcomes = speechData.Outcomes[m_LangIndex];
                 std::vector<EditorSpeechOutcome>& edOutcomes = m_SpeechOutcomes;

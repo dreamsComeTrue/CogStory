@@ -61,7 +61,7 @@ namespace aga
 
     void EditorSaveSceneWindow::Render ()
     {
-        ImGui::SetNextWindowSize (ImVec2 (400, 80));
+        ImGui::SetNextWindowSize (ImVec2 (440, 85));
 
         if (ImGui::BeginPopupModal ("Save Scene", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
@@ -71,7 +71,7 @@ namespace aga
             ImGui::SetItemDefaultFocus ();
             ImGui::SameLine ();
 
-            if (ImGui::Button ("BROWSE", ImVec2 (50.f, 18.f)))
+            if (ImGui::Button ("BROWSE", ImVec2 (80.f, 18.f)))
             {
                 std::string path = GetDataPath () + "scenes/x/";
 
@@ -106,7 +106,7 @@ namespace aga
             ImGui::Separator ();
             ImGui::BeginGroup ();
 
-            if (ImGui::Button ("SAVE", ImVec2 (50.f, 18.f)))
+            if (ImGui::Button ("SAVE", ImVec2 (80.f, 18.f)))
             {
                 ImGui::CloseCurrentPopup ();
                 m_IsVisible = false;
@@ -116,7 +116,7 @@ namespace aga
 
             ImGui::SameLine ();
 
-            if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
+            if (ImGui::Button ("CANCEL", ImVec2 (80.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
             {
                 ImGui::CloseCurrentPopup ();
                 m_IsVisible = false;
