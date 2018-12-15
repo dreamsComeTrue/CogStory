@@ -315,11 +315,11 @@ namespace aga
 
         if (!m_Closing)
         {
-            currentPercent = m_AnimationStage > 0 ? 1.0f : std::clamp (percent, 0.f, 1.f);
+            currentPercent = m_AnimationStage > 0 ? 1.0f : clamp (percent, 0.f, 1.f);
         }
         else
         {
-            currentPercent = 1.0f - std::clamp (percent, 0.f, 1.f);
+            currentPercent = 1.0f - clamp (percent, 0.f, 1.f);
 
             if (m_AnimationStage >= 1)
             {
@@ -394,11 +394,11 @@ namespace aga
 
         if (!m_Closing)
         {
-            currentPercent = m_AnimationStage > 0 ? 1.0f : std::clamp (percent, 0.f, 1.f);
+            currentPercent = m_AnimationStage > 0 ? 1.0f : clamp (percent, 0.f, 1.f);
         }
         else
         {
-            currentPercent = 1.0f - std::clamp (percent, 0.f, 1.f);
+            currentPercent = 1.0f - clamp (percent, 0.f, 1.f);
         }
 
         for (int i = 0; i < 3; ++i)
