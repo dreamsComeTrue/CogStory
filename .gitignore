@@ -2,7 +2,6 @@ Binaries/
 CMakeLists.txt.user
 .ycm_extra_conf.py
 CMakeLists.txt.user.3b5dde4
-ThirdParty/anglescript_2.31.2/angelscript/lib/
 compile_commands.json
 cscope.files
 cscope.out
@@ -15,10 +14,12 @@ ThirdParty/angelscript/angelscript/lib/CMakeFiles/
 ThirdParty/angelscript/angelscript/projects/cmake/CMakeLists.txt.user.b0cde4a
 ThirdParty/angelscript/angelscript/lib/libangelscript_W64.a
 ThirdParty/angelscript/angelscript/lib/libangelscript_LINUX.a
+ThirdParty/allegro5/bin
 Data/gfx/Thumbs.db
 CMakeLists.txt.user.c61345d
 CMakeLists.txt.user.b0cde4a
 CMakeLists.txt.user.1978819
+CMakeLists.txt.user.4.8-pre1
 .vscode/c_cpp_properties.json
 .vscode/.cmaketools.json
 ThirdParty/anglescript/angelscript/lib/
