@@ -17,10 +17,11 @@ link_directories(   ${ROOT_THIRD_PARTY_DIR}/angelscript/angelscript/lib/
                  )
 
 file(GLOB_RECURSE SRC_LIST  Sources/*
-                            ThirdParty/imgui/imgui.cpp
+	                        ThirdParty/imgui/imgui.cpp
                             ThirdParty/imgui/imgui_draw.cpp
                             ThirdParty/imgui/imgui_widgets.cpp
-                            ThirdParty/imgui/imgui_demo.cpp
+							ThirdParty/imgui/imguifilesystem.cpp
+							ThirdParty/imgui/imgui_demo.cpp
                             ThirdParty/imgui/examples/imgui_impl_allegro5.cpp)
 
 if (WIN32)
@@ -30,7 +31,6 @@ list(APPEND INCLUDE_DIRS
         ThirdParty/allegro5/addons/audio
         ThirdParty/allegro5/addons/font
         ThirdParty/allegro5/addons/image
-        ThirdParty/allegro5/addons/native_dialog
         ThirdParty/allegro5/addons/primitives
         ThirdParty/allegro5/addons/ttf
     )
@@ -64,7 +64,6 @@ list(APPEND LIBRARIES_LIST
     allegro_font${GAME_BUILD_TYPE}
     allegro_ttf${GAME_BUILD_TYPE}
     allegro_primitives${GAME_BUILD_TYPE}
-    allegro_dialog${GAME_BUILD_TYPE}
     allegro_audio${GAME_BUILD_TYPE}
     allegro_acodec${GAME_BUILD_TYPE}
 )
@@ -93,23 +92,13 @@ else()
                 Xcursor
                 openal
                 asound
-                ${GTK2_LIBRARIES}
-                jpeg
+				jpeg
                 png16
                 vorbisfile
                 vorbis
                 ogg
                 freetype						
                 )
-
-                find_package (PkgConfig REQUIRED)
-                pkg_check_modules (GTK2 REQUIRED gtk+-2.0)
-            
-                list(APPEND INCLUDE_DIRS
-                                     ${GTK2_INCLUDE_DIRS}
-                                    )
-            
-                add_definitions(${GTK2_CFLAGS_OTHER})            
     endif (STATIC_BUILD)
 
 	list(APPEND LIBRARIES_LIST

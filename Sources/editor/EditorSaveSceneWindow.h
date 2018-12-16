@@ -31,6 +31,7 @@ namespace aga
     private:
         Editor* m_Editor;
         bool m_IsVisible;
+        bool m_BrowseButtonPressed;
         char m_SceneName[100];
 
         std::function<void(std::string)> m_OnAcceptFunc;

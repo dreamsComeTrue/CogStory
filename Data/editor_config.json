@@ -6,7 +6,8 @@
         "0_home/0_0_home_main.scn",
         "2_city/2_0_city_main.scn",
         "2_city/2_4_city_forest_alley.scn",
-        "4_forest/4_0_forest_I.scn"
+        "4_forest/4_0_forest_I.scn",
+        "1_factory/1_4_factory_cabinIII.scn"
     ],
     "show_actors": true,
     "show_bounds": false,

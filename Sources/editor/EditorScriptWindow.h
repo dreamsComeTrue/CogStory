@@ -34,6 +34,7 @@ namespace aga
     private:
         Editor* m_Editor;
         bool m_IsVisible;
+        bool m_BrowseButtonPressed;
 
         char m_Name[100];
         char m_Path[100];

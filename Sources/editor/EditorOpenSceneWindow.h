@@ -39,6 +39,7 @@ namespace aga
         int m_ItemCurrent;
 
         bool m_ScheduleClosed;
+        bool m_BrowseButtonPressed;
 
         std::vector<std::string> m_RecentFileNames;
 

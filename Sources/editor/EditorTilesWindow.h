@@ -41,6 +41,9 @@ namespace aga
         bool m_DrawGrid;
 
         bool m_IsVisible;
+        bool m_SaveTilesButtonPressed;
+        bool m_SavePackButtonPressed;
+        bool m_OpenImageButtonPressed;
 
         std::function<void(std::string, std::string)> m_OnAcceptFunc;
         std::function<void(std::string, std::string)> m_OnCancelFunc;

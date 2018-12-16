@@ -6,6 +6,7 @@
 #include "Screen.h"
 
 #include "imgui.h"
+#include "imguifilesystem.h"
 
 namespace aga
 {
@@ -33,6 +34,7 @@ namespace aga
         memset (m_Path, 0, ARRAY_SIZE (m_Path));
 
         m_IsVisible = true;
+        m_BrowseButtonPressed = false;
 
         ImGui::OpenPopup ("Script");
     }
@@ -61,40 +63,46 @@ namespace aga
 
     void EditorScriptWindow::OnBrowse ()
     {
-        std::string path = GetDataPath () + "scripts/x/";
-
-        ALLEGRO_FILECHOOSER* fileOpenDialog
-            = al_create_native_file_dialog (path.c_str (), "Open script file", "*.script", 0);
-
-        if (al_show_native_file_dialog (m_Editor->GetMainLoop ()->GetScreen ()->GetDisplay (), fileOpenDialog)
-            && al_get_native_file_dialog_count (fileOpenDialog) > 0)
+        if (m_BrowseButtonPressed)
         {
-            std::string fileName = al_get_native_file_dialog_path (fileOpenDialog, 0);
-            std::replace (fileName.begin (), fileName.end (), '\\', '/');
+            std::string path = GetDataPath () + "scripts/x/";
+            static ImGuiFs::Dialog dlg;
+            const char* chosenPath = dlg.chooseFileDialog (m_BrowseButtonPressed, path.c_str ());
 
-            if (!EndsWith (fileName, ".script"))
+            if (strlen (chosenPath) > 0)
             {
-                fileName += ".script";
+                std::string fileName = chosenPath;
+                std::replace (fileName.begin (), fileName.end (), '\\', '/');
+
+                if (!EndsWith (fileName, ".script"))
+                {
+                    fileName += ".script";
+                }
+
+                std::string dataPath = "Data/scripts/";
+                size_t index = fileName.find (dataPath);
+
+                if (index != std::string::npos)
+                {
+                    fileName = fileName.substr (index + dataPath.length ());
+                }
+
+                strcpy (m_Path, fileName.c_str ());
+                m_BrowseButtonPressed = false;
             }
-
-            std::string dataPath = "Data/scripts/";
-            size_t index = fileName.find (dataPath);
-
-            if (index != std::string::npos)
+            else if (dlg.hasUserJustCancelledDialog ())
             {
-                fileName = fileName.substr (index + dataPath.length ());
+                m_BrowseButtonPressed = false;
             }
-
-            strcpy (m_Path, fileName.c_str ());
         }
-
-        al_destroy_native_file_dialog (fileOpenDialog);
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void EditorScriptWindow::Render ()
     {
+        ImGui::SetNextWindowSize (ImVec2 (390, 110));
+
         if (ImGui::BeginPopupModal ("Script", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             if (m_Name[0] == '\0')
@@ -106,16 +114,18 @@ namespace aga
             ImGui::InputText ("Path", m_Path, ARRAY_SIZE (m_Path));
             ImGui::SameLine ();
 
-            if (ImGui::Button ("BROWSE", ImVec2 (50.f, 18)))
+            if (ImGui::Button ("BROWSE", ImVec2 (80.f, 18)))
             {
-                OnBrowse ();
+                m_BrowseButtonPressed = true;
             }
+
+            OnBrowse ();
 
             ImGui::Separator ();
 
             ImGui::BeginGroup ();
 
-            if (ImGui::Button ("ACCEPT", ImVec2 (50.f, 18.f)))
+            if (ImGui::Button ("ACCEPT", ImVec2 (80.f, 18.f)))
             {
                 ImGui::CloseCurrentPopup ();
                 m_IsVisible = false;
@@ -128,7 +138,7 @@ namespace aga
 
             ImGui::SameLine ();
 
-            if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
+            if (ImGui::Button ("CANCEL", ImVec2 (80.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
             {
                 ImGui::CloseCurrentPopup ();
                 m_IsVisible = false;

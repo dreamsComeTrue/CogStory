@@ -233,7 +233,7 @@ namespace aga
         const float JOY_DELTA = 0.7f;
         bool speedBooster = false;
 
-        if (al_is_joystick_installed () && al_get_num_joysticks() > 0)
+        if (al_is_joystick_installed () && al_get_num_joysticks () > 0)
         {
             ALLEGRO_JOYSTICK_STATE joyState;
 

@@ -6,6 +6,7 @@
 #include "Screen.h"
 
 #include "imgui.h"
+#include "imguifilesystem.h"
 
 using json = nlohmann::json;
 
@@ -48,52 +49,60 @@ namespace aga
         {
             al_destroy_bitmap (m_Image);
         }
+
+        m_SaveTilesButtonPressed = false;
+        m_SavePackButtonPressed = false;
+        m_OpenImageButtonPressed = false;
     }
 
     //--------------------------------------------------------------------------------------------------
 
     void EditorTilesWindow::OnSave ()
     {
-        if (m_Image)
+        if (m_Image && m_SaveTilesButtonPressed)
         {
             std::string path = GetDataPath () + "x/";
             std::string dirName = GetDataPath ();
 
-            ALLEGRO_FILECHOOSER* fileSaveDialog
-                = al_create_native_file_dialog (path.c_str (), "Save tiles", "", ALLEGRO_FILECHOOSER_FOLDER);
+            static ImGuiFs::Dialog dlg;
+            const char* chosenPath = dlg.saveFileDialog (m_SaveTilesButtonPressed, path.c_str ());
 
-            if (al_show_native_file_dialog (m_Editor->GetMainLoop ()->GetScreen ()->GetDisplay (), fileSaveDialog)
-                && al_get_native_file_dialog_count (fileSaveDialog) > 0)
+            if (strlen (chosenPath) > 0)
             {
-                std::string fileName = al_get_native_file_dialog_path (fileSaveDialog, 0);
+                std::string fileName = chosenPath;
                 std::replace (fileName.begin (), fileName.end (), '\\', '/');
 
                 dirName = GetDirectory (fileName);
-            }
 
-            al_destroy_native_file_dialog (fileSaveDialog);
+                //  Count number of characters required to generate name
+                int numberOfNums = static_cast<int> (std::to_string (m_TilesX * m_TilesY).length ());
 
-            //  Count number of characters required to generate name
-            int numberOfNums = static_cast<int> (std::to_string (m_TilesX * m_TilesY).length ());
-
-            for (int y = 0; y < m_TilesY; ++y)
-            {
-                for (int x = 0; x < m_TilesX; ++x)
+                for (int y = 0; y < m_TilesY; ++y)
                 {
-                    ALLEGRO_BITMAP* sprite
-                        = al_create_sub_bitmap (m_Image, x * m_Width, y * m_Height, m_Width, m_Height);
-
-                    if (sprite)
+                    for (int x = 0; x < m_TilesX; ++x)
                     {
-                        std::ostringstream out;
-                        out << std::internal << std::setfill ('0') << std::setw (numberOfNums) << (x + y * m_TilesX);
+                        ALLEGRO_BITMAP* sprite
+                            = al_create_sub_bitmap (m_Image, x * m_Width, y * m_Height, m_Width, m_Height);
 
-                        std::string name = dirName + "/" + std::string (m_Name) + "_" + out.str () + ".png";
+                        if (sprite)
+                        {
+                            std::ostringstream out;
+                            out << std::internal << std::setfill ('0') << std::setw (numberOfNums)
+                                << (x + y * m_TilesX);
 
-                        al_save_bitmap (name.c_str (), sprite);
-                        al_destroy_bitmap (sprite);
+                            std::string name = dirName + "/" + std::string (m_Name) + "_" + out.str () + ".png";
+
+                            al_save_bitmap (name.c_str (), sprite);
+                            al_destroy_bitmap (sprite);
+                        }
                     }
                 }
+
+                m_SaveTilesButtonPressed = false;
+            }
+            else if (dlg.hasUserJustCancelledDialog ())
+            {
+                m_SaveTilesButtonPressed = false;
             }
         }
     }
@@ -102,63 +111,67 @@ namespace aga
 
     void EditorTilesWindow::OnSavePack ()
     {
-        if (m_Image)
+        if (m_Image && m_SavePackButtonPressed)
         {
             std::string path = GetDataPath () + "x/";
             std::string dirName = GetDataPath ();
 
-            ALLEGRO_FILECHOOSER* fileSaveDialog
-                = al_create_native_file_dialog (path.c_str (), "Save pack", "", ALLEGRO_FILECHOOSER_FOLDER);
+            static ImGuiFs::Dialog dlg;
+            const char* chosenPath = dlg.saveFileDialog (m_SavePackButtonPressed, path.c_str ());
 
-            if (al_show_native_file_dialog (m_Editor->GetMainLoop ()->GetScreen ()->GetDisplay (), fileSaveDialog)
-                && al_get_native_file_dialog_count (fileSaveDialog) > 0)
+            if (strlen (chosenPath) > 0)
             {
-                std::string fileName = al_get_native_file_dialog_path (fileSaveDialog, 0);
+                std::string fileName = chosenPath;
                 std::replace (fileName.begin (), fileName.end (), '\\', '/');
 
                 dirName = GetDirectory (fileName);
-            }
 
-            al_destroy_native_file_dialog (fileSaveDialog);
+                std::string fName = dirName + "/" + std::string (m_Name);
 
-            std::string fileName = dirName + "/" + std::string (m_Name);
+                al_save_bitmap ((fName + ".png").c_str (), m_Image);
 
-            al_save_bitmap ((fileName + ".png").c_str (), m_Image);
+                std::string packData = "";
+                packData += "\n";
+                packData += std::string (m_Name) + ".png\n";
+                packData += "size: " + std::to_string (al_get_bitmap_width (m_Image)) + ","
+                    + std::to_string (al_get_bitmap_height (m_Image)) + "\n";
+                packData += "format: RGBA8888\n";
+                packData += "filter: Nearest,Nearest\n";
+                packData += "repeat: none\n";
 
-            std::string packData = "";
-            packData += "\n";
-            packData += std::string (m_Name) + ".png\n";
-            packData += "size: " + std::to_string (al_get_bitmap_width (m_Image)) + ","
-                + std::to_string (al_get_bitmap_height (m_Image)) + "\n";
-            packData += "format: RGBA8888\n";
-            packData += "filter: Nearest,Nearest\n";
-            packData += "repeat: none\n";
+                //  Count number of characters required to generate name
+                int numberOfNums = static_cast<int> (std::to_string (m_TilesX * m_TilesY).length ());
 
-            //  Count number of characters required to generate name
-            int numberOfNums = static_cast<int> (std::to_string (m_TilesX * m_TilesY).length ());
-
-            for (int y = 0; y < m_TilesY; ++y)
-            {
-                for (int x = 0; x < m_TilesX; ++x)
+                for (int y = 0; y < m_TilesY; ++y)
                 {
-                    std::ostringstream out;
-                    out << std::internal << std::setfill ('0') << std::setw (numberOfNums) << (x + y * m_TilesX);
+                    for (int x = 0; x < m_TilesX; ++x)
+                    {
+                        std::ostringstream out;
+                        out << std::internal << std::setfill ('0') << std::setw (numberOfNums) << (x + y * m_TilesX);
 
-                    std::string name = "tile_" + out.str ();
+                        std::string name = "tile_" + out.str ();
 
-                    packData += name + "\n";
-                    packData += "  rotate: false\n";
-                    packData += "  xy: " + std::to_string (x * m_Width) + ", " + std::to_string (y * m_Height) + "\n";
-                    packData += "  size: " + std::to_string (m_Width) + ", " + std::to_string (m_Height) + "\n";
-                    packData += "  orig: 32, 32\n";
-                    packData += "  offset: 0, 0\n";
-                    packData += "  index: -1\n";
+                        packData += name + "\n";
+                        packData += "  rotate: false\n";
+                        packData
+                            += "  xy: " + std::to_string (x * m_Width) + ", " + std::to_string (y * m_Height) + "\n";
+                        packData += "  size: " + std::to_string (m_Width) + ", " + std::to_string (m_Height) + "\n";
+                        packData += "  orig: 32, 32\n";
+                        packData += "  offset: 0, 0\n";
+                        packData += "  index: -1\n";
+                    }
                 }
-            }
 
-            std::ofstream outFile ((fileName + ".pack").c_str ());
-            outFile.write (packData.c_str (), static_cast<int> (packData.length ()));
-            outFile.close ();
+                std::ofstream outFile ((fName + ".pack").c_str ());
+                outFile.write (packData.c_str (), static_cast<int> (packData.length ()));
+                outFile.close ();
+
+                m_SavePackButtonPressed = false;
+            }
+            else if (dlg.hasUserJustCancelledDialog ())
+            {
+                m_SavePackButtonPressed = false;
+            }
         }
     }
 
@@ -206,32 +219,40 @@ namespace aga
             ImGui::SameLine ();
             if (ImGui::Button ("BROWSE", ImVec2 (80, 18)))
             {
+                m_OpenImageButtonPressed = true;
+            }
+
+            if (m_OpenImageButtonPressed)
+            {
                 if (fileOpenPath == "")
                 {
                     fileOpenPath = GetDataPath () + "x/";
                 }
 
-                ALLEGRO_FILECHOOSER* fileOpenDialog
-                    = al_create_native_file_dialog (fileOpenPath.c_str (), "Open image file", "*.*", 0);
+                static ImGuiFs::Dialog dlg;
+                const char* chosenPath = dlg.chooseFileDialog (m_OpenImageButtonPressed, fileOpenPath.c_str ());
 
-                if (al_show_native_file_dialog (m_Editor->GetMainLoop ()->GetScreen ()->GetDisplay (), fileOpenDialog)
-                    && al_get_native_file_dialog_count (fileOpenDialog) > 0)
+                if (strlen (chosenPath) > 0)
                 {
-                    std::string fileName = al_get_native_file_dialog_path (fileOpenDialog, 0);
+                    std::string fileName = chosenPath;
                     std::replace (fileName.begin (), fileName.end (), '\\', '/');
 
                     strcpy (m_Path, fileName.c_str ());
                     fileOpenPath = m_Path;
+
+                    if (m_Image)
+                    {
+                        al_destroy_bitmap (m_Image);
+                    }
+
+                    m_Image = al_load_bitmap (m_Path);
+
+                    m_OpenImageButtonPressed = false;
                 }
-
-                al_destroy_native_file_dialog (fileOpenDialog);
-
-                if (m_Image)
+                else if (dlg.hasUserJustCancelledDialog ())
                 {
-                    al_destroy_bitmap (m_Image);
+                    m_OpenImageButtonPressed = false;
                 }
-
-                m_Image = al_load_bitmap (m_Path);
             }
 
             ImGui::Text ("  Grid");
@@ -264,13 +285,17 @@ namespace aga
 
             if (ImGui::Button ("CUT & SAVE", ImVec2 (controlWidth + 65, 18)))
             {
-                OnSave ();
+                m_SaveTilesButtonPressed = true;
             }
+
+            OnSave ();
 
             if (ImGui::Button ("SAVE PACK", ImVec2 (controlWidth + 65, 18)))
             {
-                OnSavePack ();
+                m_SavePackButtonPressed = true;
             }
+
+            OnSavePack ();
 
             ImGui::BeginGroup ();
 

@@ -7,6 +7,7 @@
 
 #include "imgui.h"
 #include "imgui_internal.h"
+#include "imguifilesystem.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -96,6 +97,7 @@ namespace aga
 
         m_IsVisible = true;
         m_ScheduleClosed = false;
+        m_BrowseButtonPressed = false;
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -193,15 +195,18 @@ namespace aga
 
             if (ImGui::Button ("BROWSE", ImVec2 (80.f, 18.f)))
             {
+                m_BrowseButtonPressed = true;
+            }
+
+            if (m_BrowseButtonPressed)
+            {
                 std::string path = GetDataPath () + "scenes/x/";
+                static ImGuiFs::Dialog dlg;
+                const char* chosenPath = dlg.chooseFileDialog (m_BrowseButtonPressed, path.c_str ());
 
-                ALLEGRO_FILECHOOSER* fileOpenDialog
-                    = al_create_native_file_dialog (path.c_str (), "Open scene file", "*.scn", 0);
-
-                if (al_show_native_file_dialog (m_Editor->GetMainLoop ()->GetScreen ()->GetDisplay (), fileOpenDialog)
-                    && al_get_native_file_dialog_count (fileOpenDialog) > 0)
+                if (strlen (chosenPath) > 0)
                 {
-                    std::string fileName = al_get_native_file_dialog_path (fileOpenDialog, 0);
+                    std::string fileName = chosenPath;
                     std::replace (fileName.begin (), fileName.end (), '\\', '/');
 
                     if (!EndsWith (fileName, ".scn"))
@@ -218,9 +223,12 @@ namespace aga
                     }
 
                     strcpy (m_SceneName, fileName.c_str ());
+                    m_BrowseButtonPressed = false;
                 }
-
-                al_destroy_native_file_dialog (fileOpenDialog);
+                else if (dlg.hasUserJustCancelledDialog ())
+                {
+                    m_BrowseButtonPressed = false;
+                }
             }
 
             ImGui::Separator ();

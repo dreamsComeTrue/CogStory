@@ -80,8 +80,6 @@ namespace aga
     {
         Lifecycle::Initialize ();
 
-        al_init_native_dialog_addon ();
-
         //  Diaglos & windows
         {
             m_OpenSceneWindow = new EditorOpenSceneWindow (this);
