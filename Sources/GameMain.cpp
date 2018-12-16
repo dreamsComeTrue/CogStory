@@ -4,7 +4,7 @@
 #include "Screen.h"
 
 #ifdef _WIN32
-    #include <windows.h>
+#include <windows.h>
 #endif
 
 using namespace aga;
@@ -22,9 +22,9 @@ int main (int /*argc*/, char** /*argv*/)
 
     if (mainScreen.Initialize ())
     {
-        #ifdef _WIN32
-            FreeConsole();
-        #endif
+#ifdef _WIN32
+        FreeConsole ();
+#endif
 
         MainLoop mainLoop (&mainScreen);
 

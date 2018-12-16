@@ -15,6 +15,15 @@ ThirdParty/angelscript/angelscript/projects/cmake/CMakeLists.txt.user.b0cde4a
 ThirdParty/angelscript/angelscript/lib/libangelscript_W64.a
 ThirdParty/angelscript/angelscript/lib/libangelscript_LINUX.a
 ThirdParty/allegro5/bin
+ThirdParty/allegro5/android
+ThirdParty/allegro5/contrib
+ThirdParty/allegro5/demos
+ThirdParty/allegro5/docs
+ThirdParty/allegro5/examples
+ThirdParty/allegro5/misc
+ThirdParty/allegro5/python
+ThirdParty/allegro5/tests
+ThirdParty/allegro5/tools
 Data/gfx/Thumbs.db
 CMakeLists.txt.user.c61345d
 CMakeLists.txt.user.b0cde4a

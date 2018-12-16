@@ -12,6 +12,7 @@ include(cotire)
 cmake_policy(SET CMP0015 NEW)
 link_directories(   ${ROOT_THIRD_PARTY_DIR}/angelscript/angelscript/lib/
                     ./ThirdParty/allegro5/bin/lib/
+					./ThirdParty/allegro5/bin/include/
                     ./ThirdParty/allegro5/deps/lib/
                  )
 
@@ -50,10 +51,6 @@ list(APPEND INCLUDE_DIRS
         ThirdParty/imgui/examples/
     )
 
-include_directories(${INCLUDE_DIRS})
-
-add_executable(${PROJECT_NAME} ${SRC_LIST})
-
 set(STATIC_BUILD 0)
 if (STATIC_BUILD)
     set(GAME_BUILD_TYPE "-static")
@@ -73,26 +70,57 @@ list(APPEND LIBRARIES_LIST
 )
 
 if (WIN32)
-list(APPEND LIBRARIES_LIST
-                        libangelscript.dll.a
+    if (STATIC_BUILD)
+        list(APPEND LIBRARIES_LIST
                         psapi
                         shlwapi
                         winmm
                         opengl32
-                        jpeg
-                        png16
-                        vorbisfile
-                        vorbis
-                        ogg
-                        zlib
                         dsound
-                        freetype
-    )
+						zlib						
+                        )
+    endif (STATIC_BUILD)
+
+    list(APPEND LIBRARIES_LIST
+                        libangelscript.dll.a
+						)
 else()
-list(APPEND LIBRARIES_LIST
+    if (STATIC_BUILD)
+        list(APPEND LIBRARIES_LIST
+                GL
+                X11
+                Xi
+                Xcursor
+                openal
+                asound
+                ${GTK2_LIBRARIES}
+                jpeg
+                png16
+                vorbisfile
+                vorbis
+                ogg
+                freetype						
+                )
+
+                find_package (PkgConfig REQUIRED)
+                pkg_check_modules (GTK2 REQUIRED gtk+-2.0)
+            
+                list(APPEND INCLUDE_DIRS
+                                     ${GTK2_INCLUDE_DIRS}
+                                    )
+            
+                add_definitions(${GTK2_CFLAGS_OTHER})            
+    endif (STATIC_BUILD)
+
+	list(APPEND LIBRARIES_LIST
                         libangelscript_LINUX.a
-    )
+						pthread
+						)
 endif (WIN32)
+
+include_directories(${INCLUDE_DIRS})
+
+add_executable(${PROJECT_NAME} ${SRC_LIST})
 
 target_link_libraries(${PROJECT_NAME} ${LIBRARIES_LIST})
 
