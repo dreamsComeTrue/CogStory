@@ -9,11 +9,9 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    static int CAMERA_TWEEN_ID = 100000;
+    ALLEGRO_TRANSFORM IdentityTransform;
 
     //--------------------------------------------------------------------------------------------------
-
-    ALLEGRO_TRANSFORM IdentityTransform;
 
     Camera::Camera (SceneManager* sceneManager)
         : m_SceneManager (sceneManager)
@@ -250,12 +248,12 @@ namespace aga
         if (finishFunc)
         {
             m_TweenToPoint = &m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (
-                CAMERA_TWEEN_ID++, startPoint, endPoint, static_cast<int> (timeMs), tweenFunc, finishFunc);
+                -1, startPoint, endPoint, static_cast<int> (timeMs), tweenFunc, finishFunc);
         }
         else
         {
             m_TweenToPoint = &m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (
-                CAMERA_TWEEN_ID++, startPoint, endPoint, static_cast<int> (timeMs), tweenFunc);
+                -1, startPoint, endPoint, static_cast<int> (timeMs), tweenFunc);
         }
     }
 
@@ -317,7 +315,7 @@ namespace aga
         };
 
         m_SceneManager->GetMainLoop ()->GetTweenManager ().AddTween (
-            CAMERA_TWEEN_ID++, 0.f, 1.0f, static_cast<int> (timeMs), tweenFunc);
+            -1, 0.f, 1.0f, static_cast<int> (timeMs), tweenFunc);
     }
 
     //--------------------------------------------------------------------------------------------------

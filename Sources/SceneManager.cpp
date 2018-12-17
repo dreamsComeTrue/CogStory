@@ -16,19 +16,12 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    static int SCENE_TWEEN_ID = 200000;
-    static int SCENE_TWEEN_INTRO_ID = 200001;
-    static int SCENE_TWEEN_OVERLAY_ID = 200002;
-
-    //--------------------------------------------------------------------------------------------------
-
     SceneManager::SceneManager (MainLoop* mainLoop)
         : m_MainLoop (mainLoop)
         , m_Player (nullptr)
         , m_Camera (this)
         , m_ActiveScene (nullptr)
         , m_NextScene (nullptr)
-        , m_TweenFade (nullptr)
         , m_Transitioning (true)
         , m_FadeColor (COLOR_BLACK)
         , m_DrawPhysData (true)
@@ -242,12 +235,14 @@ namespace aga
         {
             m_NextScene = sceneToSet;
 
-            if (sceneToSet == nullptr)
+            if (m_NextScene == nullptr)
             {
                 Log ("NUUUUUUUUUULLLLLLLLLLL!!!!!!\n");
             }
             else
-                Log (m_NextScene->GetName ().c_str ());
+            {
+                Log (("AAAAA > " + m_NextScene->GetName ()).c_str ());
+            }
 
             SceneFadeInOut ();
         }
@@ -572,10 +567,10 @@ namespace aga
         m_FadeColor.a = 0.0f;
         m_Transitioning = true;
 
-        auto fadeFunc = [&](float v) {
-            m_FadeColor.a = v;
+        auto fadeFunc = [&](float value) {
+            m_FadeColor.a = value;
 
-            if (m_NextScene && m_TweenFade->TweenF.progress () > 0.5f)
+            if (m_NextScene && value >= 0.98f)
             {
                 if (m_NextScene != m_ActiveScene)
                 {
@@ -589,12 +584,9 @@ namespace aga
         };
 
         tweeny::tween<float> tween
-            = tweeny::from (0.0f).to (1.0f).during (fadeInMs).onStep (fadeFunc).to (0.0f).during (fadeOutMs).onStep (
-                fadeFunc);
+            = tweeny::from (0.0f).to (1.0f).during (fadeInMs).to (0.0f).during (fadeOutMs).onStep (fadeFunc);
 
-        m_MainLoop->GetTweenManager ().RemoveTween (SCENE_TWEEN_ID);
-        m_TweenFade
-            = &m_MainLoop->GetTweenManager ().AddTween (SCENE_TWEEN_ID, tween, [&](int) { m_Transitioning = false; });
+        m_MainLoop->GetTweenManager ().AddTween (-1, tween, [&](int) { m_Transitioning = false; });
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -649,8 +641,7 @@ namespace aga
                                          .during (fadeShowTime)
                                          .onStep (introFunc);
 
-        m_MainLoop->GetTweenManager ().RemoveTween (SCENE_TWEEN_INTRO_ID);
-        m_MainLoop->GetTweenManager ().AddTween (SCENE_TWEEN_INTRO_ID, tween, [&](int) { m_SceneIntro = false; });
+        m_MainLoop->GetTweenManager ().AddTween (-1, tween, [&](int) { m_SceneIntro = false; });
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -743,8 +734,7 @@ namespace aga
                                          .during (halfTime)
                                          .onStep (introFunc);
 
-        m_MainLoop->GetTweenManager ().RemoveTween (SCENE_TWEEN_OVERLAY_ID);
-        m_MainLoop->GetTweenManager ().AddTween (SCENE_TWEEN_OVERLAY_ID, tween, [&](int) {
+        m_MainLoop->GetTweenManager ().AddTween (-1, tween, [&](int) {
             m_OverlayActive = false;
             m_OverlayText = "";
             m_OverlayDuration = 0.f;

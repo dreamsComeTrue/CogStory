@@ -152,7 +152,7 @@ namespace aga
 
             ImGui::BeginGroup ();
 
-            if (ImGui::Button ("ACCEPT", ImVec2 (50.f, 18.f)))
+            if (ImGui::Button ("ACCEPT", ImVec2 (80.f, 18.f)))
             {
                 ImGui::CloseCurrentPopup ();
 
@@ -162,7 +162,7 @@ namespace aga
 
             ImGui::SameLine ();
 
-            if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
+            if (ImGui::Button ("CANCEL", ImVec2 (80.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
             {
                 ImGui::CloseCurrentPopup ();
                 m_IsVisible = false;

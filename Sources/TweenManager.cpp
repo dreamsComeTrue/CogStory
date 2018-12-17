@@ -8,7 +8,7 @@ namespace aga
 {
     //--------------------------------------------------------------------------------------------------
 
-    static int NORMAL_TWEEN_ID = 1000;
+    static int NEXT_TWEEN_ID = 1;
 
     //--------------------------------------------------------------------------------------------------
 
@@ -187,7 +187,7 @@ namespace aga
         tweeny::tween<float> tween = tweeny::from (from).to (to).during (during).onStep (callbackFunction);
 
         TweenData tweenData;
-        tweenData.ID = id;
+        tweenData.ID = GetNextTweenID (id);
         tweenData.TweenF = tween;
         tweenData.TweenMask |= TWEEN_F;
         tweenData.FinishFunc = finishFunction;
@@ -210,7 +210,7 @@ namespace aga
         }
 
         TweenData tweenData;
-        tweenData.ID = id;
+        tweenData.ID = GetNextTweenID (id);
         tweenData.TweenF = callbackFunction;
         tweenData.TweenMask |= TWEEN_F;
         tweenData.FinishFunc = finishFunction;
@@ -236,7 +236,7 @@ namespace aga
             = tweeny::from (from.X, from.Y).to (to.X, to.Y).during (during).onStep (callbackFunction);
 
         TweenData tweenData;
-        tweenData.ID = id;
+        tweenData.ID = GetNextTweenID (id);
         tweenData.TweenFF = tween;
         tweenData.TweenMask |= TWEEN_FF;
         tweenData.FinishFunc = finishFunction;
@@ -262,7 +262,7 @@ namespace aga
             = tweeny::from (from.X, from.Y).to (to.X, to.Y).during (during).onStep (callbackFunction);
 
         TweenData tweenData;
-        tweenData.ID = id;
+        tweenData.ID = GetNextTweenID (id);
         tweenData.FinishScriptFunc = finishFunc;
         tweenData.TweenFF = tween;
         tweenData.TweenMask |= TWEEN_FF;
@@ -311,7 +311,7 @@ namespace aga
         tweeny::tween<float, float> tween = tweeny::from (from.X, from.Y).to (to.X, to.Y).during (during).onStep (func);
 
         TweenData tweenData;
-        tweenData.ID = NORMAL_TWEEN_ID++;
+        tweenData.ID = GetNextTweenID ();
         tweenData.CallbackScriptFunc = asFunc;
         tweenData.FinishScriptFunc = finishFunc;
         tweenData.TweenFF = tween;
@@ -415,6 +415,20 @@ namespace aga
         m_Timelines.push_back (timeLine);
 
         return timeLine;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
+    int TweenManager::GetNextTweenID (int id)
+    {
+        if (id < 0)
+        {
+            return NEXT_TWEEN_ID++;
+        }
+        else
+        {
+            return id;
+        }
     }
 
     //--------------------------------------------------------------------------------------------------

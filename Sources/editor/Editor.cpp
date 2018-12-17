@@ -1177,15 +1177,26 @@ namespace aga
     void Editor::RenderUI ()
     {
         ImGui::SetNextWindowPos (ImVec2 (5, 5), ImGuiCond_Always);
-        ImGui::SetNextWindowSize (ImVec2 (200, 600));
+        ImGui::SetNextWindowSize (ImVec2 (300, 15));
         ImGui::PushStyleColor (ImGuiCol_WindowBg, ImVec4 (0.f, 0.f, 0.f, 0.0f));
-        if (ImGui::Begin ("Tools", nullptr,
+
+        if (ImGui::Begin ("SceneLabel", nullptr,
                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
                     | ImGuiWindowFlags_NoCollapse))
         {
             ImGui::Text (
                 (ToString ("SCENE: ") + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ()).c_str ());
+            ImGui::End ();
+        }
+        ImGui::PopStyleColor ();
 
+        ImGui::SetNextWindowPos (ImVec2 (5, 15), ImGuiCond_Always);
+        ImGui::SetNextWindowSize (ImVec2 (150, 600));
+        ImGui::PushStyleColor (ImGuiCol_WindowBg, ImVec4 (0.f, 0.f, 0.f, 0.0f));
+        if (ImGui::Begin ("Tools", nullptr,
+                ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
+                    | ImGuiWindowFlags_NoCollapse))
+        {
             ImGui::NewLine ();
 
             ImVec2 buttonSize = ImVec2 (135.f, 18.f);

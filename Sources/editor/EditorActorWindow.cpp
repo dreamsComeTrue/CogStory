@@ -130,9 +130,9 @@ namespace aga
 
             for (int i = 0; i < 20; ++i)
             {
-                if (m_ActorFocusHeight[i] == '.')
+                if (m_ActorFocusHeight[i] == ',')
                 {
-                    m_ActorFocusHeight[i] = ',';
+                    m_ActorFocusHeight[i] = '.';
                 }
             }
 

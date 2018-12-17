@@ -61,6 +61,7 @@ namespace aga
     private:
         void CleanupFinishedTweens ();
         TweenData* FindTweenData (tweeny::tween<float, float>& t);
+        int GetNextTweenID (int id = -1);
 
     private:
         MainLoop* m_MainLoop;

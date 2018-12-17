@@ -14,6 +14,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     const int FADE_MAX_TIME = 300;
+    const int STATE_MANAGER_TWEEN_ID = 0;
 
     //--------------------------------------------------------------------------------------------------
 
@@ -273,7 +274,7 @@ namespace aga
                                          .during (FADE_MAX_TIME)
                                          .onStep (fadeFunc);
 
-        m_TweenFade = &m_MainLoop->GetTweenManager ().AddTween (9999, tween);
+        m_TweenFade = &m_MainLoop->GetTweenManager ().AddTween (STATE_MANAGER_TWEEN_ID, tween);
 
         al_get_blender (&m_BlendOp, &m_BlendSrc, &m_BlendDst);
         al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
