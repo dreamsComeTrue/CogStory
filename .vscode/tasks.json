@@ -6,6 +6,9 @@
         {
             "label": "Build Cog Story",
             "command" : "ninja",
+            "args": [
+                "-j8"
+            ],
             "options": {
                 "cwd": "${workspaceFolder}/Binaries/Linux/Out"
             },

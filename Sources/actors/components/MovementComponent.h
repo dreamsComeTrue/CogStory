@@ -84,6 +84,9 @@ namespace aga
         float m_LastAngle;
 
         asIScriptFunction* m_ScriptMoveCallback;
+
+        float m_SampleCounter;
+        class AudioSample* m_FootStepSample;
     };
 }
 

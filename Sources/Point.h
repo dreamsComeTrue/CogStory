@@ -4,6 +4,10 @@
 #define __POINT_H__
 
 #include <cmath>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <string>
 
 namespace aga
 {
@@ -116,6 +120,17 @@ namespace aga
         {
             X /= p.X;
             Y /= p.Y;
+        }
+
+        std::string ToString ()
+        {
+            std::stringstream streamX;
+            streamX << std::fixed << std::setprecision (2) << X;
+
+            std::stringstream streamY;
+            streamY << std::fixed << std::setprecision (2) << Y;
+
+            return "(X: " + streamX.str () + ", Y:" + streamY.str () + ")";
         }
 
         static Point MIN_POINT;

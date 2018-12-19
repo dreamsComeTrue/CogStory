@@ -46,6 +46,11 @@ namespace aga
 
         float GetArea () { return Size.Width * Size.Height; }
 
+        std::string ToString ()
+        {
+            return "[TopLeft: " + GetTopLeft ().ToString () + ", BottomRight:" + GetBottomRight ().ToString () + "]";
+        }
+
         Point Pos;
         Point Size;
 

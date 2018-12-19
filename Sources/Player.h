@@ -79,7 +79,6 @@ namespace aga
         bool m_PreventInput;
         bool m_ActionHandling;
 
-        AudioSampleComponent* m_FootStepComponent;
         ParticleEmitterComponent* m_HeadParticleComponent;
         ParticleEmitterComponent* m_FootParticleComponent;
 
@@ -87,6 +86,8 @@ namespace aga
 
         std::map<std::string, ActorAction> m_ActorActions;
         Actor* m_LastActionActor;
+
+        AudioSampleComponent* m_FootStepComponent;
     };
 }
 

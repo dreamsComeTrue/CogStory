@@ -1,8 +1,11 @@
 // Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "MovementComponent.h"
+#include "AudioSample.h"
 #include "MainLoop.h"
+#include "Resources.h"
 #include "Scene.h"
+#include "Screen.h"
 
 namespace aga
 {
@@ -26,12 +29,17 @@ namespace aga
         , m_WaitTimeElapsed (0.f)
         , m_MaxWaitTime (0.f)
         , m_ScriptMoveCallback (nullptr)
+        , m_SampleCounter (0)
     {
         m_InitialPos = owner->Bounds.Pos;
 
         SetMoveExtents ({-50.f, -50.f}, {50.f, 50.f});
 
         m_Actor->AddCollisionCallback ([&](Collidable*) { ComputeTargetPos (); });
+
+        m_FootStepSample = owner->GetSceneManager ()->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
+            "FOOT_STEP", GetResource (SOUND_FOOT_STEP).Dir + GetResource (SOUND_FOOT_STEP).Name);
+        m_FootStepSample->SetVolume (1.0f);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -130,6 +138,35 @@ namespace aga
                 {
                     m_LastAngle = ToPositiveAngle (RadiansToDegrees (std::atan2 (deltaPos.Y, deltaPos.X)));
                     m_Actor->ChooseWalkAnimation (m_LastAngle);
+
+                    Point screenSize = m_Actor->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+                    Point followActorPos = m_Actor->GetSceneManager ()->GetCamera ().GetFollowActor ()->GetPosition ()
+                        + m_Actor->GetSceneManager ()->GetCamera ().GetFollowActor ()->Bounds.GetHalfSize ();
+                    Point thisPos = m_Actor->GetPosition ();
+
+                    if (thisPos.X < followActorPos.X)
+                    {
+                        thisPos.X += m_Actor->Bounds.GetSize ().Width;
+                    }
+
+                    if (thisPos.Y < followActorPos.Y)
+                    {
+                        thisPos.Y += m_Actor->Bounds.GetSize ().Height;
+                    }
+
+                    Rect followActorBounds
+                        = Rect (followActorPos - screenSize * 0.5f * 0.5f, followActorPos + screenSize * 0.5f * 0.5f);
+
+                    // float distanceToFollowActor = (followActorPos - thisPos).Magnitude ();
+
+                    m_SampleCounter += deltaTime;
+
+                    if (InsideRect (thisPos, followActorBounds) && m_SampleCounter > 0.28f)
+                    {
+                        m_FootStepSample->Play ();
+
+                        m_SampleCounter = 0;
+                    }
 
                     m_Actor->Move (deltaPos);
 
