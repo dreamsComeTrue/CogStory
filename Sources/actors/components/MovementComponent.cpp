@@ -139,9 +139,11 @@ namespace aga
                     m_LastAngle = ToPositiveAngle (RadiansToDegrees (std::atan2 (deltaPos.Y, deltaPos.X)));
                     m_Actor->ChooseWalkAnimation (m_LastAngle);
 
-                    Point screenSize = m_Actor->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetWindowSize ();
-                    Point followActorPos = m_Actor->GetSceneManager ()->GetCamera ().GetFollowActor ()->GetPosition ()
-                        + m_Actor->GetSceneManager ()->GetCamera ().GetFollowActor ()->Bounds.GetHalfSize ();
+                    MainLoop* mainLoop = m_Actor->GetSceneManager ()->GetMainLoop ();
+                    Actor* followActor = mainLoop->GetSceneManager ().GetCamera ().GetFollowActor ();
+
+                    Point screenSize = mainLoop->GetScreen ()->GetWindowSize ();
+                    Point followActorPos = followActor->GetPosition () + followActor->Bounds.GetHalfSize ();
                     Point thisPos = m_Actor->GetPosition ();
 
                     if (thisPos.X < followActorPos.X)
@@ -157,12 +159,15 @@ namespace aga
                     Rect followActorBounds
                         = Rect (followActorPos - screenSize * 0.5f * 0.5f, followActorPos + screenSize * 0.5f * 0.5f);
 
-                    // float distanceToFollowActor = (followActorPos - thisPos).Magnitude ();
-
                     m_SampleCounter += deltaTime;
 
-                    if (InsideRect (thisPos, followActorBounds) && m_SampleCounter > 0.28f)
+                    if (InsideRect (thisPos, followActorBounds) && m_SampleCounter > 0.2f
+                        && !mainLoop->GetAudioManager ().IsGloballyPlaying (m_FootStepSample->GetName ()))
                     {
+                        float distanceToFollowActor = (followActorPos - thisPos).Magnitude ();
+                        float volume = 1.0f;
+                        
+                        //m_FootStepSample->SetVolume (volume);
                         m_FootStepSample->Play ();
 
                         m_SampleCounter = 0;

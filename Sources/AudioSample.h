@@ -24,6 +24,8 @@ namespace aga
         void Pause ();
         void Resume ();
 
+        bool IsPlaying ();
+
         void SetVolume (float volume = 1.0f);
         void SetSpeed (float speed = 1.0f);
 
@@ -34,6 +36,8 @@ namespace aga
 
         void SetFadeIn (float milliSeconds);
         void SetFadeOut (float milliSeconds, bool pauseOnFinish = true);
+
+        std::string GetName ();
 
     private:
         void CleanUpInstances ();

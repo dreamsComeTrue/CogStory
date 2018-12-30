@@ -259,4 +259,16 @@ namespace aga
     void AudioManager::ClearLastPlayedStreams () { m_LastPlayedStreams.clear (); }
 
     //--------------------------------------------------------------------------------------------------
+
+    bool AudioManager::IsGloballyPlaying (const std::string& name)
+    {
+        if (m_Samples.find (name) != m_Samples.end ())
+        {
+            return m_Samples[name]->IsPlaying ();
+        }
+
+        return false;
+    }
+
+    //--------------------------------------------------------------------------------------------------
 }

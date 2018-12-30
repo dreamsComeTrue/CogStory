@@ -496,7 +496,7 @@ namespace aga
     {
         if (m_ActiveScene)
         {
-            //return m_ActiveScene->SetSceneAudioStream (path);
+            return m_ActiveScene->SetSceneAudioStream (path);
         }
 
         return nullptr;

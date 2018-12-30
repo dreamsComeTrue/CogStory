@@ -146,6 +146,21 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    bool AudioSample::IsPlaying ()
+    {
+        for (size_t i = 0; i < m_SampleInstances.size (); ++i)
+        {
+            if (al_get_sample_instance_playing (m_SampleInstances[i]))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     void AudioSample::Update (float deltaTime)
     {
         if (!m_AudioManager->IsEnabled ())
@@ -271,6 +286,10 @@ namespace aga
         m_Gain = 1.f;
         m_PauseOnFinish = pauseOnFinish;
     }
+
+    //--------------------------------------------------------------------------------------------------
+
+    std::string AudioSample::GetName () { return m_Name; }
 
     //--------------------------------------------------------------------------------------------------
 }

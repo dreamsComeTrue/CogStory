@@ -42,6 +42,8 @@ namespace aga
         bool IsPaused () const;
         void ClearLastPlayedStreams ();
 
+        bool IsGloballyPlaying (const std::string& name);
+
     private:
         MainLoop* m_MainLoop;
         float m_MasterVolume;

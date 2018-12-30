@@ -15,6 +15,7 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
+            "preLaunchTask": "Build Cog Story",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
