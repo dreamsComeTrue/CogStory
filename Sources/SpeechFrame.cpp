@@ -144,14 +144,14 @@ namespace aga
 
     void SpeechFrame::HandleKeyUp ()
     {
-        if (!IsTextFitWithoutScroll () && !m_IsSuspended && !m_StillUpdating)
+        if (!m_IsSuspended && !m_StillUpdating)
         {
             //  We can only scroll, when there are no choices
-            if (!m_Choices.empty () && !m_StillUpdating)
+            if (!m_Choices.empty () && m_CurrentLine >= m_TextLines.size () - m_Choices.size ())
             {
                 MoveChoiceUp ();
             }
-            else
+            else if (!IsTextFitWithoutScroll ())
             {
                 if (GetCurrentDrawingLine () > 0)
                 {
@@ -170,13 +170,13 @@ namespace aga
 
     void SpeechFrame::HandleKeyDown ()
     {
-        if (!IsTextFitWithoutScroll () && !m_IsSuspended && !m_StillUpdating)
+        if (!m_IsSuspended && !m_StillUpdating)
         {
-            if (!m_Choices.empty () && !m_StillUpdating)
+            if (!m_Choices.empty () && m_CurrentLine >= m_TextLines.size () - m_Choices.size ())
             {
                 MoveChoiceDown ();
             }
-            else
+            else if (!IsTextFitWithoutScroll ())
             {
                 int diff = m_CurrentLine + 1 - GetMaxLinesCanFit ();
 

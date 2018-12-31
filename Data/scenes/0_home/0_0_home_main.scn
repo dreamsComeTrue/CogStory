@@ -1,14 +1,11 @@
 {
     "actors": [
         {
-            "action-speech": "",
-            "animation": "",
             "atlas": "0_0_home",
             "atlas-region": "main_room",
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "components": [],
             "focus-height": "100.00",
             "id": "6",
             "name": "main_room",
@@ -20,20 +17,18 @@
             ],
             "pos": "-256.00 -224.00",
             "rot": "0.00",
-            "scripts": [],
             "size": "512.00 382.00",
             "type": "Tile",
             "z-order": "-2"
         },
         {
             "action-speech": "PROPS_TABLE",
-            "animation": "",
+            "action-speech-handling": "0",
             "atlas": "env_1",
             "atlas-region": "Sprite-0017",
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "components": [],
             "focus-height": "100.00",
             "id": "3",
             "name": "TABLE",
@@ -45,83 +40,66 @@
             ],
             "pos": "-192.00 -144.00",
             "rot": "0.00",
-            "scripts": [],
             "size": "61.00 45.00",
             "type": "Tile",
             "z-order": "0"
         },
         {
-            "action-speech": "",
-            "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0016",
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "components": [],
             "focus-height": "100.00",
             "id": "4",
             "name": "Sprite-0016",
             "overlap": "0",
-            "phys": [],
             "pos": "-224.00 -128.00",
             "rot": "0.00",
-            "scripts": [],
             "size": "25.00 23.00",
             "type": "Tile",
             "z-order": "0"
         },
         {
-            "action-speech": "",
-            "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0016",
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "components": [],
             "focus-height": "100.00",
             "id": "5",
             "name": "Sprite-0016",
             "overlap": "0",
-            "phys": [],
             "pos": "-128.00 -128.00",
             "rot": "0.00",
-            "scripts": [],
             "size": "25.00 23.00",
             "type": "Tile",
             "z-order": "0"
         },
         {
-            "action-speech": "",
-            "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0016",
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "components": [],
             "focus-height": "100.00",
             "id": "7",
             "name": "Sprite-0016",
             "overlap": "0",
-            "phys": [],
             "pos": "-176.00 -96.00",
             "rot": "0.00",
-            "scripts": [],
             "size": "25.00 23.00",
             "type": "Tile",
             "z-order": "0"
         },
         {
             "action-speech": "PROP_FLOWER",
-            "animation": "",
+            "action-speech-handling": "0",
             "atlas": "env_1",
             "atlas-region": "Sprite-0013",
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "components": [],
             "focus-height": "100.00",
             "id": "8",
             "name": "Sprite-0013",
@@ -133,20 +111,16 @@
             ],
             "pos": "-240.00 32.00",
             "rot": "0.00",
-            "scripts": [],
             "size": "32.00 29.00",
             "type": "Tile",
             "z-order": "0"
         },
         {
-            "action-speech": "",
-            "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0013",
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "components": [],
             "focus-height": "100.00",
             "id": "9",
             "name": "Sprite-0013",
@@ -158,20 +132,16 @@
             ],
             "pos": "16.00 -48.00",
             "rot": "0.00",
-            "scripts": [],
             "size": "32.00 29.00",
             "type": "Tile",
             "z-order": "0"
         },
         {
-            "action-speech": "",
-            "animation": "",
             "atlas": "env_1",
             "atlas-region": "Sprite-0013",
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "components": [],
             "focus-height": "100.00",
             "id": "10",
             "name": "Sprite-0013",
@@ -183,20 +153,18 @@
             ],
             "pos": "208.00 -208.00",
             "rot": "0.00",
-            "scripts": [],
             "size": "32.00 29.00",
             "type": "Tile",
             "z-order": "0"
         },
         {
-            "action-speech": "",
-            "animation": "",
+            "action-speech": "QST_BED",
+            "action-speech-handling": "1",
             "atlas": "0_0_home",
             "atlas-region": "bed",
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "components": [],
             "focus-height": "100.00",
             "id": "12",
             "name": "bed",
@@ -208,7 +176,6 @@
             ],
             "pos": "32.00 -208.00",
             "rot": "0.00",
-            "scripts": [],
             "size": "64.00 64.00",
             "type": "Tile",
             "z-order": "0"
@@ -238,7 +205,7 @@
             "action": "[CLOSE]",
             "group": "PROPS",
             "id": 0,
-            "max_chars": 13,
+            "max_chars": 14,
             "max_lines": 1,
             "name": "PROPS_TABLE",
             "outcomes": [
@@ -269,7 +236,7 @@
             "action": "[CLOSE]",
             "group": "PROPS",
             "id": 1,
-            "max_chars": 16,
+            "max_chars": 18,
             "max_lines": 1,
             "name": "PROP_FLOWER",
             "outcomes": [
@@ -287,6 +254,48 @@
             "texts": [
                 {
                     "data": "An ordinary flower",
+                    "langID": "EN"
+                },
+                {
+                    "data": "",
+                    "langID": "PL"
+                }
+            ]
+        },
+        {
+            "abs_pos": "0.00 0.00",
+            "action": "[CLOSE]",
+            "group": "",
+            "id": 2,
+            "max_chars": 25,
+            "max_lines": 3,
+            "name": "QST_BED",
+            "outcomes": [
+                {
+                    "langID": "EN",
+                    "texts": [
+                        {
+                            "action": "",
+                            "data": "Why not..",
+                            "name": ""
+                        },
+                        {
+                            "action": "",
+                            "data": "I'm not sleepy",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "langID": "PL",
+                    "texts": []
+                }
+            ],
+            "region_name": "",
+            "rel_pos": 2,
+            "texts": [
+                {
+                    "data": "Do you want to go to bed?",
                     "langID": "EN"
                 },
                 {
