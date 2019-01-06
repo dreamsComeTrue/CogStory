@@ -1,4 +1,4 @@
-project("Cog Story")
+project("CogStory")
 cmake_minimum_required(VERSION 2.8)
 
 set(BIN_DIR Binaries)

@@ -8,7 +8,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/Binaries/Linux/Cog Story",
+            "program": "${workspaceFolder}/Binaries/Linux/CogStory",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/Binaries/Linux/",

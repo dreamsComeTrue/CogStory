@@ -180,6 +180,7 @@ namespace aga
         float m_GridSize;
 
         bool m_IsMousePan;
+        bool m_IsMouseDrag;
 
         Point m_LastMousePos;
         long m_LastTimeClicked;

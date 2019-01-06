@@ -427,12 +427,12 @@ namespace aga
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state (&state);
 
-        Point movePoint = m_Editor->CalculateWorldPoint (state.x, state.y);
         Point deltaPoint = {0, 0};
 
         if (m_PrimarySelectedActor)
         {
-            deltaPoint = movePoint - m_PrimarySelectedActor->Bounds.Pos;
+            Point mousePoint = m_Editor->CalculateWorldPoint (state.x, state.y);
+            deltaPoint = mousePoint - m_PrimarySelectedActor->Bounds.Pos;
         }
 
         m_SelectedAtlasRegions.clear ();
@@ -475,7 +475,12 @@ namespace aga
 
         if (changeSelection)
         {
-            m_SelectedActors = actorsToSelect;
+            ClearSelectedActors ();
+            
+            for (Actor* actor : actorsToSelect) 
+            {
+                AddActorToSelection (actor);
+            }
         }
     }
 

@@ -20,7 +20,7 @@
         {
             "label": "Run Cog Story",
             "type": "shell",
-            "command": "\"${workspaceFolder}/Binaries/Linux/Cog Story\"",
+            "command": "\"${workspaceFolder}/Binaries/Linux/CogStory\"",
             "options": {
                 "cwd": "${workspaceFolder}/Binaries/Linux/"
             },
