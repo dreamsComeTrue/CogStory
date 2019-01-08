@@ -22,7 +22,9 @@ namespace aga
     class Scriptable
     {
     public:
+        Scriptable ();
         Scriptable (ScriptManager* scriptManager);
+        Scriptable (const Scriptable& rhs);        
         virtual ~Scriptable ();
 
         virtual Script* AttachScript (const std::string& name, const std::string& path);

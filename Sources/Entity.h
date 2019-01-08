@@ -8,67 +8,69 @@
 
 namespace aga
 {
-    class SceneManager;
+	class SceneManager;
 
-    struct OverlapCallback
-    {
-        asIScriptFunction* BeginFunc = nullptr;
-        asIScriptFunction* OverlappingFunc = nullptr;
-        asIScriptFunction* EndFunc = nullptr;
-    };
+	struct OverlapCallback
+	{
+		asIScriptFunction* BeginFunc = nullptr;
+		asIScriptFunction* OverlappingFunc = nullptr;
+		asIScriptFunction* EndFunc = nullptr;
+	};
 
-    class Entity : public Transformable
-    {
-    public:
-        Entity (SceneManager* sceneManager);
-        virtual ~Entity () {}
+	class Entity : public Transformable
+	{
+	public:
+		Entity ();
+		Entity (SceneManager* sceneManager);
+		Entity (const Entity& rhs);
+		virtual ~Entity () {}
 
-        void SetCheckOverlap (bool check);
-        bool IsCheckOverlap ();
+		void SetCheckOverlap (bool check);
+		bool IsCheckOverlap ();
 
-        SceneManager* GetSceneManager ();
-        bool IsOverlaping (Entity* entity);
+		SceneManager* GetSceneManager ();
+		bool IsOverlaping (Entity* entity);
 
-        float GetAngleWith (Entity* ent);
+		float GetAngleWith (Entity* ent);
 
-        virtual std::string GetTypeName () = 0;
+		virtual std::string GetTypeName () = 0;
 
-        void AddBeginOverlapCallback (asIScriptFunction* func);
-        void AddOverlappingCallback (asIScriptFunction* func);
-        void AddEndOverlapCallback (asIScriptFunction* func);
-        void AddOverlapCallbacks (asIScriptFunction* begin, asIScriptFunction* update, asIScriptFunction* end);
+		void AddBeginOverlapCallback (asIScriptFunction* func);
+		void AddOverlappingCallback (asIScriptFunction* func);
+		void AddEndOverlapCallback (asIScriptFunction* func);
+		void AddOverlapCallbacks (asIScriptFunction* begin, asIScriptFunction* update, asIScriptFunction* end);
 
-        std::vector<Entity*> GetBluprintChildren ();
+		std::vector<Entity*> GetBluprintChildren ();
 
-        static int GetNextID ();
+		static int GetNextID ();
 
-        static bool CompareByZOrder (const Entity* a, const Entity* b);
+		static bool CompareByZOrder (const Entity* a, const Entity* b);
 
-        static int GlobalID;
+		static int GlobalID;
 
-    public:
-        int ID = 0;
-        std::string Name;
-        int ZOrder = 0;
-        int RenderID = 0;
-        int BlueprintID = -1;
+	public:
+		int ID = 0;
+		std::string Name;
+		int ZOrder = 0;
+		int RenderID = 0;
+		int BlueprintID = -1;
 
-    protected:
-        void CheckOverlap ();
-        virtual void BeginOverlap (Entity* entity);
-        virtual void EndOverlap (Entity* entity);
+	protected:
+		void CheckOverlap ();
+		virtual void BeginOverlap (Entity* entity);
+		virtual void EndOverlap (Entity* entity);
 
-        void CallBeginOverlapCallbacks (Entity* whom, Entity* target);
-        void CallOverlappingCallbacks (Entity* whom, Entity* target);
-        void CallEndOverlapCallbacks (Entity* whom, Entity* target);
+		void CallBeginOverlapCallbacks (Entity* whom, Entity* target);
+		void CallOverlappingCallbacks (Entity* whom, Entity* target);
+		void CallEndOverlapCallbacks (Entity* whom, Entity* target);
 
-    protected:
-        SceneManager* m_SceneManager;
-        std::vector<Entity*> m_OverlapedEntities;
-        std::vector<OverlapCallback> m_OverlapCallbacks;
+	protected:
+		SceneManager* m_SceneManager;
+		std::vector<Entity*> m_OverlapedEntities;
+		std::vector<OverlapCallback> m_OverlapCallbacks;
 
-        bool m_CheckOverlap;
-    };
+		bool m_CheckOverlap;
+	};
 }
 
 #endif //   __ENTITY_H__

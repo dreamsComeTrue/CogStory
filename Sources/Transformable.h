@@ -7,12 +7,20 @@
 
 namespace aga
 {
-    class Transformable
-    {
-    public:
-        Rect Bounds;
-        float Rotation = 0;
-    };
+	class Transformable
+	{
+	public:
+		Transformable () {}
+
+		Transformable (const Transformable& rhs)
+		{
+			this->Bounds = rhs.Bounds;
+			this->Rotation = rhs.Rotation;
+		}
+
+		Rect Bounds;
+		float Rotation = 0;
+	};
 }
 
 #endif //   __TRANSFORMABLE_H__

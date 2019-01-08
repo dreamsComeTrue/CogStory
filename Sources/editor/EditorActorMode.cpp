@@ -411,11 +411,9 @@ namespace aga
 
     void EditorActorMode::RemoveSelectedActors ()
     {
-        for (Actor* actor : m_SelectedActors)
-        {
-            m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveActor (actor);
-        }
-
+        RemoveActorsCommand* command = new RemoveActorsCommand (m_Editor->GetUndoRedo (), m_SelectedActors);
+        m_Editor->GetUndoRedo ()->PushCommand (command);
+        
         m_SelectedActors.clear ();
         m_Editor->SetCursorMode (CursorMode::ActorSelectMode);
     }

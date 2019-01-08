@@ -22,7 +22,10 @@ namespace aga
 
     public:
         MovementComponent (Actor* owner);
-
+        MovementComponent (const MovementComponent& rhs);
+        
+        virtual MovementComponent* Clone () const override;
+        
         virtual bool Update (float deltaTime) override;
 
         virtual bool Render (float deltaTime) override;

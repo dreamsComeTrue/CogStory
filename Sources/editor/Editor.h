@@ -9,6 +9,7 @@
 #include "EditorPhysMode.h"
 #include "EditorSpeechMode.h"
 #include "EditorTriggerAreaMode.h"
+#include "EditorUndoRedo.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -96,6 +97,8 @@ namespace aga
 
         bool IsCloseCurrentPopup ();
         void SetCloseCurrentPopup (bool close);
+        
+        EditorUndoRedo* GetUndoRedo ();
 
     private:
         void LoadConfig ();
@@ -172,6 +175,7 @@ namespace aga
         EditorTriggerAreaMode m_EditorTriggerAreaMode;
         EditorSpeechMode m_EditorSpeechMode;
         EditorActorMode m_EditorActorMode;
+        EditorUndoRedo m_EditorUndoRedo;
 
         CursorMode m_CursorMode;
 

@@ -16,7 +16,10 @@ namespace aga
 
     public:
         AudioSampleComponent (Actor* owner);
-
+        AudioSampleComponent (const AudioSampleComponent& rhs);
+        
+        virtual AudioSampleComponent* Clone () const override;
+        
         virtual bool Update (float deltaTime) override;
 
         virtual bool Render (float deltaTime) override;

@@ -41,6 +41,7 @@ namespace aga
 		, m_EditorTriggerAreaMode (this)
 		, m_EditorSpeechMode (this)
 		, m_EditorActorMode (this)
+		, m_EditorUndoRedo (this)
 		, m_CursorMode (CursorMode::ActorSelectMode)
 		, m_IsSnapToGrid (true)
 		, m_BaseGridSize (16.0f)
@@ -61,7 +62,7 @@ namespace aga
 		, m_DrawFlagPoints (true)
 		, m_DrawTriggerAreas (true)
 		, m_DrawCameraBounds (false)
-        , m_IsMouseDrag (false)
+		, m_IsMouseDrag (false)
 	{
 	}
 
@@ -351,7 +352,15 @@ namespace aga
 
 			case ALLEGRO_KEY_Z:
 			{
-				m_EditorActorMode.ChangeZOrder (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
+				if (event->keyboard.modifiers == ALLEGRO_KEYMOD_CTRL)
+				{
+					m_EditorUndoRedo.PopCommand ();
+				}
+				else
+				{
+					m_EditorActorMode.ChangeZOrder (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
+				}
+
 				break;
 			}
 
@@ -1670,8 +1679,8 @@ namespace aga
 
 		if (event.button == 1)
 		{
-            m_IsMouseDrag = true;
-            
+			m_IsMouseDrag = true;
+
 			ALLEGRO_KEYBOARD_STATE state;
 			al_get_keyboard_state (&state);
 
@@ -1811,7 +1820,7 @@ namespace aga
 		}
 
 		m_IsMousePan = false;
-        m_IsMouseDrag = false;
+		m_IsMouseDrag = false;
 		m_IsRectSelection = false;
 		m_SelectionRect = {};
 
@@ -2022,6 +2031,10 @@ namespace aga
 	//--------------------------------------------------------------------------------------------------
 
 	void Editor::SetCloseCurrentPopup (bool close) { m_CloseCurrentPopup = close; }
+
+	//--------------------------------------------------------------------------------------------------
+
+	EditorUndoRedo* Editor::GetUndoRedo () { return &m_EditorUndoRedo; }
 
 	//--------------------------------------------------------------------------------------------------
 

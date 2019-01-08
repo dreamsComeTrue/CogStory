@@ -16,7 +16,9 @@ namespace aga
     class Animable
     {
     public:
+        Animable ();
         Animable (AtlasManager* atlasManager);
+        Animable (const Animable& rhs);
         virtual ~Animable ();
 
         bool Initialize (const std::string& atlasName, const std::string& atlasRegionName);

@@ -14,6 +14,9 @@ namespace aga
 
     public:
         TileActor (SceneManager* sceneManager);
+        TileActor (const TileActor& rhs);
+        
+        virtual TileActor* Clone () const override;
 
         virtual bool Initialize () override;
 

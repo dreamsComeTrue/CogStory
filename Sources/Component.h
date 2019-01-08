@@ -8,25 +8,31 @@
 
 namespace aga
 {
-    class Component : public Lifecycle
-    {
-    public:
-        Component (Actor* owner);
-        virtual ~Component () {}
+	class Component : public Lifecycle
+	{
+	public:
+		Component (Actor* owner);
+		Component (const Component& rhs);
+		virtual ~Component () {}
 
-        virtual bool Update (float deltaTime) = 0;
+		virtual Component* Clone () const = 0;
 
-        virtual bool Render (float deltaTime) = 0;
+		virtual bool Update (float deltaTime) = 0;
 
-        void SetEnabled (bool enabled) { m_IsEnabled = enabled; }
-        bool IsEnabled () const { return m_IsEnabled; }
+		virtual bool Render (float deltaTime) = 0;
 
-        virtual std::string GetTypeName () = 0;
+		void SetEnabled (bool enabled);
+		bool IsEnabled () const;
 
-    protected:
-        Actor* m_Actor;
-        bool m_IsEnabled;
-    };
+		void SetActor (Actor* actor);
+		Actor* GetActor ();
+
+		virtual std::string GetTypeName () = 0;
+
+	protected:
+		Actor* m_Actor;
+		bool m_IsEnabled;
+	};
 }
 
 #endif //   __COMPONENT_H__

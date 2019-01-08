@@ -14,6 +14,8 @@ namespace aga
 
     public:
         NPCActor (SceneManager* sceneManager);
+        NPCActor (const NPCActor& rhs);
+        virtual NPCActor* Clone () const override;
 
         virtual bool Initialize () override;
 

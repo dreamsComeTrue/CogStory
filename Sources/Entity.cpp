@@ -7,238 +7,258 @@
 
 namespace aga
 {
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    Entity::Entity (SceneManager* sceneManager)
-        : m_SceneManager (sceneManager)
-        , m_CheckOverlap (false)
-    {
-    }
+	Entity::Entity () {}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    void Entity::SetCheckOverlap (bool check) { m_CheckOverlap = check; }
+	Entity::Entity (SceneManager* sceneManager)
+		: m_SceneManager (sceneManager)
+		, m_CheckOverlap (false)
+	{
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    bool Entity::IsCheckOverlap () { return m_CheckOverlap; }
+	Entity::Entity (const Entity& rhs):
+	Transformable (rhs)
+	{
+		this->ID = rhs.ID;
+		this->Name = rhs.Name;
+		this->ZOrder = rhs.ZOrder;
+		this->RenderID = rhs.RenderID;
+		this->BlueprintID = rhs.BlueprintID;
+		this->m_SceneManager = rhs.m_SceneManager;
+		this->m_OverlapedEntities.clear ();
+		this->m_OverlapCallbacks = rhs.m_OverlapCallbacks;
+		this->m_CheckOverlap = rhs.m_CheckOverlap;
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    SceneManager* Entity::GetSceneManager () { return m_SceneManager; }
+	void Entity::SetCheckOverlap (bool check) { m_CheckOverlap = check; }
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    void Entity::CheckOverlap ()
-    {
-        if (!m_CheckOverlap)
-        {
-            return;
-        }
+	bool Entity::IsCheckOverlap () { return m_CheckOverlap; }
 
-        Scene* activeScene = m_SceneManager->GetActiveScene ();
+	//--------------------------------------------------------------------------------------------------
 
-        Rect myBounds = activeScene->GetRenderBounds (this);
-        std::vector<Entity*> visibleEntites = activeScene->RecomputeVisibleEntities (true);
+	SceneManager* Entity::GetSceneManager () { return m_SceneManager; }
 
-        //  Special-case entity :)
-        visibleEntites.push_back (m_SceneManager->GetPlayer ());
+	//--------------------------------------------------------------------------------------------------
 
-        for (Entity* ent : visibleEntites)
-        {
-            if (ent != this && ent->IsCheckOverlap ())
-            {
-                Rect otherBounds = activeScene->GetRenderBounds (ent);
+	void Entity::CheckOverlap ()
+	{
+		if (!m_CheckOverlap)
+		{
+			return;
+		}
 
-                if (Intersect (myBounds, otherBounds))
-                {
-                    bool found = false;
+		Scene* activeScene = m_SceneManager->GetActiveScene ();
 
-                    for (Entity* saved : m_OverlapedEntities)
-                    {
-                        if (saved == ent)
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
+		Rect myBounds = activeScene->GetRenderBounds (this);
+		std::vector<Entity*> visibleEntites = activeScene->RecomputeVisibleEntities (true);
 
-                    CallOverlappingCallbacks (this, ent);
-                    CallOverlappingCallbacks (ent, this);
+		//  Special-case entity :)
+		visibleEntites.push_back (m_SceneManager->GetPlayer ());
 
-                    if (!found)
-                    {
-                        m_OverlapedEntities.push_back (ent);
+		for (Entity* ent : visibleEntites)
+		{
+			if (ent != this && ent->IsCheckOverlap ())
+			{
+				Rect otherBounds = activeScene->GetRenderBounds (ent);
 
-                        BeginOverlap (ent);
+				if (Intersect (myBounds, otherBounds))
+				{
+					bool found = false;
 
-                        CallBeginOverlapCallbacks (this, ent);
-                        CallBeginOverlapCallbacks (ent, this);
-                    }
-                }
-                else
-                {
-                    for (std::vector<Entity*>::iterator it = m_OverlapedEntities.begin ();
-                         it != m_OverlapedEntities.end (); ++it)
-                    {
-                        if (*it == ent)
-                        {
-                            EndOverlap (ent);
+					for (Entity* saved : m_OverlapedEntities)
+					{
+						if (saved == ent)
+						{
+							found = true;
+							break;
+						}
+					}
 
-                            CallEndOverlapCallbacks (this, ent);
-                            CallEndOverlapCallbacks (ent, this);
+					CallOverlappingCallbacks (this, ent);
+					CallOverlappingCallbacks (ent, this);
 
-                            m_OverlapedEntities.erase (it);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
+					if (!found)
+					{
+						m_OverlapedEntities.push_back (ent);
 
-    //--------------------------------------------------------------------------------------------------
+						BeginOverlap (ent);
 
-    bool Entity::IsOverlaping (Entity* entity)
-    {
-        for (Entity* ent : m_OverlapedEntities)
-        {
-            if (ent == entity)
-            {
-                return true;
-            }
-        }
+						CallBeginOverlapCallbacks (this, ent);
+						CallBeginOverlapCallbacks (ent, this);
+					}
+				}
+				else
+				{
+					for (std::vector<Entity*>::iterator it = m_OverlapedEntities.begin ();
+						 it != m_OverlapedEntities.end (); ++it)
+					{
+						if (*it == ent)
+						{
+							EndOverlap (ent);
 
-        return false;
-    }
+							CallEndOverlapCallbacks (this, ent);
+							CallEndOverlapCallbacks (ent, this);
 
-    //--------------------------------------------------------------------------------------------------
+							m_OverlapedEntities.erase (it);
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
 
-    float Entity::GetAngleWith (Entity* ent)
-    {
-        Point thisHalf = this->Bounds.GetHalfSize ();
-        Point entHalf = ent->Bounds.GetHalfSize ();
-        float dx = (this->Bounds.Pos.X + thisHalf.Width) - (ent->Bounds.Pos.X + entHalf.Width);
-        float dy = (this->Bounds.Pos.Y + thisHalf.Height) - (ent->Bounds.Pos.Y + entHalf.Height);
+	//--------------------------------------------------------------------------------------------------
 
-        return ToPositiveAngle (RadiansToDegrees (std::atan2 (dy, dx)));
-    }
+	bool Entity::IsOverlaping (Entity* entity)
+	{
+		for (Entity* ent : m_OverlapedEntities)
+		{
+			if (ent == entity)
+			{
+				return true;
+			}
+		}
 
-    //--------------------------------------------------------------------------------------------------
+		return false;
+	}
 
-    void Entity::AddBeginOverlapCallback (asIScriptFunction* func)
-    {
-        OverlapCallback callback;
-        callback.BeginFunc = func;
+	//--------------------------------------------------------------------------------------------------
 
-        m_OverlapCallbacks.push_back (callback);
-    }
+	float Entity::GetAngleWith (Entity* ent)
+	{
+		Point thisHalf = this->Bounds.GetHalfSize ();
+		Point entHalf = ent->Bounds.GetHalfSize ();
+		float dx = (this->Bounds.Pos.X + thisHalf.Width) - (ent->Bounds.Pos.X + entHalf.Width);
+		float dy = (this->Bounds.Pos.Y + thisHalf.Height) - (ent->Bounds.Pos.Y + entHalf.Height);
 
-    //--------------------------------------------------------------------------------------------------
+		return ToPositiveAngle (RadiansToDegrees (std::atan2 (dy, dx)));
+	}
 
-    void Entity::AddOverlappingCallback (asIScriptFunction* func)
-    {
-        OverlapCallback callback;
-        callback.OverlappingFunc = func;
+	//--------------------------------------------------------------------------------------------------
 
-        m_OverlapCallbacks.push_back (callback);
-    }
+	void Entity::AddBeginOverlapCallback (asIScriptFunction* func)
+	{
+		OverlapCallback callback;
+		callback.BeginFunc = func;
 
-    //--------------------------------------------------------------------------------------------------
+		m_OverlapCallbacks.push_back (callback);
+	}
 
-    void Entity::AddEndOverlapCallback (asIScriptFunction* func)
-    {
-        OverlapCallback callback;
-        callback.EndFunc = func;
+	//--------------------------------------------------------------------------------------------------
 
-        m_OverlapCallbacks.push_back (callback);
-    }
+	void Entity::AddOverlappingCallback (asIScriptFunction* func)
+	{
+		OverlapCallback callback;
+		callback.OverlappingFunc = func;
 
-    //--------------------------------------------------------------------------------------------------
+		m_OverlapCallbacks.push_back (callback);
+	}
 
-    void Entity::AddOverlapCallbacks (asIScriptFunction* begin, asIScriptFunction* update, asIScriptFunction* end)
-    {
-        OverlapCallback callback;
-        callback.BeginFunc = begin;
-        callback.OverlappingFunc = update;
-        callback.EndFunc = end;
+	//--------------------------------------------------------------------------------------------------
 
-        m_OverlapCallbacks.push_back (callback);
-    }
+	void Entity::AddEndOverlapCallback (asIScriptFunction* func)
+	{
+		OverlapCallback callback;
+		callback.EndFunc = func;
 
-    //--------------------------------------------------------------------------------------------------
+		m_OverlapCallbacks.push_back (callback);
+	}
 
-    void Entity::CallBeginOverlapCallbacks (Entity* whom, Entity* target)
-    {
-        for (OverlapCallback& callback : whom->m_OverlapCallbacks)
-        {
-            if (callback.BeginFunc)
-            {
-                m_SceneManager->GetMainLoop ()->GetScriptManager ().RunScriptFunction (callback.BeginFunc, target);
-            }
-        }
-    }
+	//--------------------------------------------------------------------------------------------------
 
-    //--------------------------------------------------------------------------------------------------
+	void Entity::AddOverlapCallbacks (asIScriptFunction* begin, asIScriptFunction* update, asIScriptFunction* end)
+	{
+		OverlapCallback callback;
+		callback.BeginFunc = begin;
+		callback.OverlappingFunc = update;
+		callback.EndFunc = end;
 
-    void Entity::CallOverlappingCallbacks (Entity* whom, Entity* target)
-    {
-        for (OverlapCallback& callback : whom->m_OverlapCallbacks)
-        {
-            if (callback.OverlappingFunc)
-            {
-                m_SceneManager->GetMainLoop ()->GetScriptManager ().RunScriptFunction (
-                    callback.OverlappingFunc, target);
-            }
-        }
-    }
+		m_OverlapCallbacks.push_back (callback);
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    void Entity::CallEndOverlapCallbacks (Entity* whom, Entity* target)
-    {
-        for (OverlapCallback& callback : whom->m_OverlapCallbacks)
-        {
-            if (callback.EndFunc)
-            {
-                m_SceneManager->GetMainLoop ()->GetScriptManager ().RunScriptFunction (callback.EndFunc, target);
-            }
-        }
-    }
+	void Entity::CallBeginOverlapCallbacks (Entity* whom, Entity* target)
+	{
+		for (OverlapCallback& callback : whom->m_OverlapCallbacks)
+		{
+			if (callback.BeginFunc)
+			{
+				m_SceneManager->GetMainLoop ()->GetScriptManager ().RunScriptFunction (callback.BeginFunc, target);
+			}
+		}
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    std::vector<Entity*> Entity::GetBluprintChildren ()
-    {
-        std::vector<Actor*>& actors = m_SceneManager->GetActiveScene ()->GetActors ();
-        std::vector<Entity*> entities;
+	void Entity::CallOverlappingCallbacks (Entity* whom, Entity* target)
+	{
+		for (OverlapCallback& callback : whom->m_OverlapCallbacks)
+		{
+			if (callback.OverlappingFunc)
+			{
+				m_SceneManager->GetMainLoop ()->GetScriptManager ().RunScriptFunction (
+					callback.OverlappingFunc, target);
+			}
+		}
+	}
 
-        for (Actor* actor : actors)
-        {
-            if (actor->BlueprintID == this->ID)
-            {
-                entities.push_back (actor);
-            }
-        }
+	//--------------------------------------------------------------------------------------------------
 
-        return entities;
-    }
+	void Entity::CallEndOverlapCallbacks (Entity* whom, Entity* target)
+	{
+		for (OverlapCallback& callback : whom->m_OverlapCallbacks)
+		{
+			if (callback.EndFunc)
+			{
+				m_SceneManager->GetMainLoop ()->GetScriptManager ().RunScriptFunction (callback.EndFunc, target);
+			}
+		}
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    int Entity::GetNextID () { return ++GlobalID; }
+	std::vector<Entity*> Entity::GetBluprintChildren ()
+	{
+		std::vector<Actor*>& actors = m_SceneManager->GetActiveScene ()->GetActors ();
+		std::vector<Entity*> entities;
 
-    //--------------------------------------------------------------------------------------------------
+		for (Actor* actor : actors)
+		{
+			if (actor->BlueprintID == this->ID)
+			{
+				entities.push_back (actor);
+			}
+		}
 
-    bool Entity::CompareByZOrder (const Entity* a, const Entity* b) { return a->ZOrder < b->ZOrder; }
+		return entities;
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    void Entity::BeginOverlap (Entity*) {}
+	int Entity::GetNextID () { return ++GlobalID; }
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    void Entity::EndOverlap (Entity*) {}
+	bool Entity::CompareByZOrder (const Entity* a, const Entity* b) { return a->ZOrder < b->ZOrder; }
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
+
+	void Entity::BeginOverlap (Entity*) {}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void Entity::EndOverlap (Entity*) {}
+
+	//--------------------------------------------------------------------------------------------------
 }

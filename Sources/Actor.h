@@ -11,102 +11,106 @@
 
 namespace aga
 {
-    const std::string ANIM_IDLE_NAME = "ANIM_IDLE";
+	const std::string ANIM_IDLE_NAME = "ANIM_IDLE";
 
-    const std::string ANIM_MOVE_DOWN_NAME = "ANIM_MOVE_DOWN";
-    const std::string ANIM_MOVE_UP_NAME = "ANIM_MOVE_UP";
-    const std::string ANIM_MOVE_LEFT_NAME = "ANIM_MOVE_LEFT";
-    const std::string ANIM_MOVE_RIGHT_NAME = "ANIM_MOVE_RIGHT";
+	const std::string ANIM_MOVE_DOWN_NAME = "ANIM_MOVE_DOWN";
+	const std::string ANIM_MOVE_UP_NAME = "ANIM_MOVE_UP";
+	const std::string ANIM_MOVE_LEFT_NAME = "ANIM_MOVE_LEFT";
+	const std::string ANIM_MOVE_RIGHT_NAME = "ANIM_MOVE_RIGHT";
 
-    const std::string ANIM_STAND_DOWN_NAME = "ANIM_STAND_DOWN";
-    const std::string ANIM_STAND_UP_NAME = "ANIM_STAND_UP";
-    const std::string ANIM_STAND_LEFT_NAME = "ANIM_STAND_LEFT";
-    const std::string ANIM_STAND_RIGHT_NAME = "ANIM_STAND_RIGHT";
+	const std::string ANIM_STAND_DOWN_NAME = "ANIM_STAND_DOWN";
+	const std::string ANIM_STAND_UP_NAME = "ANIM_STAND_UP";
+	const std::string ANIM_STAND_LEFT_NAME = "ANIM_STAND_LEFT";
+	const std::string ANIM_STAND_RIGHT_NAME = "ANIM_STAND_RIGHT";
 
-    class SceneManager;
-    class Scene;
-    class Component;
+	class SceneManager;
+	class Scene;
+	class Component;
 
-    class Actor : public Entity, public Lifecycle, public Animable, public Scriptable, public Collidable
-    {
-    public:
-        Actor (SceneManager* sceneManager);
-        virtual ~Actor ();
-        virtual bool Initialize ();
-        virtual bool Destroy ();
+	class Actor : public Entity, public Lifecycle, public Animable, public Scriptable, public Collidable
+	{
+	public:
+		Actor (SceneManager* sceneManager);
+		Actor (const Actor& rhs);
+		virtual ~Actor ();
 
-        virtual void BeforeEnter ();
-        virtual void AfterLeave ();
+		virtual Actor* Clone () const = 0;
 
-        virtual bool Update (float deltaTime);
-        virtual void Render (float deltaTime);
+		virtual bool Initialize ();
+		virtual bool Destroy ();
 
-        virtual void Move (float dx, float dy);
-        virtual void Move (Point deltaPos);
-        virtual void SetPosition (float x, float y);
-        virtual void SetPosition (Point pos);
+		virtual void BeforeEnter ();
+		virtual void AfterLeave ();
 
-        virtual void SetCenterPosition (float x, float y);
-        virtual void SetCenterPosition (Point pos);
+		virtual bool Update (float deltaTime);
+		virtual void Render (float deltaTime);
 
-        Point GetPosition ();
-        Point GetSize ();
+		virtual void Move (float dx, float dy);
+		virtual void Move (Point deltaPos);
+		virtual void SetPosition (float x, float y);
+		virtual void SetPosition (Point pos);
 
-        void AddComponent (const std::string& name, Component* component);
-        void RemoveComponent (const std::string& name);
-        void RemoveComponent (Component* component);
-        Component* FindComponent (const std::string& name, const std::string& typeName);
-        class MovementComponent* GetMovementComponent (const std::string& name);
-        class ParticleEmitterComponent* GetParticleEmitterComponent (const std::string& name);
-        std::map<std::string, Component*>& GetComponents ();
+		virtual void SetCenterPosition (float x, float y);
+		virtual void SetCenterPosition (Point pos);
 
-        void OrientTo (Actor* actor);
-        void ChooseWalkAnimation (float angleDeg);
-        void ChooseStandAnimation (float angleDeg);
+		Point GetPosition ();
+		Point GetSize ();
 
-        virtual void DrawBounds ();
-        virtual void DrawName ();
+		void AddComponent (const std::string& name, Component* component);
+		void RemoveComponent (const std::string& name);
+		void RemoveComponent (Component* component);
+		Component* FindComponent (const std::string& name, const std::string& typeName);
+		class MovementComponent* GetMovementComponent (const std::string& name);
+		class ParticleEmitterComponent* GetParticleEmitterComponent (const std::string& name);
+		std::map<std::string, Component*>& GetComponents ();
 
-        void SuspendUpdate ();
-        void ResumeUpdate ();
+		void OrientTo (Actor* actor);
+		void ChooseWalkAnimation (float angleDeg);
+		void ChooseStandAnimation (float angleDeg);
 
-        std::function<void(float dx, float dy)> MoveCallback;
+		virtual void DrawBounds ();
+		virtual void DrawName ();
 
-        virtual std::string GetTypeName () = 0;
+		void SuspendUpdate ();
+		void ResumeUpdate ();
 
-        //  Helper functions
-        void AssignFlagPointsToWalk (const std::string& flagPointName);
+		std::function<void(float dx, float dy)> MoveCallback;
 
-        float GetFocusHeight () const;
-        void SetFocusHeight (float focusHeight);
+		virtual std::string GetTypeName () = 0;
 
-        std::string GetActionSpeech ();
-        void SetActionSpeech (const std::string& speechID);
+		//  Helper functions
+		void AssignFlagPointsToWalk (const std::string& flagPointName);
 
-        bool IsActionSpeechHandling ();
-        void SetActionSpeechHandling (bool handling);
+		float GetFocusHeight () const;
+		void SetFocusHeight (float focusHeight);
 
-    protected:
-        void ProcessTriggerAreas (float dx, float dy, Point&& offset);
-        void RenderComponents (float deltaTime);
+		std::string GetActionSpeech ();
+		void SetActionSpeech (const std::string& speechID);
 
-        void FireMoveCallback ();
+		bool IsActionSpeechHandling ();
+		void SetActionSpeechHandling (bool handling);
 
-    protected:
-        bool m_IsUpdating;
-        Point m_OldPosition;
-        std::map<std::string, Component*> m_Components;
+	protected:
+		void ProcessTriggerAreas (float dx, float dy, Point&& offset);
+		void RenderComponents (float deltaTime);
 
-        //  At which percent [0..1] Player should be rendered OVER this actor
-        float m_FocusHeight;
+		void FireMoveCallback ();
 
-        //  Speech triggered when 'action' with player
-        std::string m_ActionSpeech;
-        bool m_ActionSpeechHandling;
+	protected:
+		bool m_IsUpdating;
+		Point m_OldPosition;
+		std::map<std::string, Component*> m_Components;
 
-    public:
-        Rect TemplateBounds;
-    };
+		//  At which percent [0..1] Player should be rendered OVER this actor
+		float m_FocusHeight;
+
+		//  Speech triggered when 'action' with player
+		std::string m_ActionSpeech;
+		bool m_ActionSpeechHandling;
+
+	public:
+		Rect TemplateBounds;
+	};
 }
 
 #endif //   __ACTOR_H__

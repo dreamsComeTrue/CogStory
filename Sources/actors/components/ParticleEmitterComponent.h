@@ -16,6 +16,9 @@ namespace aga
 
     public:
         ParticleEmitterComponent (Actor* owner);
+        ParticleEmitterComponent (const ParticleEmitterComponent& rhs);
+        
+        virtual ParticleEmitterComponent* Clone () const override;
 
         virtual bool Destroy () override;
 

@@ -9,86 +9,88 @@
 
 namespace aga
 {
-    class SceneManager;
-    class Scene;
+	class SceneManager;
+	class Scene;
 
-    class AudioSampleComponent;
-    class ParticleEmitterComponent;
+	class AudioSampleComponent;
+	class ParticleEmitterComponent;
 
-    struct ActorAction
-    {
-        Actor* AnActor = nullptr;
-        asIScriptFunction* Func = nullptr;
-        std::string SpeechID = "";
-        bool Handled = false;
-    };
+	struct ActorAction
+	{
+		Actor* AnActor = nullptr;
+		asIScriptFunction* Func = nullptr;
+		std::string SpeechID = "";
+		bool Handled = false;
+	};
 
-    class Player : public Actor
-    {
-    public:
-        static std::string TypeName;
+	class Player : public Actor
+	{
+	public:
+		static std::string TypeName;
 
-    public:
-        Player (SceneManager* sceneManager);
-        virtual ~Player () override;
-        bool Initialize () override;
-        bool Destroy () override;
+	public:
+		Player (SceneManager* sceneManager);
+		virtual ~Player () override;
+		bool Initialize () override;
+		bool Destroy () override;
 
-        void BeforeEnter () override;
+		virtual Player* Clone () const;
 
-        virtual void BeginOverlap (Entity* entity) override;
-        virtual void EndOverlap (Entity* entity) override;
+		void BeforeEnter () override;
 
-        void SetPreventInput (bool prevent = false);
-        bool IsPreventInput () const;
-        void HandleInput (float deltaTime);
-        bool ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
+		virtual void BeginOverlap (Entity* entity) override;
+		virtual void EndOverlap (Entity* entity) override;
 
-        bool IsAction ();
+		void SetPreventInput (bool prevent = false);
+		bool IsPreventInput () const;
+		void HandleInput (float deltaTime);
+		bool ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
 
-        bool Update (float deltaTime) override;
-        void Render (float deltaTime) override;
+		bool IsAction ();
 
-        virtual void Move (float dx, float dy) override;
-        virtual void SetPosition (float x, float y) override;
-        virtual void SetPosition (Point point) override;
+		bool Update (float deltaTime) override;
+		void Render (float deltaTime) override;
 
-        virtual std::string GetTypeName () override;
+		virtual void Move (float dx, float dy) override;
+		virtual void SetPosition (float x, float y) override;
+		virtual void SetPosition (Point point) override;
 
-        //  Override for ScriptManager
-        void SetCurrentAnimation (const std::string& name) override;
+		virtual std::string GetTypeName () override;
 
-        void SetActionHandler (asIScriptFunction* func);
-        Actor* RegisterActorAction (
-            const std::string& actionName, const std::string& actorName, asIScriptFunction* func);
-        void RegisterActionSpeech (const std::string& actorName, const std::string& speechID);
-        void RegisterActionSpeech (int actorID, const std::string& speechID);
-        void RegisterActionSpeech (Actor* actor, const std::string& speechID);
-        void RemoveActionSpeech (Actor* actor);
+		//  Override for ScriptManager
+		void SetCurrentAnimation (const std::string& name) override;
 
-        class SpeechFrame* TalkTo (Actor* actor, const std::string& speechID);
-        Actor* GetLastActionActor ();
+		void SetActionHandler (asIScriptFunction* func);
+		Actor* RegisterActorAction (
+			const std::string& actionName, const std::string& actorName, asIScriptFunction* func);
+		void RegisterActionSpeech (const std::string& actorName, const std::string& speechID);
+		void RegisterActionSpeech (int actorID, const std::string& speechID);
+		void RegisterActionSpeech (Actor* actor, const std::string& speechID);
+		void RemoveActionSpeech (Actor* actor);
 
-    private:
-        void CreateParticleEmitters ();
-        void UpdateParticleEmitters ();
+		class SpeechFrame* TalkTo (Actor* actor, const std::string& speechID);
+		Actor* GetLastActionActor ();
 
-        void HandleAction ();
+	private:
+		void CreateParticleEmitters ();
+		void UpdateParticleEmitters ();
 
-    private:
-        bool m_PreventInput;
-        bool m_ActionHandling;
+		void HandleAction ();
 
-        ParticleEmitterComponent* m_HeadParticleComponent;
-        ParticleEmitterComponent* m_FootParticleComponent;
+	private:
+		bool m_PreventInput;
+		bool m_ActionHandling;
 
-        asIScriptFunction* m_ActionHandler;
+		ParticleEmitterComponent* m_HeadParticleComponent;
+		ParticleEmitterComponent* m_FootParticleComponent;
 
-        std::map<std::string, ActorAction> m_ActorActions;
-        Actor* m_LastActionActor;
+		asIScriptFunction* m_ActionHandler;
 
-        AudioSampleComponent* m_FootStepComponent;
-    };
+		std::map<std::string, ActorAction> m_ActorActions;
+		Actor* m_LastActionActor;
+
+		AudioSampleComponent* m_FootStepComponent;
+	};
 }
 
 #endif //   __PLAYER_H__
