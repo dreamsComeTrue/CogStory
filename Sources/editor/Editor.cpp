@@ -1760,6 +1760,10 @@ namespace aga
 					{
 						m_EditorActorMode.SetPrimarySelectedActor (actorUnderCursor);
 					}
+					
+					std::vector<Actor*> selectedActors = m_EditorActorMode.GetSelectedActors ();
+					MoveActorsCommand* command = new MoveActorsCommand (&m_EditorUndoRedo, selectedActors);
+					m_EditorUndoRedo.PushCommand (command);
 				}
 			}
 			else if (m_CursorMode == CursorMode::EditPhysBodyMode)

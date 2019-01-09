@@ -23,6 +23,19 @@ namespace aga
 	protected:
 		EditorUndoRedo* m_UndoRedo;
 	};
+	
+	class MoveActorsCommand : public UndoRedoCommand
+	{
+	public:
+		MoveActorsCommand (EditorUndoRedo* undoRedo, std::vector<Actor*> actors);
+
+		void AtPush ();
+		void AtPop ();
+
+	private:
+		std::vector<Actor*> m_Actors;
+		std::vector<Point> m_Positions;
+	};	
 
 	class RemoveActorsCommand : public UndoRedoCommand
 	{
