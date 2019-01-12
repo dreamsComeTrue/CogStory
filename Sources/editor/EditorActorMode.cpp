@@ -315,7 +315,7 @@ namespace aga
 
 		m_SelectedAtlasRegions.clear ();
 
-		const Point screenSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+		const Point screenSize = m_Editor->GetMainLoop ()->GetScreen ()->GetRealWindowSize ();
 		float beginning = screenSize.Width * 0.5f - (TILES_COUNT - 1) * 0.5f * TILE_SIZE - TILE_SIZE * 0.5f;
 		float advance = 0;
 		std::vector<AtlasRegion> regions = m_Atlas->GetRegions ();
@@ -492,7 +492,7 @@ namespace aga
 		}
 
 		std::vector<AtlasRegion>& regions = m_Atlas->GetRegions ();
-		const Point windowSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+		const Point windowSize = m_Editor->GetMainLoop ()->GetScreen ()->GetRealWindowSize ();
 		float beginning = windowSize.Width * 0.5f - (TILES_COUNT - 1) * 0.5f * TILE_SIZE - TILE_SIZE * 0.5f;
 		float advance = 0;
 

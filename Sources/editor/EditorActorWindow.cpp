@@ -831,7 +831,7 @@ namespace aga
 
     void EditorActorWindow::RenderActorImage ()
     {
-        const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+        const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetRealWindowSize ();
 
         const int margin = 10;
         const int previewSize = 96;

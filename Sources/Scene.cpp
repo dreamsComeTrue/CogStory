@@ -232,7 +232,7 @@ namespace aga
 			float scaleX = camera.GetScale ().X;
 			float scaleY = camera.GetScale ().Y;
 
-			Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+			Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetBackBufferSize ();
 			const Point halfScreen = screenSize * 0.5f;
 
 			Rect followActorBounds = followActor->Bounds;
@@ -435,7 +435,7 @@ namespace aga
 
 		Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
 		font.DrawText (FONT_NAME_SMALL, std::to_string (m_VisibleEntities.size ()), al_map_rgb (0, 255, 0), 10,
-			m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ().Height - 12, 1.0f, ALLEGRO_ALIGN_LEFT);
+			m_SceneManager->GetMainLoop ()->GetScreen ()->GetBackBufferSize ().Height - 12, 1.0f, ALLEGRO_ALIGN_LEFT);
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -447,7 +447,7 @@ namespace aga
 		if ((cameraCenter != m_VisibleLastCameraPos) || m_ActorsTreeChanged || force)
 		{
 			Point cameraScale = m_SceneManager->GetCamera ().GetScale ();
-			Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+			Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetBackBufferSize ();
 
 			float visibleScale = 0.7f;
 			Point moveBy (

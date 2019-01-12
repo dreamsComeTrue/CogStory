@@ -313,7 +313,7 @@ namespace aga
 
         if (m_Transitioning)
         {
-            const Point size = m_MainLoop->GetScreen ()->GetWindowSize ();
+            const Point size = m_MainLoop->GetScreen ()->GetBackBufferSize ();
             al_draw_filled_rectangle (0, 0, size.Width, size.Height, m_FadeColor);
         }
 
@@ -648,7 +648,7 @@ namespace aga
 
     void SceneManager::PrintOverlayText (const std::string& text, ScreenRelativePosition screenPos)
     {
-        const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+        const Point winSize = m_MainLoop->GetScreen ()->GetBackBufferSize ();
         Font& font = m_MainLoop->GetScreen ()->GetFont ();
         Point textSize = font.GetTextDimensions (FONT_NAME_MENU_TITLE, text);
         float offset = 30.f;

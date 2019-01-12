@@ -177,7 +177,7 @@ namespace aga
 
     void EditorAnimationWindow::Render ()
     {
-        const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+        const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetRealWindowSize ();
 
         ImGui::SetNextWindowPos (ImVec2 (0, 0));
         ImGui::SetNextWindowSize (ImVec2 (320, winSize.Height - 220), ImGuiCond_Always);
@@ -438,7 +438,7 @@ namespace aga
 
     void EditorAnimationWindow::RenderSpritesheet ()
     {
-        const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+        const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetRealWindowSize ();
         const Point beginPoint = {335, 5};
 
         const int margin = 10;
@@ -542,7 +542,7 @@ namespace aga
 
     void EditorAnimationWindow::RenderAnimationFrames (float deltaTime)
     {
-        const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+        const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetRealWindowSize ();
         const float margin = 10;
         const float animBoxSize = 200;
         const Point beginPoint = {margin, winSize.Height - animBoxSize - margin};

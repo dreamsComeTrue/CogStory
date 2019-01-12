@@ -719,9 +719,11 @@ namespace aga
 		if (m_DrawCameraBounds)
 		{
 			Point cameraScale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
-			Point windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
-			float finalWidth = GAME_WINDOW_SIZE.Width * cameraScale.Width / GAME_WINDOW_SCALE;
-			float finalHeight = GAME_WINDOW_SIZE.Height * cameraScale.Height / GAME_WINDOW_SCALE;
+			Point windowSize = m_MainLoop->GetScreen ()->GetRealWindowSize ();
+			Point gameWindowSize = m_MainLoop->GetScreen ()->GetGameWindowSize ();
+			
+			float finalWidth = gameWindowSize.Width * cameraScale.Width / GAME_WINDOW_SCALE;
+			float finalHeight = gameWindowSize.Height * cameraScale.Height / GAME_WINDOW_SCALE;
 			Rect r = Rect (windowSize.Width * 0.5f - finalWidth * 0.5f, windowSize.Height * 0.5f - finalHeight * 0.5f,
 				finalWidth, finalHeight);
 
@@ -782,7 +784,7 @@ namespace aga
 		const ALLEGRO_COLOR DARK_GRAY{0.4f, 0.4f, 0.4f, 1.0f};
 		const ALLEGRO_COLOR LIGHT_GRAY{0.5f, 0.5f, 0.5f, 1.0f};
 
-		const Point screenSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+		const Point screenSize = m_MainLoop->GetScreen ()->GetRealWindowSize ();
 		Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
 		Point trans = camera.GetTranslate ();
 		Point scale = camera.GetScale ();
@@ -987,7 +989,7 @@ namespace aga
 
 	void Editor::OnResetTranslate ()
 	{
-		const Point& windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+		const Point& windowSize = m_MainLoop->GetScreen ()->GetRealWindowSize ();
 		m_MainLoop->GetSceneManager ().GetCamera ().SetTranslate (windowSize.Width * 0.5f, windowSize.Height * 0.5f);
 	}
 
@@ -1407,7 +1409,7 @@ namespace aga
 		}
 		ImGui::PopStyleColor ();
 
-		const Point windowSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+		const Point windowSize = m_MainLoop->GetScreen ()->GetRealWindowSize ();
 		float beginning = windowSize.Width * 0.5f - (TILES_COUNT - 1) * 0.5f * TILE_SIZE - TILE_SIZE * 0.5f;
 		float end = beginning + TILES_COUNT * TILE_SIZE;
 
@@ -1496,7 +1498,7 @@ namespace aga
 		ALLEGRO_MOUSE_STATE state;
 		al_get_mouse_state (&state);
 
-		ImGui::SetNextWindowPos (ImVec2 (m_MainLoop->GetScreen ()->GetWindowSize ().Width - 155, 5), ImGuiCond_Always);
+		ImGui::SetNextWindowPos (ImVec2 (m_MainLoop->GetScreen ()->GetRealWindowSize ().Width - 155, 5), ImGuiCond_Always);
 		ImGui::SetNextWindowSize (ImVec2 (150, 302));
 
 		ImGui::PushStyleColor (ImGuiCol_WindowBg, ImVec4 (0, 0, 0, 0.3f));
@@ -1586,7 +1588,7 @@ namespace aga
 		ImGui::PopStyleColor ();
 
 		ImGui::SetNextWindowPos (
-			ImVec2 (m_MainLoop->GetScreen ()->GetWindowSize ().Width - 155, 300), ImGuiCond_Always);
+			ImVec2 (m_MainLoop->GetScreen ()->GetRealWindowSize ().Width - 155, 300), ImGuiCond_Always);
 		ImGui::SetNextWindowSize (ImVec2 (150, 270));
 		ImGui::PushStyleColor (ImGuiCol_WindowBg, ImVec4 (0.f, 0.f, 0.f, 0.0f));
 		if (ImGui::Begin ("Visiblies", nullptr,

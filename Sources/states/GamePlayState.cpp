@@ -13,157 +13,155 @@
 
 namespace aga
 {
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    const float GAME_WINDOW_SCALE = 2.0f;
-    const Point GAME_WINDOW_SIZE = {800, 600};
+	const float GAME_WINDOW_SCALE = 2.0f;
 
-    //--------------------------------------------------------------------------------------------------
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    GamePlayState::GamePlayState (MainLoop* mainLoop)
-        : State (mainLoop, GAMEPLAY_STATE_NAME)
-        , m_AudioWasEnabled (true)
-    {
-    }
+	GamePlayState::GamePlayState (MainLoop* mainLoop)
+		: State (mainLoop, GAMEPLAY_STATE_NAME)
+		, m_AudioWasEnabled (true)
+	{
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    GamePlayState::~GamePlayState ()
-    {
-        if (!IsDestroyed ())
-        {
-            Destroy ();
-        }
-    }
+	GamePlayState::~GamePlayState ()
+	{
+		if (!IsDestroyed ())
+		{
+			Destroy ();
+		}
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    bool GamePlayState::Initialize ()
-    {
-        Lifecycle::Initialize ();
+	bool GamePlayState::Initialize ()
+	{
+		Lifecycle::Initialize ();
 
-        Script* masterScript = m_MainLoop->GetScriptManager ().LoadScriptFromFile ("Master.script", "master");
-        masterScript->Run ("void Start ()");
+		Script* masterScript = m_MainLoop->GetScriptManager ().LoadScriptFromFile ("Master.script", "master");
+		masterScript->Run ("void Start ()");
 
-        m_MainLoop->GetSceneManager ().GetPlayer ()->TemplateBounds.Pos
-            = m_MainLoop->GetSceneManager ().GetPlayer ()->GetPosition ();
+		m_MainLoop->GetSceneManager ().GetPlayer ()->TemplateBounds.Pos
+			= m_MainLoop->GetSceneManager ().GetPlayer ()->GetPosition ();
 
-        return true;
-    }
+		return true;
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    bool GamePlayState::Destroy () { return Lifecycle::Destroy (); }
+	bool GamePlayState::Destroy () { return Lifecycle::Destroy (); }
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    void GamePlayState::BeforeEnter ()
-    {
-        m_MainLoop->GetScreen ()->SetWindowSize (GAME_WINDOW_SIZE);
+	void GamePlayState::BeforeEnter ()
+	{
+		Screen* screen = m_MainLoop->GetScreen ();
 
-        if (m_MainLoop->GetStateManager ().GetPreviousState ()->GetName () == EDITOR_STATE_NAME)
-        {
-            m_MainLoop->GetScreen ()->CenterOnScreen ();
-        }
+		screen->SetWindowSize (screen->GetGameWindowSize ());
 
-        m_MainLoop->GetAudioManager ().SetEnabled (m_AudioWasEnabled);
+		if (m_MainLoop->GetStateManager ().GetPreviousState ()->GetName () == EDITOR_STATE_NAME)
+		{
+			screen->CenterOnScreen ();
+		}
 
-        al_hide_mouse_cursor (m_MainLoop->GetScreen ()->GetDisplay ());
+		m_MainLoop->GetAudioManager ().SetEnabled (m_AudioWasEnabled);
 
-        SceneManager& sceneManager = m_MainLoop->GetSceneManager ();
+		al_hide_mouse_cursor (screen->GetDisplay ());
 
-        sceneManager.GetSpeechFrameManager ()->Clear ();
-        sceneManager.GetCamera ().ClearTransformations ();
+		SceneManager& sceneManager = m_MainLoop->GetSceneManager ();
 
-        ResizeWindow ();
+		sceneManager.GetSpeechFrameManager ()->Clear ();
+		sceneManager.GetCamera ().ClearTransformations ();
 
-        //  Re-init current initial scene everytime we start GamePlayState
-        sceneManager.SetActiveScene (sceneManager.GetActiveScene ());
+		ResizeWindow ();
 
-        //  TODO: remove
-        m_MainLoop->GetAudioManager ().SetEnabled (false);
-    }
+		//  Re-init current initial scene everytime we start GamePlayState
+		sceneManager.SetActiveScene (sceneManager.GetActiveScene ());
 
-    //--------------------------------------------------------------------------------------------------
+		//  TODO: remove
+		m_MainLoop->GetAudioManager ().SetEnabled (false);
+	}
 
-    void GamePlayState::AfterLeave ()
-    {
-        m_MainLoop->GetSceneManager ().GetActiveScene ()->AfterLeave ();
-        m_MainLoop->GetAudioManager ().SetEnabled (true);
-    }
+	//--------------------------------------------------------------------------------------------------
 
-    //--------------------------------------------------------------------------------------------------
+	void GamePlayState::AfterLeave ()
+	{
+		m_MainLoop->GetSceneManager ().GetActiveScene ()->AfterLeave ();
+		m_MainLoop->GetAudioManager ().SetEnabled (true);
+	}
 
-    bool GamePlayState::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
-    {
-        if (event->type == ALLEGRO_EVENT_KEY_UP)
-        {
-            if (event->keyboard.keycode == ALLEGRO_KEY_M)
-            {
-                m_MainLoop->GetAudioManager ().SetEnabled (!m_MainLoop->GetAudioManager ().IsEnabled ());
-                m_AudioWasEnabled = m_MainLoop->GetAudioManager ().IsEnabled ();
-            }
+	//--------------------------------------------------------------------------------------------------
 
-            if (m_MainLoop->GetAudioManager ().IsEnabled ())
-            {
-                AudioStream* audioStream = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetSceneAudioStream ();
+	bool GamePlayState::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
+	{
+		if (event->type == ALLEGRO_EVENT_KEY_UP)
+		{
+			if (event->keyboard.keycode == ALLEGRO_KEY_M)
+			{
+				m_MainLoop->GetAudioManager ().SetEnabled (!m_MainLoop->GetAudioManager ().IsEnabled ());
+				m_AudioWasEnabled = m_MainLoop->GetAudioManager ().IsEnabled ();
+			}
 
-                if (audioStream)
-                {
-                    audioStream->Play ();
-                }
-            }
-        }
+			if (m_MainLoop->GetAudioManager ().IsEnabled ())
+			{
+				AudioStream* audioStream = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetSceneAudioStream ();
 
-        if (event->type == ALLEGRO_EVENT_DISPLAY_RESIZE)
-        {
-            ResizeWindow ();
-        }
+				if (audioStream)
+				{
+					audioStream->Play ();
+				}
+			}
+		}
 
-        return m_MainLoop->GetSceneManager ().GetPlayer ()->ProcessEvent (event, deltaTime);
-    }
+		if (event->type == ALLEGRO_EVENT_DISPLAY_RESIZE)
+		{
+			ResizeWindow ();
+		}
 
-    //--------------------------------------------------------------------------------------------------
+		return m_MainLoop->GetSceneManager ().GetPlayer ()->ProcessEvent (event, deltaTime);
+	}
 
-    void GamePlayState::ResizeWindow ()
-    {
-        //  Initial scale in gameplay twice big as normal
-        const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+	//--------------------------------------------------------------------------------------------------
 
-        float finalScale = (winSize.Width * GAME_WINDOW_SCALE) / GAME_WINDOW_SIZE.Width;
+	void GamePlayState::ResizeWindow ()
+	{
+		//  Initial scale in gameplay twice big as normal
+		const Point winSize = m_MainLoop->GetScreen ()->GetBackBufferSize ();
 
-        Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
-        Point translate = camera.GetTranslate ();
+		float finalScale = (winSize.Width * GAME_WINDOW_SCALE) / m_MainLoop->GetScreen ()->GetGameWindowSize ().Width;
 
-        camera.ClearTransformations ();
+		Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
+		Point translate = camera.GetTranslate ();
 
-        m_MainLoop->GetSceneManager ().GetCamera ().Scale (
-            finalScale, finalScale, winSize.Width * 0.5f, winSize.Height * 0.5f);
+		camera.ClearTransformations ();
+		camera.Scale (finalScale, finalScale, winSize.Width * 0.5f, winSize.Height * 0.5f);
+		camera.SetTranslate (translate);
 
-        camera.SetTranslate (translate);
+		if (camera.GetFollowActor ())
+		{
+			camera.GetFollowActor ()->MoveCallback (0, 0);
+		}
+	}
 
-        if (camera.GetFollowActor ())
-        {
-            camera.GetFollowActor ()->MoveCallback (0, 0);
-        }
-    }
+	//--------------------------------------------------------------------------------------------------
 
-    //--------------------------------------------------------------------------------------------------
+	void GamePlayState::Update (float deltaTime)
+	{
+		SceneManager& sceneManager = m_MainLoop->GetSceneManager ();
 
-    void GamePlayState::Update (float deltaTime)
-    {
-        SceneManager& sceneManager = m_MainLoop->GetSceneManager ();
+		if (!sceneManager.IsTransitioning () && !sceneManager.GetPlayer ()->IsPreventInput ())
+		{
+			sceneManager.GetPlayer ()->HandleInput (deltaTime);
+		}
+	}
 
-        if (!sceneManager.IsTransitioning () && !sceneManager.GetPlayer ()->IsPreventInput ())
-        {
-            sceneManager.GetPlayer ()->HandleInput (deltaTime);
-        }
-    }
+	//--------------------------------------------------------------------------------------------------
 
-    //--------------------------------------------------------------------------------------------------
+	void GamePlayState::Render (float deltaTime) { m_MainLoop->GetSceneManager ().Render (deltaTime); }
 
-    void GamePlayState::Render (float deltaTime) { m_MainLoop->GetSceneManager ().Render (deltaTime); }
-
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 }

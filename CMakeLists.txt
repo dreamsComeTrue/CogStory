@@ -37,7 +37,6 @@ list(APPEND INCLUDE_DIRS
 else()
 endif (WIN32)
 
-
 list(APPEND INCLUDE_DIRS
         Sources/
         Sources/editor/
@@ -119,5 +118,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
                       RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ../
                       )
 
-#set_target_properties(${PROJECT_NAME} PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
 cotire(${PROJECT_NAME})

@@ -10,114 +10,122 @@
 
 namespace aga
 {
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    EditorState::EditorState (MainLoop* mainLoop)
-        : State (mainLoop, EDITOR_STATE_NAME)
-        , m_LastEditedScene (nullptr)
-    {
-    }
+	EditorState::EditorState (MainLoop* mainLoop)
+		: State (mainLoop, EDITOR_STATE_NAME)
+		, m_LastEditedScene (nullptr)
+	{
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    EditorState::~EditorState ()
-    {
-        if (!IsDestroyed ())
-        {
-            Destroy ();
-        }
-    }
+	EditorState::~EditorState ()
+	{
+		if (!IsDestroyed ())
+		{
+			Destroy ();
+		}
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    bool EditorState::Initialize ()
-    {
-        Lifecycle::Initialize ();
+	bool EditorState::Initialize ()
+	{
+		Lifecycle::Initialize ();
 
-        m_Editor = new Editor (m_MainLoop);
-        m_Editor->Initialize ();
+		m_Editor = new Editor (m_MainLoop);
+		m_Editor->Initialize ();
 
-        ALLEGRO_DISPLAY* display = m_MainLoop->GetScreen ()->GetDisplay ();
+		ALLEGRO_DISPLAY* display = m_MainLoop->GetScreen ()->GetDisplay ();
 
-        m_LastWindowSize.X = al_get_display_width (display);
-        m_LastWindowSize.Y = al_get_display_height (display);
+		m_LastWindowSize.X = al_get_display_width (display);
+		m_LastWindowSize.Y = al_get_display_height (display);
 
-        return true;
-    }
+		return true;
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    bool EditorState::Destroy ()
-    {
-        SAFE_DELETE (m_Editor);
+	bool EditorState::Destroy ()
+	{
+		SAFE_DELETE (m_Editor);
 
-        return Lifecycle::Destroy ();
-    }
+		return Lifecycle::Destroy ();
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    void EditorState::BeforeEnter ()
-    {
-        m_MainLoop->GetAudioManager ().SetEnabled (false);
-        m_MainLoop->GetAudioManager ().ClearLastPlayedStreams ();
+	void EditorState::BeforeEnter ()
+	{
+		Screen* screen = m_MainLoop->GetScreen ();
 
-        m_MainLoop->GetScreen ()->SetWindowSize (m_LastWindowSize);
-        m_MainLoop->GetScreen ()->CenterOnScreen ();
+		m_MainLoop->GetAudioManager ().SetEnabled (false);
+		m_MainLoop->GetAudioManager ().ClearLastPlayedStreams ();
 
-        al_show_mouse_cursor (m_MainLoop->GetScreen ()->GetDisplay ());
+		screen->SetWindowSize (m_LastWindowSize);
+		screen->CenterOnScreen ();
 
-        m_Editor->BeforeEnter ();
+		al_show_mouse_cursor (screen->GetDisplay ());
 
-        SceneManager& sceneManager = m_MainLoop->GetSceneManager ();
-        Player* player = sceneManager.GetPlayer ();
+		m_Editor->BeforeEnter ();
 
-        if (m_LastEditedScene != nullptr && m_LastEditedScene != sceneManager.GetActiveScene ())
-        {
-            sceneManager.SetActiveScene (m_LastEditedScene);
-            player->TemplateBounds.Pos = player->GetPosition ();
-        }
+		SceneManager& sceneManager = m_MainLoop->GetSceneManager ();
+		Player* player = sceneManager.GetPlayer ();
 
-        sceneManager.GetActiveScene ()->ResetAllActorsPositions ();
+		if (m_LastEditedScene != nullptr && m_LastEditedScene != sceneManager.GetActiveScene ())
+		{
+			sceneManager.SetActiveScene (m_LastEditedScene);
+			player->TemplateBounds.Pos = player->GetPosition ();
+		}
 
-        //  Reset camera to player
-        player->BeforeEnter ();
-        player->Move (0.f, 0.00001f);
-        player->SetPosition (player->TemplateBounds.Pos);
+		sceneManager.GetActiveScene ()->ResetAllActorsPositions ();
 
-        if (m_Editor->GetCursorMode () == EditPhysBodyMode)
-        {
-            m_Editor->SwitchCursorMode ();
-        }
-    }
+		//  Reset camera to player
+		player->BeforeEnter ();
+		player->Move (0.f, 0.00001f);
+		player->SetPosition (player->TemplateBounds.Pos);
 
-    //--------------------------------------------------------------------------------------------------
+		if (m_Editor->GetCursorMode () == EditPhysBodyMode)
+		{
+			m_Editor->SwitchCursorMode ();
+		}
 
-    void EditorState::AfterLeave ()
-    {
-        m_LastEditedScene = m_MainLoop->GetSceneManager ().GetActiveScene ();
+		screen->SetDrawFilled (true);
+	}
 
-        ALLEGRO_DISPLAY* display = m_MainLoop->GetScreen ()->GetDisplay ();
+	//--------------------------------------------------------------------------------------------------
 
-        m_LastWindowSize.X = al_get_display_width (display);
-        m_LastWindowSize.Y = al_get_display_height (display);
-    }
+	void EditorState::AfterLeave ()
+	{
+		Screen* screen = m_MainLoop->GetScreen ();
 
-    //--------------------------------------------------------------------------------------------------
+		m_LastEditedScene = m_MainLoop->GetSceneManager ().GetActiveScene ();
 
-    bool EditorState::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
-    {
-        m_Editor->ProcessEvent (event, deltaTime);
+		ALLEGRO_DISPLAY* display = screen->GetDisplay ();
 
-        return true;
-    }
+		m_LastWindowSize.X = al_get_display_width (display);
+		m_LastWindowSize.Y = al_get_display_height (display);
 
-    //--------------------------------------------------------------------------------------------------
+		screen->SetDrawFilled (false);
+	}
 
-    void EditorState::Update (float deltaTime) { m_Editor->Update (deltaTime); }
+	//--------------------------------------------------------------------------------------------------
 
-    //--------------------------------------------------------------------------------------------------
+	bool EditorState::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
+	{
+		m_Editor->ProcessEvent (event, deltaTime);
 
-    void EditorState::Render (float deltaTime) { m_Editor->Render (deltaTime); }
+		return true;
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
+
+	void EditorState::Update (float deltaTime) { m_Editor->Update (deltaTime); }
+
+	//--------------------------------------------------------------------------------------------------
+
+	void EditorState::Render (float deltaTime) { m_Editor->Render (deltaTime); }
+
+	//--------------------------------------------------------------------------------------------------
 }

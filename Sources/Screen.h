@@ -8,72 +8,85 @@
 
 namespace aga
 {
-    struct DebugMessage
-    {
-        std::string Message;
-        float MaxDuration = 2000.0f; //  milliseconds
-        ALLEGRO_COLOR Color = COLOR_GREEN;
+	struct DebugMessage
+	{
+		std::string Message;
+		float MaxDuration = 2000.0f; //  milliseconds
+		ALLEGRO_COLOR Color = COLOR_GREEN;
 
-        float ActualDuration = 0.0f;
-    };
+		float ActualDuration = 0.0f;
+	};
 
-    class Screen : public Lifecycle
-    {
-    public:
-        Screen (unsigned width, unsigned height, const char* gameTitle, bool centerOnScreen = true);
-        virtual ~Screen ();
-        bool Initialize ();
-        bool Destroy ();
+	class Screen : public Lifecycle
+	{
+	public:
+		Screen (unsigned screenWidth, unsigned screenHeight, unsigned gameWindowWidth, unsigned gameWindowHeight,
+			const char* gameTitle, bool centerOnScreen = true);
+		virtual ~Screen ();
+		bool Initialize ();
+		bool Destroy ();
 
-        bool Update (float deltaTime);
+		bool Update (float deltaTime);
 
-        void SetBackgroundColor (ALLEGRO_COLOR color);
-        void SetBackgroundColor (float r, float g, float b, float a);
+		void SetBackgroundColor (ALLEGRO_COLOR color);
+		void SetBackgroundColor (float r, float g, float b, float a);
 
-        void SetMouseCursor (const char* path);
+		void SetMouseCursor (const char* path);
 
-        void SetWindowSize (Point size);
-        Point& GetWindowSize ();
-        Font& GetFont ();
+		void SetWindowSize (Point size);
+		Point& GetRealWindowSize ();
+		Point GetGameWindowSize ();
+		Font& GetFont ();
 
-        float GetDeltaTime () const;
-        float GetFPS () const;
+		float GetDeltaTime () const;
+		float GetFPS () const;
 
-        ALLEGRO_DISPLAY* GetDisplay ();
-        ALLEGRO_EVENT_QUEUE* GetEventQueue ();
+		ALLEGRO_DISPLAY* GetDisplay ();
+		ALLEGRO_EVENT_QUEUE* GetEventQueue ();
 
-        std::function<void(ALLEGRO_EVENT*)> ProcessEventFunction;
-        std::function<void(float deltaTime)> UpdateFunction;
-        std::function<void()> RenderFunction;
+		std::function<void(ALLEGRO_EVENT*)> ProcessEventFunction;
+		std::function<void(float deltaTime)> UpdateFunction;
+		std::function<void()> RenderFunction;
 
-        void AddDebugMessage (const std::string& text, float duration = 5000.f, ALLEGRO_COLOR color = COLOR_GREEN);
+		void AddDebugMessage (const std::string& text, float duration = 5000.f, ALLEGRO_COLOR color = COLOR_GREEN);
 
-        void CenterOnScreen ();
+		void CenterOnScreen ();
+		Point GetBackBufferSize ();
+		Point GetBackBufferOffset ();
 
-        static Screen* GetSingleton () { return m_Singleton; }
+		void SetDrawFilled (bool filled);
 
-    private:
-        void DrawDebugMessages ();
+		static Screen* GetSingleton () { return m_Singleton; }
 
-    private:
-        std::string m_GameTitle;
-        unsigned m_Width, m_Height;
-        Point m_RealSize;
-        bool m_CenterOnScreen;
-        bool m_Redraw;
-        float m_DeltaTime;
+	private:
+		void DrawDebugMessages ();
+		void OnResize ();
+		void InvalidateBackBuffer (int newWidth, int newHeight);
 
-        Font m_Font;
+	private:
+		std::string m_GameTitle;
+		unsigned m_Width, m_Height;
+		unsigned m_GameWindowWidth, m_GameWindowHeight;
+		Point m_RealSize;
+		bool m_CenterOnScreen;
+		bool m_Redraw;
+		float m_DeltaTime;
 
-        ALLEGRO_COLOR m_BackgroundColor;
-        ALLEGRO_DISPLAY* m_Display;
-        ALLEGRO_EVENT_QUEUE* m_EventQueue;
-        ALLEGRO_TIMER* m_DisplayTimer;
+		Font m_Font;
 
-        std::deque<DebugMessage> m_DebugMessages;
+		ALLEGRO_COLOR m_BackgroundColor;
+		ALLEGRO_DISPLAY* m_Display;
+		ALLEGRO_EVENT_QUEUE* m_EventQueue;
+		ALLEGRO_TIMER* m_DisplayTimer;
+		ALLEGRO_BITMAP* m_BackBuffer;
 
-        static Screen* m_Singleton;
-    };
+		std::deque<DebugMessage> m_DebugMessages;
+		Point m_BackBufferSize;
+		Point m_BackBufferOffset;
+		bool m_DrawFilled;
+
+		static Screen* m_Singleton;
+	};
 }
 
 #endif //   __SCREEN_H__

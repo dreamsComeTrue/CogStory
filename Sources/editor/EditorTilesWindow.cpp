@@ -328,7 +328,7 @@ namespace aga
 
     void EditorTilesWindow::RenderSpritesheet ()
     {
-        const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+        const Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetRealWindowSize ();
         const float margin = 10;
         const float frameBoxSize = 200;
         const Point selBeginPoint = {margin, winSize.Height - frameBoxSize - margin};

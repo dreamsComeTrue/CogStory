@@ -288,7 +288,7 @@ namespace aga
         ScreenRelativePosition position, Point absolutePos, int maxCharsInLine, int maxLines, bool showActor)
     {
         const int SCREEN_OFFSET = 10;
-        Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetWindowSize ();
+        Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetBackBufferSize ();
         Point size = GetTextRectSize (maxCharsInLine, maxLines);
         Point pos;
 

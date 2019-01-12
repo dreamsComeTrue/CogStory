@@ -939,7 +939,7 @@ namespace aga
         r = m_ScriptEngine->RegisterGlobalProperty ("Screen screen", m_MainLoop->GetScreen ());
         assert (r >= 0);
         r = m_ScriptEngine->RegisterObjectMethod (
-            "Screen", "const Point& GetWindowSize ()", asMETHOD (Screen, GetWindowSize), asCALL_THISCALL);
+            "Screen", "const Point GetWindowSize ()", asMETHOD (Screen, GetBackBufferSize), asCALL_THISCALL);
         assert (r >= 0);
     }
 

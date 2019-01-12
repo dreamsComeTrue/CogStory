@@ -15,10 +15,10 @@ int main (int /*argc*/, char** /*argv*/)
 {
     // The attributes of the screen
     const char* GAME_TITLE = "LITTLE COG STORY";
-    const int SCREEN_WIDTH = 1200;
-    const int SCREEN_HEIGHT = 700;
+    const Point SCREEN_SIZE = {1200, 700};
+    const Point GAME_WINDOW_SIZE = {800, 600};
 
-    Screen mainScreen (SCREEN_WIDTH, SCREEN_HEIGHT, GAME_TITLE, true);
+    Screen mainScreen (SCREEN_SIZE.Width, SCREEN_SIZE.Height, GAME_WINDOW_SIZE.Width, GAME_WINDOW_SIZE.Height, GAME_TITLE, true);
 
     if (mainScreen.Initialize ())
     {

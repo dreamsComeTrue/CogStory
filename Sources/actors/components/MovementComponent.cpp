@@ -173,7 +173,7 @@ namespace aga
 					MainLoop* mainLoop = m_Actor->GetSceneManager ()->GetMainLoop ();
 					Actor* followActor = mainLoop->GetSceneManager ().GetCamera ().GetFollowActor ();
 
-					Point screenSize = mainLoop->GetScreen ()->GetWindowSize ();
+					Point screenSize = mainLoop->GetScreen ()->GetBackBufferSize ();
 					Point followActorPos = followActor->GetPosition () + followActor->Bounds.GetHalfSize ();
 					Point thisPos = m_Actor->GetPosition ();
 

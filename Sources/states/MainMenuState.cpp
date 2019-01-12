@@ -283,7 +283,7 @@ namespace aga
 
     void MainMenuState::Render (float deltaTime)
     {
-        const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+        const Point winSize = m_MainLoop->GetScreen ()->GetBackBufferSize ();
         Font& font = m_MainLoop->GetScreen ()->GetFont ();
 
         if (!m_Closing)
@@ -377,7 +377,7 @@ namespace aga
 
     void MainMenuState::RenderMenuItems ()
     {
-        const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+        const Point winSize = m_MainLoop->GetScreen ()->GetBackBufferSize ();
         std::string menuItems[3] = {"NEW JOURNEY", "CONTINUE", "EXIT"};
 
         Font& font = m_MainLoop->GetScreen ()->GetFont ();
@@ -418,7 +418,7 @@ namespace aga
 
     void MainMenuState::RenderExitItems ()
     {
-        const Point winSize = m_MainLoop->GetScreen ()->GetWindowSize ();
+        const Point winSize = m_MainLoop->GetScreen ()->GetBackBufferSize ();
         std::string menuItems[3] = {"SURE?", "YES", "NO"};
 
         Font& font = m_MainLoop->GetScreen ()->GetFont ();
