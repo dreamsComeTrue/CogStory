@@ -5,6 +5,7 @@
 #include "Editor.h"
 #include "MainLoop.h"
 #include "Screen.h"
+#include "Component.h"
 #include "actors/TileActor.h"
 
 namespace aga
@@ -457,11 +458,24 @@ namespace aga
 			newActor->TemplateBounds = newActor->Bounds;
 			newActor->Rotation = selectedActor->Rotation;
 			newActor->ZOrder = selectedActor->ZOrder;
+			newActor->SetCollidable (selectedActor->IsCollidable ());
+			newActor->SetCollisionEnabled (selectedActor->IsCollisionEnabled ());
 			newActor->SetFocusHeight (selectedActor->GetFocusHeight ());
 			newActor->SetAtlas (selectedActor->GetAtlas ());
+			newActor->SetAnimation (selectedActor->GetAnimation ());
 			newActor->SetAtlasRegionName (selectedActor->GetAtlasRegionName ());
 			newActor->PhysPoints = selectedActor->PhysPoints;
 			newActor->SetPhysOffset (newActor->Bounds.GetPos () + newActor->Bounds.GetHalfSize ());
+
+			std::map<std::string, Component*>& components = selectedActor->GetComponents ();
+
+			for (std::map<std::string, Component*>::iterator it = components.begin (); it != components.end (); ++it)
+			{
+				Component* newComponent = it->second->Clone ();
+				newComponent->SetActor (newActor);
+				
+				newActor->AddComponent (it->first, newComponent);
+			}
 
 			newActor->Initialize ();
 

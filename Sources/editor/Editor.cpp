@@ -1866,7 +1866,7 @@ namespace aga
 				ALLEGRO_MOUSE_STATE state;
 				al_get_mouse_state (&state);
 
-				if (m_IsMouseDrag || m_EditorActorMode.IsSpriteSheetChoosen ())
+				if (state.buttons == 1 || m_EditorActorMode.IsSpriteSheetChoosen ())
 				{
 					m_EditorActorMode.MoveSelectedActors (state.x, state.y);
 				}
