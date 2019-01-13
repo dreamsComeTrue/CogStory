@@ -205,8 +205,13 @@ namespace aga
 
 		if (m_Transitioning)
 		{
-    		const Point size = m_MainLoop->GetScreen ()->GetBackBufferSize ();
+			al_get_blender (&m_BlendOp, &m_BlendSrc, &m_BlendDst);
+			al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+
+			const Point size = m_MainLoop->GetScreen ()->GetBackBufferSize ();
 			al_draw_filled_rectangle (0, 0, size.Width, size.Height, m_FadeColor);
+
+			al_set_blender (m_BlendOp, m_BlendSrc, m_BlendDst);
 		}
 	}
 
@@ -248,10 +253,9 @@ namespace aga
 
 		auto fadeFunc = [&](float v) {
 			m_FadeColor.a = v;
-			
+
 			if (m_TweenFade->TweenF.progress () >= 0.99f)
 			{
-				al_set_blender (m_BlendOp, m_BlendSrc, m_BlendDst);
 				m_Transitioning = false;
 			}
 
@@ -273,9 +277,6 @@ namespace aga
 										 .onStep (fadeFunc);
 
 		m_TweenFade = &m_MainLoop->GetTweenManager ().AddTween (STATE_MANAGER_TWEEN_ID, tween);
-
-		al_get_blender (&m_BlendOp, &m_BlendSrc, &m_BlendDst);
-		al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
 	}
 
 	//--------------------------------------------------------------------------------------------------
