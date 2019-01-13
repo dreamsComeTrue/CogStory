@@ -75,7 +75,7 @@ namespace aga
     void MainMenuState::BeforeEnter ()
     {
         al_hide_mouse_cursor (m_MainLoop->GetScreen ()->GetDisplay ());
-        m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgb (60, 60, 70));
+        m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgba (60, 60, 70, 255));
 
         m_MainLoop->GetAudioManager ().SetEnabled (true);
 
@@ -260,24 +260,6 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     void MainMenuState::Update (float) {}
-
-    //--------------------------------------------------------------------------------------------------
-
-    struct VertexInfo
-    {
-        float x;
-        float y;
-    };
-
-    void DrawPolyLine (float x1, float y1, float x2, float y2, ALLEGRO_COLOR c)
-    {
-        float lineThickness = 15;
-
-        float verts[] = {x1, y1, x2, y2};
-
-        al_draw_polyline (
-            verts, 2 * sizeof (float), 2, ALLEGRO_LINE_JOIN_ROUND, ALLEGRO_LINE_CAP_ROUND, c, lineThickness, 1.0);
-    }
 
     //--------------------------------------------------------------------------------------------------
 

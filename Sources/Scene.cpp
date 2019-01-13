@@ -73,7 +73,7 @@ namespace aga
 
 	Scene::Scene (SceneManager* sceneManager, Rect size)
 		: Scriptable (&sceneManager->GetMainLoop ()->GetScriptManager ())
-		, m_BackgroundColor (al_map_rgb (60, 60, 70))
+		, m_BackgroundColor (COLOR_BLACK)
 		, m_SceneManager (sceneManager)
 		, m_CurrentActor (nullptr)
 		, m_QuadTree (size)

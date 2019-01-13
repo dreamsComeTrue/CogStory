@@ -142,7 +142,7 @@ namespace aga
 				Point deltaPos = newPos - currentPos;
 
 				std::vector<Entity*> entites
-					= m_Actor->GetSceneManager ()->GetActiveScene ()->RecomputeVisibleEntities (true);
+					= m_Actor->GetSceneManager ()->GetActiveScene ()->RecomputeVisibleEntities (false);
 				for (Entity* ent : entites)
 				{
 					Collidable* collidable = static_cast<Actor*> (ent);

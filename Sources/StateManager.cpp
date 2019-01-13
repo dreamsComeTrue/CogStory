@@ -80,7 +80,7 @@ namespace aga
 
 	std::string StateManager::GetActiveStateName ()
 	{
-		if (m_ActiveState != nullptr)
+		if (m_ActiveState)
 		{
 			return m_ActiveState->GetName ();
 		}
@@ -241,22 +241,21 @@ namespace aga
 			}
 		};
 
-		m_FadeColor = al_map_rgb (60, 60, 70);
-		m_FadeColor.a = 0.0f;
+		m_FadeColor = al_map_rgba (60, 60, 70, 0);
 		m_Transitioning = true;
 		m_TransitionFunc = transitionFunc;
 		m_TransitionFuncFired = false;
 
 		auto fadeFunc = [&](float v) {
 			m_FadeColor.a = v;
-
-			if (m_TweenFade->TweenF.progress () >= 1.0f)
+			
+			if (m_TweenFade->TweenF.progress () >= 0.99f)
 			{
 				al_set_blender (m_BlendOp, m_BlendSrc, m_BlendDst);
 				m_Transitioning = false;
 			}
 
-			if (m_TransitionFunc && !m_TransitionFuncFired && m_TweenFade->TweenF.progress () > 0.5f)
+			if (m_TransitionFunc && !m_TransitionFuncFired && m_TweenFade->TweenF.progress () >= 0.5f)
 			{
 				m_TransitionFuncFired = true;
 				m_TransitionFunc ();

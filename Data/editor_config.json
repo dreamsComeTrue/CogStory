@@ -14,7 +14,7 @@
     "show_bounds": false,
     "show_camera_bounds": false,
     "show_flag_points": false,
-    "show_grid": false,
+    "show_grid": true,
     "show_names": false,
     "show_physics": false,
     "show_trigger_areas": true
