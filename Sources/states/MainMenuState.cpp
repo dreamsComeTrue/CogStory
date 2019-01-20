@@ -75,7 +75,7 @@ namespace aga
     void MainMenuState::BeforeEnter ()
     {
         al_hide_mouse_cursor (m_MainLoop->GetScreen ()->GetDisplay ());
-        m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgba (60, 60, 70, 255));
+        m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgba (35, 31, 70, 255));
 
         m_MainLoop->GetAudioManager ().SetEnabled (true);
 
@@ -156,6 +156,7 @@ namespace aga
 
             case ALLEGRO_KEY_ENTER:
             case ALLEGRO_KEY_X:
+            case ALLEGRO_KEY_SPACE:
             {
                 HandleSelection ();
 

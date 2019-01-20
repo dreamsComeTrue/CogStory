@@ -61,10 +61,9 @@ namespace aga
 	{
 		Screen* screen = m_MainLoop->GetScreen ();
 
-		screen->SetWindowSize (screen->GetGameWindowSize ());
-
 		if (m_MainLoop->GetStateManager ().GetPreviousState ()->GetName () == EDITOR_STATE_NAME)
 		{
+			screen->SetWindowSize (screen->GetGameWindowSize ());
 			screen->CenterOnScreen ();
 		}
 

@@ -13,7 +13,7 @@
     "show_actors": true,
     "show_bounds": false,
     "show_camera_bounds": false,
-    "show_flag_points": false,
+    "show_flag_points": true,
     "show_grid": true,
     "show_names": false,
     "show_physics": false,
