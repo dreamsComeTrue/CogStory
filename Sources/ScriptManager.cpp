@@ -892,12 +892,12 @@ namespace aga
 		r = m_ScriptEngine->RegisterObjectMethod (
 			"Player", "Actor@ opImplCast()", asFUNCTION ((RefCast<Player, Actor>)), asCALL_CDECL_OBJLAST);
 		assert (r >= 0);
-		r = m_ScriptEngine->RegisterObjectMethod (
-			"Actor", "const Player@ opCast()", asFUNCTION ((RefCast<Actor, Player>)), asCALL_CDECL_OBJLAST);
-		assert (r >= 0);
-		r = m_ScriptEngine->RegisterObjectMethod (
-			"Player", "const Actor@ opImplCast()", asFUNCTION ((RefCast<Player, Actor>)), asCALL_CDECL_OBJLAST);
-		assert (r >= 0);
+	//	r = m_ScriptEngine->RegisterObjectMethod (
+	//		"Actor", "const Player@ opCast()", asFUNCTION ((RefCast<Actor, Player>)), asCALL_CDECL_OBJLAST);
+	//		assert (r >= 0);
+	//	r = m_ScriptEngine->RegisterObjectMethod (
+	//		"Player", "const Actor@ opImplCast()", asFUNCTION ((RefCast<Player, Actor>)), asCALL_CDECL_OBJLAST);
+	//	assert (r >= 0);
 
 		r = m_ScriptEngine->RegisterGlobalProperty ("Player player", m_MainLoop->GetSceneManager ().GetPlayer ());
 		assert (r >= 0);

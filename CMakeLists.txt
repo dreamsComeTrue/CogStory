@@ -10,29 +10,30 @@ set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/Cotire/CMake)
 include(cotire)
 
 cmake_policy(SET CMP0015 NEW)
-link_directories(   ${ROOT_THIRD_PARTY_DIR}/angelscript/angelscript/lib/
-                    ./ThirdParty/allegro5/bin/lib/
-					./ThirdParty/allegro5/bin/include/
-                    ./ThirdParty/allegro5/deps/lib/
+link_directories(   ${ROOT_THIRD_PARTY_DIR}/angelscript/angelscript/lib/Linux/
+                    ${ROOT_THIRD_PARTY_DIR}/angelscript/angelscript/lib/Win64/
+                    ${ROOT_THIRD_PARTY_DIR}/allegro5/bin/lib/
+                    ${ROOT_THIRD_PARTY_DIR}/allegro5/bin/include/
+                    ${ROOT_THIRD_PARTY_DIR}/allegro5/deps/lib/
                  )
 
 file(GLOB_RECURSE SRC_LIST  Sources/*
-	                        ThirdParty/imgui/imgui.cpp
-                            ThirdParty/imgui/imgui_draw.cpp
-                            ThirdParty/imgui/imgui_widgets.cpp
-							ThirdParty/imgui/imguifilesystem.cpp
-							ThirdParty/imgui/imgui_demo.cpp
-                            ThirdParty/imgui/examples/imgui_impl_allegro5.cpp)
+                            ${ROOT_THIRD_PARTY_DIR}/imgui/imgui.cpp
+                            ${ROOT_THIRD_PARTY_DIR}/imgui/imgui_draw.cpp
+                            ${ROOT_THIRD_PARTY_DIR}/imgui/imgui_widgets.cpp
+							${ROOT_THIRD_PARTY_DIR}/imgui/imguifilesystem.cpp
+							${ROOT_THIRD_PARTY_DIR}/imgui/imgui_demo.cpp
+                            ${ROOT_THIRD_PARTY_DIR}/imgui/examples/imgui_impl_allegro5.cpp)
 
 if (WIN32)
 list(APPEND INCLUDE_DIRS
-        ThirdParty/allegro5/include
-        ThirdParty/allegro5/addons/acodec
-        ThirdParty/allegro5/addons/audio
-        ThirdParty/allegro5/addons/font
-        ThirdParty/allegro5/addons/image
-        ThirdParty/allegro5/addons/primitives
-        ThirdParty/allegro5/addons/ttf
+        ${ROOT_THIRD_PARTY_DIR}/allegro5/include
+        ${ROOT_THIRD_PARTY_DIR}/allegro5/addons/acodec
+        ${ROOT_THIRD_PARTY_DIR}/allegro5/addons/audio
+        ${ROOT_THIRD_PARTY_DIR}/allegro5/addons/font
+        ${ROOT_THIRD_PARTY_DIR}/allegro5/addons/image
+        ${ROOT_THIRD_PARTY_DIR}/allegro5/addons/primitives
+        ${ROOT_THIRD_PARTY_DIR}/allegro5/addons/ttf
     )
 else()
 endif (WIN32)
@@ -44,10 +45,10 @@ list(APPEND INCLUDE_DIRS
         Sources/addons/tweeny/
         Sources/addons/json/
         Sources/addons/file-watcher/
-        ThirdParty/angelscript/angelscript/include
-        ThirdParty/angelscript/add_on
-        ThirdParty/imgui/
-        ThirdParty/imgui/examples/
+        ${ROOT_THIRD_PARTY_DIR}/angelscript/angelscript/include
+        ${ROOT_THIRD_PARTY_DIR}/angelscript/add_on
+        ${ROOT_THIRD_PARTY_DIR}/imgui/
+        ${ROOT_THIRD_PARTY_DIR}/imgui/examples/
     )
 
 set(STATIC_BUILD 0)
@@ -79,9 +80,7 @@ if (WIN32)
                         )
     endif (STATIC_BUILD)
 
-    list(APPEND LIBRARIES_LIST
-                        libangelscript.dll.a
-						)
+    list(APPEND LIBRARIES_LIST libangelscript.dll.a)
 else()
     if (STATIC_BUILD)
         list(APPEND LIBRARIES_LIST
@@ -101,7 +100,7 @@ else()
     endif (STATIC_BUILD)
 
 	list(APPEND LIBRARIES_LIST
-                        libangelscript_LINUX.a
+                        libangelscript.a
 						pthread
 						)
 endif (WIN32)

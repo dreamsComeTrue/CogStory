@@ -1,7 +1,0 @@
-/home/squall/CogStory/ThirdParty/angelscript/angelscript/projects/cmake/CMakeFiles/install/strip.dir
-/home/squall/CogStory/ThirdParty/angelscript/angelscript/projects/cmake/CMakeFiles/install/local.dir
-/home/squall/CogStory/ThirdParty/angelscript/angelscript/projects/cmake/CMakeFiles/angelscript.dir
-/home/squall/CogStory/ThirdParty/angelscript/angelscript/projects/cmake/CMakeFiles/edit_cache.dir
-/home/squall/CogStory/ThirdParty/angelscript/angelscript/projects/cmake/CMakeFiles/rebuild_cache.dir
-/home/squall/CogStory/ThirdParty/angelscript/angelscript/projects/cmake/CMakeFiles/install.dir
-/home/squall/CogStory/ThirdParty/angelscript/angelscript/projects/cmake/CMakeFiles/list_install_components.dir
