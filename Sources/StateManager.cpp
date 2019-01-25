@@ -246,7 +246,7 @@ namespace aga
 			}
 		};
 
-		m_FadeColor = al_map_rgba (60, 60, 70, 0);
+		m_FadeColor = al_map_rgba (35, 31, 70, 255);
 		m_Transitioning = true;
 		m_TransitionFunc = transitionFunc;
 		m_TransitionFuncFired = false;

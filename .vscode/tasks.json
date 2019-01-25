@@ -5,17 +5,14 @@
     "tasks": [
         {
             "label": "Build Cog Story",
-            "command" : "ninja",
+            "command": "ninja",
             "args": [
                 "-j8"
             ],
             "options": {
                 "cwd": "${workspaceFolder}/Binaries/Linux/Out"
             },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
+            "group": "build"
         },
         {
             "label": "Run Cog Story",
@@ -29,7 +26,11 @@
             ],
             "problemMatcher": [
                 "$gcc"
-            ]
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }

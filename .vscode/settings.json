@@ -52,5 +52,9 @@
     "cmake.buildDirectory": "${workspaceRoot}/Binaries/Linux/Out",
     "cmake.buildBeforeRun": true,
     "cmake.configureOnOpen": true,
-    "C_Cpp.configurationWarnings": "Disabled"
+    "C_Cpp.configurationWarnings": "Disabled",
+    "cmake.generator": "Ninja",
+    "cmake.configureSettings": {
+        "CMAKE_MAKE_PROGRAM" : "ninja"
+    }
 }

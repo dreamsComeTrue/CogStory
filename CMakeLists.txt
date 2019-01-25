@@ -10,6 +10,7 @@ set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/Cotire/CMake)
 include(cotire)
 
 cmake_policy(SET CMP0015 NEW)
+cmake_policy(SET CMP0058 NEW)
 link_directories(   ${ROOT_THIRD_PARTY_DIR}/angelscript/angelscript/lib/Linux/
                     ${ROOT_THIRD_PARTY_DIR}/angelscript/angelscript/lib/Win64/
                     ${ROOT_THIRD_PARTY_DIR}/allegro5/bin/lib/
