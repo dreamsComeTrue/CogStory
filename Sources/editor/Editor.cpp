@@ -245,7 +245,9 @@ namespace aga
 	bool Editor::IsEditorCanvasNotCovered ()
 	{
 		return (!m_EditorSceneWindow->IsVisible () && !m_SpeechWindow->IsVisible () && !m_ActorWindow->IsVisible ()
-			&& !m_OpenSceneWindow->IsVisible ());
+			&& !m_OpenSceneWindow->IsVisible () && !m_EditorFlagPointMode.IsVisible ()
+			&& !m_EditorTriggerAreaMode.IsVisible () && !m_AnimationWindow->IsVisible ()
+			&& !m_TilesWindow->IsVisible ());
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -721,7 +723,7 @@ namespace aga
 			Point cameraScale = m_MainLoop->GetSceneManager ().GetCamera ().GetScale ();
 			Point windowSize = m_MainLoop->GetScreen ()->GetRealWindowSize ();
 			Point gameWindowSize = m_MainLoop->GetScreen ()->GetGameWindowSize ();
-			
+
 			float finalWidth = gameWindowSize.Width * cameraScale.Width / GAME_WINDOW_SCALE;
 			float finalHeight = gameWindowSize.Height * cameraScale.Height / GAME_WINDOW_SCALE;
 			Rect r = Rect (windowSize.Width * 0.5f - finalWidth * 0.5f, windowSize.Height * 0.5f - finalHeight * 0.5f,
@@ -1301,6 +1303,7 @@ namespace aga
 					ImGui::OpenPopup ("Flag Point");
 
 					m_OpenPopupFlagPointEditor = false;
+					m_EditorFlagPointMode.ShowUI ();
 				}
 
 				m_EditorFlagPointMode.RenderUI ();
@@ -1310,6 +1313,7 @@ namespace aga
 					ImGui::OpenPopup ("Trigger Area");
 
 					m_OpenPopupTriggerAreaEditor = false;
+					m_EditorTriggerAreaMode.ShowUI ();
 				}
 
 				m_EditorTriggerAreaMode.RenderUI ();
@@ -1498,7 +1502,8 @@ namespace aga
 		ALLEGRO_MOUSE_STATE state;
 		al_get_mouse_state (&state);
 
-		ImGui::SetNextWindowPos (ImVec2 (m_MainLoop->GetScreen ()->GetRealWindowSize ().Width - 155, 5), ImGuiCond_Always);
+		ImGui::SetNextWindowPos (
+			ImVec2 (m_MainLoop->GetScreen ()->GetRealWindowSize ().Width - 155, 5), ImGuiCond_Always);
 		ImGui::SetNextWindowSize (ImVec2 (150, 302));
 
 		ImGui::PushStyleColor (ImGuiCol_WindowBg, ImVec4 (0, 0, 0, 0.3f));
@@ -1762,7 +1767,7 @@ namespace aga
 					{
 						m_EditorActorMode.SetPrimarySelectedActor (actorUnderCursor);
 					}
-					
+
 					std::vector<Actor*> selectedActors = m_EditorActorMode.GetSelectedActors ();
 					MoveActorsCommand* command = new MoveActorsCommand (&m_EditorUndoRedo, selectedActors);
 					m_EditorUndoRedo.PushCommand (command);

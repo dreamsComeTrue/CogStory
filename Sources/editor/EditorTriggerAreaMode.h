@@ -17,6 +17,7 @@ namespace aga
         EditorTriggerAreaMode (Editor* editor);
         virtual ~EditorTriggerAreaMode ();
 
+        void ShowUI ();
         bool MoveSelectedTriggerPoint ();
         void MarkSelectedTriggerAreas ();
 
@@ -42,6 +43,8 @@ namespace aga
         void RenderUI ();
 
         void ClearSelection ();
+        
+        bool IsVisible ();
 
     private:
         void EditTriggerArea ();
@@ -49,6 +52,8 @@ namespace aga
     private:
         Editor* m_Editor;
 
+        bool m_IsVisible;
+        
         TriggerArea* m_TriggerArea;
         Point* m_TriggerPoint;
         std::string m_TriggerAreaName;

@@ -307,7 +307,7 @@ namespace aga
 
 		if (al_key_down (&state, ALLEGRO_KEY_LSHIFT) || speedBooster)
 		{
-			float multiplier = 3;
+			float multiplier = 4;
 			dx *= multiplier;
 			dy *= multiplier;
 		}
