@@ -10,7 +10,8 @@
                                    -- Chapter I --
                                    No ordinary day
 
- = Camera moves over the town, shows buildings, people and robots wandering around
+ = Camera moves over the human district, then main city area, shows buildings, 
+   people and robots wandering around
  = Fade in center text
     -- Chapter I --
     No ordinary day
@@ -177,7 +178,11 @@ PiT odkrywa że jest jedynym myślącym robotem (ma duszę człowieka z przeszł
 
 "He created The Core"
 
+Three wiseman where only one/two of them is saying true
 Character/village where character[s] lies in 50/50 ratio
+
+
+
 
 ===================
 Memes/easter eggs:

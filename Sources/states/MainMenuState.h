@@ -50,6 +50,7 @@ namespace aga
         class Atlas* m_SelectItemAtlas;
         float m_SelectionAngle;
         int m_Selection;
+        int m_QuitQuestion;
 
         int m_AnimationStage;
         float m_AnimationTimer;

@@ -5,6 +5,7 @@
 
 #include "Camera.h"
 #include "Common.h"
+#include "Font.h"
 
 namespace aga
 {
@@ -87,7 +88,8 @@ namespace aga
 
         void SetOverlayText (const std::string& text, float duration = 2000.f, float charTimeDelay = 5.f,
             ScreenRelativePosition pos = BottomRight);
-        void SetOverlayActive (bool active) { m_OverlayActive = active; }
+        void SetOverlayActive (bool active);
+        void SetCenterTextColor (ALLEGRO_COLOR color);
 
         void PushPoint (Point p);
         Point PopPoint ();
@@ -104,7 +106,7 @@ namespace aga
 
     private:
         void SceneIntro (float duration = 1000.f);
-        void PrintOverlayText (const std::string& text, ScreenRelativePosition pos = BottomRight);
+        void PrintOverlayText (const std::string& text, ScreenRelativePosition pos = BottomRight, const std::string& fontName = FONT_NAME_MENU_ITEM_NORMAL);
         void TeleportToMarkerPosition (std::string& lastSceneName);
 
     private:

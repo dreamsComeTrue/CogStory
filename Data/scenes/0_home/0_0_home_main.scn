@@ -308,8 +308,8 @@
     "trigger_areas": [
         {
             "collidable": "0",
-            "data": "2_city/2_1_city_robots_district.scn",
-            "name": "ENTRY_ROBOTS_DISTRICT",
+            "data": "2_city/2_1_city_robots_districtI.scn",
+            "name": "ENTRY_ROBOTS_DISTRICT_I",
             "poly": "-32.00 160.00 16.00 192.00 48.00 160.00 "
         },
         {
