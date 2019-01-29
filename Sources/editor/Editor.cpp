@@ -1719,12 +1719,16 @@ namespace aga
 			}
 			else if (m_CursorMode == CursorMode::ActorSelectMode)
 			{
+				bool newActorCreated = false;
+
 				if (m_EditorActorMode.IsDrawTiles ())
 				{
 					if (m_EditorActorMode.ChooseTile (event.x, event.y))
 					{
 						OnCloseSpriteSheetEdit ();
+						m_EditorActorMode.SetRotation (0);
 						m_EditorActorMode.AddActor (event.x, event.y);
+						newActorCreated = true;
 					}
 				}
 
@@ -1733,44 +1737,48 @@ namespace aga
 					m_EditorActorMode.SetSpriteSheetChoosen (false);
 				}
 
-				Rect r;
-				Actor* actorUnderCursor = m_EditorActorMode.GetActorUnderCursor (event.x, event.y, true, std::move (r));
-
-				if (!actorUnderCursor)
+				if (!newActorCreated)
 				{
-					m_IsRectSelection = true;
-					m_SelectionRect.Pos = CalculateWorldPoint (event.x, event.y);
+					Rect r;
+					Actor* actorUnderCursor
+						= m_EditorActorMode.GetActorUnderCursor (event.x, event.y, true, std::move (r));
 
-					m_EditorActorMode.ClearSelectedActors ();
-				}
-				else
-				{
-					if (!m_EditorActorMode.IsActorSelected (actorUnderCursor))
+					if (!actorUnderCursor)
 					{
+						m_IsRectSelection = true;
+						m_SelectionRect.Pos = CalculateWorldPoint (event.x, event.y);
+
 						m_EditorActorMode.ClearSelectedActors ();
-						m_EditorActorMode.AddActorToSelection (actorUnderCursor);
-
-						if (!m_EditorActorMode.GetSelectedActors ().empty ())
-						{
-							Actor* actor = m_EditorActorMode.GetSelectedActors ()[0];
-							m_EditorActorMode.SetRotation (actor->Rotation);
-
-							if (actor->PhysPoints.empty ())
-							{
-								actor->PhysPoints.push_back ({});
-							}
-
-							m_EditorPhysMode.SetPhysPoly (&actor->PhysPoints[0]);
-						}
 					}
 					else
 					{
-						m_EditorActorMode.SetPrimarySelectedActor (actorUnderCursor);
-					}
+						if (!m_EditorActorMode.IsActorSelected (actorUnderCursor))
+						{
+							m_EditorActorMode.ClearSelectedActors ();
+							m_EditorActorMode.AddActorToSelection (actorUnderCursor);
 
-					std::vector<Actor*> selectedActors = m_EditorActorMode.GetSelectedActors ();
-					MoveActorsCommand* command = new MoveActorsCommand (&m_EditorUndoRedo, selectedActors);
-					m_EditorUndoRedo.PushCommand (command);
+							if (!m_EditorActorMode.GetSelectedActors ().empty ())
+							{
+								Actor* actor = m_EditorActorMode.GetSelectedActors ()[0];
+								m_EditorActorMode.SetRotation (actor->Rotation);
+
+								if (actor->PhysPoints.empty ())
+								{
+									actor->PhysPoints.push_back ({});
+								}
+
+								m_EditorPhysMode.SetPhysPoly (&actor->PhysPoints[0]);
+							}
+						}
+						else
+						{
+							m_EditorActorMode.SetPrimarySelectedActor (actorUnderCursor);
+						}
+
+						std::vector<Actor*> selectedActors = m_EditorActorMode.GetSelectedActors ();
+						MoveActorsCommand* command = new MoveActorsCommand (&m_EditorUndoRedo, selectedActors);
+						m_EditorUndoRedo.PushCommand (command);
+					}
 				}
 			}
 			else if (m_CursorMode == CursorMode::EditPhysBodyMode)

@@ -57,13 +57,19 @@ namespace aga
 	{
 		if (m_Atlas)
 		{
-			Rect regionBounds = m_Atlas->GetRegion (m_AtlasRegionName).Bounds;
+			Point translate = m_SceneManager->GetCamera ().GetTranslate ();
+			Point scale = m_SceneManager->GetCamera ().GetScale ();
 
-			Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
+			Rect regionBounds = m_Atlas->GetRegion (m_AtlasRegionName).Bounds;
 			Point pos = {Bounds.GetPos ().X + regionBounds.GetHalfSize ().Width,
 				Bounds.GetPos ().Y + regionBounds.GetSize ().Height};
+				
+			float xPoint = pos.X * scale.X - translate.X;
+			float yPoint = pos.Y * scale.Y - translate.Y;
+
+			Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
 			std::string str = Name + "[" + std::to_string (ID) + "]";
-			font.DrawText (FONT_NAME_SMALL, str, al_map_rgb (0, 255, 0), pos.X, pos.Y, 1.0f, ALLEGRO_ALIGN_CENTER);
+			font.DrawText (FONT_NAME_SMALL, str, al_map_rgb (0, 255, 0), xPoint, yPoint, 1.0f, ALLEGRO_ALIGN_CENTER);
 		}
 	}
 

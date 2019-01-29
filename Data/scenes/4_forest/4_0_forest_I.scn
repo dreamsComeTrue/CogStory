@@ -142,7 +142,7 @@
             "action-speech": "FACTORY_SIGN_INFO",
             "action-speech-handling": "0",
             "atlas": "env_1",
-            "atlas-region": "Sprite-0020",
+            "atlas-region": "sign",
             "blueprint": "-1",
             "collidable": "0",
             "collision": "0",

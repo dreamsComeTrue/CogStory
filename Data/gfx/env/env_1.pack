@@ -1,90 +1,90 @@
 
 env_1.png
-size: 256,128
+size: 512,128
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 Sprite-0001
   rotate: false
-  xy: 0, 64
+  xy: 0, 50
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 Sprite-0002
   rotate: false
-  xy: 0, 0
+  xy: 66, 50
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 Sprite-0003
   rotate: false
-  xy: 64, 64
+  xy: 132, 50
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 Sprite-0004
   rotate: false
-  xy: 64, 0
+  xy: 198, 50
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 Sprite-0013
   rotate: false
-  xy: 158, 18
+  xy: 130, 19
   size: 32, 29
   orig: 32, 29
   offset: 0, 0
   index: -1
 Sprite-0014
   rotate: false
-  xy: 128, 0
+  xy: 328, 82
   size: 30, 32
   orig: 30, 32
   offset: 0, 0
   index: -1
 Sprite-0015
   rotate: false
-  xy: 207, 87
+  xy: 97, 7
   size: 31, 41
   orig: 31, 41
   offset: 0, 0
   index: -1
 Sprite-0016
   rotate: false
-  xy: 190, 22
+  xy: 264, 53
   size: 25, 23
   orig: 25, 23
   offset: 0, 0
   index: -1
 Sprite-0017
   rotate: false
-  xy: 146, 83
+  xy: 0, 3
   size: 61, 45
   orig: 61, 45
   offset: 0, 0
   index: -1
 Sprite-0018
   rotate: false
-  xy: 146, 47
+  xy: 264, 78
   size: 62, 36
   orig: 62, 36
   offset: 0, 0
   index: -1
 Sprite-0019
   rotate: false
-  xy: 128, 32
+  xy: 360, 18
   size: 18, 96
   orig: 18, 96
   offset: 0, 0
   index: -1
-Sprite-0020
+sign
   rotate: false
-  xy: 208, 45
-  size: 30, 42
-  orig: 30, 42
+  xy: 63, 0
+  size: 32, 48
+  orig: 32, 48
   offset: 0, 0
   index: -1
