@@ -1,15 +1,6 @@
 Binaries/
-CMakeLists.txt.user
-.ycm_extra_conf.py
-CMakeLists.txt.user.3b5dde4
-compile_commands.json
-cscope.files
-cscope.out
-tags
-Data/__RAW/__RAW music/
 Data/__RAW/
 
-Projects/
 ThirdParty/angelscript/angelscript/lib/Linux
 ThirdParty/allegro5/bin
 ThirdParty/allegro5/android
@@ -21,11 +12,6 @@ ThirdParty/allegro5/misc
 ThirdParty/allegro5/python
 ThirdParty/allegro5/tests
 ThirdParty/allegro5/tools
-Data/gfx/Thumbs.db
-CMakeLists.txt.user.c61345d
-CMakeLists.txt.user.b0cde4a
-CMakeLists.txt.user.1978819
-CMakeLists.txt.user.4.8-pre1
 .vscode/c_cpp_properties.json
 .vscode/.cmaketools.json
-Data/gfx/pngcrush_1_8_11_w64.exe
+CMakeLists.txt.user

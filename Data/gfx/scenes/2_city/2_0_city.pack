@@ -1,89 +1,131 @@
 
 2_0_city.png
-size: 540,145
+size: 328,277
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+floor-bridge-bottom
+  rotate: false
+  xy: 198, 47
+  size: 64, 32
+  orig: 64, 32
+  offset: 0, 0
+  index: -1
+floor-bridge-center
+  rotate: false
+  xy: 278, 147
+  size: 32, 64
+  orig: 32, 64
+  offset: 0, 0
+  index: -1
+floor-bridge-left
+  rotate: false
+  xy: 278, 213
+  size: 32, 64
+  orig: 32, 64
+  offset: 0, 0
+  index: -1
+floor-bridge-right
+  rotate: false
+  xy: 278, 81
+  size: 32, 64
+  orig: 32, 64
+  offset: 0, 0
+  index: -1
+floor-bridge-top
+  rotate: false
+  xy: 198, 13
+  size: 64, 32
+  orig: 64, 32
+  offset: 0, 0
+  index: -1
+floor-bridge-vertical-center
+  rotate: false
+  xy: 264, 47
+  size: 64, 32
+  orig: 64, 32
+  offset: 0, 0
+  index: -1
 floor-cell-center
   rotate: false
-  xy: 212, 15
+  xy: 66, 0
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 floor-cell-horizontal
   rotate: false
-  xy: 410, 81
+  xy: 146, 213
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 floor-cell-left-bottom
   rotate: false
-  xy: 278, 15
+  xy: 212, 147
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 floor-cell-left-right
   rotate: false
-  xy: 278, 81
+  xy: 212, 213
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 floor-cell-left-right-mirror
   rotate: false
-  xy: 146, 15
+  xy: 0, 0
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 floor-cell-left-top
   rotate: false
-  xy: 212, 81
+  xy: 66, 66
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 floor-cell-rightt-bottom
   rotate: false
-  xy: 410, 15
+  xy: 132, 15
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 floor-cell-rightt-top
   rotate: false
-  xy: 344, 81
+  xy: 146, 81
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 floor-cell-top-bottom
   rotate: false
-  xy: 344, 15
+  xy: 212, 81
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 floor-cell-top-bottom-mirror
   rotate: false
-  xy: 476, 81
+  xy: 146, 147
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 floor-cell-vertical
   rotate: false
-  xy: 146, 81
+  xy: 0, 66
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 single_house
   rotate: false
-  xy: 0, 0
+  xy: 0, 132
   size: 144, 145
   orig: 144, 145
   offset: 0, 0
