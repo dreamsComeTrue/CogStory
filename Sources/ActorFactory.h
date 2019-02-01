@@ -1,4 +1,4 @@
-// Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
+// Copyright 2017-2019 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #ifndef __ACTOR_FACTORY_H__
 #define __ACTOR_FACTORY_H__

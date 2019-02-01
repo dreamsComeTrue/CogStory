@@ -1,4 +1,4 @@
-// Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
+// Copyright 2017-2019 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "MainLoop.h"
 #include "Screen.h"
@@ -15,7 +15,7 @@ int main (int /*argc*/, char** /*argv*/)
 {
     // The attributes of the screen
     const char* GAME_TITLE = "LITTLE COG STORY";
-    const Point SCREEN_SIZE = {1200, 700};
+    const Point SCREEN_SIZE = {1600, 1080};
     const Point GAME_WINDOW_SIZE = {800, 600};
 
     Screen mainScreen (SCREEN_SIZE.Width, SCREEN_SIZE.Height, GAME_WINDOW_SIZE.Width, GAME_WINDOW_SIZE.Height, GAME_TITLE, true);

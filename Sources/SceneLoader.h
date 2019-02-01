@@ -1,4 +1,4 @@
-// Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
+// Copyright 2017-2019 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #ifndef __SCENE_LOADER_H__
 #define __SCENE_LOADER_H__

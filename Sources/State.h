@@ -1,4 +1,4 @@
-// Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
+// Copyright 2017-2019 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #ifndef __STATE_H__
 #define __STATE_H__

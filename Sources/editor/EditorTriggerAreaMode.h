@@ -1,4 +1,4 @@
-// Copyright 2017 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
+// Copyright 2017-2019 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #ifndef __EDITOR_TRIGGER_AREA_MODE_H__
 #define __EDITOR_TRIGGER_AREA_MODE_H__
