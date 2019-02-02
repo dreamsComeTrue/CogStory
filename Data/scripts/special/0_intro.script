@@ -13,41 +13,105 @@ void AfterLeaveScene ()
 }
 
 void IntroAnimation ()
-{    
+{   
     player.SetPreventInput (true);
-    player.SetPosition (0, 0);
-    player.SetCurrentAnimation ("ANIM_MOVE_UP");
+    player.Hide ();
+    
+//    CitySceneAnimation ();
+    //  TODO: DEBUG
+    SetActiveScene ("1_factory/1_factory_main.scn", false);
+    FactoryMainSceneAnimation ();
+}
 
+int DEBUG_CitySceneAnimationTime = 1000;
+void CitySceneAnimation ()
+{
     GetDummyActor ().SetPosition (GetFlagPoint ("INTRO_CAMERA_START").Pos);
     camera.SetFollowActor (GetDummyActor ());
 
-    SetOverlayText ("-- Chapter I --\nNo ordinary day", 3000.f, 100.f, Center);    
+    SetOverlayText ("-- Chapter I --\nNo ordinary day", 6000.f, 200.f, Center);    
 
-    Timeline@ timeline = CreateTimeline (0);
+    Timeline@ timeline = CreateTimeline ();
 
     timeline
-    .Once (8000.f, function (id)
+    .Once (DEBUG_CitySceneAnimationTime, function (id)
     {
-        AddTween (GetDummyActor ().GetPosition (), GetFlagPoint ("INTRO_CAMERA_EXIT").Pos, 8000.f, function (id, progress, value)
+        AddTween (GetDummyActor ().GetPosition (), GetFlagPoint ("INTRO_CAMERA_END").Pos, DEBUG_CitySceneAnimationTime, function (id, progress, value)
         {
             GetDummyActor ().SetPosition (value);
-
-            return false;
-        }, null);
-    }).Once (2000.f, function (id)
-    {
-        AddTween (GetDummyActor ().GetPosition (), player.GetPosition () + player.Bounds.GetHalfSize (), 2000.f, function (id, progress, value)
-        {
-            GetDummyActor ().SetPosition (value);
-
             return false;
         }, function (id)
         {
-            camera.SetFollowActor (player);
-            player.SetPreventInput (false);
-
-            RemoveScript ("intro");
+            CityFactorySceneAnimation ();
         });
+    });
+}
+
+int DEBUG_CityFactorySceneAnimationTime1 = 3000;
+int DEBUG_CityFactorySceneAnimationTime2 = DEBUG_CityFactorySceneAnimationTime1 / 3;
+void CityFactorySceneAnimation ()
+{
+    SetActiveScene ("2_city/2_city_factory_district.scn", true, function () 
+    {
+        GetDummyActor ().SetPosition (GetFlagPoint ("INTRO_CAMERA_START").Pos);
+        camera.SetFollowActor (GetDummyActor ());
+        
+        Timeline@ timeline = CreateTimeline ();
+
+        timeline
+        .Once (DEBUG_CityFactorySceneAnimationTime1, function (id)
+        {
+            AddTween (GetDummyActor ().GetPosition (), GetFlagPoint ("INTRO_CAMERA_A").Pos, DEBUG_CityFactorySceneAnimationTime1, function (id, progress, value)
+            {
+                GetDummyActor ().SetPosition (value);
+                return false;
+            }, function (id) {});
+        })
+        .Once (DEBUG_CityFactorySceneAnimationTime2, function (id)
+        {
+            AddTween (GetDummyActor ().GetPosition (), GetFlagPoint ("INTRO_CAMERA_END").Pos, DEBUG_CityFactorySceneAnimationTime2, function (id, progress, value)
+            {
+                GetDummyActor ().SetPosition (value);
+                return false;
+            }, function (id)
+            {
+                FactoryMainSceneAnimation ();
+            });
+        });           
+    });
+}
+
+int DEBUG_FactoryMainSceneAnimation1 = 1000;
+int DEBUG_FactoryMainSceneAnimation2 = 1000;
+void FactoryMainSceneAnimation ()
+{
+    SetActiveScene ("1_factory/1_factory_main.scn", true, function () 
+    {
+        GetDummyActor ().SetPosition (GetFlagPoint ("INTRO_CAMERA_START").Pos);
+        camera.SetFollowActor (GetDummyActor ());
+        
+        Timeline@ timeline = CreateTimeline ();
+
+        timeline
+        .Once (DEBUG_FactoryMainSceneAnimation1, function (id)
+        {
+            AddTween (GetDummyActor ().GetPosition (), GetFlagPoint ("INTRO_CAMERA_A").Pos, DEBUG_FactoryMainSceneAnimation1, function (id, progress, value)
+            {
+                GetDummyActor ().SetPosition (value);
+                return false;
+            }, function (id) {});
+        })
+        .Once (DEBUG_FactoryMainSceneAnimation2, function (id)
+        {
+            AddTween (GetDummyActor ().GetPosition (), GetFlagPoint ("INTRO_CAMERA_END").Pos, DEBUG_FactoryMainSceneAnimation2, function (id, progress, value)
+            {
+                GetDummyActor ().SetPosition (value);
+                return false;
+            }, function (id)
+            {
+                player.Show ();
+            });
+        });          
     });
 }
 

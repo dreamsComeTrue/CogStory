@@ -170,11 +170,6 @@ namespace aga
     void SpeechFrameManager::Clear ()
     {
         m_Speeches.clear ();
-
-        if (m_SceneManager->GetPlayer ()->IsPreventInput ())
-        {
-            m_SceneManager->GetPlayer ()->SetPreventInput (false);
-        }
     }
 
     //--------------------------------------------------------------------------------------------------

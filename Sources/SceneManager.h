@@ -33,7 +33,7 @@ namespace aga
         Scene* GetActiveScene ();
         Scene* GetScene (const std::string& path);
 
-        void SetActiveScene (const std::string& scenePath, bool fadeAnimation = true);
+        void SetActiveScene (const std::string& scenePath, bool fadeAnimation = true, asIScriptFunction* sceneLoadedCallback = nullptr);
 
         bool ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
         bool Update (float deltaTime);
@@ -138,6 +138,8 @@ namespace aga
         bool m_OverlayActive;
 
         std::stack<Point> m_SavedPoints;
+        
+        asIScriptFunction* m_SceneLoadedCallback;
     };
 }
 

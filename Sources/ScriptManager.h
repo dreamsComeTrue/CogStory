@@ -43,6 +43,7 @@ namespace aga
         void RemoveScript (const std::string& name);
         void RemoveScript (Script* script);
 
+        void RunScriptFunction (asIScriptFunction* func);
         void RunScriptFunction (asIScriptFunction* func, void* obj);
         void RunScriptFunction (asIScriptFunction* func, void* obj1, void* obj2);
 

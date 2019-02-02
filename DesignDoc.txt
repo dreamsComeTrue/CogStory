@@ -142,13 +142,25 @@
 
 
 
-Factory
-City
-Underground/Wasteland/Sewers
-Forest
-SpaceShip
-Planet
-Memories
+=============================
+
+   SCENES
+   
+=============================
+
+City:
+   
+Factory:
+
+Underground/Wasteland/Sewers:
+
+Forest:
+
+SpaceShip:
+
+Planet:
+
+Memories:
 
 
 
@@ -157,12 +169,24 @@ Memories
 
 
 
+=============================
+
+         CHARACTERS
+
+=============================
+
+PiTi (PTR 467) - main character
 
 
-Peter (PTR 467) oddaje swój umysł w przyszłości i zostaje umieszczony w ciele robota
+=============================
+
+            IDEAS
+
+=============================
+
 PiTi works in a factory
 Fight with the factory
-Mechanika - wkłada przedmioty do swojego wnętrza i je ożywia (ciepłem)
+Inventory - he puts stuff in his chest and gives life to them (with his warm)
 Hakowanie umysłu (jak Project IGI), niszczenie kamer w fabryce
 
 Film noir theme
@@ -174,17 +198,19 @@ Na końcu poznaję matkę - Agatha, gracz może go poświęcić lub nie
 Marketplace festival
 March of troops
 
-PiT odkrywa że jest jedynym myślącym robotem (ma duszę człowieka z przeszłości)
+PiTi discovers he is capable of free will/thinking (has human soul from the past)
 
 "He created The Core"
 
-Three wiseman where only one/two of them is saying true
+Three wiseman where only one/two of them is saying true - inspired by Distraint Game
 Character/village where character[s] lies in 50/50 ratio
 
 
+=============================
 
+      Memes/easter eggs
 
-===================
-Memes/easter eggs:
+=============================
+
 
 - while in space/spaceshuffle he passes by over Tesla car with astronaut inside

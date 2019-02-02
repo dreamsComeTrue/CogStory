@@ -89,6 +89,10 @@ namespace aga
 
 		bool IsActionSpeechHandling ();
 		void SetActionSpeechHandling (bool handling);
+		
+		void Show ();
+		void Hide ();
+		bool IsVisible ();
 
 	protected:
 		void ProcessTriggerAreas (float dx, float dy, Point&& offset);
@@ -107,6 +111,8 @@ namespace aga
 		//  Speech triggered when 'action' with player
 		std::string m_ActionSpeech;
 		bool m_ActionSpeechHandling;
+		
+		bool m_IsVisible;
 
 	public:
 		Rect TemplateBounds;

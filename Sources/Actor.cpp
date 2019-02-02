@@ -20,6 +20,7 @@ namespace aga
 		, m_FocusHeight (100.0f) //  We set it way down for small tiles grid layout
 		, m_ActionSpeech ("")
 		, m_ActionSpeechHandling (false)
+		, m_IsVisible (true)
 	{
 		ID = Entity::GetNextID ();
 	}
@@ -191,9 +192,12 @@ namespace aga
 
 	void Actor::Render (float deltaTime)
 	{
-		Animable::Render (this);
+		if (m_IsVisible)
+		{
+			Animable::Render (this);
 
-		RenderComponents (deltaTime);
+			RenderComponents (deltaTime);
+		}
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -534,6 +538,18 @@ namespace aga
 	//--------------------------------------------------------------------------------------------------
 
 	void Actor::SetActionSpeechHandling (bool handling) { m_ActionSpeechHandling = handling; }
+
+	//--------------------------------------------------------------------------------------------------
+
+	void Actor::Show () { m_IsVisible = true; }
+
+	//--------------------------------------------------------------------------------------------------
+
+	void Actor::Hide () { m_IsVisible = false; }
+
+	//--------------------------------------------------------------------------------------------------
+
+	bool Actor::IsVisible () { return m_IsVisible; }
 
 	//--------------------------------------------------------------------------------------------------
 }

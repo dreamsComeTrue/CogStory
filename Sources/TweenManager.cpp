@@ -410,6 +410,11 @@ namespace aga
 
     Timeline* TweenManager::CreateTimeline (int id)
     {
+        if (id < 0)
+        {
+            id = GetNextTweenID ();
+        }
+        
         Timeline* timeLine = new Timeline (id, this);
 
         m_Timelines.push_back (timeLine);

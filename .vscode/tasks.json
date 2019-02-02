@@ -12,7 +12,8 @@
             "options": {
                 "cwd": "${workspaceFolder}/Binaries/Linux/Out"
             },
-            "group": "build"
+            "group": "build",
+            "problemMatcher": []
         },
         {
             "label": "Run Cog Story",

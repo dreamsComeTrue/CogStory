@@ -5,7 +5,6 @@ void Start ()
 
 void SceneChanged (const string &in previousSceneName)
 {
-    camera.SetFollowActor (player);
 }
 
 void BeforeEnterScene ()

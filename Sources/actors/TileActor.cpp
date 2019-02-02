@@ -42,20 +42,23 @@ namespace aga
 
 	void TileActor::Render (float deltaTime)
 	{
-		if (m_Atlas)
+		if (m_IsVisible)
 		{
-			Point pos = Bounds.GetPos ();
-			m_Atlas->DrawRegion (m_AtlasRegionName, pos.X, pos.Y, 1.0f, 1.0f, DegressToRadians (Rotation));
-		}
+			if (m_Atlas)
+			{
+				Point pos = Bounds.GetPos ();
+				m_Atlas->DrawRegion (m_AtlasRegionName, pos.X, pos.Y, 1.0f, 1.0f, DegressToRadians (Rotation));
+			}
 
-		RenderComponents (deltaTime);
+			RenderComponents (deltaTime);
+		}
 	}
 
 	//--------------------------------------------------------------------------------------------------
 
 	void TileActor::DrawName ()
 	{
-		if (m_Atlas)
+		if (m_IsVisible && m_Atlas)
 		{
 			Point translate = m_SceneManager->GetCamera ().GetTranslate ();
 			Point scale = m_SceneManager->GetCamera ().GetScale ();
@@ -63,7 +66,7 @@ namespace aga
 			Rect regionBounds = m_Atlas->GetRegion (m_AtlasRegionName).Bounds;
 			Point pos = {Bounds.GetPos ().X + regionBounds.GetHalfSize ().Width,
 				Bounds.GetPos ().Y + regionBounds.GetSize ().Height};
-				
+
 			float xPoint = pos.X * scale.X - translate.X;
 			float yPoint = pos.Y * scale.Y - translate.Y;
 

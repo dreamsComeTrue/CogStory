@@ -32,6 +32,7 @@ namespace aga
 		, m_OverlayDuration (2000.f)
 		, m_OverlayActive (false)
 		, m_CenterTextColor (al_map_rgb (240, 240, 240))
+		, m_SceneLoadedCallback (nullptr)
 	{
 		m_SpeechFrameManager = new SpeechFrameManager (this);
 	}
@@ -198,6 +199,12 @@ namespace aga
 			}
 
 			TeleportToMarkerPosition (prevSceneName);
+
+			if (m_SceneLoadedCallback)
+			{
+				m_MainLoop->GetScriptManager ().RunScriptFunction (m_SceneLoadedCallback);
+				m_SceneLoadedCallback = nullptr;
+			}
 		}
 	}
 
@@ -220,7 +227,8 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	void SceneManager::SetActiveScene (const std::string& scenePath, bool fadeAnimation)
+	void SceneManager::SetActiveScene (
+		const std::string& scenePath, bool fadeAnimation, asIScriptFunction* sceneLoadedCallback)
 	{
 		Scene* sceneToSet = GetScene (scenePath);
 
@@ -230,6 +238,11 @@ namespace aga
 
 			sceneToSet = SceneLoader::LoadScene (this, scenePath, loadBounds);
 			AddScene (sceneToSet);
+		}
+
+		if (sceneLoadedCallback != nullptr)
+		{
+			m_SceneLoadedCallback = sceneLoadedCallback;
 		}
 
 		if (fadeAnimation)

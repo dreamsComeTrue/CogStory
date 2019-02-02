@@ -56,7 +56,7 @@ namespace aga
 
         void Clear ();
 
-        Timeline* CreateTimeline (int id);
+        Timeline* CreateTimeline (int id = -1);
 
     private:
         void CleanupFinishedTweens ();

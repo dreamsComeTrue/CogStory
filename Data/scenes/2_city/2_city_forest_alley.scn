@@ -2496,7 +2496,7 @@
     "trigger_areas": [
         {
             "collidable": "0",
-            "data": "2_city/2_0_city_main.scn",
+            "data": "2_city/2_city_main.scn",
             "name": "ENTRY_CITY",
             "poly": "-128.00 -336.00 128.00 -336.00 0.00 -384.00 "
         },

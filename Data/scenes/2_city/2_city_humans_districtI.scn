@@ -1761,13 +1761,13 @@
         },
         {
             "collidable": "0",
-            "data": "2_city/2_0_city_main.scn",
+            "data": "2_city/2_city_main.scn",
             "name": "ENTRY_CITY",
             "poly": "352.00 144.00 256.00 144.00 304.00 176.00 "
         },
         {
             "collidable": "1",
-            "data": "2_city/2_4_city_humans_districtII.scn",
+            "data": "2_city/2_city_humans_districtII.scn",
             "name": "ENTRY_HUMANS_DISTRICT_II",
             "poly": "-752.00 32.00 -752.00 -32.00 -784.00 0.00 "
         },

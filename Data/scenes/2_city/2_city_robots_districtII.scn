@@ -1888,7 +1888,7 @@
     "scripts": [
         {
             "name": "main",
-            "path": "2_city/2_1_city_robots_district.script"
+            "path": "2_city/2_city_robots_district.script"
         }
     ],
     "speeches": [
@@ -2093,7 +2093,7 @@
     "trigger_areas": [
         {
             "collidable": "0",
-            "data": "2_city/2_1_city_robots_districtI.scn",
+            "data": "2_city/2_city_robots_districtI.scn",
             "name": "ENTRY_CITY_ROBOTS_DISTRICT_I",
             "poly": "80.00 -64.00 112.00 -64.00 96.00 -32.00 "
         },

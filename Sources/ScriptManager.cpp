@@ -62,7 +62,7 @@ namespace aga
 			  = void TimelineEmptyFunc (int id)
 			  = void TimelineSingleFunc (int id, float progress, float value)
 			  = void TimelinePointFunc (int id, float progress, Point value)
-		 Timeline@ CreateTimeline (int id)
+		 Timeline@ CreateTimeline (int id = -1)
 		 Timeline@ Once (int duringMS, TimelineEmptyFunc @+ func)
 		 Timeline@ After (int duringMS, TimelineEmptyFunc @+ func)
 		 Timeline@ During (float from, float to, int duringMS, TimelineSingleFunc @+ func)
@@ -94,6 +94,9 @@ namespace aga
 		   void RegisterActionSpeech (const string &in actorName, const string &in speechID)
 		   SpeechFrame@ TalkTo (Actor@ actor, const string in& speechID)
 		   Actor@ GetLastActionActor ()
+		   void Show ()
+		   void Hide ()
+		   bool IsVisible ()
 
 	   Screen
 		   Screen screen
@@ -192,6 +195,9 @@ namespace aga
 		   void AddOverlappingCallback (OverlapHandler @+ func)
 		   void AddEndOverlapCallback (OverlapHandler @+ func)
 		   void AddOverlapCallbacks (OverlapHandler @+ begin, OverlapHandler @+ update, OverlapHandler @+ end)
+		   void Show ()
+		   void Hide ()
+		   bool IsVisible ()
 
 	   MovementComponent
 		   MovementType
@@ -834,7 +840,7 @@ namespace aga
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterFuncdef ("bool TimelinePointFunc (int id, float progress, Point value)");
 		assert (r >= 0);
-		r = m_ScriptEngine->RegisterGlobalFunction ("Timeline@ CreateTimeline (int id)",
+		r = m_ScriptEngine->RegisterGlobalFunction ("Timeline@ CreateTimeline (int id = -1)",
 			asMETHOD (TweenManager, CreateTimeline), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterObjectMethod ("Timeline",
@@ -892,12 +898,12 @@ namespace aga
 		r = m_ScriptEngine->RegisterObjectMethod (
 			"Player", "Actor@ opImplCast()", asFUNCTION ((RefCast<Player, Actor>)), asCALL_CDECL_OBJLAST);
 		assert (r >= 0);
-	//	r = m_ScriptEngine->RegisterObjectMethod (
-	//		"Actor", "const Player@ opCast()", asFUNCTION ((RefCast<Actor, Player>)), asCALL_CDECL_OBJLAST);
-	//		assert (r >= 0);
-	//	r = m_ScriptEngine->RegisterObjectMethod (
-	//		"Player", "const Actor@ opImplCast()", asFUNCTION ((RefCast<Player, Actor>)), asCALL_CDECL_OBJLAST);
-	//	assert (r >= 0);
+		//	r = m_ScriptEngine->RegisterObjectMethod (
+		//		"Actor", "const Player@ opCast()", asFUNCTION ((RefCast<Actor, Player>)), asCALL_CDECL_OBJLAST);
+		//		assert (r >= 0);
+		//	r = m_ScriptEngine->RegisterObjectMethod (
+		//		"Player", "const Actor@ opImplCast()", asFUNCTION ((RefCast<Player, Actor>)), asCALL_CDECL_OBJLAST);
+		//	assert (r >= 0);
 
 		r = m_ScriptEngine->RegisterGlobalProperty ("Player player", m_MainLoop->GetSceneManager ().GetPlayer ());
 		assert (r >= 0);
@@ -932,6 +938,13 @@ namespace aga
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterObjectMethod (
 			"Player", "Actor@ GetLastActionActor ()", asMETHOD (Player, GetLastActionActor), asCALL_THISCALL);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterObjectMethod ("Player", "void Show ()", asMETHOD (Player, Show), asCALL_THISCALL);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterObjectMethod ("Player", "void Hide ()", asMETHOD (Player, Hide), asCALL_THISCALL);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterObjectMethod (
+			"Player", "bool IsVisible ()", asMETHOD (Player, IsVisible), asCALL_THISCALL);
 		assert (r >= 0);
 
 		RegisterBaseActorAPI<Player> ("Player");
@@ -1349,9 +1362,12 @@ namespace aga
 
 	void ScriptManager::RegisterSceneManagerAPI ()
 	{
-		int r = m_ScriptEngine->RegisterGlobalFunction ("void SetActiveScene (const string &in, bool fadeAnim = true)",
-			asMETHODPR (SceneManager, SetActiveScene, (const std::string&, bool), void), asCALL_THISCALL_ASGLOBAL,
-			&m_MainLoop->GetSceneManager ());
+		int r = m_ScriptEngine->RegisterFuncdef ("void SceneLoadedCallback ()");
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterGlobalFunction (
+			"void SetActiveScene (const string &in, bool fadeAnim = true, SceneLoadedCallback @+ cb = null)",
+			asMETHODPR (SceneManager, SetActiveScene, (const std::string&, bool, asIScriptFunction*), void),
+			asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterGlobalFunction (
 			"void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, Color color = COLOR_BLACK)",
@@ -1530,6 +1546,17 @@ namespace aga
 		ctx->SetExceptionCallback (asFUNCTION (ExceptionCallback), this, asCALL_THISCALL);
 
 		return ctx;
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void ScriptManager::RunScriptFunction (asIScriptFunction* func)
+	{
+		asIScriptContext* ctx = GetContext ();
+		ctx->Prepare (func);
+		ctx->Execute ();
+		ctx->Unprepare ();
+		ctx->GetEngine ()->ReturnContext (ctx);
 	}
 
 	//--------------------------------------------------------------------------------------------------
