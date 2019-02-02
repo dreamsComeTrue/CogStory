@@ -139,6 +139,10 @@ namespace aga
 	}
 
 	//--------------------------------------------------------------------------------------------------
+	
+	void Collidable::ClearPhysPolygons () { m_PhysPolygons.clear (); }
+
+	//--------------------------------------------------------------------------------------------------
 
 	void Collidable::SetCollisionEnabled (bool enabled) { m_CollisionEnabled = enabled; }
 

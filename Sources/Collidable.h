@@ -30,6 +30,7 @@ namespace aga
 		Polygon& GetPhysPolygon (size_t index);
 		size_t GetPhysPolygonsCount () const;
 		void UpdatePhysPolygon ();
+		void ClearPhysPolygons ();
 
 		void SetCollisionEnabled (bool enabled);
 		bool IsCollisionEnabled () const;

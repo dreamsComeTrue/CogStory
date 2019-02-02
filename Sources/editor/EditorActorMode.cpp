@@ -2,10 +2,10 @@
 
 #include "EditorActorMode.h"
 #include "ActorFactory.h"
+#include "Component.h"
 #include "Editor.h"
 #include "MainLoop.h"
 #include "Screen.h"
-#include "Component.h"
 #include "actors/TileActor.h"
 
 namespace aga
@@ -458,6 +458,7 @@ namespace aga
 			newActor->TemplateBounds = newActor->Bounds;
 			newActor->Rotation = selectedActor->Rotation;
 			newActor->ZOrder = selectedActor->ZOrder;
+			newActor->SetCheckOverlap (selectedActor->IsCheckOverlap ());
 			newActor->SetCollidable (selectedActor->IsCollidable ());
 			newActor->SetCollisionEnabled (selectedActor->IsCollisionEnabled ());
 			newActor->SetFocusHeight (selectedActor->GetFocusHeight ());
@@ -473,7 +474,7 @@ namespace aga
 			{
 				Component* newComponent = it->second->Clone ();
 				newComponent->SetActor (newActor);
-				
+
 				newActor->AddComponent (it->first, newComponent);
 			}
 

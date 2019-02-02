@@ -1067,7 +1067,9 @@ namespace aga
 	{
 		if (!m_EditorActorMode.GetSelectedActors ().empty ())
 		{
-			m_EditorActorMode.GetSelectedActors ()[0]->PhysPoints.clear ();
+			Actor* actor = m_EditorActorMode.GetSelectedActors ()[0];
+			actor->PhysPoints.clear ();
+			actor->ClearPhysPolygons ();
 
 			if (m_EditorPhysMode.GetPhysPoly ())
 			{
@@ -1809,18 +1811,21 @@ namespace aga
 
 		if (event.button == 2)
 		{
-			bool flagPointRemoved = m_EditorFlagPointMode.RemoveFlagPointUnderCursor (event.x, event.y);
-			bool triggerPointRemoved = m_EditorTriggerAreaMode.RemoveTriggerPointUnderCursor (event.x, event.y);
-
-			m_EditorFlagPointMode.SetFlagPoint ("");
-
 			if (m_CursorMode == CursorMode::EditPhysBodyMode)
 			{
 				m_EditorPhysMode.RemovePhysPointUnderCursor (event.x, event.y);
 			}
-			else if (!flagPointRemoved && !triggerPointRemoved)
+			else
 			{
-				SetCursorMode (CursorMode::ActorSelectMode);
+				bool flagPointRemoved = m_EditorFlagPointMode.RemoveFlagPointUnderCursor (event.x, event.y);
+				bool triggerPointRemoved = m_EditorTriggerAreaMode.RemoveTriggerPointUnderCursor (event.x, event.y);
+
+				m_EditorFlagPointMode.SetFlagPoint ("");
+
+				if (!flagPointRemoved && !triggerPointRemoved)
+				{
+					SetCursorMode (CursorMode::ActorSelectMode);
+				}
 			}
 		}
 	}

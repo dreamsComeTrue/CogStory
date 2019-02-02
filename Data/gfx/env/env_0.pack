@@ -1,258 +1,272 @@
 
 env_0.png
-size: 670,791
+size: 1009,749
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 Sprite-0001
   rotate: false
-  xy: 0, 462
+  xy: 0, 363
   size: 160, 169
   orig: 160, 169
   offset: 0, 0
   index: -1
 Sprite-0002
   rotate: false
-  xy: 160, 462
+  xy: 160, 363
   size: 147, 169
   orig: 147, 169
   offset: 0, 0
   index: -1
 Sprite-0003
   rotate: false
-  xy: 0, 631
+  xy: 0, 589
   size: 172, 160
   orig: 172, 160
   offset: 0, 0
   index: -1
 Sprite-0004
   rotate: false
-  xy: 0, 293
+  xy: 0, 137
   size: 158, 169
   orig: 158, 169
   offset: 0, 0
   index: -1
 Sprite-0005
   rotate: false
-  xy: 0, 133
+  xy: 513, 589
   size: 160, 160
   orig: 160, 160
   offset: 0, 0
   index: -1
 Sprite-0006
   rotate: false
-  xy: 345, 632
+  xy: 345, 590
   size: 168, 159
   orig: 168, 159
   offset: 0, 0
   index: -1
 Sprite-0007
   rotate: false
-  xy: 172, 636
+  xy: 172, 594
   size: 173, 155
   orig: 173, 155
   offset: 0, 0
   index: -1
 Sprite-0008
   rotate: false
-  xy: 158, 307
+  xy: 673, 594
   size: 152, 155
   orig: 152, 155
   offset: 0, 0
   index: -1
 Sprite-0009
   rotate: false
-  xy: 513, 644
+  xy: 825, 602
   size: 157, 147
   orig: 157, 147
   offset: 0, 0
   index: -1
 Sprite-0010
   rotate: false
-  xy: 0, 2
+  xy: 307, 402
   size: 151, 131
   orig: 151, 131
   offset: 0, 0
   index: -1
 Sprite-0011
   rotate: false
-  xy: 514, 514
+  xy: 418, 209
   size: 112, 130
   orig: 112, 130
   offset: 0, 0
   index: -1
 Sprite-0012
   rotate: false
-  xy: 160, 167
+  xy: 158, 166
   size: 154, 140
   orig: 154, 140
   offset: 0, 0
   index: -1
 Sprite-0013
   rotate: false
-  xy: 307, 496
+  xy: 458, 396
   size: 113, 136
   orig: 113, 136
   offset: 0, 0
   index: -1
 Sprite-0014
   rotate: false
-  xy: 417, 363
+  xy: 751, 202
   size: 100, 132
   orig: 100, 132
   offset: 0, 0
   index: -1
 Sprite-0015
   rotate: false
-  xy: 409, 0
+  xy: 517, 25
   size: 89, 127
   orig: 89, 127
   offset: 0, 0
   index: -1
 Sprite-0016
   rotate: false
-  xy: 505, 116
+  xy: 912, 414
   size: 82, 131
   orig: 82, 131
   offset: 0, 0
   index: -1
 Sprite-0017
   rotate: false
-  xy: 529, 278
+  xy: 224, 19
   size: 60, 90
   orig: 60, 90
   offset: 0, 0
   index: -1
 Sprite-0018
   rotate: false
-  xy: 151, 0
+  xy: 741, 30
   size: 89, 115
   orig: 89, 115
   offset: 0, 0
   index: -1
 Sprite-0019
   rotate: false
-  xy: 589, 245
+  xy: 830, 23
   size: 81, 122
   orig: 81, 122
   offset: 0, 0
   index: -1
 Sprite-0020
   rotate: false
-  xy: 240, 6
+  xy: 158, 0
   size: 66, 109
   orig: 66, 109
   offset: 0, 0
   index: -1
 Sprite-0021
   rotate: false
-  xy: 560, 77
+  xy: 958, 318
   size: 51, 39
   orig: 51, 39
   offset: 0, 0
   index: -1
 Sprite-0022
   rotate: false
-  xy: 498, 18
+  xy: 911, 3
   size: 66, 41
   orig: 66, 41
   offset: 0, 0
   index: -1
 Sprite-0023
   rotate: false
-  xy: 587, 170
+  xy: 284, 34
   size: 48, 75
   orig: 48, 75
   offset: 0, 0
   index: -1
 Sprite-0024
   rotate: false
-  xy: 601, 367
+  xy: 671, 385
   size: 63, 147
   orig: 63, 147
   offset: 0, 0
   index: -1
 Sprite-0025
   rotate: false
-  xy: 310, 368
+  xy: 851, 215
   size: 107, 128
   orig: 107, 128
   offset: 0, 0
   index: -1
 Sprite-0026
   rotate: false
-  xy: 314, 240
+  xy: 428, 24
   size: 89, 128
   orig: 89, 128
   offset: 0, 0
   index: -1
 Sprite-0027
   rotate: false
-  xy: 517, 368
+  xy: 734, 391
   size: 84, 146
   orig: 84, 146
   offset: 0, 0
   index: -1
 Sprite-0028
   rotate: false
-  xy: 420, 495
+  xy: 818, 400
   size: 94, 137
   orig: 94, 137
   offset: 0, 0
   index: -1
 Sprite-0029
   rotate: false
-  xy: 306, 6
+  xy: 606, 37
   size: 95, 117
   orig: 95, 117
   offset: 0, 0
   index: -1
 Sprite-0030
   rotate: false
-  xy: 314, 123
+  xy: 656, 211
   size: 95, 117
   orig: 95, 117
   offset: 0, 0
   index: -1
 Sprite-0031
   rotate: false
-  xy: 409, 127
+  xy: 332, 15
   size: 96, 120
   orig: 96, 120
   offset: 0, 0
   index: -1
 Sprite-0032
   rotate: false
-  xy: 587, 129
+  xy: 958, 220
   size: 50, 41
   orig: 50, 41
   offset: 0, 0
   index: -1
 Sprite-0033
   rotate: false
-  xy: 160, 115
+  xy: 0, 28
   size: 128, 52
   orig: 128, 52
   offset: 0, 0
   index: -1
 Sprite-0034
   rotate: false
-  xy: 626, 532
+  xy: 701, 42
   size: 40, 112
   orig: 40, 112
   offset: 0, 0
   index: -1
 Sprite-0035
   rotate: false
-  xy: 498, 59
+  xy: 911, 101
   size: 62, 57
   orig: 62, 57
   offset: 0, 0
   index: -1
 Sprite-0036
   rotate: false
-  xy: 403, 247
+  xy: 530, 212
   size: 126, 116
   orig: 126, 116
+  offset: 0, 0
+  index: -1
+tree1
+  rotate: false
+  xy: 312, 192
+  size: 106, 153
+  orig: 106, 153
+  offset: 0, 0
+  index: -1
+tree2
+  rotate: false
+  xy: 571, 385
+  size: 100, 147
+  orig: 100, 147
   offset: 0, 0
   index: -1
