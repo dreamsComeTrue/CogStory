@@ -29,6 +29,7 @@ extern "C"
 #include "scriptarray/scriptarray.h"
 #include "scriptbuilder/scriptbuilder.h"
 #include "scriptstdstring/scriptstdstring.h"
+#include "scriptdictionary/scriptdictionary.h"
 
 #include <cmath>
 #include <cstdarg>

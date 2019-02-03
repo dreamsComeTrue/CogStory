@@ -185,7 +185,7 @@
     "flag_points": [
         {
             "connections": "",
-            "name": "MARKER_ROBOTS_DISTRICT",
+            "name": "MARKER_ROBOTS_DISTRICT_I",
             "pos": "16.00 112.00"
         }
     ],
@@ -310,7 +310,7 @@
             "collidable": "0",
             "data": "2_city/2_city_robots_districtI.scn",
             "name": "ENTRY_ROBOTS_DISTRICT_I",
-            "poly": "-32.00 160.00 16.00 192.00 48.00 160.00 "
+            "poly": "-16.00 160.00 16.00 176.00 48.00 160.00 "
         },
         {
             "collidable": "0",

@@ -1,25 +1,5 @@
 //--------------------------------------------------------------------------------------------------
 
-void ShowSpeechWhenOverlap (Actor@ other, string objectName, string speechID)
-{
-    if (other.Name == objectName)
-    {
-        AddSpeechFrame (speechID, false);
-    } 
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void HideSpeechWhenOverlap (Actor@ other, string objectName, string speechID)
-{
-    if (other.Name == objectName)
-    {
-        RemoveSpeechFrame (speechID);
-    } 
-} 
-
-//--------------------------------------------------------------------------------------------------
-
 void AddParticles (int actorName)
 {
     Actor@ tile = GetActor (actorName);
@@ -35,6 +15,61 @@ void AddParticles (int actorName)
     Point pos = particles.GetEmitter ().GetPosition ();
     particles.GetEmitter ().SetPosition (pos.X + tile.Bounds.GetHalfSize ().Width, pos.Y - 5);
     particles.GetEmitter ().Initialize ();
+}
+
+//--------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
+
+funcdef void CameraTweenFinish(int id);
+
+class FinishFunction
+{
+    int TweenID;
+    CameraTweenFinish@ FinishFunc;
+}
+
+array<FinishFunction> finishFuncs;
+dictionary g_TimesDictionary = 
+{
+    {'CitySceneAnimationTime', 2000},
+    {'CityFactorySceneAnimationTime1', 2000},
+    {'CityFactorySceneAnimationTime2', 500},
+    {'FactoryMainSceneAnimation1', 1000},
+    {'FactoryMainSceneAnimation2', 1000}
+};
+
+//--------------------------------------------------------------------------------------------------
+
+int GetTime (string id)
+{
+    return int(g_TimesDictionary[id]);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void CreateCameraToFlagPointTween (string flagPoint, string timeKey, CameraTweenFinish@ finishFunc)
+{
+    int tweenID = AddTween (GetDummyActor ().GetPosition (), GetFlagPoint (flagPoint).Pos, GetTime (timeKey), function (id, progress, value)
+    {
+        GetDummyActor ().SetPosition (value);
+        return false;
+    }, function (id) 
+    {
+        for (uint i = 0; i < finishFuncs.length(); ++i)
+        {
+            if (finishFuncs[i].TweenID == id)
+            {
+                finishFuncs[i].FinishFunc (id);
+                return;
+            }
+        }
+    });
+    
+    FinishFunction func;
+    func.TweenID = tweenID;
+    @func.FinishFunc = @finishFunc;
+    
+    finishFuncs.insertLast (func);
 }
 
 //--------------------------------------------------------------------------------------------------

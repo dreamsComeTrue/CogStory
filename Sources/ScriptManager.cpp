@@ -425,6 +425,7 @@ namespace aga
 
 			RegisterStdString (m_ScriptEngine);
 			RegisterScriptArray (m_ScriptEngine, true);
+			RegisterScriptDictionary (m_ScriptEngine);
 			RegisterAPI ();
 
 			m_FileWatcher.addWatch (GetDataPath () + "/scripts", &m_FileListener, true);

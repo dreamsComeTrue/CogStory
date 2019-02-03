@@ -7,11 +7,12 @@
         "2_city/2_city_factory_district.scn",
         "1_factory/1_factory_hallway.scn",
         "2_city/2_city_humans_districtII.scn",
-        "1_factory/1_factory_main.scn"
+        "1_factory/1_factory_main.scn",
+        "0_home/0_home_main.scn"
     ],
     "show_actors": true,
     "show_bounds": false,
-    "show_camera_bounds": true,
+    "show_camera_bounds": false,
     "show_flag_points": true,
     "show_grid": true,
     "show_names": false,

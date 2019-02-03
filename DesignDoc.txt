@@ -12,11 +12,15 @@
 
  = Camera moves over the human district, then main city area, shows buildings, 
    people and robots wandering around
+
  = Fade in center text
     -- Chapter I --
     No ordinary day
 
- = Camera stops over factory building, fades to entry
+ = Camera moves over the whole factory district, showing robots wandering
+   to/from work
+
+ = Camera stops over factory building, fades to entry, showing hallway
 
  = Camera flows over robots moving slowly around belts
 

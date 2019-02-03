@@ -2,6 +2,7 @@ Binaries/
 Data/__RAW/
 
 ThirdParty/angelscript/angelscript/lib/Linux
+ThirdParty/angelscript/docs
 ThirdParty/allegro5/bin
 ThirdParty/allegro5/android
 ThirdParty/allegro5/contrib

@@ -33,6 +33,8 @@ namespace aga
         PACK_ENV_1,
         PACK_ENV_2,
         PACK_ENV_5,
+        
+        PACK_ACTOR_ROBOT1,
 
         __FONTS__MARKER__,
 
