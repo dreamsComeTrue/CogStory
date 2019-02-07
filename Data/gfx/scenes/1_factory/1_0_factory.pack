@@ -1,12 +1,12 @@
 
 1_0_factory.png
-size: 256,64
+size: 512,64
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 Sprite-0001
   rotate: false
-  xy: 147, 0
+  xy: 211, 0
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -16,5 +16,12 @@ Sprite-0002
   xy: 0, 15
   size: 147, 49
   orig: 147, 49
+  offset: 0, 0
+  index: -1
+chair1
+  rotate: false
+  xy: 147, 0
+  size: 64, 64
+  orig: 64, 64
   offset: 0, 0
   index: -1

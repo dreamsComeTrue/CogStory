@@ -77,7 +77,7 @@ namespace aga
 	void MainMenuState::BeforeEnter ()
 	{
 		al_hide_mouse_cursor (m_MainLoop->GetScreen ()->GetDisplay ());
-		m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgba (35, 31, 70, 255));
+		m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgba (45, 55, 145, 255));
 
 		m_MainLoop->GetAudioManager ().SetEnabled (true);
 

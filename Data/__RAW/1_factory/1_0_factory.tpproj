@@ -18,6 +18,7 @@ minWidth=16
 paddingX=0
 paddingY=0
 pot=true
+mof=false
 rotation=false
 stripWhitespaceX=false
 stripWhitespaceY=false
@@ -31,12 +32,12 @@ limitMemory=true
 useIndexes=true
 
 scaleFactors=[{suffix:"",factor:1,resampling:bicubic}]
-inputFiles=[{path:Sprite-0001.png,type:Input,regionName:null},{path:Sprite-0002.png,type:Input,regionName:null}]
+inputFiles=[{path:Sprite-0001.png,type:Input,regionName:null},{path:Sprite-0002.png,type:Input,regionName:null},{path:chair1.png,type:Input,regionName:null}]
 
 
 -PROJ-
 
-version=4.7.3
+version=4.8.2
 fileTypeType=png
 fileTypeData={encoding:RGBA8888}
 previewBackgroundColor=ffffffff
