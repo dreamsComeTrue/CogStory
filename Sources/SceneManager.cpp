@@ -33,6 +33,7 @@ namespace aga
 		, m_OverlayActive (false)
 		, m_CenterTextColor (al_map_rgb (240, 240, 240))
 		, m_SceneLoadedCallback (nullptr)
+		, m_LastTweenID (-1)
 	{
 		m_SpeechFrameManager = new SpeechFrameManager (this);
 	}
@@ -645,7 +646,13 @@ namespace aga
 										 .during (fadeShowTime)
 										 .onStep (introFunc);
 
-		m_MainLoop->GetTweenManager ().AddTween (-1, tween, [&](int) { m_SceneIntro = false; });
+		if (m_LastTweenID >= 0)
+		{
+			m_MainLoop->GetTweenManager ().RemoveTween (m_LastTweenID);
+		}
+
+		TweenData& lastTween = m_MainLoop->GetTweenManager ().AddTween (-1, tween, [&](int) { m_SceneIntro = false; });
+		m_LastTweenID = lastTween.ID;
 	}
 
 	//--------------------------------------------------------------------------------------------------

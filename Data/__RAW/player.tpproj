@@ -18,6 +18,7 @@ minWidth=16
 paddingX=0
 paddingY=0
 pot=true
+mof=false
 rotation=false
 stripWhitespaceX=false
 stripWhitespaceY=false
@@ -30,13 +31,13 @@ bleed=true
 limitMemory=true
 useIndexes=true
 
-scaleFactors=[{suffix:"",factor:1}]
+scaleFactors=[{suffix:"",factor:1,resampling:bicubic}]
 inputFiles=[{path:actors/player.png,type:Input,regionName:null}]
 
 
 -PROJ-
 
-version=4.6.0
+version=4.8.2
 fileTypeType=png
 fileTypeData={encoding:RGBA8888}
 previewBackgroundColor=ffffffff

@@ -119,6 +119,7 @@ namespace aga
         Scene* m_ActiveScene;
         Scene* m_NextScene;
 
+        int m_LastTweenID;
         bool m_Transitioning;
         ALLEGRO_COLOR m_FadeColor;
 
