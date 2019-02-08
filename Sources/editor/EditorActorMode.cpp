@@ -25,12 +25,13 @@ namespace aga
 		, m_PrimarySelectedActor (nullptr)
 		, m_CurrentTileBegin (0)
 		, m_SpriteSheetChoosen (false)
+		, m_BlueprintActor (nullptr)
 	{
 	}
 
 	//--------------------------------------------------------------------------------------------------
 
-	EditorActorMode::~EditorActorMode () {}
+	EditorActorMode::~EditorActorMode () { SAFE_DELETE (m_BlueprintActor); }
 
 	//--------------------------------------------------------------------------------------------------
 
@@ -442,43 +443,13 @@ namespace aga
 		{
 			m_SelectedAtlasRegions.push_back (m_Atlas->GetRegion (selectedActor->Name));
 
-			Point regionSize = selectedActor->Bounds.GetSize ();
+			Actor* newActor = CreateBlueprintActor (selectedActor);
+			newActor->Bounds.Pos += deltaPoint;
 
-			Actor* newActor
-				= ActorFactory::GetActor (&m_Editor->GetMainLoop ()->GetSceneManager (), selectedActor->GetTypeName ());
-			newActor->Name = selectedActor->GetAtlasRegionName ();
-
-			if (linkWithParent)
+			if (!linkWithParent)
 			{
-				newActor->BlueprintID = selectedActor->ID;
+				newActor->BlueprintID = -1;
 			}
-
-			newActor->Bounds.Pos = selectedActor->Bounds.Pos + deltaPoint;
-			newActor->Bounds.Size = regionSize;
-			newActor->TemplateBounds = newActor->Bounds;
-			newActor->Rotation = selectedActor->Rotation;
-			newActor->ZOrder = selectedActor->ZOrder;
-			newActor->SetCheckOverlap (selectedActor->IsCheckOverlap ());
-			newActor->SetCollidable (selectedActor->IsCollidable ());
-			newActor->SetCollisionEnabled (selectedActor->IsCollisionEnabled ());
-			newActor->SetFocusHeight (selectedActor->GetFocusHeight ());
-			newActor->SetAtlas (selectedActor->GetAtlas ());
-			newActor->SetAnimation (selectedActor->GetAnimation ());
-			newActor->SetAtlasRegionName (selectedActor->GetAtlasRegionName ());
-			newActor->PhysPoints = selectedActor->PhysPoints;
-			newActor->SetPhysOffset (newActor->Bounds.GetPos () + newActor->Bounds.GetHalfSize ());
-
-			std::map<std::string, Component*>& components = selectedActor->GetComponents ();
-
-			for (std::map<std::string, Component*>::iterator it = components.begin (); it != components.end (); ++it)
-			{
-				Component* newComponent = it->second->Clone ();
-				newComponent->SetActor (newActor);
-
-				newActor->AddComponent (it->first, newComponent);
-			}
-
-			newActor->Initialize ();
 
 			m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddActor (newActor);
 
@@ -495,6 +466,77 @@ namespace aga
 				AddActorToSelection (actor);
 			}
 		}
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	Actor* EditorActorMode::CreateBlueprintActor (Actor* origin)
+	{
+		Actor* newActor
+			= ActorFactory::GetActor (&m_Editor->GetMainLoop ()->GetSceneManager (), origin->GetTypeName ());
+		newActor->Name = origin->Name;
+		newActor->BlueprintID = origin->ID;
+
+		newActor->Bounds.Pos = origin->Bounds.Pos;
+		newActor->Bounds.Size = origin->Bounds.GetSize ();
+		newActor->TemplateBounds = newActor->Bounds;
+		newActor->Rotation = origin->Rotation;
+		newActor->ZOrder = origin->ZOrder;
+		newActor->SetCheckOverlap (origin->IsCheckOverlap ());
+		newActor->SetCollidable (origin->IsCollidable ());
+		newActor->SetCollisionEnabled (origin->IsCollisionEnabled ());
+		newActor->SetFocusHeight (origin->GetFocusHeight ());
+		newActor->SetAtlas (origin->GetAtlas ());
+		newActor->SetAnimation (origin->GetAnimation ());
+		newActor->SetAtlasRegionName (origin->GetAtlasRegionName ());
+		newActor->PhysPoints = origin->PhysPoints;
+		newActor->SetPhysOffset (newActor->Bounds.GetPos () + newActor->Bounds.GetHalfSize ());
+
+		std::map<std::string, Component*>& components = origin->GetComponents ();
+
+		for (std::map<std::string, Component*>::iterator it = components.begin (); it != components.end (); ++it)
+		{
+			Component* newComponent = it->second->Clone ();
+			newComponent->SetActor (newActor);
+
+			newActor->AddComponent (it->first, newComponent);
+		}
+
+		newActor->Initialize ();
+
+		return newActor;
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void EditorActorMode::QueueBlueprintActor ()
+	{
+		if (!m_SelectedActors.empty ())
+		{
+			SAFE_DELETE (m_BlueprintActor);
+
+			m_BlueprintActor = CreateBlueprintActor (m_SelectedActors.back ());
+			m_BlueprintPos = m_SelectedActors.back ()->Bounds.Pos;
+		}
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void EditorActorMode::UnqueueBlueprintActor ()
+	{
+		ALLEGRO_MOUSE_STATE state;
+		al_get_mouse_state (&state);
+
+		Point deltaPoint = {0, 0};
+
+		Point mousePoint = m_Editor->CalculateWorldPoint (state.x, state.y);
+		deltaPoint = mousePoint - m_BlueprintPos;
+
+		Actor* newActor = CreateBlueprintActor (m_BlueprintActor);
+		newActor->Bounds.Pos += deltaPoint;
+
+		m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddActor (newActor);
+		m_Rotation = newActor->Rotation;
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -546,6 +588,52 @@ namespace aga
 		Font& font = m_Editor->GetMainLoop ()->GetScreen ()->GetFont ();
 		font.DrawText (FONT_NAME_SMALL, drawName, al_map_rgb (255, 255, 0), drawNamePoint.X, drawNamePoint.Y, 1.0f,
 			ALLEGRO_ALIGN_CENTER);
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void EditorActorMode::DrawBlueprints ()
+	{
+		if (m_BlueprintActor)
+		{
+			const float tileSize = 100;
+			const Point windowSize = m_Editor->GetMainLoop ()->GetScreen ()->GetRealWindowSize ();
+			Point beginning (windowSize.Width - (175.f * 0.5f) - tileSize * 0.5f, 410.f);
+			float advance = 0;
+
+			AtlasRegion& region = m_BlueprintActor->GetAtlas ()->GetRegion (m_BlueprintActor->GetAtlasRegionName ());
+			Rect regionBounds = region.Bounds;
+			int imageWidth = regionBounds.Size.Width;
+			int imageHeight = regionBounds.Size.Height;
+			int canvasWidth = static_cast<int> (tileSize - 2);
+			int canvasHeight = static_cast<int> (tileSize - 2);
+
+			int destWidth = imageWidth;
+			int destHeight = imageHeight;
+			float ratio = 1.0f;
+
+			if (imageWidth > canvasWidth || imageHeight > canvasHeight)
+			{
+				ratio = std::max (
+					static_cast<float> (imageWidth) / canvasWidth, static_cast<float> (imageHeight) / canvasHeight);
+				destWidth /= ratio;
+				destHeight /= ratio;
+			}
+
+			for (size_t i = 0; i < 1; ++i)
+			{
+				advance = beginning.Y + i * tileSize;
+
+				al_draw_rectangle (beginning.X, advance, beginning.X + tileSize, advance + tileSize, COLOR_GREEN, 1);
+				
+				int xPos = beginning.X + 1 + (tileSize - destWidth) * 0.5f;
+				int yPos = advance + 1 + (tileSize - destHeight) * 0.5f;
+
+				al_draw_scaled_bitmap (m_BlueprintActor->GetAtlas ()->GetImage (), regionBounds.GetPos ().X, regionBounds.GetPos ().Y,
+					regionBounds.GetSize ().Width, regionBounds.GetSize ().Height, xPos, yPos,
+					destWidth, destHeight, 0);
+			}
+		}
 	}
 
 	//--------------------------------------------------------------------------------------------------

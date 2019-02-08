@@ -373,6 +373,20 @@ namespace aga
 				break;
 			}
 
+			case ALLEGRO_KEY_A:
+			{
+				if (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT)
+				{
+					m_EditorActorMode.UnqueueBlueprintActor ();
+				}
+				else
+				{
+					m_EditorActorMode.QueueBlueprintActor ();
+				}
+
+				break;
+			}
+
 			case ALLEGRO_KEY_C:
 			{
 				bool changeSelection = event->keyboard.modifiers != ALLEGRO_KEYMOD_SHIFT;
@@ -715,6 +729,7 @@ namespace aga
 		if (m_EditorActorMode.IsDrawTiles ())
 		{
 			m_EditorActorMode.DrawTiles ();
+			m_EditorActorMode.DrawBlueprints ();
 			RenderUI ();
 		}
 
@@ -1505,8 +1520,8 @@ namespace aga
 		al_get_mouse_state (&state);
 
 		ImGui::SetNextWindowPos (
-			ImVec2 (m_MainLoop->GetScreen ()->GetRealWindowSize ().Width - 155, 5), ImGuiCond_Always);
-		ImGui::SetNextWindowSize (ImVec2 (150, 302));
+			ImVec2 (m_MainLoop->GetScreen ()->GetRealWindowSize ().Width - 175, 5), ImGuiCond_Always);
+		ImGui::SetNextWindowSize (ImVec2 (165, 302));
 
 		ImGui::PushStyleColor (ImGuiCol_WindowBg, ImVec4 (0, 0, 0, 0.3f));
 		if (ImGui::Begin ("Info", nullptr,
@@ -1595,8 +1610,8 @@ namespace aga
 		ImGui::PopStyleColor ();
 
 		ImGui::SetNextWindowPos (
-			ImVec2 (m_MainLoop->GetScreen ()->GetRealWindowSize ().Width - 155, 300), ImGuiCond_Always);
-		ImGui::SetNextWindowSize (ImVec2 (150, 270));
+			ImVec2 (m_MainLoop->GetScreen ()->GetRealWindowSize ().Width - 175, 300), ImGuiCond_Always);
+		ImGui::SetNextWindowSize (ImVec2 (170, 270));
 		ImGui::PushStyleColor (ImGuiCol_WindowBg, ImVec4 (0.f, 0.f, 0.f, 0.0f));
 		if (ImGui::Begin ("Visiblies", nullptr,
 				ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
