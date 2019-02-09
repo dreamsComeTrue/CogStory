@@ -70,7 +70,7 @@ namespace aga
 
     void EditorSceneWindow::RenderUI ()
     {
-        ImGui::SetNextWindowSize (ImVec2 (500, 200));
+        ImGui::SetNextWindowSize (ImVec2 (750, 200));
 
         if (ImGui::BeginPopupModal ("Scene Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
@@ -97,7 +97,7 @@ namespace aga
 
             ImGui::Separator ();
 
-            if (ImGui::Button ("ADD SCRIPT", ImVec2 (480, 18)))
+            if (ImGui::Button ("ADD SCRIPT", ImVec2 (730, 18)))
             {
                 m_Editor->GetScriptWindow ()->Show (
                     [&](std::string name, std::string path) {
@@ -109,16 +109,17 @@ namespace aga
             m_Editor->GetScriptWindow ()->Render ();
 
             ImGui::Columns (4, "mycolumns");
+            ImGui::SetColumnWidth (-1, 230);
             ImGui::Separator ();
             ImGui::Text ("Name");
             ImGui::NextColumn ();
-            ImGui::SetColumnWidth (-1, 240);
+            ImGui::SetColumnWidth (-1, 340);
             ImGui::Text ("Path");
             ImGui::NextColumn ();
-            ImGui::SetColumnWidth (-1, 60);
+            ImGui::SetColumnWidth (-1, 90);
             ImGui::Text ("Reload");
             ImGui::NextColumn ();
-            ImGui::SetColumnWidth (-1, 60);
+            ImGui::SetColumnWidth (-1, 90);
             ImGui::Text ("Remove");
             ImGui::Separator ();
 
@@ -128,20 +129,22 @@ namespace aga
             for (ScriptMetaData& script : scripts)
             {
                 ImGui::NextColumn ();
+                ImGui::SetColumnWidth (-1, 230);
                 ImGui::Text (script.Name.c_str ());
                 ImGui::NextColumn ();
+                ImGui::SetColumnWidth (-1, 340);
                 ImGui::Text (script.Path.c_str ());
                 ImGui::NextColumn ();
-                ImGui::SetColumnWidth (-1, 60);
-                if (ImGui::Button ("RELOAD"))
+                ImGui::SetColumnWidth (-1, 90);
+                if (ImGui::Button ("RELOAD", ImVec2 (80.f, 18.f)))
                 {
                     OnReloadScript (script.Name);
                 }
 
                 ImGui::NextColumn ();
-                ImGui::SetColumnWidth (-1, 60);
+                ImGui::SetColumnWidth (-1, 90);
 
-                if (ImGui::Button ("REMOVE"))
+                if (ImGui::Button ("REMOVE", ImVec2 (80.f, 18.f)))
                 {
                     m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveScript (script.Name);
                 }

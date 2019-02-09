@@ -158,7 +158,7 @@ namespace aga
 
     void EditorOpenSceneWindow::Render ()
     {
-        ImGui::SetNextWindowSize (ImVec2 (530, 275));
+        ImGui::SetNextWindowSize (ImVec2 (530, 490));
 
         if (ImGui::BeginPopupModal ("Open Scene", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
@@ -172,7 +172,7 @@ namespace aga
 
             static int hoveredItem = 0;
             ImGui::PushItemWidth (430);
-            if (ImGui::HoverableListBox ("", &m_ItemCurrent, items, ARRAY_SIZE (items), 10, &hoveredItem))
+            if (ImGui::HoverableListBox ("", &m_ItemCurrent, items, ARRAY_SIZE (items), 22, &hoveredItem))
             {
                 strcpy (m_SceneName, items[m_ItemCurrent]);
                 m_Editor->LoadScene (m_SceneName);
