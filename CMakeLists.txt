@@ -13,30 +13,22 @@ cmake_policy(SET CMP0015 NEW)
 cmake_policy(SET CMP0058 NEW)
 link_directories(   ${ROOT_THIRD_PARTY_DIR}/angelscript/angelscript/lib/Linux/
                     ${ROOT_THIRD_PARTY_DIR}/angelscript/angelscript/lib/Win64/
+                    ${ROOT_THIRD_PARTY_DIR}/allegro5_win/lib/
                     ${ROOT_THIRD_PARTY_DIR}/allegro5/bin/lib/
-                    ${ROOT_THIRD_PARTY_DIR}/allegro5/bin/include/
-                    ${ROOT_THIRD_PARTY_DIR}/allegro5/deps/lib/
                  )
 
 file(GLOB_RECURSE SRC_LIST  Sources/*
                             ${ROOT_THIRD_PARTY_DIR}/imgui/imgui.cpp
                             ${ROOT_THIRD_PARTY_DIR}/imgui/imgui_draw.cpp
                             ${ROOT_THIRD_PARTY_DIR}/imgui/imgui_widgets.cpp
-							${ROOT_THIRD_PARTY_DIR}/imgui/imguifilesystem.cpp
-							${ROOT_THIRD_PARTY_DIR}/imgui/imgui_demo.cpp
+                            ${ROOT_THIRD_PARTY_DIR}/imgui/imgui_demo.cpp
                             ${ROOT_THIRD_PARTY_DIR}/imgui/examples/imgui_impl_allegro5.cpp)
 
 if (WIN32)
-list(APPEND INCLUDE_DIRS
-        ${ROOT_THIRD_PARTY_DIR}/allegro5/include
-        ${ROOT_THIRD_PARTY_DIR}/allegro5/addons/acodec
-        ${ROOT_THIRD_PARTY_DIR}/allegro5/addons/audio
-        ${ROOT_THIRD_PARTY_DIR}/allegro5/addons/font
-        ${ROOT_THIRD_PARTY_DIR}/allegro5/addons/image
-        ${ROOT_THIRD_PARTY_DIR}/allegro5/addons/primitives
-        ${ROOT_THIRD_PARTY_DIR}/allegro5/addons/ttf
-    )
+    list(APPEND INCLUDE_DIRS ${ROOT_THIRD_PARTY_DIR}/allegro5_win/include)
 else()
+    list(APPEND INCLUDE_DIRS    ${ROOT_THIRD_PARTY_DIR}/allegro5/include
+                                ${ROOT_THIRD_PARTY_DIR}/allegro5/bin/include)
 endif (WIN32)
 
 list(APPEND INCLUDE_DIRS
@@ -77,7 +69,7 @@ if (WIN32)
                         winmm
                         opengl32
                         dsound
-						zlib						
+                        zlib
                         )
     endif (STATIC_BUILD)
 
@@ -91,7 +83,7 @@ else()
                 Xcursor
                 openal
                 asound
-				jpeg
+                jpeg
                 png16
                 vorbisfile
                 vorbis
@@ -100,10 +92,10 @@ else()
                 )
     endif (STATIC_BUILD)
 
-	list(APPEND LIBRARIES_LIST
+    list(APPEND LIBRARIES_LIST
                         libangelscript.a
-						pthread
-						)
+                        pthread
+        )
 endif (WIN32)
 
 include_directories(${INCLUDE_DIRS})

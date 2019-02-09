@@ -12,7 +12,8 @@
         "1_factory/1_factory_cabinI.scn",
         "1_factory/1_factory_cabinII.scn",
         "1_factory/1_factory_cabinIII.scn",
-        "1_factory/1_factory_corridor.scn"
+        "1_factory/1_factory_corridor.scn",
+        "2_city/2_city_forest_alley.scn"
     ],
     "show_actors": true,
     "show_bounds": false,

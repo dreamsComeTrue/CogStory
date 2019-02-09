@@ -6,7 +6,7 @@
 #include "Screen.h"
 
 #include "imgui.h"
-#include "imguifilesystem.h"
+#include "addons/tiny-file-dialogs/tinyfiledialogs.h"
 
 using json = nlohmann::json;
 
@@ -64,10 +64,16 @@ namespace aga
             std::string path = GetDataPath () + "x/";
             std::string dirName = GetDataPath ();
 
-            static ImGuiFs::Dialog dlg;
-            const char* chosenPath = dlg.saveFileDialog (m_SaveTilesButtonPressed, path.c_str ());
+            char const * filterPatterns[1] = { "*.*" };
 
-            if (strlen (chosenPath) > 0)
+            const char* chosenPath = tinyfd_saveFileDialog (
+               "Save Tiles",
+                        path.c_str (),
+                        1,
+                        filterPatterns,
+                        "all files");
+
+            if (chosenPath != nullptr && strlen (chosenPath) > 0)
             {
                 std::string fileName = chosenPath;
                 std::replace (fileName.begin (), fileName.end (), '\\', '/');
@@ -100,7 +106,7 @@ namespace aga
 
                 m_SaveTilesButtonPressed = false;
             }
-            else if (dlg.hasUserJustCancelledDialog ())
+            else
             {
                 m_SaveTilesButtonPressed = false;
             }
@@ -116,10 +122,16 @@ namespace aga
             std::string path = GetDataPath () + "x/";
             std::string dirName = GetDataPath ();
 
-            static ImGuiFs::Dialog dlg;
-            const char* chosenPath = dlg.saveFileDialog (m_SavePackButtonPressed, path.c_str ());
+            char const * filterPatterns[1] = { "*.*" };
 
-            if (strlen (chosenPath) > 0)
+            const char* chosenPath = tinyfd_saveFileDialog (
+               "Save Tiles",
+                        path.c_str (),
+                        1,
+                        filterPatterns,
+                        "all files");
+
+            if (chosenPath != nullptr && strlen (chosenPath) > 0)
             {
                 std::string fileName = chosenPath;
                 std::replace (fileName.begin (), fileName.end (), '\\', '/');
@@ -168,7 +180,7 @@ namespace aga
 
                 m_SavePackButtonPressed = false;
             }
-            else if (dlg.hasUserJustCancelledDialog ())
+            else
             {
                 m_SavePackButtonPressed = false;
             }
@@ -229,10 +241,17 @@ namespace aga
                     fileOpenPath = GetDataPath () + "x/";
                 }
 
-                static ImGuiFs::Dialog dlg;
-                const char* chosenPath = dlg.chooseFileDialog (m_OpenImageButtonPressed, fileOpenPath.c_str ());
+                char const * filterPatterns[1] = { "*.*" };
 
-                if (strlen (chosenPath) > 0)
+                const char* chosenPath = tinyfd_openFileDialog (
+                   "Open Tiles",
+                            fileOpenPath.c_str (),
+                            1,
+                            filterPatterns,
+                            "all files",
+                            0);
+
+                if (chosenPath != nullptr && strlen (chosenPath) > 0)
                 {
                     std::string fileName = chosenPath;
                     std::replace (fileName.begin (), fileName.end (), '\\', '/');
@@ -249,7 +268,7 @@ namespace aga
 
                     m_OpenImageButtonPressed = false;
                 }
-                else if (dlg.hasUserJustCancelledDialog ())
+                else
                 {
                     m_OpenImageButtonPressed = false;
                 }

@@ -6,7 +6,7 @@
 #include "Screen.h"
 
 #include "imgui.h"
-#include "imguifilesystem.h"
+#include "addons/tiny-file-dialogs/tinyfiledialogs.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -80,11 +80,16 @@ namespace aga
 
             if (m_BrowseButtonPressed)
             {
-                std::string path = GetDataPath () + "scenes/x/";
-                static ImGuiFs::Dialog dlg;
-                const char* chosenPath = dlg.saveFileDialog (m_BrowseButtonPressed, path.c_str ());
+                char const * filterPatterns[1] = { "*.scn" };
 
-                if (strlen (chosenPath) > 0)
+                const char* chosenPath = tinyfd_saveFileDialog (
+                   "Open Scene",
+                            "E:\\CogStory\\Data\\scenes\\special",
+                            1,
+                            filterPatterns,
+                            "scene files");
+
+                if (chosenPath != nullptr && strlen (chosenPath) > 0)
                 {
                     std::string fileName = chosenPath;
                     std::replace (fileName.begin (), fileName.end (), '\\', '/');
@@ -105,7 +110,7 @@ namespace aga
                     strcpy (m_SceneName, fileName.c_str ());
                     m_BrowseButtonPressed = false;
                 }
-                else if (dlg.hasUserJustCancelledDialog ())
+                else
                 {
                     m_BrowseButtonPressed = false;
                 }

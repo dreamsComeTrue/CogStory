@@ -1,4 +1,5 @@
-Binaries/
+Binaries/Linux
+Binaries/Win64/Out
 Data/__RAW/
 
 ThirdParty/angelscript/angelscript/lib/Linux
@@ -16,3 +17,5 @@ ThirdParty/allegro5/tools
 .vscode/c_cpp_properties.json
 .vscode/.cmaketools.json
 CMakeLists.txt.user
+ThirdParty/allegro5_win/
+ThirdParty/angelscript/angelscript/lib/Win64

@@ -13,11 +13,11 @@ namespace aga
 
 	EditorFlagPointMode::EditorFlagPointMode (Editor* editor)
 		: m_Editor (editor)
-		, m_AskFlagPoint (false)
+        , m_IsVisible (false)
+        , m_AskFlagPoint (false)
 		, m_FlagPoint ("")
-		, m_Editing (false)
-		, m_IsVisible (false)
-		, m_DrawConnection (true)
+        , m_Editing (false)
+        , m_DrawConnection (true)
 	{
 		memset (m_FlagPointWindow, 0, ARRAY_SIZE (m_FlagPointWindow));
 	}
