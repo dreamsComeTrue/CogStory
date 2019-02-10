@@ -47,6 +47,7 @@ namespace aga
 		bool ChooseTile (int mouseX, int mouseY);
 		bool ChooseTilesFromSpriteSheet ();
 		Actor* ChooseBlueprintActor (int mouseX, int mouseY);
+		void RemoveBlueprintActor (Actor* actor);
 
 		void ResetSettings ();
 

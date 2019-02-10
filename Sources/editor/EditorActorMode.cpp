@@ -569,8 +569,23 @@ namespace aga
 
 		m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddActor (newActor);
 		m_Rotation = newActor->Rotation;
-		
+
 		SetSelectedActor (newActor);
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void EditorActorMode::RemoveBlueprintActor (Actor* actor)
+	{
+		for (size_t i = 0; i < m_BlueprintActors.size (); ++i)
+		{
+			if (m_BlueprintActors[i] == actor)
+			{
+				m_BlueprintActors.erase (m_BlueprintActors.begin () + i);
+				SAFE_DELETE (actor);
+				break;
+			}
+		}
 	}
 
 	//--------------------------------------------------------------------------------------------------

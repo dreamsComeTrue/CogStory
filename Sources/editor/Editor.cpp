@@ -1798,7 +1798,7 @@ namespace aga
 						MoveActorsCommand* command = new MoveActorsCommand (&m_EditorUndoRedo, selectedActors);
 						m_EditorUndoRedo.PushCommand (command);
 					}
-					
+
 					newActorCreated = false;
 				}
 			}
@@ -1844,6 +1844,13 @@ namespace aga
 				if (!flagPointRemoved && !triggerPointRemoved)
 				{
 					SetCursorMode (CursorMode::ActorSelectMode);
+				}
+
+				Actor* blueprintActor = m_EditorActorMode.ChooseBlueprintActor (event.x, event.y);
+
+				if (blueprintActor)
+				{
+					m_EditorActorMode.RemoveBlueprintActor (blueprintActor);
 				}
 			}
 		}
