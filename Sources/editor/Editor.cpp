@@ -375,14 +375,7 @@ namespace aga
 
 			case ALLEGRO_KEY_A:
 			{
-				if (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT)
-				{
-					m_EditorActorMode.UnqueueBlueprintActor ();
-				}
-				else
-				{
-					m_EditorActorMode.QueueBlueprintActor ();
-				}
+				m_EditorActorMode.QueueBlueprintActor ();
 
 				break;
 			}
@@ -1611,7 +1604,7 @@ namespace aga
 
 		ImGui::SetNextWindowPos (
 			ImVec2 (m_MainLoop->GetScreen ()->GetRealWindowSize ().Width - 175, 300), ImGuiCond_Always);
-		ImGui::SetNextWindowSize (ImVec2 (170, 270));
+		ImGui::SetNextWindowSize (ImVec2 (170, 110));
 		ImGui::PushStyleColor (ImGuiCol_WindowBg, ImVec4 (0.f, 0.f, 0.f, 0.0f));
 		if (ImGui::Begin ("Visiblies", nullptr,
 				ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
@@ -1747,6 +1740,15 @@ namespace aga
 						m_EditorActorMode.AddActor (event.x, event.y);
 						newActorCreated = true;
 					}
+
+					Actor* blueprintActor = m_EditorActorMode.ChooseBlueprintActor (event.x, event.y);
+
+					if (blueprintActor)
+					{
+						m_EditorActorMode.SetRotation (0);
+						m_EditorActorMode.AddBlueprintActor (blueprintActor, event.x, event.y);
+						newActorCreated = true;
+					}
 				}
 
 				if (m_EditorActorMode.IsSpriteSheetChoosen ())
@@ -1796,6 +1798,8 @@ namespace aga
 						MoveActorsCommand* command = new MoveActorsCommand (&m_EditorUndoRedo, selectedActors);
 						m_EditorUndoRedo.PushCommand (command);
 					}
+					
+					newActorCreated = false;
 				}
 			}
 			else if (m_CursorMode == CursorMode::EditPhysBodyMode)

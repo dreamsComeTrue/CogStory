@@ -35,7 +35,7 @@ namespace aga
 		void RemoveSelectedActors ();
 		void CopySelectedActors (bool changeSelection, bool linkWithParent);
 		void QueueBlueprintActor ();
-        void UnqueueBlueprintActor ();
+        void AddBlueprintActor (Actor* actor, int mouseX, int mouseY);
 
 		void DrawTiles ();
 		void DrawBlueprints ();
@@ -46,6 +46,7 @@ namespace aga
 		void ChangeAtlas (const std::string& newAtlasName);
 		bool ChooseTile (int mouseX, int mouseY);
 		bool ChooseTilesFromSpriteSheet ();
+		Actor* ChooseBlueprintActor (int mouseX, int mouseY);
 
 		void ResetSettings ();
 
@@ -96,8 +97,7 @@ namespace aga
 		std::vector<Actor*> m_SelectedActors;
 
 		Actor* m_PrimarySelectedActor;
-		Actor* m_BlueprintActor;
-		Point m_BlueprintPos;
+		std::deque<Actor*> m_BlueprintActors;
 
 		bool m_IsDrawTiles;
 		TileActor* m_TileUnderCursor;
