@@ -45,7 +45,8 @@ namespace aga
         void RenderExitItems ();
 
     private:
-        ALLEGRO_BITMAP* m_Image;
+        ALLEGRO_BITMAP* m_BackgroundImage;
+        ALLEGRO_BITMAP* m_TitleImage;
         AudioSample* m_SelectSample;
         class Atlas* m_SelectItemAtlas;
         float m_SelectionAngle;

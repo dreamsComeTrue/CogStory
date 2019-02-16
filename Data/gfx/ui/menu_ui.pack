@@ -21,8 +21,8 @@ arrow_light
 cog
   rotate: false
   xy: 0, 0
-  size: 64, 64
-  orig: 64, 64
+  size: 60, 62
+  orig: 60, 62
   offset: 0, 0
   index: -1
 text_frame

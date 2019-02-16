@@ -22,7 +22,8 @@ namespace aga
 
 	MainMenuState::MainMenuState (MainLoop* mainLoop)
 		: State (mainLoop, MAIN_MENU_STATE_NAME)
-		, m_Image (nullptr)
+		, m_BackgroundImage (nullptr)
+		, m_TitleImage (nullptr)
 		, m_SelectionAngle (0.0f)
 		, m_Selection (0)
 		, m_AnimationStage (0)
@@ -55,7 +56,8 @@ namespace aga
 
 		m_SelectItemAtlas = m_MainLoop->GetAtlasManager ().GetAtlas ("menu_ui");
 
-		m_Image = al_load_bitmap ((GetDataPath () + "/gfx/ui/main_menu.png").c_str ());
+		m_BackgroundImage = al_load_bitmap ((GetDataPath () + "/gfx/ui/night-city3.jpg").c_str ());
+		m_TitleImage = al_load_bitmap ((GetDataPath () + "/gfx/ui/main_menu.png").c_str ());
 
 		m_AnimationStage = 0;
 		m_AnimationTimer = 0.f;
@@ -67,7 +69,8 @@ namespace aga
 
 	bool MainMenuState::Destroy ()
 	{
-		al_destroy_bitmap (m_Image);
+		al_destroy_bitmap (m_BackgroundImage);
+		al_destroy_bitmap (m_TitleImage);
 
 		return Lifecycle::Destroy ();
 	}
@@ -314,11 +317,12 @@ namespace aga
 			}
 		}
 
-		float imgHeight = al_get_bitmap_height (m_Image);
+		float imgHeight = al_get_bitmap_height (m_TitleImage);
 		float targetYPos = winSize.Height * 0.5f - imgHeight * 0.5f;
 		float yPos = -imgHeight * 0.5f + std::abs (-imgHeight * 0.5f - targetYPos) * currentPercent;
 
-		al_draw_bitmap (m_Image, winSize.Width * 0.5f - al_get_bitmap_width (m_Image) * 0.5f, yPos, 0);
+		al_draw_scaled_bitmap (m_BackgroundImage, 0, 0, al_get_bitmap_width (m_BackgroundImage), al_get_bitmap_height (m_BackgroundImage), 0, 0, winSize.Width, winSize.Height, 0);
+		al_draw_bitmap (m_TitleImage, winSize.Width * 0.5f - al_get_bitmap_width (m_TitleImage) * 0.5f, yPos, 0);
 
 		if (m_ExitSelected)
 		{
@@ -361,6 +365,8 @@ namespace aga
 	}
 
 	//--------------------------------------------------------------------------------------------------
+	
+#define MENU_ITEM_COLOR al_map_rgb (200, 200, 200)
 
 	void MainMenuState::RenderMenuItems ()
 	{
@@ -373,8 +379,6 @@ namespace aga
 		int offset = 10;
 		int menuItemSpacing = static_cast<int> (textSize.Height + offset);
 		int menuItemStartY = static_cast<int> (winSize.Height * 0.6f + menuItemSpacing);
-
-		ALLEGRO_COLOR menuItemColor = al_map_rgb (140, 140, 160);
 
 		float percent = m_AnimationTimer / MENU_ANIMATION_TIME;
 		float currentPercent;
@@ -394,7 +398,7 @@ namespace aga
 			float targetXPos = winSize.Width * 0.5f + 250.f;
 			float xPos = winSize.Width - (winSize.Width - targetXPos) * currentPercent;
 
-			font.DrawText (FONT_NAME_MENU_ITEM_SMALL, menuItems[i], menuItemColor, xPos,
+			font.DrawText (FONT_NAME_MENU_ITEM_SMALL, menuItems[i], MENU_ITEM_COLOR, xPos,
 				m_Selection == i ? menuItemStartY + i * menuItemSpacing - offset * 0.5f
 								 : menuItemStartY + i * menuItemSpacing,
 				scale, ALLEGRO_ALIGN_CENTER);
@@ -416,14 +420,12 @@ namespace aga
 		int menuItemSpacing = static_cast<int> (textSize.Height + offset);
 		int menuItemStartY = static_cast<int> (winSize.Height * 0.6f + menuItemSpacing);
 
-		ALLEGRO_COLOR menuItemColor = al_map_rgb (140, 140, 160);
-
 		for (int i = 0; i < 3; ++i)
 		{
 			float currentPercent = m_SelectionTimer / MENU_ANIMATION_TIME;
 			float scale = i == (m_Selection - MENU_ITEM_EXIT) ? 1.0f + currentPercent * 0.2f : 1.0f;
 
-			font.DrawText (FONT_NAME_MENU_ITEM_SMALL, menuItems[i], menuItemColor, winSize.Width * 0.5f + 250.f,
+			font.DrawText (FONT_NAME_MENU_ITEM_SMALL, menuItems[i], MENU_ITEM_COLOR, winSize.Width * 0.5f + 250.f,
 				i == (m_Selection - MENU_ITEM_EXIT) ? menuItemStartY + i * menuItemSpacing - offset * 0.5f
 													: menuItemStartY + i * menuItemSpacing,
 				scale, ALLEGRO_ALIGN_CENTER);
