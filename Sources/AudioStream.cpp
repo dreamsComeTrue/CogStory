@@ -24,6 +24,11 @@ namespace aga
 		if (al_filename_exists (path.c_str ()))
 		{
 			m_Stream = al_load_audio_stream (path.c_str (), 4, 1024);
+
+			if (m_Stream)
+			{
+				al_set_audio_stream_playmode (m_Stream, ALLEGRO_PLAYMODE_LOOP);
+			}
 		}
 	}
 

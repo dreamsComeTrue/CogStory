@@ -341,7 +341,7 @@ namespace aga
 		float scale = 1.3f * currentPercent;
 
 		m_SelectionAngle += MENU_SELECTION_ROTATION_SPEED * deltaTime;
-		m_SelectItemAtlas->DrawRegion ("cog", winSize.Width * 0.5f, winSize.Height * 0.5f - 70, scale, scale,
+		m_SelectItemAtlas->DrawRegion ("cog", winSize.Width * 0.5f, winSize.Height * 0.5f - 55, scale, scale,
 			m_SelectionAngle, false, COLOR_WHITE);
 
 		if (m_AnimationUp)
@@ -364,7 +364,7 @@ namespace aga
 			}
 		}
 
-		font.DrawText (FONT_NAME_SMALL, "v 0.1 (C) Agado Studio", al_map_rgb (130, 130, 130), 5, winSize.Height - 20,
+		font.DrawText (FONT_NAME_SMALL, "v 0.1 (C) agado studio", al_map_rgb (130, 130, 130), 5, winSize.Height - 20,
 			1.0f, ALLEGRO_ALIGN_LEFT);
 	}
 

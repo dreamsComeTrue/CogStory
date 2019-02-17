@@ -60,8 +60,9 @@ namespace aga
 	void GamePlayState::BeforeEnter ()
 	{
 		Screen* screen = m_MainLoop->GetScreen ();
-		
 		State* prevState = m_MainLoop->GetStateManager ().GetPreviousState ();
+
+		al_hide_mouse_cursor (screen->GetDisplay ());
 
 		if (prevState != nullptr && prevState->GetName () == EDITOR_STATE_NAME)
 		{
@@ -70,9 +71,6 @@ namespace aga
 		}
 
 		m_MainLoop->GetAudioManager ().SetEnabled (m_AudioWasEnabled);
-
-		al_hide_mouse_cursor (screen->GetDisplay ());
-
 		m_MainLoop->GetSceneManager ().BeforeEnter ();
 
 		ResizeWindow ();
