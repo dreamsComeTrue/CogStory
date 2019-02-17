@@ -87,6 +87,34 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
+	void SceneManager::BeforeEnter ()
+	{
+		GetSpeechFrameManager ()->Clear ();
+		GetCamera ().ClearTransformations ();
+
+		//  Re-init current initial scene everytime we start GamePlayState
+		SetActiveScene (GetActiveScene ());
+		
+		AudioStream* currentAudioStream = m_ActiveScene->GetSceneAudioStream ();
+		float fadeTime = 1000.f;
+
+		currentAudioStream->SetFadeIn (fadeTime);
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void SceneManager::AfterLeave ()
+	{
+		GetActiveScene ()->AfterLeave ();
+
+		AudioStream* currentAudioStream = m_ActiveScene->GetSceneAudioStream ();
+		float fadeTime = 1000.f;
+
+		currentAudioStream->SetFadeOut (fadeTime, true);
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
 	void SceneManager::AddScene (Scene* scene)
 	{
 		if (scene)

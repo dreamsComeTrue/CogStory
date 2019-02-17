@@ -11,7 +11,7 @@ void Start ()
 void BeforeEnterScene ()
 {    
     SetSuppressSceneInfo (true);
-    IntroAnimation ();        
+//    IntroAnimation ();        
 }
 
 //--------------------------------------------------------------------------------------------------

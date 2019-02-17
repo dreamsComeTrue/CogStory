@@ -3,6 +3,7 @@
 #include "MainMenuState.h"
 #include "Atlas.h"
 #include "AudioSample.h"
+#include "AudioStream.h"
 #include "GamePlayState.h"
 #include "MainLoop.h"
 #include "Resources.h"
@@ -54,6 +55,10 @@ namespace aga
 		m_SelectSample = m_MainLoop->GetSceneManager ().GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
 			"SELECT_MENU", GetResource (SOUND_SPEECH_SELECT).Dir + GetResource (SOUND_SPEECH_SELECT).Name);
 
+		m_BackgroundStream = m_MainLoop->GetSceneManager ().GetMainLoop ()->GetAudioManager ().LoadStreamFromFile (
+			"MUSIC_MENU_BACKGROUND",
+			GetResource (MUSIC_MENU_BACKGROUND).Dir + GetResource (MUSIC_MENU_BACKGROUND).Name);
+
 		m_SelectItemAtlas = m_MainLoop->GetAtlasManager ().GetAtlas ("menu_ui");
 
 		m_BackgroundImage = al_load_bitmap ((GetDataPath () + "/gfx/ui/night-city3.jpg").c_str ());
@@ -79,13 +84,12 @@ namespace aga
 
 	void MainMenuState::BeforeEnter ()
 	{
-		al_hide_mouse_cursor (m_MainLoop->GetScreen ()->GetDisplay ());
-		m_MainLoop->GetScreen ()->SetBackgroundColor (al_map_rgba (45, 55, 145, 255));
+		Screen* screen = m_MainLoop->GetScreen ();
 
-		m_MainLoop->GetAudioManager ().SetEnabled (true);
+		al_hide_mouse_cursor (screen->GetDisplay ());
+		screen->SetBackgroundColor (al_map_rgba (45, 55, 145, 255));
 
-		//  TODO: remove
-		m_MainLoop->GetAudioManager ().SetEnabled (false);
+		m_BackgroundStream->SetFadeIn (400);
 
 		m_ExitSelected = false;
 		m_Closing = false;
@@ -99,7 +103,7 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	void MainMenuState::AfterLeave () {}
+	void MainMenuState::AfterLeave () { m_BackgroundStream->SetFadeOut (400, true); }
 
 	//--------------------------------------------------------------------------------------------------
 
@@ -321,7 +325,8 @@ namespace aga
 		float targetYPos = winSize.Height * 0.5f - imgHeight * 0.5f;
 		float yPos = -imgHeight * 0.5f + std::abs (-imgHeight * 0.5f - targetYPos) * currentPercent;
 
-		al_draw_scaled_bitmap (m_BackgroundImage, 0, 0, al_get_bitmap_width (m_BackgroundImage), al_get_bitmap_height (m_BackgroundImage), 0, 0, winSize.Width, winSize.Height, 0);
+		al_draw_scaled_bitmap (m_BackgroundImage, 0, 0, al_get_bitmap_width (m_BackgroundImage),
+			al_get_bitmap_height (m_BackgroundImage), 0, 0, winSize.Width, winSize.Height, 0);
 		al_draw_bitmap (m_TitleImage, winSize.Width * 0.5f - al_get_bitmap_width (m_TitleImage) * 0.5f, yPos, 0);
 
 		if (m_ExitSelected)
@@ -365,7 +370,7 @@ namespace aga
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	
+
 #define MENU_ITEM_COLOR al_map_rgb (200, 200, 200)
 
 	void MainMenuState::RenderMenuItems ()

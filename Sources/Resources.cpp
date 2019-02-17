@@ -23,6 +23,7 @@ namespace aga
 	std::string SCENES_HOME = "scenes/0_home/";
 	std::string SCRIPTS_HOME = "scripts/0_home/";
 	std::string SOUNDS = "sounds/";
+	std::string MUSIC = "music/";
 
 	Resource g_Resources[] = {
 		//  Graphics
@@ -54,9 +55,11 @@ namespace aga
 		{FONT_SPEECH_FRAME, FONTS, "coders_crux.ttf"}, {FONT_EDITOR, FONTS, "OpenSans.ttf"},
 
 		//  Sounds
-		{SOUND_FOOT_STEP, SOUNDS, "38874__swuing__footstep-grass.wav"},
+		{SOUND_FOOT_STEP, SOUNDS, "38874__swuing__footstep-grass.wav"}, {SOUND_SPEECH_SELECT, SOUNDS, "select.wav"},
+		{SOUND_SPEECH_TYPE, SOUNDS, "type.wav"},
 
-		{SOUND_SPEECH_SELECT, SOUNDS, "select.wav"}, {SOUND_SPEECH_TYPE, SOUNDS, "type.wav"}};
+		//	Music
+		{MUSIC_MENU_BACKGROUND, MUSIC, "Around the Fireplace.ogg"}};
 
 	//--------------------------------------------------------------------------------------------------
 	//--------------------------------------------------------------------------------------------------

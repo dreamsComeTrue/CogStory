@@ -18,6 +18,7 @@ namespace aga
     const int MENU_ITEM_EXIT_NO = 4;
 
     class AudioSample;
+    class AudioStream;
     class StateManager;
 
     class MainMenuState : public State
@@ -48,6 +49,7 @@ namespace aga
         ALLEGRO_BITMAP* m_BackgroundImage;
         ALLEGRO_BITMAP* m_TitleImage;
         AudioSample* m_SelectSample;
+        AudioStream* m_BackgroundStream;
         class Atlas* m_SelectItemAtlas;
         float m_SelectionAngle;
         int m_Selection;

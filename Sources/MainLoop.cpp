@@ -78,7 +78,10 @@ namespace aga
 #ifdef EDITOR_ENABLED
         m_StateManager.SetActiveState (m_EditorState);
 #else
-        m_StateManager.SetActiveState (m_GamePlayState);
+		m_Screen->SetWindowSize (m_Screen->GetGameWindowSize ());
+		m_Screen->CenterOnScreen ();
+        m_Screen->SetDrawFilled (true);
+        m_StateManager.SetActiveState (m_MainMenuState);
 #endif
 
         return true;

@@ -26,6 +26,9 @@ namespace aga
         virtual ~SceneManager ();
         bool Initialize ();
         bool Destroy ();
+        
+        void BeforeEnter ();
+        void AfterLeave ();        
 
         void AddScene (Scene* scene);
         void RemoveScene (Scene* scene);

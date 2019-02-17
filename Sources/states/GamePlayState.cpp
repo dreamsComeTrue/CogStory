@@ -60,8 +60,10 @@ namespace aga
 	void GamePlayState::BeforeEnter ()
 	{
 		Screen* screen = m_MainLoop->GetScreen ();
+		
+		State* prevState = m_MainLoop->GetStateManager ().GetPreviousState ();
 
-		if (m_MainLoop->GetStateManager ().GetPreviousState ()->GetName () == EDITOR_STATE_NAME)
+		if (prevState != nullptr && prevState->GetName () == EDITOR_STATE_NAME)
 		{
 			screen->SetWindowSize (screen->GetGameWindowSize ());
 			screen->CenterOnScreen ();
@@ -71,26 +73,16 @@ namespace aga
 
 		al_hide_mouse_cursor (screen->GetDisplay ());
 
-		SceneManager& sceneManager = m_MainLoop->GetSceneManager ();
-
-		sceneManager.GetSpeechFrameManager ()->Clear ();
-		sceneManager.GetCamera ().ClearTransformations ();
+		m_MainLoop->GetSceneManager ().BeforeEnter ();
 
 		ResizeWindow ();
-
-		//  Re-init current initial scene everytime we start GamePlayState
-		sceneManager.SetActiveScene (sceneManager.GetActiveScene ());
-
-		//  TODO: remove
-		m_MainLoop->GetAudioManager ().SetEnabled (false);
 	}
 
 	//--------------------------------------------------------------------------------------------------
 
 	void GamePlayState::AfterLeave ()
 	{
-		m_MainLoop->GetSceneManager ().GetActiveScene ()->AfterLeave ();
-		m_MainLoop->GetAudioManager ().SetEnabled (true);
+		m_MainLoop->GetSceneManager ().AfterLeave ();
 	}
 
 	//--------------------------------------------------------------------------------------------------

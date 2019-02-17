@@ -93,71 +93,6 @@
             "z-order": "0"
         },
         {
-            "action-speech": "PROP_FLOWER",
-            "action-speech-handling": "0",
-            "atlas": "env_1",
-            "atlas-region": "Sprite-0013",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "8",
-            "name": "Sprite-0013",
-            "overlap": "1",
-            "phys": [
-                {
-                    "poly": "-16.00 -14.00 16.00 -14.00 16.00 14.00 -16.00 14.00 "
-                }
-            ],
-            "pos": "-240.00 32.00",
-            "rot": "0.00",
-            "size": "32.00 29.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "env_1",
-            "atlas-region": "Sprite-0013",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "9",
-            "name": "Sprite-0013",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-16.00 -14.00 16.00 -14.00 16.00 14.00 -16.00 14.00 "
-                }
-            ],
-            "pos": "16.00 -48.00",
-            "rot": "0.00",
-            "size": "32.00 29.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "env_1",
-            "atlas-region": "Sprite-0013",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "10",
-            "name": "Sprite-0013",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-16.00 -14.00 16.00 -14.00 16.00 14.00 -16.00 14.00 "
-                }
-            ],
-            "pos": "208.00 -208.00",
-            "rot": "0.00",
-            "size": "32.00 29.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
             "action-speech": "QST_BED",
             "action-speech-handling": "1",
             "atlas": "0_0_home",
@@ -177,6 +112,75 @@
             "pos": "32.00 -208.00",
             "rot": "0.00",
             "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "action-speech": "PROP_FLOWER",
+            "action-speech-handling": "0",
+            "atlas": "env_0",
+            "atlas-region": "flower-pot",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2153",
+            "name": "flower-pot",
+            "overlap": "1",
+            "phys": [
+                {
+                    "poly": "0.00 0.00 6.21 14.45 -6.71 14.11 "
+                }
+            ],
+            "pos": "-240.00 112.00",
+            "rot": "0.00",
+            "size": "32.00 32.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "action-speech": "PROP_FLOWER",
+            "action-speech-handling": "0",
+            "atlas": "env_0",
+            "atlas-region": "flower-pot",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2154",
+            "name": "flower-pot",
+            "overlap": "1",
+            "phys": [
+                {
+                    "poly": "0.00 0.00 6.21 14.45 -6.71 14.11 "
+                }
+            ],
+            "pos": "19.13 -45.68",
+            "rot": "0.00",
+            "size": "32.00 32.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "action-speech": "PROP_FLOWER",
+            "action-speech-handling": "0",
+            "atlas": "env_0",
+            "atlas-region": "flower-pot",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2155",
+            "name": "flower-pot",
+            "overlap": "1",
+            "phys": [
+                {
+                    "poly": "0.00 0.00 6.21 14.45 -6.71 14.11 "
+                }
+            ],
+            "pos": "208.00 -208.00",
+            "rot": "0.00",
+            "size": "32.00 32.00",
             "type": "Tile",
             "z-order": "0"
         }

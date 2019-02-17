@@ -175,7 +175,7 @@ namespace aga
 		InvalidateBackBuffer (m_Width, m_Height);
 
 		srand (time (NULL));
-
+		
 		return true;
 	}
 

@@ -28,8 +28,6 @@ namespace aga
         bool ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
         void Update (float deltaTime);
         void Render (float deltaTime);
-
-    private:
         void ResizeWindow ();
 
     private:
