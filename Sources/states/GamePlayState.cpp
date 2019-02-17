@@ -22,7 +22,7 @@ namespace aga
 
 	GamePlayState::GamePlayState (MainLoop* mainLoop)
 		: State (mainLoop, GAMEPLAY_STATE_NAME)
-		, m_AudioWasEnabled (true)
+		, m_AudioWasEnabled (false)
 	{
 	}
 
@@ -70,7 +70,6 @@ namespace aga
 			screen->CenterOnScreen ();
 		}
 
-		m_MainLoop->GetAudioManager ().SetEnabled (m_AudioWasEnabled);
 		m_MainLoop->GetSceneManager ().BeforeEnter ();
 
 		ResizeWindow ();

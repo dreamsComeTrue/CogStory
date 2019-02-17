@@ -11,15 +11,33 @@ typedef struct nine_patch_bitmap_tag NINE_PATCH_BITMAP;
 namespace aga
 {
     const std::string MAIN_MENU_STATE_NAME = "MAIN_MENU_STATE";
-    const int MENU_ITEM_NEW_JOURNEY = 0;
-    const int MENU_ITEM_CONTINUE = 1;
-    const int MENU_ITEM_EXIT = 2;
-    const int MENU_ITEM_EXIT_YES = 3;
-    const int MENU_ITEM_EXIT_NO = 4;
+    
+    const int MENU_ITEM_GENERAL_NEW_JOURNEY = 0;
+    const int MENU_ITEM_GENERAL_CONTINUE = 1;
+    const int MENU_ITEM_GENERAL_EXIT = 2;
+    
+    const int MENU_ITEM_GAME_CONTINUE = 0;
+    const int MENU_ITEM_GAME_OPTIONS = 1;
+    const int MENU_ITEM_GAME_EXIT = 2;
+    
+    const int MENU_ITEM_OPTIONS_MUSIC = 0;
+    const int MENU_ITEM_OPTIONS_SOUNDS = 1;
+    const int MENU_ITEM_OPTIONS_BACK = 2;    
+    
+    const int MENU_ITEM_EXIT_YES = 0;
+    const int MENU_ITEM_EXIT_NO = 1;
 
     class AudioSample;
     class AudioStream;
     class StateManager;
+    
+    enum MenuState
+    {
+        MENU_GENERAL,
+        MENU_IN_GAME,
+        MENU_OPTIONS,
+        MENU_EXIT        
+    };
 
     class MainMenuState : public State
     {
@@ -39,11 +57,19 @@ namespace aga
 
     private:
         void HandleSelection ();
+        void HandleGeneralMenu ();
+        void HandleInGameMenu ();
+        void HandleOptionsMenu ();
+        void HandleExitMenu ();
         void HandleMoveUp ();
         void HandleMoveDown ();
 
-        void RenderMenuItems ();
+        void RenderGeneralMenuItems ();
+        void RenderInGameMenuItems ();
+        void RenderOptionsMenuItems ();
         void RenderExitItems ();
+        
+        void RenderMenuItems (std::vector<std::string> options, int offset = 0);
 
     private:
         ALLEGRO_BITMAP* m_BackgroundImage;
@@ -55,12 +81,13 @@ namespace aga
         int m_Selection;
         int m_QuitQuestion;
         
+        MenuState m_MenuState;
+        
         int m_AnimationStage;
         float m_AnimationTimer;
         float m_SelectionTimer;
         bool m_AnimationUp;
 
-        bool m_ExitSelected;
         bool m_Closing;
     };
 }
