@@ -42,6 +42,9 @@ namespace aga
     private:
         void InitializeStates ();
         void DestroyStates ();
+        
+        void LoadConfig ();
+        void SaveConfig ();
 
     private:
         Screen* m_Screen;
