@@ -123,53 +123,7 @@
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "focus-height": "100.00",
-            "id": "2153",
-            "name": "flower-pot",
-            "overlap": "1",
-            "phys": [
-                {
-                    "poly": "0.00 0.00 6.21 14.45 -6.71 14.11 "
-                }
-            ],
-            "pos": "-240.00 112.00",
-            "rot": "0.00",
-            "size": "32.00 32.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "action-speech": "PROP_FLOWER",
-            "action-speech-handling": "0",
-            "atlas": "env_0",
-            "atlas-region": "flower-pot",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2154",
-            "name": "flower-pot",
-            "overlap": "1",
-            "phys": [
-                {
-                    "poly": "0.00 0.00 6.21 14.45 -6.71 14.11 "
-                }
-            ],
-            "pos": "19.13 -45.68",
-            "rot": "0.00",
-            "size": "32.00 32.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "action-speech": "PROP_FLOWER",
-            "action-speech-handling": "0",
-            "atlas": "env_0",
-            "atlas-region": "flower-pot",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
+            "focus-height": "0.90",
             "id": "2155",
             "name": "flower-pot",
             "overlap": "1",
@@ -182,7 +136,53 @@
             "rot": "0.00",
             "size": "32.00 32.00",
             "type": "Tile",
-            "z-order": "0"
+            "z-order": "6"
+        },
+        {
+            "action-speech": "PROP_FLOWER",
+            "action-speech-handling": "0",
+            "atlas": "env_0",
+            "atlas-region": "flower-pot",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "0.90",
+            "id": "2154",
+            "name": "flower-pot",
+            "overlap": "1",
+            "phys": [
+                {
+                    "poly": "0.00 0.00 6.21 14.45 -6.71 14.11 "
+                }
+            ],
+            "pos": "16.00 -48.00",
+            "rot": "0.00",
+            "size": "32.00 32.00",
+            "type": "Tile",
+            "z-order": "6"
+        },
+        {
+            "action-speech": "PROP_FLOWER",
+            "action-speech-handling": "0",
+            "atlas": "env_0",
+            "atlas-region": "flower-pot",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "0.90",
+            "id": "2153",
+            "name": "flower-pot",
+            "overlap": "1",
+            "phys": [
+                {
+                    "poly": "0.00 0.00 6.21 14.45 -6.71 14.11 "
+                }
+            ],
+            "pos": "-240.00 112.00",
+            "rot": "0.00",
+            "size": "32.00 32.00",
+            "type": "Tile",
+            "z-order": "6"
         }
     ],
     "color": "35 31 54 255",

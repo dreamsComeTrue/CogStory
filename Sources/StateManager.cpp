@@ -13,7 +13,7 @@ namespace aga
 {
 	//--------------------------------------------------------------------------------------------------
 
-	const int FADE_MAX_TIME = 300;
+	const int FADE_MAX_TIME = 200;
 	const int STATE_MANAGER_TWEEN_ID = 0;
 
 	//--------------------------------------------------------------------------------------------------
@@ -246,7 +246,7 @@ namespace aga
 			}
 		};
 
-		m_FadeColor = al_map_rgba (45, 55, 145, 255);
+		m_FadeColor = COLOR_BLACK;//al_map_rgba (45, 55, 145, 255);
 		m_Transitioning = true;
 		m_TransitionFunc = transitionFunc;
 		m_TransitionFuncFired = false;

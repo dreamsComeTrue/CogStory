@@ -54,7 +54,7 @@ namespace aga
         float m_SelectionAngle;
         int m_Selection;
         int m_QuitQuestion;
-
+        
         int m_AnimationStage;
         float m_AnimationTimer;
         float m_SelectionTimer;

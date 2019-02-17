@@ -172,11 +172,6 @@ namespace aga
 
 	void SceneManager::SetActiveScene (Scene* scene)
 	{
-		if (m_MainLoop->GetStateManager ().GetActiveStateName () == GAMEPLAY_STATE_NAME && scene == m_ActiveScene)
-		{
-			Log ((std::string ("LOADING ") + scene->GetName () + "\n").c_str ());
-		}
-
 		if (scene)
 		{
 			std::string prevSceneName = "";

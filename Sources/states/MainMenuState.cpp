@@ -87,7 +87,7 @@ namespace aga
 		Screen* screen = m_MainLoop->GetScreen ();
 
 		al_hide_mouse_cursor (screen->GetDisplay ());
-		screen->SetBackgroundColor (al_map_rgba (45, 55, 145, 255));
+		screen->SetBackgroundColor (COLOR_BLACK);
 
 		m_BackgroundStream->SetFadeIn (400);
 
@@ -237,12 +237,16 @@ namespace aga
 		{
 		case MENU_ITEM_NEW_JOURNEY:
 		{
+			m_AnimationTimer = 0.f;
+			m_Closing = true;
 			m_MainLoop->GetStateManager ().StateFadeInOut (GAMEPLAY_STATE_NAME);
 			break;
 		}
 
 		case MENU_ITEM_CONTINUE:
 		{
+			m_AnimationTimer = 0.f;
+			m_Closing = true;
 			m_MainLoop->GetStateManager ().StateFadeInOut (GAMEPLAY_STATE_NAME);
 			break;
 		}
@@ -314,11 +318,6 @@ namespace aga
 		else
 		{
 			currentPercent = 1.0f - clamp (percent, 0.f, 1.f);
-
-			if (m_AnimationStage >= 1)
-			{
-				m_MainLoop->GetStateManager ().StateFadeInOut (GAMEPLAY_STATE_NAME);
-			}
 		}
 
 		float imgHeight = al_get_bitmap_height (m_TitleImage);
