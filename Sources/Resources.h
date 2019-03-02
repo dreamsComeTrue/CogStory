@@ -53,6 +53,7 @@ namespace aga
         SOUND_FOOT_STEP,
         SOUND_SPEECH_SELECT,
         SOUND_SPEECH_TYPE,
+        SOUND_LOAD,
         
         //  Music
         MUSIC_MENU_BACKGROUND

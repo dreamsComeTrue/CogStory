@@ -30,6 +30,8 @@ namespace aga
 		, m_ActionHandling (false)
 		, m_ActionHandler (nullptr)
 		, m_LastActionActor (nullptr)
+		, m_Inventory (this)
+		, m_ShowInventory (false)
 	{
 		SetCollidable (true);
 		SetCollisionEnabled (true);
@@ -91,12 +93,19 @@ namespace aga
 			}
 		});
 
+		m_Inventory.Initialize ();
+
 		return true;
 	}
 
 	//--------------------------------------------------------------------------------------------------
 
-	bool Player::Destroy () { return Actor::Destroy (); }
+	bool Player::Destroy ()
+	{
+		m_Inventory.Destroy ();
+
+		return Actor::Destroy ();
+	}
 
 	//--------------------------------------------------------------------------------------------------
 
@@ -155,6 +164,18 @@ namespace aga
 
 	bool Player::ProcessEvent (ALLEGRO_EVENT* event, float)
 	{
+		//	We only need to handle showing inventory in front of all other actions
+		if (event->type == ALLEGRO_EVENT_KEY_DOWN)
+		{
+			if (event->keyboard.keycode == ALLEGRO_KEY_I)
+			{
+				m_ShowInventory = !m_ShowInventory;
+				m_PreventInput = m_ShowInventory;
+
+				return true;
+			}
+		}
+				
 		if (m_PreventInput)
 		{
 			return false;
@@ -173,6 +194,13 @@ namespace aga
 			if (event->keyboard.keycode == ALLEGRO_KEY_SPACE || event->keyboard.keycode == ALLEGRO_KEY_ENTER)
 			{
 				HandleAction ();
+
+				return true;
+			}
+
+			if (event->keyboard.keycode == ALLEGRO_KEY_I)
+			{
+				m_ShowInventory = !m_ShowInventory;
 
 				return true;
 			}
@@ -341,12 +369,14 @@ namespace aga
 
 		m_OldPosition = Bounds.GetPos ();
 
+		m_Inventory.Update (deltaTime);
+
 		return true;
 	}
 
 	//--------------------------------------------------------------------------------------------------
 
-	void Player::Render (float deltaTime) { return Actor::Render (deltaTime); }
+	void Player::Render (float deltaTime) { Actor::Render (deltaTime); }
 
 	//--------------------------------------------------------------------------------------------------
 
@@ -367,6 +397,20 @@ namespace aga
 
 		UpdateParticleEmitters ();
 	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void Player::DrawInventory (float deltaTime)
+	{
+		if (m_ShowInventory)
+		{
+			m_Inventory.Render (deltaTime);
+		}
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	bool Player::IsInventoryShown () { return m_ShowInventory; }
 
 	//--------------------------------------------------------------------------------------------------
 

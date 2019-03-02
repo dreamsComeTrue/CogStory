@@ -56,7 +56,7 @@ namespace aga
 
 		//  Sounds
 		{SOUND_FOOT_STEP, SOUNDS, "38874__swuing__footstep-grass.wav"}, {SOUND_SPEECH_SELECT, SOUNDS, "select.wav"},
-		{SOUND_SPEECH_TYPE, SOUNDS, "type.wav"},
+		{SOUND_SPEECH_TYPE, SOUNDS, "type.wav"}, {SOUND_LOAD, SOUNDS, "load.wav"},
 
 		//	Music
 		{MUSIC_MENU_BACKGROUND, MUSIC, "Around the Fireplace.ogg"}};

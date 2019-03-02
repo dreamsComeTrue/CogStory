@@ -67,7 +67,7 @@ namespace aga
 
 	void AudioStream::Play ()
 	{
-		if (m_Stream && m_AudioManager->IsEnabled ())
+		if (m_Stream && m_AudioManager->IsStreamsEnabled ())
 		{
 			float volume = 0.f;
 
@@ -103,7 +103,7 @@ namespace aga
 
 	void AudioStream::Pause ()
 	{
-		if (m_Stream && m_AudioManager->IsEnabled ())
+		if (m_Stream && m_AudioManager->IsStreamsEnabled ())
 		{
 			m_CurrentPos = al_get_audio_stream_position_secs (m_Stream);
 			al_set_audio_stream_playing (m_Stream, false);
@@ -114,7 +114,7 @@ namespace aga
 
 	void AudioStream::Resume ()
 	{
-		if (m_Stream && m_AudioManager->IsEnabled ())
+		if (m_Stream && m_AudioManager->IsStreamsEnabled ())
 		{
 			al_seek_audio_stream_secs (m_Stream, m_CurrentPos);
 			al_set_audio_stream_playing (m_Stream, true);
@@ -125,7 +125,7 @@ namespace aga
 
 	void AudioStream::Update (float deltaTime)
 	{
-		if (!m_AudioManager->IsEnabled ())
+		if (!m_AudioManager->IsStreamsEnabled ())
 		{
 			return;
 		}
@@ -169,7 +169,7 @@ namespace aga
 
 	void AudioStream::SetLooping (bool looping)
 	{
-		if (m_Stream && m_AudioManager->IsEnabled ())
+		if (m_Stream && m_AudioManager->IsStreamsEnabled ())
 		{
 			m_Looping = looping;
 
@@ -185,7 +185,7 @@ namespace aga
 
 	void AudioStream::SetVolume (float volume)
 	{
-		if (m_Stream && m_AudioManager->IsEnabled ())
+		if (m_Stream && m_AudioManager->IsStreamsEnabled ())
 		{
 			m_Gain = volume;
 			m_VolumeOverriden = true;
@@ -198,7 +198,7 @@ namespace aga
 
 	void AudioStream::SetSpeed (float speed)
 	{
-		if (m_Stream && m_AudioManager->IsEnabled ())
+		if (m_Stream && m_AudioManager->IsStreamsEnabled ())
 		{
 			al_set_audio_stream_speed (m_Stream, speed);
 		}
@@ -233,7 +233,7 @@ namespace aga
 
 	void AudioStream::SetFadeOut (float milliSeconds, bool pauseOnFinish)
 	{
-		if (!m_AudioManager->IsEnabled ())
+		if (!m_AudioManager->IsStreamsEnabled ())
 		{
 			m_FadeOutMax = 30.0f;
 			m_FadeOutCurrent = m_FadeOutMax;

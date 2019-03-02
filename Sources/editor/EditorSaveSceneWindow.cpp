@@ -5,150 +5,155 @@
 #include "MainLoop.h"
 #include "Screen.h"
 
-#include "imgui.h"
 #include "addons/tiny-file-dialogs/tinyfiledialogs.h"
+#include "imgui.h"
 
 //--------------------------------------------------------------------------------------------------
 
 namespace aga
 {
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    EditorSaveSceneWindow::EditorSaveSceneWindow (Editor* editor)
-        : m_Editor (editor)
-        , m_IsVisible (false)
-    {
-    }
+	EditorSaveSceneWindow::EditorSaveSceneWindow (Editor* editor)
+		: m_Editor (editor)
+		, m_IsVisible (false)
+	{
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    EditorSaveSceneWindow ::~EditorSaveSceneWindow () {}
+	EditorSaveSceneWindow ::~EditorSaveSceneWindow () {}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    void EditorSaveSceneWindow::Show (const std::string& filePath, std::function<void(std::string)> OnAcceptFunc,
-        std::function<void(std::string)> OnCancelFunc)
-    {
-        m_OnAcceptFunc = OnAcceptFunc;
-        m_OnCancelFunc = OnCancelFunc;
+	void EditorSaveSceneWindow::Show (const std::string& filePath, std::function<void(std::string)> OnAcceptFunc,
+		std::function<void(std::string)> OnCancelFunc)
+	{
+		m_OnAcceptFunc = OnAcceptFunc;
+		m_OnCancelFunc = OnCancelFunc;
 
-        memset (m_SceneName, 0, ARRAY_SIZE (m_SceneName));
-        strcpy (m_SceneName, filePath.c_str ());
+		memset (m_SceneName, 0, ARRAY_SIZE (m_SceneName));
+		strcpy (m_SceneName, filePath.c_str ());
 
-        m_IsVisible = true;
-        m_BrowseButtonPressed = false;
-    }
+		m_IsVisible = true;
+		m_BrowseButtonPressed = false;
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    void EditorSaveSceneWindow::OnAccept ()
-    {
-        if (m_OnAcceptFunc)
-        {
-            m_OnAcceptFunc (GetSceneName ());
-        }
-    }
+	void EditorSaveSceneWindow::OnAccept ()
+	{
+		if (m_OnAcceptFunc)
+		{
+			m_OnAcceptFunc (GetSceneName ());
+		}
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    void EditorSaveSceneWindow::OnCancel ()
-    {
-        if (m_OnCancelFunc)
-        {
-            m_OnCancelFunc (GetSceneName ());
-        }
-    }
+	void EditorSaveSceneWindow::OnCancel ()
+	{
+		if (m_OnCancelFunc)
+		{
+			m_OnCancelFunc (GetSceneName ());
+		}
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    void EditorSaveSceneWindow::Render ()
-    {
-        ImGui::SetNextWindowSize (ImVec2 (440, 85));
+	void EditorSaveSceneWindow::Render ()
+	{
+		ImGui::SetNextWindowSize (ImVec2 (440, 85));
 
-        if (ImGui::BeginPopupModal ("Save Scene", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            ImGui::PushItemWidth (330);
-            ImGui::InputText ("", m_SceneName, ARRAY_SIZE (m_SceneName));
-            ImGui::PopItemWidth ();
-            ImGui::SetItemDefaultFocus ();
-            ImGui::SameLine ();
+		if (ImGui::BeginPopupModal ("Save Scene", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			ImGui::PushItemWidth (330);
+			ImGui::InputText ("", m_SceneName, ARRAY_SIZE (m_SceneName));
+			ImGui::PopItemWidth ();
+			ImGui::SetItemDefaultFocus ();
+			ImGui::SameLine ();
 
-            if (ImGui::Button ("BROWSE", ImVec2 (80.f, 18.f)))
-            {
-                m_BrowseButtonPressed = true;
-            }
+			if (ImGui::Button ("BROWSE", ImVec2 (80.f, 18.f)))
+			{
+				m_BrowseButtonPressed = true;
+			}
 
-            if (m_BrowseButtonPressed)
-            {
-                char const * filterPatterns[1] = { "*.scn" };
+			if (m_BrowseButtonPressed)
+			{
+				char const* filterPatterns[1] = {"*.scn"};
+				std::string dataPath = GetDataPath ();
+				dataPath += GetPathSeparator ();
+				dataPath += "scenes";
+				dataPath += GetPathSeparator ();
+				dataPath += "special";
 
-                const char* chosenPath = tinyfd_saveFileDialog (
-                   "Open Scene",
-                            "E:\\CogStory\\Data\\scenes\\special",
-                            1,
-                            filterPatterns,
-                            "scene files");
+				const char* chosenPath
+					= tinyfd_saveFileDialog ("Save Scene", dataPath.c_str (), 1, filterPatterns, "scene files");
 
-                if (chosenPath != nullptr && strlen (chosenPath) > 0)
-                {
-                    std::string fileName = chosenPath;
-                    std::replace (fileName.begin (), fileName.end (), '\\', '/');
+				if (chosenPath != nullptr && strlen (chosenPath) > 0)
+				{
+					std::string fileName = chosenPath;
+					std::replace (fileName.begin (), fileName.end (), '\\', '/');
 
-                    if (!EndsWith (fileName, ".scn"))
-                    {
-                        fileName += ".scn";
-                    }
+					if (!EndsWith (fileName, ".scn"))
+					{
+						fileName += ".scn";
+					}
 
-                    std::string dataPath = "Data/scenes/";
-                    size_t index = fileName.find (dataPath);
+					std::string dataPath = "Data";
+					dataPath += GetPathSeparator ();
+					dataPath += "scenes";
+					dataPath += GetPathSeparator ();
 
-                    if (index != std::string::npos)
-                    {
-                        fileName = fileName.substr (index + dataPath.length ());
-                    }
+					size_t index = fileName.find (dataPath);
 
-                    strcpy (m_SceneName, fileName.c_str ());
-                    m_BrowseButtonPressed = false;
-                }
-                else
-                {
-                    m_BrowseButtonPressed = false;
-                }
-            }
+					if (index != std::string::npos)
+					{
+						fileName = fileName.substr (index + dataPath.length ());
+					}
 
-            ImGui::Separator ();
-            ImGui::BeginGroup ();
+					strcpy (m_SceneName, fileName.c_str ());
+					m_BrowseButtonPressed = false;
+				}
+				else
+				{
+					m_BrowseButtonPressed = false;
+				}
+			}
 
-            if (ImGui::Button ("SAVE", ImVec2 (80.f, 18.f)))
-            {
-                ImGui::CloseCurrentPopup ();
-                m_IsVisible = false;
+			ImGui::Separator ();
+			ImGui::BeginGroup ();
 
-                m_Editor->SaveScene (m_SceneName);
-            }
+			if (ImGui::Button ("SAVE", ImVec2 (80.f, 18.f)))
+			{
+				ImGui::CloseCurrentPopup ();
+				m_IsVisible = false;
 
-            ImGui::SameLine ();
+				m_Editor->SaveScene (m_SceneName);
+			}
 
-            if (ImGui::Button ("CANCEL", ImVec2 (80.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
-            {
-                ImGui::CloseCurrentPopup ();
-                m_IsVisible = false;
+			ImGui::SameLine ();
 
-                m_Editor->SetCloseCurrentPopup (false);
-            }
-            ImGui::EndGroup ();
+			if (ImGui::Button ("CANCEL", ImVec2 (80.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
+			{
+				ImGui::CloseCurrentPopup ();
+				m_IsVisible = false;
 
-            ImGui::EndPopup ();
-        }
-    }
+				m_Editor->SetCloseCurrentPopup (false);
+			}
+			ImGui::EndGroup ();
 
-    //--------------------------------------------------------------------------------------------------
+			ImGui::EndPopup ();
+		}
+	}
 
-    std::string EditorSaveSceneWindow::GetSceneName () const { return m_SceneName; }
+	//--------------------------------------------------------------------------------------------------
 
-    //--------------------------------------------------------------------------------------------------
+	std::string EditorSaveSceneWindow::GetSceneName () const { return m_SceneName; }
 
-    bool EditorSaveSceneWindow::IsVisible () { return m_IsVisible; }
+	//--------------------------------------------------------------------------------------------------
 
-    //--------------------------------------------------------------------------------------------------
+	bool EditorSaveSceneWindow::IsVisible () { return m_IsVisible; }
+
+	//--------------------------------------------------------------------------------------------------
 }

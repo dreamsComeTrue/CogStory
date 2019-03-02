@@ -32,6 +32,9 @@ namespace aga
         Editor* m_Editor;
         Scene* m_LastEditedScene;
         Point m_LastWindowSize;
+        
+        bool m_AudioStreamsEnabled;
+        bool m_AudioSamplesEnabled;
     };
 }
 

@@ -4,6 +4,7 @@
 #define __PLAYER_H__
 
 #include "Actor.h"
+#include "PlayerInventory.h"
 
 #define PLAYER_Z_ORDER 5
 
@@ -70,6 +71,9 @@ namespace aga
 
 		class SpeechFrame* TalkTo (Actor* actor, const std::string& speechID);
 		Actor* GetLastActionActor ();
+		
+		void DrawInventory (float deltaTime);
+		bool IsInventoryShown ();
 
 	private:
 		void CreateParticleEmitters ();
@@ -90,6 +94,8 @@ namespace aga
 		Actor* m_LastActionActor;
 
 		AudioSampleComponent* m_FootStepComponent;
+		PlayerInventory m_Inventory;
+		bool m_ShowInventory;
 	};
 }
 

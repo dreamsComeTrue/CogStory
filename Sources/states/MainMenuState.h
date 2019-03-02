@@ -75,6 +75,7 @@ namespace aga
         ALLEGRO_BITMAP* m_BackgroundImage;
         ALLEGRO_BITMAP* m_TitleImage;
         AudioSample* m_SelectSample;
+        AudioSample* m_LoadSample;
         AudioStream* m_BackgroundStream;
         class Atlas* m_SelectItemAtlas;
         float m_SelectionAngle;

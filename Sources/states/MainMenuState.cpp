@@ -54,6 +54,8 @@ namespace aga
 
 		m_SelectSample = m_MainLoop->GetSceneManager ().GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
 			"SELECT_MENU", GetResource (SOUND_SPEECH_SELECT).Dir + GetResource (SOUND_SPEECH_SELECT).Name);
+		m_LoadSample = m_MainLoop->GetSceneManager ().GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
+			"LOAD_MENU", GetResource (SOUND_LOAD).Dir + GetResource (SOUND_LOAD).Name);
 
 		m_BackgroundStream = m_MainLoop->GetSceneManager ().GetMainLoop ()->GetAudioManager ().LoadStreamFromFile (
 			"MUSIC_MENU_BACKGROUND",
@@ -204,6 +206,13 @@ namespace aga
 			}
 			break;
 
+		case MENU_OPTIONS:
+			if (m_Selection < MENU_ITEM_OPTIONS_MUSIC)
+			{
+				m_Selection = MENU_ITEM_OPTIONS_BACK;
+			}
+			break;
+
 		case MENU_EXIT:
 			if (m_Selection < MENU_ITEM_EXIT_YES)
 			{
@@ -237,6 +246,13 @@ namespace aga
 			}
 			break;
 
+		case MENU_OPTIONS:
+			if (m_Selection > MENU_ITEM_OPTIONS_BACK)
+			{
+				m_Selection = MENU_ITEM_OPTIONS_MUSIC;
+			}
+			break;
+
 		case MENU_EXIT:
 			if (m_Selection > MENU_ITEM_EXIT_NO)
 			{
@@ -250,8 +266,6 @@ namespace aga
 
 	void MainMenuState::HandleSelection ()
 	{
-		m_SelectSample->Play ();
-
 		switch (m_MenuState)
 		{
 		case MENU_GENERAL:
@@ -270,7 +284,7 @@ namespace aga
 			HandleExitMenu ();
 
 			break;
-		}
+		}		
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -284,6 +298,8 @@ namespace aga
 			m_AnimationTimer = 0.f;
 			m_Closing = true;
 			m_MainLoop->GetStateManager ().StateFadeInOut (GAMEPLAY_STATE_NAME);
+			
+			m_LoadSample->Play ();
 			break;
 		}
 
@@ -292,6 +308,8 @@ namespace aga
 			m_AnimationTimer = 0.f;
 			m_Closing = true;
 			m_MainLoop->GetStateManager ().StateFadeInOut (GAMEPLAY_STATE_NAME);
+			
+			m_LoadSample->Play ();
 			break;
 		}
 
@@ -299,6 +317,8 @@ namespace aga
 		{
 			m_MenuState = MENU_EXIT;
 			m_Selection = MENU_ITEM_EXIT_YES;
+			
+			m_SelectSample->Play ();
 			break;
 		}
 		}
@@ -332,6 +352,8 @@ namespace aga
 			break;
 		}
 		}
+		
+		m_SelectSample->Play ();
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -342,7 +364,7 @@ namespace aga
 		{
 		case MENU_ITEM_OPTIONS_MUSIC:
 		{
-			m_MainLoop->GetAudioManager ().SetEnabled (!m_MainLoop->GetAudioManager ().IsEnabled ());
+			m_MainLoop->GetAudioManager ().SetStreamsEnabled (!m_MainLoop->GetAudioManager ().IsStreamsEnabled ());
 
 			if (m_MainLoop->GetAudioManager ().IsEnabled ())
 			{
@@ -358,7 +380,7 @@ namespace aga
 
 		case MENU_ITEM_OPTIONS_SOUNDS:
 		{
-			m_MainLoop->GetAudioManager ().SetEnabled (!m_MainLoop->GetAudioManager ().IsEnabled ());
+			m_MainLoop->GetAudioManager ().SetSamplesEnabled (!m_MainLoop->GetAudioManager ().IsSamplesEnabled ());
 			break;
 		}
 
@@ -369,6 +391,8 @@ namespace aga
 			break;
 		}
 		}
+		
+		m_SelectSample->Play ();
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -387,6 +411,8 @@ namespace aga
 		{
 			m_MenuState = MENU_IN_GAME;
 			m_Selection = MENU_ITEM_GAME_EXIT;
+			
+			m_SelectSample->Play ();
 			break;
 		}
 		}
@@ -521,7 +547,11 @@ namespace aga
 
 	void MainMenuState::RenderOptionsMenuItems ()
 	{
-		std::vector<std::string> menuItems = {"MUSIC", "SOUNDS", "BACK"};
+		bool streamsEnabled = m_MainLoop->GetAudioManager ().IsStreamsEnabled ();
+		bool samplesEnabled = m_MainLoop->GetAudioManager ().IsSamplesEnabled ();
+		std::string musicStr = std::string ("MUSIC:") + (streamsEnabled ? "ON" : "OFF");
+		std::string soundsStr = std::string ("SOUNDS:") + (samplesEnabled ? "ON" : "OFF");
+		std::vector<std::string> menuItems = {musicStr, soundsStr, "BACK"};
 
 		RenderMenuItems (menuItems);
 	}

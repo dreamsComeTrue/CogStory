@@ -32,9 +32,15 @@ namespace aga
 
         void SetMasterVolume (float volume = 1.0f);
         float GetMasterVolume () const;
-
+        
         void SetEnabled (bool enabled);
-        bool IsEnabled ();
+        bool IsEnabled ();        
+
+        void SetSamplesEnabled (bool enabled);
+        bool IsSamplesEnabled ();
+
+        void SetStreamsEnabled (bool enabled);
+        bool IsStreamsEnabled ();
 
         void Pause ();
         void Resume ();
@@ -47,8 +53,8 @@ namespace aga
     private:
         MainLoop* m_MainLoop;
         float m_MasterVolume;
-        float m_LastMasterVolume;
-        bool m_Enabled;
+        bool m_StreamsEnabled;
+        bool m_SamplesEnabled;
         bool m_IsPaused;
         std::map<std::string, AudioSample*> m_Samples;
         std::map<std::string, AudioStream*> m_Streams;

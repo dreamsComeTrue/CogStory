@@ -171,7 +171,8 @@ namespace aga
 			file >> j;
 			file.close ();
 
-			GetAudioManager ().SetEnabled (j["music_enabled"]);
+			GetAudioManager ().SetStreamsEnabled (j["music_enabled"]);
+			GetAudioManager ().SetSamplesEnabled (j["sounds_enabled"]);
 		}
 		catch (const std::exception&)
 		{
@@ -186,7 +187,8 @@ namespace aga
 		{
 			json j;
 
-			j["music_enabled"] = GetAudioManager ().IsEnabled ();
+			j["music_enabled"] = GetAudioManager ().IsStreamsEnabled ();
+			j["sounds_enabled"] = GetAudioManager ().IsSamplesEnabled ();
 
 			// write prettified JSON to another file
 			std::ofstream out (gameConfigFileName.c_str ());

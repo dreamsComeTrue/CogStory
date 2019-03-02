@@ -66,7 +66,7 @@ namespace aga
 
     void AudioSample::Play ()
     {
-        if (m_Sample && m_AudioManager->IsEnabled ())
+        if (m_Sample && m_AudioManager->IsSamplesEnabled ())
         {
             CleanUpInstances ();
 
@@ -110,7 +110,7 @@ namespace aga
 
     void AudioSample::Pause ()
     {
-        if (m_AudioManager->IsEnabled ())
+        if (m_AudioManager->IsSamplesEnabled ())
         {
             m_CurrentPos = 0;
 
@@ -134,7 +134,7 @@ namespace aga
 
     void AudioSample::Resume ()
     {
-        if (m_AudioManager->IsEnabled ())
+        if (m_AudioManager->IsSamplesEnabled ())
         {
             for (size_t i = 0; i < m_SampleInstances.size (); ++i)
             {
@@ -163,7 +163,7 @@ namespace aga
 
     void AudioSample::Update (float deltaTime)
     {
-        if (!m_AudioManager->IsEnabled ())
+        if (!m_AudioManager->IsSamplesEnabled ())
         {
             return;
         }
@@ -205,7 +205,7 @@ namespace aga
 
     void AudioSample::SetLooping (bool looping)
     {
-        if (m_AudioManager->IsEnabled ())
+        if (m_AudioManager->IsSamplesEnabled ())
         {
             m_Looping = looping;
 
@@ -225,7 +225,7 @@ namespace aga
 
     void AudioSample::SetVolume (float volume)
     {
-        if (m_AudioManager->IsEnabled ())
+        if (m_AudioManager->IsSamplesEnabled ())
         {
             m_Gain = volume;
             m_VolumeOverriden = true;
@@ -241,7 +241,7 @@ namespace aga
 
     void AudioSample::SetSpeed (float speed)
     {
-        if (m_AudioManager->IsEnabled ())
+        if (m_AudioManager->IsSamplesEnabled ())
         {
             for (size_t i = 0; i < m_SampleInstances.size (); ++i)
             {

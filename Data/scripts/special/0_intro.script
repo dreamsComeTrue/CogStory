@@ -11,7 +11,7 @@ void Start ()
 void BeforeEnterScene ()
 {    
     SetSuppressSceneInfo (true);
-//    IntroAnimation ();        
+    IntroAnimation ();        
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ void IntroAnimation ()
     player.SetPreventInput (true);
     player.Hide ();
     
-//    CitySceneAnimation ();
+    CitySceneAnimation ();
     //  TODO: DEBUG
     SetActiveScene ("1_factory/1_factory_main.scn", false);
     FactoryMainSceneAnimation ();

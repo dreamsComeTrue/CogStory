@@ -433,6 +433,21 @@ namespace aga
 
 		m_SceneManager->GetCamera ().UseIdentityTransform ();
 
+		if (player->IsInventoryShown ())
+		{
+			int blendOp, blendSrc, blendDst;
+			al_get_blender (&blendOp, &blendSrc, &blendDst);
+			al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+
+			Point winSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetBackBufferSize ();
+			ALLEGRO_COLOR color = al_map_rgba (0, 0, 0, 128);
+			al_draw_filled_rectangle (0, 0, winSize.Width, winSize.Height, color);
+
+			al_set_blender (blendOp, blendSrc, blendDst);
+
+			player->DrawInventory (deltaTime);
+		}
+
 		Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
 		font.DrawText (FONT_NAME_SMALL, std::to_string (m_VisibleEntities.size ()), al_map_rgb (0, 255, 0), 10,
 			m_SceneManager->GetMainLoop ()->GetScreen ()->GetBackBufferSize ().Height - 12, 1.0f, ALLEGRO_ALIGN_LEFT);
