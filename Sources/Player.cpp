@@ -313,7 +313,7 @@ namespace aga
 			SetCurrentAnimation (ANIM_MOVE_LEFT_NAME);
 		}
 
-		auto updatePos = [&](Point point) {
+		auto UpdatePos = [&](Point point) {
 			float positiveMoveBoundary = 1.5f;
 			float negativeMoveBoundary = -0.5f;
 
@@ -328,10 +328,11 @@ namespace aga
 			}
 		};
 
+		//	Try to collide with Trigger Areas
 		Point triggerAreaDelta;
 
 		ProcessTriggerAreas (dx, dy, std::move (triggerAreaDelta));
-		updatePos (triggerAreaDelta);
+		UpdatePos (triggerAreaDelta);
 
 		if (al_key_down (&state, ALLEGRO_KEY_LSHIFT) || speedBooster)
 		{
@@ -340,6 +341,7 @@ namespace aga
 			dy *= multiplier;
 		}
 
+		//	Try to collide with other Entities
 		std::vector<Entity*> entites = m_SceneManager->GetActiveScene ()->RecomputeVisibleEntities (true);
 		for (Entity* ent : entites)
 		{
@@ -348,7 +350,7 @@ namespace aga
 
 			if (IsCollidingWith (collidable, Point (dx, dy), std::move (collisionDelta)))
 			{
-				updatePos (collisionDelta);
+				UpdatePos (collisionDelta);
 			}
 		}
 

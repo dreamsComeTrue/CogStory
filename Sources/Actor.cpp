@@ -409,7 +409,7 @@ namespace aga
 						{
 							if (!AreSame (r.MinimumTranslationVector, Point::ZERO_POINT))
 							{
-								offset = r.MinimumTranslationVector;
+								offset += r.MinimumTranslationVector;
 							}
 						}
 
