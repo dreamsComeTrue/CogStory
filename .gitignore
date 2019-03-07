@@ -1,6 +1,8 @@
 Binaries/Linux
 Binaries/Win64/Out
-Data/__RAW/
+Data/__RAW/actors/npc/external
+Data/__RAW/env/external
+Data/__RAW/misc
 
 ThirdParty/angelscript/angelscript/lib/Linux
 ThirdParty/angelscript/docs
