@@ -63,11 +63,11 @@ namespace aga
 
 	void EditorSaveSceneWindow::Render ()
 	{
-		ImGui::SetNextWindowSize (ImVec2 (440, 85));
+		ImGui::SetNextWindowSize (ImVec2 (610, 85));
 
 		if (ImGui::BeginPopupModal ("Save Scene", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 		{
-			ImGui::PushItemWidth (330);
+			ImGui::PushItemWidth (500);
 			ImGui::InputText ("", m_SceneName, ARRAY_SIZE (m_SceneName));
 			ImGui::PopItemWidth ();
 			ImGui::SetItemDefaultFocus ();
