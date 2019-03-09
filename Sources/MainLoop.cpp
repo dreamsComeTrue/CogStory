@@ -80,8 +80,10 @@ namespace aga
 			m_SceneManager.Update (deltaTime);
 			m_StateManager.Update (deltaTime);
 		};
-
+		
+        LoadConfig ();
 		InitializeStates ();
+
 #ifdef EDITOR_ENABLED
 		m_StateManager.SetActiveState (m_EditorState);
 #else
@@ -143,8 +145,6 @@ namespace aga
 	{
 		double oldTime = al_get_time ();
         
-        LoadConfig ();
-
 		while (m_IsRunning)
 		{
 			double newTime = al_get_time ();
