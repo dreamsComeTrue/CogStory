@@ -175,7 +175,7 @@ namespace aga
 		InvalidateBackBuffer (m_Width, m_Height);
 
 		srand (time (NULL));
-		
+
 		return true;
 	}
 
@@ -483,6 +483,14 @@ namespace aga
 		m_BackBuffer = al_create_bitmap (newWidth, newHeight);
 		m_BackBufferSize = Point (al_get_bitmap_width (m_BackBuffer), al_get_bitmap_height (m_BackBuffer));
 	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void Screen::ShowMouseCursor () { al_show_mouse_cursor (m_Display); }
+
+	//--------------------------------------------------------------------------------------------------
+
+	void Screen::HideMouseCursor () { al_hide_mouse_cursor (m_Display); }
 
 	//--------------------------------------------------------------------------------------------------
 }

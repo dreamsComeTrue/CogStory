@@ -1,7 +1,13 @@
+// Copyright 2017-2019 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
+
+//--------------------------------------------------------------------------------------------------
+//  Master.script - game main entry point
+//--------------------------------------------------------------------------------------------------
+
 void Start ()
 {
     //  Must set active scene as first command
     SetActiveScene ("2_city/2_city_main.scn", false);
     
-    AttachScript ("intro", "special/0_intro.script").Run ("void Start ()");
+    AttachScript ("intro", "special/0_intro.script", true).Run ("void Start ()");
 }  

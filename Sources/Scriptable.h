@@ -15,6 +15,7 @@ namespace aga
         std::string Name;
         std::string Path;
         Script* ScriptObj = nullptr;
+        bool Temporary = false;
 
         bool const operator< (const ScriptMetaData& other) const { return Name < other.Name; }
     };
@@ -27,8 +28,8 @@ namespace aga
         Scriptable (const Scriptable& rhs);        
         virtual ~Scriptable ();
 
-        virtual Script* AttachScript (const std::string& name, const std::string& path);
-        virtual Script* AttachScript (Script* script, const std::string& path);
+        virtual Script* AttachScript (const std::string& name, const std::string& path, bool temporary = false);
+        virtual Script* AttachScript (Script* script, const std::string& path, bool temporary = false);
 
         void RemoveScript (const std::string& name);
         void RemoveScript (Script* script);

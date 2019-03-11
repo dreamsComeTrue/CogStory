@@ -1,17 +1,23 @@
+// Copyright 2017-2019 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
+
+//--------------------------------------------------------------------------------------------------
+//  0_intro.script
+//--------------------------------------------------------------------------------------------------
+
 #include "../../Data/scripts/Common.script"
 
 //--------------------------------------------------------------------------------------------------
 
 void Start ()
 {
+    SetSuppressSceneInfo (true);
+    IntroAnimation ();        
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void BeforeEnterScene ()
-{    
-    SetSuppressSceneInfo (true);
-    IntroAnimation ();        
+{   
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -28,24 +34,21 @@ void IntroAnimation ()
     player.Hide ();
     
     CitySceneAnimation ();
-    //  TODO: DEBUG
-    SetActiveScene ("1_factory/1_factory_main.scn", false);
-    FactoryMainSceneAnimation ();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void CitySceneAnimation ()
 {
-    GetDummyActor ().SetPosition (GetFlagPoint ("INTRO_CAMERA_START").Pos);
     camera.SetFollowActor (GetDummyActor ());
+    GetDummyActor ().SetPosition (GetFlagPoint ("INTRO_CAMERA_START").Pos);
 
     SetOverlayText ("-- Chapter I --\nNo ordinary day", 6000.f, 200.f, Center);    
 
     Timeline@ timeline = CreateTimeline ();
 
     timeline
-    .Once (GetTime ('CitySceneAnimationTime'), function (id)
+    .Once (GetAnimTime ('CitySceneAnimationTime'), function (id)
     {
         CreateCameraToFlagPointTween ("INTRO_CAMERA_END", 'CitySceneAnimationTime', function (id)
         {
@@ -66,11 +69,11 @@ void CityFactorySceneAnimation ()
         Timeline@ timeline = CreateTimeline ();
 
         timeline
-        .Once (GetTime ('CityFactorySceneAnimationTime1'), function (id)
+        .Once (GetAnimTime ('CityFactorySceneAnimationTime1'), function (id)
         {
             CreateCameraToFlagPointTween ("INTRO_CAMERA_A", 'CityFactorySceneAnimationTime1', null);
         })
-        .Once (GetTime ('CityFactorySceneAnimationTime2'), function (id)
+        .Once (GetAnimTime ('CityFactorySceneAnimationTime2'), function (id)
         {
             CreateCameraToFlagPointTween ("INTRO_CAMERA_END", 'CityFactorySceneAnimationTime2', function (id)
             {
@@ -92,11 +95,11 @@ void FactoryMainSceneAnimation ()
         Timeline@ timeline = CreateTimeline ();
 
         timeline
-        .Once (GetTime ('FactoryMainSceneAnimation1'), function (id)
+        .Once (GetAnimTime ('FactoryMainSceneAnimation1'), function (id)
         {
             CreateCameraToFlagPointTween ("INTRO_CAMERA_A", 'FactoryMainSceneAnimation1', null);
         })
-        .Once (GetTime ('FactoryMainSceneAnimation2'), function (id)
+        .Once (GetAnimTime ('FactoryMainSceneAnimation2'), function (id)
         {
             CreateCameraToFlagPointTween ("INTRO_CAMERA_END", 'FactoryMainSceneAnimation2', function (id)
             {

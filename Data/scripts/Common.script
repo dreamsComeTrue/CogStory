@@ -40,7 +40,7 @@ dictionary g_TimesDictionary =
 
 //--------------------------------------------------------------------------------------------------
 
-int GetTime (string id)
+int GetAnimTime (string id)
 {
     return int(g_TimesDictionary[id]);
 }
@@ -49,7 +49,7 @@ int GetTime (string id)
 
 void CreateCameraToFlagPointTween (string flagPoint, string timeKey, CameraTweenFinish@ finishFunc)
 {
-    int tweenID = AddTween (GetDummyActor ().GetPosition (), GetFlagPoint (flagPoint).Pos, GetTime (timeKey), function (id, progress, value)
+    int tweenID = AddTween (GetDummyActor ().GetPosition (), GetFlagPoint (flagPoint).Pos, GetAnimTime (timeKey), function (id, progress, value)
     {
         GetDummyActor ().SetPosition (value);
         return false;

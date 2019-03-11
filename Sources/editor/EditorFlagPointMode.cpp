@@ -13,11 +13,11 @@ namespace aga
 
 	EditorFlagPointMode::EditorFlagPointMode (Editor* editor)
 		: m_Editor (editor)
-        , m_IsVisible (false)
-        , m_AskFlagPoint (false)
+		, m_IsVisible (false)
+		, m_AskFlagPoint (false)
 		, m_FlagPoint ("")
-        , m_Editing (false)
-        , m_DrawConnection (true)
+		, m_Editing (false)
+		, m_DrawConnection (true)
 	{
 		memset (m_FlagPointWindow, 0, ARRAY_SIZE (m_FlagPointWindow));
 	}
@@ -62,61 +62,67 @@ namespace aga
 		ALLEGRO_MOUSE_STATE state;
 		al_get_mouse_state (&state);
 
-		std::map<std::string, FlagPoint>& flagPoints
-			= m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
-		int outsets = 4;
+		Scene* scene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
 
-		bool addedFound = false;
-		for (auto& kv : flagPoints)
+		if (scene)
 		{
-			if (kv.first == m_FlagPoint)
+			std::map<std::string, FlagPoint>& flagPoints = scene->GetFlagPoints ();
+			int outsets = 4;
+
+			bool addedFound = false;
+			for (auto& kv : flagPoints)
 			{
-				addedFound = true;
-			}
-		}
-
-		if (m_DrawConnection && addedFound)
-		{
-			Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
-			Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
-
-			float xPoint = flagPoints[m_FlagPoint].Pos.X * scale.X - translate.X;
-			float yPoint = flagPoints[m_FlagPoint].Pos.Y * scale.Y - translate.Y;
-
-			al_draw_line (xPoint, yPoint, state.x, state.y, COLOR_ORANGE, 2);
-		}
-
-		for (std::map<std::string, FlagPoint>::iterator it = flagPoints.begin (); it != flagPoints.end (); ++it)
-		{
-			Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
-			Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
-			FlagPoint& fp = it->second;
-
-			float xPoint = fp.Pos.X * scale.X - translate.X;
-			float yPoint = fp.Pos.Y * scale.Y - translate.Y;
-
-			m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (
-				FONT_NAME_SMALL, it->first, al_map_rgb (0, 255, 0), xPoint, yPoint - 15, 1.0f, ALLEGRO_ALIGN_CENTER);
-
-			Point p = {fp.Pos.X, fp.Pos.Y};
-
-			for (std::vector<FlagPoint*>::iterator it2 = it->second.Connections.begin ();
-				 it2 != it->second.Connections.end (); ++it2)
-			{
-				float x2Point = (*it2)->Pos.X * scale.X - translate.X;
-				float y2Point = (*it2)->Pos.Y * scale.Y - translate.Y;
-
-				al_draw_line (xPoint, yPoint, x2Point, y2Point, COLOR_ORANGE, 2);
+				if (kv.first == m_FlagPoint)
+				{
+					addedFound = true;
+				}
 			}
 
-			if (m_Editor->IsMouseWithinPointRect (state.x, state.y, p, outsets))
+			Camera& camera = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ();
+
+			if (m_DrawConnection && addedFound)
 			{
-				al_draw_filled_circle (xPoint, yPoint, 4, COLOR_BLUE);
+				Point translate = camera.GetTranslate ();
+				Point scale = camera.GetScale ();
+
+				float xPoint = flagPoints[m_FlagPoint].Pos.X * scale.X - translate.X;
+				float yPoint = flagPoints[m_FlagPoint].Pos.Y * scale.Y - translate.Y;
+
+				al_draw_line (xPoint, yPoint, state.x, state.y, COLOR_ORANGE, 2);
 			}
-			else
+
+			for (std::map<std::string, FlagPoint>::iterator it = flagPoints.begin (); it != flagPoints.end (); ++it)
 			{
-				al_draw_filled_circle (xPoint, yPoint, 4, COLOR_GREEN);
-				al_draw_filled_circle (xPoint, yPoint, 2, COLOR_RED);
+				Point translate = camera.GetTranslate ();
+				Point scale = camera.GetScale ();
+				FlagPoint& fp = it->second;
+
+				float xPoint = fp.Pos.X * scale.X - translate.X;
+				float yPoint = fp.Pos.Y * scale.Y - translate.Y;
+
+				m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_SMALL, it->first,
+					al_map_rgb (0, 255, 0), xPoint, yPoint - 15, 1.0f, ALLEGRO_ALIGN_CENTER);
+
+				Point p = {fp.Pos.X, fp.Pos.Y};
+
+				for (std::vector<FlagPoint*>::iterator it2 = it->second.Connections.begin ();
+					 it2 != it->second.Connections.end (); ++it2)
+				{
+					float x2Point = (*it2)->Pos.X * scale.X - translate.X;
+					float y2Point = (*it2)->Pos.Y * scale.Y - translate.Y;
+
+					al_draw_line (xPoint, yPoint, x2Point, y2Point, COLOR_ORANGE, 2);
+				}
+
+				if (m_Editor->IsMouseWithinPointRect (state.x, state.y, p, outsets))
+				{
+					al_draw_filled_circle (xPoint, yPoint, 4, COLOR_BLUE);
+				}
+				else
+				{
+					al_draw_filled_circle (xPoint, yPoint, 4, COLOR_GREEN);
+					al_draw_filled_circle (xPoint, yPoint, 2, COLOR_RED);
+				}
 			}
 		}
 	}

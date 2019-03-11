@@ -222,9 +222,11 @@ namespace aga
 		OnResetTranslate ();
 		SetDrawUITiles (true);
 
-		if (m_LastScenePath == "")
+		Scene* activeScene = m_MainLoop->GetSceneManager ().GetActiveScene ();
+
+		if (m_LastScenePath == "" && activeScene)
 		{
-			m_LastScenePath = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetPath ();
+			m_LastScenePath = activeScene->GetPath ();
 		}
 	}
 
@@ -687,7 +689,8 @@ namespace aga
 
 			for (Actor* actor : m_EditorActorMode.GetSelectedActors ())
 			{
-				Rect r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (actor, true);
+				Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
+				Rect r = camera.GetRenderBounds (actor, true);
 
 				al_draw_rectangle (
 					r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X, r.GetBottomRight ().Y, COLOR_RED, 2);
@@ -698,7 +701,7 @@ namespace aga
 
 					if (parent)
 					{
-						Rect r = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (parent, true);
+						Rect r = camera.GetRenderBounds (parent, true);
 
 						al_draw_rectangle (r.GetTopLeft ().X, r.GetTopLeft ().Y, r.GetBottomRight ().X,
 							r.GetBottomRight ().Y, COLOR_BLUE, 2);
@@ -757,7 +760,7 @@ namespace aga
 				r.GetTopLeft ().Y + r.GetHalfSize ().Height, color, 1);
 		}
 
-		DrawSelectionRect (m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_SelectionRect));
+		DrawSelectionRect (m_MainLoop->GetSceneManager ().GetCamera ().GetRenderBounds (m_SelectionRect));
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -1217,8 +1220,11 @@ namespace aga
 				ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
 					| ImGuiWindowFlags_NoCollapse))
 		{
-			ImGui::Text (
-				(ToString ("SCENE: ") + m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ()).c_str ());
+			std::string name = m_MainLoop->GetSceneManager ().GetActiveScene ()
+				? m_MainLoop->GetSceneManager ().GetActiveScene ()->GetName ()
+				: "-- NO SCENE --";
+
+			ImGui::Text ((ToString ("SCENE: ") + name).c_str ());
 			ImGui::End ();
 		}
 		ImGui::PopStyleColor ();
@@ -1572,8 +1578,10 @@ namespace aga
 
 			Scene* activeScene = m_MainLoop->GetSceneManager ().GetActiveScene ();
 
-			ImGui::Text (std::string (" TILES: " + ToString (activeScene->GetTiles ().size ())).c_str ());
-			ImGui::Text (std::string ("ACTORS: " + ToString (activeScene->GetActors ().size ())).c_str ());
+			ImGui::Text (
+				std::string (" TILES: " + ToString (activeScene ? activeScene->GetTiles ().size () : -1)).c_str ());
+			ImGui::Text (
+				std::string ("ACTORS: " + ToString (activeScene ? activeScene->GetActors ().size () : -1)).c_str ());
 
 			std::string cursorMode = "";
 
@@ -1638,6 +1646,9 @@ namespace aga
 			if (ImGui::Button ("YES", ImVec2 (50.f, 18.f)))
 			{
 				ImGui::CloseCurrentPopup ();
+
+				Scene* scene = m_MainLoop->GetSceneManager ().CreateNewScene (sceneName);
+				m_MainLoop->GetSceneManager ().SetActiveScene (scene);
 
 				ResetSettings ();
 				m_MainLoop->GetSceneManager ().GetActiveScene ()->Reset ();
@@ -1947,7 +1958,8 @@ namespace aga
 
 	void Editor::SelectActorsWithinSelectionRect ()
 	{
-		Rect selectionWorld = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (m_SelectionRect);
+		Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
+		Rect selectionWorld = camera.GetRenderBounds (m_SelectionRect);
 
 		if (selectionWorld.GetSize ().Width > 2 || selectionWorld.GetSize ().Height > 2)
 		{
@@ -1955,7 +1967,7 @@ namespace aga
 
 			for (Actor* actorIt : actors)
 			{
-				Rect rect = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetRenderBounds (actorIt);
+				Rect rect = camera.GetRenderBounds (actorIt);
 
 				if (Intersect (rect, selectionWorld))
 				{

@@ -88,7 +88,7 @@ namespace aga
 	{
 		Screen* screen = m_MainLoop->GetScreen ();
 
-		al_hide_mouse_cursor (screen->GetDisplay ());
+		screen->HideMouseCursor();
 		screen->SetBackgroundColor (COLOR_BLACK);
 
 		m_BackgroundStream->SetFadeIn (400);

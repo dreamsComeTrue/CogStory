@@ -21,8 +21,8 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	Entity::Entity (const Entity& rhs):
-	Transformable (rhs)
+	Entity::Entity (const Entity& rhs)
+		: Transformable (rhs)
 	{
 		this->ID = rhs.ID;
 		this->Name = rhs.Name;
@@ -56,10 +56,10 @@ namespace aga
 			return;
 		}
 
-		Scene* activeScene = m_SceneManager->GetActiveScene ();
+		Camera& camera = m_SceneManager->GetCamera ();
 
-		Rect myBounds = activeScene->GetRenderBounds (this);
-		std::vector<Entity*> visibleEntites = activeScene->RecomputeVisibleEntities (true);
+		Rect myBounds = camera.GetRenderBounds (this);
+		std::vector<Entity*> visibleEntites = m_SceneManager->GetActiveScene ()->RecomputeVisibleEntities (true);
 
 		//  Special-case entity :)
 		visibleEntites.push_back (m_SceneManager->GetPlayer ());
@@ -68,7 +68,7 @@ namespace aga
 		{
 			if (ent != this && ent->IsCheckOverlap ())
 			{
-				Rect otherBounds = activeScene->GetRenderBounds (ent);
+				Rect otherBounds = camera.GetRenderBounds (ent);
 
 				if (Intersect (myBounds, otherBounds))
 				{

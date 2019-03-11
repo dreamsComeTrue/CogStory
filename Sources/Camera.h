@@ -8,7 +8,8 @@
 namespace aga
 {
     class SceneManager;
-    class Actor;
+    class Entity;
+    class Actor;    
     struct TweenData;
 
     class Camera
@@ -54,6 +55,9 @@ namespace aga
 
         void Shake (float timeMs = 500, float oscilatingTime = 0.2f, float rangePixels = 5.f);
 
+        Rect GetRenderBounds (Entity* entity, bool drawOOBBox = false);
+        Rect GetRenderBounds (Rect b);
+        
     private:
         void ShakeFunction (float progress);
 

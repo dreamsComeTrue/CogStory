@@ -242,8 +242,8 @@ namespace aga
 		   void PushPoint (Point p)
 		   Point PopPoint ()
 		   void RegisterTriggerScene (const string &in areaName, const string &in sceneFile)
-		   Script@ AttachScript (Script@ script, const string &in path)
-		   Script@ AttachScript (const string &in name, const string &in path)
+		   Script@ AttachScript (Script@ script, const string &in path, bool temporary = false)
+		   Script@ AttachScript (const string &in name, const string &in path, bool temporary = false)
 		   void RemoveScript (const string &in name)
 		   void EnableSceneScripts ()
 		   void DisableSceneScripts ()
@@ -1428,12 +1428,12 @@ namespace aga
 			asMETHOD (SceneManager, GetPlayerStartLocation), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
 		assert (r >= 0);
 
-		m_ScriptEngine->RegisterGlobalFunction ("Script@ AttachScript (Script@ script, const string &in path)",
-			asMETHODPR (SceneManager, AttachScript, (Script*, const std::string&), Script*), asCALL_THISCALL_ASGLOBAL,
+		m_ScriptEngine->RegisterGlobalFunction ("Script@ AttachScript (Script@ script, const string &in path, bool temporary = false)",
+			asMETHODPR (SceneManager, AttachScript, (Script*, const std::string&, bool), Script*), asCALL_THISCALL_ASGLOBAL,
 			&m_MainLoop->GetSceneManager ());
 		assert (r >= 0);
-		m_ScriptEngine->RegisterGlobalFunction ("Script@ AttachScript (const string &in name, const string &in path)",
-			asMETHODPR (SceneManager, AttachScript, (const std::string&, const std::string&), Script*),
+		m_ScriptEngine->RegisterGlobalFunction ("Script@ AttachScript (const string &in name, const string &in path, bool temporary = false)",
+			asMETHODPR (SceneManager, AttachScript, (const std::string&, const std::string&, bool), Script*),
 			asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
 		assert (r >= 0);
 		m_ScriptEngine->RegisterGlobalFunction ("void RemoveScript (const string &in name)",

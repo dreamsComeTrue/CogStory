@@ -1,16 +1,24 @@
 #include "../../Data/scripts/Common.script"
 
+//--------------------------------------------------------------------------------------------------
+
 Point playerSize = player.GetSize ();
 Point screenSize = screen.GetWindowSize ();
+
+//--------------------------------------------------------------------------------------------------
 
 void Start ()
 {
     SetSceneAudioStream ("music/Caketown 1.ogg");
 }
 
+//--------------------------------------------------------------------------------------------------
+
 void SceneChanged (const string &in previousSceneName)
 {
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void BeforeEnterScene ()
 {
@@ -23,10 +31,14 @@ void BeforeEnterScene ()
     GetActor ("npc_girl").AssignFlagPointsToWalk ("NPC_1_A");
 }
 
+//--------------------------------------------------------------------------------------------------
+
 void AfterLeaveScene ()
 {
     SetOverlayActive (false);
 }
+
+//--------------------------------------------------------------------------------------------------
 
 void PlayerActionHandler ()
 {
@@ -46,6 +58,8 @@ void PlayerActionHandler ()
     });
 }
 
+//--------------------------------------------------------------------------------------------------
+
 void RegisterFunctions ()
 {
     player.SetActionHandler (PlayerActionHandler);
@@ -56,7 +70,7 @@ void RegisterFunctions ()
     });    
 }
 
-
+//--------------------------------------------------------------------------------------------------
 
 void Update (float deltaTime)
 {

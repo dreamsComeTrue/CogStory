@@ -55,6 +55,9 @@ namespace aga
 		Point GetBackBufferOffset ();
 
 		void SetDrawFilled (bool filled);
+		
+		void ShowMouseCursor ();
+		void HideMouseCursor ();
 
 		static Screen* GetSingleton () { return m_Singleton; }
 

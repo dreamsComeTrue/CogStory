@@ -30,6 +30,7 @@ namespace aga
         void BeforeEnter ();
         void AfterLeave ();        
 
+        Scene* CreateNewScene (const std::string& name);
         void AddScene (Scene* scene);
         void RemoveScene (Scene* scene);
         void SetActiveScene (Scene* scene);
@@ -99,8 +100,8 @@ namespace aga
 
         void RegisterTriggerScene (const std::string& areaName, const std::string& sceneFile);
 
-        Script* AttachScript (Script* script, const std::string& path);
-        Script* AttachScript (const std::string& name, const std::string& path);
+        Script* AttachScript (Script* script, const std::string& path, bool temporary = false);
+        Script* AttachScript (const std::string& name, const std::string& path, bool temporary = false);
         void RemoveScript (const std::string& name);
         void EnableSceneScripts ();
         void DisableSceneScripts ();

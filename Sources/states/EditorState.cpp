@@ -60,7 +60,7 @@ namespace aga
 	{
 		m_AudioSamplesEnabled = m_MainLoop->GetAudioManager ().IsSamplesEnabled ();
 		m_AudioStreamsEnabled = m_MainLoop->GetAudioManager ().IsStreamsEnabled ();
-		
+
 		m_MainLoop->GetAudioManager ().SetEnabled (false);
 
 		Screen* screen = m_MainLoop->GetScreen ();
@@ -69,8 +69,7 @@ namespace aga
 
 		screen->SetWindowSize (m_LastWindowSize);
 		screen->CenterOnScreen ();
-
-		al_show_mouse_cursor (screen->GetDisplay ());
+		screen->ShowMouseCursor ();
 
 		m_Editor->BeforeEnter ();
 
@@ -83,7 +82,10 @@ namespace aga
 			player->TemplateBounds.Pos = player->GetPosition ();
 		}
 
-		sceneManager.GetActiveScene ()->ResetAllActorsPositions ();
+		if (sceneManager.GetActiveScene ())
+		{
+			sceneManager.GetActiveScene ()->ResetAllActorsPositions ();
+		}
 
 		//  Reset camera to player
 		player->BeforeEnter ();
@@ -105,14 +107,14 @@ namespace aga
 		Screen* screen = m_MainLoop->GetScreen ();
 
 		m_LastEditedScene = m_MainLoop->GetSceneManager ().GetActiveScene ();
-		
+
 		ALLEGRO_DISPLAY* display = screen->GetDisplay ();
 
 		m_LastWindowSize.X = al_get_display_width (display);
 		m_LastWindowSize.Y = al_get_display_height (display);
 
 		screen->SetDrawFilled (false);
-		
+
 		m_MainLoop->GetAudioManager ().SetSamplesEnabled (m_AudioSamplesEnabled);
 		m_MainLoop->GetAudioManager ().SetStreamsEnabled (m_AudioStreamsEnabled);
 	}

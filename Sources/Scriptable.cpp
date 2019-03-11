@@ -37,7 +37,7 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	Script* Scriptable::AttachScript (const std::string& name, const std::string& path)
+	Script* Scriptable::AttachScript (const std::string& name, const std::string& path, bool temporary)
 	{
 		ScriptMetaData* found = GetScript (name);
 
@@ -45,7 +45,7 @@ namespace aga
 		{
 			Script* script = m_ScriptManager->LoadScriptFromFile (path, name);
 
-			ScriptMetaData meta = {name, path, script};
+			ScriptMetaData meta = {name, path, script, temporary};
 			m_Scripts.push_back (meta);
 
 			return script;
@@ -58,7 +58,7 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	Script* Scriptable::AttachScript (Script* script, const std::string& path)
+	Script* Scriptable::AttachScript (Script* script, const std::string& path, bool temporary)
 	{
 		if (!script)
 		{
@@ -69,7 +69,7 @@ namespace aga
 
 		if (!found)
 		{
-			ScriptMetaData meta = {script->GetName (), path, script};
+			ScriptMetaData meta = {script->GetName (), path, script, temporary};
 			m_Scripts.push_back (meta);
 		}
 

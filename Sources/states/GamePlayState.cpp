@@ -23,6 +23,7 @@ namespace aga
 	GamePlayState::GamePlayState (MainLoop* mainLoop)
 		: State (mainLoop, GAMEPLAY_STATE_NAME)
 		, m_AudioWasEnabled (false)
+		, m_MasterScript (nullptr)
 	{
 	}
 
@@ -42,11 +43,7 @@ namespace aga
 	{
 		Lifecycle::Initialize ();
 
-		Script* masterScript = m_MainLoop->GetScriptManager ().LoadScriptFromFile ("Master.script", "master");
-		masterScript->Run ("void Start ()");
-
-		m_MainLoop->GetSceneManager ().GetPlayer ()->TemplateBounds.Pos
-			= m_MainLoop->GetSceneManager ().GetPlayer ()->GetPosition ();
+		m_MasterScript = m_MainLoop->GetScriptManager ().LoadScriptFromFile ("Master.script", "master");
 
 		return true;
 	}
@@ -60,9 +57,10 @@ namespace aga
 	void GamePlayState::BeforeEnter ()
 	{
 		Screen* screen = m_MainLoop->GetScreen ();
+		SceneManager& sceneManager = m_MainLoop->GetSceneManager ();
 		State* prevState = m_MainLoop->GetStateManager ().GetPreviousState ();
 
-		al_hide_mouse_cursor (screen->GetDisplay ());
+		screen->HideMouseCursor ();
 
 		if (prevState != nullptr && prevState->GetName () == EDITOR_STATE_NAME)
 		{
@@ -70,17 +68,17 @@ namespace aga
 			screen->CenterOnScreen ();
 		}
 
-		m_MainLoop->GetSceneManager ().BeforeEnter ();
+		sceneManager.BeforeEnter ();
+		sceneManager.GetPlayer ()->TemplateBounds.Pos = sceneManager.GetPlayer ()->GetPosition ();
 
 		ResizeWindow ();
+
+		m_MasterScript->Run ("void Start ()");
 	}
 
 	//--------------------------------------------------------------------------------------------------
 
-	void GamePlayState::AfterLeave ()
-	{
-		m_MainLoop->GetSceneManager ().AfterLeave ();
-	}
+	void GamePlayState::AfterLeave () { m_MainLoop->GetSceneManager ().AfterLeave (); }
 
 	//--------------------------------------------------------------------------------------------------
 

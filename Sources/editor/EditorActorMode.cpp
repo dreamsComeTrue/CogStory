@@ -157,23 +157,28 @@ namespace aga
 
 	Actor* EditorActorMode::GetActorUnderCursor (int mouseX, int mouseY, bool selecting, Rect&& outRect)
 	{
-		std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
+		Scene* scene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
 		Actor* resultActor = nullptr;
 
-		for (Actor* actorIt : actors)
+		if (scene)
 		{
-			Rect r = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetRenderBounds (actorIt);
+			std::vector<Actor*>& actors = scene->GetActors ();
 
-			if (InsideRect (mouseX, mouseY, r))
+			for (Actor* actorIt : actors)
 			{
-				if ((resultActor == nullptr) || (resultActor && (resultActor->RenderID < actorIt->RenderID)))
-				{
-					outRect = r;
-					resultActor = actorIt;
+				Rect r = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetRenderBounds (actorIt);
 
-					if (selecting)
+				if (InsideRect (mouseX, mouseY, r))
+				{
+					if ((resultActor == nullptr) || (resultActor && (resultActor->RenderID < actorIt->RenderID)))
 					{
-						m_TileSelectionOffset = {r.GetTopLeft ().X - mouseX, r.GetTopLeft ().Y - mouseY};
+						outRect = r;
+						resultActor = actorIt;
+
+						if (selecting)
+						{
+							m_TileSelectionOffset = {r.GetTopLeft ().X - mouseX, r.GetTopLeft ().Y - mouseY};
+						}
 					}
 				}
 			}

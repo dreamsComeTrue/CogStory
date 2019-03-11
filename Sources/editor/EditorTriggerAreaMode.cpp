@@ -55,63 +55,69 @@ namespace aga
 
 	void EditorTriggerAreaMode::MarkSelectedTriggerAreas ()
 	{
-		ALLEGRO_MOUSE_STATE state;
-		al_get_mouse_state (&state);
-
 		SceneManager& sceneManager = m_Editor->GetMainLoop ()->GetSceneManager ();
-		Point translate = sceneManager.GetCamera ().GetTranslate ();
-		Point scale = sceneManager.GetCamera ().GetScale ();
-		Point* selectedPoint = GetTriggerPointUnderCursor (state.x, state.y);
-		std::map<std::string, TriggerArea>& triggerAreas = sceneManager.GetActiveScene ()->GetTriggerAreas ();
+		Scene* scene = sceneManager.GetActiveScene ();
 
-		for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)
+		if (scene)
 		{
-			if (!it->second.Points.empty ())
+			ALLEGRO_MOUSE_STATE state;
+			al_get_mouse_state (&state);
+
+			Point translate = sceneManager.GetCamera ().GetTranslate ();
+			Point scale = sceneManager.GetCamera ().GetScale ();
+			Point* selectedPoint = GetTriggerPointUnderCursor (state.x, state.y);
+			std::map<std::string, TriggerArea>& triggerAreas = scene->GetTriggerAreas ();
+
+			for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end ();
+				 ++it)
 			{
-				int i = 0;
-				int selectedIndex = std::numeric_limits<int>::min ();
-
-				for (size_t j = 0; j < it->second.Points.size (); ++j)
+				if (!it->second.Points.empty ())
 				{
-					if (m_TriggerPoint && it->second.Points[j] == *m_TriggerPoint)
+					int i = 0;
+					int selectedIndex = std::numeric_limits<int>::min ();
+
+					for (size_t j = 0; j < it->second.Points.size (); ++j)
 					{
-						selectedIndex = j;
-						break;
-					}
-				}
-
-				std::vector<float> out;
-				for (const Point& p : it->second.Points)
-				{
-					float xPoint = p.X * scale.X - translate.X;
-					float yPoint = p.Y * scale.Y - translate.Y;
-
-					out.push_back (xPoint);
-					out.push_back (yPoint);
-				}
-
-				for (const Point& p : it->second.Points)
-				{
-					float xPoint = p.X * scale.X - translate.X;
-					float yPoint = p.Y * scale.Y - translate.Y;
-
-					if (i == selectedIndex)
-					{
-						//  Mark selected corner
-						al_draw_filled_circle (xPoint, yPoint, 4, COLOR_PINK);
-					}
-					else if ((i == 0 && selectedIndex == it->second.Points.size () - 1) || (i == selectedIndex + 1))
-					{
-						//  Mark also next corner
-						al_draw_filled_circle (xPoint, yPoint, 4, COLOR_PINK);
+						if (m_TriggerPoint && it->second.Points[j] == *m_TriggerPoint)
+						{
+							selectedIndex = j;
+							break;
+						}
 					}
 
-					if (selectedPoint != nullptr && p == *selectedPoint)
+					std::vector<float> out;
+					for (const Point& p : it->second.Points)
 					{
-						al_draw_filled_circle (xPoint, yPoint, 4, COLOR_RED);
+						float xPoint = p.X * scale.X - translate.X;
+						float yPoint = p.Y * scale.Y - translate.Y;
+
+						out.push_back (xPoint);
+						out.push_back (yPoint);
 					}
 
-					++i;
+					for (const Point& p : it->second.Points)
+					{
+						float xPoint = p.X * scale.X - translate.X;
+						float yPoint = p.Y * scale.Y - translate.Y;
+
+						if (i == selectedIndex)
+						{
+							//  Mark selected corner
+							al_draw_filled_circle (xPoint, yPoint, 4, COLOR_PINK);
+						}
+						else if ((i == 0 && selectedIndex == it->second.Points.size () - 1) || (i == selectedIndex + 1))
+						{
+							//  Mark also next corner
+							al_draw_filled_circle (xPoint, yPoint, 4, COLOR_PINK);
+						}
+
+						if (selectedPoint != nullptr && p == *selectedPoint)
+						{
+							al_draw_filled_circle (xPoint, yPoint, 4, COLOR_RED);
+						}
+
+						++i;
+					}
 				}
 			}
 		}
@@ -121,17 +127,22 @@ namespace aga
 
 	Point* EditorTriggerAreaMode::GetTriggerPointUnderCursor (int mouseX, int mouseY)
 	{
-		int outsets = 4;
-		std::map<std::string, TriggerArea>& triggerAreas
-			= m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetTriggerAreas ();
+		Scene* scene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
 
-		for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)
+		if (scene)
 		{
-			for (Point& point : it->second.Points)
+			int outsets = 4;
+			std::map<std::string, TriggerArea>& triggerAreas = scene->GetTriggerAreas ();
+
+			for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end ();
+				 ++it)
 			{
-				if (m_Editor->IsMouseWithinPointRect (mouseX, mouseY, point, outsets))
+				for (Point& point : it->second.Points)
 				{
-					return &point;
+					if (m_Editor->IsMouseWithinPointRect (mouseX, mouseY, point, outsets))
+					{
+						return &point;
+					}
 				}
 			}
 		}
@@ -280,77 +291,83 @@ namespace aga
 
 	void EditorTriggerAreaMode::Render ()
 	{
-		Point translate = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetTranslate ();
-		Point scale = m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
-		std::map<std::string, TriggerArea> triggerAreas
-			= m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetTriggerAreas ();
+		SceneManager& sceneManager = m_Editor->GetMainLoop ()->GetSceneManager ();
 
-		for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)
+		if (sceneManager.GetActiveScene ())
 		{
-			if (!it->second.Points.empty ())
+			Camera& camera = sceneManager.GetCamera ();
+			Point translate = camera.GetTranslate ();
+			Point scale = camera.GetScale ();
+			std::map<std::string, TriggerArea> triggerAreas = sceneManager.GetActiveScene ()->GetTriggerAreas ();
+
+			for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end ();
+				 ++it)
 			{
-				int i = 0;
-
-				std::vector<float> out;
-				for (const Point& p : it->second.Points)
+				if (!it->second.Points.empty ())
 				{
-					float xPoint = p.X * scale.X - translate.X;
-					float yPoint = p.Y * scale.Y - translate.Y;
+					int i = 0;
 
-					out.push_back (xPoint);
-					out.push_back (yPoint);
+					std::vector<float> out;
+					for (const Point& p : it->second.Points)
+					{
+						float xPoint = p.X * scale.X - translate.X;
+						float yPoint = p.Y * scale.Y - translate.Y;
+
+						out.push_back (xPoint);
+						out.push_back (yPoint);
+					}
+
+					al_draw_polygon (out.data (), static_cast<int> (it->second.Points.size ()), 0,
+						it->second.Collidable ? COLOR_GREEN : COLOR_LIGHTBLUE, 2, 0);
+
+					Point min{std::numeric_limits<int>::max (), std::numeric_limits<int>::max ()};
+					Point max{std::numeric_limits<int>::min (), std::numeric_limits<int>::min ()};
+
+					for (const Point& p : it->second.Points)
+					{
+						float xPoint = p.X * scale.X - translate.X;
+						float yPoint = p.Y * scale.Y - translate.Y;
+
+						if (xPoint < min.X)
+						{
+							min.X = xPoint;
+						}
+
+						if (yPoint < min.Y)
+						{
+							min.Y = yPoint;
+						}
+
+						if (xPoint > max.X)
+						{
+							max.X = xPoint;
+						}
+
+						if (yPoint > max.Y)
+						{
+							max.Y = yPoint;
+						}
+
+						ALLEGRO_COLOR color;
+
+						if (i == 0)
+						{
+							color = COLOR_GREEN;
+						}
+						else
+						{
+							color = COLOR_YELLOW;
+						}
+
+						++i;
+
+						al_draw_filled_circle (xPoint, yPoint, 4, color);
+					}
+
+					m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_SMALL, it->second.Name,
+						al_map_rgb (0, 255, 0), static_cast<float> (min.X + (max.X - min.X) * 0.5f),
+						static_cast<float> (min.Y + (max.Y - min.Y) * 0.5f), 1.0f, ALLEGRO_ALIGN_CENTER);
 				}
-
-				al_draw_polygon (out.data (), static_cast<int> (it->second.Points.size ()), 0,
-					it->second.Collidable ? COLOR_GREEN : COLOR_LIGHTBLUE, 2, 0);
-
-				Point min{std::numeric_limits<int>::max (), std::numeric_limits<int>::max ()};
-				Point max{std::numeric_limits<int>::min (), std::numeric_limits<int>::min ()};
-
-				for (const Point& p : it->second.Points)
-				{
-					float xPoint = p.X * scale.X - translate.X;
-					float yPoint = p.Y * scale.Y - translate.Y;
-
-					if (xPoint < min.X)
-					{
-						min.X = xPoint;
-					}
-
-					if (yPoint < min.Y)
-					{
-						min.Y = yPoint;
-					}
-
-					if (xPoint > max.X)
-					{
-						max.X = xPoint;
-					}
-
-					if (yPoint > max.Y)
-					{
-						max.Y = yPoint;
-					}
-
-					ALLEGRO_COLOR color;
-
-					if (i == 0)
-					{
-						color = COLOR_GREEN;
-					}
-					else
-					{
-						color = COLOR_YELLOW;
-					}
-
-					++i;
-
-					al_draw_filled_circle (xPoint, yPoint, 4, color);
-				}
-
-				m_Editor->GetMainLoop ()->GetScreen ()->GetFont ().DrawText (FONT_NAME_SMALL, it->second.Name,
-					al_map_rgb (0, 255, 0), static_cast<float> (min.X + (max.X - min.X) * 0.5f),
-					static_cast<float> (min.Y + (max.Y - min.Y) * 0.5f), 1.0f, ALLEGRO_ALIGN_CENTER);
 			}
 		}
 	}

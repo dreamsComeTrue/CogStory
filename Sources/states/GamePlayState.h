@@ -12,6 +12,7 @@ namespace aga
     extern const float GAME_WINDOW_SCALE;
 
     class MainLoop;
+    class Script;
 
     class GamePlayState : public State
     {
@@ -32,6 +33,7 @@ namespace aga
 
     private:
         bool m_AudioWasEnabled;
+        Script* m_MasterScript;
     };
 }
 

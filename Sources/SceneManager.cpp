@@ -116,6 +116,18 @@ namespace aga
 	}
 
 	//--------------------------------------------------------------------------------------------------
+	
+	Scene* SceneManager::CreateNewScene (const std::string& name)
+	{
+		Scene* scene = new Scene (this, Rect (0, 0, 128, 128));
+		scene->SetName (name);
+		
+		m_Scenes.insert (std::make_pair (name, scene));
+		
+		return scene;
+	}
+	
+	//--------------------------------------------------------------------------------------------------
 
 	void SceneManager::AddScene (Scene* scene)
 	{
@@ -811,11 +823,11 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	Script* SceneManager::AttachScript (class Script* script, const std::string& path)
+	Script* SceneManager::AttachScript (class Script* script, const std::string& path, bool temporary)
 	{
 		if (m_ActiveScene)
 		{
-			return m_ActiveScene->AttachScript (script, path);
+			return m_ActiveScene->AttachScript (script, path, temporary);
 		}
 
 		return nullptr;
@@ -823,11 +835,11 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	Script* SceneManager::AttachScript (const std::string& name, const std::string& path)
+	Script* SceneManager::AttachScript (const std::string& name, const std::string& path, bool temporary)
 	{
 		if (m_ActiveScene)
 		{
-			return m_ActiveScene->AttachScript (name, path);
+			return m_ActiveScene->AttachScript (name, path, temporary);
 		}
 
 		return nullptr;
