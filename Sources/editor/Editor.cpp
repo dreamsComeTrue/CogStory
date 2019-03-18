@@ -101,8 +101,6 @@ namespace aga
 		LoadConfig ();
 		ScreenResize ();
 
-		al_identity_transform (&m_NewTransform);
-
 		// Setup Dear ImGui binding
 		IMGUI_CHECKVERSION ();
 		ImGui::CreateContext ();
@@ -121,6 +119,8 @@ namespace aga
 
 		ImGui::GetIO ().FontDefault
 			= ImGui::GetIO ().Fonts->AddFontFromFileTTF (GetResourcePath (FONT_MEDIUM).c_str (), 15.0f);
+
+		al_identity_transform (&m_NewTransform);
 
 		return true;
 	}
@@ -585,7 +585,9 @@ namespace aga
 		ImGui_ImplAllegro5_NewFrame ();
 		ImGui::NewFrame ();
 
-		if (m_CursorMode == CursorMode::EditPhysBodyMode)
+		switch (m_CursorMode)
+		{
+		case CursorMode::EditPhysBodyMode:
 		{
 			if (m_IsSnapToGrid)
 			{
@@ -594,20 +596,22 @@ namespace aga
 
 			RenderPhysBodyMode (deltaTime);
 		}
-		else if (m_CursorMode == CursorMode::EditSpriteSheetMode)
+
+		break;
+
+		case CursorMode::EditSpriteSheetMode:
 		{
 			m_MainLoop->GetSceneManager ().GetCamera ().Update (deltaTime);
 			m_EditorActorMode.RenderSpriteSheet ();
 
 			DrawSelectionRect (m_SelectionRect);
 		}
-		else
-		{
-			RenderActorMode (deltaTime);
-		}
+		break;
 
-		//        bool showMe;
-		//   ImGui::ShowDemoWindow (&showMe);
+		default:
+			RenderActorMode (deltaTime);
+			break;
+		}
 
 		//  Draw GUI
 		ImGui::Render ();
@@ -671,7 +675,9 @@ namespace aga
 			m_EditorTriggerAreaMode.Render ();
 		}
 
-		m_MainLoop->GetSceneManager ().GetCamera ().UseIdentityTransform ();
+		Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
+
+		camera.UseIdentityTransform ();
 
 		if (IsEditorCanvasNotCovered ())
 		{
@@ -689,7 +695,6 @@ namespace aga
 
 			for (Actor* actor : m_EditorActorMode.GetSelectedActors ())
 			{
-				Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
 				Rect r = camera.GetRenderBounds (actor, true);
 
 				al_draw_rectangle (
@@ -760,7 +765,7 @@ namespace aga
 				r.GetTopLeft ().Y + r.GetHalfSize ().Height, color, 1);
 		}
 
-		DrawSelectionRect (m_MainLoop->GetSceneManager ().GetCamera ().GetRenderBounds (m_SelectionRect));
+		DrawSelectionRect (camera.GetRenderBounds (m_SelectionRect));
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -973,12 +978,18 @@ namespace aga
 
 	void Editor::OnSpriteSheetEdit ()
 	{
-		m_OldSnapToGrid = m_IsSnapToGrid;
-		m_IsSnapToGrid = false;
+		Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
+
+		m_WorldTransform = camera.GetCurrentTransform ();
+
+		camera.SetCurrentTransform (m_NewTransform);
+		camera.UseIdentityTransform();
 
 		SetCursorMode (EditSpriteSheetMode);
-		m_WorldTransform = m_MainLoop->GetSceneManager ().GetCamera ().GetCurrentTransform ();
-		m_MainLoop->GetSceneManager ().GetCamera ().SetCurrentTransform (m_NewTransform);
+
+		m_OldSnapToGrid = m_IsSnapToGrid;
+		m_OldGridSize = m_GridSize;
+		m_IsSnapToGrid = false;
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -987,10 +998,17 @@ namespace aga
 	{
 		if (GetCursorMode () == EditSpriteSheetMode)
 		{
-			m_IsSnapToGrid = m_OldSnapToGrid;
-			m_NewTransform = m_MainLoop->GetSceneManager ().GetCamera ().GetCurrentTransform ();
-			m_MainLoop->GetSceneManager ().GetCamera ().SetCurrentTransform (m_WorldTransform);
+			Camera& camera = m_MainLoop->GetSceneManager ().GetCamera ();
+
+			m_NewTransform = camera.GetCurrentTransform ();
+
+			camera.SetCurrentTransform (m_WorldTransform);
+			camera.UseIdentityTransform();
+
 			SetCursorMode (ActorSelectMode);
+
+			m_IsSnapToGrid = m_OldSnapToGrid;
+			m_GridSize = m_OldGridSize;
 		}
 	}
 
@@ -2065,10 +2083,6 @@ namespace aga
 	//--------------------------------------------------------------------------------------------------
 
 	EditorActorWindow* Editor::GetActorWindow () { return m_ActorWindow; }
-
-	//--------------------------------------------------------------------------------------------------
-
-	ALLEGRO_TRANSFORM& Editor::GetWorldTransform () { return m_WorldTransform; }
 
 	//--------------------------------------------------------------------------------------------------
 

@@ -87,11 +87,11 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	ALLEGRO_TRANSFORM& Camera::GetCurrentTransform () { return m_Transform; }
+	ALLEGRO_TRANSFORM Camera::GetCurrentTransform () { return m_Transform; }
 
 	//--------------------------------------------------------------------------------------------------
 
-	void Camera::SetCurrentTransform (ALLEGRO_TRANSFORM& transform)
+	void Camera::SetCurrentTransform (ALLEGRO_TRANSFORM transform)
 	{
 		m_Transform = transform;
 		al_use_transform (&m_Transform);

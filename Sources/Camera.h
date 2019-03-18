@@ -27,8 +27,8 @@ namespace aga
         void SetTranslate (float dx, float dy);
         Point GetTranslate ();
 
-        ALLEGRO_TRANSFORM& GetCurrentTransform ();
-        void SetCurrentTransform (ALLEGRO_TRANSFORM& transform);
+        ALLEGRO_TRANSFORM GetCurrentTransform ();
+        void SetCurrentTransform (ALLEGRO_TRANSFORM transform);
 
         void Scale (float dx, float dy, float mousePosX = -1, float mousePosY = -1);
         Point GetScale ();

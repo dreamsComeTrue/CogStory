@@ -269,9 +269,11 @@ namespace aga
 
 		Point primaryPos;
 
+		SceneManager& sceneManager = m_Editor->GetMainLoop ()->GetSceneManager ();
+
 		for (AtlasRegion& region : m_SelectedAtlasRegions)
 		{
-			Actor* tile = new TileActor (&m_Editor->GetMainLoop ()->GetSceneManager ());
+			Actor* tile = new TileActor (&sceneManager);
 			Point regionSize = m_Atlas->GetRegion (region.Name).Bounds.GetSize ();
 			Point point = m_Editor->CalculateWorldPoint (mouseX, mouseY);
 
@@ -298,16 +300,15 @@ namespace aga
 
 			tile->Initialize ();
 
-			m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddActor (tile);
-			m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->SortActors ();
+			sceneManager.GetActiveScene ()->AddActor (tile);
+			sceneManager.GetActiveScene ()->SortActors ();
 
 			m_SelectedActors.push_back (tile);
 
 			m_Rotation = tile->Rotation;
 
 			//  Orient mouse cursor in middle of tile regarding camera scaling
-			m_TileSelectionOffset
-				= -tile->Bounds.GetHalfSize () * m_Editor->GetMainLoop ()->GetSceneManager ().GetCamera ().GetScale ();
+			m_TileSelectionOffset = -tile->Bounds.GetHalfSize () * sceneManager.GetCamera ().GetScale ();
 
 			if (!tile->PhysPoints.empty ())
 			{

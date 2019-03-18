@@ -18,6 +18,7 @@ ThirdParty/allegro5/tests
 ThirdParty/allegro5/tools
 .vscode/c_cpp_properties.json
 .vscode/.cmaketools.json
+.vscode/ipch/
 CMakeLists.txt.user
 ThirdParty/allegro5_win/
 ThirdParty/angelscript/angelscript/lib/Win64

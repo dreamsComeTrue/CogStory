@@ -86,8 +86,6 @@ namespace aga
         EditorSpeechWindow* GetSpeechWindow ();
         EditorActorWindow* GetActorWindow ();
 
-        ALLEGRO_TRANSFORM& GetWorldTransform ();
-
         Point GetLastMousePos ();
 
         bool IsSnapToGrid ();
@@ -204,6 +202,7 @@ namespace aga
         ALLEGRO_TRANSFORM m_WorldTransform;
         ALLEGRO_TRANSFORM m_NewTransform;
         bool m_OldSnapToGrid;
+        float m_OldGridSize;
 
         Rect m_SelectionRect;
         bool m_IsRectSelection;
