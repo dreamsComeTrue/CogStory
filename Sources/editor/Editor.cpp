@@ -63,6 +63,7 @@ namespace aga
 		, m_DrawTriggerAreas (true)
 		, m_DrawCameraBounds (false)
 		, m_IsMouseDrag (false)
+		, m_NoSceneSelected (false)
 	{
 	}
 
@@ -335,6 +336,8 @@ namespace aga
 
 		if (io.WantCaptureKeyboard || io.WantCaptureMouse)
 		{
+			event->type = 0;
+			
 			return;
 		}
 
@@ -460,6 +463,8 @@ namespace aga
 			case ALLEGRO_KEY_F1:
 			{
 				OnPlay ();
+				event->type = 0;
+								
 				break;
 			}
 
@@ -960,7 +965,17 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	void Editor::OnPlay () { m_MainLoop->GetStateManager ().SetActiveState ("GAMEPLAY_STATE"); }
+	void Editor::OnPlay ()
+	{
+		if (m_MainLoop->GetSceneManager ().GetActiveScene ())
+		{
+			m_MainLoop->GetStateManager ().SetActiveState ("GAMEPLAY_STATE");
+		}
+		else
+		{
+			m_NoSceneSelected = true;
+		}
+	}
 
 	//--------------------------------------------------------------------------------------------------
 
@@ -983,7 +998,7 @@ namespace aga
 		m_WorldTransform = camera.GetCurrentTransform ();
 
 		camera.SetCurrentTransform (m_NewTransform);
-		camera.UseIdentityTransform();
+		camera.UseIdentityTransform ();
 
 		SetCursorMode (EditSpriteSheetMode);
 
@@ -1003,7 +1018,7 @@ namespace aga
 			m_NewTransform = camera.GetCurrentTransform ();
 
 			camera.SetCurrentTransform (m_WorldTransform);
-			camera.UseIdentityTransform();
+			camera.UseIdentityTransform ();
 
 			SetCursorMode (ActorSelectMode);
 
@@ -1644,6 +1659,24 @@ namespace aga
 			ImGui::End ();
 		}
 		ImGui::PopStyleColor ();
+
+		if (m_NoSceneSelected)
+		{
+			ImGui::OpenPopup ("No Scene Selected");
+			m_NoSceneSelected = false;
+		}
+
+		if (ImGui::BeginPopupModal ("No Scene Selected", nullptr, ImGuiWindowFlags_NoResize))
+		{
+			ImGui::Text ("Select a scene to play with!");
+
+			if (ImGui::Button ("Close"))
+			{
+				ImGui::CloseCurrentPopup ();
+			}
+
+			ImGui::EndPopup ();
+		}
 	}
 
 	//--------------------------------------------------------------------------------------------------

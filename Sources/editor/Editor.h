@@ -223,6 +223,8 @@ namespace aga
         bool m_DrawFlagPoints;
         bool m_DrawTriggerAreas;
         bool m_DrawCameraBounds;
+        
+        bool m_NoSceneSelected;
     };
 }
 
