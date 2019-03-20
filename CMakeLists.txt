@@ -57,7 +57,7 @@ else()
 endif (STATIC_BUILD)
 
 list(APPEND LIBRARIES_LIST
-    allegro_monolith${GAME_BUILD_TYPE}
+    
 )
 
 if (WIN32)
@@ -72,7 +72,9 @@ if (WIN32)
                         )
     endif (STATIC_BUILD)
 
-    list(APPEND LIBRARIES_LIST libangelscript.dll.a)
+    list(APPEND LIBRARIES_LIST 
+                        allegro_monolith${GAME_BUILD_TYPE}
+                        libangelscript.dll.a)
 else()
     if (STATIC_BUILD)
         list(APPEND LIBRARIES_LIST
@@ -92,6 +94,13 @@ else()
     endif (STATIC_BUILD)
 
     list(APPEND LIBRARIES_LIST
+                        allegro${GAME_BUILD_TYPE}
+                        allegro_image${GAME_BUILD_TYPE}
+                        allegro_font${GAME_BUILD_TYPE}
+                        allegro_ttf${GAME_BUILD_TYPE}
+                        allegro_primitives${GAME_BUILD_TYPE}
+                        allegro_audio${GAME_BUILD_TYPE}
+                        allegro_acodec${GAME_BUILD_TYPE}                        
                         libangelscript.a
                         pthread
         )
