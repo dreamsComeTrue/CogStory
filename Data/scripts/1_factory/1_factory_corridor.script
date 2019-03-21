@@ -1,0 +1,21 @@
+void Start ()
+{
+    SetSceneAudioStream ("music/Little People At Work.ogg");
+}
+
+void SceneChanged (const string &in previousSceneName)
+{
+    camera.SetFollowActor (player);
+}
+
+void BeforeEnterScene ()
+{
+}
+
+void AfterLeaveScene ()
+{
+}
+
+void Update (float deltaTime)
+{
+}

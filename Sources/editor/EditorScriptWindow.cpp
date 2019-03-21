@@ -5,8 +5,8 @@
 #include "MainLoop.h"
 #include "Screen.h"
 
-#include "imgui.h"
 #include "addons/tiny-file-dialogs/tinyfiledialogs.h"
+#include "imgui.h"
 
 namespace aga
 {
@@ -65,41 +65,42 @@ namespace aga
 	{
 		if (m_BrowseButtonPressed)
 		{
-            char const * filterPatterns[1] = { "*.script" };
+			char const* filterPatterns[1] = {"*.script"};
 
-            const char* chosenPath = tinyfd_openFileDialog (
-               "Open Scene",
-                        "E:\\CogStory\\Data\\scripts\\special",
-                        1,
-                        filterPatterns,
-                        "script files",
-                        0);
+			std::string dataPath = GetDataPath ();
+			dataPath += GetPathSeparator ();
+			dataPath += "scripts";
+			dataPath += GetPathSeparator ();
+			dataPath += "special";
 
-            if (chosenPath != nullptr && strlen (chosenPath) > 0)
-            {
-                std::string fileName = chosenPath;
-                std::replace (fileName.begin (), fileName.end (), '\\', '/');
+			const char* chosenPath
+				= tinyfd_openFileDialog ("Open Scene", dataPath.c_str (), 1, filterPatterns, "script files", 0);
 
-                if (!EndsWith (fileName, ".script"))
-                {
-                    fileName += ".script";
-                }
+			if (chosenPath != nullptr && strlen (chosenPath) > 0)
+			{
+				std::string fileName = chosenPath;
+				std::replace (fileName.begin (), fileName.end (), '\\', '/');
 
-                std::string dataPath = "Data/scripts/";
-                size_t index = fileName.find (dataPath);
+				if (!EndsWith (fileName, ".script"))
+				{
+					fileName += ".script";
+				}
 
-                if (index != std::string::npos)
-                {
-                    fileName = fileName.substr (index + dataPath.length ());
-                }
+				std::string dataPath = "Data/scripts/";
+				size_t index = fileName.find (dataPath);
 
-                strcpy (m_Path, fileName.c_str ());
-                m_BrowseButtonPressed = false;
-            }
-            else
-            {
-                m_BrowseButtonPressed = false;
-            }
+				if (index != std::string::npos)
+				{
+					fileName = fileName.substr (index + dataPath.length ());
+				}
+
+				strcpy (m_Path, fileName.c_str ());
+				m_BrowseButtonPressed = false;
+			}
+			else
+			{
+				m_BrowseButtonPressed = false;
+			}
 		}
 	}
 
