@@ -18,5 +18,5 @@ ThirdParty/allegro5/tests
 ThirdParty/allegro5/tools
 .vscode/
 CMakeLists.txt.user
-ThirdParty/allegro5_win/
+ThirdParty/allegro5_static/
 ThirdParty/angelscript/angelscript/lib/Win64

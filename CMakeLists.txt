@@ -8,9 +8,7 @@ set(ROOT_THIRD_PARTY_DIR ./ThirdParty)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/Cotire/CMake)
 
-#set(CMAKE_CXX_STANDARD_LIBRARIES "-static-libgcc -static-libstdc++ ${CMAKE_CXX_STANDARD_LIBRARIES}")
-#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive")
-#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lwinpthread -Wl,-allow-multiple-definition")
+set(CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_CXX_STANDARD_LIBRARIES} -static-libgcc -static-libstdc++ -Wl,-allow-multiple-definition -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic")
 
 include(cotire)
 
@@ -18,7 +16,7 @@ cmake_policy(SET CMP0015 NEW)
 cmake_policy(SET CMP0058 NEW)
 link_directories(   ${ROOT_THIRD_PARTY_DIR}/angelscript/angelscript/lib/Linux/
                     ${ROOT_THIRD_PARTY_DIR}/angelscript/angelscript/lib/Win64/
-                    ${ROOT_THIRD_PARTY_DIR}/allegro5_win/lib/
+                    ${ROOT_THIRD_PARTY_DIR}/allegro5_static/lib/
 #                    ${ROOT_THIRD_PARTY_DIR}/allegro5/bin/lib/
                  )
 
@@ -30,7 +28,7 @@ file(GLOB_RECURSE SRC_LIST  Sources/*
                             ${ROOT_THIRD_PARTY_DIR}/imgui/examples/imgui_impl_allegro5.cpp)
 
 if (WIN32)
-    list(APPEND INCLUDE_DIRS ${ROOT_THIRD_PARTY_DIR}/allegro5_win/include)
+    list(APPEND INCLUDE_DIRS ${ROOT_THIRD_PARTY_DIR}/allegro5_static/include)
 else()
     list(APPEND INCLUDE_DIRS    ${ROOT_THIRD_PARTY_DIR}/allegro5/include
                                 ${ROOT_THIRD_PARTY_DIR}/allegro5/bin/include)
