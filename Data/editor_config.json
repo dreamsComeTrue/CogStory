@@ -1,19 +1,7 @@
 {
+    "editor_scene": "2_city/2_city_main.scn",
     "recent_files": [
-        "2_city/2_city_humans_districtI.scn",
-        "2_city/2_city_robots_districtI.scn",
-        "2_city/2_city_main.scn",
-        "2_city/2_city_robots_districtII.scn",
-        "2_city/2_city_factory_district.scn",
-        "1_factory/1_factory_hallway.scn",
-        "2_city/2_city_humans_districtII.scn",
-        "1_factory/1_factory_main.scn",
-        "0_home/0_home_main.scn",
-        "1_factory/1_factory_cabinI.scn",
-        "1_factory/1_factory_cabinII.scn",
-        "1_factory/1_factory_cabinIII.scn",
-        "1_factory/1_factory_corridor.scn",
-        "2_city/2_city_forest_alley.scn"
+        "2_city/2_city_main.scn"
     ],
     "show_actors": true,
     "show_bounds": false,

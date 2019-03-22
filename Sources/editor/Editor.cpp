@@ -28,6 +28,16 @@ namespace aga
 	//--------------------------------------------------------------------------------------------------
 
 	std::string configFileName = "editor_config.json";
+	const std::string CONFIG_SHOW_GRID = "show_grid";
+	const std::string CONFIG_SHOW_PHYSICS = "show_physics";
+	const std::string CONFIG_SHOW_BOUNDS = "show_bounds";
+	const std::string CONFIG_SHOW_NAMES = "show_names";
+	const std::string CONFIG_SHOW_ACTORS = "show_actors";
+	const std::string CONFIG_SHOW_FLAG_POINTS = "show_flag_points";
+	const std::string CONFIG_SHOW_TRIGGER_AREAS = "show_trigger_areas";
+	const std::string CONFIG_SHOW_CAMERA_BOUNDS = "show_camera_bounds";
+	const std::string CONFIG_RECENT_FILES = "recent_files";
+	const std::string CONFIG_EDITOR_SCENE = "editor_scene";
 
 	const float DOUBLE_CLICK_SPEED = 300;
 
@@ -160,20 +170,25 @@ namespace aga
 			file >> j;
 			file.close ();
 
-			m_IsSnapToGrid = j["show_grid"];
-			m_MainLoop->GetSceneManager ().SetDrawPhysData (j["show_physics"]);
-			m_MainLoop->GetSceneManager ().SetDrawBoundingBox (j["show_bounds"]);
-			m_MainLoop->GetSceneManager ().SetDrawActorsNames (j["show_names"]);
-			m_DrawActors = j["show_actors"];
-			m_DrawFlagPoints = j["show_flag_points"];
-			m_DrawTriggerAreas = j["show_trigger_areas"];
-			m_DrawCameraBounds = j["show_camera_bounds"];
+			m_IsSnapToGrid = j[CONFIG_SHOW_GRID];
+			m_MainLoop->GetSceneManager ().SetDrawPhysData (j[CONFIG_SHOW_PHYSICS]);
+			m_MainLoop->GetSceneManager ().SetDrawBoundingBox (j[CONFIG_SHOW_BOUNDS]);
+			m_MainLoop->GetSceneManager ().SetDrawActorsNames (j[CONFIG_SHOW_NAMES]);
+			m_DrawActors = j[CONFIG_SHOW_ACTORS];
+			m_DrawFlagPoints = j[CONFIG_SHOW_FLAG_POINTS];
+			m_DrawTriggerAreas = j[CONFIG_SHOW_TRIGGER_AREAS];
+			m_DrawCameraBounds = j[CONFIG_SHOW_CAMERA_BOUNDS];
 
-			auto& recentFiles = j["recent_files"];
+			auto& recentFiles = j[CONFIG_RECENT_FILES];
 
 			for (auto& file : recentFiles)
 			{
 				m_OpenSceneWindow->AddRecentFileName (file);
+			}
+
+			if (j[CONFIG_EDITOR_SCENE] != "")
+			{
+				LoadScene (j[CONFIG_EDITOR_SCENE]);
 			}
 		}
 		catch (const std::exception&)
@@ -189,21 +204,22 @@ namespace aga
 		{
 			json j;
 
-			j["show_grid"] = m_IsSnapToGrid;
-			j["show_physics"] = m_MainLoop->GetSceneManager ().IsDrawPhysData ();
-			j["show_bounds"] = m_MainLoop->GetSceneManager ().IsDrawBoundingBox ();
-			j["show_names"] = m_MainLoop->GetSceneManager ().IsDrawActorsNames ();
-			j["show_actors"] = m_DrawActors;
-			j["show_flag_points"] = m_DrawFlagPoints;
-			j["show_trigger_areas"] = m_DrawTriggerAreas;
-			j["show_camera_bounds"] = m_DrawCameraBounds;
+			j[CONFIG_SHOW_GRID] = m_IsSnapToGrid;
+			j[CONFIG_SHOW_PHYSICS] = m_MainLoop->GetSceneManager ().IsDrawPhysData ();
+			j[CONFIG_SHOW_BOUNDS] = m_MainLoop->GetSceneManager ().IsDrawBoundingBox ();
+			j[CONFIG_SHOW_NAMES] = m_MainLoop->GetSceneManager ().IsDrawActorsNames ();
+			j[CONFIG_SHOW_ACTORS] = m_DrawActors;
+			j[CONFIG_SHOW_FLAG_POINTS] = m_DrawFlagPoints;
+			j[CONFIG_SHOW_TRIGGER_AREAS] = m_DrawTriggerAreas;
+			j[CONFIG_SHOW_CAMERA_BOUNDS] = m_DrawCameraBounds;
+			j[CONFIG_EDITOR_SCENE] = m_LastScenePath;
 
-			j["recent_files"] = json::array ({});
+			j[CONFIG_RECENT_FILES] = json::array ({});
 
 			std::vector<std::string>& files = m_OpenSceneWindow->GetRecentFileNames ();
 			for (std::string recentFile : files)
 			{
-				j["recent_files"].push_back (recentFile);
+				j[CONFIG_RECENT_FILES].push_back (recentFile);
 			}
 
 			// write prettified JSON to another file
@@ -337,7 +353,7 @@ namespace aga
 		if (io.WantCaptureKeyboard || io.WantCaptureMouse)
 		{
 			event->type = 0;
-			
+
 			return;
 		}
 
@@ -464,7 +480,7 @@ namespace aga
 			{
 				OnPlay ();
 				event->type = 0;
-								
+
 				break;
 			}
 

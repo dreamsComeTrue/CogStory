@@ -1,5 +1,5 @@
 =============================
-       Cog Story v0.1
+     Little Cog Story v0.1
 =============================
 
 
@@ -201,6 +201,8 @@ Na końcu poznaję matkę - Agatha, gracz może go poświęcić lub nie
 
 Marketplace festival
 March of troops
+
+Multiple worlds, where time flows with different speed
 
 PiTi discovers he is capable of free will/thinking (has human soul from the past)
 
