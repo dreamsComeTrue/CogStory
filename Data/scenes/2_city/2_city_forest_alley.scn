@@ -10,7 +10,6 @@
             "id": "224",
             "name": "tile098",
             "overlap": "0",
-            "phys": [],
             "pos": "-32.00 -144.00",
             "rot": "0.00",
             "size": "32.00 32.00",
@@ -120,6 +119,27 @@
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.90",
+            "id": "2268",
+            "name": "tree2",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
+                }
+            ],
+            "pos": "160.00 -432.00",
+            "rot": "0.00",
+            "size": "100.00 147.00",
+            "type": "Tile",
+            "z-order": "5"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "tree2",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "0.90",
             "id": "2267",
             "name": "tree2",
             "overlap": "0",
@@ -133,27 +153,6 @@
             "size": "100.00 147.00",
             "type": "Tile",
             "z-order": "5"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "tree2",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "0.90",
-            "id": "2170",
-            "name": "tree2",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
-                }
-            ],
-            "pos": "-224.00 -384.00",
-            "rot": "0.00",
-            "size": "100.00 147.00",
-            "type": "Tile",
-            "z-order": "6"
         },
         {
             "atlas": "env_0",
@@ -183,7 +182,7 @@
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.90",
-            "id": "2169",
+            "id": "2170",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -191,11 +190,11 @@
                     "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
                 }
             ],
-            "pos": "-176.00 -352.00",
+            "pos": "-224.00 -384.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "7"
+            "z-order": "6"
         },
         {
             "atlas": "env_0",
@@ -225,7 +224,7 @@
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.90",
-            "id": "2185",
+            "id": "2169",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -233,11 +232,11 @@
                     "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
                 }
             ],
-            "pos": "112.00 -272.00",
+            "pos": "-176.00 -352.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "8"
+            "z-order": "7"
         },
         {
             "atlas": "env_0",
@@ -267,7 +266,7 @@
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.90",
-            "id": "2172",
+            "id": "2185",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -275,11 +274,11 @@
                     "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
                 }
             ],
-            "pos": "-176.00 -256.00",
+            "pos": "112.00 -272.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "9"
+            "z-order": "8"
         },
         {
             "atlas": "env_0",
@@ -309,7 +308,7 @@
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.90",
-            "id": "2176",
+            "id": "2172",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -317,11 +316,11 @@
                     "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
                 }
             ],
-            "pos": "-224.00 -160.00",
+            "pos": "-176.00 -256.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "10"
+            "z-order": "9"
         },
         {
             "atlas": "env_0",
@@ -351,7 +350,7 @@
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.90",
-            "id": "2175",
+            "id": "2176",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -359,11 +358,11 @@
                     "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
                 }
             ],
-            "pos": "-176.00 -144.00",
+            "pos": "-224.00 -160.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "11"
+            "z-order": "10"
         },
         {
             "atlas": "env_0",
@@ -393,7 +392,7 @@
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.90",
-            "id": "2189",
+            "id": "2175",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -401,11 +400,11 @@
                     "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
                 }
             ],
-            "pos": "112.00 -48.00",
+            "pos": "-176.00 -144.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "12"
+            "z-order": "11"
         },
         {
             "atlas": "env_0",
@@ -435,7 +434,7 @@
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.90",
-            "id": "2177",
+            "id": "2189",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -443,11 +442,11 @@
                     "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
                 }
             ],
-            "pos": "-176.00 -32.00",
+            "pos": "112.00 -48.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "13"
+            "z-order": "12"
         },
         {
             "atlas": "env_0",
@@ -477,7 +476,7 @@
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.90",
-            "id": "2191",
+            "id": "2177",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -485,11 +484,11 @@
                     "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
                 }
             ],
-            "pos": "112.00 64.00",
+            "pos": "-176.00 -32.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "14"
+            "z-order": "13"
         },
         {
             "atlas": "env_0",
@@ -519,7 +518,7 @@
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.90",
-            "id": "2192",
+            "id": "2191",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -527,11 +526,11 @@
                     "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
                 }
             ],
-            "pos": "160.00 80.00",
+            "pos": "112.00 64.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "15"
+            "z-order": "14"
         },
         {
             "atlas": "env_0",
@@ -561,7 +560,7 @@
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.90",
-            "id": "2182",
+            "id": "2192",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -569,11 +568,11 @@
                     "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
                 }
             ],
-            "pos": "-224.00 176.00",
+            "pos": "160.00 80.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "16"
+            "z-order": "15"
         },
         {
             "atlas": "env_0",
@@ -591,6 +590,27 @@
                 }
             ],
             "pos": "112.00 176.00",
+            "rot": "0.00",
+            "size": "100.00 147.00",
+            "type": "Tile",
+            "z-order": "16"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "tree2",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "0.90",
+            "id": "2182",
+            "name": "tree2",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
+                }
+            ],
+            "pos": "-224.00 176.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
@@ -687,27 +707,6 @@
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.90",
-            "id": "2198",
-            "name": "tree2",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
-                }
-            ],
-            "pos": "-176.00 304.00",
-            "rot": "0.00",
-            "size": "100.00 147.00",
-            "type": "Tile",
-            "z-order": "19"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "tree2",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "0.90",
             "id": "2210",
             "name": "tree2",
             "overlap": "0",
@@ -729,7 +728,7 @@
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.90",
-            "id": "2211",
+            "id": "2198",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -737,11 +736,11 @@
                     "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
                 }
             ],
-            "pos": "112.00 400.00",
+            "pos": "-176.00 304.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "20"
+            "z-order": "19"
         },
         {
             "atlas": "env_0",
@@ -759,6 +758,27 @@
                 }
             ],
             "pos": "-224.00 400.00",
+            "rot": "0.00",
+            "size": "100.00 147.00",
+            "type": "Tile",
+            "z-order": "20"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "tree2",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "0.90",
+            "id": "2211",
+            "name": "tree2",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
+                }
+            ],
+            "pos": "112.00 400.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
@@ -897,6 +917,27 @@
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.90",
+            "id": "2215",
+            "name": "tree2",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
+                }
+            ],
+            "pos": "112.00 624.00",
+            "rot": "0.00",
+            "size": "100.00 147.00",
+            "type": "Tile",
+            "z-order": "24"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "tree2",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "0.90",
             "id": "2203",
             "name": "tree2",
             "overlap": "0",
@@ -918,7 +959,7 @@
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.90",
-            "id": "2215",
+            "id": "2204",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -926,11 +967,11 @@
                     "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
                 }
             ],
-            "pos": "112.00 624.00",
+            "pos": "-176.00 640.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "24"
+            "z-order": "25"
         },
         {
             "atlas": "env_0",
@@ -960,7 +1001,7 @@
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.90",
-            "id": "2204",
+            "id": "2257",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -968,11 +1009,74 @@
                     "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
                 }
             ],
-            "pos": "-176.00 640.00",
+            "pos": "496.00 960.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "25"
+            "z-order": "26"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "tree2",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "0.90",
+            "id": "2249",
+            "name": "tree2",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
+                }
+            ],
+            "pos": "880.00 704.00",
+            "rot": "0.00",
+            "size": "100.00 147.00",
+            "type": "Tile",
+            "z-order": "26"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "tree2",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "0.90",
+            "id": "2252",
+            "name": "tree2",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
+                }
+            ],
+            "pos": "208.00 960.00",
+            "rot": "0.00",
+            "size": "100.00 147.00",
+            "type": "Tile",
+            "z-order": "26"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "tree2",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "0.90",
+            "id": "2259",
+            "name": "tree2",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
+                }
+            ],
+            "pos": "592.00 960.00",
+            "rot": "0.00",
+            "size": "100.00 147.00",
+            "type": "Tile",
+            "z-order": "26"
         },
         {
             "atlas": "env_0",
@@ -1074,6 +1178,27 @@
                 }
             ],
             "pos": "304.00 704.00",
+            "rot": "0.00",
+            "size": "100.00 147.00",
+            "type": "Tile",
+            "z-order": "26"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "tree2",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "0.90",
+            "id": "2255",
+            "name": "tree2",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
+                }
+            ],
+            "pos": "400.00 960.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
@@ -1242,111 +1367,6 @@
                 }
             ],
             "pos": "688.00 960.00",
-            "rot": "0.00",
-            "size": "100.00 147.00",
-            "type": "Tile",
-            "z-order": "26"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "tree2",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "0.90",
-            "id": "2255",
-            "name": "tree2",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
-                }
-            ],
-            "pos": "400.00 960.00",
-            "rot": "0.00",
-            "size": "100.00 147.00",
-            "type": "Tile",
-            "z-order": "26"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "tree2",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "0.90",
-            "id": "2257",
-            "name": "tree2",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
-                }
-            ],
-            "pos": "496.00 960.00",
-            "rot": "0.00",
-            "size": "100.00 147.00",
-            "type": "Tile",
-            "z-order": "26"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "tree2",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "0.90",
-            "id": "2249",
-            "name": "tree2",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
-                }
-            ],
-            "pos": "880.00 704.00",
-            "rot": "0.00",
-            "size": "100.00 147.00",
-            "type": "Tile",
-            "z-order": "26"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "tree2",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "0.90",
-            "id": "2252",
-            "name": "tree2",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
-                }
-            ],
-            "pos": "208.00 960.00",
-            "rot": "0.00",
-            "size": "100.00 147.00",
-            "type": "Tile",
-            "z-order": "26"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "tree2",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "0.90",
-            "id": "2259",
-            "name": "tree2",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
-                }
-            ],
-            "pos": "592.00 960.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
@@ -1905,7 +1925,7 @@
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.90",
-            "id": "2231",
+            "id": "2221",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -1913,7 +1933,7 @@
                     "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
                 }
             ],
-            "pos": "112.00 1184.00",
+            "pos": "-224.00 1072.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
@@ -1926,7 +1946,7 @@
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.90",
-            "id": "2221",
+            "id": "2231",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -1934,7 +1954,7 @@
                     "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
                 }
             ],
-            "pos": "-224.00 1072.00",
+            "pos": "112.00 1184.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
@@ -2107,27 +2127,6 @@
             "size": "100.00 147.00",
             "type": "Tile",
             "z-order": "37"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "tree2",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "0.90",
-            "id": "2268",
-            "name": "tree2",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-35.86 66.62 39.54 66.30 2.63 -53.64 "
-                }
-            ],
-            "pos": "160.00 -432.00",
-            "rot": "0.00",
-            "size": "100.00 147.00",
-            "type": "Tile",
-            "z-order": "5"
         }
     ],
     "color": "35 31 54 255",
@@ -2142,267 +2141,6 @@
     "min_size": "-224.00 -448.00",
     "name": "Forest Alley",
     "player_start": "0.00 0.00",
-    "speeches": [
-        {
-            "abs_pos": "0.00 0.00",
-            "action": "[CLOSE]",
-            "group": "NPC_1",
-            "id": -1,
-            "max_chars": 20,
-            "max_lines": 3,
-            "name": "GREET_1",
-            "outcomes": [
-                {
-                    "langID": "EN",
-                    "texts": [
-                        {
-                            "action": "GREET_EXIT",
-                            "data": "OK",
-                            "name": "1"
-                        },
-                        {
-                            "action": "*choice1",
-                            "data": "Not ok...",
-                            "name": "2"
-                        }
-                    ]
-                },
-                {
-                    "langID": "PL",
-                    "texts": []
-                }
-            ],
-            "region_name": "player_head",
-            "rel_pos": 5,
-            "texts": [
-                {
-                    "data": "Hey, what's up.\nHow are \nYOU???@\nI mean, no worry...@\nIs everything ok?",
-                    "langID": "EN"
-                },
-                {
-                    "data": "",
-                    "langID": "PL"
-                }
-            ]
-        },
-        {
-            "abs_pos": "0.00 0.00",
-            "action": "GREET_1",
-            "group": "NPC_1",
-            "id": 0,
-            "max_chars": 20,
-            "max_lines": 3,
-            "name": "SPCH_2",
-            "outcomes": [
-                {
-                    "langID": "EN",
-                    "texts": []
-                },
-                {
-                    "langID": "PL",
-                    "texts": []
-                }
-            ],
-            "region_name": "player_head",
-            "rel_pos": 5,
-            "texts": [
-                {
-                    "data": "Maybe you need some help???",
-                    "langID": "EN"
-                },
-                {
-                    "data": "",
-                    "langID": "PL"
-                }
-            ]
-        },
-        {
-            "abs_pos": "0.00 0.00",
-            "action": "[CLOSE]",
-            "group": "",
-            "id": 1,
-            "max_chars": 15,
-            "max_lines": 1,
-            "name": "HOME_SIGN_INFO",
-            "outcomes": [
-                {
-                    "langID": "EN",
-                    "texts": []
-                },
-                {
-                    "langID": "PL",
-                    "texts": []
-                }
-            ],
-            "region_name": "",
-            "rel_pos": 2,
-            "texts": [
-                {
-                    "data": "Welcome home!!!",
-                    "langID": "EN"
-                },
-                {
-                    "data": "",
-                    "langID": "PL"
-                }
-            ]
-        },
-        {
-            "abs_pos": "0.00 0.00",
-            "action": "[CLOSE]",
-            "group": "SHOPKEEPER",
-            "id": 2,
-            "max_chars": 25,
-            "max_lines": 1,
-            "name": "SHOPKEEPER_GREET",
-            "outcomes": [
-                {
-                    "langID": "EN",
-                    "texts": []
-                },
-                {
-                    "langID": "PL",
-                    "texts": []
-                }
-            ],
-            "region_name": "player_head",
-            "rel_pos": 5,
-            "texts": [
-                {
-                    "data": " Hello, what do you want?",
-                    "langID": "EN"
-                },
-                {
-                    "data": "",
-                    "langID": "PL"
-                }
-            ]
-        },
-        {
-            "abs_pos": "0.00 0.00",
-            "action": "[CLOSE]",
-            "group": "",
-            "id": 3,
-            "max_chars": 20,
-            "max_lines": 1,
-            "name": "FACTORY_SIGN_INFO",
-            "outcomes": [
-                {
-                    "langID": "EN",
-                    "texts": []
-                },
-                {
-                    "langID": "PL",
-                    "texts": []
-                }
-            ],
-            "region_name": "",
-            "rel_pos": 2,
-            "texts": [
-                {
-                    "data": "To Factory of Dreams",
-                    "langID": "EN"
-                },
-                {
-                    "data": "",
-                    "langID": "PL"
-                }
-            ]
-        },
-        {
-            "abs_pos": "0.00 0.00",
-            "action": "[CLOSE]",
-            "group": "NPC_1",
-            "id": 4,
-            "max_chars": 13,
-            "max_lines": 3,
-            "name": "GREET_EXIT",
-            "outcomes": [
-                {
-                    "langID": "EN",
-                    "texts": []
-                },
-                {
-                    "langID": "PL",
-                    "texts": []
-                }
-            ],
-            "region_name": "player_head",
-            "rel_pos": 5,
-            "texts": [
-                {
-                    "data": " \nSee ya, then!",
-                    "langID": "EN"
-                },
-                {
-                    "data": "",
-                    "langID": "PL"
-                }
-            ]
-        },
-        {
-            "abs_pos": "0.00 0.00",
-            "action": "[CLOSE]",
-            "group": "",
-            "id": 5,
-            "max_chars": 18,
-            "max_lines": 1,
-            "name": "HUMANS_SIGN_INFO",
-            "outcomes": [
-                {
-                    "langID": "EN",
-                    "texts": []
-                },
-                {
-                    "langID": "PL",
-                    "texts": []
-                }
-            ],
-            "region_name": "",
-            "rel_pos": 5,
-            "texts": [
-                {
-                    "data": "To Humans District",
-                    "langID": "EN"
-                },
-                {
-                    "data": "",
-                    "langID": "PL"
-                }
-            ]
-        },
-        {
-            "abs_pos": "0.00 0.00",
-            "action": "[CLOSE]",
-            "group": "",
-            "id": 6,
-            "max_chars": 26,
-            "max_lines": 1,
-            "name": "wefwef",
-            "outcomes": [
-                {
-                    "langID": "EN",
-                    "texts": []
-                },
-                {
-                    "langID": "PL",
-                    "texts": []
-                }
-            ],
-            "region_name": "",
-            "rel_pos": 1,
-            "texts": [
-                {
-                    "data": "zwykla studnia, nic ciekawego",
-                    "langID": "EN"
-                },
-                {
-                    "data": "",
-                    "langID": "PL"
-                }
-            ]
-        }
-    ],
     "trigger_areas": [
         {
             "collidable": "0",

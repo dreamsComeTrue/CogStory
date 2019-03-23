@@ -507,47 +507,6 @@
         {
             "abs_pos": "0 0",
             "action": "",
-            "id": 0,
-            "max_chars": 27,
-            "max_lines": 3,
-            "name": "GREET_1",
-            "outcomes": [
-                {
-                    "langID": "EN",
-                    "texts": [
-                        {
-                            "action": "asd",
-                            "data": "OK",
-                            "name": ""
-                        },
-                        {
-                            "action": "",
-                            "data": "No, no, no!!!",
-                            "name": ""
-                        }
-                    ]
-                },
-                {
-                    "langID": "PL",
-                    "texts": []
-                }
-            ],
-            "region_name": "player_head",
-            "rel_pos": 5,
-            "texts": [
-                {
-                    "data": "So, what you think?? Mister...",
-                    "langID": "EN"
-                },
-                {
-                    "data": "",
-                    "langID": "PL"
-                }
-            ]
-        },
-        {
-            "abs_pos": "0 0",
-            "action": "",
             "id": 1,
             "max_chars": 22,
             "max_lines": 3,
