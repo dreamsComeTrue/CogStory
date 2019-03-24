@@ -77,7 +77,7 @@ namespace aga
             {
                 frame->ProcessEvent (event, deltaTime);
 
-                if (frame->IsShouldBeHandled () && frame->IsHandled ()
+                if (frame->ShouldBeHandled () && frame->IsHandled ()
                     && std::find (nextSpeeches.begin (), nextSpeeches.end (), frame) == nextSpeeches.end ())
                 {
                     std::string outcomeAction = frame->GetOutcomeAction ();
@@ -138,7 +138,7 @@ namespace aga
 
             if (frame->IsVisible ())
             {
-                if (frame->IsShouldBeHandled ())
+                if (frame->ShouldBeHandled ())
                 {
                     m_SceneManager->GetPlayer ()->SetPreventInput (true);
                 }

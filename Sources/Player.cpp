@@ -175,7 +175,7 @@ namespace aga
 				return true;
 			}
 		}
-				
+
 		if (m_PreventInput)
 		{
 			return false;
@@ -494,14 +494,10 @@ namespace aga
 
 				if (action.SpeechID != "" && action.AnActor->IsActionSpeechHandling ())
 				{
-					action.AnActor->OrientTo (this);
-					action.AnActor->SuspendUpdate ();
-
-					m_SceneManager->GetSpeechFrameManager ()->AddSpeechFrame (action.SpeechID, true);
+					TalkTo (action.AnActor, action.SpeechID);
 				}
 
 				action.Handled = true;
-
 				m_LastActionActor = action.AnActor;
 			}
 		}
@@ -571,9 +567,7 @@ namespace aga
 		actor->OrientTo (this);
 		actor->SuspendUpdate ();
 
-		SpeechFrame* frame = m_SceneManager->GetSpeechFrameManager ()->AddSpeechFrame (speechID, true);
-
-		return frame;
+		return m_SceneManager->GetSpeechFrameManager ()->AddSpeechFrame (speechID, true);
 	}
 
 	//--------------------------------------------------------------------------------------------------

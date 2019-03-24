@@ -44,17 +44,10 @@ void PlayerActionHandler ()
 {
     player.RegisterActorAction ("my_action", "npc_girl", function (actor)
     {
-        player.TalkTo (actor, "GREET_1").SetHandleFunction (function () 
-        { 
-            Log ("OK!!!"); 
-        });
-    });
-
-    player.RegisterActorAction ("my_action2", "SHOPKEEPER", function (actor)
-    {
-        player.TalkTo (actor, "SHOPKEEPER_GREET").SetHandleFunction (function () 
-        { 
-        });
+        //player.TalkTo (actor, "GREET_1").SetHandleFunction (function () 
+//        { 
+ //           Log ("OK!!!"); 
+   //     });
     });
 }
 
@@ -62,12 +55,12 @@ void PlayerActionHandler ()
 
 void RegisterFunctions ()
 {
-    player.SetActionHandler (PlayerActionHandler);
-
     RegisterChoiceFunction ("choice1", function ()
     {
         return "SPCH_2";
-    });    
+    });  
+    
+    player.SetActionHandler (PlayerActionHandler);  
 }
 
 //--------------------------------------------------------------------------------------------------

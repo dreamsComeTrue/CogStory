@@ -86,13 +86,15 @@ namespace aga
 	{
 		if (event->type == ALLEGRO_EVENT_KEY_UP)
 		{
+			AudioManager& audioManager = m_MainLoop->GetAudioManager ();
+			
 			if (event->keyboard.keycode == ALLEGRO_KEY_M)
 			{
-				m_MainLoop->GetAudioManager ().SetEnabled (!m_MainLoop->GetAudioManager ().IsEnabled ());
-				m_AudioWasEnabled = m_MainLoop->GetAudioManager ().IsEnabled ();
+				audioManager.SetEnabled (!audioManager.IsEnabled ());
+				m_AudioWasEnabled = audioManager.IsEnabled ();
 			}
 
-			if (m_MainLoop->GetAudioManager ().IsEnabled ())
+			if (audioManager.IsEnabled ())
 			{
 				AudioStream* audioStream = m_MainLoop->GetSceneManager ().GetActiveScene ()->GetSceneAudioStream ();
 

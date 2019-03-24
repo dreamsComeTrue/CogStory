@@ -70,7 +70,7 @@ namespace aga
 
         void SetDrawSpeed (float speedInMs);
 
-        bool IsShouldBeHandled ();
+        bool ShouldBeHandled ();
         bool IsHandled ();
 
         static Point GetActorRegionOffset ();
