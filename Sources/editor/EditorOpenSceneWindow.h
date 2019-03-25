@@ -7,45 +7,55 @@
 
 namespace aga
 {
-    class Editor;
+	class Editor;
 
-    class EditorOpenSceneWindow
-    {
-    public:
-        EditorOpenSceneWindow (Editor* editor);
-        virtual ~EditorOpenSceneWindow ();
+	struct RecentFilesGroup
+	{
+		std::string Name;
+		std::vector<std::string> Paths;
+		int CurrentItem;
+	};
 
-        void Show (const std::string& filePath, std::function<void(std::string)> OnAcceptFunc,
-            std::function<void(std::string)> OnCancelFunc);
+	class EditorOpenSceneWindow
+	{
+	public:
+		EditorOpenSceneWindow (Editor* editor);
+		virtual ~EditorOpenSceneWindow ();
 
-        std::string GetSceneName () const;
+		void Show (const std::string& filePath, std::function<void(std::string)> OnAcceptFunc,
+			std::function<void(std::string)> OnCancelFunc);
 
-        void ProcessEvent (ALLEGRO_EVENT* event);
-        void Render ();
+		std::string GetSceneName () const;
 
-        bool IsVisible ();
+		void ProcessEvent (ALLEGRO_EVENT* event);
+		void Render ();
 
-        std::vector<std::string>& GetRecentFileNames ();
-        void AddRecentFileName (const std::string& name);
+		bool IsVisible ();
 
-    private:
-        void OnAccept ();
-        void OnCancel ();
+		std::vector<std::string>& GetRecentFileNames ();
+		void AddRecentFileName (const std::string& name);
 
-    private:
-        Editor* m_Editor;
-        bool m_IsVisible;
-        char m_SceneName[100];
-        int m_ItemCurrent;
+	private:
+		void OnAccept ();
+		void OnCancel ();
+		void ComputeGroups ();
 
-        bool m_ScheduleClosed;
-        bool m_BrowseButtonPressed;
+	private:
+		Editor* m_Editor;
+		bool m_IsVisible;
+		char m_SceneName[100];
+		int m_ItemCurrent;
+		int m_SelectedGroup;
 
-        std::vector<std::string> m_RecentFileNames;
+		bool m_ScheduleClosed;
+		bool m_BrowseButtonPressed;
 
-        std::function<void(std::string)> m_OnAcceptFunc;
-        std::function<void(std::string)> m_OnCancelFunc;
-    };
+		std::vector<std::string> m_RecentFileNames;
+        std::vector<RecentFilesGroup> m_Groups;
+
+		std::function<void(std::string)> m_OnAcceptFunc;
+		std::function<void(std::string)> m_OnCancelFunc;
+	};
 }
 
 #endif //   __EDITOR_OPENSCENE_WINDOW_H__

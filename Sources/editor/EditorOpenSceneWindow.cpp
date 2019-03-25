@@ -75,7 +75,7 @@ namespace aga
 	EditorOpenSceneWindow::EditorOpenSceneWindow (Editor* editor)
 		: m_Editor (editor)
 		, m_IsVisible (false)
-		, m_ItemCurrent (0)
+		, m_ItemCurrent (-1)
 		, m_ScheduleClosed (false)
 	{
 	}
@@ -98,6 +98,8 @@ namespace aga
 		m_IsVisible = true;
 		m_ScheduleClosed = false;
 		m_BrowseButtonPressed = false;
+
+		ComputeGroups ();
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -124,31 +126,47 @@ namespace aga
 
 	void EditorOpenSceneWindow::ProcessEvent (ALLEGRO_EVENT* event)
 	{
+		RecentFilesGroup& choosenGroup = m_Groups[m_SelectedGroup];
+
 		switch (event->keyboard.keycode)
 		{
 		case ALLEGRO_KEY_UP:
-			--m_ItemCurrent;
+			--choosenGroup.CurrentItem;
 
-			if (m_ItemCurrent < 0)
+			if (choosenGroup.CurrentItem < 0)
 			{
-				m_ItemCurrent = m_RecentFileNames.size () - 1;
+				--m_SelectedGroup;
+
+				if (m_SelectedGroup < 0)
+				{
+					m_SelectedGroup = m_Groups.size () - 1;
+				}
+
+				m_Groups[m_SelectedGroup].CurrentItem = m_Groups[m_SelectedGroup].Paths.size () - 1;
 			}
 			break;
 
 		case ALLEGRO_KEY_DOWN:
-			++m_ItemCurrent;
+			++choosenGroup.CurrentItem;
 
-			if (m_ItemCurrent >= m_RecentFileNames.size ())
+			if (choosenGroup.CurrentItem >= choosenGroup.Paths.size ())
 			{
-				m_ItemCurrent = 0;
+				++m_SelectedGroup;
+
+				if (m_SelectedGroup >= m_Groups.size ())
+				{
+					m_SelectedGroup = 0;
+				}
+
+				m_Groups[m_SelectedGroup].CurrentItem = 0;
 			}
 			break;
 
 		case ALLEGRO_KEY_ENTER:
 		case ALLEGRO_KEY_SPACE:
-			strcpy (m_SceneName, m_RecentFileNames[m_ItemCurrent].c_str ());
+			std::string selectedSceneName = choosenGroup.Name + "/" + choosenGroup.Paths[choosenGroup.CurrentItem];
+			strcpy (m_SceneName, selectedSceneName.c_str ());
 			m_Editor->LoadScene (m_SceneName);
-			m_ScheduleClosed = true;
 
 			break;
 		}
@@ -162,30 +180,58 @@ namespace aga
 
 		if (ImGui::BeginPopupModal ("Open Scene", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 		{
-			char* items[m_RecentFileNames.size ()];
+			static int hoveredItem = -1;
 
-			for (size_t i = 0; i < m_RecentFileNames.size (); ++i)
+			ImGui::BeginChild (
+				"Child1", ImVec2 (500, ImGui::GetWindowSize ().y - 90), false, ImGuiWindowFlags_HorizontalScrollbar);
+			ImGui::BeginGroup ();
 			{
-				char* fileName = const_cast<char*> (m_RecentFileNames[i].c_str ());
-				items[i] = fileName;
+				for (int currentGroup = 0; currentGroup < m_Groups.size (); ++currentGroup)
+				{
+					RecentFilesGroup& group = m_Groups[currentGroup];
+
+					if (ImGui::TreeNodeEx (group.Name.c_str (), ImGuiTreeNodeFlags_DefaultOpen))
+					{
+						size_t pathsCount = group.Paths.size ();
+						char* items[pathsCount];
+
+						for (int i = 0; i < pathsCount; ++i)
+						{
+							items[i] = const_cast<char*> (group.Paths[i].c_str ());
+						}
+
+						ImGui::PushItemWidth (430);
+						if (ImGui::HoverableListBox (std::string ("##" + group.Name).c_str (), &group.CurrentItem,
+								items, pathsCount, pathsCount, &hoveredItem))
+						{
+							std::string selectedSceneName = group.Name + "/" + items[group.CurrentItem];
+							strcpy (m_SceneName, selectedSceneName.c_str ());
+							m_Editor->LoadScene (m_SceneName);
+
+							m_SelectedGroup = currentGroup;
+							m_ScheduleClosed = true;
+						}
+						ImGui::PopItemWidth ();
+
+						if (ImGui::IsItemClicked (1))
+						{
+							std::string selectedSceneName = group.Name + "/" + items[hoveredItem];
+							std::vector<std::string>::iterator it
+								= std::find (m_RecentFileNames.begin (), m_RecentFileNames.end (), selectedSceneName);
+
+							if (it != m_RecentFileNames.end ())
+							{
+								m_RecentFileNames.erase (it);
+								ComputeGroups ();
+							}
+						}
+
+						ImGui::TreePop ();
+					}
+				}
 			}
-
-			static int hoveredItem = 0;
-			ImGui::PushItemWidth (430);
-			if (ImGui::HoverableListBox ("", &m_ItemCurrent, items, ARRAY_SIZE (items), 22, &hoveredItem))
-			{
-				strcpy (m_SceneName, items[m_ItemCurrent]);
-				m_Editor->LoadScene (m_SceneName);
-
-				m_ScheduleClosed = true;
-			}
-
-			if (ImGui::IsItemClicked (1))
-			{
-				m_RecentFileNames.erase (m_RecentFileNames.begin () + hoveredItem);
-			}
-
-			ImGui::PopItemWidth ();
+			ImGui::EndGroup ();
+			ImGui::EndChild ();
 
 			ImGui::PushItemWidth (430);
 			ImGui::InputText ("", m_SceneName, ARRAY_SIZE (m_SceneName));
@@ -269,6 +315,42 @@ namespace aga
 			ImGui::EndGroup ();
 
 			ImGui::EndPopup ();
+		}
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void EditorOpenSceneWindow::ComputeGroups ()
+	{
+		m_Groups.clear ();
+		m_SelectedGroup = 0;
+
+		for (const std::string& recentName : m_RecentFileNames)
+		{
+			int separatorIndex = recentName.find ("/");
+			std::string groupName = recentName.substr (0, separatorIndex);
+			bool found = false;
+
+			for (RecentFilesGroup& group : m_Groups)
+			{
+				if (group.Name == groupName)
+				{
+					group.Paths.push_back (recentName.substr (separatorIndex + 1));
+					group.CurrentItem = -1;
+					found = true;
+					break;
+				}
+			}
+
+			if (!found)
+			{
+				RecentFilesGroup newGroup;
+				newGroup.Name = groupName;
+				newGroup.Paths.push_back (recentName.substr (separatorIndex + 1));
+				newGroup.CurrentItem = -1;
+
+				m_Groups.push_back (newGroup);
+			}
 		}
 	}
 
