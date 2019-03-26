@@ -92,8 +92,9 @@ namespace aga
 
         void SetOverlayText (const std::string& text, float duration = 2000.f, float charTimeDelay = 5.f,
             ScreenRelativePosition pos = BottomRight);
-        void SetOverlayActive (bool active);
-        void SetCenterTextColor (ALLEGRO_COLOR color);
+        void SetStepOverlayActive (bool active);
+        void SetRandomOverlayActive (bool active);
+        void SetOverlayTextColor (ALLEGRO_COLOR color);
 
         void PushPoint (Point p);
         Point PopPoint ();
@@ -112,6 +113,8 @@ namespace aga
         void SceneIntro (float duration = 1000.f);
         void PrintOverlayText (const std::string& text, ScreenRelativePosition pos = BottomRight, const std::string& fontName = FONT_NAME_MENU_ITEM_NORMAL);
         void TeleportToMarkerPosition (std::string& lastSceneName);
+        
+        void ComputeNextOverlayCharIndex (const std::string& text);
 
     private:
         MainLoop* m_MainLoop;
@@ -128,7 +131,7 @@ namespace aga
         ALLEGRO_COLOR m_FadeColor;
 
         bool m_SceneIntro;
-        ALLEGRO_COLOR m_CenterTextColor;
+        ALLEGRO_COLOR m_OverlayTextColor;
 
         bool m_DrawPhysData;
         bool m_DrawBoundingBox;
@@ -140,7 +143,9 @@ namespace aga
         ScreenRelativePosition m_OverlayPosition;
         float m_OverlayDuration;
         float m_OverlayCharMaxDuration;
-        bool m_OverlayActive;
+        bool m_StepOverlayActive;
+        bool m_RandomOverlayActive;
+        std::vector<int> m_OverlayCharsIndices;
 
         std::stack<Point> m_SavedPoints;
         

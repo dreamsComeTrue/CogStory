@@ -406,6 +406,17 @@ namespace aga
 	{
 		if (m_ShowInventory)
 		{
+			//	Draw semi-transparent overlay
+			int blendOp, blendSrc, blendDst;
+			al_get_blender (&blendOp, &blendSrc, &blendDst);
+			al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+
+			Point winSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetBackBufferSize ();
+			ALLEGRO_COLOR color = al_map_rgba (0, 0, 0, 128);
+			al_draw_filled_rectangle (0, 0, winSize.Width, winSize.Height, color);
+
+			al_set_blender (blendOp, blendSrc, blendDst);
+
 			m_Inventory.Render (deltaTime);
 		}
 	}

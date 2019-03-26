@@ -231,7 +231,8 @@ namespace aga
 		   bool IsSuppressSceneInfo () const
 		   void SetOverlayText (const string& in, float duration = 2000.f, float charTimeDelay = 5.f,
 				ScreenRelativePosition pos = BottomRight)
-		   void SetOverlayActive (bool active)
+		   void SetStepOverlayActive (bool active)
+		   void SetRandomOverlayActive (bool active)
 		   Actor@ GetActor (const string &in)
 		   Actor@ GetActor (int id)
 				= string ChoiceFunction (void)
@@ -1386,8 +1387,11 @@ namespace aga
 			"ScreenRelativePosition pos = BottomRight)",
 			asMETHOD (SceneManager, SetOverlayText), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
 		assert (r >= 0);
-		r = m_ScriptEngine->RegisterGlobalFunction ("void SetOverlayActive (bool active)",
-			asMETHOD (SceneManager, SetOverlayActive), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+		r = m_ScriptEngine->RegisterGlobalFunction ("void SetStepOverlayActive (bool active)",
+			asMETHOD (SceneManager, SetStepOverlayActive), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterGlobalFunction ("void SetRandomOverlayActive (bool active)",
+			asMETHOD (SceneManager, SetRandomOverlayActive), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterGlobalFunction ("Actor@ GetActor (const string &in)",
 			asMETHODPR (SceneManager, GetActor, (const std::string&), Actor*), asCALL_THISCALL_ASGLOBAL,
@@ -1428,11 +1432,13 @@ namespace aga
 			asMETHOD (SceneManager, GetPlayerStartLocation), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
 		assert (r >= 0);
 
-		m_ScriptEngine->RegisterGlobalFunction ("Script@ AttachScript (Script@ script, const string &in path, bool temporary = false)",
-			asMETHODPR (SceneManager, AttachScript, (Script*, const std::string&, bool), Script*), asCALL_THISCALL_ASGLOBAL,
-			&m_MainLoop->GetSceneManager ());
+		m_ScriptEngine->RegisterGlobalFunction (
+			"Script@ AttachScript (Script@ script, const string &in path, bool temporary = false)",
+			asMETHODPR (SceneManager, AttachScript, (Script*, const std::string&, bool), Script*),
+			asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
 		assert (r >= 0);
-		m_ScriptEngine->RegisterGlobalFunction ("Script@ AttachScript (const string &in name, const string &in path, bool temporary = false)",
+		m_ScriptEngine->RegisterGlobalFunction (
+			"Script@ AttachScript (const string &in name, const string &in path, bool temporary = false)",
 			asMETHODPR (SceneManager, AttachScript, (const std::string&, const std::string&, bool), Script*),
 			asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
 		assert (r >= 0);

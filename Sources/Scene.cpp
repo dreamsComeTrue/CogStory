@@ -427,7 +427,6 @@ namespace aga
 		{
 			//  Draw circle in center for reference
 			al_draw_filled_circle (0, 0, 4, COLOR_RED);
-
 			al_draw_filled_circle (m_PlayerStartLocation.X, m_PlayerStartLocation.Y, 4, COLOR_LIGHTBLUE);
 		}
 
@@ -435,16 +434,6 @@ namespace aga
 
 		if (player->IsInventoryShown ())
 		{
-			int blendOp, blendSrc, blendDst;
-			al_get_blender (&blendOp, &blendSrc, &blendDst);
-			al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
-
-			Point winSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetBackBufferSize ();
-			ALLEGRO_COLOR color = al_map_rgba (0, 0, 0, 128);
-			al_draw_filled_rectangle (0, 0, winSize.Width, winSize.Height, color);
-
-			al_set_blender (blendOp, blendSrc, blendDst);
-
 			player->DrawInventory (deltaTime);
 		}
 

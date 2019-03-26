@@ -35,7 +35,7 @@ void BeforeEnterScene ()
 
 void AfterLeaveScene ()
 {
-    SetOverlayActive (false);
+    SetStepOverlayActive (false);
 }
 
 //--------------------------------------------------------------------------------------------------

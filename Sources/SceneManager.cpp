@@ -30,8 +30,9 @@ namespace aga
 		, m_OverlayText ("")
 		, m_OverlayPosition (Center)
 		, m_OverlayDuration (2000.f)
-		, m_OverlayActive (false)
-		, m_CenterTextColor (al_map_rgb (240, 240, 240))
+		, m_StepOverlayActive (false)
+		, m_RandomOverlayActive (false)
+		, m_OverlayTextColor (al_map_rgb (240, 240, 240))
 		, m_SceneLoadedCallback (nullptr)
 		, m_LastTweenID (-1)
 	{
@@ -116,17 +117,17 @@ namespace aga
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	
+
 	Scene* SceneManager::CreateNewScene (const std::string& name)
 	{
 		Scene* scene = new Scene (this, Rect (0, 0, 128, 128));
 		scene->SetName (name);
-		
+
 		m_Scenes.insert (std::make_pair (name, scene));
-		
+
 		return scene;
 	}
-	
+
 	//--------------------------------------------------------------------------------------------------
 
 	void SceneManager::AddScene (Scene* scene)
@@ -197,6 +198,8 @@ namespace aga
 				prevSceneName = m_ActiveScene->GetName ();
 				prevScene = m_ActiveScene;
 			}
+
+			m_OverlayCharsIndices.clear ();
 
 			m_ActiveScene = scene;
 			m_ActiveScene->BeforeEnter ();
@@ -374,7 +377,7 @@ namespace aga
 			al_set_blender (blendOp, blendSrc, blendDst);
 		}
 
-		if (m_OverlayActive)
+		if (m_StepOverlayActive)
 		{
 			int blendOp, blendSrc, blendDst;
 			al_get_blender (&blendOp, &blendSrc, &blendDst);
@@ -393,6 +396,40 @@ namespace aga
 
 				m_OverlayCharDuration = 0.f;
 			}
+		}
+		else if (m_RandomOverlayActive)
+		{
+			std::string finalString = "";
+
+			m_OverlayCharDuration += deltaTime;
+
+			if (m_OverlayCharDuration > 70.f / 1000.f)
+			{
+				ComputeNextOverlayCharIndex (m_OverlayText);
+
+				m_OverlayCharDuration = 0.f;
+			}
+
+			for (int i = 0; i < m_OverlayText.length (); ++i)
+			{
+				if (std::find (m_OverlayCharsIndices.begin (), m_OverlayCharsIndices.end (), i)
+					!= m_OverlayCharsIndices.end ())
+				{
+					finalString += m_OverlayText[i];
+				}
+				else
+				{
+					finalString += " ";
+				}
+			}
+
+			int blendOp, blendSrc, blendDst;
+			al_get_blender (&blendOp, &blendSrc, &blendDst);
+			al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+
+			PrintOverlayText (finalString.c_str (), m_OverlayPosition);
+
+			al_set_blender (blendOp, blendSrc, blendDst);
 		}
 	}
 
@@ -598,7 +635,7 @@ namespace aga
 		m_FadeColor.a = 0.0f;
 		m_Transitioning = false;
 
-		m_CenterTextColor.a = 0.0f;
+		m_OverlayTextColor.a = 0.0f;
 		m_SceneIntro = false;
 	}
 
@@ -664,11 +701,11 @@ namespace aga
 
 	void SceneManager::SceneIntro (float duration)
 	{
-		m_CenterTextColor.a = 0.0f;
+		m_OverlayTextColor.a = 0.0f;
 		m_SceneIntro = true;
 
 		auto introFunc = [&](float v) {
-			m_CenterTextColor.a = std::min (1.0f, v);
+			m_OverlayTextColor.a = std::min (1.0f, v);
 
 			return false;
 		};
@@ -749,7 +786,24 @@ namespace aga
 		}
 
 		font.DrawMultilineText (
-			fontName, m_CenterTextColor, pos.X, pos.Y, winSize.Width, textSize.Height, align, text.c_str ());
+			fontName, m_OverlayTextColor, pos.X, pos.Y, winSize.Width, textSize.Height, align, text.c_str ());
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void SceneManager::ComputeNextOverlayCharIndex (const std::string& text)
+	{
+		do
+		{
+			int nextIndex = RandInRange (0, text.size ());
+
+			if (std::find (m_OverlayCharsIndices.begin (), m_OverlayCharsIndices.end (), nextIndex)
+				== m_OverlayCharsIndices.end ())
+			{
+				m_OverlayCharsIndices.push_back (nextIndex);
+				break;
+			}
+		} while (m_OverlayCharsIndices.size () < text.size ());
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -760,13 +814,13 @@ namespace aga
 		m_OverlayText = text;
 		m_OverlayDuration = duration;
 		m_OverlayPosition = pos;
-		m_OverlayActive = true;
+		m_StepOverlayActive = true;
 		m_OverlayCharPos = 0;
 		m_OverlayCharDuration = 0.f;
 		m_OverlayCharMaxDuration = charTimeDelay / 1000.f;
 
 		auto introFunc = [&](float v) {
-			m_CenterTextColor.a = std::min (1.0f, v);
+			m_OverlayTextColor.a = std::min (1.0f, v);
 
 			return false;
 		};
@@ -782,7 +836,7 @@ namespace aga
 										 .onStep (introFunc);
 
 		m_MainLoop->GetTweenManager ().AddTween (-1, tween, [&](int) {
-			m_OverlayActive = false;
+			m_StepOverlayActive = false;
 			m_OverlayText = "";
 			m_OverlayDuration = 0.f;
 		});
@@ -790,11 +844,15 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	void SceneManager::SetOverlayActive (bool active) { m_OverlayActive = active; }
+	void SceneManager::SetStepOverlayActive (bool active) { m_StepOverlayActive = active; }
 
 	//--------------------------------------------------------------------------------------------------
 
-	void SceneManager::SetCenterTextColor (ALLEGRO_COLOR color) { m_CenterTextColor = color; }
+	void SceneManager::SetRandomOverlayActive (bool active) { m_RandomOverlayActive = active; }
+
+	//--------------------------------------------------------------------------------------------------
+
+	void SceneManager::SetOverlayTextColor (ALLEGRO_COLOR color) { m_OverlayTextColor = color; }
 
 	//--------------------------------------------------------------------------------------------------
 
