@@ -30,9 +30,10 @@ namespace aga
 		, m_OverlayText ("")
 		, m_OverlayPosition (Center)
 		, m_OverlayDuration (2000.f)
-		, m_StepOverlayActive (false)
-		, m_RandomOverlayActive (false)
+		, m_OverlayTextMode (Plain)
+		, m_RandomOverlayProcessing (false)
 		, m_OverlayTextColor (al_map_rgb (240, 240, 240))
+		, m_OverlayCharMaxDuration (150.f / 1000.f)
 		, m_SceneLoadedCallback (nullptr)
 		, m_LastTweenID (-1)
 	{
@@ -200,6 +201,8 @@ namespace aga
 			}
 
 			m_OverlayCharsIndices.clear ();
+			m_OverlayRandomTexts.clear ();
+			m_RandomOverlayProcessing = true;
 
 			m_ActiveScene = scene;
 			m_ActiveScene->BeforeEnter ();
@@ -365,72 +368,141 @@ namespace aga
 
 		if (m_ActiveScene && m_SceneIntro)
 		{
-			int blendOp, blendSrc, blendDst;
-			al_get_blender (&blendOp, &blendSrc, &blendDst);
-			al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
-
-			if (!m_ActiveScene->IsSuppressSceneInfo ())
-			{
-				PrintOverlayText (m_ActiveScene->GetName (), BottomRight);
-			}
-
-			al_set_blender (blendOp, blendSrc, blendDst);
+			m_OverlayPosition = BottomRight;
+			m_OverlayText = m_ActiveScene->GetName ();
 		}
 
-		if (m_StepOverlayActive)
+		switch (m_OverlayTextMode)
 		{
-			int blendOp, blendSrc, blendDst;
-			al_get_blender (&blendOp, &blendSrc, &blendDst);
-			al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+		case OverlayTextMode::Plain:
+			RenderPlainOverlay (deltaTime);
+			break;
 
-			PrintOverlayText (m_OverlayText.substr (0, m_OverlayCharPos), m_OverlayPosition);
+		case OverlayTextMode::Sequence:
+			RenderSequenceOverlay (deltaTime);
+			break;
 
-			al_set_blender (blendOp, blendSrc, blendDst);
-
-			m_OverlayCharDuration += deltaTime;
-
-			if (m_OverlayCharDuration > m_OverlayCharMaxDuration)
-			{
-				++m_OverlayCharPos;
-				m_OverlayCharPos = std::min (m_OverlayCharPos, static_cast<int> (m_OverlayText.length ()));
-
-				m_OverlayCharDuration = 0.f;
-			}
+		case OverlayTextMode::Random:
+			RenderRandomOverlay (deltaTime);
+			break;
 		}
-		else if (m_RandomOverlayActive)
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void SceneManager::RenderPlainOverlay (float deltaTime)
+	{
+		int blendOp, blendSrc, blendDst;
+		al_get_blender (&blendOp, &blendSrc, &blendDst);
+		al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+
+		if (!m_ActiveScene->IsSuppressSceneInfo ())
 		{
-			std::string finalString = "";
-
-			m_OverlayCharDuration += deltaTime;
-
-			if (m_OverlayCharDuration > 70.f / 1000.f)
-			{
-				ComputeNextOverlayCharIndex (m_OverlayText);
-
-				m_OverlayCharDuration = 0.f;
-			}
-
-			for (int i = 0; i < m_OverlayText.length (); ++i)
-			{
-				if (std::find (m_OverlayCharsIndices.begin (), m_OverlayCharsIndices.end (), i)
-					!= m_OverlayCharsIndices.end ())
-				{
-					finalString += m_OverlayText[i];
-				}
-				else
-				{
-					finalString += " ";
-				}
-			}
-
-			int blendOp, blendSrc, blendDst;
-			al_get_blender (&blendOp, &blendSrc, &blendDst);
-			al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
-
-			PrintOverlayText (finalString.c_str (), m_OverlayPosition);
-
-			al_set_blender (blendOp, blendSrc, blendDst);
+			PrintOverlayText (m_OverlayText, m_OverlayTextColor, m_OverlayPosition);
 		}
+
+		al_set_blender (blendOp, blendSrc, blendDst);
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void SceneManager::RenderSequenceOverlay (float deltaTime)
+	{
+		int blendOp, blendSrc, blendDst;
+		al_get_blender (&blendOp, &blendSrc, &blendDst);
+		al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+
+		PrintOverlayText (m_OverlayText.substr (0, m_OverlayCharPos), m_OverlayTextColor, m_OverlayPosition);
+
+		al_set_blender (blendOp, blendSrc, blendDst);
+
+		m_OverlayCharDuration += deltaTime;
+
+		if (m_OverlayCharDuration > m_OverlayCharMaxDuration)
+		{
+			++m_OverlayCharPos;
+			m_OverlayCharPos = std::min (m_OverlayCharPos, static_cast<int> (m_OverlayText.length ()));
+
+			m_OverlayCharDuration = 0.f;
+		}
+
+		if (m_OverlayCharPos >= m_OverlayText.length ())
+		{
+			m_SceneIntro = false;
+		}
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void SceneManager::RenderRandomOverlay (float deltaTime)
+	{
+		std::string finalString = "";
+
+		m_OverlayCharDuration += deltaTime;
+
+		if (m_RandomOverlayProcessing && m_OverlayCharDuration > m_OverlayCharMaxDuration)
+		{
+			auto changeColorFunc = [&](float v) {
+				m_OverlayTextColor.a = std::min (1.0f, v);
+
+				return false;
+			};
+
+			tweeny::tween<float> tween;
+			float timeMs = m_OverlayCharMaxDuration * 1000.f;
+
+			if (m_OverlayCharsIndices.size () < m_OverlayText.length ())
+			{
+				int overlayCharIndex = ComputeNextOverlayCharIndex (m_OverlayText);
+				m_OverlayCharDuration = 0.f;
+				m_OverlayTextColor.a = 0.f;
+
+				for (int i = 0; i < m_OverlayText.length (); ++i)
+				{
+					if (i == overlayCharIndex)
+					{
+						finalString += m_OverlayText[i];
+					}
+					else
+					{
+						finalString += " ";
+					}
+				}
+
+				m_OverlayRandomTexts.push_back (finalString);
+
+				tween = tweeny::from (0.0f).to (1.0f).during (timeMs).onStep (changeColorFunc);
+				m_MainLoop->GetTweenManager ().AddTween (-1, tween, nullptr);
+			}
+			else
+			{
+				float closeTimeMs = timeMs * 3;
+				tween = tweeny::from (1.0f).to (0.0f).during (closeTimeMs).onStep (changeColorFunc);
+				m_MainLoop->GetTweenManager ().AddTween (-1, tween, [&](int) { m_SceneIntro = false; });
+
+				m_RandomOverlayProcessing = false;
+			}
+		}
+
+		int blendOp, blendSrc, blendDst;
+		al_get_blender (&blendOp, &blendSrc, &blendDst);
+		al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+
+		int textsGeneratedCount = m_OverlayRandomTexts.size ();
+
+		for (int i = 0; i < textsGeneratedCount; ++i)
+		{
+			ALLEGRO_COLOR color = m_OverlayTextColor;
+
+			if (i < textsGeneratedCount - 1 && m_RandomOverlayProcessing)
+			{
+				color.a = 1.0f;
+			}
+
+			PrintOverlayText (m_OverlayRandomTexts[i].c_str (), color, m_OverlayPosition);
+		}
+
+		al_set_blender (blendOp, blendSrc, blendDst);
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -637,6 +709,10 @@ namespace aga
 
 		m_OverlayTextColor.a = 0.0f;
 		m_SceneIntro = false;
+
+		m_OverlayRandomTexts.clear ();
+		m_OverlayCharsIndices.clear ();
+		m_RandomOverlayProcessing = true;
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -701,38 +777,43 @@ namespace aga
 
 	void SceneManager::SceneIntro (float duration)
 	{
-		m_OverlayTextColor.a = 0.0f;
 		m_SceneIntro = true;
 
-		auto introFunc = [&](float v) {
-			m_OverlayTextColor.a = std::min (1.0f, v);
-
-			return false;
-		};
-
-		float fadeShowTime = duration * 0.5f;
-		tweeny::tween<float> tween = tweeny::from (0.0f)
-										 .to (1.0f)
-										 .during (fadeShowTime)
-										 .to (1.0f)
-										 .during (duration)
-										 .to (0.0f)
-										 .during (fadeShowTime)
-										 .onStep (introFunc);
-
-		if (m_LastTweenID >= 0)
+		if (m_OverlayTextMode == OverlayTextMode::Plain)
 		{
-			m_MainLoop->GetTweenManager ().RemoveTween (m_LastTweenID);
-		}
+			m_OverlayTextColor.a = 0.0f;
 
-		TweenData& lastTween = m_MainLoop->GetTweenManager ().AddTween (-1, tween, [&](int) { m_SceneIntro = false; });
-		m_LastTweenID = lastTween.ID;
+			auto introFunc = [&](float v) {
+				m_OverlayTextColor.a = std::min (1.0f, v);
+
+				return false;
+			};
+
+			float fadeShowTime = duration * 0.5f;
+			tweeny::tween<float> tween = tweeny::from (0.0f)
+											 .to (1.0f)
+											 .during (fadeShowTime)
+											 .to (1.0f)
+											 .during (duration)
+											 .to (0.0f)
+											 .during (fadeShowTime)
+											 .onStep (introFunc);
+
+			if (m_LastTweenID >= 0)
+			{
+				m_MainLoop->GetTweenManager ().RemoveTween (m_LastTweenID);
+			}
+
+			TweenData& lastTween
+				= m_MainLoop->GetTweenManager ().AddTween (-1, tween, [&](int) { m_SceneIntro = false; });
+			m_LastTweenID = lastTween.ID;
+		}
 	}
 
 	//--------------------------------------------------------------------------------------------------
 
 	void SceneManager::PrintOverlayText (
-		const std::string& text, ScreenRelativePosition screenPos, const std::string& fontName)
+		const std::string& text, ALLEGRO_COLOR color, ScreenRelativePosition screenPos, const std::string& fontName)
 	{
 		const Point winSize = m_MainLoop->GetScreen ()->GetBackBufferSize ();
 		Font& font = m_MainLoop->GetScreen ()->GetFont ();
@@ -742,7 +823,7 @@ namespace aga
 		Point pos;
 		int align = 0;
 
-		float textSizeHeight = textSize.Height * (std::count (m_OverlayText.begin (), m_OverlayText.end (), '\n') + 1);
+		float textSizeHeight = textSize.Height * (std::count (text.begin (), text.end (), '\n') + 1);
 
 		switch (screenPos)
 		{
@@ -785,13 +866,12 @@ namespace aga
 			break;
 		}
 
-		font.DrawMultilineText (
-			fontName, m_OverlayTextColor, pos.X, pos.Y, winSize.Width, textSize.Height, align, text.c_str ());
+		font.DrawMultilineText (fontName, color, pos.X, pos.Y, winSize.Width, textSize.Height, align, text.c_str ());
 	}
 
 	//--------------------------------------------------------------------------------------------------
 
-	void SceneManager::ComputeNextOverlayCharIndex (const std::string& text)
+	int SceneManager::ComputeNextOverlayCharIndex (const std::string& text)
 	{
 		do
 		{
@@ -801,23 +881,34 @@ namespace aga
 				== m_OverlayCharsIndices.end ())
 			{
 				m_OverlayCharsIndices.push_back (nextIndex);
-				break;
+
+				return nextIndex;
 			}
 		} while (m_OverlayCharsIndices.size () < text.size ());
+
+		return -1;
 	}
 
 	//--------------------------------------------------------------------------------------------------
 
 	void SceneManager::SetOverlayText (
-		const std::string& text, float duration, float charTimeDelay, ScreenRelativePosition pos)
+		const std::string& text, float duration, OverlayTextMode mode, float charTimeDelay, ScreenRelativePosition pos)
 	{
 		m_OverlayText = text;
 		m_OverlayDuration = duration;
+		m_OverlayTextMode = mode;
 		m_OverlayPosition = pos;
-		m_StepOverlayActive = true;
 		m_OverlayCharPos = 0;
 		m_OverlayCharDuration = 0.f;
 		m_OverlayCharMaxDuration = charTimeDelay / 1000.f;
+
+		m_OverlayRandomTexts.clear ();
+		m_OverlayCharsIndices.clear ();
+
+		if (m_OverlayTextMode == OverlayTextMode::Random)
+		{
+			m_RandomOverlayProcessing = true;
+		}
 
 		auto introFunc = [&](float v) {
 			m_OverlayTextColor.a = std::min (1.0f, v);
@@ -836,7 +927,7 @@ namespace aga
 										 .onStep (introFunc);
 
 		m_MainLoop->GetTweenManager ().AddTween (-1, tween, [&](int) {
-			m_StepOverlayActive = false;
+			m_OverlayTextMode = OverlayTextMode::None;
 			m_OverlayText = "";
 			m_OverlayDuration = 0.f;
 		});
@@ -844,11 +935,15 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	void SceneManager::SetStepOverlayActive (bool active) { m_StepOverlayActive = active; }
+	void SceneManager::SetOverlayTextMode (OverlayTextMode mode)
+	{
+		m_OverlayTextMode = mode;
 
-	//--------------------------------------------------------------------------------------------------
-
-	void SceneManager::SetRandomOverlayActive (bool active) { m_RandomOverlayActive = active; }
+		if (mode == OverlayTextMode::Random)
+		{
+			m_RandomOverlayProcessing = true;
+		}
+	}
 
 	//--------------------------------------------------------------------------------------------------
 

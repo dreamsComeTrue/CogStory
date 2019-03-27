@@ -229,16 +229,15 @@ namespace aga
 		   void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, Color color = COLOR_BLACK)
 		   void SetSuppressSceneInfo (bool suppress)
 		   bool IsSuppressSceneInfo () const
-		   void SetOverlayText (const string& in, float duration = 2000.f, float charTimeDelay = 5.f,
-				ScreenRelativePosition pos = BottomRight)
-		   void SetStepOverlayActive (bool active)
-		   void SetRandomOverlayActive (bool active)
-		   Actor@ GetActor (const string &in)
-		   Actor@ GetActor (int id)
-				= string ChoiceFunction (void)
-		   void RegisterChoiceFunction (string, ChoiceFunction @+ func)
-		   AudioSample@ SetSceneAudioStream (const string &in path)
-		   AudioSample@ GetSceneAudioStream ()
+		   void SetOverlayText (const string& in, float duration = 2000.f, OverlayTextMode mode = Plain, float
+	   							charTimeDelay = 5.f, ScreenRelativePosition pos = BottomRight) 
+	   	   void SetOverlayTextMode (OverlayTextMode mode)
+		   Actor@ GetActor (const string &in) 
+		   Actor@ GetActor (int id) = 
+		   string ChoiceFunction (void) 
+		   void RegisterChoiceFunction (string, ChoiceFunction @+ func) 
+		   AudioSample@ SetSceneAudioStream (const string &in path) 
+		   AudioSample@ GetSceneAudioStream () 
 		   Point GetPlayerStartLocation ()
 		   void PushPoint (Point p)
 		   Point PopPoint ()
@@ -703,6 +702,17 @@ namespace aga
 			"ScreenRelativePosition", "BottomRight", ScreenRelativePosition::BottomRight);
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterEnumValue ("ScreenRelativePosition", "Center", ScreenRelativePosition::Center);
+		assert (r >= 0);
+
+		r = m_ScriptEngine->RegisterEnum ("OverlayTextMode");
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterEnumValue ("OverlayTextMode", "None", OverlayTextMode::None);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterEnumValue ("OverlayTextMode", "Plain", OverlayTextMode::Plain);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterEnumValue ("OverlayTextMode", "Sequence", OverlayTextMode::Sequence);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterEnumValue ("OverlayTextMode", "Random", OverlayTextMode::Random);
 		assert (r >= 0);
 	}
 
@@ -1382,16 +1392,13 @@ namespace aga
 		//            asMETHOD (SceneManager, IsSuppressSceneInfo), asCALL_THISCALL_ASGLOBAL,
 		//            &m_MainLoop->GetSceneManager ());
 		assert (r >= 0);
-		r = m_ScriptEngine->RegisterGlobalFunction (
-			"void SetOverlayText (const string& in, float duration = 2000.f, float charTimeDelay = 5.f, "
-			"ScreenRelativePosition pos = BottomRight)",
+		r = m_ScriptEngine->RegisterGlobalFunction ("void SetOverlayText (const string& in, float duration = 2000.f, "
+													"OverlayTextMode mode = Plain, float charTimeDelay = 5.f, "
+													"ScreenRelativePosition pos = BottomRight)",
 			asMETHOD (SceneManager, SetOverlayText), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
 		assert (r >= 0);
-		r = m_ScriptEngine->RegisterGlobalFunction ("void SetStepOverlayActive (bool active)",
-			asMETHOD (SceneManager, SetStepOverlayActive), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
-		assert (r >= 0);
-		r = m_ScriptEngine->RegisterGlobalFunction ("void SetRandomOverlayActive (bool active)",
-			asMETHOD (SceneManager, SetRandomOverlayActive), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
+		r = m_ScriptEngine->RegisterGlobalFunction ("void SetOverlayTextMode (OverlayTextMode mode)",
+			asMETHOD (SceneManager, SetOverlayTextMode), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetSceneManager ());
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterGlobalFunction ("Actor@ GetActor (const string &in)",
 			asMETHODPR (SceneManager, GetActor, (const std::string&), Actor*), asCALL_THISCALL_ASGLOBAL,

@@ -9,148 +9,161 @@
 
 namespace aga
 {
-    class Scene;
-    class Player;
-    class Script;
-    class MainLoop;
-    class AtlasManager;
-    class AudioStream;
-    class SpeechFrameManager;
-    struct TweenData;
-    struct FlagPoint;
+	class Scene;
+	class Player;
+	class Script;
+	class MainLoop;
+	class AtlasManager;
+	class AudioStream;
+	class SpeechFrameManager;
+	struct TweenData;
+	struct FlagPoint;
 
-    class SceneManager : public Lifecycle
-    {
-    public:
-        SceneManager (MainLoop* mainLoop);
-        virtual ~SceneManager ();
-        bool Initialize ();
-        bool Destroy ();
-        
-        void BeforeEnter ();
-        void AfterLeave ();        
+	enum OverlayTextMode
+	{
+		None,
+		Plain,
+		Sequence,
+		Random
+	};
 
-        Scene* CreateNewScene (const std::string& name);
-        void AddScene (Scene* scene);
-        void RemoveScene (Scene* scene);
-        void SetActiveScene (Scene* scene);
-        Scene* GetActiveScene ();
-        Scene* GetScene (const std::string& path);
+	class SceneManager : public Lifecycle
+	{
+	public:
+		SceneManager (MainLoop* mainLoop);
+		virtual ~SceneManager ();
+		bool Initialize ();
+		bool Destroy ();
 
-        void SetActiveScene (const std::string& scenePath, bool fadeAnimation = true, asIScriptFunction* sceneLoadedCallback = nullptr);
+		void BeforeEnter ();
+		void AfterLeave ();
 
-        bool ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
-        bool Update (float deltaTime);
-        void Render (float deltaTime);
+		Scene* CreateNewScene (const std::string& name);
+		void AddScene (Scene* scene);
+		void RemoveScene (Scene* scene);
+		void SetActiveScene (Scene* scene);
+		Scene* GetActiveScene ();
+		Scene* GetScene (const std::string& path);
 
-        Player* GetPlayer ();
-        Camera& GetCamera ();
-        MainLoop* GetMainLoop ();
+		void SetActiveScene (
+			const std::string& scenePath, bool fadeAnimation = true, asIScriptFunction* sceneLoadedCallback = nullptr);
 
-        void AddOnEnterCallback (
-            const std::string& triggerName, std::function<void(std::string areaName, float dx, float dy)> func);
-        void AddOnEnterCallback (const std::string& triggerName, asIScriptFunction* func);
+		bool ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
+		bool Update (float deltaTime);
+		void Render (float deltaTime);
 
-        void RemoveOnEnterCallback (const std::string& triggerName);
+		Player* GetPlayer ();
+		Camera& GetCamera ();
+		MainLoop* GetMainLoop ();
 
-        void AddOnLeaveCallback (
-            const std::string& triggerName, std::function<void(std::string areaName, float dx, float dy)> func);
-        void AddOnLeaveCallback (const std::string& triggerName, asIScriptFunction* func);
+		void AddOnEnterCallback (
+			const std::string& triggerName, std::function<void(std::string areaName, float dx, float dy)> func);
+		void AddOnEnterCallback (const std::string& triggerName, asIScriptFunction* func);
 
-        void RemoveOnLeaveCallback (const std::string& triggerName);
+		void RemoveOnEnterCallback (const std::string& triggerName);
 
-        void RegisterChoiceFunction (const std::string& name, asIScriptFunction* func);
+		void AddOnLeaveCallback (
+			const std::string& triggerName, std::function<void(std::string areaName, float dx, float dy)> func);
+		void AddOnLeaveCallback (const std::string& triggerName, asIScriptFunction* func);
 
-        Actor* GetActor (const std::string& name);
-        Actor* GetActor (int id);
-        FlagPoint* GetFlagPoint (const std::string& name);
+		void RemoveOnLeaveCallback (const std::string& triggerName);
 
-        Actor* GetCurrentlyProcessedActor ();
+		void RegisterChoiceFunction (const std::string& name, asIScriptFunction* func);
 
-        SpeechFrameManager* GetSpeechFrameManager ();
+		Actor* GetActor (const std::string& name);
+		Actor* GetActor (int id);
+		FlagPoint* GetFlagPoint (const std::string& name);
 
-        void Reset ();
-        void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, ALLEGRO_COLOR color = COLOR_BLACK);
-        bool IsTransitioning () const;
+		Actor* GetCurrentlyProcessedActor ();
 
-        void SetDrawPhysData (bool enable);
-        bool IsDrawPhysData ();
+		SpeechFrameManager* GetSpeechFrameManager ();
 
-        void SetDrawBoundingBox (bool enable);
-        bool IsDrawBoundingBox ();
+		void Reset ();
+		void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, ALLEGRO_COLOR color = COLOR_BLACK);
+		bool IsTransitioning () const;
 
-        void SetDrawActorsNames (bool enable);
-        bool IsDrawActorsNames ();
+		void SetDrawPhysData (bool enable);
+		bool IsDrawPhysData ();
 
-        void SetSuppressSceneInfo (bool suppress);
-        bool IsSuppressSceneInfo () const;
+		void SetDrawBoundingBox (bool enable);
+		bool IsDrawBoundingBox ();
 
-        AudioStream* SetSceneAudioStream (const std::string& path);
-        AudioStream* GetSceneAudioStream ();
+		void SetDrawActorsNames (bool enable);
+		bool IsDrawActorsNames ();
 
-        Point GetPlayerStartLocation ();
+		void SetSuppressSceneInfo (bool suppress);
+		bool IsSuppressSceneInfo () const;
 
-        void SetOverlayText (const std::string& text, float duration = 2000.f, float charTimeDelay = 5.f,
-            ScreenRelativePosition pos = BottomRight);
-        void SetStepOverlayActive (bool active);
-        void SetRandomOverlayActive (bool active);
-        void SetOverlayTextColor (ALLEGRO_COLOR color);
+		AudioStream* SetSceneAudioStream (const std::string& path);
+		AudioStream* GetSceneAudioStream ();
 
-        void PushPoint (Point p);
-        Point PopPoint ();
+		Point GetPlayerStartLocation ();
 
-        void RegisterTriggerScene (const std::string& areaName, const std::string& sceneFile);
+		void SetOverlayText (const std::string& text, float duration = 2000.f, OverlayTextMode mode = Plain,
+			float charTimeDelay = 5.f, ScreenRelativePosition pos = BottomRight);
+		void SetOverlayTextMode (OverlayTextMode mode);
+		void SetOverlayTextColor (ALLEGRO_COLOR color);
 
-        Script* AttachScript (Script* script, const std::string& path, bool temporary = false);
-        Script* AttachScript (const std::string& name, const std::string& path, bool temporary = false);
-        void RemoveScript (const std::string& name);
-        void EnableSceneScripts ();
-        void DisableSceneScripts ();
+		void PushPoint (Point p);
+		Point PopPoint ();
 
-        Actor* GetDummyActor ();
+		void RegisterTriggerScene (const std::string& areaName, const std::string& sceneFile);
 
-    private:
-        void SceneIntro (float duration = 1000.f);
-        void PrintOverlayText (const std::string& text, ScreenRelativePosition pos = BottomRight, const std::string& fontName = FONT_NAME_MENU_ITEM_NORMAL);
-        void TeleportToMarkerPosition (std::string& lastSceneName);
-        
-        void ComputeNextOverlayCharIndex (const std::string& text);
+		Script* AttachScript (Script* script, const std::string& path, bool temporary = false);
+		Script* AttachScript (const std::string& name, const std::string& path, bool temporary = false);
+		void RemoveScript (const std::string& name);
+		void EnableSceneScripts ();
+		void DisableSceneScripts ();
 
-    private:
-        MainLoop* m_MainLoop;
-        SpeechFrameManager* m_SpeechFrameManager;
-        Player* m_Player;
-        Camera m_Camera;
+		Actor* GetDummyActor ();
 
-        std::map<std::string, Scene*> m_Scenes;
-        Scene* m_ActiveScene;
-        Scene* m_NextScene;
+	private:
+		void SceneIntro (float duration = 1000.f);
+		void PrintOverlayText (const std::string& text, ALLEGRO_COLOR color, ScreenRelativePosition pos = BottomRight,
+			const std::string& fontName = FONT_NAME_MENU_ITEM_NORMAL);
+		void RenderPlainOverlay (float deltaTime);
+		void RenderSequenceOverlay (float deltaTime);
+		void RenderRandomOverlay (float deltaTime);
+		void TeleportToMarkerPosition (std::string& lastSceneName);
 
-        int m_LastTweenID;
-        bool m_Transitioning;
-        ALLEGRO_COLOR m_FadeColor;
+		int ComputeNextOverlayCharIndex (const std::string& text);
 
-        bool m_SceneIntro;
-        ALLEGRO_COLOR m_OverlayTextColor;
+	private:
+		MainLoop* m_MainLoop;
+		SpeechFrameManager* m_SpeechFrameManager;
+		Player* m_Player;
+		Camera m_Camera;
 
-        bool m_DrawPhysData;
-        bool m_DrawBoundingBox;
-        bool m_DrawActorsNames;
+		std::map<std::string, Scene*> m_Scenes;
+		Scene* m_ActiveScene;
+		Scene* m_NextScene;
 
-        std::string m_OverlayText;
-        int m_OverlayCharPos;
-        float m_OverlayCharDuration;
-        ScreenRelativePosition m_OverlayPosition;
-        float m_OverlayDuration;
-        float m_OverlayCharMaxDuration;
-        bool m_StepOverlayActive;
-        bool m_RandomOverlayActive;
-        std::vector<int> m_OverlayCharsIndices;
+		int m_LastTweenID;
+		bool m_Transitioning;
+		ALLEGRO_COLOR m_FadeColor;
 
-        std::stack<Point> m_SavedPoints;
-        
-        asIScriptFunction* m_SceneLoadedCallback;
-    };
+		bool m_SceneIntro;
+		ALLEGRO_COLOR m_OverlayTextColor;
+
+		bool m_DrawPhysData;
+		bool m_DrawBoundingBox;
+		bool m_DrawActorsNames;
+
+		OverlayTextMode m_OverlayTextMode;
+		std::string m_OverlayText;
+		int m_OverlayCharPos;
+		float m_OverlayCharDuration;
+		ScreenRelativePosition m_OverlayPosition;
+		float m_OverlayDuration;
+		float m_OverlayCharMaxDuration;
+		bool m_RandomOverlayProcessing;
+		std::vector<int> m_OverlayCharsIndices;
+		std::vector<std::string> m_OverlayRandomTexts;
+
+		std::stack<Point> m_SavedPoints;
+
+		asIScriptFunction* m_SceneLoadedCallback;
+	};
 }
 
 #endif //   __SCENE_MANAGER_H__
