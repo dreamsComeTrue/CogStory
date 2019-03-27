@@ -8,7 +8,7 @@ set(ROOT_THIRD_PARTY_DIR ./ThirdParty)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/Cotire/CMake)
 
-set(CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_CXX_STANDARD_LIBRARIES} -static-libgcc -static-libstdc++ -Wl,-allow-multiple-definition -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic")
+set(CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_CXX_STANDARD_LIBRARIES} -static-libgcc -static-libstdc++ -Wl,-allow-multiple-definition -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic")
 
 include(cotire)
 
