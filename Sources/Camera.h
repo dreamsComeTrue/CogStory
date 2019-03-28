@@ -76,6 +76,7 @@ namespace aga
         Point m_ShakeStartPos;
         Point m_ShakeComputedPos;
         bool m_ShakeComputed;
+        Actor* m_ShakeFollowActor;
 
         Point m_SavedFollowPoint;
         bool m_FollowingEnabledXAxis;

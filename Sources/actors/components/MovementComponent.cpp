@@ -173,35 +173,38 @@ namespace aga
 					MainLoop* mainLoop = m_Actor->GetSceneManager ()->GetMainLoop ();
 					Actor* followActor = mainLoop->GetSceneManager ().GetCamera ().GetFollowActor ();
 
-					Point screenSize = mainLoop->GetScreen ()->GetBackBufferSize ();
-					Point followActorPos = followActor->GetPosition () + followActor->Bounds.GetHalfSize ();
-					Point thisPos = m_Actor->GetPosition ();
-
-					if (thisPos.X < followActorPos.X)
+					if (followActor)
 					{
-						thisPos.X += m_Actor->Bounds.GetSize ().Width;
-					}
+						Point screenSize = mainLoop->GetScreen ()->GetBackBufferSize ();
+						Point followActorPos = followActor->GetPosition () + followActor->Bounds.GetHalfSize ();
+						Point thisPos = m_Actor->GetPosition ();
 
-					if (thisPos.Y < followActorPos.Y)
-					{
-						thisPos.Y += m_Actor->Bounds.GetSize ().Height;
-					}
+						if (thisPos.X < followActorPos.X)
+						{
+							thisPos.X += m_Actor->Bounds.GetSize ().Width;
+						}
 
-					Rect followActorBounds
-						= Rect (followActorPos - screenSize * 0.5f * 0.5f, followActorPos + screenSize * 0.5f * 0.5f);
+						if (thisPos.Y < followActorPos.Y)
+						{
+							thisPos.Y += m_Actor->Bounds.GetSize ().Height;
+						}
 
-					m_SampleCounter += deltaTime;
+						Rect followActorBounds = Rect (
+							followActorPos - screenSize * 0.5f * 0.5f, followActorPos + screenSize * 0.5f * 0.5f);
 
-					if (InsideRect (thisPos, followActorBounds) && m_SampleCounter > 0.2f
-						&& !mainLoop->GetAudioManager ().IsGloballyPlaying (m_FootStepSample->GetName ()))
-					{
-						float distanceToFollowActor = (followActorPos - thisPos).Magnitude ();
-						float volume = 1.0f;
+						m_SampleCounter += deltaTime;
 
-						// m_FootStepSample->SetVolume (volume);
-						m_FootStepSample->Play ();
+						if (InsideRect (thisPos, followActorBounds) && m_SampleCounter > 0.2f
+							&& !mainLoop->GetAudioManager ().IsGloballyPlaying (m_FootStepSample->GetName ()))
+						{
+							float distanceToFollowActor = (followActorPos - thisPos).Magnitude ();
+							float volume = 1.0f;
 
-						m_SampleCounter = 0;
+							// m_FootStepSample->SetVolume (volume);
+							m_FootStepSample->Play ();
+
+							m_SampleCounter = 0;
+						}
 					}
 
 					m_Actor->Move (deltaPos);

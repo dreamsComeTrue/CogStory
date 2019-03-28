@@ -16,6 +16,7 @@ namespace aga
 	Camera::Camera (SceneManager* sceneManager)
 		: m_SceneManager (sceneManager)
 		, m_CameraFollowActor (nullptr)
+		, m_ShakeFollowActor (nullptr)
 		, m_TweenToPoint (nullptr)
 		, m_SavedFollowPoint (Point::ZERO_POINT)
 		, m_FollowingEnabledXAxis (false)
@@ -305,6 +306,10 @@ namespace aga
 		m_ShakePercentage = 0.f;
 		m_ShakeOscilatingTime = oscilatingTime;
 
+		//	Remeber and clear current follow actor
+		m_ShakeFollowActor = m_CameraFollowActor;
+		SetFollowActor (nullptr);
+
 		std::function<bool(float)> tweenFunc = [&](float progress) {
 			if (progress < 1.0f)
 			{
@@ -313,6 +318,7 @@ namespace aga
 			else
 			{
 				SetTranslate (m_ShakeStartPos);
+				SetFollowActor (m_ShakeFollowActor);
 			}
 
 			return false;
