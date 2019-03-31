@@ -815,9 +815,11 @@ namespace aga
 		al_draw_rectangle (bounds.GetTopLeft ().X, bounds.GetTopLeft ().Y, bounds.GetBottomRight ().X,
 			bounds.GetBottomRight ().Y, COLOR_WHITE, 1);
 
+		Rect worldBounds = m_SceneManager->GetCamera ().GetRenderBounds (bounds);
 		Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
-		font.DrawText (FONT_NAME_SMALL, std::to_string (node->GetData ().size ()), al_map_rgb (255, 255, 0),
-			bounds.GetCenter ().X, bounds.GetCenter ().Y, 1.0f, ALLEGRO_ALIGN_CENTER);
+		Point drawPos = worldBounds.GetCenter ();
+		font.DrawText (FONT_NAME_SMALL, std::to_string (node->GetData ().size ()), al_map_rgb (255, 255, 0), drawPos.X,
+			drawPos.Y, 1.0f, ALLEGRO_ALIGN_CENTER);
 
 		if (node->GetTopLeftTree ())
 		{
