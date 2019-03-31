@@ -253,6 +253,8 @@ namespace aga
 				}
 			}
 
+			scene->CreateDummyActor ();
+
 			UpdateMaxEntityID (scene);
 			scene->SortActors ();
 

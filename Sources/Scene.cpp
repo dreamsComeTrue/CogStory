@@ -1,6 +1,7 @@
 // Copyright 2017-2019 Dominik 'dreamsComeTrue' Jasiński. All Rights Reserved.
 
 #include "Scene.h"
+#include "ActorFactory.h"
 #include "Atlas.h"
 #include "MainLoop.h"
 #include "Player.h"
@@ -32,6 +33,8 @@ namespace aga
 	//--------------------------------------------------------------------------------------------------
 
 	int Entity::GlobalID = 0;
+
+	const std::string DUMMY_ACTOR_NAME = "__DUMMY_ACTOR__";
 
 	//--------------------------------------------------------------------------------------------------
 
@@ -96,14 +99,7 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	bool Scene::Initialize ()
-	{
-		m_DummyActor = new TileActor (m_SceneManager);
-
-		AddActor (m_DummyActor);
-
-		return Lifecycle::Initialize ();
-	}
+	bool Scene::Initialize () { return Lifecycle::Initialize (); }
 
 	//--------------------------------------------------------------------------------------------------
 
@@ -1011,6 +1007,19 @@ namespace aga
 	std::string Scene::GetSceneTransition (const std::string& triggerAreaName)
 	{
 		return m_ScenesTransitions[triggerAreaName];
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void Scene::CreateDummyActor ()
+	{
+		if (!m_DummyActor)
+		{
+			m_DummyActor = ActorFactory::GetActor (m_SceneManager, TileActor::TypeName);
+			m_DummyActor->Name = DUMMY_ACTOR_NAME;
+
+			AddActor (m_DummyActor);
+		}
 	}
 
 	//--------------------------------------------------------------------------------------------------
