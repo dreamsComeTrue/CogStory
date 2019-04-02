@@ -42,6 +42,8 @@ namespace aga
         void AddComponentEntry (const std::string& name, const std::string& type);
 
         void FillComponentsList ();
+        
+        void RenderActorGroup (const std::string& groupName);
 
     private:
         Editor* m_Editor;
@@ -63,6 +65,7 @@ namespace aga
         char m_ActorFocusHeight[20];
         bool m_ActorCollidable;
         bool m_ActorCollision;
+        char m_ActorOverlapSize[100];
         bool m_ActorOverlap;
 
         std::vector<std::string> m_ActorTypes;

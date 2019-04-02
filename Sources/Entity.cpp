@@ -16,6 +16,7 @@ namespace aga
 	Entity::Entity (SceneManager* sceneManager)
 		: m_SceneManager (sceneManager)
 		, m_CheckOverlap (false)
+		, OverlapSize (Point::ZERO_POINT)
 	{
 	}
 
@@ -29,6 +30,7 @@ namespace aga
 		this->ZOrder = rhs.ZOrder;
 		this->RenderID = rhs.RenderID;
 		this->BlueprintID = rhs.BlueprintID;
+		this->OverlapSize = rhs.OverlapSize;
 		this->m_SceneManager = rhs.m_SceneManager;
 		this->m_OverlapedEntities.clear ();
 		this->m_OverlapCallbacks = rhs.m_OverlapCallbacks;
@@ -58,7 +60,7 @@ namespace aga
 
 		Camera& camera = m_SceneManager->GetCamera ();
 
-		Rect myBounds = camera.GetRenderBounds (this);
+		Rect myBounds = camera.GetRenderBounds (GetOverlapRect ());
 		std::vector<Entity*> visibleEntites = m_SceneManager->GetActiveScene ()->RecomputeVisibleEntities (true);
 
 		//  Special-case entity :)
@@ -68,7 +70,7 @@ namespace aga
 		{
 			if (ent != this && ent->IsCheckOverlap ())
 			{
-				Rect otherBounds = camera.GetRenderBounds (ent);
+				Rect otherBounds = camera.GetRenderBounds (ent->GetOverlapRect ());
 
 				if (Intersect (myBounds, otherBounds))
 				{
@@ -115,6 +117,27 @@ namespace aga
 				}
 			}
 		}
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	Rect Entity::GetOverlapRect ()
+	{
+		Point mySize;
+
+		if (AreSame (OverlapSize, Point::ZERO_POINT) || AreSame (OverlapSize, Bounds.Size))
+		{
+			mySize = Bounds.Size;
+		}
+		else
+		{
+			mySize = OverlapSize;
+		}
+
+		float xPos = Bounds.Pos.X + Bounds.GetHalfSize ().Width - mySize.Width * 0.5f;
+		float yPos = Bounds.Pos.Y + Bounds.GetHalfSize ().Height - mySize.Height * 0.5f;
+
+		return Rect (xPos, yPos, mySize.Width, mySize.Height);
 	}
 
 	//--------------------------------------------------------------------------------------------------

@@ -76,6 +76,7 @@ namespace aga
 		memset (m_ActorName, 0, ARRAY_SIZE (m_ActorName));
 
 		memset (m_ActorPosition, 0, ARRAY_SIZE (m_ActorPosition));
+		memset (m_ActorOverlapSize, 0, ARRAY_SIZE (m_ActorOverlapSize));
 		memset (m_ActorRotation, 0, ARRAY_SIZE (m_ActorRotation));
 		m_ActorZOrder = 0;
 
@@ -128,6 +129,10 @@ namespace aga
 			Point position (
 				static_cast<float> (atof (posParts[0].c_str ())), static_cast<float> (atof (posParts[1].c_str ())));
 
+			std::vector<std::string> sizeParts = SplitString (m_ActorOverlapSize, ' ');
+			Point size (
+				static_cast<float> (atof (sizeParts[0].c_str ())), static_cast<float> (atof (sizeParts[1].c_str ())));
+
 			for (int i = 0; i < 20; ++i)
 			{
 				if (m_ActorFocusHeight[i] == ',')
@@ -138,9 +143,9 @@ namespace aga
 
 			float focusHeight = static_cast<float> (atof (m_ActorFocusHeight));
 
-			Actor* retActor
-				= m_Editor->GetEditorActorMode ().AddOrUpdateActor (id, m_ActorName, m_ActorTypes[m_SelectedActorType],
-					blueprintID, position, static_cast<float> (atof (m_ActorRotation)), m_ActorZOrder, focusHeight);
+			Actor* retActor = m_Editor->GetEditorActorMode ().AddOrUpdateActor (id, m_ActorName,
+				m_ActorTypes[m_SelectedActorType], blueprintID, position, size,
+				static_cast<float> (atof (m_ActorRotation)), m_ActorZOrder, focusHeight);
 
 			if (retActor)
 			{
@@ -163,10 +168,6 @@ namespace aga
 				{
 					player->RegisterActionSpeech (retActor, retActor->GetActionSpeech ());
 				}
-
-				m_Editor->GetEditorActorMode ().Clear ();
-
-				UpdateComboBoxes ();
 			}
 		}
 	}
@@ -271,6 +272,8 @@ namespace aga
 	void EditorActorWindow::OnActorSelect (int id)
 	{
 		m_SelectedActor = nullptr;
+		m_SelectedAtlas = nullptr;
+		m_SelectedAtlasRegion = "";
 
 		memset (m_ActorID, 0, ARRAY_SIZE (m_ActorID));
 		memset (m_ActorName, 0, ARRAY_SIZE (m_ActorName));
@@ -311,6 +314,7 @@ namespace aga
 		}
 
 		sprintf (m_ActorPosition, "%.2f %.2f", m_SelectedActor->Bounds.Pos.X, m_SelectedActor->Bounds.Pos.Y);
+		sprintf (m_ActorOverlapSize, "%.2f %.2f", m_SelectedActor->OverlapSize.X, m_SelectedActor->OverlapSize.Y);
 		sprintf (m_ActorRotation, "%.2f", m_SelectedActor->Rotation);
 		m_ActorZOrder = m_SelectedActor->ZOrder;
 
@@ -325,20 +329,23 @@ namespace aga
 
 		FillComponentsList ();
 
-		m_SelectedAtlas
-			= m_Editor->GetMainLoop ()->GetAtlasManager ().GetAtlas (m_SelectedActor->GetAtlas ()->GetName ());
-		m_SelectedAtlasRegion = m_SelectedActor->GetAtlasRegionName ();
-
-		std::vector<ResourceID> packs = GetGfxPacks ();
-		for (size_t i = 0; i < packs.size (); ++i)
+		if (m_SelectedActor->GetAtlas ())
 		{
-			std::string name = GetBaseName (GetResource (packs[i]).Name);
-			std::string path = m_SelectedActor->GetAtlas ()->GetName ();
+			m_SelectedAtlas
+				= m_Editor->GetMainLoop ()->GetAtlasManager ().GetAtlas (m_SelectedActor->GetAtlas ()->GetName ());
+			m_SelectedAtlasRegion = m_SelectedActor->GetAtlasRegionName ();
 
-			if (TrimString (path) == name)
+			std::vector<ResourceID> packs = GetGfxPacks ();
+			for (size_t i = 0; i < packs.size (); ++i)
 			{
-				m_SelectedImagePath = i;
-				break;
+				std::string name = GetBaseName (GetResource (packs[i]).Name);
+				std::string path = m_SelectedActor->GetAtlas ()->GetName ();
+
+				if (TrimString (path) == name)
+				{
+					m_SelectedImagePath = i;
+					break;
+				}
 			}
 		}
 
@@ -468,66 +475,25 @@ namespace aga
 
 			if (ImGui::BeginPopupModal ("Actor Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 			{
-				std::vector<Actor*>& actors = scene->GetActors ();
-
 				ImGui::BeginChild ("Child1", ImVec2 (240, ImGui::GetWindowSize ().y - 40), false,
 					ImGuiWindowFlags_HorizontalScrollbar);
 				ImGui::BeginGroup ();
 				{
 					if (ImGui::TreeNodeEx ("NPC", ImGuiTreeNodeFlags_DefaultOpen))
 					{
-						for (Actor* actor : actors)
-						{
-							if (actor->GetTypeName () == NPCActor::TypeName)
-							{
-								std::string name
-									= actor->Name + std::string (" [") + std::to_string (actor->ID) + std::string ("]");
-
-								if (ImGui::Selectable (name.c_str (), false))
-								{
-									OnActorSelect (actor->ID);
-								}
-							}
-						}
-
+						RenderActorGroup (NPCActor::TypeName);
 						ImGui::TreePop ();
 					}
 
 					if (ImGui::TreeNodeEx ("Enemy", ImGuiTreeNodeFlags_DefaultOpen))
 					{
-						for (Actor* actor : actors)
-						{
-							if (actor->GetTypeName () == EnemyActor::TypeName)
-							{
-								std::string name
-									= actor->Name + std::string (" [") + std::to_string (actor->ID) + std::string ("]");
-
-								if (ImGui::Selectable (name.c_str (), false))
-								{
-									OnActorSelect (actor->ID);
-								}
-							}
-						}
-
+						RenderActorGroup (EnemyActor::TypeName);
 						ImGui::TreePop ();
 					}
 
 					if (ImGui::TreeNodeEx ("Tiles", ImGuiTreeNodeFlags_DefaultOpen))
 					{
-						for (Actor* actor : actors)
-						{
-							if (actor->GetTypeName () == TileActor::TypeName)
-							{
-								std::string name
-									= actor->Name + std::string (" [") + std::to_string (actor->ID) + std::string ("]");
-
-								if (ImGui::Selectable (name.c_str (), false))
-								{
-									OnActorSelect (actor->ID);
-								}
-							}
-						}
-
+						RenderActorGroup (TileActor::TypeName);
 						ImGui::TreePop ();
 					}
 				}
@@ -681,6 +647,13 @@ namespace aga
 						ImGui::PopItemWidth ();
 						ImGui::NextColumn ();
 
+						ImGui::Text ("Overlap Size");
+						ImGui::NextColumn ();
+						ImGui::PushItemWidth (controlWidth);
+						ImGui::InputText ("##actorOverlapSize", m_ActorOverlapSize, ARRAY_SIZE (m_ActorOverlapSize));
+						ImGui::PopItemWidth ();
+						ImGui::NextColumn ();
+
 						ImGui::Text ("Action Speech");
 						ImGui::NextColumn ();
 						ImGui::PushItemWidth (controlWidth);
@@ -829,6 +802,50 @@ namespace aga
 				ImGui::EndGroup ();
 
 				ImGui::EndPopup ();
+			}
+		}
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	bool SortByName (std::pair<int, std::string> a, std::pair<int, std::string> b)
+	{
+		if ((a.second != "" && b.second != "") && (a.second != b.second))
+		{
+			return a.second < b.second;
+		}
+		else
+		{
+			return a.first < b.first;
+		}
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void EditorActorWindow::RenderActorGroup (const std::string& groupName)
+	{
+		Scene* scene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
+		std::vector<Actor*>& actors = scene->GetActors ();
+
+		std::vector<std::pair<int, std::string>> items;
+
+		for (Actor* actor : actors)
+		{
+			if (actor->GetTypeName () == groupName)
+			{
+				items.push_back (std::make_pair (actor->ID, actor->Name));
+			}
+		}
+
+		std::sort (items.begin (), items.end (), SortByName);
+
+		for (std::pair<int, std::string> item : items)
+		{
+			std::string name = item.second + std::string (" [") + std::to_string (item.first) + std::string ("]");
+
+			if (ImGui::Selectable (name.c_str (), false))
+			{
+				OnActorSelect (item.first);
 			}
 		}
 	}

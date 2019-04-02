@@ -72,6 +72,7 @@ namespace aga
 							  .GetAtlas (m_AtlasName)
 							  ->GetRegion (m_AtlasRegionName)
 							  .Bounds.GetSize ();
+			OverlapSize = Bounds.Size;
 		}
 
 		return Lifecycle::Initialize ();
@@ -294,6 +295,10 @@ namespace aga
 	{
 		if (m_SceneManager->IsDrawBoundingBox ())
 		{
+			Rect overlap = GetOverlapRect ();
+			al_draw_rectangle (overlap.GetTopLeft ().X, overlap.GetTopLeft ().Y, overlap.GetBottomRight ().X,
+				overlap.GetBottomRight ().Y, COLOR_LIGHTBLUE, 2);
+
 			al_draw_rectangle (Bounds.GetTopLeft ().X, Bounds.GetTopLeft ().Y, Bounds.GetBottomRight ().X,
 				Bounds.GetBottomRight ().Y, COLOR_YELLOW, 2);
 		}

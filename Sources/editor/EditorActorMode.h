@@ -24,9 +24,8 @@ namespace aga
 		virtual ~EditorActorMode ();
 
 		Actor* AddOrUpdateActor (int id, const std::string& name, const std::string& actorType, int blueprintID,
-			Point pos, float rotation, int zOrder, float focusHeight);
+			Point pos, Point size, float rotation, int zOrder, float focusHeight);
 		void RemoveActor (int id);
-		void Clear ();
 
 		void ChangeRotation (bool clockwise);
 		void ChangeZOrder (bool clockwise);

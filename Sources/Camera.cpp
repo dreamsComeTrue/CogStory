@@ -336,13 +336,14 @@ namespace aga
 		Point scale = GetScale ();
 
 		Rect b = entity->Bounds;
+		Point pos = b.GetPos ();
 		float halfWidth = b.GetHalfSize ().Width;
 		float halfHeight = b.GetHalfSize ().Height;
 
-		float x1 = (b.GetPos ().X - translate.X * (1.0f / scale.X)) * (scale.X);
-		float y1 = (b.GetPos ().Y - translate.Y * (1.0f / scale.Y)) * (scale.Y);
-		float x2 = (b.GetPos ().X - translate.X * (1.0f / scale.X) + 2 * halfWidth) * (scale.X);
-		float y2 = (b.GetPos ().Y - translate.Y * (1.0f / scale.Y) + 2 * halfHeight) * (scale.Y);
+		float x1 = (pos.X - translate.X * (1.0f / scale.X)) * (scale.X);
+		float y1 = (pos.Y - translate.Y * (1.0f / scale.Y)) * (scale.Y);
+		float x2 = (pos.X - translate.X * (1.0f / scale.X) + 2 * halfWidth) * (scale.X);
+		float y2 = (pos.Y - translate.Y * (1.0f / scale.Y) + 2 * halfHeight) * (scale.Y);
 
 		Point origin = {x1 + (x2 - x1) * 0.5f, y1 + (y2 - y1) * 0.5f};
 		Point pointA = RotatePoint (x1, y1, origin, entity->Rotation);

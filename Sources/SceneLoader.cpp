@@ -249,6 +249,15 @@ namespace aga
 
 					newActor->Initialize ();
 
+					if (!actorIt["overlap-size"].is_null () && actorIt["overlap-size"] != "")
+					{
+						newActor->OverlapSize = StringToPoint (actorIt["overlap-size"]);
+					}
+					else
+					{
+						newActor->OverlapSize = newActor->Bounds.Size;
+					}
+
 					scene->AddActor (newActor);
 				}
 			}
@@ -423,6 +432,13 @@ namespace aga
 				actorObj["collision"] = std::to_string (actor->IsCollisionEnabled ());
 				actorObj["collidable"] = std::to_string (actor->IsCollidable ());
 				actorObj["overlap"] = std::to_string (actor->IsCheckOverlap ());
+
+				if (!AreSame (actor->OverlapSize, Point::ZERO_POINT)
+					&& !AreSame (actor->OverlapSize, actor->Bounds.Size))
+				{
+					actorObj["overlap-size"] = PointToString (actor->OverlapSize);
+				}
+
 				actorObj["focus-height"] = streamFucsHeight.str ();
 
 				if (actor->GetActionSpeech () != "")

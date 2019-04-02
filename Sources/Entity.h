@@ -54,6 +54,7 @@ namespace aga
 		int ZOrder = 0;
 		int RenderID = 0;
 		int BlueprintID = -1;
+		Point OverlapSize;
 
 	protected:
 		void CheckOverlap ();
@@ -63,6 +64,8 @@ namespace aga
 		void CallBeginOverlapCallbacks (Entity* whom, Entity* target);
 		void CallOverlappingCallbacks (Entity* whom, Entity* target);
 		void CallEndOverlapCallbacks (Entity* whom, Entity* target);
+		
+		Rect GetOverlapRect ();
 
 	protected:
 		SceneManager* m_SceneManager;

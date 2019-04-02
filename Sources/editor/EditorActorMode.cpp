@@ -41,7 +41,7 @@ namespace aga
 	//--------------------------------------------------------------------------------------------------
 
 	Actor* EditorActorMode::AddOrUpdateActor (int id, const std::string& name, const std::string& actorType,
-		int blueprintID, Point pos, float rotation, int zOrder, float focusHeight)
+		int blueprintID, Point pos, Point overlapSize, float rotation, int zOrder, float focusHeight)
 	{
 		Scene* activeScene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
 		Actor* actor = activeScene->GetActor (id);
@@ -51,6 +51,7 @@ namespace aga
 			actor->Name = name;
 			actor->BlueprintID = blueprintID;
 			actor->Bounds.Pos = pos;
+			actor->OverlapSize = overlapSize;
 			actor->TemplateBounds.Pos = pos;
 			actor->Rotation = rotation;
 			actor->ZOrder = zOrder;
@@ -70,6 +71,7 @@ namespace aga
 			actor->Name = name;
 			actor->BlueprintID = blueprintID;
 			actor->Bounds.Pos = pos;
+			actor->OverlapSize = overlapSize;
 			actor->TemplateBounds.Pos = pos;
 			actor->Rotation = rotation;
 			actor->ZOrder = zOrder;
@@ -89,8 +91,6 @@ namespace aga
 		}
 
 		activeScene->SortActors ();
-		m_Editor->GetEditorActorMode ().Clear ();
-
 		SetSelectedActor (actor);
 
 		return actor;
@@ -105,10 +105,6 @@ namespace aga
 		activeScene->RemoveActor (id);
 		activeScene->SortActors ();
 	}
-
-	//--------------------------------------------------------------------------------------------------
-
-	void EditorActorMode::Clear () {}
 
 	//--------------------------------------------------------------------------------------------------
 
