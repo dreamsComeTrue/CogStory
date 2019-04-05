@@ -80,6 +80,9 @@ namespace aga
 
 		bool IsSpriteSheetChoosen ();
 		void SetSpriteSheetChoosen (bool choosen);
+		
+		void IncreaseActorOverlapRect (bool width, bool height);
+		void DecreaseActorOverlapRect (bool width, bool height);
 
 	private:
 		Actor* CreateBlueprintActor (Actor* origin);

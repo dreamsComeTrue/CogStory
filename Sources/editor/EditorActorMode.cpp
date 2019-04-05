@@ -809,6 +809,26 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
+	void EditorActorMode::IncreaseActorOverlapRect (bool width, bool height)
+	{
+		for (Actor* actor : m_SelectedActors)
+		{
+			actor->OverlapSize += Point (width ? 1.f : 0.f, height ? 1.f : 0.f);
+		}
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void EditorActorMode::DecreaseActorOverlapRect (bool width, bool height)
+	{
+		for (Actor* actor : m_SelectedActors)
+		{
+			actor->OverlapSize -= Point (width ? 1.f : 0.f, height ? 1.f : 0.f);
+		}
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
 	Actor* EditorActorMode::GetActorUnderCursor () { return m_ActorUnderCursor; }
 
 	//--------------------------------------------------------------------------------------------------

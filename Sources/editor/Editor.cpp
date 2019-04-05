@@ -469,6 +469,20 @@ namespace aga
 				OnSaveScene ();
 				break;
 			}
+
+			case ALLEGRO_KEY_OPENBRACE:
+			{
+				m_EditorActorMode.DecreaseActorOverlapRect (event->keyboard.modifiers != ALLEGRO_KEYMOD_CTRL,
+					event->keyboard.modifiers != ALLEGRO_KEYMOD_SHIFT);
+				break;
+			}
+
+			case ALLEGRO_KEY_CLOSEBRACE:
+			{
+				m_EditorActorMode.IncreaseActorOverlapRect (event->keyboard.modifiers != ALLEGRO_KEYMOD_CTRL,
+					event->keyboard.modifiers != ALLEGRO_KEYMOD_SHIFT);
+				break;
+			}
 			}
 		}
 
@@ -1596,19 +1610,22 @@ namespace aga
 				std::string ("PARENT: " + (selectedEntity ? ToString (selectedEntity->BlueprintID) : "-")).c_str ());
 
 			std::stringstream streamX;
-			streamX << std::fixed << std::setprecision (0) << (translate.X + state.x) * (1 / scale.X);
 			std::stringstream streamY;
-			streamY << std::fixed << std::setprecision (0) << (translate.Y + state.y) * (1 / scale.Y);
+
+			if (selectedEntity)
+			{
+				streamX << std::fixed << std::setprecision (0) << selectedEntity->Bounds.Pos.X;
+				streamY << std::fixed << std::setprecision (0) << selectedEntity->Bounds.Pos.Y;
+			}
 
 			ImGui::Text ((std::string ("     X: ") + streamX.str ()).c_str ());
 			ImGui::Text ((std::string ("     Y: ") + streamY.str ()).c_str ());
 
-			AtlasRegion* atlasRegion = m_EditorActorMode.GetSelectedAtlasRegion ();
 			Point size = Point::ZERO_POINT;
 
-			if (atlasRegion)
+			if (selectedEntity)
 			{
-				size = atlasRegion->Bounds.GetSize ();
+				size = selectedEntity->Bounds.Size;
 			}
 
 			ImGui::Text (std::string ("     W: " + ToString (size.Width)).c_str ());
