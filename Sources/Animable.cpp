@@ -14,8 +14,8 @@ namespace aga
 		, m_Atlas (nullptr)
 	{
 	}
-    
-    //--------------------------------------------------------------------------------------------------
+
+	//--------------------------------------------------------------------------------------------------
 
 	Animable::Animable (AtlasManager* atlasManager)
 		: m_AtlasManager (atlasManager)
@@ -68,8 +68,10 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	void Animable::Render (Transformable* transformable)
+	void Animable::Render (Transformable* transformable, bool convertToRadians)
 	{
+		float angle = convertToRadians ? DegressToRadians (transformable->Rotation) : transformable->Rotation;
+	
 		if (m_Atlas)
 		{
 			float sourceX = 0;
@@ -83,15 +85,14 @@ namespace aga
 			{
 				if (m_AtlasRegionName != "")
 				{
-					m_Atlas->DrawRegion (m_AtlasRegionName, pos.X, pos.Y, 1.f, 1.f, transformable->Rotation, true);
+					m_Atlas->DrawRegion (m_AtlasRegionName, pos.X, pos.Y, 1.f, 1.f, angle, true);
 				}
 				else
 				{
 					sourceWidth = al_get_bitmap_width (m_Atlas->GetImage ());
 					sourceHeight = al_get_bitmap_height (m_Atlas->GetImage ());
 
-					m_Atlas->DrawRegion (
-						0, 0, sourceWidth, sourceHeight, pos.X, pos.Y, 1.f, 1.f, transformable->Rotation, true);
+					m_Atlas->DrawRegion (0, 0, sourceWidth, sourceHeight, pos.X, pos.Y, 1.f, 1.f, angle, true);
 				}
 			}
 			else
@@ -105,8 +106,7 @@ namespace aga
 				sourceWidth = frameRect.GetSize ().Width;
 				sourceHeight = frameRect.GetSize ().Height;
 
-				m_Atlas->DrawRegion (
-					sourceX, sourceY, sourceWidth, sourceHeight, pos.X, pos.Y, 1, 1, transformable->Rotation, true);
+				m_Atlas->DrawRegion (sourceX, sourceY, sourceWidth, sourceHeight, pos.X, pos.Y, 1, 1, angle, true);
 			}
 		}
 	}

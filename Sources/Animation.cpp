@@ -4,140 +4,151 @@
 
 namespace aga
 {
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    AnimationData::AnimationData (unsigned howManyFrames, Point cellSize)
-        : m_CellSize (cellSize)
-        , m_SpeedMS (1000)
-    {
-        m_Frames.reserve (howManyFrames);
-    }
+	AnimationData::AnimationData (unsigned howManyFrames, Point cellSize)
+		: m_CellSize (cellSize)
+		, m_SpeedMS (1000)
+	{
+		m_Frames.reserve (howManyFrames);
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    void AnimationData::SetPlaySpeed (unsigned milliseconds) { m_SpeedMS = milliseconds; }
+	void AnimationData::SetPlaySpeed (unsigned milliseconds) { m_SpeedMS = milliseconds; }
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    unsigned AnimationData::GetPlaySpeed () const { return m_SpeedMS; }
+	unsigned AnimationData::GetPlaySpeed () const { return m_SpeedMS; }
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    void AnimationData::AddFrame (const AnimationFrameEntry& frame, int index)
-    {
-        if (index >= 0)
-        {
-            m_Frames.insert (m_Frames.begin () + index, frame);
-        }
-        else
-        {
-            m_Frames.push_back (frame);
-        }
-    }
+	void AnimationData::AddFrame (const AnimationFrameEntry& frame, int index)
+	{
+		if (index >= 0)
+		{
+			m_Frames.insert (m_Frames.begin () + index, frame);
+		}
+		else
+		{
+			m_Frames.push_back (frame);
+		}
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    AnimationFrameEntry& AnimationData::GetFrame (unsigned index) { return m_Frames[index]; }
+	void AnimationData::SetFrames (std::vector<AnimationFrameEntry> frames) { m_Frames = frames; }
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    std::vector<AnimationFrameEntry>& AnimationData::GetFrames () { return m_Frames; }
+	AnimationFrameEntry& AnimationData::GetFrame (unsigned index) { return m_Frames[index]; }
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    size_t AnimationData::GetFramesCount () const { return m_Frames.size (); }
+	std::vector<AnimationFrameEntry>& AnimationData::GetFrames () { return m_Frames; }
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    void AnimationData::SetName (const std::string& name) { m_Name = name; }
+	size_t AnimationData::GetFramesCount () const { return m_Frames.size (); }
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    std::string AnimationData::GetName () { return m_Name; }
+	void AnimationData::SetName (const std::string& name) { m_Name = name; }
 
-    //--------------------------------------------------------------------------------------------------
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    Animation::Animation ()
-        : m_CurrentAnimationName ("")
-        , m_CurrentFrame (0)
-    {
-    }
+	std::string AnimationData::GetName () { return m_Name; }
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    void Animation::AddAnimationData (const std::string& name, const AnimationData& frames)
-    {
-        m_Animations.insert (std::make_pair (name, frames));
-    }
+	Animation::Animation ()
+		: m_CurrentAnimationName ("")
+		, m_CurrentFrame (0)
+	{
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    void Animation::ClearAnimationData () { m_Animations.clear (); }
+	void Animation::AddAnimationData (const std::string& name, const AnimationData& frames)
+	{
+		m_Animations.insert (std::make_pair (name, frames));
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    AnimationData& Animation::GetAnimationData (const std::string& name) { return m_Animations[name]; }
+	void Animation::SetAnimationData (const std::string& name, const AnimationData& frames)
+	{
+		m_Animations[name] = frames;
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    AnimationData& Animation::GetCurrentAnimation () { return m_Animations[m_CurrentAnimationName]; }
+	void Animation::ClearAnimationData () { m_Animations.clear (); }
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    std::string Animation::GetCurrentAnimationName () { return m_CurrentAnimationName; }
+	AnimationData& Animation::GetAnimationData (const std::string& name) { return m_Animations[name]; }
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    std::map<std::string, AnimationData>& Animation::GetAnimations () { return m_Animations; }
+	AnimationData& Animation::GetCurrentAnimation () { return m_Animations[m_CurrentAnimationName]; }
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    void Animation::SetCurrentAnimation (const std::string& name)
-    {
-        if (m_CurrentAnimationName != name)
-        {
-            m_CurrentAnimationName = name;
-            m_CurrentFrame = 0;
-        }
-    }
+	std::string Animation::GetCurrentAnimationName () { return m_CurrentAnimationName; }
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    void Animation::Update (float deltaTime)
-    {
-        std::map<std::string, AnimationData>::iterator it = m_Animations.find (m_CurrentAnimationName);
+	std::map<std::string, AnimationData>& Animation::GetAnimations () { return m_Animations; }
 
-        if (it != m_Animations.end ())
-        {
-            AnimationData& animation = it->second;
+	//--------------------------------------------------------------------------------------------------
 
-            m_TimeTaken += deltaTime * 1000;
+	void Animation::SetCurrentAnimation (const std::string& name)
+	{
+		if (m_CurrentAnimationName != name)
+		{
+			m_CurrentAnimationName = name;
+			m_CurrentFrame = 0;
+		}
+	}
 
-            if (m_TimeTaken >= animation.GetPlaySpeed ())
-            {
-                ++m_CurrentFrame;
-                m_TimeTaken = 0;
-            }
+	//--------------------------------------------------------------------------------------------------
 
-            if (m_CurrentFrame >= animation.GetFramesCount ())
-            {
-                m_CurrentFrame = 0;
-            }
-        }
-    }
+	void Animation::Update (float deltaTime)
+	{
+		std::map<std::string, AnimationData>::iterator it = m_Animations.find (m_CurrentAnimationName);
 
-    //--------------------------------------------------------------------------------------------------
+		if (it != m_Animations.end ())
+		{
+			AnimationData& animation = it->second;
 
-    unsigned Animation::GetCurrentFrame () const { return m_CurrentFrame; }
+			m_TimeTaken += deltaTime * 1000;
 
-    //--------------------------------------------------------------------------------------------------
+			if (m_TimeTaken >= animation.GetPlaySpeed ())
+			{
+				++m_CurrentFrame;
+				m_TimeTaken = 0;
+			}
 
-    void Animation::SetName (const std::string& name) { m_Name = name; }
+			if (m_CurrentFrame >= animation.GetFramesCount ())
+			{
+				m_CurrentFrame = 0;
+			}
+		}
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    std::string Animation::GetName () { return m_Name; }
+	unsigned Animation::GetCurrentFrame () const { return m_CurrentFrame; }
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
+
+	void Animation::SetName (const std::string& name) { m_Name = name; }
+
+	//--------------------------------------------------------------------------------------------------
+
+	std::string Animation::GetName () { return m_Name; }
+
+	//--------------------------------------------------------------------------------------------------
 }

@@ -1,0 +1,27 @@
+
+scenes_common.png
+size: 256,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+scene_door1
+  rotate: false
+  xy: 0, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+scene_door2
+  rotate: false
+  xy: 66, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+scene_door3
+  rotate: false
+  xy: 132, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1

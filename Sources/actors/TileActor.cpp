@@ -44,11 +44,7 @@ namespace aga
 	{
 		if (m_IsVisible)
 		{
-			if (m_Atlas)
-			{
-				Point pos = Bounds.GetPos ();
-				m_Atlas->DrawRegion (m_AtlasRegionName, pos.X, pos.Y, 1.0f, 1.0f, DegressToRadians (Rotation));
-			}
+			Animable::Render (this, true);
 
 			RenderComponents (deltaTime);
 		}

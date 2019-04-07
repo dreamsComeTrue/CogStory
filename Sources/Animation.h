@@ -25,6 +25,7 @@ namespace aga
         void AddFrame (const AnimationFrameEntry& frame, int index = -1);
         void ClearFrames ();
 
+        void SetFrames (std::vector<AnimationFrameEntry> frames);
         AnimationFrameEntry& GetFrame (unsigned index);
         std::vector<AnimationFrameEntry>& GetFrames ();
 
@@ -48,6 +49,7 @@ namespace aga
         Animation ();
 
         void AddAnimationData (const std::string& name, const AnimationData& frames);
+        void SetAnimationData (const std::string& name, const AnimationData& frames);
         AnimationData& GetAnimationData (const std::string& name);
         AnimationData& GetCurrentAnimation ();
         std::string GetCurrentAnimationName ();

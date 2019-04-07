@@ -25,7 +25,7 @@ namespace aga
         bool Destroy ();
 
         virtual bool Update (float deltaTime);
-        void Render (Transformable* transformable);
+        void Render (Transformable* transformable, bool convertToRadians = false);
 
         virtual void SetCurrentAnimation (const std::string& name);
 

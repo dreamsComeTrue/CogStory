@@ -15,6 +15,7 @@ namespace aga
 	std::string GFX_EFFECTS = "gfx/effects";
 	std::string GFX_ENV = "gfx/env";
 
+	std::string GFX_SCENES = "gfx/scenes";
 	std::string GFX_0_HOME = "gfx/scenes/0_home";
 	std::string GFX_1_FACTORY = "gfx/scenes/1_factory";
 	std::string GFX_2_CITY = "gfx/scenes/2_city";
@@ -41,6 +42,8 @@ namespace aga
 		//  City
 		{PACK_2_0_CITY, GFX_2_CITY, "2_0_city.pack"}, {PACK_2_1_CITY, GFX_2_CITY, "2_1_city.pack"},
 		{PACK_2_2_CITY, GFX_2_CITY, "2_2_city.pack"}, {PACK_2_3_CITY, GFX_2_CITY, "2_3_city.pack"},
+
+		{PACK_SCENES_COMMON, GFX_SCENES, "scenes_common.pack"},
 
 		//  Env
 		{PACK_ENV_0, GFX_ENV, "env_0.pack"}, {PACK_ENV_2, GFX_ENV, "env_2.pack"}, {PACK_ENV_1, GFX_ENV, "env_1.pack"},

@@ -42,10 +42,10 @@ namespace aga
         class Atlas* m_SelectedAtlas;
         std::string m_SelectedAtlasRegion;
 
-        char m_Animation[100];
-        char m_Name[100];
+        char m_AnimationGroup[100];
+        char m_AnimationName[100];
         std::vector<std::string> m_Animations;
-        int m_SelectedAnimation;
+        int m_SelectedAnimationGroupIndex;
 
         std::vector<std::string> m_Names;
         int m_SelectedName;
@@ -66,7 +66,7 @@ namespace aga
         std::function<void(std::string, std::string)> m_OnAcceptFunc;
         std::function<void(std::string, std::string)> m_OnCancelFunc;
 
-        Animation m_AnimationData;
+        Animation m_Animation;
         std::vector<AnimationFrameEntry> m_Frames;
         int m_CurrentFrameIndex;
         float m_FrameTimeLeft;

@@ -190,6 +190,7 @@ namespace aga
 					{
 						Animation& animation = ActorFactory::GetAnimation (actorIt["animation"]);
 						newActor->SetAnimation (animation);
+						newActor->GetAnimation ().SetCurrentAnimation (ANIM_IDLE_NAME);
 					}
 
 					//  Physics

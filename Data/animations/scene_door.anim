@@ -1,0 +1,31 @@
+{
+    "animation": "SCENE_DOOR",
+    "animations": [
+        {
+            "frames": [
+                {
+                    "atlas": "scenes_common",
+                    "bounds": "0.00 0.00 64.00 64.00 ",
+                    "region": "scene_door1"
+                },
+                {
+                    "atlas": "scenes_common",
+                    "bounds": "66.00 0.00 64.00 64.00 ",
+                    "region": "scene_door2"
+                },
+                {
+                    "atlas": "scenes_common",
+                    "bounds": "132.00 0.00 64.00 64.00 ",
+                    "region": "scene_door3"
+                },
+                {
+                    "atlas": "scenes_common",
+                    "bounds": "66.00 0.00 64.00 64.00 ",
+                    "region": "scene_door2"
+                }
+            ],
+            "name": "ANIM_IDLE",
+            "speed": 260
+        }
+    ]
+}
