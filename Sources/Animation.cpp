@@ -115,6 +115,10 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
+	void Animation::RemoveAnimation (const std::string& name) { m_Animations.erase (name); }
+
+	//--------------------------------------------------------------------------------------------------
+
 	void Animation::Update (float deltaTime)
 	{
 		std::map<std::string, AnimationData>::iterator it = m_Animations.find (m_CurrentAnimationName);

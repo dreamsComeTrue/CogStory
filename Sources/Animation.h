@@ -55,6 +55,7 @@ namespace aga
         std::string GetCurrentAnimationName ();
         std::map<std::string, AnimationData>& GetAnimations ();
         void SetCurrentAnimation (const std::string& name);
+        void RemoveAnimation (const std::string& name);
         void ClearAnimationData ();
 
         void Update (float deltaTime);

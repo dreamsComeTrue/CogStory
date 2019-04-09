@@ -188,8 +188,7 @@ namespace aga
 
 					if (!actorIt["animation"].is_null () && actorIt["animation"] != "")
 					{
-						Animation& animation = ActorFactory::GetAnimation (actorIt["animation"]);
-						newActor->SetAnimation (animation);
+						newActor->SetAnimation (ActorFactory::GetAnimation (actorIt["animation"]));
 						newActor->GetAnimation ().SetCurrentAnimation (ANIM_IDLE_NAME);
 					}
 

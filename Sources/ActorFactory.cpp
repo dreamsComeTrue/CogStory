@@ -45,8 +45,6 @@ namespace aga
 
     void ActorFactory::RegisterAnimations ()
     {
-        s_Animations.clear ();
-
         const std::string animPath = GetDataPath () + "/animations/";
         std::vector<std::string> files = GetFilesInDirectory (animPath);
 

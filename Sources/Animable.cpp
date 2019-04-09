@@ -106,7 +106,8 @@ namespace aga
 				sourceWidth = frameRect.GetSize ().Width;
 				sourceHeight = frameRect.GetSize ().Height;
 
-				m_Atlas->DrawRegion (sourceX, sourceY, sourceWidth, sourceHeight, pos.X, pos.Y, 1, 1, angle, true);
+				Atlas* atlas = m_AtlasManager->GetAtlas (frame.Atlas);
+				atlas->DrawRegion (sourceX, sourceY, sourceWidth, sourceHeight, pos.X, pos.Y, 1, 1, angle, true);
 			}
 		}
 	}

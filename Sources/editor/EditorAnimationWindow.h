@@ -8,71 +8,77 @@
 
 namespace aga
 {
-    class Editor;
+	class Editor;
 
-    class EditorAnimationWindow
-    {
-    public:
-        EditorAnimationWindow (Editor* editor);
-        virtual ~EditorAnimationWindow ();
+	class EditorAnimationWindow
+	{
+	public:
+		EditorAnimationWindow (Editor* editor);
+		virtual ~EditorAnimationWindow ();
 
-        void Show (std::function<void(std::string, std::string)> OnAcceptFunc,
-            std::function<void(std::string, std::string)> OnCancelFunc);
+		void Show (std::function<void(std::string, std::string)> OnAcceptFunc,
+			std::function<void(std::string, std::string)> OnCancelFunc);
 
-        void Render ();
-        void RenderSpritesheet ();
-        void RenderAnimationFrames (float deltaTime);
+		void Render ();
+		void RenderSpritesheet ();
+		void RenderAnimationFrames (float deltaTime);
 
-        void SelectAnimationFrame ();
+		void SelectAnimationFrame ();
 
-        bool IsVisible ();
+		bool IsVisible ();
 
-    private:
-        void OnSave ();
-        void OnAccept ();
-        void OnCancel ();
+	private:
+		void OnSave ();
+        void OnDelete ();
+		void OnAccept ();
+		void OnCancel ();
 
-        void UpdateImageCombos ();
-        void UpdateAnimations ();
-        void UpdateNames ();
+		void UpdateImageCombos ();
+		void UpdateAnimations ();
+		void UpdateNames ();
 
-    private:
-        Editor* m_Editor;
+		void UpdateSceneActorsAnimation ();
+		
+		void ClearInputs ();
+		void SaveAnimToFile ();
 
-        class Atlas* m_SelectedAtlas;
-        std::string m_SelectedAtlasRegion;
+	private:
+		Editor* m_Editor;
 
-        char m_AnimationGroup[100];
-        char m_AnimationName[100];
-        std::vector<std::string> m_Animations;
-        int m_SelectedAnimationGroupIndex;
+		class Atlas* m_SelectedAtlas;
+		std::string m_SelectedAtlasRegion;
 
-        std::vector<std::string> m_Names;
-        int m_SelectedName;
+		char m_AnimationGroup[100];
+		char m_AnimationName[100];
+		std::vector<std::string> m_Animations;
+		int m_SelectedAnimationGroupIndex;
 
-        std::vector<std::string> m_Images;
-        int m_SelectedImage;
+		std::vector<std::string> m_Names;
+		int m_SelectedName;
 
-        std::vector<std::string> m_ImagePaths;
-        int m_SelectedImagePath;
+		std::vector<std::string> m_Images;
+		int m_SelectedImage;
 
-        int m_AnimSpeed;
+		std::vector<std::string> m_ImagePaths;
+		int m_SelectedImagePath;
 
-        bool m_IsVisible;
+		int m_AnimSpeed;
 
-        class AtlasRegion* m_HoveredRegion;
-        Rect m_HoveredArea;
+		bool m_IsVisible;
 
-        std::function<void(std::string, std::string)> m_OnAcceptFunc;
-        std::function<void(std::string, std::string)> m_OnCancelFunc;
+		class AtlasRegion* m_HoveredRegion;
+		Rect m_HoveredArea;
 
-        Animation m_Animation;
-        std::vector<AnimationFrameEntry> m_Frames;
-        int m_CurrentFrameIndex;
-        float m_FrameTimeLeft;
+		std::function<void(std::string, std::string)> m_OnAcceptFunc;
+		std::function<void(std::string, std::string)> m_OnCancelFunc;
 
-        int m_CellX, m_CellY;
-    };
+		Animation m_Animation;
+		std::vector<AnimationFrameEntry> m_Frames;
+		int m_CurrentFrameIndex;
+		float m_FrameTimeLeft;
+
+		int m_CellX, m_CellY;
+	};
 }
 
 #endif //   __EDITOR_ANIMATION_WINDOW_H__

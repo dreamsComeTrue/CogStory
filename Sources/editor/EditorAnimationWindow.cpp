@@ -47,23 +47,16 @@ namespace aga
 		m_OnCancelFunc = OnCancelFunc;
 
 		m_IsVisible = true;
-		memset (m_AnimationGroup, 0, ARRAY_SIZE (m_AnimationGroup));
-		memset (m_AnimationName, 0, ARRAY_SIZE (m_AnimationName));
-
-		m_Frames.clear ();
 
 		UpdateAnimations ();
 		UpdateNames ();
-
-		m_AnimSpeed = 0;
+		ClearInputs ();
 	}
 
 	//--------------------------------------------------------------------------------------------------
 
 	void EditorAnimationWindow::OnSave ()
 	{
-		std::string animName = m_AnimationGroup;
-
 		std::map<std::string, AnimationData>& animations = m_Animation.GetAnimations ();
 		bool found = false;
 
@@ -77,8 +70,8 @@ namespace aga
 		}
 
 		AnimationData frames;
-        frames.SetName (m_AnimationName);
-        frames.SetPlaySpeed (m_AnimSpeed);
+		frames.SetName (m_AnimationName);
+		frames.SetPlaySpeed (m_AnimSpeed);
 
 		for (AnimationFrameEntry& entry : m_Frames)
 		{
@@ -94,6 +87,24 @@ namespace aga
 			m_Animation.SetAnimationData (m_AnimationName, frames);
 		}
 
+		SaveAnimToFile ();
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void EditorAnimationWindow::OnDelete ()
+	{
+		m_Animation.RemoveAnimation (m_AnimationName);
+		SaveAnimToFile ();
+		ClearInputs ();
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void EditorAnimationWindow::SaveAnimToFile ()
+	{
+		std::string animName = m_AnimationGroup;
+
 		// Save to file
 		if (animName != "")
 		{
@@ -102,13 +113,15 @@ namespace aga
 			j["animation"] = m_Animation.GetName ();
 			j["animations"] = json::array ({});
 
+			std::map<std::string, AnimationData>& animations = m_Animation.GetAnimations ();
+
 			for (auto& kv : animations)
 			{
 				if (kv.first == "")
 				{
 					continue;
 				}
-				
+
 				json animObj = json::object ({});
 
 				animObj["name"] = kv.first;
@@ -150,6 +163,24 @@ namespace aga
 			out.close ();
 
 			ActorFactory::RegisterAnimations ();
+
+			UpdateSceneActorsAnimation ();
+		}
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void EditorAnimationWindow::UpdateSceneActorsAnimation ()
+	{
+		std::vector<Actor*>& actors = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetActors ();
+
+		for (Actor* actor : actors)
+		{
+			if (actor->GetAnimation ().GetName () == m_AnimationGroup)
+			{
+				actor->SetAnimation (ActorFactory::GetAnimation (m_AnimationGroup));
+				actor->GetAnimation ().SetCurrentAnimation (ANIM_IDLE_NAME);
+			}
 		}
 	}
 
@@ -260,15 +291,6 @@ namespace aga
 
 			ImGui::PopItemWidth ();
 
-			if (ImGui::Button ("SAVE", ImVec2 (controlWidth / 2 + 40, 18)))
-			{
-				OnSave ();
-				UpdateAnimations ();
-			}
-
-			ImGui::SameLine ();
-			ImGui::Button ("DELETE", ImVec2 (controlWidth / 2 + 40, 18));
-
 			ImGui::Text ("CellX");
 			ImGui::SameLine ();
 			ImGui::PushItemWidth (controlWidth / 2 - 10);
@@ -352,6 +374,22 @@ namespace aga
 			ImGui::Separator ();
 
 			ImGui::BeginGroup ();
+
+			if (ImGui::Button ("SAVE", ImVec2 (controlWidth / 2 + 40, 18)))
+			{
+				OnSave ();
+				UpdateAnimations ();
+			}
+
+			ImGui::SameLine ();
+			if (ImGui::Button ("DELETE", ImVec2 (controlWidth / 2 + 40, 18)))
+			{
+				OnDelete ();
+				UpdateAnimations ();
+			}
+
+			ImGui::Separator ();
+			ImGui::Separator ();
 
 			if (ImGui::Button ("ACCEPT", ImVec2 (controlWidth / 2 + 40, 18)))
 			{
@@ -633,6 +671,18 @@ namespace aga
 	//--------------------------------------------------------------------------------------------------
 
 	bool EditorAnimationWindow::IsVisible () { return m_IsVisible; }
+
+	//--------------------------------------------------------------------------------------------------
+
+	void EditorAnimationWindow::ClearInputs ()
+	{
+		memset (m_AnimationGroup, 0, ARRAY_SIZE (m_AnimationGroup));
+		memset (m_AnimationName, 0, ARRAY_SIZE (m_AnimationName));
+		m_Frames.clear ();
+		m_SelectedAnimationGroupIndex = 0;
+		m_SelectedName = 0;
+		m_AnimSpeed = 0;
+	}
 
 	//--------------------------------------------------------------------------------------------------
 }
