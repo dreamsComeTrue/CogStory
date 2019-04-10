@@ -44,6 +44,7 @@ namespace aga
 
 		static int GetNextID ();
 
+		static bool CompareByID (const Entity* a, const Entity* b);
 		static bool CompareByZOrder (const Entity* a, const Entity* b);
 
 		static int GlobalID;

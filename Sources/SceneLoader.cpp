@@ -380,8 +380,11 @@ namespace aga
 			}
 
 			j["actors"] = json::array ({});
+			
+			std::vector<Actor*> actors = scene->m_Actors;
+			std::sort (actors.begin (), actors.end (), Entity::CompareByID);
 
-			for (Actor* actor : scene->m_Actors)
+			for (Actor* actor : actors)
 			{
 				if (actor == scene->GetDummyActor ())
 				{
