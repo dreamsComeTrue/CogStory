@@ -1,183 +1,82 @@
 {
     "actors": [
         {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-horizontal",
+            "atlas": "env_0",
+            "atlas-region": "Sprite-0004",
             "blueprint": "-1",
             "collidable": "1",
-            "collision": "0",
+            "collision": "1",
             "focus-height": "100.00",
-            "id": "2069",
-            "name": "floor-cell-horizontal",
+            "id": "4",
+            "name": "Sprite-0004",
             "overlap": "0",
-            "pos": "-624.00 192.00",
+            "pos": "-192.00 16.00",
             "rot": "0.00",
-            "size": "64.00 64.00",
+            "size": "158.00 169.00",
             "type": "Tile",
-            "z-order": "0"
+            "z-order": "11"
         },
         {
             "atlas": "env_0",
-            "atlas-region": "tree2",
-            "blueprint": "2122",
+            "atlas-region": "Sprite-0025",
+            "blueprint": "-1",
             "collidable": "1",
-            "collision": "0",
+            "collision": "1",
             "focus-height": "100.00",
-            "id": "2141",
-            "name": "tree2",
+            "id": "12",
+            "name": "Sprite-0025",
             "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-34.00 54.50 30.00 54.50 -2.00 -25.50 "
-                }
-            ],
-            "pos": "-272.00 -112.00",
+            "pos": "-400.00 64.00",
             "rot": "0.00",
-            "size": "100.00 147.00",
+            "size": "107.00 128.00",
             "type": "Tile",
-            "z-order": "0"
+            "z-order": "11"
         },
         {
             "atlas": "env_0",
-            "atlas-region": "tree2",
-            "blueprint": "2122",
+            "atlas-region": "Sprite-0009",
+            "blueprint": "-1",
             "collidable": "1",
-            "collision": "0",
+            "collision": "1",
             "focus-height": "100.00",
-            "id": "2143",
-            "name": "tree2",
+            "id": "16",
+            "name": "Sprite-0009",
+            "overlap": "0",
+            "pos": "369.00 103.00",
+            "rot": "0.00",
+            "size": "157.00 147.00",
+            "type": "Tile",
+            "z-order": "11"
+        },
+        {
+            "atlas": "2_2_city",
+            "atlas-region": "Sprite-0020",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "1",
+            "focus-height": "0.00",
+            "id": "130",
+            "name": "sign",
             "overlap": "0",
             "phys": [
                 {
-                    "poly": "-34.00 54.50 30.00 54.50 -2.00 -25.50 "
+                    "poly": "-108.00 -63.00 -108.00 132.00 106.00 132.00 105.00 -62.00 -1.00 -110.00 "
                 }
             ],
-            "pos": "-144.00 -112.00",
+            "pos": "192.00 -192.00",
             "rot": "0.00",
-            "size": "100.00 147.00",
+            "size": "224.00 332.00",
             "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-horizontal",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2079",
-            "name": "floor-cell-horizontal",
-            "overlap": "0",
-            "pos": "16.00 192.00",
-            "rot": "0.00",
-            "size": "64.00 64.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-horizontal",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2076",
-            "name": "floor-cell-horizontal",
-            "overlap": "0",
-            "pos": "-176.00 192.00",
-            "rot": "0.00",
-            "size": "64.00 64.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-horizontal",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2077",
-            "name": "floor-cell-horizontal",
-            "overlap": "0",
-            "pos": "-112.00 192.00",
-            "rot": "0.00",
-            "size": "64.00 64.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-horizontal",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2075",
-            "name": "floor-cell-horizontal",
-            "overlap": "0",
-            "pos": "-240.00 192.00",
-            "rot": "0.00",
-            "size": "64.00 64.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-horizontal",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2074",
-            "name": "floor-cell-horizontal",
-            "overlap": "0",
-            "pos": "-304.00 192.00",
-            "rot": "0.00",
-            "size": "64.00 64.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-horizontal",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2082",
-            "name": "floor-cell-horizontal",
-            "overlap": "0",
-            "pos": "208.00 192.00",
-            "rot": "0.00",
-            "size": "64.00 64.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-horizontal",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2068",
-            "name": "floor-cell-horizontal",
-            "overlap": "0",
-            "pos": "-688.00 192.00",
-            "rot": "0.00",
-            "size": "64.00 64.00",
-            "type": "Tile",
-            "z-order": "0"
+            "z-order": "11"
         },
         {
             "atlas": "env_0",
             "atlas-region": "Sprite-0016",
-            "blueprint": "865",
+            "blueprint": "-1",
             "collidable": "1",
-            "collision": "0",
+            "collision": "1",
             "focus-height": "100.00",
-            "id": "1541",
+            "id": "1015",
             "name": "Sprite-0016",
             "overlap": "0",
             "phys": [
@@ -185,137 +84,20 @@
                     "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
                 }
             ],
-            "pos": "224.00 -336.00",
+            "pos": "560.00 -288.00",
             "rot": "0.00",
             "size": "82.00 131.00",
             "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-horizontal",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2078",
-            "name": "floor-cell-horizontal",
-            "overlap": "0",
-            "pos": "-48.00 192.00",
-            "rot": "0.00",
-            "size": "64.00 64.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "tree2",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2122",
-            "name": "tree2",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-34.00 54.50 30.00 54.50 -2.00 -25.50 "
-                }
-            ],
-            "pos": "-784.00 -112.00",
-            "rot": "0.00",
-            "size": "100.00 147.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-horizontal",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2066",
-            "name": "floor-cell-horizontal",
-            "overlap": "0",
-            "pos": "-816.00 192.00",
-            "rot": "0.00",
-            "size": "64.00 64.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-rightt-bottom",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2083",
-            "name": "floor-cell-rightt-bottom",
-            "overlap": "0",
-            "pos": "272.00 192.00",
-            "rot": "0.00",
-            "size": "64.00 64.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-horizontal",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2067",
-            "name": "floor-cell-horizontal",
-            "overlap": "0",
-            "pos": "-752.00 192.00",
-            "rot": "0.00",
-            "size": "64.00 64.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-vertical",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2084",
-            "name": "floor-cell-vertical",
-            "overlap": "0",
-            "pos": "272.00 128.00",
-            "rot": "0.00",
-            "size": "64.00 64.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-horizontal",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2081",
-            "name": "floor-cell-horizontal",
-            "overlap": "0",
-            "pos": "144.00 192.00",
-            "rot": "0.00",
-            "size": "64.00 64.00",
-            "type": "Tile",
-            "z-order": "0"
+            "z-order": "27"
         },
         {
             "atlas": "env_0",
             "atlas-region": "Sprite-0016",
-            "blueprint": "865",
+            "blueprint": "-1",
             "collidable": "1",
-            "collision": "0",
+            "collision": "1",
             "focus-height": "100.00",
-            "id": "1539",
+            "id": "1016",
             "name": "Sprite-0016",
             "overlap": "0",
             "phys": [
@@ -323,62 +105,20 @@
                     "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
                 }
             ],
-            "pos": "112.00 -336.00",
+            "pos": "496.00 -368.00",
             "rot": "0.00",
             "size": "82.00 131.00",
             "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "tree2",
-            "blueprint": "2122",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2135",
-            "name": "tree2",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-34.00 54.50 30.00 54.50 -2.00 -25.50 "
-                }
-            ],
-            "pos": "-656.00 -112.00",
-            "rot": "0.00",
-            "size": "100.00 147.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "tree2",
-            "blueprint": "2122",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2139",
-            "name": "tree2",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-34.00 54.50 30.00 54.50 -2.00 -25.50 "
-                }
-            ],
-            "pos": "-400.00 -112.00",
-            "rot": "0.00",
-            "size": "100.00 147.00",
-            "type": "Tile",
-            "z-order": "0"
+            "z-order": "1"
         },
         {
             "atlas": "env_0",
             "atlas-region": "Sprite-0016",
-            "blueprint": "865",
+            "blueprint": "-1",
             "collidable": "1",
-            "collision": "0",
+            "collision": "1",
             "focus-height": "100.00",
-            "id": "1543",
+            "id": "1017",
             "name": "Sprite-0016",
             "overlap": "0",
             "phys": [
@@ -386,59 +126,139 @@
                     "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
                 }
             ],
-            "pos": "336.00 -336.00",
+            "pos": "561.00 -169.00",
             "rot": "0.00",
             "size": "82.00 131.00",
             "type": "Tile",
-            "z-order": "0"
+            "z-order": "29"
         },
         {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-horizontal",
+            "atlas": "env_0",
+            "atlas-region": "Sprite-0016",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "1",
+            "focus-height": "100.00",
+            "id": "1018",
+            "name": "Sprite-0016",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
+                }
+            ],
+            "pos": "529.00 -233.00",
+            "rot": "0.00",
+            "size": "82.00 131.00",
+            "type": "Tile",
+            "z-order": "28"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "Sprite-0016",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "1",
+            "focus-height": "100.00",
+            "id": "1019",
+            "name": "Sprite-0016",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
+                }
+            ],
+            "pos": "561.00 -25.00",
+            "rot": "0.00",
+            "size": "82.00 131.00",
+            "type": "Tile",
+            "z-order": "31"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "Sprite-0016",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "1",
+            "focus-height": "100.00",
+            "id": "1020",
+            "name": "Sprite-0016",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
+                }
+            ],
+            "pos": "529.00 -89.00",
+            "rot": "0.00",
+            "size": "82.00 131.00",
+            "type": "Tile",
+            "z-order": "30"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "Sprite-0016",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "1",
+            "focus-height": "100.00",
+            "id": "1021",
+            "name": "Sprite-0016",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
+                }
+            ],
+            "pos": "561.00 103.00",
+            "rot": "0.00",
+            "size": "82.00 131.00",
+            "type": "Tile",
+            "z-order": "33"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "Sprite-0016",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "1",
+            "focus-height": "100.00",
+            "id": "1022",
+            "name": "Sprite-0016",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
+                }
+            ],
+            "pos": "529.00 39.00",
+            "rot": "0.00",
+            "size": "82.00 131.00",
+            "type": "Tile",
+            "z-order": "32"
+        },
+        {
+            "action-speech": "FACTORY_SIGN_INFO",
+            "action-speech-handling": "0",
+            "atlas": "env_1",
+            "atlas-region": "sign",
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "focus-height": "100.00",
-            "id": "2070",
-            "name": "floor-cell-horizontal",
-            "overlap": "0",
-            "pos": "-560.00 192.00",
+            "focus-height": "0.00",
+            "id": "1088",
+            "name": "FACTORY_SIGN",
+            "overlap": "1",
+            "phys": [
+                {
+                    "poly": "-5.00 2.00 -5.00 19.00 5.00 19.00 6.00 2.00 "
+                }
+            ],
+            "pos": "226.00 147.00",
             "rot": "0.00",
-            "size": "64.00 64.00",
+            "size": "32.00 48.00",
             "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-horizontal",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2073",
-            "name": "floor-cell-horizontal",
-            "overlap": "0",
-            "pos": "-368.00 192.00",
-            "rot": "0.00",
-            "size": "64.00 64.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-horizontal",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2071",
-            "name": "floor-cell-horizontal",
-            "overlap": "0",
-            "pos": "-496.00 192.00",
-            "rot": "0.00",
-            "size": "64.00 64.00",
-            "type": "Tile",
-            "z-order": "0"
+            "z-order": "12"
         },
         {
             "atlas": "env_0",
@@ -463,33 +283,12 @@
         },
         {
             "atlas": "env_0",
-            "atlas-region": "tree2",
-            "blueprint": "2122",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2137",
-            "name": "tree2",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-34.00 54.50 30.00 54.50 -2.00 -25.50 "
-                }
-            ],
-            "pos": "-528.00 -112.00",
-            "rot": "0.00",
-            "size": "100.00 147.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "env_0",
             "atlas-region": "Sprite-0016",
-            "blueprint": "-1",
+            "blueprint": "864",
             "collidable": "1",
             "collision": "0",
             "focus-height": "100.00",
-            "id": "1809",
+            "id": "1538",
             "name": "Sprite-0016",
             "overlap": "0",
             "phys": [
@@ -497,41 +296,30 @@
                     "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
                 }
             ],
-            "pos": "544.00 -368.00",
+            "pos": "81.00 -313.00",
             "rot": "0.00",
             "size": "82.00 131.00",
             "type": "Tile",
-            "z-order": "0"
+            "z-order": "1"
         },
         {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-horizontal",
-            "blueprint": "-1",
+            "atlas": "env_0",
+            "atlas-region": "Sprite-0016",
+            "blueprint": "865",
             "collidable": "1",
             "collision": "0",
             "focus-height": "100.00",
-            "id": "2080",
-            "name": "floor-cell-horizontal",
+            "id": "1539",
+            "name": "Sprite-0016",
             "overlap": "0",
-            "pos": "80.00 192.00",
+            "phys": [
+                {
+                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
+                }
+            ],
+            "pos": "112.00 -336.00",
             "rot": "0.00",
-            "size": "64.00 64.00",
-            "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "atlas": "2_0_city",
-            "atlas-region": "floor-cell-horizontal",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2072",
-            "name": "floor-cell-horizontal",
-            "overlap": "0",
-            "pos": "-432.00 192.00",
-            "rot": "0.00",
-            "size": "64.00 64.00",
+            "size": "82.00 131.00",
             "type": "Tile",
             "z-order": "0"
         },
@@ -559,11 +347,11 @@
         {
             "atlas": "env_0",
             "atlas-region": "Sprite-0016",
-            "blueprint": "864",
+            "blueprint": "865",
             "collidable": "1",
             "collision": "0",
             "focus-height": "100.00",
-            "id": "1544",
+            "id": "1541",
             "name": "Sprite-0016",
             "overlap": "0",
             "phys": [
@@ -571,53 +359,11 @@
                     "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
                 }
             ],
-            "pos": "400.00 -368.00",
+            "pos": "224.00 -336.00",
             "rot": "0.00",
             "size": "82.00 131.00",
             "type": "Tile",
-            "z-order": "1"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "Sprite-0016",
-            "blueprint": "864",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "1538",
-            "name": "Sprite-0016",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
-                }
-            ],
-            "pos": "81.00 -313.00",
-            "rot": "0.00",
-            "size": "82.00 131.00",
-            "type": "Tile",
-            "z-order": "1"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "Sprite-0016",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "1",
-            "focus-height": "100.00",
-            "id": "1016",
-            "name": "Sprite-0016",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
-                }
-            ],
-            "pos": "496.00 -368.00",
-            "rot": "0.00",
-            "size": "82.00 131.00",
-            "type": "Tile",
-            "z-order": "1"
+            "z-order": "0"
         },
         {
             "atlas": "env_0",
@@ -643,11 +389,11 @@
         {
             "atlas": "env_0",
             "atlas-region": "Sprite-0016",
-            "blueprint": "-1",
+            "blueprint": "865",
             "collidable": "1",
             "collision": "0",
             "focus-height": "100.00",
-            "id": "1808",
+            "id": "1543",
             "name": "Sprite-0016",
             "overlap": "0",
             "phys": [
@@ -655,11 +401,32 @@
                     "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
                 }
             ],
-            "pos": "448.00 -320.00",
+            "pos": "336.00 -336.00",
             "rot": "0.00",
             "size": "82.00 131.00",
             "type": "Tile",
-            "z-order": "2"
+            "z-order": "0"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "Sprite-0016",
+            "blueprint": "864",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "1544",
+            "name": "Sprite-0016",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
+                }
+            ],
+            "pos": "400.00 -368.00",
+            "rot": "0.00",
+            "size": "82.00 131.00",
+            "type": "Tile",
+            "z-order": "1"
         },
         {
             "atlas": "env_0",
@@ -705,12 +472,379 @@
         },
         {
             "atlas": "env_0",
+            "atlas-region": "Sprite-0016",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "1808",
+            "name": "Sprite-0016",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
+                }
+            ],
+            "pos": "448.00 -320.00",
+            "rot": "0.00",
+            "size": "82.00 131.00",
+            "type": "Tile",
+            "z-order": "2"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "Sprite-0016",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "1809",
+            "name": "Sprite-0016",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
+                }
+            ],
+            "pos": "544.00 -368.00",
+            "rot": "0.00",
+            "size": "82.00 131.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-horizontal",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2066",
+            "name": "floor-cell-horizontal",
+            "overlap": "0",
+            "pos": "-816.00 192.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-horizontal",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2067",
+            "name": "floor-cell-horizontal",
+            "overlap": "0",
+            "pos": "-752.00 192.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-horizontal",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2068",
+            "name": "floor-cell-horizontal",
+            "overlap": "0",
+            "pos": "-688.00 192.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-horizontal",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2069",
+            "name": "floor-cell-horizontal",
+            "overlap": "0",
+            "pos": "-624.00 192.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-horizontal",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2070",
+            "name": "floor-cell-horizontal",
+            "overlap": "0",
+            "pos": "-560.00 192.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-horizontal",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2071",
+            "name": "floor-cell-horizontal",
+            "overlap": "0",
+            "pos": "-496.00 192.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-horizontal",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2072",
+            "name": "floor-cell-horizontal",
+            "overlap": "0",
+            "pos": "-432.00 192.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-horizontal",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2073",
+            "name": "floor-cell-horizontal",
+            "overlap": "0",
+            "pos": "-368.00 192.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-horizontal",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2074",
+            "name": "floor-cell-horizontal",
+            "overlap": "0",
+            "pos": "-304.00 192.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-horizontal",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2075",
+            "name": "floor-cell-horizontal",
+            "overlap": "0",
+            "pos": "-240.00 192.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-horizontal",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2076",
+            "name": "floor-cell-horizontal",
+            "overlap": "0",
+            "pos": "-176.00 192.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-horizontal",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2077",
+            "name": "floor-cell-horizontal",
+            "overlap": "0",
+            "pos": "-112.00 192.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-horizontal",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2078",
+            "name": "floor-cell-horizontal",
+            "overlap": "0",
+            "pos": "-48.00 192.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-horizontal",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2079",
+            "name": "floor-cell-horizontal",
+            "overlap": "0",
+            "pos": "16.00 192.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-horizontal",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2080",
+            "name": "floor-cell-horizontal",
+            "overlap": "0",
+            "pos": "80.00 192.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-horizontal",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2081",
+            "name": "floor-cell-horizontal",
+            "overlap": "0",
+            "pos": "144.00 192.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-horizontal",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2082",
+            "name": "floor-cell-horizontal",
+            "overlap": "0",
+            "pos": "208.00 192.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-rightt-bottom",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2083",
+            "name": "floor-cell-rightt-bottom",
+            "overlap": "0",
+            "pos": "272.00 192.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "2_0_city",
+            "atlas-region": "floor-cell-vertical",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2084",
+            "name": "floor-cell-vertical",
+            "overlap": "0",
+            "pos": "272.00 128.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "Sprite-0016",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "1",
+            "focus-height": "100.00",
+            "id": "2119",
+            "name": "Sprite-0016",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
+                }
+            ],
+            "pos": "512.00 144.00",
+            "rot": "0.00",
+            "size": "82.00 131.00",
+            "type": "Tile",
+            "z-order": "33"
+        },
+        {
+            "atlas": "env_0",
             "atlas-region": "tree2",
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
             "focus-height": "0.96",
-            "id": "2145",
+            "id": "2121",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -718,7 +852,7 @@
                     "poly": "-34.00 54.50 30.00 54.50 -2.00 -25.50 "
                 }
             ],
-            "pos": "-592.00 -64.00",
+            "pos": "-848.00 -64.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
@@ -727,11 +861,11 @@
         {
             "atlas": "env_0",
             "atlas-region": "tree2",
-            "blueprint": "2136",
+            "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "focus-height": "0.96",
-            "id": "2142",
+            "focus-height": "100.00",
+            "id": "2122",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -739,11 +873,32 @@
                     "poly": "-34.00 54.50 30.00 54.50 -2.00 -25.50 "
                 }
             ],
-            "pos": "-336.00 -64.00",
+            "pos": "-784.00 -112.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "6"
+            "z-order": "0"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "tree2",
+            "blueprint": "2122",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2135",
+            "name": "tree2",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-34.00 54.50 30.00 54.50 -2.00 -25.50 "
+                }
+            ],
+            "pos": "-656.00 -112.00",
+            "rot": "0.00",
+            "size": "100.00 147.00",
+            "type": "Tile",
+            "z-order": "0"
         },
         {
             "atlas": "env_0",
@@ -769,11 +924,11 @@
         {
             "atlas": "env_0",
             "atlas-region": "tree2",
-            "blueprint": "2136",
+            "blueprint": "2122",
             "collidable": "1",
             "collision": "0",
-            "focus-height": "0.96",
-            "id": "2144",
+            "focus-height": "100.00",
+            "id": "2137",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -781,11 +936,11 @@
                     "poly": "-34.00 54.50 30.00 54.50 -2.00 -25.50 "
                 }
             ],
-            "pos": "-208.00 -64.00",
+            "pos": "-528.00 -112.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "6"
+            "z-order": "0"
         },
         {
             "atlas": "env_0",
@@ -811,11 +966,11 @@
         {
             "atlas": "env_0",
             "atlas-region": "tree2",
-            "blueprint": "-1",
+            "blueprint": "2122",
             "collidable": "1",
             "collision": "0",
-            "focus-height": "0.96",
-            "id": "2121",
+            "focus-height": "100.00",
+            "id": "2139",
             "name": "tree2",
             "overlap": "0",
             "phys": [
@@ -823,272 +978,134 @@
                     "poly": "-34.00 54.50 30.00 54.50 -2.00 -25.50 "
                 }
             ],
-            "pos": "-848.00 -64.00",
+            "pos": "-400.00 -112.00",
+            "rot": "0.00",
+            "size": "100.00 147.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "tree2",
+            "blueprint": "2122",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2141",
+            "name": "tree2",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-34.00 54.50 30.00 54.50 -2.00 -25.50 "
+                }
+            ],
+            "pos": "-272.00 -112.00",
+            "rot": "0.00",
+            "size": "100.00 147.00",
+            "type": "Tile",
+            "z-order": "0"
+        },
+        {
+            "atlas": "env_0",
+            "atlas-region": "tree2",
+            "blueprint": "2136",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "0.96",
+            "id": "2142",
+            "name": "tree2",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-34.00 54.50 30.00 54.50 -2.00 -25.50 "
+                }
+            ],
+            "pos": "-336.00 -64.00",
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
             "z-order": "6"
         },
         {
-            "atlas": "2_2_city",
-            "atlas-region": "Sprite-0020",
-            "blueprint": "-1",
+            "atlas": "env_0",
+            "atlas-region": "tree2",
+            "blueprint": "2122",
             "collidable": "1",
-            "collision": "1",
-            "focus-height": "0.00",
-            "id": "130",
-            "name": "sign",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "2143",
+            "name": "tree2",
             "overlap": "0",
             "phys": [
                 {
-                    "poly": "-108.00 -63.00 -108.00 132.00 106.00 132.00 105.00 -62.00 -1.00 -110.00 "
+                    "poly": "-34.00 54.50 30.00 54.50 -2.00 -25.50 "
                 }
             ],
-            "pos": "192.00 -192.00",
+            "pos": "-144.00 -112.00",
             "rot": "0.00",
-            "size": "224.00 332.00",
+            "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "11"
+            "z-order": "0"
         },
         {
             "atlas": "env_0",
-            "atlas-region": "Sprite-0004",
-            "blueprint": "-1",
+            "atlas-region": "tree2",
+            "blueprint": "2136",
             "collidable": "1",
-            "collision": "1",
-            "focus-height": "100.00",
-            "id": "4",
-            "name": "Sprite-0004",
+            "collision": "0",
+            "focus-height": "0.96",
+            "id": "2144",
+            "name": "tree2",
             "overlap": "0",
-            "pos": "-192.00 16.00",
+            "phys": [
+                {
+                    "poly": "-34.00 54.50 30.00 54.50 -2.00 -25.50 "
+                }
+            ],
+            "pos": "-208.00 -64.00",
             "rot": "0.00",
-            "size": "158.00 169.00",
+            "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "11"
+            "z-order": "6"
         },
         {
             "atlas": "env_0",
-            "atlas-region": "Sprite-0009",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "1",
-            "focus-height": "100.00",
-            "id": "16",
-            "name": "Sprite-0009",
-            "overlap": "0",
-            "pos": "369.00 103.00",
-            "rot": "0.00",
-            "size": "157.00 147.00",
-            "type": "Tile",
-            "z-order": "11"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "Sprite-0025",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "1",
-            "focus-height": "100.00",
-            "id": "12",
-            "name": "Sprite-0025",
-            "overlap": "0",
-            "phys": [],
-            "pos": "-400.00 64.00",
-            "rot": "0.00",
-            "size": "107.00 128.00",
-            "type": "Tile",
-            "z-order": "11"
-        },
-        {
-            "action-speech": "FACTORY_SIGN_INFO",
-            "action-speech-handling": "0",
-            "atlas": "env_1",
-            "atlas-region": "sign",
+            "atlas-region": "tree2",
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "focus-height": "0.00",
-            "id": "1088",
-            "name": "FACTORY_SIGN",
-            "overlap": "1",
-            "phys": [
-                {
-                    "poly": "-5.00 2.00 -5.00 19.00 5.00 19.00 6.00 2.00 "
-                }
-            ],
-            "pos": "226.00 147.00",
-            "rot": "0.00",
-            "size": "32.00 48.00",
-            "type": "Tile",
-            "z-order": "12"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "Sprite-0016",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "1",
-            "focus-height": "100.00",
-            "id": "1015",
-            "name": "Sprite-0016",
+            "focus-height": "0.96",
+            "id": "2145",
+            "name": "tree2",
             "overlap": "0",
             "phys": [
                 {
-                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
+                    "poly": "-34.00 54.50 30.00 54.50 -2.00 -25.50 "
                 }
             ],
-            "pos": "560.00 -288.00",
+            "pos": "-592.00 -64.00",
             "rot": "0.00",
-            "size": "82.00 131.00",
+            "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "27"
+            "z-order": "6"
         },
         {
-            "atlas": "env_0",
-            "atlas-region": "Sprite-0016",
-            "blueprint": "-1",
+            "animation": "SCENE_DOOR",
+            "atlas": "scenes_common",
+            "atlas-region": "scene_door1",
+            "blueprint": "2491",
             "collidable": "1",
-            "collision": "1",
+            "collision": "0",
             "focus-height": "100.00",
-            "id": "1018",
-            "name": "Sprite-0016",
+            "id": "2771",
+            "name": "scene_door1",
             "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
-                }
-            ],
-            "pos": "529.00 -233.00",
-            "rot": "0.00",
-            "size": "82.00 131.00",
+            "phys": [],
+            "pos": "-848.00 192.00",
+            "rot": "90.00",
+            "size": "64.00 64.00",
             "type": "Tile",
-            "z-order": "28"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "Sprite-0016",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "1",
-            "focus-height": "100.00",
-            "id": "1017",
-            "name": "Sprite-0016",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
-                }
-            ],
-            "pos": "561.00 -169.00",
-            "rot": "0.00",
-            "size": "82.00 131.00",
-            "type": "Tile",
-            "z-order": "29"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "Sprite-0016",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "1",
-            "focus-height": "100.00",
-            "id": "1020",
-            "name": "Sprite-0016",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
-                }
-            ],
-            "pos": "529.00 -89.00",
-            "rot": "0.00",
-            "size": "82.00 131.00",
-            "type": "Tile",
-            "z-order": "30"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "Sprite-0016",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "1",
-            "focus-height": "100.00",
-            "id": "1019",
-            "name": "Sprite-0016",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
-                }
-            ],
-            "pos": "561.00 -25.00",
-            "rot": "0.00",
-            "size": "82.00 131.00",
-            "type": "Tile",
-            "z-order": "31"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "Sprite-0016",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "1",
-            "focus-height": "100.00",
-            "id": "1022",
-            "name": "Sprite-0016",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
-                }
-            ],
-            "pos": "529.00 39.00",
-            "rot": "0.00",
-            "size": "82.00 131.00",
-            "type": "Tile",
-            "z-order": "32"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "Sprite-0016",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "1",
-            "focus-height": "100.00",
-            "id": "2119",
-            "name": "Sprite-0016",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
-                }
-            ],
-            "pos": "512.00 144.00",
-            "rot": "0.00",
-            "size": "82.00 131.00",
-            "type": "Tile",
-            "z-order": "33"
-        },
-        {
-            "atlas": "env_0",
-            "atlas-region": "Sprite-0016",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "1",
-            "focus-height": "100.00",
-            "id": "1021",
-            "name": "Sprite-0016",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-40.00 49.00 41.00 50.00 -1.00 -61.00 "
-                }
-            ],
-            "pos": "561.00 103.00",
-            "rot": "0.00",
-            "size": "82.00 131.00",
-            "type": "Tile",
-            "z-order": "33"
+            "z-order": "5"
         }
     ],
     "color": "35 31 54 255",

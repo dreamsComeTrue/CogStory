@@ -161,25 +161,27 @@ namespace aga
 
 	void SceneManager::RemoveScene (Scene* scene)
 	{
-		for (std::map<std::string, Scene*>::iterator it = m_Scenes.begin (); it != m_Scenes.end ();)
+		for (std::map<std::string, Scene*>::iterator it = m_Scenes.begin (); it != m_Scenes.end (); ++it)
 		{
 			if (it->second == scene)
 			{
 				it->second->AfterLeave ();
 
+				bool clearActiveScene = false;
 				if (it->second == m_ActiveScene)
 				{
-					m_ActiveScene = nullptr;
+					clearActiveScene = true;
 				}
 
 				SAFE_DELETE (it->second);
 				m_Scenes.erase (it);
 
-				return;
-			}
-			else
-			{
-				it++;
+				if (clearActiveScene)
+				{
+					m_ActiveScene = nullptr;
+				}
+
+				break;
 			}
 		}
 	}
