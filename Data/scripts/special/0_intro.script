@@ -43,14 +43,14 @@ void CitySceneAnimation ()
     camera.SetFollowActor (GetDummyActor ());
     GetDummyActor ().SetPosition (GetFlagPoint ("INTRO_CAMERA_START").Pos);
 
-    SetOverlayText ("-- Chapter I --\nNo ordinary day", 6000.f, 200.f, Center);    
+    SetOverlayText ("-- Chapter I --\nNo ordinary day", 4000.f, Plain, 200.f, Center);    
 
     Timeline@ timeline = CreateTimeline ();
 
     timeline
-    .Once (GetAnimTime ('CitySceneAnimationTime'), function (id)
+    .Once (GetAnimTime ('CityMainScene_AnimTime'), function (id)
     {
-        CreateCameraToFlagPointTween ("INTRO_CAMERA_END", 'CitySceneAnimationTime', function (id)
+        CreateCameraToFlagPointTween ("INTRO_CAMERA_END", 'CityMainScene_AnimTime', function (id)
         {
             CityFactorySceneAnimation ();
         });
@@ -69,13 +69,13 @@ void CityFactorySceneAnimation ()
         Timeline@ timeline = CreateTimeline ();
 
         timeline
-        .Once (GetAnimTime ('CityFactorySceneAnimationTime1'), function (id)
+        .Once (GetAnimTime ('CityFactoryScene_AnimTime1'), function (id)
         {
-            CreateCameraToFlagPointTween ("INTRO_CAMERA_A", 'CityFactorySceneAnimationTime1', null);
+            CreateCameraToFlagPointTween ("INTRO_CAMERA_A", 'CityFactoryScene_AnimTime1', null);
         })
-        .Once (GetAnimTime ('CityFactorySceneAnimationTime2'), function (id)
+        .Once (GetAnimTime ('CityFactoryScene_AnimTime2'), function (id)
         {
-            CreateCameraToFlagPointTween ("INTRO_CAMERA_END", 'CityFactorySceneAnimationTime2', function (id)
+            CreateCameraToFlagPointTween ("INTRO_CAMERA_END", 'CityFactoryScene_AnimTime2', function (id)
             {
                 FactoryMainSceneAnimation ();
             });
@@ -95,13 +95,13 @@ void FactoryMainSceneAnimation ()
         Timeline@ timeline = CreateTimeline ();
 
         timeline
-        .Once (GetAnimTime ('FactoryMainSceneAnimation1'), function (id)
+        .Once (GetAnimTime ('FactoryMainScene_Anim1'), function (id)
         {
-            CreateCameraToFlagPointTween ("INTRO_CAMERA_A", 'FactoryMainSceneAnimation1', null);
+            CreateCameraToFlagPointTween ("INTRO_CAMERA_A", 'FactoryMainScene_Anim1', null);
         })
-        .Once (GetAnimTime ('FactoryMainSceneAnimation2'), function (id)
+        .Once (GetAnimTime ('FactoryMainScene_Anim2'), function (id)
         {
-            CreateCameraToFlagPointTween ("INTRO_CAMERA_END", 'FactoryMainSceneAnimation2', function (id)
+            CreateCameraToFlagPointTween ("INTRO_CAMERA_END", 'FactoryMainScene_Anim2', function (id)
             {
                 camera.SetFollowActor (player);
                 player.SetPreventInput (false);

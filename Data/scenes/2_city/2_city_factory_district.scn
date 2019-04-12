@@ -1088,24 +1088,6 @@
             "size": "100.00 147.00",
             "type": "Tile",
             "z-order": "6"
-        },
-        {
-            "animation": "SCENE_DOOR",
-            "atlas": "scenes_common",
-            "atlas-region": "scene_door1",
-            "blueprint": "2491",
-            "collidable": "1",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "2771",
-            "name": "scene_door1",
-            "overlap": "0",
-            "phys": [],
-            "pos": "-848.00 192.00",
-            "rot": "90.00",
-            "size": "64.00 64.00",
-            "type": "Tile",
-            "z-order": "5"
         }
     ],
     "color": "35 31 54 255",
@@ -1113,7 +1095,7 @@
         {
             "connections": "INTRO_CAMERA_END INTRO_CAMERA_START ",
             "name": "INTRO_CAMERA_A",
-            "pos": "304.00 112.00"
+            "pos": "306.00 122.00"
         },
         {
             "connections": "",
@@ -1123,7 +1105,7 @@
         {
             "connections": "INTRO_CAMERA_A ",
             "name": "INTRO_CAMERA_START",
-            "pos": "-608.00 112.00"
+            "pos": "-608.00 122.00"
         },
         {
             "connections": "",

@@ -31,18 +31,22 @@ class FinishFunction
 array<FinishFunction> finishFuncs;
 dictionary g_TimesDictionary = 
 {
-    {'CitySceneAnimationTime', 2000},
-    {'CityFactorySceneAnimationTime1', 2000},
-    {'CityFactorySceneAnimationTime2', 500},
-    {'FactoryMainSceneAnimation1', 1000},
-    {'FactoryMainSceneAnimation2', 1000}
+    {'CityMainScene_AnimTime', 8000},
+    {'CityFactoryScene_AnimTime1', 5000},
+    {'CityFactoryScene_AnimTime2', 2000},
+    {'FactoryMainScene_Anim1', 3000},
+    {'FactoryMainScene_Anim2', 3000}
 };
 
 //--------------------------------------------------------------------------------------------------
 
+float TIME_MULTIPLIER = 1.0f;
+
 int GetAnimTime (string id)
 {
-    return int(g_TimesDictionary[id]);
+    int time = int(g_TimesDictionary[id]);
+    
+    return int(time / TIME_MULTIPLIER);
 }
 
 //--------------------------------------------------------------------------------------------------

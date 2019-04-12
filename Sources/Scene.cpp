@@ -1017,6 +1017,9 @@ namespace aga
 		{
 			m_DummyActor = ActorFactory::GetActor (m_SceneManager, TileActor::TypeName);
 			m_DummyActor->Name = DUMMY_ACTOR_NAME;
+			m_DummyActor->SetCollisionEnabled (false);
+			m_DummyActor->SetCollidable (false);
+			m_DummyActor->SetCheckOverlap (false);
 
 			AddActor (m_DummyActor);
 		}

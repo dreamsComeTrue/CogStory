@@ -368,7 +368,7 @@ namespace aga
 			al_draw_filled_rectangle (0, 0, size.Width, size.Height, m_FadeColor);
 		}
 
-		if (m_ActiveScene && m_SceneIntro)
+		if (m_ActiveScene && m_SceneIntro && !m_ActiveScene->IsSuppressSceneInfo ())
 		{
 			m_OverlayPosition = BottomRight;
 			m_OverlayText = m_ActiveScene->GetName ();
@@ -398,10 +398,7 @@ namespace aga
 		al_get_blender (&blendOp, &blendSrc, &blendDst);
 		al_set_blender (ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
 
-		if (!m_ActiveScene->IsSuppressSceneInfo ())
-		{
-			PrintOverlayText (m_OverlayText, m_OverlayTextColor, m_OverlayPosition);
-		}
+		PrintOverlayText (m_OverlayText, m_OverlayTextColor, m_OverlayPosition);
 
 		al_set_blender (blendOp, blendSrc, blendDst);
 	}
