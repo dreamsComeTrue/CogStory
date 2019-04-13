@@ -1,4 +1,4 @@
 {
-    "music_enabled": false,
-    "sounds_enabled": false
+    "music_enabled": true,
+    "sounds_enabled": true
 }
