@@ -393,6 +393,11 @@ namespace aga
 
 	void Actor::ProcessTriggerAreas (float dx, float dy, Point&& offset)
 	{
+		if (!IsCollidable ())
+		{
+			return;
+		}
+		
 		std::map<std::string, TriggerArea>& triggerAreas = m_SceneManager->GetActiveScene ()->GetTriggerAreas ();
 
 		for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)

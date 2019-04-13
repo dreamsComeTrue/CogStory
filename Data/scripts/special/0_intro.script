@@ -43,7 +43,7 @@ void CitySceneAnimation ()
     camera.SetFollowActor (GetDummyActor ());
     GetDummyActor ().SetPosition (GetFlagPoint ("INTRO_CAMERA_START").Pos);
 
-    SetOverlayText ("-- Chapter I --\nNo ordinary day", 4000.f, Plain, 200.f, Center);    
+    SetOverlayText ("-- Chapter I --\nNo ordinary day", GetAnimTime ('CityMainScene_AnimTime') / 2.0f, Plain, 200.f, Center);    
 
     Timeline@ timeline = CreateTimeline ();
 
