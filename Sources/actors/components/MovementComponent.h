@@ -47,15 +47,18 @@ namespace aga
         void SetSpeed (float speed) { m_Speed = speed; }
         float GetSpeed () const { return m_Speed; }
 
-        void SetWalkPoints (struct FlagPoint* flagPoint);
+        void SetWalkPoints (struct FlagPoint* flagPoint, bool followLinks = true);
         void SetWalkPoints (CScriptArray* array);
         void SetWalkPoints (std::vector<Point> points);
+        void SetWalkPointReachTime (int duringMS);
 
         void SetMovementCallback (asIScriptFunction* callback) { m_ScriptMoveCallback = callback; }
 
         virtual std::string GetTypeName () override { return TypeName; }
 
     private:
+        void PlayStepSample (float deltaTime);
+        Point ComputeNewPos ();
         void ComputeTargetPos ();
         void ComputeMovePoints ();
         void ComputeMoveWander ();
@@ -76,6 +79,7 @@ namespace aga
         float m_Speed;
 
         std::vector<Point> m_Points;
+        int m_WalkPointReachTime;
         int m_CurrentPointIndex;
         bool m_PointsMovingForward;
 

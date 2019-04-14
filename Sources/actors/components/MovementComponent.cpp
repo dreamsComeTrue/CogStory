@@ -30,6 +30,7 @@ namespace aga
 		, m_MaxWaitTime (0.f)
 		, m_ScriptMoveCallback (nullptr)
 		, m_SampleCounter (0)
+		, m_WalkPointReachTime (-1)
 	{
 		m_InitialPos = owner->Bounds.Pos;
 
@@ -110,8 +111,7 @@ namespace aga
 			return true;
 		}
 
-		Point currentPos = m_Actor->Bounds.Pos;
-
+		//	Choose, how long we need to no move
 		if (AreSame (m_MaxWaitTime, 0.0f) && RandZeroToOne () < m_WaitLikelihood)
 		{
 			m_MaxWaitTime = RandInRange (m_WaitTimeBounds.X, m_WaitTimeBounds.Y);
@@ -123,6 +123,7 @@ namespace aga
 			m_MaxWaitTime = 0.0f;
 		}
 
+		//	Wait (no-move)
 		if (m_MaxWaitTime > 0.0f)
 		{
 			m_WaitTimeElapsed += deltaTime;
@@ -131,83 +132,31 @@ namespace aga
 		}
 		else
 		{
+			Point currentPos = m_Actor->GetPosition ();
 			bool xEqual = m_TargetPos.X > m_StartPos.X ? currentPos.X >= m_TargetPos.X : currentPos.X <= m_TargetPos.X;
 			bool yEqual = m_TargetPos.Y > m_StartPos.Y ? currentPos.Y >= m_TargetPos.Y : currentPos.Y <= m_TargetPos.Y;
 
+			//	We can move
 			if (!xEqual || !yEqual)
 			{
-				m_CurrentTargetTime += m_Speed * deltaTime;
-
-				Point newPos = Lerp (m_StartPos, m_TargetPos, m_CurrentTargetTime / m_MaxTargetTime);
-				Point deltaPos = newPos - currentPos;
-
-				std::vector<Entity*> entites
-					= m_Actor->GetSceneManager ()->GetActiveScene ()->RecomputeVisibleEntities (false);
-				for (Entity* ent : entites)
+				if (m_WalkPointReachTime >= 0)
 				{
-					Collidable* collidable = static_cast<Actor*> (ent);
-					Point collisionDelta;
-
-					if (ent != m_Actor && m_Actor->IsCollidingWith (collidable, deltaPos, std::move (collisionDelta)))
-					{
-						float positiveMoveBoundary = 1.5f;
-						float negativeMoveBoundary = -0.5f;
-
-						if (collisionDelta.X < negativeMoveBoundary || collisionDelta.X > positiveMoveBoundary)
-						{
-							deltaPos.X = deltaPos.X + collisionDelta.X;
-						}
-
-						if (collisionDelta.Y < negativeMoveBoundary || collisionDelta.Y > positiveMoveBoundary)
-						{
-							deltaPos.Y = deltaPos.Y + collisionDelta.Y;
-						}
-					}
+					m_CurrentTargetTime += deltaTime * 1000.f;
+				}
+				else
+				{
+					m_CurrentTargetTime += deltaTime * m_Speed;
 				}
 
-				if (!((AreSame (deltaPos.X, 0) && AreSame (deltaPos.Y, 0))))
+				Point newPos = ComputeNewPos ();
+
+				if (!((AreSame (newPos.X, 0) && AreSame (newPos.Y, 0))))
 				{
-					m_LastAngle = ToPositiveAngle (RadiansToDegrees (std::atan2 (deltaPos.Y, deltaPos.X)));
+					PlayStepSample (deltaTime);
+
+					m_LastAngle = ToPositiveAngle (RadiansToDegrees (std::atan2 (newPos.Y, newPos.X)));
 					m_Actor->ChooseWalkAnimation (m_LastAngle);
-
-					MainLoop* mainLoop = m_Actor->GetSceneManager ()->GetMainLoop ();
-					Actor* followActor = mainLoop->GetSceneManager ().GetCamera ().GetFollowActor ();
-
-					if (followActor)
-					{
-						Point screenSize = mainLoop->GetScreen ()->GetBackBufferSize ();
-						Point followActorPos = followActor->GetPosition () + followActor->Bounds.GetHalfSize ();
-						Point thisPos = m_Actor->GetPosition ();
-
-						if (thisPos.X < followActorPos.X)
-						{
-							thisPos.X += m_Actor->Bounds.GetSize ().Width;
-						}
-
-						if (thisPos.Y < followActorPos.Y)
-						{
-							thisPos.Y += m_Actor->Bounds.GetSize ().Height;
-						}
-
-						Rect followActorBounds = Rect (
-							followActorPos - screenSize * 0.5f * 0.5f, followActorPos + screenSize * 0.5f * 0.5f);
-
-						m_SampleCounter += deltaTime;
-
-						if (InsideRect (thisPos, followActorBounds) && m_SampleCounter > 0.2f
-							&& !mainLoop->GetAudioManager ().IsGloballyPlaying (m_FootStepSample->GetName ()))
-						{
-							float distanceToFollowActor = (followActorPos - thisPos).Magnitude ();
-							float volume = 1.0f;
-
-							// m_FootStepSample->SetVolume (volume);
-							m_FootStepSample->Play ();
-
-							m_SampleCounter = 0;
-						}
-					}
-
-					m_Actor->Move (deltaPos);
+					m_Actor->Move (newPos);
 
 					if (m_ScriptMoveCallback)
 					{
@@ -234,6 +183,81 @@ namespace aga
 		ctx->Execute ();
 		ctx->Unprepare ();
 		ctx->GetEngine ()->ReturnContext (ctx);
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	Point MovementComponent::ComputeNewPos ()
+	{
+		Point newPos = Lerp (m_StartPos, m_TargetPos, m_CurrentTargetTime / m_MaxTargetTime);
+		Point deltaPos = newPos - m_Actor->GetPosition ();
+
+		std::vector<Entity*> entites = m_Actor->GetSceneManager ()->GetActiveScene ()->RecomputeVisibleEntities (false);
+		for (Entity* ent : entites)
+		{
+			Collidable* collidable = static_cast<Actor*> (ent);
+			Point collisionDelta;
+
+			if (ent != m_Actor && m_Actor->IsCollidingWith (collidable, deltaPos, std::move (collisionDelta)))
+			{
+				float positiveMoveBoundary = 1.5f;
+				float negativeMoveBoundary = -0.5f;
+
+				if (collisionDelta.X < negativeMoveBoundary || collisionDelta.X > positiveMoveBoundary)
+				{
+					deltaPos.X += collisionDelta.X;
+				}
+
+				if (collisionDelta.Y < negativeMoveBoundary || collisionDelta.Y > positiveMoveBoundary)
+				{
+					deltaPos.Y += collisionDelta.Y;
+				}
+			}
+		}
+
+		return deltaPos;
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void MovementComponent::PlayStepSample (float deltaTime)
+	{
+		MainLoop* mainLoop = m_Actor->GetSceneManager ()->GetMainLoop ();
+		Actor* followActor = mainLoop->GetSceneManager ().GetCamera ().GetFollowActor ();
+
+		if (followActor)
+		{
+			Point screenSize = mainLoop->GetScreen ()->GetBackBufferSize ();
+			Point followActorPos = followActor->GetPosition () + followActor->Bounds.GetHalfSize ();
+			Point thisPos = m_Actor->GetPosition ();
+
+			if (thisPos.X < followActorPos.X)
+			{
+				thisPos.X += m_Actor->Bounds.GetSize ().Width;
+			}
+
+			if (thisPos.Y < followActorPos.Y)
+			{
+				thisPos.Y += m_Actor->Bounds.GetSize ().Height;
+			}
+
+			Rect followActorBounds
+				= Rect (followActorPos - screenSize * 0.5f * 0.5f, followActorPos + screenSize * 0.5f * 0.5f);
+
+			m_SampleCounter += deltaTime;
+
+			if (InsideRect (thisPos, followActorBounds) && m_SampleCounter > 0.2f
+				&& !mainLoop->GetAudioManager ().IsGloballyPlaying (m_FootStepSample->GetName ()))
+			{
+				float distanceToFollowActor = (followActorPos - thisPos).Magnitude ();
+				float volume = 1.0f;
+
+				// m_FootStepSample->SetVolume (volume);
+				m_FootStepSample->Play ();
+
+				m_SampleCounter = 0;
+			}
+		}
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -292,7 +316,18 @@ namespace aga
 		m_TargetPos -= m_Actor->Bounds.GetHalfSize ();
 
 		m_CurrentTargetTime = 0.f;
-		m_MaxTargetTime = Distance (m_StartPos, m_TargetPos) / m_Speed * 1000.f;
+
+		float distance = Distance (m_StartPos, m_TargetPos);
+
+		if (m_WalkPointReachTime >= 0)
+		{
+			m_Speed = 1.0f;
+			m_MaxTargetTime = m_WalkPointReachTime;
+		}
+		else
+		{
+			m_MaxTargetTime = distance / m_Speed * 1000.f;
+		}
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -304,11 +339,9 @@ namespace aga
 			m_TargetPos = m_Points[m_CurrentPointIndex];
 		}
 
-		int index = m_CurrentPointIndex;
-
 		if (m_PointsMovingForward)
 		{
-			if (index + 1 >= m_Points.size ())
+			if (m_CurrentPointIndex + 1 >= m_Points.size ())
 			{
 				m_PointsMovingForward = false;
 				--m_CurrentPointIndex;
@@ -320,7 +353,7 @@ namespace aga
 		}
 		else if (!m_PointsMovingForward)
 		{
-			if (index - 1 < 0)
+			if (m_CurrentPointIndex - 1 < 0)
 			{
 				m_PointsMovingForward = true;
 				++m_CurrentPointIndex;
@@ -330,6 +363,8 @@ namespace aga
 				--m_CurrentPointIndex;
 			}
 		}
+
+		m_CurrentPointIndex = clamp (m_CurrentPointIndex, 0, static_cast<int> (m_Points.size () - 1));
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -352,46 +387,49 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	void MovementComponent::SetWalkPoints (FlagPoint* flagPoint)
+	void MovementComponent::SetWalkPoints (FlagPoint* flagPoint, bool followLinks)
 	{
 		if (flagPoint)
 		{
 			m_Points.clear ();
-
-			std::vector<std::string> visited;
-
 			m_Points.push_back (flagPoint->Pos);
-			visited.push_back (flagPoint->Name);
 
-			FlagPoint* next = flagPoint->Connections[0];
-
-			while (next != nullptr)
+			if (followLinks)
 			{
-				m_Points.push_back (next->Pos);
-				visited.push_back (next->Name);
+				std::vector<std::string> visited;
+				visited.push_back (flagPoint->Name);
 
-				if (!next->Connections.empty ())
+				FlagPoint* next = flagPoint->Connections[0];
+
+				while (next != nullptr)
 				{
-					bool found = false;
+					m_Points.push_back (next->Pos);
+					visited.push_back (next->Name);
 
-					for (size_t i = 0; i < next->Connections.size (); ++i)
+					if (!next->Connections.empty ())
 					{
-						if (std::find (visited.begin (), visited.end (), next->Connections[i]->Name) == visited.end ())
+						bool found = false;
+
+						for (size_t i = 0; i < next->Connections.size (); ++i)
 						{
-							next = next->Connections[i];
-							found = true;
+							if (std::find (visited.begin (), visited.end (), next->Connections[i]->Name)
+								== visited.end ())
+							{
+								next = next->Connections[i];
+								found = true;
+								break;
+							}
+						}
+
+						if (!found)
+						{
 							break;
 						}
 					}
-
-					if (!found)
+					else
 					{
 						break;
 					}
-				}
-				else
-				{
-					break;
 				}
 			}
 		}
@@ -420,6 +458,15 @@ namespace aga
 		m_Points = points;
 
 		ComputeClosestWalkPoint ();
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void MovementComponent::SetWalkPointReachTime (int duringMS)
+	{
+		m_WalkPointReachTime = duringMS;
+
+		ComputeTargetPos ();
 	}
 
 	//--------------------------------------------------------------------------------------------------
