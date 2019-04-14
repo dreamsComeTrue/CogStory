@@ -30,6 +30,7 @@ namespace aga
 		, m_GamePlayState (nullptr)
 		, m_EditorState (nullptr)
 		, m_IsRunning (true)
+		, m_SpeedMultiplier (1.0f)
 	{
 	}
 
@@ -62,6 +63,12 @@ namespace aga
 		m_Screen->ProcessEventFunction = [&](ALLEGRO_EVENT* event) {
 			bool ret = m_StateManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
 
+			if (event->type == ALLEGRO_EVENT_KEY_DOWN && event->keyboard.keycode >= ALLEGRO_KEY_0
+				&& event->keyboard.keycode <= ALLEGRO_KEY_9)
+			{
+				m_SpeedMultiplier = event->keyboard.keycode - 27;
+			}
+
 			if (!ret)
 			{
 				m_SceneManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
@@ -70,6 +77,8 @@ namespace aga
 
 		m_Screen->RenderFunction = [&]() { m_StateManager.Render (m_Screen->GetDeltaTime ()); };
 		m_Screen->UpdateFunction = [&](float deltaTime) {
+			deltaTime *= m_SpeedMultiplier;
+
 			if (m_StateManager.GetActiveStateName () != EDITOR_STATE_NAME)
 			{
 				m_TweenManager.Update (deltaTime);
@@ -80,8 +89,8 @@ namespace aga
 			m_SceneManager.Update (deltaTime);
 			m_StateManager.Update (deltaTime);
 		};
-		
-        LoadConfig ();
+
+		LoadConfig ();
 		InitializeStates ();
 
 #ifdef EDITOR_ENABLED
@@ -144,7 +153,7 @@ namespace aga
 	void MainLoop::Start ()
 	{
 		double oldTime = al_get_time ();
-        
+
 		while (m_IsRunning)
 		{
 			double newTime = al_get_time ();
@@ -156,8 +165,8 @@ namespace aga
 				break;
 			}
 		}
-        
-        SaveConfig ();
+
+		SaveConfig ();
 	}
 
 	//--------------------------------------------------------------------------------------------------

@@ -61,6 +61,7 @@ namespace aga
         EditorState* m_EditorState;
 
         bool m_IsRunning;
+        float m_SpeedMultiplier;
     };
 }
 
