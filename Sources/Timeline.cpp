@@ -63,24 +63,6 @@ namespace aga
             }
         }
 
-        if (m_CurrentAfterTweenIndex < m_AfterTweens.size ())
-        {
-            TweenData& tween = m_AfterTweens[m_CurrentAfterTweenIndex];
-
-            if (!tween.IsPaused)
-            {
-                if (tween.TweenMask & TWEEN_F)
-                {
-                    tween.TweenF.step (static_cast<int> (deltaTime * 1000));
-                }
-
-                if (tween.TweenMask & TWEEN_FF)
-                {
-                    tween.TweenFF.step (static_cast<int> (deltaTime * 1000));
-                }
-            }
-        }
-
         return true;
     }
 
@@ -118,37 +100,6 @@ namespace aga
                 ++m_CurrentTweenIndex;
             }
         }
-
-        if (m_CurrentAfterTweenIndex < m_AfterTweens.size ())
-        {
-            if (((m_AfterTweens[m_CurrentAfterTweenIndex].TweenMask & TWEEN_F)
-                    && (m_AfterTweens[m_CurrentAfterTweenIndex].TweenF.progress () >= 1.0f))
-                || ((m_AfterTweens[m_CurrentAfterTweenIndex].TweenMask & TWEEN_FF)
-                       && (m_AfterTweens[m_CurrentAfterTweenIndex].TweenFF.progress () >= 1.0f))
-                || (m_AfterTweens[m_CurrentAfterTweenIndex].TweenMask == 0))
-            {
-                TweenData& tweenToProcess = m_AfterTweens[m_CurrentAfterTweenIndex];
-
-                if (tweenToProcess.FinishFunc)
-                {
-                    tweenToProcess.FinishFunc (tweenToProcess.ID);
-                }
-
-                if (tweenToProcess.FinishScriptFunc)
-                {
-                    asIScriptContext* ctx = m_TweenManager->GetMainLoop ()->GetScriptManager ().GetContext ();
-                    ctx->Prepare (tweenToProcess.FinishScriptFunc);
-                    ctx->SetArgDWord (0, static_cast<asDWORD> (tweenToProcess.ID));
-                    ctx->Execute ();
-                    ctx->Unprepare ();
-                    ctx->GetEngine ()->ReturnContext (ctx);
-                }
-
-                // m_Tweens.erase (m_Tweens.begin () + i);
-
-                ++m_CurrentAfterTweenIndex;
-            }
-        }
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -180,7 +131,7 @@ namespace aga
         tweenData.TweenF = tween;
         tweenData.TweenMask |= TWEEN_F;
 
-        m_AfterTweens.push_back (tweenData);
+        m_Tweens.push_back (tweenData);
 
         return this;
     }
@@ -322,7 +273,6 @@ namespace aga
     void Timeline::Clear ()
     {
         m_Tweens.clear ();
-        m_AfterTweens.clear ();
     }
 
     //--------------------------------------------------------------------------------------------------

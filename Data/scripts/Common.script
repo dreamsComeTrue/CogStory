@@ -27,33 +27,38 @@ class FinishFunction
     int TweenID;
     CameraTweenFinish@ FinishFunc;
 }
-
 array<FinishFunction> finishFuncs;
-dictionary g_TimesDictionary = 
-{
-    {'CityMainScene_AnimTime', 8000},
-    {'CityFactoryScene_AnimTime1', 5000},
-    {'CityFactoryScene_AnimTime2', 2000},
-    {'FactoryMainScene_Anim1', 3000},
-    {'FactoryMainScene_Anim2', 3000}
-};
 
 //--------------------------------------------------------------------------------------------------
 
-float TIME_MULTIPLIER = 1.0f;
-
-int GetAnimTime (string id)
+void CameraFollowDummy (string flagPoint)
 {
-    int time = int(g_TimesDictionary[id]);
-    
-    return int(time / TIME_MULTIPLIER);
+    camera.SetFollowActor (GetDummyActor ());
+    GetDummyActor ().SetPosition (GetFlagPoint (flagPoint).Pos);    
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void CreateCameraToFlagPointTween (string flagPoint, string timeKey, CameraTweenFinish@ finishFunc)
+Actor@ MoveActorToFlagPoint (string actorName, string flagPoint)
 {
-    int tweenID = AddTween (GetDummyActor ().GetPosition (), GetFlagPoint (flagPoint).Pos, GetAnimTime (timeKey), function (id, progress, value)
+    Actor@ actor = GetActor (actorName);
+    actor.SetPosition (GetFlagPoint (flagPoint).Pos);
+    
+    return actor;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+MovementComponent@ GetMovementComponent (string actorName)
+{
+    return GetActor (actorName).GetMovementComponent ("MOVEMENT");
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void CameraToFlagPointTween (string flagPoint, int timeMS, CameraTweenFinish@ finishFunc)
+{
+    int tweenID = AddTween (GetDummyActor ().GetPosition (), GetFlagPoint (flagPoint).Pos, timeMS, function (id, progress, value)
     {
         GetDummyActor ().SetPosition (value);
         return false;
