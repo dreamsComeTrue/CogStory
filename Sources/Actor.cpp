@@ -355,7 +355,7 @@ namespace aga
 
 		FireMoveCallback ();
 
-		SetPhysOffset (Bounds.GetPos ());
+		AddPhysOffset ({x - m_OldPosition.X, y - m_OldPosition.Y});
 
 		MovementComponent* movementComponent = GetMovementComponent ("MOVEMENT_COMPONENT");
 		if (movementComponent)
