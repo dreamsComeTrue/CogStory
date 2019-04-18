@@ -40,17 +40,13 @@ void IntroAnimation ()
 
 void CitySceneAnimation ()
 {
-    camera.SetFollowActor (GetDummyActor ());
-    GetDummyActor ().SetPosition (GetFlagPoint ("INTRO_CAMERA_START").Pos);
+    CameraFollowDummy ("INTRO_CAMERA_START");
+    SetOverlayText ("-- Chapter I --\nNo ordinary day", 8000.f / 2.0f, Plain, 200.f, Center);    
 
-    SetOverlayText ("-- Chapter I --\nNo ordinary day", GetAnimTime ('CityMainScene_AnimTime') / 2.0f, Plain, 200.f, Center);    
-
-    Timeline@ timeline = CreateTimeline ();
-
-    timeline
-    .Once (GetAnimTime ('CityMainScene_AnimTime'), function (id)
+    CreateTimeline ()
+    .Once (8000.f, function (id)
     {
-        CreateCameraToFlagPointTween ("INTRO_CAMERA_END", 'CityMainScene_AnimTime', function (id)
+        CameraToFlagPointTween ("INTRO_CAMERA_END", 8000.f, function (id)
         {
             CityFactorySceneAnimation ();
         });
@@ -63,19 +59,16 @@ void CityFactorySceneAnimation ()
 {
     SetActiveScene ("2_city/2_city_factory_district.scn", true, function () 
     {
-        GetDummyActor ().SetPosition (GetFlagPoint ("INTRO_CAMERA_START").Pos);
-        camera.SetFollowActor (GetDummyActor ());
+        CameraFollowDummy ("INTRO_CAMERA_START");
         
-        Timeline@ timeline = CreateTimeline ();
-
-        timeline
-        .Once (GetAnimTime ('CityFactoryScene_AnimTime1'), function (id)
+        CreateTimeline ()
+        .Once (5000.f, function (id)
         {
-            CreateCameraToFlagPointTween ("INTRO_CAMERA_A", 'CityFactoryScene_AnimTime1', null);
+            CameraToFlagPointTween ("INTRO_CAMERA_A", 5000.f, null);
         })
-        .Once (GetAnimTime ('CityFactoryScene_AnimTime2'), function (id)
+        .Once (2000.f, function (id)
         {
-            CreateCameraToFlagPointTween ("INTRO_CAMERA_END", 'CityFactoryScene_AnimTime2', function (id)
+            CameraToFlagPointTween ("INTRO_CAMERA_END", 2000.f, function (id)
             {
                 FactoryMainSceneAnimation ();
             });
@@ -86,30 +79,54 @@ void CityFactorySceneAnimation ()
 //--------------------------------------------------------------------------------------------------
 
 void FactoryMainSceneAnimation ()
-{
+{    
     SetActiveScene ("1_factory/1_factory_main.scn", true, function () 
     {
-        GetDummyActor ().SetPosition (GetFlagPoint ("INTRO_CAMERA_START").Pos);
-        camera.SetFollowActor (GetDummyActor ());
-        
-        Timeline@ timeline = CreateTimeline ();
+        Actor@ supervisor = MoveActorToFlagPoint ("ROBOT_SUPERVISOR", "SUPERVISOR_START");
+        MovementComponent@ movement = supervisor.GetMovementComponent ("MOVEMENT");
+        movement.SetEnabled (false);
 
-        timeline
-        .Once (GetAnimTime ('FactoryMainScene_Anim1'), function (id)
+        CameraFollowDummy ("INTRO_CAMERA_START");
+        
+        CreateTimeline ()
+        .Once (3000.f, function (id)
         {
-            CreateCameraToFlagPointTween ("INTRO_CAMERA_A", 'FactoryMainScene_Anim1', null);
+            CameraToFlagPointTween ("INTRO_CAMERA_A", 3000.f, null);
         })
-        .Once (GetAnimTime ('FactoryMainScene_Anim2'), function (id)
+        .Once (3000.f, function (id)
         {
-            CreateCameraToFlagPointTween ("INTRO_CAMERA_END", 'FactoryMainScene_Anim2', function (id)
-            {
-                camera.SetFollowActor (player);
-                player.SetPreventInput (false);
-                player.SetPosition (GetDummyActor ().GetPosition ());
-                player.Show ();
-            });
-        });          
+            CameraToFlagPointTween ("INTRO_CAMERA_END", 3000.f, null);
+        })
+        .Once (5000.f, function (id) 
+        {
+            MovementComponent@ movement = GetMovementComponent ("ROBOT_SUPERVISOR");
+            movement.SetEnabled (true);
+            movement.SetStartPos (GetFlagPoint ("SUPERVISOR_START").Pos);
+            movement.SetMovementType (MovePoints);
+            movement.SetWaitTimeBounds (0.f, 0.f);
+            movement.SetWalkPoints (GetFlagPoint ("SUPERVISOR_A"), false);
+            movement.SetWalkPointReachTime (5000.f);
+        })
+        .Once (1000.f, function (id)
+        {
+            AddSpeechFrame ("SUPERVISOR_SPEECH_1", false).SetDrawSpeed (40.f);
+        })        
+        .After (5000.f, function (id)
+        {
+            RemoveSpeechFrame ("SUPERVISOR_SPEECH_1");
+            ActivatePlayer ();
+        });        
     });
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void ActivatePlayer ()
+{
+    camera.SetFollowActor (player);
+    player.SetPreventInput (false);
+    player.SetPosition (GetDummyActor ().GetPosition ());
+    player.Show ();    
 }
 
 //--------------------------------------------------------------------------------------------------

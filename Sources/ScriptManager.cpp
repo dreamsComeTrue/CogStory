@@ -146,6 +146,7 @@ namespace aga
 		   void Hide ()
 		   bool IsVisible ()
 		   void SetDrawRect (Rect)
+		   void SetDrawSpeed (float speedInMs)
 		   void SetDrawTextCenter (bool)
 		   bool IsDrawTextCenter ()
 			   = void ScriptHandleFunc ()
@@ -210,12 +211,15 @@ namespace aga
 		   MovementComponent@ GetMovementComponent (const string &in)
 		   void SetMovementType (MovementType type)
 		   MovementType GetMovementType ()
+		   void SetStartPos (Point pos)
 		   void SetMoveExtents (Point min, Point max)
 		   void SetSpeed (float speed)
 		   float GetSpeed ()
 		   void SetWaitLikelihood (float percentage)
+		   void SetWaitTimeBounds (float minWaitSeconds, float maxWaitSeconds)
 		   void SetWalkPoints (array<Point>@+ points)
-		   void SetWalkPoints (FlagPoint@ points)
+		   void SetWalkPoints (FlagPoint@ points, bool followLinks = true)
+		   void SetWalkPointReachTime (int duringMS)
 			   = void MovementCallback (Point)
 		   void SetMovementCallback (MovementCallback @+ mc)
 
@@ -1123,6 +1127,9 @@ namespace aga
 			"SpeechFrame", "void SetDrawRect (Rect)", asMETHOD (SpeechFrame, SetDrawRect), asCALL_THISCALL);
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterObjectMethod (
+			"SpeechFrame", "void SetDrawSpeed (float speedInMs)", asMETHOD (SpeechFrame, SetDrawSpeed), asCALL_THISCALL);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterObjectMethod (
 			"SpeechFrame", "void SetDrawTextCenter (bool)", asMETHOD (SpeechFrame, SetDrawTextCenter), asCALL_THISCALL);
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterObjectMethod (
@@ -1319,6 +1326,9 @@ namespace aga
 		r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "MovementType GetMovementType ()",
 			asMETHOD (MovementComponent, GetMovementType), asCALL_THISCALL);
 		assert (r >= 0);
+		r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetStartPos (Point pos)",
+			asMETHOD (MovementComponent, SetStartPos), asCALL_THISCALL);
+		assert (r >= 0);
 		r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetMoveExtents (Point min, Point max)",
 			asMETHOD (MovementComponent, SetMoveExtents), asCALL_THISCALL);
 		assert (r >= 0);
@@ -1331,11 +1341,17 @@ namespace aga
 		r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetWaitLikelihood (float percentage)",
 			asMETHOD (MovementComponent, SetWaitLikelihood), asCALL_THISCALL);
 		assert (r >= 0);
+		r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetWaitTimeBounds (float minWaitSeconds, float maxWaitSeconds)",
+			asMETHOD (MovementComponent, SetWaitTimeBounds), asCALL_THISCALL);
+		assert (r >= 0);
 		r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetWalkPoints (array<Point>@+ points)",
 			asMETHODPR (MovementComponent, SetWalkPoints, (CScriptArray*), void), asCALL_THISCALL);
 		assert (r >= 0);
-		r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetWalkPoints (FlagPoint@ points)",
-			asMETHODPR (MovementComponent, SetWalkPoints, (FlagPoint*), void), asCALL_THISCALL);
+		r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetWalkPoints (FlagPoint@ points, bool followLinks = true)",
+			asMETHODPR (MovementComponent, SetWalkPoints, (FlagPoint*, bool), void), asCALL_THISCALL);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetWalkPointReachTime (int duringMS)",
+			asMETHOD (MovementComponent, SetWalkPointReachTime), asCALL_THISCALL);
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterFuncdef ("void MovementCallback (Point)");
 		assert (r >= 0);

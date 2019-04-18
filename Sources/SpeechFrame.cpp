@@ -208,7 +208,7 @@ namespace aga
 
 	void SpeechFrame::UpdateTextPosition (float deltaTime)
 	{
-		if (m_StillUpdating && !m_IsSuspended)
+		if (m_StillUpdating && !m_IsSuspended && !m_TextLines.empty ())
 		{
 			//  Handle [WAIT] annotation
 			UpdateWaitTime (deltaTime);
@@ -555,7 +555,7 @@ namespace aga
 
 	void SpeechFrame::Render (float)
 	{
-		if (!m_Visible)
+		if (!m_Visible || m_TextLines.empty ())
 		{
 			return;
 		}
@@ -741,8 +741,6 @@ namespace aga
 		int yOffset = 2;
 		std::string regionName = m_DrawLightArrow ? "arrow_light" : "arrow_dark";
 
-		size_t maxLines = GetMaxLinesCanFit ();
-
 		Atlas* atlas = m_Manager->GetSceneManager ()->GetMainLoop ()->GetAtlasManager ().GetAtlas (
 			GetBaseName (GetResourcePath (PACK_MENU_UI)));
 
@@ -754,7 +752,7 @@ namespace aga
 		}
 
 		//  How many lines are hidden
-		int diff = static_cast<int> (m_CurrentLine) + 1 - maxLines;
+		int diff = static_cast<int> (m_CurrentLine) + 1 - GetMaxLinesCanFit ();
 
 		//  Down arrow
 		if (currentDrawingLine < diff)
@@ -1023,6 +1021,10 @@ namespace aga
 			++currIndex;
 		}
 	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void SpeechFrame::SetDrawSpeed (float speedInMs) { m_DrawSpeed = speedInMs; }
 
 	//--------------------------------------------------------------------------------------------------
 

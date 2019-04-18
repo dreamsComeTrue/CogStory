@@ -1782,33 +1782,6 @@
             "z-order": "2"
         },
         {
-            "atlas": "robot1",
-            "atlas-region": "robot1",
-            "blueprint": "-1",
-            "collidable": "1",
-            "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT",
-                    "type": "MovementComponent"
-                }
-            ],
-            "focus-height": "0.90",
-            "id": "2121",
-            "name": "robot1",
-            "overlap": "0",
-            "phys": [
-                {
-                    "poly": "-9.27 -29.85 -6.19 28.54 6.83 29.07 8.85 -29.71 "
-                }
-            ],
-            "pos": "352.00 -464.00",
-            "rot": "0.00",
-            "size": "64.00 64.00",
-            "type": "Tile",
-            "z-order": "6"
-        },
-        {
             "atlas": "robot2",
             "atlas-region": "robot2",
             "blueprint": "-1",
@@ -1816,14 +1789,14 @@
             "collision": "0",
             "focus-height": "0.95",
             "id": "2123",
-            "name": "robot2",
+            "name": "ROBOT_2",
             "overlap": "0",
             "phys": [
                 {
                     "poly": "-7.94 -11.71 7.83 -11.71 8.50 17.82 -8.06 17.68 "
                 }
             ],
-            "pos": "464.00 -464.00",
+            "pos": "512.00 -592.00",
             "rot": "0.00",
             "size": "64.00 64.00",
             "type": "Tile",
@@ -1877,16 +1850,22 @@
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
+            "components": [
+                {
+                    "name": "MOVEMENT",
+                    "type": "MovementComponent"
+                }
+            ],
             "focus-height": "0.95",
             "id": "2152",
-            "name": "robot2",
+            "name": "ROBOT_1",
             "overlap": "0",
             "phys": [
                 {
                     "poly": "-7.94 -11.71 7.83 -11.71 8.50 17.82 -8.06 17.68 "
                 }
             ],
-            "pos": "413.97 -362.26",
+            "pos": "384.00 -384.00",
             "rot": "0.00",
             "size": "64.00 64.00",
             "type": "Tile",
@@ -1925,6 +1904,33 @@
             "size": "64.00 64.00",
             "type": "Tile",
             "z-order": "1"
+        },
+        {
+            "atlas": "robot1",
+            "atlas-region": "robot1",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "components": [
+                {
+                    "name": "MOVEMENT",
+                    "type": "MovementComponent"
+                }
+            ],
+            "focus-height": "0.90",
+            "id": "3649",
+            "name": "ROBOT_SUPERVISOR",
+            "overlap": "0",
+            "phys": [
+                {
+                    "poly": "-9.88 -3.04 10.26 -2.54 -1.15 25.65 "
+                }
+            ],
+            "pos": "672.00 -464.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "NPC",
+            "z-order": "6"
         }
     ],
     "color": "43 54 129 255",
@@ -1937,7 +1943,7 @@
         {
             "connections": "INTRO_CAMERA_A ",
             "name": "INTRO_CAMERA_END",
-            "pos": "480.00 -432.00"
+            "pos": "480.00 -400.00"
         },
         {
             "connections": "INTRO_CAMERA_A ",
@@ -1953,6 +1959,21 @@
             "connections": "",
             "name": "MARKER_FACTORY_HALLWAY",
             "pos": "-32.00 16.00"
+        },
+        {
+            "connections": "SUPERVISOR_B SUPERVISOR_START ",
+            "name": "SUPERVISOR_A",
+            "pos": "576.00 -352.00"
+        },
+        {
+            "connections": "SUPERVISOR_A ",
+            "name": "SUPERVISOR_B",
+            "pos": "512.00 -352.00"
+        },
+        {
+            "connections": "SUPERVISOR_A ",
+            "name": "SUPERVISOR_START",
+            "pos": "704.00 -432.00"
         }
     ],
     "max_size": "832.00 160.00",
@@ -1963,6 +1984,39 @@
         {
             "name": "1_1_factory",
             "path": "1_factory/1_factory_main.script"
+        }
+    ],
+    "speeches": [
+        {
+            "abs_pos": "0.00 0.00",
+            "action": "[CLOSE]",
+            "group": "INTRO",
+            "id": 0,
+            "max_chars": 20,
+            "max_lines": 3,
+            "name": "SUPERVISOR_SPEECH_1",
+            "outcomes": [
+                {
+                    "langID": "EN",
+                    "texts": []
+                },
+                {
+                    "langID": "PL",
+                    "texts": []
+                }
+            ],
+            "region_name": "",
+            "rel_pos": 5,
+            "texts": [
+                {
+                    "data": "Is everything going according to the plan?",
+                    "langID": "EN"
+                },
+                {
+                    "data": "",
+                    "langID": "PL"
+                }
+            ]
         }
     ],
     "trigger_areas": [
