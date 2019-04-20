@@ -282,6 +282,11 @@ namespace aga
 				speechData.AbsoluteFramePosition = StringToPoint (speech["abs_pos"]);
 				speechData.RelativeFramePosition = speech["rel_pos"];
 
+				if (!speech["speed"].is_null () && speech["speed"] != "")
+				{
+					speechData.Speed = speech["speed"];
+				}
+
 				auto& texts = speech["texts"];
 
 				for (auto& text : texts)
@@ -380,7 +385,7 @@ namespace aga
 			}
 
 			j["actors"] = json::array ({});
-			
+
 			std::vector<Actor*> actors = scene->m_Actors;
 			std::sort (actors.begin (), actors.end (), Entity::CompareByID);
 
@@ -568,6 +573,7 @@ namespace aga
 					speechObj["region_name"] = it->second.ActorRegionName;
 					speechObj["max_chars"] = it->second.MaxCharsInLine;
 					speechObj["max_lines"] = it->second.MaxLines;
+					speechObj["speed"] = it->second.Speed;
 					speechObj["abs_pos"] = PointToString (it->second.AbsoluteFramePosition);
 					speechObj["rel_pos"] = static_cast<int> (it->second.RelativeFramePosition);
 

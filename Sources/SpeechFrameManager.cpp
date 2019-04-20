@@ -174,12 +174,14 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
-    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& id, const std::string& text, Rect rect,
+    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& id, const std::string& text, Rect rect, int speed,
         bool shouldBeHandled, const std::string& actionName, const std::string& regionName)
     {
         if (m_Speeches.find (id) == m_Speeches.end ())
         {
             SpeechFrame* frame = new SpeechFrame (this, text, rect, shouldBeHandled, actionName, regionName);
+            frame->SetDrawSpeed (speed);
+            
             m_Speeches.insert (std::make_pair (id, frame));
 
             frame->ScrollDownFunction = [&]() { m_SelectSample->Play (); };
@@ -194,7 +196,7 @@ namespace aga
     //--------------------------------------------------------------------------------------------------
 
     SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& id, const std::string& text, Point pos,
-        int maxLineCharsCount, int linesCount, bool shouldBeHandled, const std::string& actionName,
+        int maxLineCharsCount, int linesCount, int speed, bool shouldBeHandled, const std::string& actionName,
         const std::string& regionName)
     {
         Point size = GetTextRectSize (maxLineCharsCount, linesCount);
@@ -203,7 +205,7 @@ namespace aga
         rect.SetPos (pos);
         rect.SetSize (size.Width, size.Height);
 
-        return AddSpeechFrame (id, text, rect, shouldBeHandled, actionName, regionName);
+        return AddSpeechFrame (id, text, rect, speed, shouldBeHandled, actionName, regionName);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -214,7 +216,7 @@ namespace aga
             speechData->MaxCharsInLine, speechData->MaxLines, speechData->ActorRegionName != "");
 
         return AddSpeechFrame (speechData->Name, speechData->Text[CURRENT_LANG], pos, speechData->MaxCharsInLine,
-            speechData->MaxLines, shouldBeHandled, speechData->ActorRegionName);
+            speechData->MaxLines, speechData->Speed, shouldBeHandled, speechData->ActorRegionName);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -227,7 +229,7 @@ namespace aga
         if (instance)
         {
             frame = AddSpeechFrame (instance->Name, instance->Text[CURRENT_LANG], pos, instance->MaxCharsInLine,
-                instance->MaxLines, shouldBeHandled, instance->Action, instance->ActorRegionName);
+                instance->MaxLines, instance->Speed, shouldBeHandled, instance->Action, instance->ActorRegionName);
 
             std::vector<SpeechOutcome>& outcomes = instance->Outcomes[CURRENT_LANG];
 

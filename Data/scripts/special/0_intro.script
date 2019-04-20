@@ -66,9 +66,9 @@ void CityFactorySceneAnimation ()
         {
             CameraToFlagPointTween ("INTRO_CAMERA_A", 5000.f, null);
         })
-        .Once (2000.f, function (id)
+        .Once (1500.f, function (id)
         {
-            CameraToFlagPointTween ("INTRO_CAMERA_END", 2000.f, function (id)
+            CameraToFlagPointTween ("INTRO_CAMERA_END", 1500.f, function (id)
             {
                 FactoryMainSceneAnimation ();
             });
@@ -109,7 +109,7 @@ void FactoryMainSceneAnimation ()
         })
         .Once (1000.f, function (id)
         {
-            AddSpeechFrame ("SUPERVISOR_SPEECH_1", false).SetDrawSpeed (40.f);
+            AddSpeechFrame ("SUPERVISOR_SPEECH_1", false);
         })        
         .After (5000.f, function (id)
         {

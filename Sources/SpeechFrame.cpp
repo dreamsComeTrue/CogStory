@@ -30,7 +30,7 @@ namespace aga
 		, m_Visible (true)
 		, m_DrawTextCenter (false)
 		, m_StillUpdating (true)
-		, m_DrawSpeed (15)
+		, m_DrawSpeed (SPEECH_FRAME_DEFAULT_SPEED)
 		, m_DrawTimeAccumulator (0)
 		, m_CurrentIndexInLine (0)
 		, m_CurrentLine (0)

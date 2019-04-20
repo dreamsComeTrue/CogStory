@@ -3,6 +3,7 @@
 #include "EditorSpeechMode.h"
 #include "Editor.h"
 #include "MainLoop.h"
+#include "SpeechFrame.h"
 
 namespace aga
 {
@@ -58,6 +59,7 @@ namespace aga
                 speech->Outcomes = m_Speech.Outcomes;
                 speech->Action = m_Speech.Action;
                 speech->Group = m_Speech.Group;
+                speech->Speed = m_Speech.Speed;
             }
             else
             {
@@ -90,6 +92,7 @@ namespace aga
         m_Speech.MaxLines = 0;
         m_Speech.RelativeFramePosition = BottomCenter;
         m_Speech.AbsoluteFramePosition = {0, 0};
+        m_Speech.Speed = SPEECH_FRAME_DEFAULT_SPEED;
         m_Speech.Text.clear ();
         m_Speech.Outcomes.clear ();
     }

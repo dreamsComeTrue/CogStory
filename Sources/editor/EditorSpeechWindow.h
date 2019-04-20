@@ -60,6 +60,7 @@ namespace aga
 
         int m_MaxChars;
         int m_MaxLines;
+        int m_Speed;
 
         int m_AbsPosX;
         int m_AbsPosY;

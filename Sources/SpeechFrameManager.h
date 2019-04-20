@@ -4,10 +4,10 @@
 #define __SPEECH_FRAME_MANAGER_H__
 
 #include "Common.h"
+#include "SpeechFrame.h"
 
 namespace aga
 {
-    class SpeechFrame;
     class SceneManager;
     class AudioSample;
     struct SpeechData;
@@ -27,10 +27,10 @@ namespace aga
         void Render (float deltaTime);
         void Clear ();
 
-        SpeechFrame* AddSpeechFrame (const std::string& id, const std::string& text, Rect rect,
+        SpeechFrame* AddSpeechFrame (const std::string& id, const std::string& text, Rect rect, int speed = SPEECH_FRAME_DEFAULT_SPEED,
             bool shouldBeHandled = true, const std::string& actionName = "", const std::string& regionName = "");
         SpeechFrame* AddSpeechFrame (const std::string& id, const std::string& text, Point pos, int maxLineCharsCount,
-            int linesCount, bool shouldBeHandled = true, const std::string& actionName = "",
+            int linesCount, int speed = SPEECH_FRAME_DEFAULT_SPEED, bool shouldBeHandled = true, const std::string& actionName = "",
             const std::string& regionName = "");
 
         SpeechFrame* AddSpeechFrame (SpeechData* speechData, bool shouldBeHandled = true);

@@ -45,6 +45,7 @@ namespace aga
 		std::string ActorRegionName;
 		int MaxCharsInLine = 0;
 		int MaxLines = 0;
+		int Speed = 15;
 		Point AbsoluteFramePosition = {0, 0};
 		ScreenRelativePosition RelativeFramePosition = ScreenRelativePosition::Center;
 	};

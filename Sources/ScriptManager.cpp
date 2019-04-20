@@ -153,13 +153,11 @@ namespace aga
 		   void SetHandleFunction (ScriptHandleFunc)
 
 	   SpeechFrameManager
-		   SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Rect, bool = true, const string &in = "")
-		   SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Point, int, int, bool = true, const string
-	   &in="")
-		   SpeechFrame@ AddSpeechFrame (const string &in id, bool shouldBeHandled = true)
-		   void RemoveSpeechFrame (const string &in id)
-			   = void SpeechHandler ()
-		   void RegisterSpeechesFinishedHandler (SpeechHandler @+ hd)
+		   SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Rect, int speed = 15, bool shouldBeHandled =
+	   true, const string &in = "") SpeechFrame@ AddSpeechFrame (const string &in, const string &in, Point, int, int,
+	   int speed = 15, bool shouldBeHandled = true, const string &in="") SpeechFrame@ AddSpeechFrame (const string &in
+	   id, bool shouldBeHandled = true) void RemoveSpeechFrame (const string &in id) = void SpeechHandler () void
+	   RegisterSpeechesFinishedHandler (SpeechHandler @+ hd)
 
 		ParticleEmitter
 			void Initialize ()
@@ -234,14 +232,14 @@ namespace aga
 		   void SetSuppressSceneInfo (bool suppress)
 		   bool IsSuppressSceneInfo () const
 		   void SetOverlayText (const string& in, float duration = 2000.f, OverlayTextMode mode = Plain, float
-	   							charTimeDelay = 5.f, ScreenRelativePosition pos = BottomRight) 
-	   	   void SetOverlayTextMode (OverlayTextMode mode)
-		   Actor@ GetActor (const string &in) 
-		   Actor@ GetActor (int id) = 
-		   string ChoiceFunction (void) 
-		   void RegisterChoiceFunction (string, ChoiceFunction @+ func) 
-		   AudioSample@ SetSceneAudioStream (const string &in path) 
-		   AudioSample@ GetSceneAudioStream () 
+								charTimeDelay = 5.f, ScreenRelativePosition pos = BottomRight)
+		   void SetOverlayTextMode (OverlayTextMode mode)
+		   Actor@ GetActor (const string &in)
+		   Actor@ GetActor (int id) =
+		   string ChoiceFunction (void)
+		   void RegisterChoiceFunction (string, ChoiceFunction @+ func)
+		   AudioSample@ SetSceneAudioStream (const string &in path)
+		   AudioSample@ GetSceneAudioStream ()
 		   Point GetPlayerStartLocation ()
 		   void PushPoint (Point p)
 		   Point PopPoint ()
@@ -1126,8 +1124,8 @@ namespace aga
 		r = m_ScriptEngine->RegisterObjectMethod (
 			"SpeechFrame", "void SetDrawRect (Rect)", asMETHOD (SpeechFrame, SetDrawRect), asCALL_THISCALL);
 		assert (r >= 0);
-		r = m_ScriptEngine->RegisterObjectMethod (
-			"SpeechFrame", "void SetDrawSpeed (float speedInMs)", asMETHOD (SpeechFrame, SetDrawSpeed), asCALL_THISCALL);
+		r = m_ScriptEngine->RegisterObjectMethod ("SpeechFrame", "void SetDrawSpeed (float speedInMs)",
+			asMETHOD (SpeechFrame, SetDrawSpeed), asCALL_THISCALL);
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterObjectMethod (
 			"SpeechFrame", "void SetDrawTextCenter (bool)", asMETHOD (SpeechFrame, SetDrawTextCenter), asCALL_THISCALL);
@@ -1148,18 +1146,18 @@ namespace aga
 	{
 		int r = m_ScriptEngine->RegisterGlobalFunction (
 			"SpeechFrame@ AddSpeechFrame (const string &in, const string &in, "
-			"Rect, bool = true, const string &in = \"\", const string &in = \"\")",
+			"Rect, int speed = 15, bool shouldBeHandled = true, const string &in = \"\", const string &in = \"\")",
 			asMETHODPR (SpeechFrameManager, AddSpeechFrame,
-				(const std::string&, const std::string&, Rect, bool, const std::string& actionName,
+				(const std::string&, const std::string&, Rect, int, bool, const std::string& actionName,
 					const std::string& regionName),
 				SpeechFrame*),
 			asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
 		assert (r >= 0);
-		r = m_ScriptEngine->RegisterGlobalFunction (
-			"SpeechFrame@ AddSpeechFrame (const string &in, const string &in, "
-			"Point, int, int, bool = true, const string &in = \"\", const string &in = \"\")",
+		r = m_ScriptEngine->RegisterGlobalFunction ("SpeechFrame@ AddSpeechFrame (const string &in, const string &in, "
+													"Point, int, int, int speed = 15, bool shouldBeHandled = true, "
+													"const string &in = \"\", const string &in = \"\")",
 			asMETHODPR (SpeechFrameManager, AddSpeechFrame,
-				(const std::string&, const std::string&, Point, int, int, bool, const std::string& actionName,
+				(const std::string&, const std::string&, Point, int, int, int, bool, const std::string& actionName,
 					const std::string& regionName),
 				SpeechFrame*),
 			asCALL_THISCALL_ASGLOBAL, m_MainLoop->GetSceneManager ().GetSpeechFrameManager ());
@@ -1341,13 +1339,15 @@ namespace aga
 		r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetWaitLikelihood (float percentage)",
 			asMETHOD (MovementComponent, SetWaitLikelihood), asCALL_THISCALL);
 		assert (r >= 0);
-		r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetWaitTimeBounds (float minWaitSeconds, float maxWaitSeconds)",
+		r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent",
+			"void SetWaitTimeBounds (float minWaitSeconds, float maxWaitSeconds)",
 			asMETHOD (MovementComponent, SetWaitTimeBounds), asCALL_THISCALL);
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetWalkPoints (array<Point>@+ points)",
 			asMETHODPR (MovementComponent, SetWalkPoints, (CScriptArray*), void), asCALL_THISCALL);
 		assert (r >= 0);
-		r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetWalkPoints (FlagPoint@ points, bool followLinks = true)",
+		r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent",
+			"void SetWalkPoints (FlagPoint@ points, bool followLinks = true)",
 			asMETHODPR (MovementComponent, SetWalkPoints, (FlagPoint*, bool), void), asCALL_THISCALL);
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterObjectMethod ("MovementComponent", "void SetWalkPointReachTime (int duringMS)",

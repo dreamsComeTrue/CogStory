@@ -26,6 +26,7 @@ namespace aga
         , m_MaxLines (0)
         , m_AbsPosX (0)
         , m_AbsPosY (0)
+        , m_Speed (SPEECH_FRAME_DEFAULT_SPEED)
         , m_RelPosition (0)
         , m_Action (0)
     {
@@ -95,6 +96,7 @@ namespace aga
         speechData.AbsoluteFramePosition.X = m_AbsPosX;
         speechData.AbsoluteFramePosition.Y = m_AbsPosY;
         speechData.MaxCharsInLine = m_MaxChars;
+        speechData.Speed = m_Speed;
         speechData.MaxLines = m_MaxLines;
         speechData.Action = m_Actions[m_Action];
         speechData.Group = m_SpeechGroup;
@@ -234,6 +236,7 @@ namespace aga
 
         m_LangIndex = 0;
         m_MaxChars = 10;
+        m_Speed = SPEECH_FRAME_DEFAULT_SPEED;
         m_MaxLines = 1;
         m_AbsPosX = 0;
         m_AbsPosY = 0;
@@ -271,6 +274,7 @@ namespace aga
         m_MaxChars = speech.MaxCharsInLine;
         m_MaxLines = speech.MaxLines;
         m_RelPosition = speech.RelativeFramePosition;
+        m_Speed = speech.Speed;
         m_AbsPosX = static_cast<int> (speech.AbsoluteFramePosition.X);
         m_AbsPosY = static_cast<int> (speech.AbsoluteFramePosition.Y);
 
@@ -402,6 +406,8 @@ namespace aga
                 {
                     speechData.AbsoluteFramePosition.Y = m_AbsPosY;
                 }
+                
+                ImGui::InputInt ("Speed", &m_Speed);
 
                 if (ImGui::Combo ("Actions", &m_Action, m_Actions))
                 {

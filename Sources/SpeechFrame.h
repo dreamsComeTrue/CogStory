@@ -17,6 +17,7 @@ namespace aga
     const int SPEECH_FRAME_ADVANCE_SPACE = 14;
     const int SPEECH_FRAME_ADVANCE_CHOICE = 30;
     const float SPEECH_FRAME_MAX_CHAR_EDGE_LENGTH = 64;
+    const int SPEECH_FRAME_DEFAULT_SPEED = 15;
 
     class Atlas;
     class SpeechFrameManager;
