@@ -2018,6 +2018,38 @@
                     "langID": "PL"
                 }
             ]
+        },
+        {
+            "abs_pos": "0.00 0.00",
+            "action": "[CLOSE]",
+            "group": "INTRO",
+            "id": 1,
+            "max_chars": 20,
+            "max_lines": 3,
+            "name": "ROBOT_1_SPEECH_1",
+            "outcomes": [
+                {
+                    "langID": "EN",
+                    "texts": []
+                },
+                {
+                    "langID": "PL",
+                    "texts": []
+                }
+            ],
+            "region_name": "",
+            "rel_pos": 2,
+            "speed": 50,
+            "texts": [
+                {
+                    "data": "There... are... some... c-c-complications...",
+                    "langID": "EN"
+                },
+                {
+                    "data": "",
+                    "langID": "PL"
+                }
+            ]
         }
     ],
     "trigger_areas": [

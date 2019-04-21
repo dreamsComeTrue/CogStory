@@ -532,7 +532,7 @@ namespace aga
 		//  Extract break points and text attributes
 		PreprocessText (m_Text);
 
-		m_TextLines = BreakLine (m_Text, m_DrawRect.GetSize ().Width - 2 * SPEECH_FRAME_TEXT_INSETS);
+		m_TextLines = BreakTextLines (m_Text, m_DrawRect.GetSize ().Width - 2 * SPEECH_FRAME_TEXT_INSETS);
 		m_AttrColorIndex = 0;
 		m_AttrDelayIndex = 0;
 	}
@@ -817,19 +817,19 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	std::vector<std::string> SpeechFrame::BreakLine (const std::string& line, float maxWidth)
+	std::vector<std::string> SpeechFrame::BreakTextLines (const std::string& text, float maxWidth)
 	{
 		std::vector<std::string> ret;
-
-		float width = m_Manager->GetSceneManager ()
-						  ->GetMainLoop ()
-						  ->GetScreen ()
-						  ->GetFont ()
-						  .GetTextDimensions (FONT_NAME_SPEECH_FRAME, line)
-						  .Width;
-
-		std::string workLine = line;
+		Font& font = m_Manager->GetSceneManager ()->GetMainLoop ()->GetScreen ()->GetFont ();
+		std::string workLine = text;
 		int currentIndex = 0;
+
+		auto cutLine = [&](int indexToCut) {
+			std::string str = workLine.substr (0, indexToCut);
+			ret.push_back (str);
+			workLine = workLine.substr (indexToCut);
+			currentIndex = 0;
+		};
 
 		while (currentIndex < workLine.size ())
 		{
@@ -837,30 +837,21 @@ namespace aga
 
 			if (currentPart[currentPart.length () - 1] == '\n')
 			{
-				std::string str = workLine.substr (0, currentIndex);
-				ret.push_back (str);
-				workLine = workLine.substr (currentIndex + 1);
-				currentIndex = 0;
+				cutLine (currentIndex + 1);
 			}
 			else
 			{
-				width = m_Manager->GetSceneManager ()
-							->GetMainLoop ()
-							->GetScreen ()
-							->GetFont ()
-							.GetTextDimensions (FONT_NAME_SPEECH_FRAME, currentPart)
-							.Width;
-
-				if (width >= maxWidth)
+				if (font.GetTextDimensions (FONT_NAME_SPEECH_FRAME, currentPart).Width >= maxWidth)
 				{
-					currentIndex = currentPart.rfind (' ');
+					int lastSpaceIndex = currentPart.rfind (' ');
 
-					if (currentIndex != std::string::npos)
+					if (lastSpaceIndex != std::string::npos)
 					{
-						std::string str = workLine.substr (0, currentIndex);
-						ret.push_back (str);
-						workLine = workLine.substr (currentIndex);
-						currentIndex = 0;
+						cutLine (lastSpaceIndex + 1);
+					}
+					else 
+					{
+						cutLine (currentIndex);
 					}
 				}
 				else

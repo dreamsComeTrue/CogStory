@@ -109,7 +109,7 @@ namespace aga
         bool IsTextFitWithoutScroll ();
         void PreprocessText (std::string& text);
         int GetCurrentDrawingLine ();
-        std::vector<std::string> BreakLine (const std::string& line, float maxWidth);
+        std::vector<std::string> BreakTextLines (const std::string& text, float maxWidth);
 
         void UpdateWaitTime (float deltaTime);
         void PlayTypeWriterSound ();
