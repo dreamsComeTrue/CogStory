@@ -163,6 +163,8 @@ namespace aga
 		std::stack<Point> m_SavedPoints;
 
 		asIScriptFunction* m_SceneLoadedCallback;
+		
+		int m_LastTimeSpeed;
 	};
 }
 

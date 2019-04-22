@@ -741,7 +741,13 @@ namespace aga
 		tweeny::tween<float> tween
 			= tweeny::from (0.0f).to (1.0f).during (fadeInMs).to (0.0f).during (fadeOutMs).onStep (fadeFunc);
 
-		m_MainLoop->GetTweenManager ().AddTween (-1, tween, [&](int) { m_Transitioning = false; });
+		m_LastTimeSpeed = m_MainLoop->GetSpeedMultiplier ();
+		m_MainLoop->SetSpeedMultiplier (1.0f);
+
+		m_MainLoop->GetTweenManager ().AddTween (-1, tween, [&](int) {
+			m_Transitioning = false;
+			m_MainLoop->SetSpeedMultiplier (m_LastTimeSpeed);
+		});
 	}
 
 	//--------------------------------------------------------------------------------------------------

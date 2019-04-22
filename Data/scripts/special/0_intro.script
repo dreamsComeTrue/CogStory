@@ -83,8 +83,7 @@ void FactoryMainSceneAnimation ()
     SetActiveScene ("1_factory/1_factory_main.scn", true, function () 
     {
         Actor@ supervisor = MoveActorToFlagPoint ("ROBOT_SUPERVISOR", "SUPERVISOR_START");
-        MovementComponent@ movement = supervisor.GetMovementComponent ("MOVEMENT");
-        movement.SetEnabled (false);
+        supervisor.GetMovementComponent ("MOVEMENT").SetEnabled (false);
 
         CameraFollowDummy ("INTRO_CAMERA_START");
         
@@ -107,11 +106,23 @@ void FactoryMainSceneAnimation ()
             movement.SetWalkPoints (GetFlagPoint ("SUPERVISOR_A"), false);
             movement.SetWalkPointReachTime (5000.f);
         })
-        .Once (1000.f, function (id)
+        .Once (5000.f, function (id)
         {
             AddSpeechFrame ("SUPERVISOR_SPEECH_1", false);
         })        
-        .After (5000.f, function (id)
+        .Once (1000.f, function (id)
+        {
+            RemoveSpeechFrame ("SUPERVISOR_SPEECH_1");
+        })        
+        .Once (5000.f, function (id)
+        {
+            AddSpeechFrame ("ROBOT_1_SPEECH_1", false);
+        })        
+        .Once (1000.f, function (id)
+        {
+            RemoveSpeechFrame ("ROBOT_1_SPEECH_1");
+        })        
+        .After (2000.f, function (id)
         {
             RemoveSpeechFrame ("SUPERVISOR_SPEECH_1");
             ActivatePlayer ();

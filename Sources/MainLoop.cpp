@@ -245,4 +245,12 @@ namespace aga
 	AtlasManager& MainLoop::GetAtlasManager () { return m_AtlasManager; }
 
 	//--------------------------------------------------------------------------------------------------
+
+	void MainLoop::SetSpeedMultiplier (float speed) { m_SpeedMultiplier = speed; }
+
+	//--------------------------------------------------------------------------------------------------
+
+	float MainLoop::GetSpeedMultiplier () { return m_SpeedMultiplier; }
+
+	//--------------------------------------------------------------------------------------------------
 }

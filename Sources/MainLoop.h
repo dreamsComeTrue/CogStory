@@ -38,6 +38,9 @@ namespace aga
         TweenManager& GetTweenManager ();
         AudioManager& GetAudioManager ();
         AtlasManager& GetAtlasManager ();
+        
+        void SetSpeedMultiplier (float speed);
+        float GetSpeedMultiplier ();
 
     private:
         void InitializeStates ();
