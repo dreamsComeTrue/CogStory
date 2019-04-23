@@ -11,368 +11,374 @@
 
 namespace aga
 {
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    typedef std::map<std::string, SpeechFrame*>::iterator SpeechFrameIterator;
+	typedef std::map<std::string, SpeechFrame*>::iterator SpeechFrameIterator;
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    SpeechFrameManager::SpeechFrameManager (SceneManager* sceneManager)
-        : m_SceneManager (sceneManager)
-        , m_SpeechesFinishedScriptFunc (nullptr)
-        , m_SpeechesFinishedFunc (nullptr)
-        , m_SelectSample (nullptr)
-        , m_TypeSample (nullptr)
-    {
-    }
+	SpeechFrameManager::SpeechFrameManager (SceneManager* sceneManager)
+		: m_SceneManager (sceneManager)
+		, m_SpeechesFinishedScriptFunc (nullptr)
+		, m_SpeechesFinishedFunc (nullptr)
+		, m_SelectSample (nullptr)
+		, m_TypeSample (nullptr)
+	{
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    SpeechFrameManager::~SpeechFrameManager ()
-    {
-        if (!IsDestroyed ())
-        {
-            Destroy ();
-        }
-    }
+	SpeechFrameManager::~SpeechFrameManager ()
+	{
+		if (!IsDestroyed ())
+		{
+			Destroy ();
+		}
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    bool SpeechFrameManager::Initialize ()
-    {
-        Lifecycle::Initialize ();
+	bool SpeechFrameManager::Initialize ()
+	{
+		Lifecycle::Initialize ();
 
-        m_SelectSample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
-            "SPEECH_SELECT", GetResource (SOUND_SPEECH_SELECT).Dir + GetResource (SOUND_SPEECH_SELECT).Name);
-        m_TypeSample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
-            "SPEECH_TYPE", GetResource (SOUND_SPEECH_TYPE).Dir + GetResource (SOUND_SPEECH_TYPE).Name);
+		m_SelectSample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
+			"SPEECH_SELECT", GetResource (SOUND_SPEECH_SELECT).Dir + GetResource (SOUND_SPEECH_SELECT).Name);
+		m_TypeSample = m_SceneManager->GetMainLoop ()->GetAudioManager ().LoadSampleFromFile (
+			"SPEECH_TYPE", GetResource (SOUND_SPEECH_TYPE).Dir + GetResource (SOUND_SPEECH_TYPE).Name);
 
-        return true;
-    }
+		return true;
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    bool SpeechFrameManager::Destroy ()
-    {
-        for (SpeechFrameIterator it = m_Speeches.begin (); it != m_Speeches.end ();)
-        {
-            SAFE_DELETE (it->second);
-            m_Speeches.erase (it++);
-        }
+	bool SpeechFrameManager::Destroy ()
+	{
+		for (SpeechFrameIterator it = m_Speeches.begin (); it != m_Speeches.end ();)
+		{
+			SAFE_DELETE (it->second);
+			m_Speeches.erase (it++);
+		}
 
-        return Lifecycle::Destroy ();
-    }
+		return Lifecycle::Destroy ();
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    bool SpeechFrameManager::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
-    {
-        std::vector<SpeechFrame*> nextSpeeches;
+	bool SpeechFrameManager::ProcessEvent (ALLEGRO_EVENT* event, float deltaTime)
+	{
+		std::vector<SpeechFrame*> nextSpeeches;
 
-        for (SpeechFrameIterator it = m_Speeches.begin (); it != m_Speeches.end ();)
-        {
-            SpeechFrame* frame = it->second;
+		for (SpeechFrameIterator it = m_Speeches.begin (); it != m_Speeches.end ();)
+		{
+			SpeechFrame* frame = it->second;
 
-            if (frame->IsVisible ())
-            {
-                frame->ProcessEvent (event, deltaTime);
+			if (frame->IsVisible ())
+			{
+				frame->ProcessEvent (event, deltaTime);
 
-                if (frame->ShouldBeHandled () && frame->IsHandled ()
-                    && std::find (nextSpeeches.begin (), nextSpeeches.end (), frame) == nextSpeeches.end ())
-                {
-                    std::string outcomeAction = frame->GetOutcomeAction ();
+				if (frame->ShouldBeHandled () && frame->IsHandled ()
+					&& std::find (nextSpeeches.begin (), nextSpeeches.end (), frame) == nextSpeeches.end ())
+				{
+					std::string outcomeAction = frame->GetOutcomeAction ();
 
-                    SAFE_DELETE (it->second);
-                    m_Speeches.erase (it++);
+					SAFE_DELETE (it->second);
+					m_Speeches.erase (it++);
 
-                    m_SceneManager->GetPlayer ()->SetPreventInput (false);
+					m_SceneManager->GetPlayer ()->SetPreventInput (false);
 
-                    if (outcomeAction != "" && outcomeAction != "[CLOSE]")
-                    {
-                        SpeechFrame* frame = AddSpeechFrame (outcomeAction);
+					if (outcomeAction != "" && outcomeAction != "[CLOSE]")
+					{
+						SpeechFrame* frame = AddSpeechFrame (outcomeAction);
 
-                        nextSpeeches.push_back (frame);
-                        m_Speeches.insert (std::make_pair (outcomeAction, frame));
-                    }
-                    else
-                    {
-                        m_SelectSample->Play ();
-                    }
+						nextSpeeches.push_back (frame);
+						m_Speeches.insert (std::make_pair (outcomeAction, frame));
+					}
+					else
+					{
+						m_SelectSample->Play ();
+					}
 
+					continue;
+				}
+			}
+
+			++it;
+		}
+
+		for (SpeechFrame* nextSpeech : nextSpeeches)
+		{
+			nextSpeech->Show ();
+		}
+
+		if (m_SpeechesFinishedFunc && m_Speeches.empty ())
+		{
+			m_SpeechesFinishedFunc ();
+		}
+
+		if (m_SpeechesFinishedScriptFunc && m_Speeches.empty ())
+		{
+			asIScriptContext* ctx = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetContext ();
+			ctx->Prepare (m_SpeechesFinishedScriptFunc);
+			ctx->Execute ();
+			ctx->Unprepare ();
+			ctx->GetEngine ()->ReturnContext (ctx);
+		}
+
+		return false;
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	bool SpeechFrameManager::Update (float deltaTime)
+	{
+		for (SpeechFrameIterator it = m_Speeches.begin (); it != m_Speeches.end ();)
+		{
+			SpeechFrame* frame = it->second;
+
+			if (frame->IsVisible ())
+			{
+				if (frame->ShouldBeHandled ())
+				{
+					m_SceneManager->GetPlayer ()->SetPreventInput (true);
+				}
+
+				frame->Update (deltaTime);
+
+				if (frame->GetTimeout () > -1 && frame->GetCurrentTimeDisplayed () > frame->GetTimeout ())
+				{
+					SAFE_DELETE (it->second);
+					m_Speeches.erase (it++);
                     continue;
-                }
-            }
-
-            ++it;
-        }
-
-        for (SpeechFrame* nextSpeech : nextSpeeches)
-        {
-            nextSpeech->Show ();
-        }
-
-        if (m_SpeechesFinishedFunc && m_Speeches.empty ())
-        {
-            m_SpeechesFinishedFunc ();
-        }
-
-        if (m_SpeechesFinishedScriptFunc && m_Speeches.empty ())
-        {
-            asIScriptContext* ctx = m_SceneManager->GetMainLoop ()->GetScriptManager ().GetContext ();
-            ctx->Prepare (m_SpeechesFinishedScriptFunc);
-            ctx->Execute ();
-            ctx->Unprepare ();
-            ctx->GetEngine ()->ReturnContext (ctx);
-        }
-
-        return false;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    bool SpeechFrameManager::Update (float deltaTime)
-    {
-        for (SpeechFrameIterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
-        {
-            SpeechFrame* frame = it->second;
-
-            if (frame->IsVisible ())
-            {
-                if (frame->ShouldBeHandled ())
-                {
-                    m_SceneManager->GetPlayer ()->SetPreventInput (true);
-                }
-
-                frame->Update (deltaTime);
-            }
-        }
-
-        return true;
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void SpeechFrameManager::Render (float deltaTime)
-    {
-        for (SpeechFrameIterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
-        {
-            SpeechFrame* frame = it->second;
-
-            if (frame->IsVisible ())
-            {
-                frame->Render (deltaTime);
-            }
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    void SpeechFrameManager::Clear ()
-    {
-        m_Speeches.clear ();
-    }
-
-    //--------------------------------------------------------------------------------------------------
-
-    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& id, const std::string& text, Rect rect, int speed,
-        bool shouldBeHandled, const std::string& actionName, const std::string& regionName)
-    {
-        if (m_Speeches.find (id) == m_Speeches.end ())
-        {
-            SpeechFrame* frame = new SpeechFrame (this, text, rect, shouldBeHandled, actionName, regionName);
-            frame->SetDrawSpeed (speed);
+				}
+			}
             
-            m_Speeches.insert (std::make_pair (id, frame));
+            it++;
+		}
 
-            frame->ScrollDownFunction = [&]() { m_SelectSample->Play (); };
-            frame->ScrollUpFunction = [&]() { m_SelectSample->Play (); };
-            frame->ChoiceUpFunction = [&]() { m_SelectSample->Play (); };
-            frame->ChoiceDownFunction = [&]() { m_SelectSample->Play (); };
-        }
+		return true;
+	}
 
-        return m_Speeches[id];
-    }
+	//--------------------------------------------------------------------------------------------------
 
-    //--------------------------------------------------------------------------------------------------
+	void SpeechFrameManager::Render (float deltaTime)
+	{
+		for (SpeechFrameIterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
+		{
+			SpeechFrame* frame = it->second;
 
-    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& id, const std::string& text, Point pos,
-        int maxLineCharsCount, int linesCount, int speed, bool shouldBeHandled, const std::string& actionName,
-        const std::string& regionName)
-    {
-        Point size = GetTextRectSize (maxLineCharsCount, linesCount);
+			if (frame->IsVisible ())
+			{
+				frame->Render (deltaTime);
+			}
+		}
+	}
 
-        Rect rect;
-        rect.SetPos (pos);
-        rect.SetSize (size.Width, size.Height);
+	//--------------------------------------------------------------------------------------------------
 
-        return AddSpeechFrame (id, text, rect, speed, shouldBeHandled, actionName, regionName);
-    }
+	void SpeechFrameManager::Clear () { m_Speeches.clear (); }
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    SpeechFrame* SpeechFrameManager::AddSpeechFrame (SpeechData* speechData, bool shouldBeHandled)
-    {
-        Point pos = GetFramePos (speechData->RelativeFramePosition, speechData->AbsoluteFramePosition,
-            speechData->MaxCharsInLine, speechData->MaxLines, speechData->ActorRegionName != "");
+	SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& id, const std::string& text, Rect rect,
+		int speed, bool shouldBeHandled, const std::string& actionName, const std::string& regionName)
+	{
+		if (m_Speeches.find (id) == m_Speeches.end ())
+		{
+			SpeechFrame* frame = new SpeechFrame (this, text, rect, shouldBeHandled, actionName, regionName);
+			frame->SetDrawSpeed (speed);
 
-        return AddSpeechFrame (speechData->Name, speechData->Text[CURRENT_LANG], pos, speechData->MaxCharsInLine,
-            speechData->MaxLines, speechData->Speed, shouldBeHandled, speechData->ActorRegionName);
-    }
+			m_Speeches.insert (std::make_pair (id, frame));
 
-    //--------------------------------------------------------------------------------------------------
+			frame->ScrollDownFunction = [&]() { m_SelectSample->Play (); };
+			frame->ScrollUpFunction = [&]() { m_SelectSample->Play (); };
+			frame->ChoiceUpFunction = [&]() { m_SelectSample->Play (); };
+			frame->ChoiceDownFunction = [&]() { m_SelectSample->Play (); };
+		}
 
-    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& speechID, Point pos, bool shouldBeHandled)
-    {
-        SpeechData* instance = m_SceneManager->GetActiveScene ()->GetSpeech (speechID);
-        SpeechFrame* frame = nullptr;
+		return m_Speeches[id];
+	}
 
-        if (instance)
-        {
-            frame = AddSpeechFrame (instance->Name, instance->Text[CURRENT_LANG], pos, instance->MaxCharsInLine,
-                instance->MaxLines, instance->Speed, shouldBeHandled, instance->Action, instance->ActorRegionName);
+	//--------------------------------------------------------------------------------------------------
 
-            std::vector<SpeechOutcome>& outcomes = instance->Outcomes[CURRENT_LANG];
+	SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& id, const std::string& text, Point pos,
+		int maxLineCharsCount, int linesCount, int speed, bool shouldBeHandled, const std::string& actionName,
+		const std::string& regionName)
+	{
+		Point size = GetTextRectSize (maxLineCharsCount, linesCount);
 
-            for (SpeechOutcome& outcome : outcomes)
-            {
-                frame->AddChoice (outcome.Text, outcome.Action, nullptr);
-            }
-        }
+		Rect rect;
+		rect.SetPos (pos);
+		rect.SetSize (size.Width, size.Height);
 
-        return frame;
-    }
+		return AddSpeechFrame (id, text, rect, speed, shouldBeHandled, actionName, regionName);
+	}
 
-    //--------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------
 
-    SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& speechID, bool shouldBeHandled)
-    {
-        SpeechData* instance = m_SceneManager->GetActiveScene ()->GetSpeech (speechID);
+	SpeechFrame* SpeechFrameManager::AddSpeechFrame (SpeechData* speechData, bool shouldBeHandled)
+	{
+		Point pos = GetFramePos (speechData->RelativeFramePosition, speechData->AbsoluteFramePosition,
+			speechData->MaxCharsInLine, speechData->MaxLines, speechData->ActorRegionName != "");
 
-        if (instance)
-        {
-            Point pos = GetFramePos (instance->RelativeFramePosition, instance->AbsoluteFramePosition,
-                instance->MaxCharsInLine, instance->MaxLines, instance->ActorRegionName != "");
+		return AddSpeechFrame (speechData->Name, speechData->Text[CURRENT_LANG], pos, speechData->MaxCharsInLine,
+			speechData->MaxLines, speechData->Speed, shouldBeHandled, speechData->ActorRegionName);
+	}
 
-            return AddSpeechFrame (speechID, pos, shouldBeHandled);
-        }
+	//--------------------------------------------------------------------------------------------------
 
-        return nullptr;
-    }
+	SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& speechID, Point pos, bool shouldBeHandled)
+	{
+		SpeechData* instance = m_SceneManager->GetActiveScene ()->GetSpeech (speechID);
+		SpeechFrame* frame = nullptr;
 
-    //--------------------------------------------------------------------------------------------------
+		if (instance)
+		{
+			frame = AddSpeechFrame (instance->Name, instance->Text[CURRENT_LANG], pos, instance->MaxCharsInLine,
+				instance->MaxLines, instance->Speed, shouldBeHandled, instance->Action, instance->ActorRegionName);
 
-    void SpeechFrameManager::RemoveSpeechFrame (const std::string& speechID)
-    {
-        for (SpeechFrameIterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
-        {
-            if (it->first == speechID)
-            {
-                m_Speeches.erase (it);
-                SAFE_DELETE (it->second);
+			std::vector<SpeechOutcome>& outcomes = instance->Outcomes[CURRENT_LANG];
 
-                break;
-            }
-        }
-    }
+			for (SpeechOutcome& outcome : outcomes)
+			{
+				frame->AddChoice (outcome.Text, outcome.Action, nullptr);
+			}
+		}
 
-    //--------------------------------------------------------------------------------------------------
+		return frame;
+	}
 
-    SceneManager* SpeechFrameManager::GetSceneManager () { return m_SceneManager; }
+	//--------------------------------------------------------------------------------------------------
 
-    //--------------------------------------------------------------------------------------------------
+	SpeechFrame* SpeechFrameManager::AddSpeechFrame (const std::string& speechID, bool shouldBeHandled)
+	{
+		SpeechData* instance = m_SceneManager->GetActiveScene ()->GetSpeech (speechID);
 
-    Point SpeechFrameManager::GetFramePos (
-        ScreenRelativePosition position, Point absolutePos, int maxCharsInLine, int maxLines, bool showActor)
-    {
-        const int SCREEN_OFFSET = 10;
-        Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetBackBufferSize ();
-        Point size = GetTextRectSize (maxCharsInLine, maxLines);
-        Point pos;
+		if (instance)
+		{
+			Point pos = GetFramePos (instance->RelativeFramePosition, instance->AbsoluteFramePosition,
+				instance->MaxCharsInLine, instance->MaxLines, instance->ActorRegionName != "");
 
-        int edgeLength = 0;
+			return AddSpeechFrame (speechID, pos, shouldBeHandled);
+		}
 
-        if (showActor)
-        {
-            Point characterOffset = SpeechFrame::GetActorRegionOffset ();
-            edgeLength
-                = static_cast<int> (std::min (size.Height - 2 * characterOffset.Y, SPEECH_FRAME_MAX_CHAR_EDGE_LENGTH));
-        }
+		return nullptr;
+	}
 
-        switch (position)
-        {
-        case TopLeft:
-        {
-            pos.X = SCREEN_OFFSET + edgeLength;
-            pos.Y = SCREEN_OFFSET;
-            break;
-        }
+	//--------------------------------------------------------------------------------------------------
 
-        case TopCenter:
-        {
-            pos.X = screenSize.Width * 0.5f - size.Width * 0.5f;
-            pos.Y = SCREEN_OFFSET;
-            break;
-        }
+	void SpeechFrameManager::RemoveSpeechFrame (const std::string& speechID)
+	{
+		for (SpeechFrameIterator it = m_Speeches.begin (); it != m_Speeches.end (); ++it)
+		{
+			if (it->first == speechID)
+			{
+				m_Speeches.erase (it);
+				SAFE_DELETE (it->second);
 
-        case TopRight:
-        {
-            pos.X = screenSize.Width - size.Width - SCREEN_OFFSET;
-            pos.Y = SCREEN_OFFSET;
-            break;
-        }
+				break;
+			}
+		}
+	}
 
-        case BottomLeft:
-        {
-            pos.X = SCREEN_OFFSET + edgeLength;
-            pos.Y = screenSize.Height - size.Height - SCREEN_OFFSET;
-            break;
-        }
+	//--------------------------------------------------------------------------------------------------
 
-        case BottomCenter:
-        {
-            pos.X = screenSize.Width * 0.5f - size.Width * 0.5f;
-            pos.Y = screenSize.Height - size.Height - SCREEN_OFFSET;
-            break;
-        }
+	SceneManager* SpeechFrameManager::GetSceneManager () { return m_SceneManager; }
 
-        case BottomRight:
-        {
-            pos.X = screenSize.Width - size.Width - SCREEN_OFFSET;
-            pos.Y = screenSize.Height - size.Height - SCREEN_OFFSET;
-            break;
-        }
+	//--------------------------------------------------------------------------------------------------
 
-        case Center:
-        {
-            pos.X = screenSize.Width * 0.5f - size.Width * 0.5f;
-            pos.Y = screenSize.Height * 0.5f - size.Height * 0.5f;
-            break;
-        }
+	Point SpeechFrameManager::GetFramePos (
+		ScreenRelativePosition position, Point absolutePos, int maxCharsInLine, int maxLines, bool showActor)
+	{
+		const int SCREEN_OFFSET = 10;
+		Point screenSize = m_SceneManager->GetMainLoop ()->GetScreen ()->GetBackBufferSize ();
+		Point size = GetTextRectSize (maxCharsInLine, maxLines);
+		Point pos;
 
-        case Absoulte:
-        {
-            pos = absolutePos;
-            break;
-        }
-        }
+		int edgeLength = 0;
 
-        return pos;
-    }
+		if (showActor)
+		{
+			Point characterOffset = SpeechFrame::GetActorRegionOffset ();
+			edgeLength
+				= static_cast<int> (std::min (size.Height - 2 * characterOffset.Y, SPEECH_FRAME_MAX_CHAR_EDGE_LENGTH));
+		}
 
-    //--------------------------------------------------------------------------------------------------
+		switch (position)
+		{
+		case TopLeft:
+		{
+			pos.X = SCREEN_OFFSET + edgeLength;
+			pos.Y = SCREEN_OFFSET;
+			break;
+		}
 
-    Point SpeechFrameManager::GetTextRectSize (int maxLineCharsCount, int linesCount)
-    {
-        Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
-        int ascent = font.GetFontAscent (FONT_NAME_SPEECH_FRAME);
-        int descent = font.GetFontDescent (FONT_NAME_SPEECH_FRAME);
+		case TopCenter:
+		{
+			pos.X = screenSize.Width * 0.5f - size.Width * 0.5f;
+			pos.Y = SCREEN_OFFSET;
+			break;
+		}
 
-        float width = maxLineCharsCount * 25 + 2 * SPEECH_FRAME_TEXT_INSETS;
-        float height = linesCount * (ascent + descent) - descent + 2 * SPEECH_FRAME_TEXT_INSETS;
-        height += (linesCount - 1) * SPEECH_FRAME_LINE_OFFSET;
+		case TopRight:
+		{
+			pos.X = screenSize.Width - size.Width - SCREEN_OFFSET;
+			pos.Y = SCREEN_OFFSET;
+			break;
+		}
 
-        return {width, height};
-    }
+		case BottomLeft:
+		{
+			pos.X = SCREEN_OFFSET + edgeLength;
+			pos.Y = screenSize.Height - size.Height - SCREEN_OFFSET;
+			break;
+		}
 
-    //--------------------------------------------------------------------------------------------------
+		case BottomCenter:
+		{
+			pos.X = screenSize.Width * 0.5f - size.Width * 0.5f;
+			pos.Y = screenSize.Height - size.Height - SCREEN_OFFSET;
+			break;
+		}
+
+		case BottomRight:
+		{
+			pos.X = screenSize.Width - size.Width - SCREEN_OFFSET;
+			pos.Y = screenSize.Height - size.Height - SCREEN_OFFSET;
+			break;
+		}
+
+		case Center:
+		{
+			pos.X = screenSize.Width * 0.5f - size.Width * 0.5f;
+			pos.Y = screenSize.Height * 0.5f - size.Height * 0.5f;
+			break;
+		}
+
+		case Absoulte:
+		{
+			pos = absolutePos;
+			break;
+		}
+		}
+
+		return pos;
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	Point SpeechFrameManager::GetTextRectSize (int maxLineCharsCount, int linesCount)
+	{
+		Font& font = m_SceneManager->GetMainLoop ()->GetScreen ()->GetFont ();
+		int ascent = font.GetFontAscent (FONT_NAME_SPEECH_FRAME);
+		int descent = font.GetFontDescent (FONT_NAME_SPEECH_FRAME);
+
+		float width = maxLineCharsCount * 25 + 2 * SPEECH_FRAME_TEXT_INSETS;
+		float height = linesCount * (ascent + descent) - descent + 2 * SPEECH_FRAME_TEXT_INSETS;
+		height += (linesCount - 1) * SPEECH_FRAME_LINE_OFFSET;
+
+		return {width, height};
+	}
+
+	//--------------------------------------------------------------------------------------------------
 }

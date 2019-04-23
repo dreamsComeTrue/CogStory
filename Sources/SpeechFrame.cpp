@@ -50,6 +50,8 @@ namespace aga
 		, m_IsSuspended (false)
 		, m_OverrideSuspension (false)
 		, m_CurrentLineBreakOffset (0)
+		, m_CurrentTimeDisplayed (0.f)
+		, m_Timeout (-1)
 	{
 		AtlasManager& atlasManager = m_Manager->GetSceneManager ()->GetMainLoop ()->GetAtlasManager ();
 		Atlas* atlas = atlasManager.GetAtlas (GetBaseName (GetResourcePath (PACK_MENU_UI)));
@@ -317,6 +319,8 @@ namespace aga
 			m_KeyDelta += deltaTime * 1000;
 		}
 
+		m_CurrentTimeDisplayed += deltaTime * 1000.f;
+
 		if ( //! IsTextFitWithoutScroll () &&
 			m_KeyDelta > m_MaxKeyDelta)
 		{
@@ -535,6 +539,8 @@ namespace aga
 		m_TextLines = BreakTextLines (m_Text, m_DrawRect.GetSize ().Width - 2 * SPEECH_FRAME_TEXT_INSETS);
 		m_AttrColorIndex = 0;
 		m_AttrDelayIndex = 0;
+
+		m_CurrentTimeDisplayed = 0.f;
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -849,7 +855,7 @@ namespace aga
 					{
 						cutLine (lastSpaceIndex + 1);
 					}
-					else 
+					else
 					{
 						cutLine (currentIndex);
 					}
@@ -891,6 +897,7 @@ namespace aga
 		m_ActualChoiceIndex = 0;
 		m_IsSuspended = false;
 		m_OverrideSuspension = false;
+		m_CurrentTimeDisplayed = 0.f;
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -1028,6 +1035,18 @@ namespace aga
 	//--------------------------------------------------------------------------------------------------
 
 	Point SpeechFrame::GetActorRegionOffset () { return Point (20, 10); }
+
+	//--------------------------------------------------------------------------------------------------
+
+	void SpeechFrame::SetTimeout (int timeMs) { m_Timeout = timeMs; }
+
+	//--------------------------------------------------------------------------------------------------
+
+	int SpeechFrame::GetTimeout () { return m_Timeout; }
+
+	//--------------------------------------------------------------------------------------------------
+
+	int SpeechFrame::GetCurrentTimeDisplayed () { return m_CurrentTimeDisplayed; }
 
 	//--------------------------------------------------------------------------------------------------
 }

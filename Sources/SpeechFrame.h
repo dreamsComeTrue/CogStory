@@ -86,6 +86,10 @@ namespace aga
 
         void SetHandleFunction (asIScriptFunction* func) { m_ScriptHandleFunction = func; }
 
+        void SetTimeout (int timeMs);
+        int GetTimeout ();
+        int GetCurrentTimeDisplayed ();
+
     private:
         void DrawActorSprite ();
         void DrawTextLine (const std::string& line, Point drawPoint, float advance);
@@ -114,7 +118,7 @@ namespace aga
         void UpdateWaitTime (float deltaTime);
         void PlayTypeWriterSound ();
         void TryToSuspendOnBreakPoints ();
-
+        
     private:
         SpeechFrameManager* m_Manager;
         NINE_PATCH_BITMAP* m_FrameBitmap;
@@ -173,6 +177,9 @@ namespace aga
         bool m_IsSuspended;
         bool m_OverrideSuspension;
         int m_CurrentLineBreakOffset;
+
+        float m_CurrentTimeDisplayed;        
+        int m_Timeout;
     };
 }
 

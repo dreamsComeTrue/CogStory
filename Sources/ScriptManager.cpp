@@ -148,6 +148,8 @@ namespace aga
 		   void SetDrawRect (Rect)
 		   void SetDrawSpeed (float speedInMs)
 		   void SetDrawTextCenter (bool)
+           void SetTimeout (int timeMs)
+           int GetTimeout ()
 		   bool IsDrawTextCenter ()
 			   = void ScriptHandleFunc ()
 		   void SetHandleFunction (ScriptHandleFunc)
@@ -1129,6 +1131,12 @@ namespace aga
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterObjectMethod (
 			"SpeechFrame", "void SetDrawTextCenter (bool)", asMETHOD (SpeechFrame, SetDrawTextCenter), asCALL_THISCALL);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterObjectMethod (
+			"SpeechFrame", "void SetTimeout (int timeMs)", asMETHOD (SpeechFrame, SetTimeout), asCALL_THISCALL);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterObjectMethod (
+			"SpeechFrame", "int GetTimeout ()", asMETHOD (SpeechFrame, GetTimeout), asCALL_THISCALL);
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterObjectMethod (
 			"SpeechFrame", "bool IsDrawTextCenter ()", asMETHOD (SpeechFrame, IsDrawTextCenter), asCALL_THISCALL);

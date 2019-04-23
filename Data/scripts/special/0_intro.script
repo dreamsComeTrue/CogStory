@@ -108,21 +108,15 @@ void FactoryMainSceneAnimation ()
         })
         .Once (5000.f, function (id)
         {
-            AddSpeechFrame ("SUPERVISOR_SPEECH_1", false);
+            AddSpeechFrame ("SUPERVISOR_SPEECH_1", false).SetTimeout (5000.f);
         })        
-        .Once (1000.f, function (id)
-        {
-            RemoveSpeechFrame ("SUPERVISOR_SPEECH_1");
-        })        
+        .Once (1000.f, null)
         .Once (5000.f, function (id)
         {
-            AddSpeechFrame ("ROBOT_1_SPEECH_1", false);
+            AddSpeechFrame ("ROBOT_1_SPEECH_1", false).SetTimeout (5000.f);
         })        
-        .Once (1000.f, function (id)
-        {
-            RemoveSpeechFrame ("ROBOT_1_SPEECH_1");
-        })        
-        .After (2000.f, function (id)
+        .Once (1000.f, null)
+        .After (0.f, function (id)
         {
             RemoveSpeechFrame ("SUPERVISOR_SPEECH_1");
             ActivatePlayer ();
