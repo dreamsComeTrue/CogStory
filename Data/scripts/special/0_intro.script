@@ -110,12 +110,12 @@ void FactoryMainSceneAnimation ()
         {
             AddSpeechFrame ("SUPERVISOR_SPEECH_1", false).SetTimeout (5000.f);
         })        
-        .Once (1000.f, null)
+        .Wait (1000.f)
         .Once (5000.f, function (id)
         {
             AddSpeechFrame ("ROBOT_1_SPEECH_1", false).SetTimeout (5000.f);
         })        
-        .Once (1000.f, null)
+        .Wait (1000.f)
         .After (0.f, function (id)
         {
             RemoveSpeechFrame ("SUPERVISOR_SPEECH_1");

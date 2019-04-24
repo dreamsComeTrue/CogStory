@@ -135,7 +135,23 @@ namespace aga
 
         return this;
     }
+    
+    //--------------------------------------------------------------------------------------------------
+    
+    Timeline* Timeline::Wait (int waitTime)
+    {
+        tweeny::tween<float> tween = tweeny::from (0.f).to (1.f).during (waitTime);
 
+        TweenData tweenData;
+        tweenData.ID = m_ID;
+        tweenData.TweenF = tween;
+        tweenData.TweenMask |= TWEEN_F;
+
+        m_Tweens.push_back (tweenData);
+
+        return this;
+    }
+    
     //--------------------------------------------------------------------------------------------------
 
     Timeline* Timeline::During (float from, float to, int duringMS, asIScriptFunction* asFunc)

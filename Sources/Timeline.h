@@ -22,6 +22,9 @@ namespace aga
         //  Run timeline function after specified time period
         Timeline* After (int afterMS, asIScriptFunction* func);
         
+        //  Simply wait 
+        Timeline* Wait (int waitTime);
+
         //  Used for interpolate between two values in span of the time
         Timeline* During (float from, float to, int duringMS, asIScriptFunction* func);
         Timeline* During (Point from, Point to, int duringMS, asIScriptFunction* func);

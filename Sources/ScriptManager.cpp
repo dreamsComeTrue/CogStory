@@ -65,6 +65,7 @@ namespace aga
 		 Timeline@ CreateTimeline (int id = -1)
 		 Timeline@ Once (int duringMS, TimelineEmptyFunc @+ func)
 		 Timeline@ After (int duringMS, TimelineEmptyFunc @+ func)
+		 Timeline@ Wait (int waitTime)
 		 Timeline@ During (float from, float to, int duringMS, TimelineSingleFunc @+ func)
 		 Timeline@ During (Point from, Point to, int duringMS, TimelinePointFunc @+ func)
 
@@ -148,8 +149,8 @@ namespace aga
 		   void SetDrawRect (Rect)
 		   void SetDrawSpeed (float speedInMs)
 		   void SetDrawTextCenter (bool)
-           void SetTimeout (int timeMs)
-           int GetTimeout ()
+		   void SetTimeout (int timeMs)
+		   int GetTimeout ()
 		   bool IsDrawTextCenter ()
 			   = void ScriptHandleFunc ()
 		   void SetHandleFunction (ScriptHandleFunc)
@@ -866,6 +867,9 @@ namespace aga
 		r = m_ScriptEngine->RegisterObjectMethod ("Timeline",
 			"Timeline@ After (int duringMS, TimelineEmptyFunc @+ func)",
 			asMETHODPR (Timeline, After, (int, asIScriptFunction*), Timeline*), asCALL_THISCALL);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterObjectMethod (
+			"Timeline", "Timeline@ Wait (int timeMS)", asMETHOD (Timeline, Wait), asCALL_THISCALL);
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterObjectMethod ("Timeline",
 			"Timeline@ During (float from, float to, int duringMS, TimelineSingleFunc @+ func)",
