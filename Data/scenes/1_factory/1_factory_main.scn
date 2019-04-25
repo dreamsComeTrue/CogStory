@@ -2050,6 +2050,38 @@
                     "langID": "PL"
                 }
             ]
+        },
+        {
+            "abs_pos": "0.00 0.00",
+            "action": "[CLOSE]",
+            "group": "INTRO",
+            "id": 2,
+            "max_chars": 20,
+            "max_lines": 3,
+            "name": "SUPERVISOR_SPEECH_2",
+            "outcomes": [
+                {
+                    "langID": "EN",
+                    "texts": []
+                },
+                {
+                    "langID": "PL",
+                    "texts": []
+                }
+            ],
+            "region_name": "",
+            "rel_pos": 5,
+            "speed": 50,
+            "texts": [
+                {
+                    "data": "What does it mean [WAIT=200]\"com-pli-ca-tions\"[/WAIT] ?!?",
+                    "langID": "EN"
+                },
+                {
+                    "data": "",
+                    "langID": "PL"
+                }
+            ]
         }
     ],
     "trigger_areas": [

@@ -115,7 +115,7 @@ namespace aga
         int GetCurrentDrawingLine ();
         std::vector<std::string> BreakTextLines (const std::string& text, float maxWidth);
 
-        void UpdateWaitTime (float deltaTime);
+        bool UpdateWaitTime (float deltaTime);
         void PlayTypeWriterSound ();
         void TryToSuspendOnBreakPoints ();
         

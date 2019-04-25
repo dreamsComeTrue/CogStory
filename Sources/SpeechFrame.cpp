@@ -212,16 +212,12 @@ namespace aga
 	{
 		if (m_StillUpdating && !m_IsSuspended && !m_TextLines.empty ())
 		{
-			//  Handle [WAIT] annotation
-			UpdateWaitTime (deltaTime);
-
 			m_DrawTimeAccumulator += deltaTime * 1000;
 
 			//  Update each character
-			if (m_DrawTimeAccumulator >= m_DrawSpeed)
+			//	We can proceed when there is time for the next letter, or Delay time is exhausted
+			if (m_DrawTimeAccumulator >= m_DrawSpeed || UpdateWaitTime (deltaTime))
 			{
-				PlayTypeWriterSound ();
-
 				m_DrawTimeAccumulator = 0.0f;
 
 				if (!m_IsDelayed)
@@ -229,44 +225,62 @@ namespace aga
 					++m_CurrentCharIndex;
 					++m_CurrentIndexInLine;
 					++m_AttrDelayIndex;
-				}
 
-				//  Try to switch to the next line
-				if (m_CurrentIndexInLine >= m_TextLines[m_CurrentLine].size ())
-				{
-					bool drawnLastLine = (m_CurrentLine + 1) % GetMaxLinesCanFit () == 0;
-					bool notOnLastLine = !(m_CurrentLine + 1 >= m_TextLines.size ());
+					PlayTypeWriterSound ();
 
-					if (!m_OverrideSuspension && notOnLastLine && drawnLastLine)
+					//  Try to switch to the next line
+					if (m_CurrentIndexInLine >= m_TextLines[m_CurrentLine].size ())
 					{
-						m_IsSuspended = true;
-						m_OverrideSuspension = false;
+						bool drawnLastLine = (m_CurrentLine + 1) % GetMaxLinesCanFit () == 0;
+						bool notOnLastLine = !(m_CurrentLine + 1 >= m_TextLines.size ());
+
+						if (!m_OverrideSuspension && notOnLastLine && drawnLastLine)
+						{
+							m_IsSuspended = true;
+							m_OverrideSuspension = false;
+						}
+
+						if (!m_IsSuspended)
+						{
+							m_CurrentIndexInLine = 0;
+							++m_CurrentLine;
+						}
 					}
 
-					if (!m_IsSuspended)
+					//  Are we at the end of processing?
+					if (!m_IsSuspended && m_CurrentLine >= m_TextLines.size ())
 					{
-						m_CurrentIndexInLine = 0;
-						++m_CurrentLine;
+						m_StillUpdating = false;
+						m_CurrentLine = m_TextLines.size () - 1;
+						m_CurrentIndexInLine = m_TextLines[m_CurrentLine].size ();
 					}
-				}
 
-				//  Are we at the end of processing?
-				if (!m_IsSuspended && m_CurrentLine >= m_TextLines.size ())
-				{
-					m_StillUpdating = false;
-					m_CurrentLine = m_TextLines.size () - 1;
-					m_CurrentIndexInLine = m_TextLines[m_CurrentLine].size ();
+					TryToSuspendOnBreakPoints ();
 				}
-
-				TryToSuspendOnBreakPoints ();
 			}
 		}
 	}
 
 	//--------------------------------------------------------------------------------------------------
 
-	void SpeechFrame::UpdateWaitTime (float deltaTime)
+	bool SpeechFrame::UpdateWaitTime (float deltaTime)
 	{
+		if (!m_IsDelayed)
+		{
+			for (SpeechTextAttribute& attr : m_Attributes)
+			{
+				if (m_AttrDelayIndex >= attr.BeginIndex && m_AttrDelayIndex <= attr.EndIndex)
+				{
+					if (attr.AttributesMask & ATTRIBUTE_DELAY && !m_IsDelayed && attr.Delay > 0.0f)
+					{
+						m_IsDelayed = true;
+						m_DelayCounter = attr.Delay;
+						break;
+					}
+				}
+			}
+		}
+
 		if (m_IsDelayed)
 		{
 			m_DelayCounter -= deltaTime * 1000.0f;
@@ -275,8 +289,12 @@ namespace aga
 			{
 				m_IsDelayed = false;
 				m_DelayCounter = 0.0f;
+				
+				return true;
 			}
 		}
+		
+		return false;
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -674,15 +692,6 @@ namespace aga
 					if (attr.AttributesMask & ATTRIBUTE_COLOR)
 					{
 						color = attr.Color;
-					}
-				}
-
-				if (m_AttrDelayIndex >= attr.BeginIndex && m_AttrDelayIndex <= attr.EndIndex)
-				{
-					if (attr.AttributesMask & ATTRIBUTE_DELAY && !m_IsDelayed && attr.Delay > 0.0f)
-					{
-						m_IsDelayed = true;
-						m_DelayCounter = attr.Delay;
 					}
 				}
 			}
