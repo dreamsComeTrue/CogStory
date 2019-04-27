@@ -174,6 +174,16 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
+	void EditorActorWindow::OnRemove ()
+	{
+		m_Editor->GetEditorActorMode ().RemoveActor (atoi (m_ActorID));
+		m_SelectedActor = nullptr;
+	
+		Show ();
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
 	void EditorActorWindow::SelectActor (Actor* actor)
 	{
 		m_SelectedActor = actor;
@@ -471,11 +481,12 @@ namespace aga
 
 		if (scene)
 		{
-			ImGui::SetNextWindowSize (ImVec2 (800, 650), ImGuiCond_Always);
+			Point screenSize = m_Editor->GetMainLoop ()->GetScreen ()->GetRealWindowSize ();
+			ImGui::SetNextWindowSize (ImVec2 (screenSize.Width - 100, screenSize.Height - 100), ImGuiCond_Always);
 
 			if (ImGui::BeginPopupModal ("Actor Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 			{
-				ImGui::BeginChild ("Child1", ImVec2 (240, ImGui::GetWindowSize ().y - 40), false,
+				ImGui::BeginChild ("Child1", ImVec2 (400, ImGui::GetWindowSize ().y - 40), false,
 					ImGuiWindowFlags_HorizontalScrollbar);
 				ImGui::BeginGroup ();
 				{
@@ -502,14 +513,14 @@ namespace aga
 
 				ImGui::SameLine ();
 
-				ImGui::BeginChild ("Child2", ImVec2 (400, ImGui::GetWindowSize ().y - 40), false,
+				ImGui::BeginChild ("Child2", ImVec2 (screenSize.Width - 660, ImGui::GetWindowSize ().y - 40), false,
 					ImGuiWindowFlags_HorizontalScrollbar);
 				ImGui::BeginGroup ();
 				{
 					int headerStyle
 						= ImGuiTreeNodeFlags_Bullet | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_DefaultOpen;
 
-					float controlWidth = 190.f;
+					float controlWidth = (ImGui::GetWindowSize ().x - 10) / 2;
 
 					if (ImGui::CollapsingHeader ("General", headerStyle))
 					{
@@ -741,7 +752,7 @@ namespace aga
 
 					if (ImGui::Button ("REMOVE", buttonSize))
 					{
-						m_Editor->GetEditorActorMode ().RemoveActor (atoi (m_ActorID));
+						OnRemove ();
 					}
 
 					ImGui::NewLine ();

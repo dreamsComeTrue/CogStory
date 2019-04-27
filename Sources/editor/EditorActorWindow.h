@@ -27,6 +27,7 @@ namespace aga
 
     private:
         void OnSave ();
+        void OnRemove ();
 
         void OnAddScript ();
 

@@ -4,6 +4,7 @@
 #include "Editor.h"
 #include "EditorActorWindow.h"
 #include "MainLoop.h"
+#include "Screen.h"
 #include "SpeechFrame.h"
 #include "SpeechFrameManager.h"
 
@@ -294,7 +295,8 @@ namespace aga
 
     void EditorSpeechWindow::RenderUI ()
     {
-        ImGui::SetNextWindowSize (ImVec2 (900, 550), ImGuiCond_Always);
+        Point winSize = m_Editor->GetMainLoop ()->GetScreen ()->GetRealWindowSize ();
+        ImGui::SetNextWindowSize (ImVec2 (winSize.Width - 100, winSize.Height - 100), ImGuiCond_Always);
 
         if (ImGui::BeginPopupModal ("Speech Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
@@ -361,8 +363,10 @@ namespace aga
 
             ImGui::SameLine ();
 
+            int centerSize = ImGui::GetWindowSize ().x - 430;
+
             ImGui::BeginChild (
-                "Child2", ImVec2 (460, ImGui::GetWindowSize ().y - 50), false, ImGuiWindowFlags_HorizontalScrollbar);
+                "Child2", ImVec2 (centerSize, ImGui::GetWindowSize ().y - 50), false, ImGuiWindowFlags_HorizontalScrollbar);
             ImGui::BeginGroup ();
             {
                 ImGui::LabelText ("ID", m_SpeechID);
@@ -416,7 +420,7 @@ namespace aga
 
                 ImGui::Dummy (ImVec2 (100, 10));
 
-                if (ImGui::InputTextMultiline ("Text", m_Text, ARRAY_SIZE (m_Text), ImVec2 (305, 90)))
+                if (ImGui::InputTextMultiline ("Text", m_Text, ARRAY_SIZE (m_Text), ImVec2 (centerSize - 50, 90)))
                 {
                     speechData.Text[m_LangIndex] = std::string (m_Text);
                 }
@@ -433,7 +437,7 @@ namespace aga
                 {
                     EditorSpeechOutcome& out = edOutcomes[i];
 
-                    ImGui::PushItemWidth (40.f);
+                    ImGui::PushItemWidth (100.f);
                     if (ImGui::InputText (
                             (std::string ("##Name") + std::to_string (i)).c_str (), out.Name, ARRAY_SIZE (out.Name)))
                     {
@@ -443,7 +447,7 @@ namespace aga
 
                     ImGui::SameLine ();
 
-                    ImGui::PushItemWidth (150.f);
+                    ImGui::PushItemWidth (centerSize - 500);
                     if (ImGui::InputText (
                             (std::string ("##Text") + std::to_string (i)).c_str (), out.Text, ARRAY_SIZE (out.Text)))
                     {
@@ -453,7 +457,7 @@ namespace aga
 
                     ImGui::SameLine ();
 
-                    ImGui::PushItemWidth (85.f);
+                    ImGui::PushItemWidth (250.f);
                     if (ImGui::Combo (
                             (std::string ("##Action") + std::to_string (i)).c_str (), &out.ActionIndex, m_Actions))
                     {
