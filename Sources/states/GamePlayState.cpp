@@ -69,7 +69,11 @@ namespace aga
 		}
 
 		sceneManager.BeforeEnter ();
-		sceneManager.GetPlayer ()->TemplateBounds.Pos = sceneManager.GetPlayer ()->GetPosition ();
+
+		Player* player = sceneManager.GetPlayer ();
+		player->SetPreventInput (false);
+		player->Show ();
+		player->TemplateBounds.Pos = player->GetPosition ();
 
 		ResizeWindow ();
 
@@ -87,7 +91,7 @@ namespace aga
 		if (event->type == ALLEGRO_EVENT_KEY_UP)
 		{
 			AudioManager& audioManager = m_MainLoop->GetAudioManager ();
-			
+
 			if (event->keyboard.keycode == ALLEGRO_KEY_M)
 			{
 				audioManager.SetEnabled (!audioManager.IsEnabled ());

@@ -14,7 +14,7 @@ namespace aga
     class Script : public Lifecycle
     {
     public:
-        Script (asIScriptModule* module, ScriptManager* manager, const std::string& name);
+        Script (asIScriptModule* module, ScriptManager* manager, const std::string& name, const std::string& path = "");
         virtual ~Script ();
         bool Initialize ();
         bool Destroy ();
@@ -25,6 +25,8 @@ namespace aga
         bool Run (const std::string& functionName, float arg0);
         bool Run (const std::string& functionName, int arg0);
         bool Run (const std::string& functionName, void* arg0);
+        
+        void Reload ();
 
         std::string GetName () { return m_Name; }
         asIScriptModule* GetModule () { return m_Module; }
@@ -36,6 +38,7 @@ namespace aga
     private:
         ScriptManager* m_Manager;
 
+        std::string m_Path;
         std::string m_Name;
         asIScriptModule* m_Module;
     };

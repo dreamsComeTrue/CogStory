@@ -7,6 +7,7 @@
 #include "ParticleEmitter.h"
 #include "Player.h"
 #include "Scene.h"
+#include "SceneManager.h"
 #include "Screen.h"
 #include "Script.h"
 #include "SpeechFrame.h"
@@ -294,26 +295,23 @@ namespace aga
 			return;
 		}
 
-		auto reloadScriptsFunc = [&](Scriptable* scriptable) {
-			for (ScriptMetaData& script : scriptable->GetScripts ())
-			{
-				std::string file = fileName;
-				std::replace (file.begin (), file.end (), '\\', '/');
+		std::string filePath = dir + GetPathSeparator () + fileName;
 
-				if (script.Path == file)
-				{
-					scriptable->ReloadScript (script.Name);
-				}
-			}
-		};
+		Log (std::string ("Changed script: " + fileName + "\n").c_str ());
 
-		reloadScriptsFunc (m_SceneManager->GetActiveScene ());
+		std::map<std::string, Script*>& scripts
+			= m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptsByPath ();
 
-		std::vector<Actor*>& actors = m_SceneManager->GetActiveScene ()->GetActors ();
-
-		for (Actor* actor : actors)
+		for (std::map<std::string, Script*>::iterator it = scripts.begin (); it != scripts.end (); ++it)
 		{
-			reloadScriptsFunc (actor);
+			if (it->first == filePath)
+			{
+				Log (std::string ("Reloading script: " + fileName + "\n").c_str ());
+
+				it->second->Reload ();
+
+				Log (std::string ("Reloaded script: " + fileName + "\n").c_str ());
+			}
 		}
 
 		lastTimePoint = now;
@@ -477,12 +475,20 @@ namespace aga
 		text = strStream.str (); // str holds the content of the file
 		file.close ();
 
-		return LoadScriptFromText (text, moduleName);
+		Script* script = LoadScriptFromText (text, moduleName, realPath);
+
+		if (script)
+		{
+			m_ScriptsByPath.insert (std::make_pair (realPath, script));
+		}
+
+		return script;
 	}
 
 	//--------------------------------------------------------------------------------------------------
 
-	Script* ScriptManager::LoadScriptFromText (const std::string& text, const std::string& moduleName)
+	Script* ScriptManager::LoadScriptFromText (
+		const std::string& text, const std::string& moduleName, const std::string& path)
 	{
 		memset (g_ScriptErrorBuffer, 0, sizeof (g_ScriptErrorBuffer));
 
@@ -521,7 +527,7 @@ namespace aga
 			return nullptr;
 		}
 
-		Script* script = new Script (builder.GetModule (), this, moduleName);
+		Script* script = new Script (builder.GetModule (), this, moduleName, path);
 		m_Scripts.insert (std::make_pair (moduleName, script));
 
 		script->Initialize ();
@@ -537,6 +543,16 @@ namespace aga
 		{
 			if (it->second->GetName () == name)
 			{
+				for (std::map<std::string, Script*>::iterator it2 = m_ScriptsByPath.begin ();
+					 it2 != m_ScriptsByPath.end (); ++it2)
+				{
+					if (it->second == it2->second)
+					{
+						m_ScriptsByPath.erase (it2);
+						break;
+					}
+				}
+
 				SAFE_DELETE (it->second);
 				m_Scripts.erase (it);
 				return;
@@ -1627,6 +1643,10 @@ namespace aga
 		ctx->Unprepare ();
 		ctx->GetEngine ()->ReturnContext (ctx);
 	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	std::map<std::string, Script*>& ScriptManager::GetScriptsByPath () { return m_ScriptsByPath; }
 
 	//--------------------------------------------------------------------------------------------------
 }

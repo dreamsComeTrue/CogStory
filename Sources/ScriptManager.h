@@ -36,7 +36,7 @@ namespace aga
         void Update (float deltaTime);
 
         Script* LoadScriptFromFile (const std::string& path, const std::string& moduleName);
-        Script* LoadScriptFromText (const std::string& text, const std::string& moduleName);
+        Script* LoadScriptFromText (const std::string& text, const std::string& moduleName, const std::string& path = "");
         asIScriptEngine* GetEngine ();
         asIScriptContext* GetContext ();
 
@@ -48,6 +48,8 @@ namespace aga
         void RunScriptFunction (asIScriptFunction* func, void* obj1, void* obj2);
 
         Script* GetScriptByModuleName (const std::string& moduleName);
+        
+        std::map<std::string, Script*>& GetScriptsByPath ();
 
     private:
         void RegisterAPI ();
@@ -84,6 +86,7 @@ namespace aga
         MainLoop* m_MainLoop;
         asIScriptEngine* m_ScriptEngine;
         std::map<std::string, Script*> m_Scripts;
+        std::map<std::string, Script*> m_ScriptsByPath;
 
         FW::FileWatcher m_FileWatcher;
         FileUpdateListener m_FileListener;

@@ -48,27 +48,30 @@ namespace FW
 	public:
 		///
 		///
-		FileWatcherLinux();
+		FileWatcherLinux ();
 
 		///
 		///
-		virtual ~FileWatcherLinux();
+		virtual ~FileWatcherLinux ();
 
 		/// Add a directory watch
 		/// @exception FileNotFoundException Thrown when the requested directory does not exist
-		WatchID addWatch(const String& directory, FileWatchListener* watcher, bool recursive);
+		WatchID addWatch (const String& directory, FileWatchListener* watcher, bool recursive);
 
 		/// Remove a directory watch. This is a brute force lazy search O(nlogn).
-		void removeWatch(const String& directory);
+		void removeWatch (const String& directory);
 
 		/// Remove a directory watch. This is a map lookup O(logn).
-		void removeWatch(WatchID watchid);
+		void removeWatch (WatchID watchid);
 
 		/// Updates the watcher. Must be called often.
-		void update();
+		void update ();
 
 		/// Handles the action
-		void handleAction(WatchStruct* watch, const String& filename, unsigned long action);
+		void handleAction (WatchStruct* watch, const String& filename, unsigned long action);
+
+	private:
+		void addWatchRecursive (const String& directory, FileWatchListener* watcher);
 
 	private:
 		/// Map of WatchID to WatchStruct pointers
@@ -82,10 +85,10 @@ namespace FW
 		/// File descriptor set
 		fd_set mDescriptorSet;
 
-	};//end FileWatcherLinux
+	}; // end FileWatcherLinux
 
-};//namespace FW
+}; // namespace FW
 
-#endif//FILEWATCHER_PLATFORM_LINUX
+#endif // FILEWATCHER_PLATFORM_LINUX
 
-#endif//_FW_FILEWATCHERLINUX_H_
+#endif //_FW_FILEWATCHERLINUX_H_
