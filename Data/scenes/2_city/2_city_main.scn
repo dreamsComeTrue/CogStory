@@ -220,6 +220,7 @@
             "id": "76",
             "name": "SHOPKEEPER",
             "overlap": "1",
+            "overlap-size": "131.00 77.00",
             "phys": [
                 {
                     "poly": "-10.00 15.00 12.00 15.00 12.00 -11.00 -10.00 -11.00 "
@@ -3216,7 +3217,6 @@
             "id": "1992",
             "name": "floor-cell-horizontal",
             "overlap": "0",
-            "phys": [],
             "pos": "-224.00 432.00",
             "rot": "0.00",
             "size": "64.00 64.00",
@@ -4990,6 +4990,7 @@
             ],
             "region_name": "player_head",
             "rel_pos": 5,
+            "speed": 15,
             "texts": [
                 {
                     "data": "Hey, what's up.\nHow are YOU???@\nI mean, no worry...@\nIs everything ok?",
@@ -5021,6 +5022,7 @@
             ],
             "region_name": "player_head",
             "rel_pos": 5,
+            "speed": 15,
             "texts": [
                 {
                     "data": "Maybe you need some help???",
@@ -5052,6 +5054,7 @@
             ],
             "region_name": "",
             "rel_pos": 2,
+            "speed": 15,
             "texts": [
                 {
                     "data": "Welcome home!!!",
@@ -5083,6 +5086,7 @@
             ],
             "region_name": "player_head",
             "rel_pos": 5,
+            "speed": 15,
             "texts": [
                 {
                     "data": "Hello, what do you want?",
@@ -5114,6 +5118,7 @@
             ],
             "region_name": "",
             "rel_pos": 2,
+            "speed": 15,
             "texts": [
                 {
                     "data": "To Factory of Dreams",
@@ -5145,6 +5150,7 @@
             ],
             "region_name": "player_head",
             "rel_pos": 5,
+            "speed": 15,
             "texts": [
                 {
                     "data": " \nSee ya, then!",
@@ -5176,6 +5182,7 @@
             ],
             "region_name": "",
             "rel_pos": 5,
+            "speed": 15,
             "texts": [
                 {
                     "data": "To Humans District",
@@ -5207,6 +5214,7 @@
             ],
             "region_name": "",
             "rel_pos": 1,
+            "speed": 15,
             "texts": [
                 {
                     "data": "An ordinary fountain\nNothing special...\n",
@@ -5238,6 +5246,7 @@
             ],
             "region_name": "",
             "rel_pos": 2,
+            "speed": 15,
             "texts": [
                 {
                     "data": "Forest Alley",

@@ -5,43 +5,52 @@
 
 #include "Common.h"
 
+#include "TextEditor.h"
+
 namespace aga
 {
-    class Editor;
+	class Editor;
 
-    class EditorScriptWindow
-    {
-    public:
-        EditorScriptWindow (Editor* editor);
-        virtual ~EditorScriptWindow ();
+	struct FileEntry
+	{
+		std::string Name;
+		std::string Path;
+		std::string Text;
+		bool Modified = false;
 
-        void Show (std::function<void(std::string, std::string)> OnAcceptFunc,
-            std::function<void(std::string, std::string)> OnCancelFunc);
+		TextEditor TextEditorControl;
+	};
 
-        void Render ();
+	class EditorScriptWindow
+	{
+	public:
+		EditorScriptWindow (Editor* editor);
+		virtual ~EditorScriptWindow ();
 
-        std::string GetName () const;
-        std::string GetPath () const;
+		void Show ();
 
-        bool IsVisible ();
+		void ProcessEvent (ALLEGRO_EVENT* event);
+		void RenderUI ();
 
-    private:
-        void OnAccept ();
-        void OnCancel ();
+		bool IsVisible () const;
 
-        void OnBrowse ();
+		void AddEntry (const std::string& dataPath);
 
-    private:
-        Editor* m_Editor;
-        bool m_IsVisible;
-        bool m_BrowseButtonPressed;
+		std::vector<FileEntry>& GetEntries ();
 
-        char m_Name[100];
-        char m_Path[100];
+	private:
+		void OpenSelectedFile ();
+		void SaveCurrentFile ();
 
-        std::function<void(std::string, std::string)> m_OnAcceptFunc;
-        std::function<void(std::string, std::string)> m_OnCancelFunc;
-    };
+	private:
+		Editor* m_Editor;
+		bool m_IsVisible;
+
+		bool m_OpenButtonPressed;
+
+		std::vector<FileEntry> m_Entries;
+		int m_SelectedEntry;
+	};
 }
 
 #endif //   __EDITOR_SCRIPT_WINDOW_H__

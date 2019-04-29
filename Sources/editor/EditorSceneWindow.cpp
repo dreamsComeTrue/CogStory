@@ -2,7 +2,7 @@
 
 #include "EditorSceneWindow.h"
 #include "Editor.h"
-#include "EditorScriptWindow.h"
+#include "EditorScriptSelectWindow.h"
 #include "MainLoop.h"
 #include "Script.h"
 
@@ -106,11 +106,11 @@ namespace aga
 
 				if (ImGui::Button ("ADD SCRIPT", ImVec2 (740, 18)))
 				{
-					m_Editor->GetScriptWindow ()->Show (
+					m_Editor->GetScriptSelectWindow ()->Show (
 						[&](std::string name, std::string path) { scene->AttachScript (name, path); }, nullptr);
 				}
 
-				m_Editor->GetScriptWindow ()->Render ();
+				m_Editor->GetScriptSelectWindow ()->Render ();
 
 				ImGui::Columns (5, "mycolumns");
 				ImGui::SetColumnWidth (-1, 180);
@@ -161,7 +161,7 @@ namespace aga
 
 				ImGui::Columns (1);
 				ImGui::Separator ();
-
+				
 				ImGui::BeginGroup ();
 
 				if (ImGui::Button ("ACCEPT", ImVec2 (80.f, 18.f)))

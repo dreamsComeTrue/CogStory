@@ -30,6 +30,7 @@ namespace aga
     class EditorActorWindow;
     class EditorActorScriptWindow;
     class EditorSceneWindow;
+    class EditorScriptSelectWindow;
     class EditorScriptWindow;
     class EditorComponentWindow;
     class EditorAnimationWindow;
@@ -80,11 +81,12 @@ namespace aga
         EditorSpeechMode& GetEditorSpeechMode ();
         EditorTriggerAreaMode& GetEditorTriggerAreaMode ();
 
-        EditorScriptWindow* GetScriptWindow ();
+        EditorScriptSelectWindow* GetScriptSelectWindow ();
         EditorComponentWindow* GetComponentWindow ();
         EditorAnimationWindow* GetAnimationWindow ();
         EditorSpeechWindow* GetSpeechWindow ();
         EditorActorWindow* GetActorWindow ();
+        EditorScriptWindow* GetScriptWindow ();
 
         Point GetLastMousePos ();
 
@@ -139,6 +141,7 @@ namespace aga
         void OnActorSelected ();
         void OnAnimation ();
         void OnTilesEditor ();
+        void OnScriptEditor ();
 
         void MarkPlayerPosition ();
 
@@ -192,10 +195,11 @@ namespace aga
         EditorSceneWindow* m_EditorSceneWindow;
         EditorSpeechWindow* m_SpeechWindow;
         EditorActorWindow* m_ActorWindow;
-        EditorScriptWindow* m_ScriptWindow;
+        EditorScriptSelectWindow* m_ScriptSelectWindow;
         EditorComponentWindow* m_ComponentWindow;
         EditorAnimationWindow* m_AnimationWindow;
         EditorTilesWindow* m_TilesWindow;
+        EditorScriptWindow* m_ScriptWindow;
 
         std::string m_LastScenePath;
 
@@ -216,6 +220,7 @@ namespace aga
         bool m_OpenPopupSpeechEditor;
         bool m_OpenPopupAnimationEditor;
         bool m_OpenPopupTilesEditor;
+        bool m_OpenPopupScriptEditor;
 
         char m_FlagPointName[100];
 

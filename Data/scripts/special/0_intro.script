@@ -42,7 +42,7 @@ void IntroAnimation ()
 void CitySceneAnimation ()
 {
     CameraFollowDummy ("INTRO_CAMERA_START");
-    SetOverlayText ("-- Chapter I --\nNo ordinary day", 8000.f / 2.0f, Plain, 200.f, Center);    
+    SetOverlayText ("-- Chapter I --\nNo ordinary day", 8000.f / 2.0f, Plain, 200.f, Center); 
 
     CreateTimeline ()
     .Once (8000.f, function (id)

@@ -7,6 +7,7 @@
 #include "EditorOpenSceneWindow.h"
 #include "EditorSaveSceneWindow.h"
 #include "EditorSceneWindow.h"
+#include "EditorScriptSelectWindow.h"
 #include "EditorScriptWindow.h"
 #include "EditorSpeechWindow.h"
 #include "EditorTilesWindow.h"
@@ -37,6 +38,7 @@ namespace aga
 	const std::string CONFIG_SHOW_TRIGGER_AREAS = "show_trigger_areas";
 	const std::string CONFIG_SHOW_CAMERA_BOUNDS = "show_camera_bounds";
 	const std::string CONFIG_RECENT_FILES = "recent_files";
+	const std::string CONFIG_RECENT_SCRIPTS = "recent_scripts";
 	const std::string CONFIG_EDITOR_SCENE = "editor_scene";
 
 	const float DOUBLE_CLICK_SPEED = 300;
@@ -68,6 +70,7 @@ namespace aga
 		, m_OpenPopupSpeechEditor (false)
 		, m_OpenPopupAnimationEditor (false)
 		, m_OpenPopupTilesEditor (false)
+		, m_OpenPopupScriptEditor (false)
 		, m_DrawActors (true)
 		, m_DrawFlagPoints (true)
 		, m_DrawTriggerAreas (true)
@@ -100,10 +103,11 @@ namespace aga
 			m_EditorSceneWindow = new EditorSceneWindow (this);
 			m_SpeechWindow = new EditorSpeechWindow (this);
 			m_ActorWindow = new EditorActorWindow (this);
-			m_ScriptWindow = new EditorScriptWindow (this);
+			m_ScriptSelectWindow = new EditorScriptSelectWindow (this);
 			m_ComponentWindow = new EditorComponentWindow (this);
 			m_AnimationWindow = new EditorAnimationWindow (this);
 			m_TilesWindow = new EditorTilesWindow (this);
+			m_ScriptWindow = new EditorScriptWindow (this);
 		}
 
 		std::map<std::string, Atlas*>& atlases = m_MainLoop->GetAtlasManager ().GetAtlases ();
@@ -147,10 +151,11 @@ namespace aga
 		SAFE_DELETE (m_SpeechWindow);
 		SAFE_DELETE (m_ActorWindow);
 		SAFE_DELETE (m_EditorSceneWindow);
-		SAFE_DELETE (m_ScriptWindow);
+		SAFE_DELETE (m_ScriptSelectWindow);
 		SAFE_DELETE (m_ComponentWindow);
 		SAFE_DELETE (m_AnimationWindow);
 		SAFE_DELETE (m_TilesWindow);
+		SAFE_DELETE (m_ScriptWindow);
 
 		// Cleanup
 		ImGui_ImplAllegro5_Shutdown ();
@@ -184,6 +189,13 @@ namespace aga
 			for (auto& file : recentFiles)
 			{
 				m_OpenSceneWindow->AddRecentFileName (file);
+			}
+
+			auto& recentScripts = j[CONFIG_RECENT_SCRIPTS];
+
+			for (auto& script : recentScripts)
+			{
+				m_ScriptWindow->AddEntry (script);
 			}
 
 			if (j[CONFIG_EDITOR_SCENE] != "")
@@ -220,6 +232,12 @@ namespace aga
 			for (std::string recentFile : files)
 			{
 				j[CONFIG_RECENT_FILES].push_back (recentFile);
+			}
+
+			std::vector<FileEntry>& scripts = m_ScriptWindow->GetEntries ();
+			for (FileEntry& recentScript : scripts)
+			{
+				j[CONFIG_RECENT_SCRIPTS].push_back (recentScript.Path);
 			}
 
 			// write prettified JSON to another file
@@ -265,8 +283,8 @@ namespace aga
 	{
 		return (!m_EditorSceneWindow->IsVisible () && !m_SpeechWindow->IsVisible () && !m_ActorWindow->IsVisible ()
 			&& !m_OpenSceneWindow->IsVisible () && !m_EditorFlagPointMode.IsVisible ()
-			&& !m_EditorTriggerAreaMode.IsVisible () && !m_AnimationWindow->IsVisible ()
-			&& !m_TilesWindow->IsVisible ());
+			&& !m_EditorTriggerAreaMode.IsVisible () && !m_AnimationWindow->IsVisible () && !m_TilesWindow->IsVisible ()
+			&& !m_ScriptWindow->IsVisible ());
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -339,6 +357,11 @@ namespace aga
 		if (m_OpenSceneWindow->IsVisible () && event->type == ALLEGRO_EVENT_KEY_CHAR)
 		{
 			m_OpenSceneWindow->ProcessEvent (event);
+		}
+
+		if (m_ScriptWindow->IsVisible () && event->type == ALLEGRO_EVENT_KEY_CHAR)
+		{
+			m_ScriptWindow->ProcessEvent (event);
 		}
 
 		if (event->type == ALLEGRO_EVENT_DISPLAY_RESIZE)
@@ -516,13 +539,18 @@ namespace aga
 				break;
 			}
 
+			case ALLEGRO_KEY_F5:
+			{
+				OnScriptEditor ();
+				break;
+			}
+
 			case ALLEGRO_KEY_F12:
 			{
 				OnTilesEditor ();
 				break;
 			}
 
-			case ALLEGRO_KEY_F5:
 			case ALLEGRO_KEY_SPACE:
 			{
 				m_EditorActorMode.SetDrawTiles (!m_EditorActorMode.IsDrawTiles ());
@@ -1254,6 +1282,15 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
+	void Editor::OnScriptEditor ()
+	{
+		m_OpenPopupScriptEditor = true;
+
+		m_ScriptWindow->Show ();
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
 	void Editor::MarkPlayerPosition ()
 	{
 		ALLEGRO_MOUSE_STATE state;
@@ -1426,7 +1463,7 @@ namespace aga
 			{
 				ImGui::NewLine ();
 
-				if (ImGui::Button ("ACTOR [F2]", buttonSize) || m_OpenPopupActorEditor)
+				if (ImGui::Button (" ACTOR [F2]", buttonSize) || m_OpenPopupActorEditor)
 				{
 					if (!m_OpenPopupActorEditor)
 					{
@@ -1454,7 +1491,7 @@ namespace aga
 
 				m_SpeechWindow->RenderUI ();
 
-				if ((ImGui::Button ("ANIM [F4]", buttonSize) || m_OpenPopupAnimationEditor))
+				if ((ImGui::Button ("  ANIM [F4]", buttonSize) || m_OpenPopupAnimationEditor))
 				{
 					if (!m_OpenPopupAnimationEditor)
 					{
@@ -1467,6 +1504,20 @@ namespace aga
 				}
 
 				m_AnimationWindow->Render ();
+
+				if ((ImGui::Button ("SCRIPT [F5]", buttonSize) || m_OpenPopupScriptEditor))
+				{
+					if (!m_OpenPopupScriptEditor)
+					{
+						OnScriptEditor ();
+					}
+
+					ImGui::OpenPopup ("Script");
+
+					m_OpenPopupScriptEditor = false;
+				}
+
+				m_ScriptWindow->RenderUI ();
 
 				if ((ImGui::Button ("TILES [F12]", buttonSize) || m_OpenPopupTilesEditor))
 				{
@@ -1482,7 +1533,7 @@ namespace aga
 
 				m_TilesWindow->Render ();
 
-				if (ImGui::Button ("PLAY [F1]", buttonSize))
+				if (ImGui::Button ("  PLAY [F1]", buttonSize))
 				{
 					OnPlay ();
 				}
@@ -2132,7 +2183,7 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	EditorScriptWindow* Editor::GetScriptWindow () { return m_ScriptWindow; }
+	EditorScriptSelectWindow* Editor::GetScriptSelectWindow () { return m_ScriptSelectWindow; }
 
 	//--------------------------------------------------------------------------------------------------
 

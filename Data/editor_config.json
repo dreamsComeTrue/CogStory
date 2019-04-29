@@ -1,5 +1,5 @@
 {
-    "editor_scene": "2_city/2_city_factory_district.scn",
+    "editor_scene": "2_city/2_city_main.scn",
     "recent_files": [
         "2_city/2_city_main.scn",
         "2_city/2_city_factory_district.scn",
@@ -12,6 +12,10 @@
         "1_factory/1_factory_cabinIII.scn",
         "0_home/0_home_main.scn"
     ],
+    "recent_scripts": [
+        "special/0_intro.script",
+        "2_city/2_city_main.script"
+    ],
     "show_actors": true,
     "show_bounds": false,
     "show_camera_bounds": false,
@@ -19,5 +23,5 @@
     "show_grid": true,
     "show_names": false,
     "show_physics": false,
-    "show_trigger_areas": true
+    "show_trigger_areas": false
 }

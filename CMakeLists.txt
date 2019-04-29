@@ -28,7 +28,7 @@ file(GLOB_RECURSE SRC_LIST  Sources/*
                             ${ROOT_THIRD_PARTY_DIR}/imgui/imgui.cpp
                             ${ROOT_THIRD_PARTY_DIR}/imgui/imgui_draw.cpp
                             ${ROOT_THIRD_PARTY_DIR}/imgui/imgui_widgets.cpp
-                            ${ROOT_THIRD_PARTY_DIR}/imgui/imgui_demo.cpp
+                            ${ROOT_THIRD_PARTY_DIR}/imgui/TextEditor.cpp
                             ${ROOT_THIRD_PARTY_DIR}/imgui/examples/imgui_impl_allegro5.cpp)
 
 if (WIN32)

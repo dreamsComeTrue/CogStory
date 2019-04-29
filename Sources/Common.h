@@ -55,6 +55,9 @@ extern "C"
 
 #include "addons/file-watcher/FileWatcher.h"
 
+#include "imgui.h"
+#include "imgui_internal.h"
+
 #define SAFE_DELETE(x)                                                                                                 \
 	{                                                                                                                  \
 		if (x != nullptr)                                                                                              \
@@ -288,5 +291,64 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 }
+
+//--------------------------------------------------------------------------------------------------
+
+namespace ImGui
+{
+	static bool HoverableItems_ArrayGetter (void* data, int idx, const char** out_text)
+	{
+		const char* const* items = static_cast<const char* const*> (data);
+		if (out_text)
+			*out_text = items[idx];
+		return true;
+	}
+
+	bool HoverableListBox (const char* label, int* current_item, const char* const items[], int items_count,
+		int height_in_items, int* hovered_item)
+	{
+		if (!ListBoxHeader (label, items_count, height_in_items))
+			return false;
+
+		// Assume all items have even height (= 1 line of text). If you need items of different or variable sizes you
+		// can create a custom version of ListBox() in your code without using the clipper.
+		ImGuiContext& g = *GImGui;
+		bool value_changed = false;
+		ImGuiListClipper clipper (
+			items_count, GetTextLineHeightWithSpacing ()); // We know exactly our line height here so we pass it as a
+														   // minor optimization, but generally you don't need to.
+		while (clipper.Step ())
+			for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
+			{
+				const bool item_selected = (i == *current_item);
+				const char* item_text;
+				if (!HoverableItems_ArrayGetter ((void*)items, i, &item_text))
+					item_text = "*Unknown item*";
+
+				PushID (i);
+				if (Selectable (item_text, item_selected))
+				{
+					*current_item = i;
+					value_changed = true;
+				}
+
+				if (ImGui::IsItemHovered ())
+				{
+					*hovered_item = i;
+				}
+
+				if (item_selected)
+					SetItemDefaultFocus ();
+				PopID ();
+			}
+		ListBoxFooter ();
+		if (value_changed)
+			MarkItemEdited (g.CurrentWindow->DC.LastItemId);
+
+		return value_changed;
+	}
+}
+
+//--------------------------------------------------------------------------------------------------
 
 #endif //   __COMMON_H__

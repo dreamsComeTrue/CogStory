@@ -5,7 +5,7 @@
 #include "Component.h"
 #include "Editor.h"
 #include "EditorComponentWindow.h"
-#include "EditorScriptWindow.h"
+#include "EditorScriptSelectWindow.h"
 #include "EditorSpeechWindow.h"
 #include "MainLoop.h"
 #include "Player.h"
@@ -434,7 +434,7 @@ namespace aga
 	{
 		if (m_ActorName[0] != '\0')
 		{
-			m_Editor->GetScriptWindow ()->Show (
+			m_Editor->GetScriptSelectWindow ()->Show (
 				[&](std::string name, std::string path) { AddScriptEntry (name, path); }, nullptr);
 		}
 		else
@@ -762,7 +762,7 @@ namespace aga
 						OnAddScript ();
 					}
 
-					m_Editor->GetScriptWindow ()->Render ();
+					m_Editor->GetScriptSelectWindow ()->Render ();
 
 					if (ImGui::Button ("COMPONENTS", buttonSize))
 					{
