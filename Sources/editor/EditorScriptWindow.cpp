@@ -18,6 +18,9 @@ namespace aga
 		, m_IsVisible (false)
 		, m_SelectedEntry (-1)
 		, m_OpenButtonPressed (false)
+		, m_ShowFindDialog (false)
+		, m_FindDialogShowed (false)
+		, m_LastFoundPos (-1)
 	{
 	}
 
@@ -27,7 +30,12 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	void EditorScriptWindow::Show () { m_IsVisible = true; }
+	void EditorScriptWindow::Show ()
+	{
+		m_IsVisible = true;
+
+		memset (m_FindText, 0, ARRAY_SIZE (m_FindText));
+	}
 
 	//--------------------------------------------------------------------------------------------------
 
@@ -44,6 +52,18 @@ namespace aga
 
 			break;
 		}
+
+		case ALLEGRO_KEY_F:
+		{
+			if (event->keyboard.modifiers == ALLEGRO_KEYMOD_CTRL)
+			{
+				m_ShowFindDialog = !m_ShowFindDialog;
+				m_FindDialogShowed = false;
+				m_LastFoundPos = -1;
+			}
+
+			break;
+		}
 		}
 
 		if (event->type == ALLEGRO_EVENT_KEY_UP)
@@ -54,6 +74,12 @@ namespace aga
 			{
 				m_Editor->OnPlay ();
 				event->type = 0;
+				break;
+			}
+
+			case ALLEGRO_KEY_F3:
+			{
+				FindNext ();
 				break;
 			}
 			}
@@ -170,12 +196,30 @@ namespace aga
 
 			if (m_SelectedEntry >= 0)
 			{
+				TextEditor& textArea = m_Entries[m_SelectedEntry].TextEditorControl;
+
+				auto cpos = textArea.GetCursorPosition ();
+				ImGui::Text ("%6d/%-6d %6d lines  | %s | %s | %s", cpos.mLine + 1, cpos.mColumn + 1,
+					textArea.GetTotalLines (), textArea.IsOverwrite () ? "Ovr" : "Ins", textArea.CanUndo () ? "*" : " ",
+					m_Entries[m_SelectedEntry].Path.c_str ());
+
+				if (m_ShowFindDialog)
+				{
+					if (!m_FindDialogShowed)
+					{
+						ImGui::SetKeyboardFocusHere ();
+						m_FindDialogShowed = true;
+					}
+
+					ImGui::InputText ("", m_FindText, ARRAY_SIZE (m_FindText));
+				}
+
 				m_Entries[m_SelectedEntry].TextEditorControl.Render (
 					"ScriptEditor", ImVec2 (ImGui::GetWindowSize ().x, ImGui::GetWindowSize ().y - 10), true);
 
-				if (m_Entries[m_SelectedEntry].TextEditorControl.IsTextChanged ())
+				if (textArea.IsTextChanged ())
 				{
-					m_Entries[m_SelectedEntry].Text = m_Entries[m_SelectedEntry].TextEditorControl.GetText ();
+					m_Entries[m_SelectedEntry].Text = textArea.GetText ();
 					m_Entries[m_SelectedEntry].Modified = true;
 				}
 			}
@@ -263,6 +307,113 @@ namespace aga
 
 			m_Entries[m_SelectedEntry].Modified = false;
 		}
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void EditorScriptWindow::FindNext ()
+	{
+		TextEditor& textArea = m_Entries[m_SelectedEntry].TextEditorControl;
+		TextEditor::Coordinates cpos = textArea.GetCursorPosition ();
+		std::vector<std::string> allLines = textArea.GetTextLines ();
+		size_t linearPos = ConvertToLinearPos (allLines, cpos);
+
+		bool found = FindNextInternal (linearPos);
+
+		//	If we can't find, try once more, from the beginning
+		if (!found)
+		{
+			FindNextInternal (0);
+		}
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	bool EditorScriptWindow::FindNextInternal (size_t currentPos)
+	{
+		std::string findText = m_FindText;
+		std::transform (findText.begin (), findText.end (), findText.begin (), ::tolower);
+
+		if (findText != "" && m_SelectedEntry >= 0)
+		{
+			TextEditor& textArea = m_Entries[m_SelectedEntry].TextEditorControl;
+			TextEditor::Coordinates cpos = textArea.GetCursorPosition ();
+			std::vector<std::string> allLines = textArea.GetTextLines ();
+			std::string allText = textArea.GetText ();
+			std::transform (allText.begin (), allText.end (), allText.begin (), ::tolower);
+
+			if (currentPos == m_LastFoundPos)
+			{
+				currentPos += findText.length ();
+			}
+
+			size_t foundPos = allText.find (findText.c_str (), currentPos);
+
+			if (foundPos != std::string::npos)
+			{
+				m_LastFoundPos = foundPos;
+				textArea.SetSelection (ConvertToCoordinates (allLines, foundPos + 1),
+					ConvertToCoordinates (allLines, foundPos + 1 + findText.length ()));
+				textArea.SetCursorPosition (ConvertToCoordinates (allLines, foundPos + 1));
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	size_t EditorScriptWindow::ConvertToLinearPos (std::vector<std::string>& lines, TextEditor::Coordinates pos)
+	{
+		size_t linearPos = 0;
+
+		for (size_t line = 0; line < lines.size (); ++line)
+		{
+			for (size_t col = 0; col < lines[line].size (); ++col)
+			{
+				if (pos.mLine == line && pos.mColumn == col)
+				{
+					return linearPos;
+				}
+
+				++linearPos;
+			}
+
+			if (pos.mLine == line && pos.mColumn == lines[line].size ())
+			{
+				return linearPos;
+			}
+
+			++linearPos;
+		}
+
+		return linearPos;
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	TextEditor::Coordinates EditorScriptWindow::ConvertToCoordinates (std::vector<std::string>& lines, size_t pos)
+	{
+		size_t linearPos = 0;
+
+		for (size_t i = 0; i < lines.size (); ++i)
+		{
+			for (size_t j = 0; j < lines[i].size (); ++j)
+			{
+				++linearPos;
+
+				if (linearPos == pos)
+				{
+					return TextEditor::Coordinates (i, j);
+				}
+			}
+
+			++linearPos;
+		}
+
+		return TextEditor::Coordinates ();
 	}
 
 	//--------------------------------------------------------------------------------------------------
