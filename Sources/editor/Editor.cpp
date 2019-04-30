@@ -359,7 +359,8 @@ namespace aga
 			m_OpenSceneWindow->ProcessEvent (event);
 		}
 
-		if (m_ScriptWindow->IsVisible () && (event->type == ALLEGRO_EVENT_KEY_CHAR || event->type == ALLEGRO_EVENT_KEY_UP))
+		if (m_ScriptWindow->IsVisible ()
+			&& (event->type == ALLEGRO_EVENT_KEY_CHAR || event->type == ALLEGRO_EVENT_KEY_UP))
 		{
 			m_ScriptWindow->ProcessEvent (event);
 		}
@@ -554,12 +555,6 @@ namespace aga
 			case ALLEGRO_KEY_SPACE:
 			{
 				m_EditorActorMode.SetDrawTiles (!m_EditorActorMode.IsDrawTiles ());
-				break;
-			}
-
-			case ALLEGRO_KEY_TAB:
-			{
-				SwitchCursorMode ();
 				break;
 			}
 
@@ -1978,7 +1973,10 @@ namespace aga
 		{
 			if (m_CursorMode == CursorMode::EditPhysBodyMode)
 			{
-				m_EditorPhysMode.RemovePhysPointUnderCursor (event.x, event.y);
+				if (!m_EditorPhysMode.RemovePhysPointUnderCursor (event.x, event.y))
+				{
+					SwitchCursorMode ();
+				}
 			}
 			else
 			{
@@ -1990,6 +1988,12 @@ namespace aga
 				if (!flagPointRemoved && !triggerPointRemoved)
 				{
 					SetCursorMode (CursorMode::ActorSelectMode);
+
+					//	If we have at least one Actor selected, with right click we can set its physics body
+					if (!m_EditorActorMode.GetSelectedActors ().empty ())
+					{
+						SwitchCursorMode ();
+					}
 				}
 
 				Actor* blueprintActor = m_EditorActorMode.ChooseBlueprintActor (event.x, event.y);
