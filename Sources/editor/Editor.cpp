@@ -359,7 +359,7 @@ namespace aga
 			m_OpenSceneWindow->ProcessEvent (event);
 		}
 
-		if (m_ScriptWindow->IsVisible () && event->type == ALLEGRO_EVENT_KEY_CHAR)
+		if (m_ScriptWindow->IsVisible () && (event->type == ALLEGRO_EVENT_KEY_CHAR || event->type == ALLEGRO_EVENT_KEY_UP))
 		{
 			m_ScriptWindow->ProcessEvent (event);
 		}

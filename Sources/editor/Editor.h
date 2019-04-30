@@ -15,222 +15,222 @@
 
 namespace ImGui
 {
-    bool Combo (const char* label, int* currIndex, std::vector<std::string>& values);
+	bool Combo (const char* label, int* currIndex, std::vector<std::string>& values);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 namespace aga
 {
-    extern const int TILES_COUNT;
+	extern const int TILES_COUNT;
 
-    class EditorSaveSceneWindow;
-    class EditorOpenSceneWindow;
-    class EditorSpeechWindow;
-    class EditorActorWindow;
-    class EditorActorScriptWindow;
-    class EditorSceneWindow;
-    class EditorScriptSelectWindow;
-    class EditorScriptWindow;
-    class EditorComponentWindow;
-    class EditorAnimationWindow;
-    class EditorTilesWindow;
+	class EditorSaveSceneWindow;
+	class EditorOpenSceneWindow;
+	class EditorSpeechWindow;
+	class EditorActorWindow;
+	class EditorActorScriptWindow;
+	class EditorSceneWindow;
+	class EditorScriptSelectWindow;
+	class EditorScriptWindow;
+	class EditorComponentWindow;
+	class EditorAnimationWindow;
+	class EditorTilesWindow;
 
-    class MainLoop;
-    struct Tile;
+	class MainLoop;
+	struct Tile;
 
-    enum CursorMode
-    {
-        ActorSelectMode,
-        EditPhysBodyMode,
-        EditFlagPointsMode,
-        EditTriggerAreaMode,
-        EditSpriteSheetMode
-    };
+	enum CursorMode
+	{
+		ActorSelectMode,
+		EditPhysBodyMode,
+		EditFlagPointsMode,
+		EditTriggerAreaMode,
+		EditSpriteSheetMode
+	};
 
-    class Editor : public Lifecycle
-    {
-    public:
-        Editor (MainLoop* mainLoop);
-        virtual ~Editor ();
-        bool Initialize ();
-        bool Destroy ();
+	class Editor : public Lifecycle
+	{
+	public:
+		Editor (MainLoop* mainLoop);
+		virtual ~Editor ();
+		bool Initialize ();
+		bool Destroy ();
 
-        void BeforeEnter ();
+		void BeforeEnter ();
 
-        bool Update (float deltaTime);
-        void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
-        void Render (float deltaTime);
+		bool Update (float deltaTime);
+		void ProcessEvent (ALLEGRO_EVENT* event, float deltaTime);
+		void Render (float deltaTime);
 
-        void LoadScene (const std::string& filePath);
-        void SaveScene (const std::string& filePath);
+		void LoadScene (const std::string& filePath);
+		void SaveScene (const std::string& filePath);
 
-        CursorMode GetCursorMode () const;
-        void SetCursorMode (CursorMode mode);
-        void SwitchCursorMode ();
+		CursorMode GetCursorMode () const;
+		void SetCursorMode (CursorMode mode);
+		void SwitchCursorMode ();
 
-        Point CalculateWorldPoint (int mouseX, int mouseY);
-        bool IsMouseWithinRect (int mouseX, int mouseY, Rect rect);
-        bool IsMouseWithinPointRect (int mouseX, int mouseY, Point point, int outsets = 0);
+		Point CalculateWorldPoint (int mouseX, int mouseY);
+		bool IsMouseWithinRect (int mouseX, int mouseY, Rect rect);
+		bool IsMouseWithinPointRect (int mouseX, int mouseY, Point point, int outsets = 0);
 
-        MainLoop* GetMainLoop ();
+		MainLoop* GetMainLoop ();
 
-        EditorPhysMode& GetEditorPhysMode ();
-        EditorActorMode& GetEditorActorMode ();
-        EditorFlagPointMode& GetEditorFlagPointMode ();
-        EditorSpeechMode& GetEditorSpeechMode ();
-        EditorTriggerAreaMode& GetEditorTriggerAreaMode ();
+		EditorPhysMode& GetEditorPhysMode ();
+		EditorActorMode& GetEditorActorMode ();
+		EditorFlagPointMode& GetEditorFlagPointMode ();
+		EditorSpeechMode& GetEditorSpeechMode ();
+		EditorTriggerAreaMode& GetEditorTriggerAreaMode ();
 
-        EditorScriptSelectWindow* GetScriptSelectWindow ();
-        EditorComponentWindow* GetComponentWindow ();
-        EditorAnimationWindow* GetAnimationWindow ();
-        EditorSpeechWindow* GetSpeechWindow ();
-        EditorActorWindow* GetActorWindow ();
-        EditorScriptWindow* GetScriptWindow ();
+		EditorScriptSelectWindow* GetScriptSelectWindow ();
+		EditorComponentWindow* GetComponentWindow ();
+		EditorAnimationWindow* GetAnimationWindow ();
+		EditorSpeechWindow* GetSpeechWindow ();
+		EditorActorWindow* GetActorWindow ();
+		EditorScriptWindow* GetScriptWindow ();
 
-        Point GetLastMousePos ();
+		Point GetLastMousePos ();
 
-        bool IsSnapToGrid ();
-        float GetGridSize ();
+		bool IsSnapToGrid ();
+		float GetGridSize ();
 
-        Rect GetSelectionRect ();
+		Rect GetSelectionRect ();
 
-        bool IsCloseCurrentPopup ();
-        void SetCloseCurrentPopup (bool close);
-        
-        EditorUndoRedo* GetUndoRedo ();
+		bool IsCloseCurrentPopup ();
+		void SetCloseCurrentPopup (bool close);
 
-    private:
-        void LoadConfig ();
-        void SaveConfig ();
+		EditorUndoRedo* GetUndoRedo ();
 
-        void DrawGrid ();
-        void DrawSelectionRect (Rect rect);
+		void OnPlay ();
 
-        void ChangeGridSize (bool clockwise);
-        bool IsEditorCanvasNotCovered ();
+	private:
+		void LoadConfig ();
+		void SaveConfig ();
 
-        void HandleCameraMovement (const ALLEGRO_MOUSE_EVENT& event);
-        void HandleCameraPan (float deltaTime);
+		void DrawGrid ();
+		void DrawSelectionRect (Rect rect);
 
-        void OnResetTranslate ();
-        void OnResetScale ();
+		void ChangeGridSize (bool clockwise);
+		bool IsEditorCanvasNotCovered ();
 
-        void SetDrawUITiles (bool draw);
+		void HandleCameraMovement (const ALLEGRO_MOUSE_EVENT& event);
+		void HandleCameraPan (float deltaTime);
 
-        void OnPlay ();
+		void OnResetTranslate ();
+		void OnResetScale ();
 
-        void OnScrollPrevTiles ();
-        void OnScrollNextTiles ();
-        void OnBigScrollPrevTiles ();
-        void OnBigScrollNextTiles ();
-        void OnSpriteSheetEdit ();
-        void OnCloseSpriteSheetEdit ();
+		void SetDrawUITiles (bool draw);
 
-        void OnShowGrid ();
-        void OnGridIncrease ();
-        void OnGridDecrease ();
+		void OnScrollPrevTiles ();
+		void OnScrollNextTiles ();
+		void OnBigScrollPrevTiles ();
+		void OnBigScrollNextTiles ();
+		void OnSpriteSheetEdit ();
+		void OnCloseSpriteSheetEdit ();
 
-        void OutlineBody ();
-        void OnRemoveBody ();
-        void OnNewPoly ();
+		void OnShowGrid ();
+		void OnGridIncrease ();
+		void OnGridDecrease ();
 
-        void OnOpenScene ();
-        void OnSaveScene ();
-        void OnSpeech ();
-        void OnActorSelected ();
-        void OnAnimation ();
-        void OnTilesEditor ();
-        void OnScriptEditor ();
+		void OutlineBody ();
+		void OnRemoveBody ();
+		void OnNewPoly ();
 
-        void MarkPlayerPosition ();
+		void OnOpenScene ();
+		void OnSaveScene ();
+		void OnSpeech ();
+		void OnActorSelected ();
+		void OnAnimation ();
+		void OnTilesEditor ();
+		void OnScriptEditor ();
 
-        void OnTilesetSelected (const std::string& path);
+		void MarkPlayerPosition ();
 
-        void RenderUI ();
-        void RenderActorMode (float deltaTime);
-        void RenderPhysBodyMode (float deltaTime);
+		void OnTilesetSelected (const std::string& path);
 
-        void RenderUINewScene ();
+		void RenderUI ();
+		void RenderActorMode (float deltaTime);
+		void RenderPhysBodyMode (float deltaTime);
 
-        void ResetSettings ();
-        void ScreenResize ();
+		void RenderUINewScene ();
 
-        void ProcessMouseButtonDoubleClick (ALLEGRO_MOUSE_EVENT& event);
-        void ProcessMouseButtonDown (ALLEGRO_MOUSE_EVENT& event);
-        void ProcessMouseButtonUp (ALLEGRO_MOUSE_EVENT& event);
-        void ProcessMouseAxes (ALLEGRO_MOUSE_EVENT& event);
+		void ResetSettings ();
+		void ScreenResize ();
 
-        void TryToCloseWindows ();
+		void ProcessMouseButtonDoubleClick (ALLEGRO_MOUSE_EVENT& event);
+		void ProcessMouseButtonDown (ALLEGRO_MOUSE_EVENT& event);
+		void ProcessMouseButtonUp (ALLEGRO_MOUSE_EVENT& event);
+		void ProcessMouseAxes (ALLEGRO_MOUSE_EVENT& event);
 
-        void AddActorsFromSpritesheet (int x, int y);
-        void SelectActorsWithinSelectionRect ();
+		void TryToCloseWindows ();
 
-        void SelectPhysPoint ();
-        void SelectTriggerAreaPoint ();
+		void AddActorsFromSpritesheet (int x, int y);
+		void SelectActorsWithinSelectionRect ();
 
-    private:
-        MainLoop* m_MainLoop;
-        EditorPhysMode m_EditorPhysMode;
-        EditorFlagPointMode m_EditorFlagPointMode;
-        EditorTriggerAreaMode m_EditorTriggerAreaMode;
-        EditorSpeechMode m_EditorSpeechMode;
-        EditorActorMode m_EditorActorMode;
-        EditorUndoRedo m_EditorUndoRedo;
+		void SelectPhysPoint ();
+		void SelectTriggerAreaPoint ();
 
-        CursorMode m_CursorMode;
+	private:
+		MainLoop* m_MainLoop;
+		EditorPhysMode m_EditorPhysMode;
+		EditorFlagPointMode m_EditorFlagPointMode;
+		EditorTriggerAreaMode m_EditorTriggerAreaMode;
+		EditorSpeechMode m_EditorSpeechMode;
+		EditorActorMode m_EditorActorMode;
+		EditorUndoRedo m_EditorUndoRedo;
 
-        bool m_IsSnapToGrid;
-        float m_BaseGridSize;
-        float m_GridSize;
+		CursorMode m_CursorMode;
 
-        bool m_IsMousePan;
-        bool m_IsMouseDrag;
+		bool m_IsSnapToGrid;
+		float m_BaseGridSize;
+		float m_GridSize;
 
-        Point m_LastMousePos;
-        long m_LastTimeClicked;
+		bool m_IsMousePan;
+		bool m_IsMouseDrag;
 
-        EditorOpenSceneWindow* m_OpenSceneWindow;
-        EditorSaveSceneWindow* m_SaveSceneWindow;
-        EditorSceneWindow* m_EditorSceneWindow;
-        EditorSpeechWindow* m_SpeechWindow;
-        EditorActorWindow* m_ActorWindow;
-        EditorScriptSelectWindow* m_ScriptSelectWindow;
-        EditorComponentWindow* m_ComponentWindow;
-        EditorAnimationWindow* m_AnimationWindow;
-        EditorTilesWindow* m_TilesWindow;
-        EditorScriptWindow* m_ScriptWindow;
+		Point m_LastMousePos;
+		long m_LastTimeClicked;
 
-        std::string m_LastScenePath;
+		EditorOpenSceneWindow* m_OpenSceneWindow;
+		EditorSaveSceneWindow* m_SaveSceneWindow;
+		EditorSceneWindow* m_EditorSceneWindow;
+		EditorSpeechWindow* m_SpeechWindow;
+		EditorActorWindow* m_ActorWindow;
+		EditorScriptSelectWindow* m_ScriptSelectWindow;
+		EditorComponentWindow* m_ComponentWindow;
+		EditorAnimationWindow* m_AnimationWindow;
+		EditorTilesWindow* m_TilesWindow;
+		EditorScriptWindow* m_ScriptWindow;
 
-        ALLEGRO_TRANSFORM m_WorldTransform;
-        ALLEGRO_TRANSFORM m_NewTransform;
-        bool m_OldSnapToGrid;
-        float m_OldGridSize;
+		std::string m_LastScenePath;
 
-        Rect m_SelectionRect;
-        bool m_IsRectSelection;
+		ALLEGRO_TRANSFORM m_WorldTransform;
+		ALLEGRO_TRANSFORM m_NewTransform;
+		bool m_OldSnapToGrid;
+		float m_OldGridSize;
 
-        bool m_CloseCurrentPopup;
-        bool m_OpenPopupOpenScene;
-        bool m_OpenPopupSaveScene;
-        bool m_OpenPopupActorEditor;
-        bool m_OpenPopupFlagPointEditor;
-        bool m_OpenPopupTriggerAreaEditor;
-        bool m_OpenPopupSpeechEditor;
-        bool m_OpenPopupAnimationEditor;
-        bool m_OpenPopupTilesEditor;
-        bool m_OpenPopupScriptEditor;
+		Rect m_SelectionRect;
+		bool m_IsRectSelection;
 
-        char m_FlagPointName[100];
+		bool m_CloseCurrentPopup;
+		bool m_OpenPopupOpenScene;
+		bool m_OpenPopupSaveScene;
+		bool m_OpenPopupActorEditor;
+		bool m_OpenPopupFlagPointEditor;
+		bool m_OpenPopupTriggerAreaEditor;
+		bool m_OpenPopupSpeechEditor;
+		bool m_OpenPopupAnimationEditor;
+		bool m_OpenPopupTilesEditor;
+		bool m_OpenPopupScriptEditor;
 
-        bool m_DrawActors;
-        bool m_DrawFlagPoints;
-        bool m_DrawTriggerAreas;
-        bool m_DrawCameraBounds;
-        
-        bool m_NoSceneSelected;
-    };
+		char m_FlagPointName[100];
+
+		bool m_DrawActors;
+		bool m_DrawFlagPoints;
+		bool m_DrawTriggerAreas;
+		bool m_DrawCameraBounds;
+
+		bool m_NoSceneSelected;
+	};
 }
 
 #endif //   __EDITOR_H__

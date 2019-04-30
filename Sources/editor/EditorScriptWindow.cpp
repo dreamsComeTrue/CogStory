@@ -36,12 +36,27 @@ namespace aga
 		switch (event->keyboard.keycode)
 		{
 		case ALLEGRO_KEY_S:
+		{
 			if (event->keyboard.modifiers == ALLEGRO_KEYMOD_CTRL)
 			{
 				SaveCurrentFile ();
 			}
 
 			break;
+		}
+		}
+
+		if (event->type == ALLEGRO_EVENT_KEY_UP)
+		{
+			switch (event->keyboard.keycode)
+			{
+			case ALLEGRO_KEY_F1:
+			{
+				m_Editor->OnPlay ();
+				event->type = 0;
+				break;
+			}
+			}
 		}
 	}
 
