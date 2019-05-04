@@ -51,6 +51,8 @@ namespace aga
 		// use current time as seed for random generator
 		std::srand (static_cast<unsigned> (std::time (nullptr)));
 
+		//printf ("%0x\n%0x\n", ALLEGRO_VERSION_INT, al_get_allegro_version ());
+
 		if (!al_init ())
 		{
 			Log ("Failed to initialize allegro!\n");

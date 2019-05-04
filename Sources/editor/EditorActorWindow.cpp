@@ -699,6 +699,7 @@ namespace aga
 								if (ImGui::Button ("X"))
 								{
 									m_SelectedActor->RemoveScript (scriptData.Name);
+									break;
 								}
 
 								ImGui::NextColumn ();
@@ -727,6 +728,7 @@ namespace aga
 								if (ImGui::Button ("X"))
 								{
 									m_SelectedActor->RemoveComponent (it->first);
+									break;
 								}
 
 								ImGui::NextColumn ();

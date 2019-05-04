@@ -34,8 +34,8 @@ file(GLOB_RECURSE SRC_LIST  Sources/*
 if (WIN32)
     list(APPEND INCLUDE_DIRS ${ROOT_THIRD_PARTY_DIR}/allegro5_static/include)
 else()
-    list(APPEND INCLUDE_DIRS    ${ROOT_THIRD_PARTY_DIR}/allegro5/include
-                                ${ROOT_THIRD_PARTY_DIR}/allegro5/bin/include)
+    # list(APPEND INCLUDE_DIRS    ${ROOT_THIRD_PARTY_DIR}/allegro5/include
+    #                             ${ROOT_THIRD_PARTY_DIR}/allegro5/bin/include)
 endif (WIN32)
 
 list(APPEND INCLUDE_DIRS

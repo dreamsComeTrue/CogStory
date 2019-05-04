@@ -168,6 +168,9 @@ namespace aga
 
 		void SelectPhysPoint ();
 		void SelectTriggerAreaPoint ();
+		
+		void SelectActor (int mouseX, int mouseY);
+		void ExtendActorsSelection (int mouseX, int mouseY);
 
 	private:
 		MainLoop* m_MainLoop;
