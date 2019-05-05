@@ -839,10 +839,10 @@ namespace aga
 		std::string workLine = text;
 		int currentIndex = 0;
 
-		auto cutLine = [&](int indexToCut) {
+		auto cutLine = [&](int indexToCut, int indexToStart) {
 			std::string str = workLine.substr (0, indexToCut);
 			ret.push_back (str);
-			workLine = workLine.substr (indexToCut);
+			workLine = workLine.substr (indexToStart);
 			currentIndex = 0;
 		};
 
@@ -852,7 +852,7 @@ namespace aga
 
 			if (currentPart[currentPart.length () - 1] == '\n')
 			{
-				cutLine (currentIndex + 1);
+				cutLine (currentIndex, currentIndex + 1);
 			}
 			else
 			{
@@ -862,11 +862,11 @@ namespace aga
 
 					if (lastSpaceIndex != std::string::npos)
 					{
-						cutLine (lastSpaceIndex + 1);
+						cutLine (lastSpaceIndex, lastSpaceIndex + 1);
 					}
 					else
 					{
-						cutLine (currentIndex);
+						cutLine (currentIndex, currentIndex);
 					}
 				}
 				else
