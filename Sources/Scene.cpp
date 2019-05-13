@@ -418,8 +418,10 @@ namespace aga
 		{
 			player->DrawPhysBody ();
 		}
+		
+		std::string stateName = m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName ();
 
-		if (m_SceneManager->GetMainLoop ()->GetStateManager ().GetActiveStateName () == EDITOR_STATE_NAME)
+		if (stateName == EDITOR_STATE_NAME)
 		{
 			//  Draw circle in center for reference
 			al_draw_filled_circle (0, 0, 4, COLOR_RED);

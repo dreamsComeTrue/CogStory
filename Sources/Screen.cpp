@@ -160,7 +160,7 @@ namespace aga
 		al_register_event_source (m_EventQueue, al_get_display_event_source (m_Display));
 		al_register_event_source (m_EventQueue, al_get_timer_event_source (m_DisplayTimer));
 		al_register_event_source (m_EventQueue, al_get_joystick_event_source ());
-		al_register_event_source (m_EventQueue, al_get_mouse_event_source ());
+		al_register_event_source (GetEventQueue (), al_get_mouse_event_source ());
 		al_register_event_source (m_EventQueue, al_get_keyboard_event_source ());
 
 		al_set_window_title (m_Display, m_GameTitle.c_str ());

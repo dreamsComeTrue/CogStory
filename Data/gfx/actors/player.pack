@@ -1,14 +1,21 @@
 
 player.png
-size: 1024,512
+size: 984,320
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-inventory
+inventory-back
   rotate: false
-  xy: 384, 64
-  size: 256, 256
-  orig: 256, 256
+  xy: 684, 20
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+inventory-front
+  rotate: false
+  xy: 384, 20
+  size: 300, 300
+  orig: 300, 300
   offset: 0, 0
   index: -1
 player

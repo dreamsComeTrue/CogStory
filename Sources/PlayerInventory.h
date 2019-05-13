@@ -27,7 +27,9 @@ namespace aga
 
 	private:
 		Player* m_Player;
-		Atlas* m_Atlas;
+		Atlas* m_UIAtlas;
+		Atlas* m_MenuAtlas;
+		float m_CogRotations[3];
 		AudioSample* m_SelectItemSample;
 	};
 }

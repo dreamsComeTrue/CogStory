@@ -102,6 +102,10 @@ namespace aga
 			float fadeTime = 1000.f;
 			currentAudioStream->SetFadeIn (fadeTime);
 		}
+		
+		m_Player->SetPreventInput (false);
+		m_Player->Show ();
+		m_Player->TemplateBounds.Pos = m_Player->GetPosition ();
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -115,6 +119,8 @@ namespace aga
 			float fadeTime = 1000.f;
 			currentAudioStream->SetFadeOut (fadeTime, true);
 		}
+		
+		m_Player->ShowInventory (false);
 	}
 
 	//--------------------------------------------------------------------------------------------------

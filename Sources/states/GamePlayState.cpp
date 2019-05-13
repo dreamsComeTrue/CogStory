@@ -70,11 +70,6 @@ namespace aga
 
 		sceneManager.BeforeEnter ();
 
-		Player* player = sceneManager.GetPlayer ();
-		player->SetPreventInput (false);
-		player->Show ();
-		player->TemplateBounds.Pos = player->GetPosition ();
-
 		ResizeWindow ();
 
 		m_MasterScript->Run ("void Start ()");

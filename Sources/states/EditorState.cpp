@@ -98,6 +98,9 @@ namespace aga
 		}
 
 		screen->SetDrawFilled (true);
+
+		//	TODO
+		// al_register_event_source (m_MainLoop->GetScreen()->GetEventQueue (), al_get_mouse_event_source ());
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -117,6 +120,9 @@ namespace aga
 
 		m_MainLoop->GetAudioManager ().SetSamplesEnabled (m_AudioSamplesEnabled);
 		m_MainLoop->GetAudioManager ().SetStreamsEnabled (m_AudioStreamsEnabled);
+
+		//	TODO
+		//	al_unregister_event_source (m_MainLoop->GetScreen()->GetEventQueue (), al_get_mouse_event_source ());
 	}
 
 	//--------------------------------------------------------------------------------------------------

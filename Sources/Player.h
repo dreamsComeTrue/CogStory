@@ -73,6 +73,7 @@ namespace aga
 		Actor* GetLastActionActor ();
 		
 		void DrawInventory (float deltaTime);
+		void ShowInventory (bool show);
 		bool IsInventoryShown ();
 
 	private:
