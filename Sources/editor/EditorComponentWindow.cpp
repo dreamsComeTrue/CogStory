@@ -63,10 +63,14 @@ namespace aga
 
     void EditorComponentWindow::Render ()
     {
+        ImGui::SetNextWindowSize (ImVec2 (600, 110));
+        
         if (ImGui::BeginPopupModal ("Component", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
+            ImGui::PushItemWidth (520);
             ImGui::InputText ("Name", m_Name, ARRAY_SIZE (m_Name));
             ImGui::SetItemDefaultFocus ();
+            ImGui::PushItemWidth (520);
             ImGui::Combo ("Type", &m_SelectedType, m_Types);
             ImGui::SameLine ();
 
@@ -74,7 +78,7 @@ namespace aga
 
             ImGui::BeginGroup ();
 
-            if (ImGui::Button ("ACCEPT", ImVec2 (50.f, 18.f)))
+            if (ImGui::Button ("ACCEPT", ImVec2 (80.f, 18.f)))
             {
                 ImGui::CloseCurrentPopup ();
                 m_IsVisible = false;
@@ -87,7 +91,7 @@ namespace aga
 
             ImGui::SameLine ();
 
-            if (ImGui::Button ("CANCEL", ImVec2 (50.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
+            if (ImGui::Button ("CANCEL", ImVec2 (80.f, 18.f)) || m_Editor->IsCloseCurrentPopup ())
             {
                 OnCancel ();
 
