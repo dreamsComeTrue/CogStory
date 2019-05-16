@@ -167,7 +167,7 @@ namespace aga
 		//	We only need to handle showing inventory in front of all other actions
 		if (event->type == ALLEGRO_EVENT_KEY_DOWN)
 		{
-			if (event->keyboard.keycode == ALLEGRO_KEY_I)
+			if (event->keyboard.keycode == ALLEGRO_KEY_E)
 			{
 				m_ShowInventory = !m_ShowInventory;
 				m_PreventInput = m_ShowInventory;

@@ -73,6 +73,7 @@ namespace aga
         void RegisterActorAPI ();
         void RegisterMovementComponentAPI ();
         void RegisterParticleEmitterComponentAPI ();
+        void RegisterAnimPresetComponentAPI ();
         void RegisterSceneManagerAPI ();
         void RegisterSceneAPI ();
         void RegisterCameraAPI ();

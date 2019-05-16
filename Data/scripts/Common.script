@@ -56,6 +56,13 @@ MovementComponent@ GetMovementComponent (string actorName)
 
 //--------------------------------------------------------------------------------------------------
 
+AnimPresetComponent@ GetAnimPresetComponent (string actorName)
+{
+    return GetActor (actorName).GetAnimPresetComponent ("ANIM_PRESET");
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void CameraToFlagPointTween (string flagPoint, int timeMS, CameraTweenFinish@ finishFunc)
 {
     int tweenID = AddTween (GetDummyActor ().GetPosition (), GetFlagPoint (flagPoint).Pos, timeMS, function (id, progress, value)

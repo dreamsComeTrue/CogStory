@@ -426,6 +426,7 @@
             "id": "80",
             "name": "Sprite-0001",
             "overlap": "0",
+            "phys": [],
             "pos": "-32.00 -48.00",
             "rot": "0.00",
             "size": "64.00 64.00",
@@ -1787,6 +1788,12 @@
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
+            "components": [
+                {
+                    "name": "MOVEMENT",
+                    "type": "MovementComponent"
+                }
+            ],
             "focus-height": "0.95",
             "id": "2123",
             "name": "ROBOT_2",
@@ -1850,12 +1857,6 @@
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "components": [
-                {
-                    "name": "MOVEMENT",
-                    "type": "MovementComponent"
-                }
-            ],
             "focus-height": "0.95",
             "id": "2152",
             "name": "ROBOT_1",
@@ -1865,7 +1866,7 @@
                     "poly": "-7.94 -11.71 7.83 -11.71 8.50 17.82 -8.06 17.68 "
                 }
             ],
-            "pos": "384.00 -384.00",
+            "pos": "384.00 -416.00",
             "rot": "0.00",
             "size": "64.00 64.00",
             "type": "Tile",
@@ -1913,6 +1914,10 @@
             "collision": "0",
             "components": [
                 {
+                    "name": "ANIM_PRESET",
+                    "type": "AnimPresetComponent"
+                },
+                {
                     "name": "MOVEMENT",
                     "type": "MovementComponent"
                 }
@@ -1926,7 +1931,7 @@
                     "poly": "-9.88 -3.04 10.26 -2.54 -1.15 25.65 "
                 }
             ],
-            "pos": "672.00 -464.00",
+            "pos": "672.00 -528.00",
             "rot": "0.00",
             "size": "64.00 64.00",
             "type": "NPC",
@@ -1963,17 +1968,17 @@
         {
             "connections": "SUPERVISOR_B SUPERVISOR_START ",
             "name": "SUPERVISOR_A",
-            "pos": "576.00 -352.00"
+            "pos": "544.00 -384.00"
         },
         {
             "connections": "SUPERVISOR_A ",
             "name": "SUPERVISOR_B",
-            "pos": "512.00 -352.00"
+            "pos": "480.00 -384.00"
         },
         {
             "connections": "SUPERVISOR_A ",
             "name": "SUPERVISOR_START",
-            "pos": "704.00 -432.00"
+            "pos": "704.00 -480.00"
         }
     ],
     "max_size": "832.00 160.00",
@@ -2075,6 +2080,38 @@
             "texts": [
                 {
                     "data": "What does it mean [WAIT=200]\"com-pli-ca-tions\"[/WAIT] ?!?",
+                    "langID": "EN"
+                },
+                {
+                    "data": "",
+                    "langID": "PL"
+                }
+            ]
+        },
+        {
+            "abs_pos": "0.00 0.00",
+            "action": "[CLOSE]",
+            "group": "INTRO",
+            "id": 3,
+            "max_chars": 20,
+            "max_lines": 3,
+            "name": "ROBOT_1_SPEECH_2",
+            "outcomes": [
+                {
+                    "langID": "EN",
+                    "texts": []
+                },
+                {
+                    "langID": "PL",
+                    "texts": []
+                }
+            ],
+            "region_name": "",
+            "rel_pos": 2,
+            "speed": 50,
+            "texts": [
+                {
+                    "data": "I don't think we're gonna make it till end of the week...",
                     "langID": "EN"
                 },
                 {

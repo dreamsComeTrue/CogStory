@@ -13,6 +13,7 @@
 #include "SpeechFrame.h"
 #include "SpeechFrameManager.h"
 #include "Timeline.h"
+#include "actors/components/AnimPresetComponent.h"
 #include "actors/components/MovementComponent.h"
 #include "actors/components/ParticleEmitterComponent.h"
 
@@ -64,7 +65,7 @@ namespace aga
 			  = void TimelineSingleFunc (int id, float progress, float value)
 			  = void TimelinePointFunc (int id, float progress, Point value)
 		 Timeline@ CreateTimeline (int id = -1)
-		 Timeline@ Once (int duringMS, TimelineEmptyFunc @+ func)
+		 Timeline@ Begin (int duringMS, TimelineEmptyFunc @+ func)
 		 Timeline@ After (int duringMS, TimelineEmptyFunc @+ func)
 		 Timeline@ Wait (int waitTime)
 		 Timeline@ During (float from, float to, int duringMS, TimelineSingleFunc @+ func)
@@ -230,6 +231,16 @@ namespace aga
 							unsigned maxParticles, float emitLifeSpan)
 			ParticleEmitter@ GetEmitter ()
 
+		AnimPresetComponent
+			AnimPresetType
+				NoAnim
+				JumpInPlace
+			void SetAnimPresetType (AnimPresetType type)
+			AnimPresetType GetAnimPresetType () const
+			void SetJumpInPlaceMaxHeight (int heightInPixels)
+			void SetMaxJumpTimes (int times)
+			void Play ()
+
 	   SceneManager
 		   void SetActiveScene (const string &in, bool fadeAnim = true)
 		   void SceneFadeInOut (float fadeInMs = 500, float fadeOutMs = 500, Color color = COLOR_BLACK)
@@ -299,7 +310,7 @@ namespace aga
 		std::string filePath = SanitizePath (dir + "/" + fileNameSanitized);
 
 		Log (std::string ("Changed script: " + fileNameSanitized + "\n").c_str ());
-\
+
 		std::map<std::string, Script*>& scripts
 			= m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptsByPath ();
 
@@ -672,6 +683,9 @@ namespace aga
 		//  ParticleEmitterComponent
 		RegisterParticleEmitterComponentAPI ();
 
+		//	AnimPresetComponent
+		RegisterAnimPresetComponentAPI ();
+
 		//  Script
 		RegisterScriptAPI ();
 
@@ -701,6 +715,13 @@ namespace aga
 		r = m_ScriptEngine->RegisterEnumValue ("MovementType", "MovePoints", MovementType::MovePoints);
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterEnumValue ("MovementType", "MoveWander", MovementType::MoveWander);
+		assert (r >= 0);
+
+		r = m_ScriptEngine->RegisterEnum ("AnimPresetType");
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterEnumValue ("AnimPresetType", "NoAnim", AnimPresetType::NoAnim);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterEnumValue ("AnimPresetType", "JumpInPlace", AnimPresetType::JumpInPlace);
 		assert (r >= 0);
 
 		r = m_ScriptEngine->RegisterEnum ("ScreenRelativePosition");
@@ -870,16 +891,16 @@ namespace aga
 
 		r = m_ScriptEngine->RegisterFuncdef ("void TimelineEmptyFunc (int id)");
 		assert (r >= 0);
-		r = m_ScriptEngine->RegisterFuncdef ("bool TimelineSingleFunc (int id, float progress, float value)");
+		r = m_ScriptEngine->RegisterFuncdef ("void TimelineSingleFunc (int id, float progress, float value)");
 		assert (r >= 0);
-		r = m_ScriptEngine->RegisterFuncdef ("bool TimelinePointFunc (int id, float progress, Point value)");
+		r = m_ScriptEngine->RegisterFuncdef ("void TimelinePointFunc (int id, float progress, Point value)");
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterGlobalFunction ("Timeline@ CreateTimeline (int id = -1)",
 			asMETHOD (TweenManager, CreateTimeline), asCALL_THISCALL_ASGLOBAL, &m_MainLoop->GetTweenManager ());
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterObjectMethod ("Timeline",
-			"Timeline@ Once (int duringMS, TimelineEmptyFunc @+ func)",
-			asMETHODPR (Timeline, Once, (int, asIScriptFunction*), Timeline*), asCALL_THISCALL);
+			"Timeline@ Begin (int duringMS, TimelineEmptyFunc @+ func)",
+			asMETHODPR (Timeline, Begin, (int, asIScriptFunction*), Timeline*), asCALL_THISCALL);
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterObjectMethod ("Timeline",
 			"Timeline@ After (int duringMS, TimelineEmptyFunc @+ func)",
@@ -1412,6 +1433,39 @@ namespace aga
 		assert (r >= 0);
 		r = m_ScriptEngine->RegisterObjectMethod ("ParticleEmitterComponent", "ParticleEmitter@ GetEmitter ()",
 			asMETHOD (ParticleEmitterComponent, GetEmitter), asCALL_THISCALL);
+		assert (r >= 0);
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	void ScriptManager::RegisterAnimPresetComponentAPI ()
+	{
+		int r = m_ScriptEngine->RegisterObjectType ("AnimPresetComponent", 0, asOBJ_REF | asOBJ_NOCOUNT);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterObjectMethod ("Actor",
+			"AnimPresetComponent@ GetAnimPresetComponent (const string &in)", asMETHOD (Actor, GetAnimPresetComponent),
+			asCALL_THISCALL);
+		r = m_ScriptEngine->RegisterObjectMethod ("AnimPresetComponent", "void SetEnabled (bool enabled)",
+			asMETHOD (AnimPresetComponent, SetEnabled), asCALL_THISCALL);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterObjectMethod ("AnimPresetComponent", "bool IsEnabled () const",
+			asMETHOD (AnimPresetComponent, IsEnabled), asCALL_THISCALL);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterObjectMethod ("AnimPresetComponent", "void SetAnimPresetType (AnimPresetType type)",
+			asMETHOD (AnimPresetComponent, SetAnimPresetType), asCALL_THISCALL);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterObjectMethod ("AnimPresetComponent", "AnimPresetType GetAnimPresetType ()",
+			asMETHOD (AnimPresetComponent, GetAnimPresetType), asCALL_THISCALL);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterObjectMethod ("AnimPresetComponent",
+			"void SetJumpInPlaceMaxHeight (int heightInPixels)",
+			asMETHOD (AnimPresetComponent, SetJumpInPlaceMaxHeight), asCALL_THISCALL);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterObjectMethod ("AnimPresetComponent", "void SetMaxJumpTimes (int times)",
+			asMETHOD (AnimPresetComponent, SetMaxJumpTimes), asCALL_THISCALL);
+		assert (r >= 0);
+		r = m_ScriptEngine->RegisterObjectMethod (
+			"AnimPresetComponent", "void Play ()", asMETHOD (AnimPresetComponent, Play), asCALL_THISCALL);
 		assert (r >= 0);
 	}
 

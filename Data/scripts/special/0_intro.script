@@ -11,7 +11,7 @@
 void Start ()
 {
     SetSuppressSceneInfo (true);
-    //IntroAnimation ();        
+    IntroAnimation ();        
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ void CitySceneAnimation ()
     SetOverlayText ("-- Chapter I --\nNo ordinary day", 8000.f / 2.0f, Plain, 200.f, Center); 
 
     CreateTimeline ()
-    .Once (8000.f, function (id)
+    .Begin (8000.f, function (id)
     {
         CameraToFlagPointTween ("INTRO_CAMERA_END", 8000.f, function (id)
         {
@@ -63,11 +63,11 @@ void CityFactorySceneAnimation ()
         CameraFollowDummy ("INTRO_CAMERA_START");
         
         CreateTimeline ()
-        .Once (5000.f, function (id)
+        .Begin (5000.f, function (id)
         {
             CameraToFlagPointTween ("INTRO_CAMERA_A", 5000.f, null);
         })
-        .Once (1500.f, function (id)
+        .Begin (1500.f, function (id)
         {
             CameraToFlagPointTween ("INTRO_CAMERA_END", 1500.f, function (id)
             {
@@ -89,15 +89,15 @@ void FactoryMainSceneAnimation ()
         CameraFollowDummy ("INTRO_CAMERA_START");
         
         CreateTimeline ()
-        .Once (3000.f, function (id)
+        .Begin (3000.f, function (id)
         {
             CameraToFlagPointTween ("INTRO_CAMERA_A", 3000.f, null);
         })
-        .Once (3000.f, function (id)
+        .Begin (3000.f, function (id)
         {
             CameraToFlagPointTween ("INTRO_CAMERA_END", 3000.f, null);
         })
-        .Once (5000.f, function (id) 
+        .Begin (5000.f, function (id) 
         {
             MovementComponent@ movement = GetMovementComponent ("ROBOT_SUPERVISOR");
             movement.SetEnabled (true);
@@ -107,23 +107,42 @@ void FactoryMainSceneAnimation ()
             movement.SetWalkPoints (GetFlagPoint ("SUPERVISOR_A"), false);
             movement.SetWalkPointReachTime (5000.f);
         })
-        .Once (5000.f, function (id)
+        // .Begin (5000.f, function (id)
+        // {
+        //     AddSpeechFrame ("SUPERVISOR_SPEECH_1", false).SetTimeout (5000.f);
+        // })        
+        // .Wait (1000.f)
+        // .Begin (5000.f, function (id)
+        // {
+        //     AddSpeechFrame ("ROBOT_1_SPEECH_1", false).SetTimeout (5000.f);
+        // })                
+        //.Wait (1000.f)
+        .After (500.f, function (id)
         {
-            AddSpeechFrame ("SUPERVISOR_SPEECH_1", false).SetTimeout (5000.f);
-        })        
-        .Wait (1000.f)
-        .Once (5000.f, function (id)
-        {
-            AddSpeechFrame ("ROBOT_1_SPEECH_1", false).SetTimeout (5000.f);
-        })        
-        .Wait (1000.f)
-        .Once (8000.f, function (id)
+            MovementComponent@ movement = GetMovementComponent ("ROBOT_SUPERVISOR");
+            movement.SetEnabled (false);
+            
+            CreateTimeline ()
+            .After (1500.f, function (id)
+            {
+                AnimPresetComponent@ anim = GetAnimPresetComponent ("ROBOT_SUPERVISOR");
+                anim.SetAnimPresetType (JumpInPlace);
+                anim.SetMaxJumpTimes (8);
+                anim.Play ();
+            });
+        })       
+        .Begin (8000.f, function (id)
         {
             AddSpeechFrame ("SUPERVISOR_SPEECH_2", false).SetTimeout (8000.f);
-        }) 
+        })
+        // .Wait (1000.f)
+        // .Begin (5000.f, function (id)
+        // {
+	    //     AddSpeechFrame ("ROBOT_1_SPEECH_2", false).SetTimeout (5000.f);
+        // })  
         .After (0.f, function (id)
         {
-            RemoveSpeechFrame ("SUPERVISOR_SPEECH_1");
+            RemoveSpeechFrame ("ROBOT_1_SPEECH_2");
             ActivatePlayer ();
         });        
     });

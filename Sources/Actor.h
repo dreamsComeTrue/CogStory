@@ -59,9 +59,12 @@ namespace aga
 		void AddComponent (const std::string& name, Component* component);
 		void RemoveComponent (const std::string& name);
 		void RemoveComponent (Component* component);
+
 		Component* FindComponent (const std::string& name, const std::string& typeName);
 		class MovementComponent* GetMovementComponent (const std::string& name);
 		class ParticleEmitterComponent* GetParticleEmitterComponent (const std::string& name);
+		class AnimPresetComponent* GetAnimPresetComponent (const std::string& name);
+
 		std::map<std::string, Component*>& GetComponents ();
 
 		void OrientTo (Actor* actor);

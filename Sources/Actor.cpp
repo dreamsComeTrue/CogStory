@@ -6,6 +6,7 @@
 #include "Screen.h"
 #include "actors/components/MovementComponent.h"
 #include "actors/components/ParticleEmitterComponent.h"
+#include "actors/components/AnimPresetComponent.h"
 
 namespace aga
 {
@@ -287,6 +288,13 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
+	AnimPresetComponent* Actor::GetAnimPresetComponent (const std::string& name)
+	{
+		return static_cast<AnimPresetComponent*> (FindComponent (name, AnimPresetComponent::TypeName));
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
 	std::map<std::string, Component*>& Actor::GetComponents () { return m_Components; }
 
 	//--------------------------------------------------------------------------------------------------
@@ -397,7 +405,7 @@ namespace aga
 		{
 			return;
 		}
-		
+
 		std::map<std::string, TriggerArea>& triggerAreas = m_SceneManager->GetActiveScene ()->GetTriggerAreas ();
 
 		for (std::map<std::string, TriggerArea>::iterator it = triggerAreas.begin (); it != triggerAreas.end (); ++it)

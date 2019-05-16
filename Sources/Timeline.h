@@ -17,7 +17,7 @@ namespace aga
         bool Update (float deltaTime);
 
         //  Run timeline function immediatelly
-        Timeline* Once (int duringMS, asIScriptFunction* func);
+        Timeline* Begin (int duringMS, asIScriptFunction* func);
         
         //  Run timeline function after specified time period
         Timeline* After (int afterMS, asIScriptFunction* func);

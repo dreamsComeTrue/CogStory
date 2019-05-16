@@ -7,6 +7,7 @@
 #include "actors/components/AudioSampleComponent.h"
 #include "actors/components/MovementComponent.h"
 #include "actors/components/ParticleEmitterComponent.h"
+#include "actors/components/AnimPresetComponent.h"
 
 using json = nlohmann::json;
 
@@ -39,6 +40,7 @@ namespace aga
         s_ActorComponents.push_back (AudioSampleComponent::TypeName);
         s_ActorComponents.push_back (MovementComponent::TypeName);
         s_ActorComponents.push_back (ParticleEmitterComponent::TypeName);
+        s_ActorComponents.push_back (AnimPresetComponent::TypeName);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -156,6 +158,10 @@ namespace aga
         else if (type == ParticleEmitterComponent::TypeName)
         {
             newComponent = new ParticleEmitterComponent (actor);
+        }
+        else if (type == AnimPresetComponent::TypeName)
+        {
+            newComponent = new AnimPresetComponent (actor);
         }
 
         return newComponent;
