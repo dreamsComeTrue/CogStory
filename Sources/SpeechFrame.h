@@ -180,6 +180,8 @@ namespace aga
 
         float m_CurrentTimeDisplayed;        
         int m_Timeout;
+        
+        float m_LastSoundTime;
     };
 }
 

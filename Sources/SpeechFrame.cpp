@@ -213,6 +213,7 @@ namespace aga
 		if (m_StillUpdating && !m_IsSuspended && !m_TextLines.empty ())
 		{
 			m_DrawTimeAccumulator += deltaTime * 1000;
+			m_LastSoundTime -= deltaTime * 1000;
 
 			//  Update each character
 			//	We can proceed when there is time for the next letter, or Delay time is exhausted
@@ -224,7 +225,7 @@ namespace aga
 				{
 					++m_CurrentCharIndex;
 					++m_CurrentIndexInLine;
-					++m_AttrDelayIndex;
+					++m_AttrDelayIndex;					
 
 					PlayTypeWriterSound ();
 
@@ -289,11 +290,11 @@ namespace aga
 			{
 				m_IsDelayed = false;
 				m_DelayCounter = 0.0f;
-				
+
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -301,9 +302,10 @@ namespace aga
 
 	void SpeechFrame::PlayTypeWriterSound ()
 	{
-		if (m_CurrentCharIndex % 7 == 0)
+		if (m_LastSoundTime < 0.0f)
 		{
 			m_Manager->GetTypeSample ()->Play ();
+			m_LastSoundTime = 100.f;
 		}
 	}
 
