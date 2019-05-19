@@ -426,7 +426,6 @@
             "id": "80",
             "name": "Sprite-0001",
             "overlap": "0",
-            "phys": [],
             "pos": "-32.00 -48.00",
             "rot": "0.00",
             "size": "64.00 64.00",
@@ -1866,7 +1865,7 @@
                     "poly": "-7.94 -11.71 7.83 -11.71 8.50 17.82 -8.06 17.68 "
                 }
             ],
-            "pos": "384.00 -416.00",
+            "pos": "384.00 -464.00",
             "rot": "0.00",
             "size": "64.00 64.00",
             "type": "Tile",
@@ -1936,6 +1935,23 @@
             "size": "64.00 64.00",
             "type": "NPC",
             "z-order": "6"
+        },
+        {
+            "atlas": "time_traveler",
+            "atlas-region": "time-traveler",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "100.00",
+            "id": "3651",
+            "name": "time-traveler",
+            "overlap": "0",
+            "phys": [],
+            "pos": "448.00 -240.00",
+            "rot": "0.00",
+            "size": "64.00 64.00",
+            "type": "Tile",
+            "z-order": "7"
         }
     ],
     "color": "43 54 129 255",
@@ -1968,12 +1984,12 @@
         {
             "connections": "SUPERVISOR_B SUPERVISOR_START ",
             "name": "SUPERVISOR_A",
-            "pos": "544.00 -384.00"
+            "pos": "544.00 -432.00"
         },
         {
             "connections": "SUPERVISOR_A ",
             "name": "SUPERVISOR_B",
-            "pos": "480.00 -384.00"
+            "pos": "480.00 -432.00"
         },
         {
             "connections": "SUPERVISOR_A ",

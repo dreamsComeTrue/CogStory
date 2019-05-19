@@ -67,7 +67,7 @@ namespace aga
 		{
 			if (m_GoingUp)
 			{
-				m_Actor->Bounds.Pos.Y -= m_JumpSpeed * deltaTime;
+				m_Actor->Bounds.Pos.Y -= m_JumpSpeed * 1.5f * deltaTime;
 
 				if (m_Actor->Bounds.Pos.Y < m_EndPos.Y)
 				{

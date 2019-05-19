@@ -17,6 +17,7 @@ namespace aga
         PACK_MENU_UI,
         PACK_ACTORS_UI,
         PACK_PLAYER,
+        PACK_TIME_TRAVELER,
         PACK_PARTICLES,
         PACK_NPC_1,
         PACK_NPC_2,

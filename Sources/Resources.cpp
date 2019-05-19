@@ -29,9 +29,9 @@ namespace aga
 	Resource g_Resources[] = {
 		//  Graphics
 		{__PACKS__MARKER__, "", ""}, {PACK_MENU_UI, GFX_UI, "menu_ui.pack"}, {PACK_ACTORS_UI, GFX_UI, "actors_ui.pack"},
-		{PACK_PLAYER, GFX_ACTORS, "player.pack"}, {PACK_PARTICLES, GFX_EFFECTS, "particles.pack"},
-		{PACK_NPC_1, GFX_NPC, "npc_1.pack"}, {PACK_NPC_2, GFX_NPC, "npc_2.pack"}, {PACK_NPC_3, GFX_NPC, "npc_3.pack"},
-		{PACK_NPC_4, GFX_NPC, "npc_4.pack"},
+		{PACK_PLAYER, GFX_ACTORS, "player.pack"}, {PACK_TIME_TRAVELER, GFX_ACTORS, "time_traveler.pack"},
+		{PACK_PARTICLES, GFX_EFFECTS, "particles.pack"}, {PACK_NPC_1, GFX_NPC, "npc_1.pack"},
+		{PACK_NPC_2, GFX_NPC, "npc_2.pack"}, {PACK_NPC_3, GFX_NPC, "npc_3.pack"}, {PACK_NPC_4, GFX_NPC, "npc_4.pack"},
 
 		//  Home
 		{PACK_0_0_HOME, GFX_0_HOME, "0_0_home.pack"},
