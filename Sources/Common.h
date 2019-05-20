@@ -165,14 +165,7 @@ namespace aga
 	void Log (const char* str, ...);
 	void Log (float timeout, ALLEGRO_COLOR color, const char* str, ...);
 
-	inline char GetPathSeparator ()
-	{
-#ifdef _WIN32
-		return '\\';
-#else
-		return '/';
-#endif
-	}
+	std::string SanitizePath (const std::string& path);
 
 	//--------------------------------------------------------------------------------------------------
 

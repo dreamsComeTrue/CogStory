@@ -68,10 +68,7 @@ namespace aga
 			char const* filterPatterns[1] = {"*.script"};
 
 			std::string dataPath = GetDataPath ();
-			dataPath += GetPathSeparator ();
-			dataPath += "scripts";
-			dataPath += GetPathSeparator ();
-			dataPath += "special";
+			dataPath += "/scripts/special";
 
 			const char* chosenPath
 				= tinyfd_openFileDialog ("Open Scene", dataPath.c_str (), 1, filterPatterns, "script files", 0);

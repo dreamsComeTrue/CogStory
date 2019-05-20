@@ -295,10 +295,11 @@ namespace aga
 			return;
 		}
 
-		std::string filePath = dir + GetPathSeparator () + fileName;
+		std::string fileNameSanitized = SanitizePath (fileName);
+		std::string filePath = SanitizePath (dir + "/" + fileNameSanitized);
 
-		Log (std::string ("Changed script: " + fileName + "\n").c_str ());
-
+		Log (std::string ("Changed script: " + fileNameSanitized + "\n").c_str ());
+\
 		std::map<std::string, Script*>& scripts
 			= m_SceneManager->GetMainLoop ()->GetScriptManager ().GetScriptsByPath ();
 
@@ -306,11 +307,11 @@ namespace aga
 		{
 			if (it->first == filePath)
 			{
-				Log (std::string ("Reloading script: " + fileName + "\n").c_str ());
+				Log (std::string ("Reloading script: " + fileNameSanitized + "\n").c_str ());
 
 				it->second->Reload ();
 
-				Log (std::string ("Reloaded script: " + fileName + "\n").c_str ());
+				Log (std::string ("Reloaded script: " + fileNameSanitized + "\n").c_str ());
 			}
 		}
 

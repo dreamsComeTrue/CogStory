@@ -82,10 +82,7 @@ namespace aga
 			{
 				char const* filterPatterns[1] = {"*.scn"};
 				std::string dataPath = GetDataPath ();
-				dataPath += GetPathSeparator ();
-				dataPath += "scenes";
-				dataPath += GetPathSeparator ();
-				dataPath += "special";
+				dataPath += "/scenes/special";
 
 				const char* chosenPath
 					= tinyfd_saveFileDialog ("Save Scene", dataPath.c_str (), 1, filterPatterns, "scene files");
@@ -100,10 +97,7 @@ namespace aga
 						fileName += ".scn";
 					}
 
-					std::string dataPath = "Data";
-					dataPath += GetPathSeparator ();
-					dataPath += "scenes";
-					dataPath += GetPathSeparator ();
+					std::string dataPath = "Data/scenes/";
 
 					size_t index = fileName.find (dataPath);
 

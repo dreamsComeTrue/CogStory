@@ -263,6 +263,16 @@ namespace aga
 
     //--------------------------------------------------------------------------------------------------
 
+    std::string SanitizePath (const std::string& path)
+    {
+		std::string sanitized = path;
+		std::replace (sanitized.begin (), sanitized.end (), '\\', '/');
+
+		return sanitized;
+    }
+
+    //--------------------------------------------------------------------------------------------------
+
     bool IsFileExists (const std::string& filePath)
     {
         std::ifstream f (filePath.c_str ());

@@ -109,9 +109,9 @@ namespace aga
 				{
 					char const* filterPatterns[1] = {"*.script"};
 					std::string dataPath = GetDataPath ();
-					dataPath += GetPathSeparator ();
+					dataPath += "/";
 					dataPath += "scripts";
-					dataPath += GetPathSeparator ();
+					dataPath += "/";
 					dataPath += "special";
 
 					const char* chosenPath = tinyfd_openFileDialog (
