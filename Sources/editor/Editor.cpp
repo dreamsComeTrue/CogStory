@@ -391,9 +391,15 @@ namespace aga
 				break;
 			}
 
-			case ALLEGRO_KEY_G:
+			case ALLEGRO_KEY_MINUS:
 			{
-				ChangeGridSize (event->keyboard.modifiers == ALLEGRO_KEYMOD_SHIFT);
+				ChangeGridSize (false);
+				break;
+			}
+
+			case ALLEGRO_KEY_EQUALS:
+			{
+				ChangeGridSize (true);
 				break;
 			}
 
@@ -435,16 +441,10 @@ namespace aga
 				break;
 			}
 
-			case ALLEGRO_KEY_S:
+			case ALLEGRO_KEY_G:
 			{
-				if (event->keyboard.modifiers == ALLEGRO_KEYMOD_CTRL)
-				{
-					//  Save requested
-				}
-				else
-				{
-					m_IsSnapToGrid = !m_IsSnapToGrid;
-				}
+				m_IsSnapToGrid = !m_IsSnapToGrid;
+
 				break;
 			}
 
@@ -540,7 +540,7 @@ namespace aga
 				break;
 			}
 
-			case ALLEGRO_KEY_F5:
+			case ALLEGRO_KEY_S:
 			{
 				OnScriptEditor ();
 				break;
@@ -552,9 +552,20 @@ namespace aga
 				break;
 			}
 
-			case ALLEGRO_KEY_SPACE:
+			case ALLEGRO_KEY_H:
 			{
 				m_EditorActorMode.SetDrawTiles (!m_EditorActorMode.IsDrawTiles ());
+				break;
+			}
+
+			case ALLEGRO_KEY_SPACE:
+			{
+				if (!m_EditorActorMode.GetSelectedActors ().empty ())
+				{
+					SetCursorMode (m_CursorMode == CursorMode::EditPhysBodyMode ? CursorMode::ActorSelectMode
+																				: CursorMode::EditPhysBodyMode);
+				}
+
 				break;
 			}
 
@@ -1500,7 +1511,7 @@ namespace aga
 
 				m_AnimationWindow->Render ();
 
-				if ((ImGui::Button ("SCRIPT [F5]", buttonSize) || m_OpenPopupScriptEditor))
+				if ((ImGui::Button ("SCRIPT [S]", buttonSize) || m_OpenPopupScriptEditor))
 				{
 					if (!m_OpenPopupScriptEditor)
 					{
@@ -1846,12 +1857,20 @@ namespace aga
 			Point* selectedTriggerPoint = m_EditorTriggerAreaMode.GetTriggerPointUnderCursor (event.x, event.y);
 			TriggerArea* selectedTriggerArea = m_EditorTriggerAreaMode.GetTriggerAreaUnderCursor (event.x, event.y);
 
-			m_EditorTriggerAreaMode.SetTriggerPoint (selectedTriggerPoint);
-			m_EditorTriggerAreaMode.SetTriggerArea (selectedTriggerArea);
-
 			if (selectedFlagPoint != "" || m_EditorFlagPointMode.GetFlagPoint () != "")
 			{
 				m_EditorFlagPointMode.SetFlagPoint (selectedFlagPoint);
+				m_EditorActorMode.ClearSelectedActors ();
+			}
+			else if (selectedTriggerPoint || m_EditorTriggerAreaMode.GetTriggerPoint ())
+			{
+				m_EditorTriggerAreaMode.SetTriggerPoint (selectedTriggerPoint);
+				m_EditorActorMode.ClearSelectedActors ();
+			}
+			else if (selectedTriggerArea || m_EditorTriggerAreaMode.GetTriggerArea ())
+			{
+				m_EditorTriggerAreaMode.SetTriggerArea (selectedTriggerArea);
+				m_EditorActorMode.ClearSelectedActors ();
 			}
 			else if (selectedTriggerPoint && selectedTriggerArea)
 			{
@@ -1888,10 +1907,7 @@ namespace aga
 		{
 			if (m_CursorMode == CursorMode::EditPhysBodyMode)
 			{
-				if (!m_EditorPhysMode.RemovePhysPointUnderCursor (event.x, event.y))
-				{
-					SwitchCursorMode ();
-				}
+				m_EditorPhysMode.RemovePhysPointUnderCursor (event.x, event.y);
 			}
 			else if (m_EditorFlagPointMode.GetFlagPoint () != "" || m_EditorTriggerAreaMode.GetTriggerPoint ())
 			{
@@ -1902,14 +1918,6 @@ namespace aga
 			}
 			else
 			{
-				SetCursorMode (CursorMode::ActorSelectMode);
-
-				//	If we have at least one Actor selected, with right click we can set its physics body
-				if (!m_EditorActorMode.GetSelectedActors ().empty ())
-				{
-					SwitchCursorMode ();
-				}
-
 				Actor* blueprintActor = m_EditorActorMode.ChooseBlueprintActor (event.x, event.y);
 
 				if (blueprintActor)

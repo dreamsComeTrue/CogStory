@@ -22,6 +22,7 @@ namespace aga
 		, m_FindDialogShowed (false)
 		, m_LastFoundPos (-1)
 	{
+		memset (m_FindText, 0, ARRAY_SIZE (m_FindText));
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -30,12 +31,7 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	void EditorScriptWindow::Show ()
-	{
-		m_IsVisible = true;
-
-		memset (m_FindText, 0, ARRAY_SIZE (m_FindText));
-	}
+	void EditorScriptWindow::Show () { m_IsVisible = true; }
 
 	//--------------------------------------------------------------------------------------------------
 
@@ -57,9 +53,13 @@ namespace aga
 		{
 			if (event->keyboard.modifiers == ALLEGRO_KEYMOD_CTRL)
 			{
-				m_ShowFindDialog = !m_ShowFindDialog;
+				if (m_FindDialogFocused || !m_ShowFindDialog)
+				{
+					m_ShowFindDialog = !m_ShowFindDialog;
+					m_LastFoundPos = -1;
+				}
+
 				m_FindDialogShowed = false;
-				m_LastFoundPos = -1;
 			}
 
 			break;
@@ -203,6 +203,8 @@ namespace aga
 					textArea.GetTotalLines (), textArea.IsOverwrite () ? "Ovr" : "Ins", textArea.CanUndo () ? "*" : " ",
 					m_Entries[m_SelectedEntry].Path.c_str ());
 
+				m_FindDialogFocused = false;
+
 				if (m_ShowFindDialog)
 				{
 					if (!m_FindDialogShowed)
@@ -211,11 +213,24 @@ namespace aga
 						m_FindDialogShowed = true;
 					}
 
-					ImGui::InputText ("", m_FindText, ARRAY_SIZE (m_FindText));
+					if (ImGui::InputText (
+							"", m_FindText, ARRAY_SIZE (m_FindText), ImGuiInputTextFlags_EnterReturnsTrue))
+					{
+						FindNext ();
+					}
+
+					m_FindDialogFocused = ImGui::IsItemActive ();
+				}
+
+				int controlHeight = ImGui::GetWindowSize ().y - 20;
+
+				if (m_ShowFindDialog)
+				{
+					controlHeight -= 25;
 				}
 
 				m_Entries[m_SelectedEntry].TextEditorControl.Render (
-					"ScriptEditor", ImVec2 (ImGui::GetWindowSize ().x, ImGui::GetWindowSize ().y - 10), true);
+					"ScriptEditor", ImVec2 (ImGui::GetWindowSize ().x - 20, controlHeight), true);
 
 				if (textArea.IsTextChanged ())
 				{

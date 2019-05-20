@@ -380,7 +380,7 @@ namespace aga
 
 		if (ImGui::BeginPopupModal ("Trigger Area", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 		{
-			ImGui::PushItemWidth (540);
+			ImGui::PushItemWidth (520);
 			ImGui::InputText ("Name", m_TriggerAreaWindow, ARRAY_SIZE (m_TriggerAreaWindow));
 			ImGui::SetItemDefaultFocus ();
 			ImGui::InputText ("Data", m_TriggerAreaData, ARRAY_SIZE (m_TriggerAreaData));

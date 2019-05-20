@@ -52,7 +52,8 @@ namespace aga
         bool m_IsVisible;
         bool m_ShowFindDialog;
         bool m_FindDialogShowed;
-        char m_FindText[100];
+		bool m_FindDialogFocused;
+		char m_FindText[100];
         int m_LastFoundPos;
 
         bool m_OpenButtonPressed;
