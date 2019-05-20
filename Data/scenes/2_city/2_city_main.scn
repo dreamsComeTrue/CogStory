@@ -1435,7 +1435,7 @@
             "rot": "90.00",
             "size": "32.00 32.00",
             "type": "Tile",
-            "z-order": "0"
+            "z-order": "-9"
         },
         {
             "atlas": "2_3_city",
@@ -1456,7 +1456,7 @@
             "rot": "90.00",
             "size": "32.00 32.00",
             "type": "Tile",
-            "z-order": "0"
+            "z-order": "-8"
         },
         {
             "atlas": "2_3_city",
@@ -3633,7 +3633,8 @@
             "id": "2030",
             "name": "floor-cell-vertical",
             "overlap": "0",
-            "pos": "-32.00 16.00",
+            "phys": [],
+            "pos": "240.00 112.00",
             "rot": "0.00",
             "size": "64.00 64.00",
             "type": "Tile",
@@ -4358,7 +4359,7 @@
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "focus-height": "100.00",
+            "focus-height": "0.90",
             "id": "2103",
             "name": "tree2",
             "overlap": "0",
@@ -4371,7 +4372,7 @@
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "5"
+            "z-order": "11"
         },
         {
             "atlas": "env_0",
@@ -4392,7 +4393,7 @@
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "6"
+            "z-order": "12"
         },
         {
             "action-speech": "FOREST_ALLEY_SIGN_INFO",
@@ -4628,7 +4629,7 @@
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "focus-height": "100.00",
+            "focus-height": "0.90",
             "id": "2275",
             "name": "tree2",
             "overlap": "0",
@@ -4641,7 +4642,7 @@
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "12"
+            "z-order": "10"
         },
         {
             "atlas": "env_0",
@@ -4649,7 +4650,7 @@
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "focus-height": "100.00",
+            "focus-height": "0.90",
             "id": "2276",
             "name": "tree2",
             "overlap": "0",
@@ -4662,7 +4663,7 @@
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "11"
+            "z-order": "9"
         },
         {
             "atlas": "env_0",
@@ -4670,7 +4671,7 @@
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "focus-height": "100.00",
+            "focus-height": "0.90",
             "id": "2277",
             "name": "tree2",
             "overlap": "0",
@@ -4683,7 +4684,7 @@
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "10"
+            "z-order": "8"
         },
         {
             "atlas": "env_0",
@@ -4691,7 +4692,7 @@
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "focus-height": "100.00",
+            "focus-height": "0.90",
             "id": "2278",
             "name": "tree2",
             "overlap": "0",
@@ -4704,7 +4705,7 @@
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "9"
+            "z-order": "7"
         },
         {
             "atlas": "env_0",
@@ -4725,7 +4726,7 @@
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "7"
+            "z-order": "-7"
         },
         {
             "atlas": "env_0",
@@ -4746,7 +4747,7 @@
             "rot": "0.00",
             "size": "100.00 147.00",
             "type": "Tile",
-            "z-order": "6"
+            "z-order": "-8"
         },
         {
             "atlas": "env_1",

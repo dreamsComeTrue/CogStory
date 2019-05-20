@@ -150,6 +150,7 @@
             "id": "2154",
             "name": "flower-pot",
             "overlap": "1",
+            "overlap-size": "14.00 14.00",
             "phys": [
                 {
                     "poly": "0.00 0.00 6.21 14.45 -6.71 14.11 "
@@ -195,7 +196,6 @@
             "id": "3096",
             "name": "scene_door1",
             "overlap": "0",
-            "phys": [],
             "pos": "-20.65 121.31",
             "rot": "0.00",
             "size": "64.00 64.00",
@@ -242,6 +242,7 @@
             ],
             "region_name": "",
             "rel_pos": 5,
+            "speed": 15,
             "texts": [
                 {
                     "data": "Ordinary table",
@@ -273,6 +274,7 @@
             ],
             "region_name": "",
             "rel_pos": 5,
+            "speed": 15,
             "texts": [
                 {
                     "data": "An ordinary flower",
@@ -315,6 +317,7 @@
             ],
             "region_name": "",
             "rel_pos": 2,
+            "speed": 15,
             "texts": [
                 {
                     "data": "Do you want to go to bed?",

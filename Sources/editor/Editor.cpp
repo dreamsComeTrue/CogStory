@@ -1850,8 +1850,23 @@ namespace aga
 		{
 			m_IsMouseDrag = true;
 
-			ALLEGRO_KEYBOARD_STATE state;
-			al_get_keyboard_state (&state);
+			if (m_CursorMode == CursorMode::EditPhysBodyMode)
+			{
+				m_EditorPhysMode.InsertPhysPointAtCursor (event.x, event.y);
+			}
+
+			if (m_CursorMode == CursorMode::EditFlagPointsMode)
+			{
+				if (m_EditorFlagPointMode.InsertFlagPointAtCursor (event.x, event.y))
+				{
+					SetCursorMode (CursorMode::ActorSelectMode);
+				}
+			}
+
+			if (m_CursorMode == CursorMode::EditTriggerAreaMode)
+			{
+				m_EditorTriggerAreaMode.InsertTriggerAreaAtCursor (event.x, event.y);
+			}
 
 			std::string selectedFlagPoint = m_EditorFlagPointMode.GetFlagPointUnderCursor (event.x, event.y);
 			Point* selectedTriggerPoint = m_EditorTriggerAreaMode.GetTriggerPointUnderCursor (event.x, event.y);
@@ -1875,7 +1890,11 @@ namespace aga
 				m_EditorTriggerAreaMode.SetTriggerArea (selectedTriggerArea);
 				m_EditorActorMode.ClearSelectedActors ();
 			}
-			else if (selectedTriggerPoint && selectedTriggerArea)
+
+			ALLEGRO_KEYBOARD_STATE state;
+			al_get_keyboard_state (&state);
+
+			if (selectedTriggerPoint && selectedTriggerArea)
 			{
 				SetCursorMode (CursorMode::EditTriggerAreaMode);
 			}
@@ -1892,24 +1911,6 @@ namespace aga
 				&& !m_EditorTriggerAreaMode.GetTriggerArea ())
 			{
 				SelectActor (event.x, event.y);
-			}
-
-			if (m_CursorMode == CursorMode::EditPhysBodyMode)
-			{
-				m_EditorPhysMode.InsertPhysPointAtCursor (event.x, event.y);
-			}
-
-			if (m_CursorMode == CursorMode::EditFlagPointsMode)
-			{
-				if (m_EditorFlagPointMode.InsertFlagPointAtCursor (event.x, event.y))
-				{
-					SetCursorMode (CursorMode::ActorSelectMode);
-				}
-			}
-
-			if (m_CursorMode == CursorMode::EditTriggerAreaMode)
-			{
-				m_EditorTriggerAreaMode.InsertTriggerAreaAtCursor (event.x, event.y);
 			}
 		}
 
