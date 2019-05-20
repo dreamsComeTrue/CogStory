@@ -1849,7 +1849,7 @@ namespace aga
 			m_EditorTriggerAreaMode.SetTriggerPoint (selectedTriggerPoint);
 			m_EditorTriggerAreaMode.SetTriggerArea (selectedTriggerArea);
 
-			if (selectedFlagPoint != "")
+			if (selectedFlagPoint != "" || m_EditorFlagPointMode.GetFlagPoint () != "")
 			{
 				m_EditorFlagPointMode.SetFlagPoint (selectedFlagPoint);
 			}
@@ -1893,22 +1893,21 @@ namespace aga
 					SwitchCursorMode ();
 				}
 			}
-			else
+			else if (m_EditorFlagPointMode.GetFlagPoint () != "" || m_EditorTriggerAreaMode.GetTriggerPoint ())
 			{
 				bool flagPointRemoved = m_EditorFlagPointMode.RemoveFlagPointUnderCursor (event.x, event.y);
 				bool triggerPointRemoved = m_EditorTriggerAreaMode.RemoveTriggerPointUnderCursor (event.x, event.y);
 
 				m_EditorFlagPointMode.SetFlagPoint ("");
+			}
+			else
+			{
+				SetCursorMode (CursorMode::ActorSelectMode);
 
-				if (!flagPointRemoved && !triggerPointRemoved)
+				//	If we have at least one Actor selected, with right click we can set its physics body
+				if (!m_EditorActorMode.GetSelectedActors ().empty ())
 				{
-					SetCursorMode (CursorMode::ActorSelectMode);
-
-					//	If we have at least one Actor selected, with right click we can set its physics body
-					if (!m_EditorActorMode.GetSelectedActors ().empty ())
-					{
-						SwitchCursorMode ();
-					}
+					SwitchCursorMode ();
 				}
 
 				Actor* blueprintActor = m_EditorActorMode.ChooseBlueprintActor (event.x, event.y);
