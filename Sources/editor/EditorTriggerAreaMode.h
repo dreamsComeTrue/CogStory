@@ -46,6 +46,8 @@ namespace aga
         
         bool IsVisible ();
 
+        void SetDragging (bool drag);
+
     private:
         void EditTriggerArea ();
 
@@ -63,6 +65,7 @@ namespace aga
         char m_TriggerAreaData[100];
 
         bool m_Editing;
+        bool m_Dragging;
     };
 }
 

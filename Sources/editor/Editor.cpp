@@ -1859,16 +1859,19 @@ namespace aga
 
 			if (selectedFlagPoint != "" || m_EditorFlagPointMode.GetFlagPoint () != "")
 			{
+				m_EditorFlagPointMode.SetDragging (true);
 				m_EditorFlagPointMode.SetFlagPoint (selectedFlagPoint);
 				m_EditorActorMode.ClearSelectedActors ();
 			}
 			else if (selectedTriggerPoint || m_EditorTriggerAreaMode.GetTriggerPoint ())
 			{
+				m_EditorTriggerAreaMode.SetDragging (true);
 				m_EditorTriggerAreaMode.SetTriggerPoint (selectedTriggerPoint);
 				m_EditorActorMode.ClearSelectedActors ();
 			}
 			else if (selectedTriggerArea || m_EditorTriggerAreaMode.GetTriggerArea ())
 			{
+				m_EditorTriggerAreaMode.SetDragging (true);
 				m_EditorTriggerAreaMode.SetTriggerArea (selectedTriggerArea);
 				m_EditorActorMode.ClearSelectedActors ();
 			}
@@ -1932,6 +1935,9 @@ namespace aga
 
 	void Editor::ProcessMouseButtonUp (ALLEGRO_MOUSE_EVENT& event)
 	{
+		m_EditorFlagPointMode.SetDragging (false);
+		m_EditorTriggerAreaMode.SetDragging (false);
+
 		if (m_CursorMode == CursorMode::EditSpriteSheetMode && event.button == 1 && m_EditorActorMode.IsDrawTiles ())
 		{
 			AddActorsFromSpritesheet (event.x, event.y);

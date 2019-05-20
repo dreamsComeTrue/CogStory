@@ -31,8 +31,9 @@ namespace aga
         void RenderUI ();
         
         bool IsVisible ();
+		void SetDragging (bool drag);
 
-    private:
+	private:
         Editor* m_Editor;
         bool m_IsVisible;
 
@@ -42,7 +43,8 @@ namespace aga
 
         bool m_Editing;
         bool m_DrawConnection;
-    };
+		bool m_Dragging;
+	};
 }
 
 #endif //   __EDITOR_FLAG_POINT_MODE_H__

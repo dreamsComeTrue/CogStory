@@ -19,6 +19,7 @@ namespace aga
 		, m_Collidable (false)
 		, m_IsVisible (false)
 		, m_Editing (false)
+		, m_Dragging (false)
 	{
 		memset (m_TriggerAreaWindow, 0, ARRAY_SIZE (m_TriggerAreaWindow));
 		memset (m_TriggerAreaData, 0, ARRAY_SIZE (m_TriggerAreaData));
@@ -39,7 +40,7 @@ namespace aga
 		ALLEGRO_MOUSE_STATE state;
 		al_get_mouse_state (&state);
 
-		if (m_TriggerPoint && state.buttons == 1)
+		if (state.buttons == 1 && m_TriggerPoint && m_Dragging)
 		{
 			Point point = m_Editor->CalculateWorldPoint (state.x, state.y);
 			m_TriggerPoint->X = point.X;
@@ -512,6 +513,10 @@ namespace aga
 	//--------------------------------------------------------------------------------------------------
 
 	bool EditorTriggerAreaMode::IsVisible () { return m_IsVisible; }
+
+	//--------------------------------------------------------------------------------------------------
+
+	void EditorTriggerAreaMode::SetDragging (bool drag) { m_Dragging = drag; }
 
 	//--------------------------------------------------------------------------------------------------
 }

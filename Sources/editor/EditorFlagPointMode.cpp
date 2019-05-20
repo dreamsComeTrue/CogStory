@@ -18,6 +18,7 @@ namespace aga
 		, m_FlagPoint ("")
 		, m_Editing (false)
 		, m_DrawConnection (true)
+		, m_Dragging (false)
 	{
 		memset (m_FlagPointWindow, 0, ARRAY_SIZE (m_FlagPointWindow));
 	}
@@ -37,19 +38,16 @@ namespace aga
 		ALLEGRO_MOUSE_STATE state;
 		al_get_mouse_state (&state);
 
-		if (state.buttons == 1)
+		if (state.buttons == 1 && m_Dragging && m_FlagPoint != "")
 		{
-			if (m_FlagPoint != "")
-			{
-				std::map<std::string, FlagPoint>& flagPoints
-					= m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
-				Point p = m_Editor->CalculateWorldPoint (state.x, state.y);
+			std::map<std::string, FlagPoint>& flagPoints
+				= m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoints ();
+			Point p = m_Editor->CalculateWorldPoint (state.x, state.y);
 
-				flagPoints[m_FlagPoint].Pos.X = p.X;
-				flagPoints[m_FlagPoint].Pos.Y = p.Y;
+			flagPoints[m_FlagPoint].Pos.X = p.X;
+			flagPoints[m_FlagPoint].Pos.Y = p.Y;
 
-				return true;
-			}
+			return true;
 		}
 
 		return false;
@@ -323,6 +321,10 @@ namespace aga
 	//--------------------------------------------------------------------------------------------------
 
 	bool EditorFlagPointMode::IsVisible () { return m_IsVisible; }
+
+	//--------------------------------------------------------------------------------------------------
+
+	void EditorFlagPointMode::SetDragging (bool drag) { m_Dragging = drag; }
 
 	//--------------------------------------------------------------------------------------------------
 }
