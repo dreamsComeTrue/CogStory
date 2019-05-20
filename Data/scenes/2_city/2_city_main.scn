@@ -2653,35 +2653,22 @@
             "atlas": "env_1",
             "atlas-region": "sign",
             "blueprint": "-1",
-            "collidable": "0",
+            "collidable": "1",
             "collision": "0",
-            "focus-height": "100.00",
+            "focus-height": "0.90",
             "id": "1812",
             "name": "FACTORY_SIGN",
             "overlap": "1",
+            "phys": [
+                {
+                    "poly": "-0.12 3.92 5.54 18.39 -4.95 17.13 "
+                }
+            ],
             "pos": "432.00 -352.00",
             "rot": "0.00",
             "size": "32.00 48.00",
             "type": "Tile",
-            "z-order": "0"
-        },
-        {
-            "action-speech": "HUMANS_SIGN_INFO",
-            "action-speech-handling": "0",
-            "atlas": "env_1",
-            "atlas-region": "sign",
-            "blueprint": "-1",
-            "collidable": "0",
-            "collision": "0",
-            "focus-height": "100.00",
-            "id": "1816",
-            "name": "HUMANS_SIGN",
-            "overlap": "1",
-            "pos": "48.00 -384.00",
-            "rot": "0.00",
-            "size": "32.00 48.00",
-            "type": "Tile",
-            "z-order": "0"
+            "z-order": "6"
         },
         {
             "atlas": "2_3_city",
@@ -3634,7 +3621,7 @@
             "name": "floor-cell-vertical",
             "overlap": "0",
             "phys": [],
-            "pos": "240.00 112.00",
+            "pos": "-32.00 16.00",
             "rot": "0.00",
             "size": "64.00 64.00",
             "type": "Tile",
@@ -4874,6 +4861,29 @@
             "size": "100.00 147.00",
             "type": "Tile",
             "z-order": "11"
+        },
+        {
+            "action-speech": "HUMANS_SIGN_INFO",
+            "action-speech-handling": "0",
+            "atlas": "env_1",
+            "atlas-region": "sign",
+            "blueprint": "-1",
+            "collidable": "1",
+            "collision": "0",
+            "focus-height": "0.90",
+            "id": "3591",
+            "name": "HUMANS_SIGN",
+            "overlap": "1",
+            "phys": [
+                {
+                    "poly": "-0.12 3.92 5.54 18.39 -4.95 17.13 "
+                }
+            ],
+            "pos": "64.00 -384.00",
+            "rot": "0.00",
+            "size": "32.00 48.00",
+            "type": "Tile",
+            "z-order": "6"
         }
     ],
     "color": "35 31 54 255",
