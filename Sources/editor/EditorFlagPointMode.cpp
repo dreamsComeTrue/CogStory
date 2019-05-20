@@ -127,7 +127,7 @@ namespace aga
 
 	//--------------------------------------------------------------------------------------------------
 
-	void EditorFlagPointMode::InsertFlagPointAtCursor (int mouseX, int mouseY)
+	bool EditorFlagPointMode::InsertFlagPointAtCursor (int mouseX, int mouseY)
 	{
 		if (std::string (m_FlagPoint) != "")
 		{
@@ -139,11 +139,15 @@ namespace aga
 			}
 
 			m_FlagPoint = "";
+
+			return true;
 		}
 		else
 		{
 			m_AskFlagPoint = true;
 		}
+
+		return false;
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -151,23 +155,46 @@ namespace aga
 	bool EditorFlagPointMode::RemoveFlagPointUnderCursor (int mouseX, int mouseY)
 	{
 		std::string flagPoint = GetFlagPointUnderCursor (mouseX, mouseY);
+		Scene* scene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
 
 		if (flagPoint != "")
 		{
-			FlagPoint* flag = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoint (flagPoint);
+			FlagPoint* flag = scene->GetFlagPoint (flagPoint);
+			std::vector<FlagPoint*>& myConnections = flag->Connections;
 
-			for (size_t i = 0; i < flag->Connections.size (); ++i)
+			//	Search in own connections
+			for (size_t i = 0; i < myConnections.size (); ++i)
 			{
-				for (size_t j = 0; j < flag->Connections[i]->Connections.size (); ++j)
+				std::vector<FlagPoint*>& otherConnections = myConnections[i]->Connections;
+
+				for (size_t j = 0; j < otherConnections.size (); ++j)
 				{
-					if (flag->Connections[i]->Connections[j] == flag)
+					if (otherConnections[j] == flag)
 					{
-						flag->Connections[i]->Connections.erase (flag->Connections[i]->Connections.begin () + j);
+						otherConnections.erase (otherConnections.begin () + j);
 					}
 				}
 			}
 
-			m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoints ().erase (flagPoint);
+			std::map<std::string, FlagPoint>& allFlagPoints = scene->GetFlagPoints ();
+
+			//	Search in all connections
+			for (std::map<std::string, FlagPoint>::iterator it = allFlagPoints.begin (); it != allFlagPoints.end ();
+				 ++it)
+			{
+				std::vector<FlagPoint*>& otherConnections = (*it).second.Connections;
+
+				for (size_t i = 0; i < otherConnections.size (); ++i)
+				{
+					if (otherConnections[i] == flag)
+					{
+						otherConnections.erase (otherConnections.begin () + i);
+					}
+				}
+			}
+
+			scene->GetFlagPoints ().erase (flagPoint);
+
 			return true;
 		}
 
@@ -260,20 +287,40 @@ namespace aga
 			{
 				if (m_Editing)
 				{
-					FlagPoint* oldFlagPoint
-						= m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->GetFlagPoint (m_FlagPoint);
+					Scene* scene = m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ();
+					FlagPoint* oldFlagPoint = scene->GetFlagPoint (m_FlagPoint);
 
 					if (oldFlagPoint)
 					{
-						m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->RemoveFlagPoint (m_FlagPoint);
+						std::string oldName = oldFlagPoint->Name;
+						Point oldPos = oldFlagPoint->Pos;
+						std::vector<FlagPoint*>& connections = oldFlagPoint->Connections;
 
-						FlagPoint* newFlagPoint
-							= m_Editor->GetMainLoop ()->GetSceneManager ().GetActiveScene ()->AddFlagPoint (
-								m_FlagPointWindow, oldFlagPoint->Pos);
+						scene->RemoveFlagPoint (m_FlagPoint);
 
-						newFlagPoint->Connections = oldFlagPoint->Connections;
+						FlagPoint* newFlagPoint = scene->AddFlagPoint (m_FlagPointWindow, oldPos);
+						newFlagPoint->Connections = connections;
+
+						std::map<std::string, FlagPoint>& allFlagPoints = scene->GetFlagPoints ();
+
+						//	Search in all connections
+						for (std::map<std::string, FlagPoint>::iterator it = allFlagPoints.begin ();
+							 it != allFlagPoints.end (); ++it)
+						{
+							std::vector<FlagPoint*>& otherConnections = (*it).second.Connections;
+
+							for (size_t i = 0; i < otherConnections.size (); ++i)
+							{
+								if (otherConnections[i]->Name == oldName)
+								{
+									otherConnections.erase (otherConnections.begin () + i);
+									otherConnections.push_back (newFlagPoint);
+								}
+							}
+						}
 					}
 
+					m_FlagPoint = "";
 					m_Editing = false;
 					m_Editor->SetCursorMode (CursorMode::ActorSelectMode);
 				}

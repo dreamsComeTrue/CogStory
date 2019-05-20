@@ -1857,19 +1857,19 @@ namespace aga
 			Point* selectedTriggerPoint = m_EditorTriggerAreaMode.GetTriggerPointUnderCursor (event.x, event.y);
 			TriggerArea* selectedTriggerArea = m_EditorTriggerAreaMode.GetTriggerAreaUnderCursor (event.x, event.y);
 
-			if (selectedFlagPoint != "" || m_EditorFlagPointMode.GetFlagPoint () != "")
+			if (selectedFlagPoint != "")
 			{
 				m_EditorFlagPointMode.SetDragging (true);
 				m_EditorFlagPointMode.SetFlagPoint (selectedFlagPoint);
 				m_EditorActorMode.ClearSelectedActors ();
 			}
-			else if (selectedTriggerPoint || m_EditorTriggerAreaMode.GetTriggerPoint ())
+			else if (selectedTriggerPoint)
 			{
 				m_EditorTriggerAreaMode.SetDragging (true);
 				m_EditorTriggerAreaMode.SetTriggerPoint (selectedTriggerPoint);
 				m_EditorActorMode.ClearSelectedActors ();
 			}
-			else if (selectedTriggerArea || m_EditorTriggerAreaMode.GetTriggerArea ())
+			else if (selectedTriggerArea)
 			{
 				m_EditorTriggerAreaMode.SetDragging (true);
 				m_EditorTriggerAreaMode.SetTriggerArea (selectedTriggerArea);
@@ -1888,19 +1888,26 @@ namespace aga
 				m_IsRectSelection = true;
 				m_SelectionRect.Pos = CalculateWorldPoint (event.x, event.y);
 			}
-			else if (m_CursorMode == CursorMode::ActorSelectMode)
+			else if (m_CursorMode == CursorMode::ActorSelectMode && m_EditorFlagPointMode.GetFlagPoint () == ""
+				&& !m_EditorTriggerAreaMode.GetTriggerArea ())
 			{
 				SelectActor (event.x, event.y);
 			}
-			else if (m_CursorMode == CursorMode::EditPhysBodyMode)
+
+			if (m_CursorMode == CursorMode::EditPhysBodyMode)
 			{
 				m_EditorPhysMode.InsertPhysPointAtCursor (event.x, event.y);
 			}
-			else if (m_CursorMode == CursorMode::EditFlagPointsMode)
+
+			if (m_CursorMode == CursorMode::EditFlagPointsMode)
 			{
-				m_EditorFlagPointMode.InsertFlagPointAtCursor (event.x, event.y);
+				if (m_EditorFlagPointMode.InsertFlagPointAtCursor (event.x, event.y))
+				{
+					SetCursorMode (CursorMode::ActorSelectMode);
+				}
 			}
-			else if (m_CursorMode == CursorMode::EditTriggerAreaMode)
+
+			if (m_CursorMode == CursorMode::EditTriggerAreaMode)
 			{
 				m_EditorTriggerAreaMode.InsertTriggerAreaAtCursor (event.x, event.y);
 			}

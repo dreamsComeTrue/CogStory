@@ -20,7 +20,7 @@ namespace aga
         void Render ();
         bool MoveSelectedFlagPoint ();
         std::string GetFlagPointUnderCursor (int mouseX, int mouseY);
-        void InsertFlagPointAtCursor (int mouseX, int mouseY);
+        bool InsertFlagPointAtCursor (int mouseX, int mouseY);
         bool RemoveFlagPointUnderCursor (int mouseX, int mouseY);
 
         std::string GetFlagPoint ();
