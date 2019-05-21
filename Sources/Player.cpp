@@ -78,10 +78,10 @@ namespace aga
 
 		PhysPoints.clear ();
 		PhysPoints.push_back ({
-			{23.f, 35.f}, //  Left arm
-			{25.f, 25.f}, //  Left head
-			{37.f, 25.f}, //  Right head
-			{39.f, 35.f}, //  Right arm
+			{23.f, 45.f}, //  Left arm
+			{25.f, 35.f}, //  Left head
+			{37.f, 35.f}, //  Right head
+			{39.f, 45.f}, //  Right arm
 			{39.f, 64.f}, //  Right leg
 			{23.f, 64.f} //  Left leg
 		});

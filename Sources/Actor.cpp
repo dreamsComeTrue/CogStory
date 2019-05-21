@@ -4,9 +4,9 @@
 #include "MainLoop.h"
 #include "Scene.h"
 #include "Screen.h"
+#include "actors/components/AnimPresetComponent.h"
 #include "actors/components/MovementComponent.h"
 #include "actors/components/ParticleEmitterComponent.h"
-#include "actors/components/AnimPresetComponent.h"
 
 namespace aga
 {
@@ -73,8 +73,15 @@ namespace aga
 							  .GetAtlas (m_AtlasName)
 							  ->GetRegion (m_AtlasRegionName)
 							  .Bounds.GetSize ();
-			OverlapSize = Bounds.Size;
 		}
+
+		if (m_Animation.GetName () != "")
+		{
+			Bounds.Size = m_Animation.GetCurrentAnimation ().GetFrames ()[m_Animation.GetCurrentFrame ()].Bounds.Size;
+		}
+
+		TemplateBounds = Bounds;
+		OverlapSize = Bounds.Size;
 
 		return Lifecycle::Initialize ();
 	}

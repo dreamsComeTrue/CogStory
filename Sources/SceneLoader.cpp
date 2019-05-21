@@ -155,7 +155,6 @@ namespace aga
 					newActor->Name = actorIt["name"];
 					newActor->Bounds.Pos = StringToPoint (actorIt["pos"]);
 					newActor->Bounds.Size = StringToPoint (actorIt["size"]);
-					newActor->TemplateBounds = newActor->Bounds;
 
 					std::string zOrder = actorIt["z-order"];
 					newActor->ZOrder = atoi (zOrder.c_str ());
