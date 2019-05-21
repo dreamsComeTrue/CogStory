@@ -1,0 +1,225 @@
+{
+    "animation": "TIME_TRAVELER",
+    "animations": [
+        {
+            "frames": [
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "0,000000 0,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "64,000000 0,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "128,000000 0,000000 64,000000 64,000000 "
+                }                                
+            ],
+            "name": "ANIM_IDLE",
+            "speed": 500
+        },
+        {
+            "frames": [
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "0,000000 64,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "64,000000 64,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "128,000000 64,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "192,000000 64,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "256,000000 64,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "320,000000 64,000000 64,000000 64,000000 "
+                }
+            ],
+            "name": "ANIM_MOVE_DOWN",
+            "speed": 80
+        },
+        {
+            "frames": [
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "0,000000 128,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "64,000000 128,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "128,000000 128,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "192,000000 128,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "256,000000 128,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "320,000000 128,000000 64,000000 64,000000 "
+                }
+            ],
+            "name": "ANIM_MOVE_LEFT",
+            "speed": 110
+        },
+        {
+            "frames": [
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "0,000000 192,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "64,000000 192,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "128,000000 192,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "192,000000 192,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "256,000000 192,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "320,000000 192,000000 64,000000 64,000000 "
+                }
+            ],
+            "name": "ANIM_MOVE_RIGHT",
+            "speed": 110
+        },
+        {
+            "frames": [
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "0,000000 256,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "64,000000 256,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "128,000000 256,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "192,000000 256,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "256,000000 256,000000 64,000000 64,000000 "
+                },
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "320,000000 256,000000 64,000000 64,000000 "
+                }
+            ],
+            "name": "ANIM_MOVE_UP",
+            "speed": 80
+        },
+        {
+            "frames": [
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "0,000000 256,000000 64,000000 64,000000 "
+                }
+            ],
+            "name": "ANIM_MOVE_UP_LOOK",
+            "speed": 80
+        },
+        {
+            "frames": [
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "0,000000 128,000000 64,000000 64,000000 "
+                }
+            ],
+            "name": "ANIM_STAND_LEFT",
+            "speed": 80
+        },
+        {
+            "frames": [
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "0,000000 192,000000 64,000000 64,000000 "
+                }
+            ],
+            "name": "ANIM_STAND_RIGHT",
+            "speed": 80
+        },
+        {
+            "frames": [
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "0,000000 256,000000 64,000000 64,000000 "
+                }
+            ],
+            "name": "ANIM_STAND_UP",
+            "speed": 80
+        },
+        {
+            "frames": [
+                {
+                    "atlas": "time_traveler",
+                    "region": "time_traveler",
+                    "bounds": "0,000000 64,000000 64,000000 64,000000 "
+                }
+            ],
+            "name": "ANIM_STAND_DOWN",
+            "speed": 80
+        }        
+    ]
+}

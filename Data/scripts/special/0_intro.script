@@ -117,24 +117,24 @@ void FactoryMainSceneAnimation ()
         //     AddSpeechFrame ("ROBOT_1_SPEECH_1", false).SetTimeout (5000.f);
         // })                
         //.Wait (1000.f)
-        .After (500.f, function (id)
-        {
-            MovementComponent@ movement = GetMovementComponent ("ROBOT_SUPERVISOR");
-            movement.SetEnabled (false);
+        // .After (500.f, function (id)
+        // {
+        //     MovementComponent@ movement = GetMovementComponent ("ROBOT_SUPERVISOR");
+        //     movement.SetEnabled (false);
             
-            CreateTimeline ()
-            .After (1500.f, function (id)
-            {
-                AnimPresetComponent@ anim = GetAnimPresetComponent ("ROBOT_SUPERVISOR");
-                anim.SetAnimPresetType (JumpInPlace);
-                anim.SetMaxJumpTimes (8);
-                anim.Play ();
-            });
-        })       
-        .Begin (8000.f, function (id)
-        {
-            AddSpeechFrame ("SUPERVISOR_SPEECH_2", false).SetTimeout (8000.f);
-        })
+        //     CreateTimeline ()
+        //     .After (1500.f, function (id)
+        //     {
+        //         AnimPresetComponent@ anim = GetAnimPresetComponent ("ROBOT_SUPERVISOR");
+        //         anim.SetAnimPresetType (JumpInPlace);
+        //         anim.SetMaxJumpTimes (8);
+        //         anim.Play ();
+        //     });
+        // })       
+        // .Begin (8000.f, function (id)
+        // {
+        //     AddSpeechFrame ("SUPERVISOR_SPEECH_2", false).SetTimeout (8000.f);
+        // })
         // .Wait (1000.f)
         // .Begin (5000.f, function (id)
         // {

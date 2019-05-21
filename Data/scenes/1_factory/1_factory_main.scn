@@ -1937,19 +1937,25 @@
             "z-order": "6"
         },
         {
+            "animation": "TIME_TRAVELER",
             "atlas": "time_traveler",
             "atlas-region": "time-traveler",
             "blueprint": "-1",
             "collidable": "1",
             "collision": "0",
-            "focus-height": "100.00",
+            "focus-height": "0.95",
             "id": "3651",
-            "name": "time-traveler",
+            "name": "time_traveler",
             "overlap": "0",
-            "phys": [],
-            "pos": "448.00 -240.00",
+            "overlap-size": "59.00 59.00",
+            "phys": [
+                {
+                    "poly": "-0.15 11.84 5.79 29.94 -5.07 30.27 "
+                }
+            ],
+            "pos": "448.00 -192.00",
             "rot": "0.00",
-            "size": "64.00 64.00",
+            "size": "384.00 320.00",
             "type": "Tile",
             "z-order": "7"
         }
