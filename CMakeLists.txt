@@ -21,7 +21,7 @@ cmake_policy(SET CMP0058 NEW)
 link_directories(   ${ROOT_THIRD_PARTY_DIR}/angelscript/angelscript/lib/Linux/
                     ${ROOT_THIRD_PARTY_DIR}/angelscript/angelscript/lib/Win64/
                     ${ROOT_THIRD_PARTY_DIR}/allegro5_static/lib/
-#                    ${ROOT_THIRD_PARTY_DIR}/allegro5/bin/lib/
+                    ${ROOT_THIRD_PARTY_DIR}/allegro5/bin/lib/
                  )
 
 file(GLOB_RECURSE SRC_LIST  Sources/*
@@ -34,8 +34,8 @@ file(GLOB_RECURSE SRC_LIST  Sources/*
 if (WIN32)
     list(APPEND INCLUDE_DIRS ${ROOT_THIRD_PARTY_DIR}/allegro5_static/include)
 else()
-    # list(APPEND INCLUDE_DIRS    ${ROOT_THIRD_PARTY_DIR}/allegro5/include
-    #                             ${ROOT_THIRD_PARTY_DIR}/allegro5/bin/include)
+     list(APPEND INCLUDE_DIRS    ${ROOT_THIRD_PARTY_DIR}/allegro5/include
+                                 ${ROOT_THIRD_PARTY_DIR}/allegro5/bin/include)
 endif (WIN32)
 
 list(APPEND INCLUDE_DIRS
@@ -51,7 +51,7 @@ list(APPEND INCLUDE_DIRS
         ${ROOT_THIRD_PARTY_DIR}/imgui/examples/
     )
 
-set(STATIC_BUILD 0)
+set(STATIC_BUILD 1)
 if (STATIC_BUILD)
     set(GAME_BUILD_TYPE "-static")
 else()
@@ -96,13 +96,7 @@ else()
     endif (STATIC_BUILD)
 
     list(APPEND LIBRARIES_LIST
-                        allegro${GAME_BUILD_TYPE}
-                        allegro_image${GAME_BUILD_TYPE}
-                        allegro_font${GAME_BUILD_TYPE}
-                        allegro_ttf${GAME_BUILD_TYPE}
-                        allegro_primitives${GAME_BUILD_TYPE}
-                        allegro_audio${GAME_BUILD_TYPE}
-                        allegro_acodec${GAME_BUILD_TYPE}                        
+                        allegro_monolith${GAME_BUILD_TYPE}
                         libangelscript.a
                         pthread
         )
