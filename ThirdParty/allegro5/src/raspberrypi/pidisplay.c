@@ -420,6 +420,14 @@ static ALLEGRO_DISPLAY *raspberrypi_create_display(int w, int h)
    display->w = w;
    display->h = h;
 
+   display->flags |= ALLEGRO_OPENGL;
+#ifdef ALLEGRO_CFG_OPENGLES2
+   display->flags |= ALLEGRO_PROGRAMMABLE_PIPELINE;
+#endif
+#ifdef ALLEGRO_CFG_OPENGLES
+   display->flags |= ALLEGRO_OPENGL_ES_PROFILE;
+#endif
+
    if (!pi_create_display(display)) {
       // FIXME: cleanup
       return NULL;
@@ -469,13 +477,16 @@ static ALLEGRO_DISPLAY *raspberrypi_create_display(int w, int h)
 
    al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_ALPHA);
 
-   display->flags |= ALLEGRO_OPENGL;
-
    if (al_is_mouse_installed() && !getenv("DISPLAY")) {
       _al_evdev_set_mouse_range(0, 0, display->w-1, display->h-1);
    }
 
    set_cursor_data(d, default_cursor, DEFAULT_CURSOR_WIDTH, DEFAULT_CURSOR_HEIGHT);
+
+   /* Fill in opengl version */
+   const int v = display->ogl_extras->ogl_info.version;
+   display->extra_settings.settings[ALLEGRO_OPENGL_MAJOR_VERSION] = (v >> 24) & 0xFF;
+   display->extra_settings.settings[ALLEGRO_OPENGL_MINOR_VERSION] = (v >> 16) & 0xFF;
 
    return display;
 }

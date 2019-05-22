@@ -192,6 +192,14 @@ static ALLEGRO_DISPLAY *iphone_create_display(int w, int h)
 
    memcpy(&display->extra_settings, eds[0], sizeof(ALLEGRO_EXTRA_DISPLAY_SETTINGS));
 
+   display->flags |= ALLEGRO_OPENGL;
+#ifdef ALLEGRO_CFG_OPENGLES2
+   display->flags |= ALLEGRO_PROGRAMMABLE_PIPELINE;
+#endif
+#ifdef ALLEGRO_CFG_OPENGLES
+   display->flags |= ALLEGRO_OPENGL_ES_PROFILE;
+#endif
+
    /* This will add an OpenGL view with an OpenGL context, then return. */
    if (!_al_iphone_add_view(display)) {
       /* FIXME: cleanup */
@@ -207,10 +215,13 @@ static ALLEGRO_DISPLAY *iphone_create_display(int w, int h)
    _al_ogl_set_extensions(ogl->extension_api);
    _al_iphone_setup_opengl_view(display, true);
 
-   display->flags |= ALLEGRO_OPENGL;
-
    int ndisplays = system->system.displays._size;
    [[UIApplication sharedApplication] setIdleTimerDisabled:(ndisplays > 1)];
+
+   /* Fill in opengl version */
+   const int v = display->ogl_extras->ogl_info.version;
+   display->extra_settings.settings[ALLEGRO_OPENGL_MAJOR_VERSION] = (v >> 24) & 0xFF;
+   display->extra_settings.settings[ALLEGRO_OPENGL_MINOR_VERSION] = (v >> 16) & 0xFF;
 
    return display;
 }

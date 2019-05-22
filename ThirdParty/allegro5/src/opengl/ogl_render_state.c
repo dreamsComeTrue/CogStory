@@ -25,13 +25,15 @@ void _al_ogl_update_render_state(ALLEGRO_DISPLAY *display)
     * avoid so many redundant OpenGL calls.
     */
 
+#ifdef ALLEGRO_CFG_OPENGL_FIXED_FUNCTION
    if (!(display->flags & ALLEGRO_PROGRAMMABLE_PIPELINE)) {
       if (r->alpha_test == 0)
          glDisable(GL_ALPHA_TEST);
       else
          glEnable(GL_ALPHA_TEST);
-      glAlphaFunc(_gl_funcs[r->alpha_function], r->alpha_test_value);
+      glAlphaFunc(_gl_funcs[r->alpha_function], (float)r->alpha_test_value / 255.0);
    }
+#endif
 
    if (r->depth_test == 0)
       glDisable(GL_DEPTH_TEST);

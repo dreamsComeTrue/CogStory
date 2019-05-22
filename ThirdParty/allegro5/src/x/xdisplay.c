@@ -313,6 +313,12 @@ static ALLEGRO_DISPLAY_XGLX *xdpy_create_display_locked(
    display->flags = flags;
    // FIXME: default? Is this the right place to set this?
    display->flags |= ALLEGRO_OPENGL;
+#ifdef ALLEGRO_CFG_OPENGLES2
+   display->flags |= ALLEGRO_PROGRAMMABLE_PIPELINE;
+#endif
+#ifdef ALLEGRO_CFG_OPENGLES
+   display->flags |= ALLEGRO_OPENGL_ES_PROFILE;
+#endif
 
    /* Store our initial virtual adapter, used by fullscreen and positioning
     * code.
@@ -481,6 +487,11 @@ static ALLEGRO_DISPLAY_XGLX *xdpy_create_display_locked(
    ALLEGRO_INFO("OpenGL Version: %s\n", (const char*)glGetString(GL_VERSION));
    ALLEGRO_INFO("Vendor: %s\n", (const char*)glGetString(GL_VENDOR));
    ALLEGRO_INFO("Renderer: %s\n", (const char*)glGetString(GL_RENDERER));
+
+   /* Fill in opengl version */
+   const int v = display->ogl_extras->ogl_info.version;
+   display->extra_settings.settings[ALLEGRO_OPENGL_MAJOR_VERSION] = (v >> 24) & 0xFF;
+   display->extra_settings.settings[ALLEGRO_OPENGL_MINOR_VERSION] = (v >> 16) & 0xFF;
 
    if (display->ogl_extras->ogl_info.version < _ALLEGRO_OPENGL_VERSION_1_2) {
       ALLEGRO_EXTRA_DISPLAY_SETTINGS *eds = _al_get_new_display_settings();

@@ -491,8 +491,12 @@ static GLXContext create_context_new(int ver, Display *dpy, GLXFBConfig fb,
    GCCA_PROC _xglx_glXCreateContextAttribsARB = NULL;
 
    if (ver >= 140) {
-      /* GLX 1.4 should have this */
+      /* GLX 1.4 should have this, if it's defined, use it directly. */
+      /* OTOH it *could* be there but only available through dynamic loading. */
+      /* In that case, fallback to calling glxXGetProcAddress. */
+#ifdef glXCreateContextAttribsARB
       _xglx_glXCreateContextAttribsARB = glXCreateContextAttribsARB;
+#endif // glXCreateContextAttribsARB
    }
    if (!_xglx_glXCreateContextAttribsARB) {
       /* Load the extension manually. */
@@ -532,10 +536,8 @@ bool _al_xglx_config_create_context(ALLEGRO_DISPLAY_XGLX *glx)
          existing_ctx = (*existing_dpy)->context;
    }
 
-   int major = _al_get_suggested_display_option(disp,
-      ALLEGRO_OPENGL_MAJOR_VERSION, 0);
-   int minor = _al_get_suggested_display_option(disp,
-      ALLEGRO_OPENGL_MINOR_VERSION, 0);
+   int major = al_get_new_display_option(ALLEGRO_OPENGL_MAJOR_VERSION, 0);
+   int minor = al_get_new_display_option(ALLEGRO_OPENGL_MINOR_VERSION, 0);
 
    if (glx->fbc) {
       bool forward_compat = (disp->flags & ALLEGRO_OPENGL_FORWARD_COMPATIBLE) != 0;
