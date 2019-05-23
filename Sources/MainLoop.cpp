@@ -62,11 +62,21 @@ namespace aga
 
 		m_Screen->ProcessEventFunction = [&](ALLEGRO_EVENT* event) {
 			bool ret = m_StateManager.ProcessEvent (event, m_Screen->GetDeltaTime ());
+			
+			if (event->keyboard.keycode  == ALLEGRO_KEY_LSHIFT)
+			{
+				m_SpeedMultiplier = 6;
+				
+				if (event->type == ALLEGRO_EVENT_KEY_UP)
+				{
+					m_SpeedMultiplier = 1;
+				}
+			}
 
 			if (event->type == ALLEGRO_EVENT_KEY_DOWN && event->keyboard.keycode >= ALLEGRO_KEY_0
 				&& event->keyboard.keycode <= ALLEGRO_KEY_9)
 			{
-				m_SpeedMultiplier = event->keyboard.keycode - 27;
+				m_SpeedMultiplier = (event->keyboard.keycode - 27);
 			}
 
 			if (!ret)

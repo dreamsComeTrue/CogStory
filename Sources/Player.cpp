@@ -334,7 +334,7 @@ namespace aga
 		ProcessTriggerAreas (dx, dy, std::move (triggerAreaDelta));
 		UpdatePos (triggerAreaDelta);
 
-		if (al_key_down (&state, ALLEGRO_KEY_LSHIFT) || speedBooster)
+		if (al_key_down (&state, ALLEGRO_KEY_LCTRL) || speedBooster)
 		{
 			float multiplier = 4;
 			dx *= multiplier;
